@@ -1,0 +1,11 @@
+{
+  "cSpell.words": [
+    "esbuild",
+    "modelcontextprotocol",
+    "nuxy",
+    "nuxyconfig",
+    "wlog"
+  ],
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore"
+}

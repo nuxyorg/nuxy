@@ -1,0 +1,13 @@
+{
+  "id": "com.nuxy.calculator",
+  "name": "Calculator",
+  "version": "1.0.0",
+  "type": "provider",
+  "capabilities": {
+    "callable": true,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.js"
+  }
+}

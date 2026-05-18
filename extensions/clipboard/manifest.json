@@ -1,0 +1,14 @@
+{
+  "id": "com.nuxy.clipboard",
+  "name": "Clipboard Manager",
+  "version": "1.0.0",
+  "type": "tool",
+  "capabilities": {
+    "callable": true,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.js",
+    "frontend": "frontend.js"
+  }
+}

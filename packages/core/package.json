@@ -1,0 +1,9 @@
+{
+  "name": "@nuxy/core",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
