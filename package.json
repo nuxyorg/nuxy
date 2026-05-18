@@ -1,9 +1,12 @@
 {
   "name": "nuxy",
   "version": "2.0.0",
+  "private": true,
   "description": "",
   "main": "index.js",
+  "packageManager": "pnpm@11.1.2",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "pnpm -C apps/desktop dev",
     "start": "bun run src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"

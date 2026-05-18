@@ -10,6 +10,10 @@ import path from 'path';
 
 const log = kernelLogger.child('IPC');
 
+/** Ignore renderer measurements below this — layout not ready yet. */
+const MIN_CONTENT_WIDTH = 200;
+const MIN_CONTENT_HEIGHT = 48;
+
 let dragOffset: { x: number; y: number } | null = null;
 
 export function registerIpc() {
@@ -91,31 +95,25 @@ export function registerIpc() {
       return;
     }
 
+    // Renderer and setContentSize both use CSS (logical) pixels; do not scale again.
+    const targetW = Math.max(MIN_CONTENT_WIDTH, Math.round(width));
+    const targetH = Math.max(MIN_CONTENT_HEIGHT, Math.round(height));
+
     try {
-      const bounds  = win.getBounds();
-      const [cw, ch] = win.getContentSize();
-      const frameW  = bounds.width  - cw;
-      const frameH  = bounds.height - ch;
-
-      // Renderer sends CSS (logical) pixels; getBounds/getContentSize return
-      // physical pixels on Linux. Multiply by scaleFactor to convert.
-      const scale   = screen.getDisplayMatching(bounds).scaleFactor;
-      const targetW = Math.round(width  * scale) + frameW;
-      const targetH = Math.round(height * scale) + frameH;
-
-      log.silly(`window:resize target → ${targetW}x${targetH} (scale=${scale})`);
+      const [, ch] = win.getContentSize();
+      log.silly(`window:resize target → ${targetW}x${targetH}`);
       const spring = getOrCreateSpring(win);
       spring.setTarget({
         width: targetW,
         height: targetH,
       });
-      if (!win.isVisible() || bounds.height < 100) {
+      if (!win.isVisible() || ch < MIN_CONTENT_HEIGHT) {
         spring.snapToTarget();
         log.info(`Window snapped instantly to target size (${targetW}x${targetH})`);
       }
     } catch (error) {
       log.error('window:resize failed, falling back to instant resize', error);
-      win.setContentSize(width, height);
+      win.setContentSize(targetW, targetH);
     }
   });
 

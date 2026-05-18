@@ -55,8 +55,9 @@ Desktop.ini
 *.swo
 *~
 
-# Bun
+# Bun (use pnpm at repo root for workspace installs)
 .bun/
+bun.lock
 
 # Misc
 *.local

@@ -60,19 +60,20 @@ export class WindowSpringController {
     this.win = win
     this.cfg = { ...DEFAULTS, ...config }
     const b = win.getBounds()
+    const [cw, ch] = win.getContentSize()
     this.s = {
       x: b.x,
       y: b.y,
-      w: b.width,
-      h: b.height,
+      w: cw,
+      h: ch,
       vx: 0,
       vy: 0,
       vw: 0,
       vh: 0,
       tx: b.x,
       ty: b.y,
-      tw: b.width,
-      th: b.height
+      tw: cw,
+      th: ch
     }
   }
 
@@ -103,14 +104,15 @@ export class WindowSpringController {
     if (this.win.isDestroyed()) return
     this._stop()
     const b = this.win.getBounds()
+    const [cw, ch] = this.win.getContentSize()
     this.s.x = b.x
     this.s.y = b.y
-    this.s.w = b.width
-    this.s.h = b.height
+    this.s.w = cw
+    this.s.h = ch
     this.s.tx = b.x
     this.s.ty = b.y
-    this.s.tw = b.width
-    this.s.th = b.height
+    this.s.tw = cw
+    this.s.th = ch
     this.s.vx = 0
     this.s.vy = 0
     this.s.vw = 0
@@ -130,13 +132,8 @@ export class WindowSpringController {
     s.vh = 0
     this._stop()
     if (!this.win.isDestroyed()) {
-      this.win.setBounds({
-        x: Math.round(s.x),
-        y: Math.round(s.y),
-        width: Math.max(1, Math.round(s.w)),
-        height: Math.max(1, Math.round(s.h))
-      })
-      log.info(`Physical window bounds after snapToTarget:`, this.win.getBounds())
+      this._applyFrame()
+      log.info(`Content size after snapToTarget:`, this.win.getContentSize())
     }
   }
 
@@ -213,12 +210,7 @@ export class WindowSpringController {
       s.vy = 0
       s.vw = 0
       s.vh = 0
-      this.win.setBounds({
-        x: Math.round(s.tx),
-        y: Math.round(s.ty),
-        width: Math.max(1, Math.round(s.tw)),
-        height: Math.max(1, Math.round(s.th))
-      })
+      this._applyFrame()
       this._stop()
       log.silly(
         `Spring at rest: (${Math.round(s.x)}, ${Math.round(s.y)}) ${Math.round(s.w)}x${Math.round(s.h)}`
@@ -226,12 +218,18 @@ export class WindowSpringController {
       return
     }
 
-    this.win.setBounds({
-      x: Math.round(s.x),
-      y: Math.round(s.y),
-      width: Math.max(1, Math.round(s.w)),
-      height: Math.max(1, Math.round(s.h))
-    })
+    this._applyFrame()
+  }
+
+  /** Apply spring position + content size (logical pixels, frameless window). */
+  private _applyFrame(): void {
+    if (this.win.isDestroyed()) return
+    const s = this.s
+    this.win.setPosition(Math.round(s.x), Math.round(s.y))
+    this.win.setContentSize(
+      Math.max(1, Math.round(s.w)),
+      Math.max(1, Math.round(s.h))
+    )
   }
 }
 

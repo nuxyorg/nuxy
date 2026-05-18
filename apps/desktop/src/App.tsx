@@ -15,21 +15,37 @@ export default function App() {
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const omniBarRef = useRef<HTMLDivElement>(null)
+  const lastReportedSize = useRef({ width: 0, height: 0 })
   const isHoppidikActive = query.trim().toLowerCase() === 'hoppidiktest'
 
   useEffect(() => {
     if (!containerRef.current) return
+    let rafId = 0
     const observer = new ResizeObserver(() => {
-      if (containerRef.current && (window as any).core?.window?.resize) {
+      cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        if (!containerRef.current || !(window as any).core?.window?.resize) return
         const rect = containerRef.current.getBoundingClientRect()
-        ;(window as any).core.window.resize(
-          Math.ceil(rect.width),
-          Math.ceil(rect.height)
-        )
-      }
+        const width = Math.ceil(rect.width)
+        const height = Math.ceil(rect.height)
+        // Skip collapsed pre-layout measurements that caused 3px-wide snaps.
+        if (width < 100 || height < 32) return
+        const prev = lastReportedSize.current
+        if (
+          Math.abs(width - prev.width) < 2 &&
+          Math.abs(height - prev.height) < 2
+        ) {
+          return
+        }
+        lastReportedSize.current = { width, height }
+        ;(window as any).core.window.resize(width, height)
+      })
     })
     observer.observe(containerRef.current)
-    return () => observer.disconnect()
+    return () => {
+      cancelAnimationFrame(rafId)
+      observer.disconnect()
+    }
   }, [results, ToolComponent, activeTool])
 
   useEffect(() => {

@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import electron from 'vite-plugin-electron/simple';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import electron from 'vite-plugin-electron/simple'
 
 export default defineConfig({
   plugins: [
@@ -17,10 +17,10 @@ export default defineConfig({
         }
       },
       preload: {
-        input: 'electron/preload.ts',
+        input: 'electron/preload.ts'
       },
       renderer: {}
     })
   ],
   base: './'
-});
+})
