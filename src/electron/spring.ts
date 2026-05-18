@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron'
-import { kernelLogger } from '../../../packages/core/src/logger.js'
+import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('Spring')
 

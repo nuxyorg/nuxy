@@ -16,12 +16,17 @@ To enforce modular boundaries, Nuxy should be structured as a workspace (e.g. us
 ├── src/                   # The Nuxy Kernel (Electron) & Shell (React)
 │   ├── electron/          # Backend (Kernel)
 │   │   ├── main.ts        # App boot, single instance lock
-│   │   ├── window.ts      # Transparent BrowserWindow manager
-│   │   ├── ipc.ts         # Message Broker & Validation
-│   │   ├── scanner.ts     # Extension folder watcher
+│   │   ├── paths.ts       # ~/.nuxy path constants
+│   │   ├── registry.ts    # Extension id → folder registry
+│   │   ├── window.ts      # BrowserWindow manager
+│   │   ├── ipc.ts         # Message broker & validation
+│   │   ├── scanner.ts     # Extension loader
 │   │   ├── protocol.ts    # nuxy-ext:// custom protocol
-│   │   └── worker/        # Worker Thread Sandbox Logic
-│   │       └── spawn.ts   # Node.js worker_threads launcher
+│   │   ├── themes/        # Kernel: copy bundled themes → ~/.nuxy/themes/
+│   │   └── worker/        # Worker thread sandbox
+│   │       ├── spawn.ts
+│   │       └── extension-host.ts
+│   ├── themes/            # Bundled theme JSON (Tailwind + runtime)
 │   ├── src/               # Frontend (Canvas)
 │   │   ├── App.tsx        # Central OmniBar and routing
 │   │   ├── main.tsx       # React DOM mount

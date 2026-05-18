@@ -5,25 +5,34 @@ Given the architectural separation between the React Frontend, the Context Bridg
 
 ## 2. Unit Testing (Vitest)
 
-Vitest is selected over Jest due to its native Vite integration, meaning the same `vite.config.ts` handles both building and testing without complex transform steps.
+Vitest is selected over Jest due to its native Vite integration. Kernel unit tests live next to the Electron sources:
+
+```bash
+pnpm test          # from repo root (runs src/electron/**/*.test.ts)
+pnpm -C src test:watch
+```
+
+Current coverage (`src/electron/`):
+
+- `storage-path.test.ts` — chroot path traversal
+- `protocol-resolve.test.ts` — `nuxy-ext://` resolution and traversal blocks
+- `ipc-validate.test.ts` — kernel channel and extension id validation
+- `registry.test.ts` — manifest id ↔ folder mapping
 
 ### 2.1 Backend Services
 Test pure logic (e.g., Cryptography, File string parsing) in isolation. Mock the `CoreContext` completely.
 
 ```typescript
-// test/vault.test.ts
-import { expect, test, vi } from 'vitest';
-import { VaultService } from '../src/modules/vault/backend/service';
+// electron/storage-path.test.ts
+import { describe, it, expect } from 'vitest';
+import { resolveStoragePath } from './storage-path.js';
 
-test('Vault Encrypts and Decrypts correctly', () => {
-  const service = new VaultService();
-  const raw = { password: 'secret123' };
-  
-  const encrypted = service.encrypt(raw, 'master-key');
-  expect(encrypted).not.toEqual(raw);
-  
-  const decrypted = service.decrypt(encrypted, 'master-key');
-  expect(decrypted).toEqual(raw);
+describe('resolveStoragePath', () => {
+  it('blocks parent traversal', () => {
+    expect(() =>
+      resolveStoragePath('/home/user/.nuxy/data/com.nuxy.test', '../other/secret.json')
+    ).toThrow(/Path traversal/);
+  });
 });
 ```
 

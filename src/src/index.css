@@ -5,23 +5,25 @@
 :root {
   --bg-base: #141414;
   --syntax-comment: #333333;
-  --syntax-variable: #EEFFFF;
-  --syntax-constant: #FFAA01;
-  --syntax-invalid: #FF1D64;
-  --syntax-deprecated: #B04DFF;
+  --syntax-variable: #eeffff;
+  --syntax-constant: #ffaa01;
+  --syntax-invalid: #ff1d64;
+  --syntax-deprecated: #b04dff;
   --syntax-keyword: #555555;
-  --syntax-operator: #2AC0FF;
-  --syntax-tag: #FF00B0;
-  --syntax-function: #00FECA;
-  --syntax-orange: #F9672B;
+  --syntax-operator: #2ac0ff;
+  --syntax-tag: #ff00b0;
+  --syntax-function: #00feca;
+  --syntax-orange: #f9672b;
   --syntax-peach: #ff8b5a;
-  --terminal-green: #CCFF2D;
+  --syntax-green: #ccff2d;
 }
 
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
   background-color: var(--bg-base) !important;
   color: var(--syntax-variable);
   overflow: hidden;
@@ -35,99 +37,6 @@ body {
 }
 
 .custom-scrollbar {
-  -ms-overflow-style: none !important;  /* IE/Edge */
-  scrollbar-width: none !important;  /* Firefox */
-}
-
-/* ── OmniBar breadcrumb bar ──────────────────────────────── */
-.omniBar-bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 13px 16px;
-  cursor: text;
-  min-height: 52px;
-}
-
-/* The real input sits behind everything, invisible but captures focus/keystrokes */
-.omniBar-hidden-input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: text;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: transparent;
-  caret-color: transparent;
-  z-index: 0;
-}
-
-.omniBar-icon {
-  display: flex;
-  align-items: center;
-  color: var(--syntax-comment);
-  flex-shrink: 0;
-  z-index: 1;
-}
-
-.omniBar-sep {
-  color: var(--syntax-comment);
-  font-size: 18px;
-  line-height: 1;
-  user-select: none;
-  flex-shrink: 0;
-  z-index: 1;
-}
-
-.omniBar-segment {
-  display: flex;
-  align-items: center;
-  font-size: 15px;
-  z-index: 1;
-}
-
-/* Tool name pill */
-.omniBar-segment--tool {
-  color: var(--syntax-operator);
-  font-weight: 500;
-  letter-spacing: 0.01em;
-}
-
-/* Query / placeholder area */
-.omniBar-segment--query {
-  flex: 1;
-  min-width: 0;
-}
-
-.omniBar-placeholder {
-  color: var(--syntax-keyword);
-  font-size: 15px;
-}
-
-.omniBar-typed {
-  color: var(--syntax-variable);
-  font-size: 15px;
-  display: inline-flex;
-  align-items: center;
-  gap: 1px;
-}
-
-/* Blinking cursor replica */
-.omniBar-cursor {
-  display: inline-block;
-  width: 2px;
-  height: 1em;
-  background: var(--syntax-operator);
-  margin-left: 1px;
-  vertical-align: text-bottom;
-  animation: omniBar-blink 1s step-start infinite;
-}
-
-@keyframes omniBar-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+  -ms-overflow-style: none !important; /* IE/Edge */
+  scrollbar-width: none !important; /* Firefox */
 }

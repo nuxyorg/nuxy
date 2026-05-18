@@ -1,16 +1,14 @@
 /// <reference types="vite/client" />
 import { ipcMain, BrowserWindow } from 'electron'
 import { getOrCreateSpring } from '../spring.js'
-import { kernelLogger } from '../../../../packages/core/src/logger.js'
+import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('Hoppidik')
 
 let hoppidikInterval: NodeJS.Timeout | null = null
 
-;(global as any).isHoppidikActive = () => {
-  return hoppidikInterval !== null
-}
-;(global as any).clearHoppidik = () => {
+globalThis.isHoppidikActive = () => hoppidikInterval !== null
+globalThis.clearHoppidik = () => {
   if (hoppidikInterval) {
     clearInterval(hoppidikInterval)
     hoppidikInterval = null

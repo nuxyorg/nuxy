@@ -1,7 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import os from 'os'
-import { kernelLogger } from '../../../packages/core/src/logger.js'
+import { kernelLogger } from '@nuxy/core'
+import { CONFIG_DIR, CONFIG_PATH } from './paths.js'
+import { ensureUserThemes } from './themes/index.js'
 
 const log = kernelLogger.child('NuxyConfig')
 
@@ -21,6 +23,9 @@ export interface NuxyConfig {
 
   /** Width of the launcher window in pixels. default: 800 */
   windowWidth: number
+
+  /** Max height of the launcher window in pixels; also used as initial height on open. default: 600 */
+  windowMaxHeight: number
 
   /** Whether the window should always stay on top. default: false */
   alwaysOnTop: boolean
@@ -46,19 +51,15 @@ const DEFAULTS: NuxyConfig = {
   theme: 'dark',
   escAction: 'hide',
   windowWidth: 800,
+  windowMaxHeight: 600,
   alwaysOnTop: false,
   opacity: 1,
   showInTaskbar: false,
   startHidden: false
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Path
-// ──────────────────────────────────────────────────────────────────────────────
-
-export const CONFIG_DIR = path.join(os.homedir(), '.nuxy')
-export const CONFIG_PATH = path.join(CONFIG_DIR, 'nuxyconfig')
-export const THEMES_DIR = path.join(CONFIG_DIR, 'themes')
+export { CONFIG_DIR, CONFIG_PATH, THEMES_DIR } from './paths.js'
+export { DEFAULT_DARK_THEME, DEFAULT_LIGHT_THEME } from './themes/index.js'
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Parser  (minimal key = value format, # comments, blank lines ignored)
@@ -89,9 +90,16 @@ function parseConfig(raw: string): Partial<NuxyConfig> {
         if (['hide', 'minimize', 'quit', 'none'].includes(value))
           result.escAction = value as EscAction
         break
-      case 'windowWidth':
-        result.windowWidth = Number(value)
+      case 'windowWidth': {
+        const w = Number(value)
+        if (!Number.isNaN(w) && w >= 200 && w <= 4096) result.windowWidth = w
         break
+      }
+      case 'windowMaxHeight': {
+        const h = Number(value)
+        if (!Number.isNaN(h) && h >= 48 && h <= 4096) result.windowMaxHeight = h
+        break
+      }
       case 'alwaysOnTop':
         result.alwaysOnTop = value === 'true'
         break
@@ -135,7 +143,8 @@ theme = dark
 escAction = hide
 
 # Launcher window dimensions (pixels)
-windowWidth  = 800
+windowWidth     = 800
+windowMaxHeight = 600
 
 # Keep the window above all other windows
 alwaysOnTop = false
@@ -165,7 +174,7 @@ startHidden = false
 // ──────────────────────────────────────────────────────────────────────────────
 
 let _config: NuxyConfig | null = null
-let isWatching = false;
+let isWatching = false
 
 export function loadConfig(): NuxyConfig {
   if (_config) return _config
@@ -175,50 +184,10 @@ export function loadConfig(): NuxyConfig {
     fs.mkdirSync(CONFIG_DIR, { recursive: true })
   }
 
-  // Initialize themes directory and default theme files
-  if (!fs.existsSync(THEMES_DIR)) {
-    log.info(`Creating themes directory at ${THEMES_DIR}`)
-    fs.mkdirSync(THEMES_DIR, { recursive: true })
-  }
-
-  // Write default themes if they don't exist, or if they contain the old bad style format
-  const darkJsonPath = path.join(THEMES_DIR, 'dark.json')
-  const lightJsonPath = path.join(THEMES_DIR, 'light.json')
-
   try {
-    let shouldWriteDark = !fs.existsSync(darkJsonPath)
-    if (!shouldWriteDark) {
-      const currentDark = fs.readFileSync(darkJsonPath, 'utf8')
-      if (currentDark.includes('p-3.5')) {
-        shouldWriteDark = true
-      }
-    }
-    if (shouldWriteDark) {
-      fs.writeFileSync(
-        darkJsonPath,
-        JSON.stringify(DEFAULT_DARK_THEME, null, 2),
-        'utf8'
-      )
-      log.info('Initialized/Updated default dark.json theme')
-    }
-
-    let shouldWriteLight = !fs.existsSync(lightJsonPath)
-    if (!shouldWriteLight) {
-      const currentLight = fs.readFileSync(lightJsonPath, 'utf8')
-      if (currentLight.includes('p-3.5')) {
-        shouldWriteLight = true
-      }
-    }
-    if (shouldWriteLight) {
-      fs.writeFileSync(
-        lightJsonPath,
-        JSON.stringify(DEFAULT_LIGHT_THEME, null, 2),
-        'utf8'
-      )
-      log.info('Initialized/Updated default light.json theme')
-    }
+    ensureUserThemes()
   } catch (e) {
-    log.error('Failed to initialize/update default themes:', e)
+    log.error('Failed to initialize user themes:', e)
   }
 
   // Old config migration check
@@ -239,59 +208,84 @@ export function loadConfig(): NuxyConfig {
   }
 
   function watchConfig() {
-    if (isWatching) return;
-    isWatching = true;
+    if (isWatching) return
+    isWatching = true
     try {
       fs.watch(CONFIG_DIR, (eventType, filename) => {
         if (filename === 'nuxyconfig') {
-          log.info('nuxyconfig changed on disk — reloading config.');
+          log.info('nuxyconfig changed on disk — reloading config.')
           try {
-            reloadConfig();
+            reloadConfig()
+            void import('./config-runtime.js').then(({ applyConfigToWindow }) =>
+              import('./window.js').then(({ getMainWindow }) => {
+                const win = getMainWindow()
+                if (win) applyConfigToWindow(win)
+              })
+            )
           } catch (e) {
-            log.error('Failed to reload config on file change:', e);
+            log.error('Failed to reload config on file change:', e)
           }
         }
-      });
+      })
     } catch (err) {
-      log.error('Failed to watch config directory:', err);
+      log.error('Failed to watch config directory:', err)
     }
   }
 
   if (!fs.existsSync(CONFIG_PATH)) {
-    log.info(`No config found at ${CONFIG_PATH} — writing defaults.`);
-    writeDefaultConfig();
-    _config = { ...DEFAULTS };
-    watchConfig();
-    return _config;
+    log.info(`No config found at ${CONFIG_PATH} — writing defaults.`)
+    writeDefaultConfig()
+    _config = { ...DEFAULTS }
+    watchConfig()
+    return _config
   }
 
   try {
-    const raw = fs.readFileSync(CONFIG_PATH, 'utf-8');
-    const parsed = parseConfig(raw);
-    _config = { ...DEFAULTS, ...parsed };
-    log.info(`Config loaded from ${CONFIG_PATH}`, _config);
+    const raw = fs.readFileSync(CONFIG_PATH, 'utf-8')
+    const parsed = parseConfig(raw)
+    _config = normalizeConfig({ ...DEFAULTS, ...parsed })
+    log.info(`Config loaded from ${CONFIG_PATH}`, _config)
   } catch (err) {
-    log.error(`Failed to read config — falling back to defaults.`, err);
-    _config = { ...DEFAULTS };
+    log.error(`Failed to read config — falling back to defaults.`, err)
+    _config = { ...DEFAULTS }
   }
 
-  watchConfig();
-  return _config;
+  watchConfig()
+  return _config
 }
 
 /** Clears the config cache and re-reads config from disk. */
 export function reloadConfig(): NuxyConfig {
-  _config = null;
-  return loadConfig();
+  _config = null
+  return loadConfig()
+}
+
+function normalizeConfig(cfg: NuxyConfig): NuxyConfig {
+  return {
+    ...cfg,
+    windowWidth:
+      Number.isFinite(cfg.windowWidth) && cfg.windowWidth >= 200
+        ? cfg.windowWidth
+        : DEFAULTS.windowWidth,
+    windowMaxHeight:
+      Number.isFinite(cfg.windowMaxHeight) && cfg.windowMaxHeight >= 48
+        ? cfg.windowMaxHeight
+        : DEFAULTS.windowMaxHeight,
+    opacity: Math.min(1, Math.max(0, cfg.opacity ?? DEFAULTS.opacity))
+  }
 }
 
 /** Returns the already-loaded config (must call loadConfig first). */
 export function getConfig(): NuxyConfig {
-  if (!_config) return loadConfig();
-  return _config;
+  if (!_config) return loadConfig()
+  return _config
 }
 
-function parseCoordinate(val: string, displayLength: number, winLength: number): number {
+function parseCoordinate(
+  val: string,
+  displayLength: number,
+  winLength: number
+): number {
   val = val.trim().toLowerCase()
 
   if (val === 'center') {
@@ -300,7 +294,9 @@ function parseCoordinate(val: string, displayLength: number, winLength: number):
 
   if (val.endsWith('px')) {
     const px = parseFloat(val)
-    return isNaN(px) ? Math.round((displayLength - winLength) / 2) : Math.round(px)
+    return isNaN(px)
+      ? Math.round((displayLength - winLength) / 2)
+      : Math.round(px)
   }
 
   if (val.endsWith('%')) {
@@ -334,6 +330,7 @@ function parseCoordinate(val: string, displayLength: number, winLength: number):
   return Math.round((displayLength - winLength) / 2)
 }
 
+// For now, not used
 export function getWindowPosition(
   winWidth: number,
   winHeight: number,
@@ -357,80 +354,4 @@ export function getWindowPosition(
   }
 
   return { x: targetX, y: targetY }
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// Default Themes Definition
-// ──────────────────────────────────────────────────────────────────────────────
-
-export const DEFAULT_DARK_THEME = {
-  name: 'dark',
-  colors: {
-    'bg-base': '#141414',
-    'syntax-comment': '#333333',
-    'syntax-variable': '#EEFFFF',
-    'syntax-constant': '#FFAA01',
-    'syntax-invalid': '#FF1D64',
-    'syntax-deprecated': '#B04DFF',
-    'syntax-keyword': '#555555',
-    'syntax-operator': '#2AC0FF',
-    'syntax-tag': '#FF00B0',
-    'syntax-function': '#00FECA',
-    'syntax-orange': '#F9672B',
-    'syntax-peach': '#ff8b5a',
-    'terminal-green': '#CCFF2D'
-  },
-  styles: {
-    container: 'w-full h-fit bg-bg-base border border-syntax-comment',
-    input:
-      'w-full border-syntax-comment bg-bg-base text-syntax-variable placeholder:text-slate-500 text-lg py-5 px-4 rounded-lg focus:border-syntax-operator focus:ring-1 focus:ring-syntax-operator transition-all duration-300 shadow-inner',
-    itemActive:
-      'mx-2 my-1 py-2 px-4 rounded-md flex items-center justify-between cursor-pointer transition-all duration-150 bg-syntax-comment text-syntax-variable shadow-sm',
-    itemInactive:
-      'mx-2 my-1 py-2 px-4 rounded-md flex items-center justify-between cursor-pointer transition-all duration-150 bg-transparent hover:bg-syntax-comment/40 text-syntax-variable',
-    itemTitleActive:
-      'text-base font-medium transition-colors duration-150 text-syntax-function',
-    itemTitleInactive:
-      'text-base font-medium transition-colors duration-150 text-syntax-variable',
-    itemSubtitleActive:
-      'text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-constant bg-bg-base border border-syntax-operator',
-    itemSubtitleInactive:
-      'text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-peach bg-syntax-comment border border-transparent'
-  }
-}
-
-export const DEFAULT_LIGHT_THEME = {
-  name: 'light',
-  colors: {
-    'bg-base': '#F4F4F5',
-    'syntax-comment': '#E4E4E7',
-    'syntax-variable': '#18181B',
-    'syntax-constant': '#D97706',
-    'syntax-invalid': '#DC2626',
-    'syntax-deprecated': '#7C3AED',
-    'syntax-keyword': '#71717A',
-    'syntax-operator': '#2563EB',
-    'syntax-tag': '#DB2777',
-    'syntax-function': '#059669',
-    'syntax-orange': '#EA580C',
-    'syntax-peach': '#F97316',
-    'terminal-green': '#16A34A'
-  },
-  styles: {
-    container: 'w-full h-fit bg-bg-base border border-syntax-comment',
-    input:
-      'w-full border-syntax-comment bg-bg-base text-syntax-variable placeholder:text-zinc-400 text-lg py-5 px-4 rounded-lg focus:border-syntax-operator focus:ring-1 focus:ring-syntax-operator transition-all duration-300 shadow-inner',
-    itemActive:
-      'mx-2 my-1 py-2 px-4 rounded-md flex items-center justify-between cursor-pointer transition-all duration-150 bg-syntax-comment text-syntax-variable shadow-sm',
-    itemInactive:
-      'mx-2 my-1 py-2 px-4 rounded-md flex items-center justify-between cursor-pointer transition-all duration-150 bg-transparent hover:bg-syntax-comment/40 text-syntax-variable',
-    itemTitleActive:
-      'text-base font-medium transition-colors duration-150 text-syntax-function',
-    itemTitleInactive:
-      'text-base font-medium transition-colors duration-150 text-syntax-variable',
-    itemSubtitleActive:
-      'text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-constant bg-bg-base border border-syntax-operator',
-    itemSubtitleInactive:
-      'text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-peach bg-syntax-comment border border-transparent'
-  }
 }

@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "name": "dark",
+  "colors": {
+    "bg-base": "#141414",
+    "syntax-comment": "#333333",
+    "syntax-variable": "#EEFFFF",
+    "syntax-constant": "#FFAA01",
+    "syntax-invalid": "#FF1D64",
+    "syntax-deprecated": "#B04DFF",
+    "syntax-keyword": "#555555",
+    "syntax-operator": "#2AC0FF",
+    "syntax-tag": "#FF00B0",
+    "syntax-function": "#00FECA",
+    "syntax-orange": "#F9672B",
+    "syntax-peach": "#ff8b5a",
+    "syntax-green": "#CCFF2D"
+  },
+  "styles": {
+    "container": "w-full h-fit bg-bg-base",
+    "input": "w-full border-syntax-comment bg-bg-base text-syntax-variable placeholder:text-slate-500 text-lg py-5 px-4 rounded-lg focus:border-syntax-operator focus:ring-1 focus:ring-syntax-operator transition-all duration-300 shadow-inner",
+    "itemActive": "py-2 px-4 rounded-md flex items-center justify-between cursor-pointer transition-all duration-150 bg-syntax-comment text-syntax-variable shadow-sm",
+    "itemInactive": "py-2 px-4 rounded-md flex items-center justify-between cursor-pointer transition-all duration-150 bg-transparent hover:bg-syntax-comment/40 text-syntax-variable",
+    "itemTitleActive": "text-base font-medium transition-colors duration-150 text-syntax-function",
+    "itemTitleInactive": "text-base font-medium transition-colors duration-150 text-syntax-variable",
+    "itemSubtitleActive": "text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-constant bg-bg-base",
+    "itemSubtitleInactive": "text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-peach bg-syntax-comment border border-transparent"
+  }
+}

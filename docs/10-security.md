@@ -19,8 +19,12 @@ Modules **do not** run in the main Node.js process. When the Nuxy Kernel boots a
 If a module attempts to read files, it must use the injected `core.storage` API. This API is actually an IPC wrapper that asks the Kernel to perform the I/O.
 
 The Kernel enforces a strict virtual filesystem jail (similar to `chroot`):
-- When `com.nuxy.notes` requests `core.storage.read('secret.txt')`, the Kernel translates this to `~/.local/share/nuxy/data/com.nuxy.notes/secret.txt`.
-- If a malicious module requests `core.storage.read('../com.nuxy.vault/passwords.json')`, the Kernel detects the path traversal attempt, blocks the request, and instantly terminates the malicious Worker thread.
+- When `com.nuxy.notes` requests `core.storage.read('secret.txt')`, the Kernel translates this to `~/.nuxy/data/com.nuxy.notes/secret.txt`.
+- If a malicious module requests `core.storage.read('../com.nuxy.vault/passwords.json')`, the Kernel detects the path traversal attempt via `path.relative` and rejects the request.
+
+Extension frontend assets are served via `nuxy-ext://<manifest.id>/…`. The protocol handler resolves the manifest id to an on-disk folder and rejects any path that escapes that folder.
+
+All user data lives under `~/.nuxy/` (config, extensions, themes, data). Legacy `~/.config/nuxy/data/` is migrated automatically on first access.
 
 ## 4. Cross-Module Invocation Security
 

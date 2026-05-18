@@ -23,3 +23,10 @@ export interface CoreContext {
 
 export { createLogger, kernelLogger } from './logger.js';
 export type { Logger, LogLevel } from './logger.js';
+export type {
+  ExtensionManifest,
+  ExtensionType,
+  LoadedExtension,
+  IpcResult,
+  ThemeDefinition,
+} from './types.js';

@@ -1,11 +1,12 @@
-import { app, protocol, BrowserWindow, screen } from 'electron'
+import { app, protocol, BrowserWindow } from 'electron'
 
-import { createMainWindow } from './window.js'
+import { createMainWindow, getMainWindow } from './window.js'
+import { applyConfigToWindow, positionWindowOnDisplay } from './config-runtime.js'
 import { registerProtocols } from './protocol.js'
 import { registerIpc } from './ipc.js'
 import { scanExtensions } from './scanner.js'
 import { reloadConfig } from './nuxyconfig.js'
-import { kernelLogger } from '../../../packages/core/src/logger.js'
+import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('App')
 
@@ -37,35 +38,19 @@ if (!gotTheLock) {
       log.error('Failed to reload config on second-instance:', err)
     }
 
-    const wins = BrowserWindow.getAllWindows()
-    if (wins.length > 0) {
-      const win = wins[0]
+    const win = getMainWindow() ?? BrowserWindow.getAllWindows()[0]
+    if (win && !win.isDestroyed()) {
+      applyConfigToWindow(win)
 
-      try {
-        const cursorPoint = screen.getCursorScreenPoint()
-        const display = screen.getDisplayNearestPoint(cursorPoint)
-        if (!win.isVisible()) {
-          log.info(
-            `Showing window on display ${display.id} near cursor coordinates (${cursorPoint.x}, ${cursorPoint.y})`
-          )
-          win.show()
-        } else {
-          log.info(
-            `Window is already visible. Focusing window on display ${display.id} near cursor coordinates (${cursorPoint.x}, ${cursorPoint.y})`
-          )
-        }
-      } catch (err) {
-        log.warn(
-          'Could not determine screen display before second-instance show/focus',
-          err
-        )
-        if (!win.isVisible()) win.show()
+      if (!win.isVisible()) {
+        positionWindowOnDisplay(win)
+        win.show()
+      } else {
+        positionWindowOnDisplay(win)
       }
 
       if (win.isMinimized()) win.restore()
       win.focus()
-
-      // Notify the frontend that the window is being opened/summoned
       win.webContents.send('window-show')
     }
   })

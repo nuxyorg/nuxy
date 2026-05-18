@@ -1,27 +1,36 @@
 import { BrowserWindow, screen } from 'electron'
 import path from 'path'
 import { getConfig } from './nuxyconfig.js'
-import { kernelLogger } from '../../../packages/core/src/logger.js'
+import { applyConfigToWindow, positionWindowOnDisplay } from './config-runtime.js'
+import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('Window')
 
 let mainWindow: BrowserWindow | null = null
 
-export function createMainWindow() {
-  const cfg = getConfig()
+export function getMainWindow(): BrowserWindow | null {
+  return mainWindow
+}
 
-  log.info('Creating main window with config', cfg)
+export function createMainWindow() {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    log.info('Destroying existing main window before recreate')
+    mainWindow.destroy()
+    mainWindow = null
+  }
+
+  const cfg = getConfig()
+  log.info('Creating main window', cfg)
 
   mainWindow = new BrowserWindow({
     width: cfg.windowWidth,
-    height: 0,
-    transparent: false,
-    backgroundColor: '#141414',
+    height: cfg.windowMaxHeight,
+    transparent: true,
     frame: false,
     alwaysOnTop: cfg.alwaysOnTop,
     skipTaskbar: !cfg.showInTaskbar,
     opacity: cfg.opacity,
-    show: false, // position first, then show — avoids flicker
+    show: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -30,7 +39,10 @@ export function createMainWindow() {
     }
   })
 
+  applyConfigToWindow(mainWindow)
+
   mainWindow.on('show', () => {
+    positionWindowOnDisplay(mainWindow!)
     mainWindow?.webContents.send('window-show')
   })
 
@@ -42,8 +54,9 @@ export function createMainWindow() {
         `Showing main window on display ${display.id} near cursor (${cursorPoint.x}, ${cursorPoint.y})`
       )
     } catch (err) {
-      log.warn('Could not determine screen display before show', err)
+      log.warn('Could not determine display before show', err)
     }
+    positionWindowOnDisplay(mainWindow)
     mainWindow.show()
   }
 
@@ -52,8 +65,4 @@ export function createMainWindow() {
   } else {
     mainWindow.loadFile(path.join(import.meta.dirname, '../dist/index.html'))
   }
-}
-
-export function getMainWindow() {
-  return mainWindow
 }

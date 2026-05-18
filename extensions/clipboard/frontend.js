@@ -1,5 +1,20 @@
+const EXT_ID = 'com.nuxy.clipboard'
+
 export default function ClipboardView({ query }) {
-  const { List, ListItem, Badge, Button, Kbd, EmptyState } = window.UI || {}
+  const {
+    List,
+    ListItem,
+    ListItemBody,
+    ListItemText,
+    ListItemMeta,
+    ListItemActions,
+    Button,
+    Kbd,
+    EmptyState,
+    ShortcutBar,
+    ShortcutHint,
+    ShortcutSep
+  } = window.UI || {}
 
   const [items, setItems] = React.useState([])
   const [copiedId, setCopiedId] = React.useState(null)
@@ -9,9 +24,9 @@ export default function ClipboardView({ query }) {
   const searchQuery = query || ''
 
   const loadHistory = () => {
-    if (!window.core?.clipboard?.getHistory) return
-    window.core.clipboard
-      .getHistory()
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(EXT_ID, 'getHistory')
       .then((res) => {
         if (res?.success) setItems(res.data || [])
       })
@@ -60,9 +75,9 @@ export default function ClipboardView({ query }) {
 
   const handleCopy = (id, eStop) => {
     if (eStop) eStop.stopPropagation()
-    if (!window.core?.clipboard?.copyItem) return
-    window.core.clipboard
-      .copyItem(id)
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(EXT_ID, 'copyItem', id)
       .then((res) => {
         if (!res?.success) return
         setItems(res.data || [])
@@ -79,9 +94,9 @@ export default function ClipboardView({ query }) {
     if (eStop) eStop.stopPropagation()
     const targetIdx = filteredItems.findIndex((item) => item.id === id)
     if (targetIdx === 0) return
-    if (!window.core?.clipboard?.deleteItem) return
-    window.core.clipboard
-      .deleteItem(id)
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(EXT_ID, 'deleteItem', id)
       .then((res) => {
         if (!res?.success) return
         const newItems = res.data || []
@@ -143,8 +158,7 @@ export default function ClipboardView({ query }) {
 
   return (
     <div>
-      {/* List */}
-      <List className="max-h-[320px]">
+      <List maxHeight="md">
         {filteredItems.length === 0 ? (
           <EmptyState
             message={searchQuery ? 'No matches.' : 'History is empty.'}
@@ -165,21 +179,13 @@ export default function ClipboardView({ query }) {
                 onClick={() => handleCopy(item.id)}
                 data-selected={isActive ? 'true' : 'false'}
               >
-                <div className="flex flex-col gap-0.5 flex-1 min-w-0 pr-2">
-                  <span
-                    className={`text-sm font-mono truncate transition-colors duration-150 ${
-                      isCopied ? 'text-syntax-function' : 'text-syntax-variable'
-                    }`}
-                  >
+                <ListItemBody>
+                  <ListItemText variant={isCopied ? 'success' : 'default'}>
                     {isCopied ? 'Copied!' : item.text}
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-syntax-keyword">
-                      {timeAgo(item.copiedAt)}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1 flex-shrink-0">
+                  </ListItemText>
+                  <ListItemMeta>{timeAgo(item.copiedAt)}</ListItemMeta>
+                </ListItemBody>
+                <ListItemActions>
                   {!isCopied && idx !== 0 && (
                     <Button
                       variant="danger"
@@ -196,33 +202,32 @@ export default function ClipboardView({ query }) {
                       Copy
                     </Button>
                   )}
-                </div>
+                </ListItemActions>
               </ListItem>
             )
           })
         )}
       </List>
 
-      {/* Keyboard hint footer */}
       {selectedIndex >= 0 && (
-        <div className="flex items-center justify-center gap-4 px-4 py-2.5 border-t border-syntax-comment">
-          <div className="flex items-center gap-1 text-[10px] text-syntax-keyword">
+        <ShortcutBar>
+          <ShortcutHint>
             <Kbd>S</Kbd>
             <span>search</span>
-          </div>
+          </ShortcutHint>
           {selectedIndex !== 0 && (
-            <div className="flex items-center gap-1 text-[10px] text-syntax-keyword">
+            <ShortcutHint>
               <Kbd>D</Kbd>
               <span>delete</span>
-            </div>
+            </ShortcutHint>
           )}
-          <div className="flex items-center gap-1 text-[10px] text-syntax-keyword">
+          <ShortcutHint>
             <Kbd>C</Kbd>
-            <span className="opacity-40">/</span>
+            <ShortcutSep />
             <Kbd>↵</Kbd>
             <span>copy</span>
-          </div>
-        </div>
+          </ShortcutHint>
+        </ShortcutBar>
       )}
     </div>
   )

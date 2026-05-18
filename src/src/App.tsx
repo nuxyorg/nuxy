@@ -1,22 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Card } from '@nuxy/ui'
+import type { LoadedExtension, ThemeDefinition, IpcResult } from '@nuxy/core'
+
+interface SearchResult {
+  id: string
+  title: string
+  subtitle?: string
+  value?: string
+  isTool?: boolean
+}
 
 export default function App() {
   const [query, setQuery] = useState('')
   const [savedQuery, setSavedQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(-1)
-  const [results, setResults] = useState<any[]>([])
-  const [tools, setTools] = useState<any[]>([])
-  const [providers, setProviders] = useState<any[]>([])
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [tools, setTools] = useState<LoadedExtension[]>([])
+  const [providers, setProviders] = useState<LoadedExtension[]>([])
   const [activeTool, setActiveTool] = useState<string | null>(null)
-  const [ToolComponent, setToolComponent] = useState<any>(null)
-  const [themeStyles, setThemeStyles] = useState<any>(null)
+  const [ToolComponent, setToolComponent] = useState<React.ComponentType<{
+    query: string
+  }> | null>(null)
+  const [themeStyles, setThemeStyles] = useState<
+    ThemeDefinition['styles'] | null
+  >(null)
   const [showOmniBar, setShowOmniBar] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const omniBarRef = useRef<HTMLDivElement>(null)
   const lastReportedSize = useRef({ width: 0, height: 0 })
-  const isHoppidikActive = query.trim().toLowerCase() === 'hoppidiktest'
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -24,7 +36,8 @@ export default function App() {
     const observer = new ResizeObserver(() => {
       cancelAnimationFrame(rafId)
       rafId = requestAnimationFrame(() => {
-        if (!containerRef.current || !(window as any).core?.window?.resize) return
+        if (!containerRef.current || !(window as any).core?.window?.resize)
+          return
         const rect = containerRef.current.getBoundingClientRect()
         const width = Math.ceil(rect.width)
         const height = Math.ceil(rect.height)
@@ -53,6 +66,7 @@ export default function App() {
       const { action } = e.detail
       if (action === 'hide') {
         setShowOmniBar(false)
+        inputRef.current?.blur()
       } else if (action === 'show') {
         setShowOmniBar(true)
         setTimeout(() => {
@@ -68,7 +82,9 @@ export default function App() {
 
   useEffect(() => {
     const handleWindowShow = () => {
-      console.log('[Renderer:App] Window opened/shown — resetting state and listing all tools.')
+      console.log(
+        '[Renderer:App] Window opened/shown — resetting state and listing all tools.'
+      )
       setQuery('')
       setSavedQuery('')
       setActiveTool(null)
@@ -101,7 +117,7 @@ export default function App() {
           setSavedQuery('')
           setResults([])
           setSelectedIndex(-1)
-          ;(window as any).core?.window?.hide()
+          ;(window as any).core?.window?.esc?.()
         }
         return
       }
@@ -148,34 +164,34 @@ export default function App() {
   useEffect(() => {
     ;(window as any).core?.ipc
       ?.invoke('kernel', 'listTools', {})
-      .then((res: any) => {
+      .then((res: IpcResult<LoadedExtension[]>) => {
         if (res.success && res.data) {
           setTools(res.data)
         }
       })
-      .catch((e: any) => console.error('Failed to list tools:', e))
+      .catch((e: unknown) => console.error('Failed to list tools:', e))
   }, [])
 
   // Fetch providers once on mount
   useEffect(() => {
     ;(window as any).core?.ipc
       ?.invoke('kernel', 'listProviders', {})
-      .then((res: any) => {
+      .then((res: IpcResult<LoadedExtension[]>) => {
         if (res.success && res.data) {
           setProviders(res.data)
         }
       })
-      .catch((e: any) => console.error('Failed to list providers:', e))
+      .catch((e: unknown) => console.error('Failed to list providers:', e))
   }, [])
 
   // Fetch and apply theme once on mount
   useEffect(() => {
     ;(window as any).core?.ipc
       ?.invoke('kernel', 'getTheme', {})
-      .then((res: any) => {
+      .then((res: IpcResult<ThemeDefinition>) => {
         if (res.success && res.data) {
           const themeData = res.data
-          setThemeStyles(themeData.styles || null)
+          setThemeStyles(themeData.styles ?? null)
 
           if (themeData.colors) {
             const root = document.documentElement
@@ -185,20 +201,8 @@ export default function App() {
           }
         }
       })
-      .catch((e: any) => console.error('Failed to get theme:', e))
+      .catch((e: unknown) => console.error('Failed to get theme:', e))
   }, [])
-
-  useEffect(() => {
-    if (isHoppidikActive) {
-      console.log('[Renderer:App] Hoppidik activated!')
-      ;(window as any).core?.window?.startHoppidik?.()
-    } else {
-      ;(window as any).core?.window?.stopHoppidik?.()
-    }
-    return () => {
-      ;(window as any).core?.window?.stopHoppidik?.()
-    }
-  }, [isHoppidikActive])
 
   // Calculate matching tools and provider results when savedQuery changes
   useEffect(() => {
@@ -213,15 +217,14 @@ export default function App() {
           {
             id: 'hoppidik',
             title: '🐰 Hoppidik Modu Aktif!',
-            subtitle: 'Boing! Boing! 🚀',
-            isHoppidik: true
+            subtitle: 'Boing! Boing! 🚀'
           }
         ])
         return
       }
 
       // 1. Convert registered tools to results format
-      const toolItems = tools.map((t: any) => ({
+      const toolItems: SearchResult[] = tools.map((t) => ({
         id: t.id,
         title: t.manifest.name,
         subtitle: t.manifest.id || 'Tool',
@@ -233,28 +236,29 @@ export default function App() {
       let filteredTools = toolItems
       if (savedQuery.trim().length > 0) {
         filteredTools = toolItems.filter(
-          (item: any) =>
+          (item) =>
             item.title.toLowerCase().includes(savedQuery.toLowerCase()) ||
             item.id.toLowerCase().includes(savedQuery.toLowerCase())
         )
       }
 
       // 3. Fetch all provider results
-      let providerResults: any[] = []
+      let providerResults: SearchResult[] = []
       if (savedQuery.trim().length > 0 && providers.length > 0) {
         try {
-          const promises = providers.map(async (provider) => {
+          const promises = providers.map(async (provider: LoadedExtension) => {
             try {
-              const res = await (window as any).core.ipc.invoke(
-                provider.id,
-                'eval',
-                { text: savedQuery }
-              )
-              if (res.success && res.data && res.data.items) {
+              const res = (await window.core.ipc.invoke(provider.id, 'eval', {
+                text: savedQuery
+              })) as IpcResult<{ items?: SearchResult[] }>
+              if (res.success && res.data?.items) {
                 return res.data.items
               }
             } catch (e) {
-              console.error(`IPC invocation failed for provider ${provider.id}:`, e)
+              console.error(
+                `IPC invocation failed for provider ${provider.id}:`,
+                e
+              )
             }
             return []
           })
@@ -297,7 +301,7 @@ export default function App() {
       .catch(console.error)
   }
 
-  const handleItemClick = (item: any) => {
+  const handleItemClick = (item: SearchResult) => {
     if (item.isTool) {
       openTool(item.id)
     }
@@ -390,34 +394,17 @@ export default function App() {
     <div
       ref={containerRef}
       className={
-        isHoppidikActive
-          ? 'w-full h-full bg-bg-base border border-syntax-comment rounded-xl shadow-2xl overflow-hidden'
-          : themeStyles?.container ||
-            'w-full h-fit bg-bg-base border border-syntax-comment rounded-xl shadow-2xl overflow-hidden'
+        themeStyles?.container ||
+        'w-full h-fit bg-bg-base rounded-xl shadow-2xl overflow-hidden'
       }
-      style={{
-        height: isHoppidikActive ? '100vh' : undefined
-      }}
     >
       <div className="w-full text-syntax-variable">
         {/* Breadcrumb omniBar */}
-        <div
-          className="omniBar-wrapper"
-          style={{
-            overflow: 'hidden',
-            maxHeight: showOmniBar ? '200px' : '0px',
-            transition: 'max-height 0.2s ease'
-          }}
-        >
+        <div>
           <div
             ref={omniBarRef}
-            style={{
-              transform: showOmniBar ? 'translateY(0)' : 'translateY(-100%)',
-              transition: 'transform 0.2s ease',
-              cursor: 'grab'
-            }}
-            className="omniBar-bar"
-            onClick={() => inputRef.current?.focus()}
+            className={`relative flex items-center gap-1.5 px-4 py-[13px] min-h-[52px] ${showOmniBar ? 'cursor-text' : 'cursor-default'}`}
+            onClick={() => showOmniBar && inputRef.current?.focus()}
             onMouseDown={handleDragMouseDown}
           >
             {/* Hidden real input */}
@@ -433,12 +420,12 @@ export default function App() {
                 setSelectedIndex(-1)
               }}
               onKeyDown={handleKeyDown}
-              className="omniBar-hidden-input"
+              className="absolute inset-0 opacity-0 w-full h-full cursor-text bg-transparent border-0 outline-none text-transparent caret-transparent z-0"
               aria-label="Search"
             />
 
             {/* Icon */}
-            <span className="omniBar-icon">
+            <span className="flex items-center text-syntax-comment shrink-0 z-[1]">
               <svg
                 width="18"
                 height="18"
@@ -455,28 +442,36 @@ export default function App() {
             </span>
 
             {/* Separator */}
-            <span className="omniBar-sep">›</span>
+            <span className="text-syntax-comment text-[18px] leading-none select-none shrink-0 z-[1]">
+              ›
+            </span>
 
             {/* Tool name segment (only when a tool is active) */}
             {activeToolName && (
               <>
-                <span className="omniBar-segment omniBar-segment--tool">
+                <span className="flex items-center text-[15px] z-[1] text-syntax-operator font-medium tracking-[0.01em]">
                   {activeToolName}
                 </span>
-                <span className="omniBar-sep">›</span>
+                <span className="text-syntax-comment text-[18px] leading-none select-none shrink-0 z-[1]">
+                  ›
+                </span>
               </>
             )}
 
             {/* Query / placeholder segment */}
-            <span className="omniBar-segment omniBar-segment--query">
+            <span className="flex items-center text-[15px] z-[1] flex-1 min-w-0">
               {query ? (
-                <span className="omniBar-typed">
+                <span className="text-syntax-variable text-[15px] inline-flex items-center gap-px">
                   {query}
-                  <span className="omniBar-cursor" />
+                  {showOmniBar && (
+                    <span className="inline-block w-0.5 h-[1em] bg-syntax-operator ml-px align-text-bottom animate-cursor-blink" />
+                  )}
                 </span>
               ) : (
-                <span className="omniBar-placeholder">
-                  <span className="omniBar-cursor" />
+                <span className="text-syntax-keyword text-[15px]">
+                  {showOmniBar && (
+                    <span className="inline-block w-0.5 h-[1em] bg-syntax-operator ml-px align-text-bottom animate-cursor-blink" />
+                  )}
                   {activeToolName
                     ? `Search ${activeToolName}`
                     : 'What do you have in mind?'}
@@ -485,65 +480,43 @@ export default function App() {
             </span>
           </div>
         </div>
-        {/* end omniBar-wrapper */}
 
         {results.length > 0 && !activeTool && (
           <div
             className={
-              isHoppidikActive
-                ? 'mt-0 border-t border-syntax-comment flex flex-col gap-0 items-center justify-center overflow-hidden'
-                : 'mt-0 border-t border-syntax-comment flex flex-col gap-0 max-h-[350px] overflow-y-auto custom-scrollbar'
+              'mt-0 border-t border-syntax-comment flex flex-col gap-0 max-h-[350px] overflow-y-auto custom-scrollbar'
             }
-            style={isHoppidikActive ? { height: 'calc(100vh - 52px)' } : undefined}
           >
-            {isHoppidikActive ? (
-              <div className="flex flex-col items-center justify-center p-8 text-center select-none animate-bounce">
-                <span style={{ fontSize: '72px' }}>🐰</span>
-                <h1 className="text-3xl font-extrabold text-syntax-function mt-4 tracking-wider">
-                  HOPPİDİK!
-                </h1>
-                <p className="text-syntax-peach mt-2 font-mono text-sm animate-pulse">
-                  Bouncing around the screen... 🚀
-                </p>
-              </div>
-            ) : (
-              results.map((item, index) => (
-                <div
-                  key={item.id}
+            {results.map((item, index) => (
+              <div
+                key={item.id}
+                className={
+                  index === selectedIndex
+                    ? themeStyles?.itemActive
+                    : themeStyles?.itemInactive
+                }
+                onClick={() => handleItemClick(item)}
+              >
+                <span
                   className={
                     index === selectedIndex
-                      ? themeStyles?.itemActive ||
-                        'px-4 py-3 flex items-center justify-between cursor-pointer transition-all duration-150 bg-syntax-comment border-l-2 border-syntax-operator'
-                      : themeStyles?.itemInactive ||
-                        'px-4 py-3 flex items-center justify-between cursor-pointer transition-all duration-150 border-l-2 border-transparent hover:bg-syntax-comment hover:border-syntax-comment'
+                      ? themeStyles?.itemTitleActive
+                      : themeStyles?.itemTitleInactive
                   }
-                  onClick={() => handleItemClick(item)}
                 >
-                  <span
-                    className={
-                      index === selectedIndex
-                        ? themeStyles?.itemTitleActive ||
-                          'text-base font-medium transition-colors duration-150 text-syntax-function'
-                        : themeStyles?.itemTitleInactive ||
-                          'text-base font-medium transition-colors duration-150 text-syntax-variable'
-                    }
-                  >
-                    {item.title}
-                  </span>
-                  <span
-                    className={
-                      index === selectedIndex
-                        ? themeStyles?.itemSubtitleActive ||
-                          'text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-constant bg-bg-base border border-syntax-operator'
-                        : themeStyles?.itemSubtitleInactive ||
-                          'text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-peach bg-syntax-comment border border-transparent'
-                    }
-                  >
-                    {item.subtitle}
-                  </span>
-                </div>
-              ))
-            )}
+                  {item.title}
+                </span>
+                <span
+                  className={
+                    index === selectedIndex
+                      ? themeStyles?.itemSubtitleActive
+                      : themeStyles?.itemSubtitleInactive
+                  }
+                >
+                  {item.subtitle}
+                </span>
+              </div>
+            ))}
           </div>
         )}
 

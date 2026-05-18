@@ -1,4 +1,10 @@
-import path from 'path';
-import os from 'os';
-
-export const EXTENSION_DIR = path.join(os.homedir(), '.nuxy', 'extensions');
+/** @deprecated Import from `./paths.js` instead. */
+export {
+  NUXY_HOME,
+  CONFIG_DIR,
+  CONFIG_PATH,
+  EXTENSION_DIR,
+  THEMES_DIR,
+  DATA_DIR,
+  LEGACY_DATA_DIR
+} from './paths.js'

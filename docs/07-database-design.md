@@ -24,7 +24,7 @@ export class StorageEngine {
     // 1. Path Traversal Prevention
     if (filename.includes('..')) throw new Error('Path traversal detected');
 
-    // 2. Chroot Resolution (~/.local/share/nuxy/data/com.nuxy.clipboard/data.json)
+    // 2. Chroot Resolution (~/.nuxy/data/com.nuxy.clipboard/data.json)
     const filePath = path.join(this.userExtDataPath, extensionId, filename);
     const tempPath = `${filePath}.tmp`;
     

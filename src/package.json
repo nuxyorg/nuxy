@@ -3,10 +3,13 @@
   "private": true,
   "type": "module",
   "version": "1.0.0",
-  "main": "dist-electron/main.js",
+  "main": "dist-electron/index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build"
+    "dev": "ELECTRON_OZONE_PLATFORM_HINT=x11 vite",
+    "build": "vitest run && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@nuxy/core": "workspace:*",
@@ -25,6 +28,7 @@
     "typescript": "^5.0.2",
     "vite": "^4.4.5",
     "vite-plugin-electron": "^0.28.0",
-    "vite-plugin-electron-renderer": "^0.14.0"
+    "vite-plugin-electron-renderer": "^0.14.0",
+    "vitest": "^3.0.5"
   }
 }
