@@ -13,22 +13,21 @@ To enforce modular boundaries, Nuxy should be structured as a workspace (e.g. us
 │   └── ui/                    # @nuxy/ui
 │       ├── src/index.ts       # Exports Shadcn components & useExtensionContext hook
 │       └── package.json
-├── apps/
-│   ├── desktop/               # The Nuxy Kernel (Electron) & Shell (React)
-│   │   ├── electron/          # Backend (Kernel)
-│   │   │   ├── main.ts        # App boot, single instance lock
-│   │   │   ├── window.ts      # Transparent BrowserWindow manager
-│   │   │   ├── ipc.ts         # Message Broker & Validation
-│   │   │   ├── scanner.ts     # Extension folder watcher
-│   │   │   ├── protocol.ts    # nuxy-ext:// custom protocol
-│   │   │   └── worker/        # Worker Thread Sandbox Logic
-│   │   │       └── spawn.ts   # Node.js worker_threads launcher
-│   │   ├── src/               # Frontend (Canvas)
-│   │   │   ├── App.tsx        # Central OmniBar and routing
-│   │   │   ├── main.tsx       # React DOM mount
-│   │   │   └── env.d.ts       # window.core.ipc typings
-│   │   ├── package.json
-│   │   └── vite.config.ts
+├── src/                   # The Nuxy Kernel (Electron) & Shell (React)
+│   ├── electron/          # Backend (Kernel)
+│   │   ├── main.ts        # App boot, single instance lock
+│   │   ├── window.ts      # Transparent BrowserWindow manager
+│   │   ├── ipc.ts         # Message Broker & Validation
+│   │   ├── scanner.ts     # Extension folder watcher
+│   │   ├── protocol.ts    # nuxy-ext:// custom protocol
+│   │   └── worker/        # Worker Thread Sandbox Logic
+│   │       └── spawn.ts   # Node.js worker_threads launcher
+│   ├── src/               # Frontend (Canvas)
+│   │   ├── App.tsx        # Central OmniBar and routing
+│   │   ├── main.tsx       # React DOM mount
+│   │   └── env.d.ts       # window.core.ipc typings
+│   ├── package.json
+│   └── vite.config.ts
 ├── extensions/                # Local dummy extensions for MVP
 │   ├── calculator/
 │   │   ├── manifest.json
@@ -42,6 +41,7 @@ To enforce modular boundaries, Nuxy should be structured as a workspace (e.g. us
 ```
 
 ## Guiding Principles
+
 - **No Monoliths**: Every functional piece of logic (even basic OS utilities) must be an extension.
-- **Clear Boundaries**: `apps/desktop` is completely devoid of application logic. It only handles IPC, React rendering, and Web Workers.
+- **Clear Boundaries**: `src` is completely devoid of application logic. It only handles IPC, React rendering, and Web Workers.
 - **Small Files**: Keep logic focused. Instead of a massive `main.ts`, isolate `scanner.ts` from `worker/spawn.ts`.

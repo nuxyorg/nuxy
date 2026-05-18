@@ -7,7 +7,7 @@
   "packageManager": "pnpm@11.1.2",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "pnpm -C apps/desktop dev",
+    "dev": "pnpm -C src dev",
     "start": "bun run src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
