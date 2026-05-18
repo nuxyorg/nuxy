@@ -1,1 +1,65 @@
-/node_modules
+# Dependencies
+node_modules/
+
+# pnpm
+.pnpm-store/
+.pnpm-debug.log*
+
+# Build outputs
+dist/
+dist-electron/
+out/
+release/
+build/
+
+# Vite
+.vite/
+.vite-electron-renderer/
+
+# TypeScript
+*.tsbuildinfo
+
+# Electron
+*.asar
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test & coverage
+coverage/
+.nyc_output/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editors (keep shared .vscode settings if committed)
+.idea/
+*.swp
+*.swo
+*~
+
+# Bun
+.bun/
+
+# Misc
+*.local
+.cache/
+.turbo/
+*.pem
