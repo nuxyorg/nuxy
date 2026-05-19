@@ -3,6 +3,7 @@
   "name": "Calculator",
   "version": "1.0.0",
   "type": "provider",
+  "permissions": [],
   "capabilities": {
     "callable": true,
     "caller": false

@@ -4,7 +4,7 @@
 Connect the disparate external UIs onto the blank React canvas. The Nuxy frontend must dynamically fetch JS files from the user's hard drive and render them seamlessly.
 
 ## Step 1: The Custom Protocol Handler
-In the Electron main process, you must register a protocol to serve files from `~/.local/share/nuxy/extensions/`. Browsers cannot fetch `file://` URIs due to security, so we need `nuxy-ext://`.
+In the Electron main process, you must register a protocol to serve files from `~/.nuxy/extensions/`. Browsers cannot fetch `file://` URIs due to security, so we need `nuxy-ext://`.
 
 ```typescript
 // electron/main/protocol.ts
@@ -19,7 +19,7 @@ export function registerProtocols() {
     const filePath = url.substring(extensionId.length + 1);
     
     // Resolve to the actual OS path
-    const absolutePath = path.join(process.env.HOME, '.local/share/nuxy/extensions', extensionId, filePath);
+    const absolutePath = path.join(process.env.HOME, '.nuxy/extensions', extensionId, filePath);
     
     return net.fetch(`file://${absolutePath}`);
   });
@@ -75,7 +75,7 @@ export default function App() {
   if (loadedExtensions.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen bg-slate-900 text-white">
-        <h2>Empty Shell. Please place extensions in ~/.local/share/nuxy/extensions/</h2>
+        <h2>Empty Shell. Please place extensions in ~/.nuxy/extensions/</h2>
       </div>
     );
   }

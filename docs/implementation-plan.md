@@ -39,7 +39,7 @@ This outlines the exact steps to implement the MVP step-by-step. Stop and verify
 **Steps:**
 
 1. **`src/electron/protocol.ts`**:
-   - Register `nuxy-ext://` custom scheme to fetch files from `~/.local/share/nuxy/extensions`.
+   - Register `nuxy-ext://` custom scheme to fetch files from `~/.nuxy/extensions`.
 2. **`src/electron/scanner.ts`**:
    - Implement a simple watcher/scanner to read `manifest.json` from extension directories.
 3. **`src/electron/worker/spawn.ts`**:

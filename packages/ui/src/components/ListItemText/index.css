@@ -1,0 +1,13 @@
+.nuxy-list-item-text {
+  font-size: var(--font-md);
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color 150ms;
+  color: var(--syntax-variable);
+}
+
+.nuxy-list-item-text--success {
+  color: var(--syntax-function);
+}

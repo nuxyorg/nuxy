@@ -21,7 +21,7 @@
 - **Scope**: Build the Core Kernel components that discover and sandbox plugins.
 - **Goal**: The Kernel can find an extension folder and spawn its backend in a `worker_threads` instance.
 - **Key Features**:
-  - `ExtensionScanner` to watch `~/.local/share/nuxy/extensions/`
+  - `ExtensionScanner` to watch `~/.nuxy/extensions/`
   - Spawn dedicated `Worker` threads for detected `backend.js` files
   - Inject minimal `CoreContext` via `MessagePort` to allow pinging the Kernel
   - Register custom `nuxy-ext://` protocol in Electron to serve frontend files locally.

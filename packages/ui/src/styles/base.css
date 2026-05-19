@@ -1,0 +1,52 @@
+/* Design tokens — fallbacks until kernel getTheme applies theme JSON */
+:root {
+  /* Colors */
+  --bg-base: #141414;
+  --syntax-comment: #333333;
+  --syntax-variable: #eeffff;
+  --syntax-constant: #ffaa01;
+  --syntax-invalid: #ff1d64;
+  --syntax-deprecated: #b04dff;
+  --syntax-keyword: #555555;
+  --syntax-operator: #2ac0ff;
+  --syntax-tag: #ff00b0;
+  --syntax-function: #00feca;
+  --syntax-orange: #f9672b;
+  --syntax-peach: #ff8b5a;
+  --syntax-green: #ccff2d;
+
+  /* Spacing */
+  --space-px: 1px;
+  --space-0: 2px;
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 32px;
+
+  /* Font sizes */
+  --font-xs: 10px;
+  --font-sm: 12px;
+  --font-md: 14px;
+  --font-body: 15px;
+  --font-lg: 16px;
+  --font-xl: 18px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  background-color: var(--bg-base);
+  color: var(--syntax-variable);
+  overflow: hidden;
+}

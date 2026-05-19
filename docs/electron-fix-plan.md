@@ -61,7 +61,6 @@ Bundled defaults ship in `src/themes/default-*.json` (UI assets; kernel copies t
 
 ### Phase 5 — Window & polish
 - [x] `window.ts` — destroy old window, transparency, position on show
-- [x] `preload.ts` — hoppidik gated to development
 - [x] Theme `version` field migration
 
 ### Phase 6 — Quality

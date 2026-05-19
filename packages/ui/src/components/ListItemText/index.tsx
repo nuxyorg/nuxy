@@ -1,14 +1,15 @@
 import React from 'react'
+import './index.css'
 
 const variantStyles: Record<string, string> = {
-  default: 'text-syntax-variable',
-  success: 'text-syntax-function'
+  default: '',
+  success: 'nuxy-list-item-text--success'
 }
 
 export function ListItemText({ children, variant = 'default', className, ...props }: any) {
   return (
     <span
-      className={`text-sm font-mono truncate transition-colors duration-150 ${variantStyles[variant] || variantStyles.default} ${className || ''}`}
+      className={`nuxy-list-item-text ${variantStyles[variant] || ''} ${className || ''}`}
       {...props}
     >
       {children}

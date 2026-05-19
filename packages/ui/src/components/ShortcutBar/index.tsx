@@ -1,11 +1,9 @@
 import React from 'react'
+import './index.css'
 
 export function ShortcutBar({ children, className, ...props }: any) {
   return (
-    <div
-      className={`flex items-center justify-center gap-4 px-4 py-2.5 border-t border-syntax-comment ${className || ''}`}
-      {...props}
-    >
+    <div className={`nuxy-shortcut-bar ${className || ''}`} {...props}>
       {children}
     </div>
   )

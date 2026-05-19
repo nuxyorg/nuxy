@@ -2,14 +2,14 @@
 
 ## 1. "Nuxy Tek Başına Bir İşe Yaramamalı"
 
-The core philosophy of Nuxy is that the executable itself is a completely useless shell. If `~/.local/share/nuxy/extensions/` is empty, Nuxy does absolutely nothing.
+The core philosophy of Nuxy is that the executable itself is a completely useless shell. If `~/.nuxy/extensions/` is empty, Nuxy does absolutely nothing.
 
 ## 2. The Strict Isolation Loading Sequence 
 
 Nuxy treats every extension as potentially hostile. They must be isolated.
 
 1. **User Starts Nuxy**: The Electron app boots. The React frontend is a blank `div`.
-2. **Directory Scan**: The Kernel watches `~/.local/share/nuxy/extensions/`.
+2. **Directory Scan**: The Kernel watches `~/.nuxy/extensions/`.
 3. **Detection**: It finds `com.nuxy.currency`.
 4. **Thread Spawning**: The Kernel spawns a dedicated **Node.js Web Worker** (`worker_threads`). It does not use `require()`. It passes the extension's code into this isolated thread.
 5. **Context Injection**: Inside the Worker, the code has no access to `fs` or `http`. The Kernel provides a proxy `CoreContext` over a `MessagePort`.
@@ -33,7 +33,7 @@ export interface CoreContext {
     invoke?: (extensionName: string, params: any) => Promise<any>;
   };
   storage: {
-    // Kernel intercepts this, forcing path to ~/.local/share/nuxy/data/<ext_id>/
+    // Kernel intercepts this, forcing path to ~/.nuxy/data/<ext_id>/
     read: <T>(key: string) => Promise<T>;   
     write: <T>(key: string, value: T) => Promise<void>;
   };

@@ -1,0 +1,13 @@
+{
+  "name": "@nuxy/ext-template",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Starter template for Nuxy extensions",
+  "dependencies": {
+    "@nuxy/extension-sdk": "workspace:*"
+  },
+  "scripts": {
+    "build": "echo 'Copy manifest.json, backend.js, frontend.js to ~/.nuxy/extensions/my-ext/'"
+  }
+}

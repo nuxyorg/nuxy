@@ -25,5 +25,5 @@ Not all extensions require a User Interface. Nuxy supports `headless` extensions
 Because the Nuxy ecosystem relies heavily on extensions calling other extensions (e.g., the AI Orchestrator calling the Vault), Nuxy implements a strict Dependency Graph.
 
 - **Implementation**: Extensions declare their dependencies in `manifest.json` under `"peerExtensions"`.
-- **Validation**: During boot, the Nuxy Kernel builds a topological graph of all extensions in `~/.local/share/nuxy/extensions/`.
+- **Validation**: During boot, the Nuxy Kernel builds a topological graph of all extensions in `~/.nuxy/extensions/`.
 - **Resolution**: If Extension A requires Extension B (e.g., `"com.nuxy.vault": "^1.2.0"`), but Extension B is missing, Extension A is placed in a `Suspended` state. The React UI will prompt the user: *"AI Orchestrator requires the Vault extension to function. Click here to download it."*

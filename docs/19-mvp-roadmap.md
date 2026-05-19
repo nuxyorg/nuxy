@@ -28,7 +28,7 @@ To reach a **Minimum Viable Product (MVP)** within 2-3 weeks, we must drasticall
 ## ✅ Sprint 2: The Extension Engine (Days 4-7)
 **Goal:** The Kernel can discover an extension and spawn it in a Worker thread.
 
-1. **The Scanner**: Write Node.js logic to read `~/.local/share/nuxy/extensions`.
+1. **The Scanner**: Write Node.js logic to read `~/.nuxy/extensions`.
 2. **The Worker**: Use Node's `worker_threads` to execute `backend.js`.
 3. **The Minimal CoreContext**: Inject a basic MessagePort object into the Worker so it can send a simple `{ action: 'ping' }` to the Kernel.
 4. **The Protocol**: Register `nuxy-ext://` in Electron so Chrome can fetch local files.

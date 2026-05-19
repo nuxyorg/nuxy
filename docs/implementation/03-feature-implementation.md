@@ -83,7 +83,7 @@ export default function ClipboardView() {
 ## Step 5: Compilation & Deployment
 Compile your extension using Vite/Rollup to emit ESM modules.
 Copy the `dist/` folder and `manifest.json` into:
-`~/.local/share/nuxy/extensions/com.nuxy.clipboard/`
+`~/.nuxy/extensions/com.nuxy.clipboard/`
 
 If you built the Nuxy Shell correctly in Phase 2, the app will instantly detect the folder, sandbox the backend, and render the UI.
 

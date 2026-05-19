@@ -1,0 +1,11 @@
+{
+  "id": "com.nuxy.shell",
+  "name": "Nuxy Shell",
+  "version": "1.0.0",
+  "type": "tool",
+  "bootstrap": true,
+  "permissions": [],
+  "entry": {
+    "frontend": "frontend.js"
+  }
+}

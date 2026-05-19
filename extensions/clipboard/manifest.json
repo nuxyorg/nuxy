@@ -3,6 +3,7 @@
   "name": "Clipboard Manager",
   "version": "1.0.0",
   "type": "tool",
+  "permissions": ["clipboard", "storage"],
   "capabilities": {
     "callable": true,
     "caller": false

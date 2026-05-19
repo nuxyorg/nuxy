@@ -18,8 +18,10 @@
     "baseUrl": ".",
     "paths": {
       "@nuxy/core": ["../packages/core/src/index.ts"],
-      "@nuxy/ui": ["../packages/ui/src/index.tsx"]
+      "@nuxy/ui": ["../packages/ui/src/index.tsx"],
+      "@nuxy/extension-host": ["../packages/extension-host/src/index.ts"],
+      "@nuxy/extension-sdk": ["../packages/extension-sdk/src/index.ts"]
     }
   },
-  "include": ["src", "electron"]
+  "include": ["renderer", "electron"]
 }

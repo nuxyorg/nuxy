@@ -1,10 +1,10 @@
-# 04 - Extensions directory (`~/.local/share/nuxy/extensions`)
+# 04 - Extensions directory (`~/.nuxy/extensions`)
 
 ## 1. The Single Source of Truth
 
 Nuxy itself is a blank slate. **Every single feature** must be placed into the extensions directory. 
 
-- On Linux: `~/.local/share/nuxy/extensions/`
+- On Linux: `~/.nuxy/extensions/`
 - On macOS: `~/Library/Application Support/nuxy/extensions/`
 - On Windows: `%APPDATA%\nuxy\extensions\`
 
@@ -12,7 +12,7 @@ Nuxy itself is a blank slate. **Every single feature** must be placed into the e
 An extension is a compiled bundle created by a developer anywhere in the world. It is a folder that contains the backend logic, frontend UI, and a manifest.
 
 ```text
-~/.local/share/nuxy/extensions/com.example.spotify-controller/
+~/.nuxy/extensions/com.example.spotify-controller/
 ├── manifest.json       # Defines ID, Name, Role, Permissions, Capabilities
 ├── dist/
 │   ├── backend.js      # The Node.js logic executed inside the VM Sandbox

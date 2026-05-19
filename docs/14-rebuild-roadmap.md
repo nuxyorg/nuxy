@@ -15,7 +15,7 @@ This roadmap transitions the theoretical analysis into an actionable execution p
 **Goal**: Build the secure `CoreContext`, routing mechanism, and directory scanner.
 - Implement the `WindowManager` to handle invisible daemon status.
 - Build the `electron/core/ipc.ts` strict router.
-- Implement the `ExtensionScanner` to watch `~/.local/share/nuxy/extensions/`.
+- Implement the `ExtensionScanner` to watch `~/.nuxy/extensions/`.
 - Implement the Node `vm` sandbox to securely execute third-party backend code.
 - **Actionable Guide**: [02. Core Infrastructure](./implementation/02-core-infrastructure.md)
 
@@ -24,7 +24,7 @@ This roadmap transitions the theoretical analysis into an actionable execution p
 - Create new github repositories for `nuxy-ext-launcher`, `nuxy-ext-notes`, etc.
 - Build the backend using `@nuxy/core` types.
 - Build the frontend using React.
-- Compile and drop them into the `~/.local/share/nuxy/extensions/` folder to watch Nuxy come alive.
+- Compile and drop them into the `~/.nuxy/extensions/` folder to watch Nuxy come alive.
 - **Actionable Guide**: [03. Feature Implementation](./implementation/03-feature-implementation.md)
 
 ### Phase 4: Dynamic UI Integration

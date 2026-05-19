@@ -16,14 +16,24 @@
     "syntax-peach": "#ff8b5a",
     "syntax-green": "#CCFF2D"
   },
-  "styles": {
-    "container": "w-full h-fit bg-bg-base",
-    "input": "w-full border-syntax-comment bg-bg-base text-syntax-variable placeholder:text-slate-500 text-lg py-5 px-4 rounded-lg focus:border-syntax-operator focus:ring-1 focus:ring-syntax-operator transition-all duration-300 shadow-inner",
-    "itemActive": "py-2 px-4 rounded-md flex items-center justify-between cursor-pointer transition-all duration-150 bg-syntax-comment text-syntax-variable shadow-sm",
-    "itemInactive": "py-2 px-4 rounded-md flex items-center justify-between cursor-pointer transition-all duration-150 bg-transparent hover:bg-syntax-comment/40 text-syntax-variable",
-    "itemTitleActive": "text-base font-medium transition-colors duration-150 text-syntax-function",
-    "itemTitleInactive": "text-base font-medium transition-colors duration-150 text-syntax-variable",
-    "itemSubtitleActive": "text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-constant bg-bg-base",
-    "itemSubtitleInactive": "text-xs font-mono px-2 py-0.5 rounded transition-colors duration-150 text-syntax-peach bg-syntax-comment border border-transparent"
+  "tokens": {
+    "space-px": "1px",
+    "space-0": "2px",
+    "space-1": "4px",
+    "space-2": "6px",
+    "space-3": "8px",
+    "space-4": "12px",
+    "space-5": "16px",
+    "space-6": "32px",
+    "font-xs": "10px",
+    "font-sm": "12px",
+    "font-md": "14px",
+    "font-body": "15px",
+    "font-lg": "16px",
+    "font-xl": "18px",
+    "radius-sm": "4px",
+    "radius-md": "6px",
+    "radius-lg": "8px",
+    "radius-xl": "12px"
   }
 }

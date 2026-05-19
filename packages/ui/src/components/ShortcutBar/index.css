@@ -1,0 +1,8 @@
+.nuxy-shortcut-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  padding: 10px var(--space-5);
+  border-top: 1px solid var(--syntax-comment);
+}

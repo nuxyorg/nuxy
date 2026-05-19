@@ -1,0 +1,8 @@
+.nuxy-card {
+  background-color: var(--bg-base);
+  border: 1px solid var(--syntax-comment);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: var(--space-5);
+  transition: all 300ms;
+}

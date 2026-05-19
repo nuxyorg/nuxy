@@ -1,0 +1,41 @@
+appId: com.nuxy.app
+productName: Nuxy
+copyright: Copyright © 2026
+npmRebuild: false
+buildDependenciesFromSource: false
+asar: true
+asarUnpack:
+  - "**/*.node"
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - package.json
+  - "!**/*.map"
+  - "!node_modules/@nuxy/**"
+extraResources:
+  - from: ../extensions
+    to: extensions
+    filter:
+      - "**/*"
+      - "!**/node_modules/**"
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+  maintainer: nuxy@localhost
+  synopsis: Extensible desktop launcher
+  description: Nuxy desktop launcher and productivity hub.
+mac:
+  target:
+    - dmg
+  category: public.app-category.productivity
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+win:
+  target:
+    - nsis

@@ -27,12 +27,16 @@ This documentation serves as a complete blueprint to reverse-engineer the curren
 - [13. Deployment](./13-deployment.md)
 
 ### Execution
+- [Documentation status index](./DOCUMENTATION.md) — implemented vs planned features
+- [Pain Points & Remediation Plan](./pain-points-plan.md) — gaps vs architecture, prioritized fixes
 - [14. Rebuild Roadmap](./14-rebuild-roadmap.md)
 - [15. Modular Plugin System](./15-modular-plugin-system.md)
 - [16. Omni-Input & Conflict Resolution](./16-omni-input-system.md)
 - [17. Frontend Extensions & UI Library](./17-frontend-extensions.md)
 - [18. Advanced Capabilities](./18-advanced-capabilities.md)
 - [19. MVP Roadmap (Execution Plan)](./19-mvp-roadmap.md)
+- [20. Logging](./20-logging.md)
+- [21. Extension Access & Permissions](./21-extension-access.md)
 
 ### Implementation Guides
 - [01. Setup](./implementation/01-setup.md)

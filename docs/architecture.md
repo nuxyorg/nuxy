@@ -31,7 +31,7 @@ Extensions are injected with a restricted `CoreContext` proxy over `MessagePort`
 
 ## 5. Extension Ecosystem
 
-Extensions live in `~/.local/share/nuxy/extensions/` and declare capabilities in `manifest.json`.
+Extensions live in `~/.nuxy/extensions/` and declare capabilities in `manifest.json`.
 
 - **Capabilities**: `callable` (can be executed by others), `caller` (can execute others).
 - **Types**: `Tool` (standard utility), `Provider` (real-time dropdown), `Orchestrator` (AI/logic fallback).

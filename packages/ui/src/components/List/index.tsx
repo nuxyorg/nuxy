@@ -1,14 +1,15 @@
 import React from 'react'
+import './index.css'
 
 const maxHeightStyles: Record<string, string> = {
-  md: 'max-h-[320px]'
+  md: 'nuxy-list--max-h-md'
 }
 
 export function List({ children, className, maxHeight, ...props }: any) {
   const heightClass = maxHeight ? maxHeightStyles[maxHeight] || '' : ''
   return (
     <div
-      className={`flex flex-col gap-0 overflow-y-auto custom-scrollbar ${heightClass} ${className || ''}`}
+      className={`nuxy-list ${heightClass} ${className || ''}`}
       {...props}
     >
       {children}

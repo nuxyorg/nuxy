@@ -1,0 +1,19 @@
+.nuxy-list-item {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 150ms;
+  border-left: 2px solid transparent;
+}
+
+.nuxy-list-item--active {
+  background-color: var(--syntax-comment);
+  border-left-color: var(--syntax-operator);
+}
+
+.nuxy-list-item:not(.nuxy-list-item--active):hover {
+  background-color: var(--syntax-comment);
+  border-left-color: var(--syntax-comment);
+}

@@ -1,0 +1,15 @@
+{
+  "id": "com.example.my-extension",
+  "name": "My Extension",
+  "version": "1.0.0",
+  "type": "tool",
+  "permissions": ["storage"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.js",
+    "frontend": "frontend.js"
+  }
+}

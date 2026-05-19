@@ -1,0 +1,9 @@
+{
+  "name": "@nuxy-ext/calculator",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "dependencies": {
+    "@nuxy/extension-sdk": "workspace:*"
+  }
+}

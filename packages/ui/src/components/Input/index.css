@@ -1,0 +1,28 @@
+.nuxy-input {
+  display: flex;
+  height: 36px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--syntax-comment);
+  background: transparent;
+  padding: var(--space-1) var(--space-4);
+  font-size: var(--font-md);
+  color: var(--syntax-variable);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: border-color 150ms, box-shadow 150ms;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.nuxy-input::placeholder {
+  color: color-mix(in srgb, var(--syntax-keyword) 60%, transparent);
+}
+
+.nuxy-input:focus-visible {
+  box-shadow: 0 0 0 1px var(--syntax-operator);
+}
+
+.nuxy-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

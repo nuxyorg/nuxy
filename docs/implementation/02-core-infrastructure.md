@@ -96,7 +96,7 @@ import { app } from 'electron';
 import { WindowManager } from './WindowManager';
 import { StorageEngine } from '../core/Storage';
 import { ExtensionScanner } from './ExtensionScanner';
-// ... logic to read ~/.local/share/nuxy/extensions and spawn Worker threads
+// ... logic to read ~/.nuxy/extensions and spawn Worker threads
 
 app.whenReady().then(() => {
   const windowManager = new WindowManager();
@@ -105,7 +105,7 @@ app.whenReady().then(() => {
   // Construct context API
   const coreContext = {
      window: { hide: () => windowManager.hide(), show: () => windowManager.show() },
-     storage: new StorageEngine(), // Translates paths to ~/.local/share/nuxy/data/<ext_id>
+     storage: new StorageEngine(), // Translates paths to ~/.nuxy/data/<ext_id>
      registry: { /* schema validators */ },
      extensions: { /* IPC routing */ }
   };

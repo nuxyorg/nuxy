@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { findWorkspaceExtensionsDir } from './extensions.js'
+import { findWorkspaceExtensionsDir, shouldSyncPath } from './extensions.js'
 
 describe('findWorkspaceExtensionsDir', () => {
   it('finds repo extensions/ from electron/dev', () => {
@@ -12,5 +12,19 @@ describe('findWorkspaceExtensionsDir', () => {
       path.resolve(devDir, '../../../extensions')
     )
     expect(path.basename(found!)).toBe('extensions')
+  })
+})
+
+describe('shouldSyncPath', () => {
+  it('excludes node_modules (pnpm workspace symlinks)', () => {
+    expect(
+      shouldSyncPath(
+        '/repo/extensions/calculator/node_modules/@nuxy/extension-sdk'
+      )
+    ).toBe(false)
+  })
+
+  it('includes extension source files', () => {
+    expect(shouldSyncPath('/repo/extensions/calculator/backend.js')).toBe(true)
   })
 })

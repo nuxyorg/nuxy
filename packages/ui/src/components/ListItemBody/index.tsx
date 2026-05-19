@@ -1,11 +1,9 @@
 import React from 'react'
+import './index.css'
 
 export function ListItemBody({ children, className, ...props }: any) {
   return (
-    <div
-      className={`flex flex-col gap-0.5 flex-1 min-w-0 pr-2 ${className || ''}`}
-      {...props}
-    >
+    <div className={`nuxy-list-item-body ${className || ''}`} {...props}>
       {children}
     </div>
   )

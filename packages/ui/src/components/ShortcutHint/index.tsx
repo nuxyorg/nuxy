@@ -1,16 +1,14 @@
 import React from 'react'
+import './index.css'
 
 export function ShortcutHint({ children, className, ...props }: any) {
   return (
-    <div
-      className={`flex items-center gap-1 text-[10px] text-syntax-keyword ${className || ''}`}
-      {...props}
-    >
+    <div className={`nuxy-shortcut-hint ${className || ''}`} {...props}>
       {children}
     </div>
   )
 }
 
 export function ShortcutSep() {
-  return <span className="opacity-40">/</span>
+  return <span className="nuxy-shortcut-sep">/</span>
 }

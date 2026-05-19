@@ -1,0 +1,103 @@
+import type { IpcResult } from '@nuxy/core'
+import {
+  getExtensionById,
+  isChannelAllowed
+} from '../extensions/registry.js'
+
+const KERNEL_CHANNELS = new Set([
+  'listTools',
+  'listProviders',
+  'listOrchestrators',
+  'getConfig',
+  'getTheme'
+])
+
+export function validateExtInvokeArgs(
+  extId: unknown,
+  channel: unknown,
+  payload: unknown
+):
+  | { ok: true; extId: string; channel: string; payload: unknown }
+  | { ok: false; result: IpcResult } {
+  if (typeof extId !== 'string' || extId.trim() === '') {
+    return {
+      ok: false,
+      result: { success: false, error: 'Invalid extId', code: 'INVALID_ARGS' }
+    }
+  }
+
+  if (typeof channel !== 'string' || channel.trim() === '') {
+    return {
+      ok: false,
+      result: {
+        success: false,
+        error: 'Invalid channel',
+        code: 'INVALID_ARGS'
+      }
+    }
+  }
+
+  const id = extId.trim()
+  const ch = channel.trim()
+
+  if (id === 'kernel' || id === 'core') {
+    if (!KERNEL_CHANNELS.has(ch)) {
+      return {
+        ok: false,
+        result: {
+          success: false,
+          error: `Unknown kernel channel: ${ch}`,
+          code: 'UNKNOWN_CHANNEL'
+        }
+      }
+    }
+    if (payload !== undefined && payload !== null && typeof payload !== 'object') {
+      return {
+        ok: false,
+        result: {
+          success: false,
+          error: 'Kernel channel payload must be an object',
+          code: 'INVALID_ARGS'
+        }
+      }
+    }
+    return { ok: true, extId: id, channel: ch, payload }
+  }
+
+  if (!getExtensionById(id)) {
+    return {
+      ok: false,
+      result: {
+        success: false,
+        error: `Extension not found: ${id}`,
+        code: 'EXTENSION_NOT_FOUND'
+      }
+    }
+  }
+
+  if (!isChannelAllowed(id, ch)) {
+    return {
+      ok: false,
+      result: {
+        success: false,
+        error: `Unknown channel: ${ch}`,
+        code: 'UNKNOWN_CHANNEL'
+      }
+    }
+  }
+
+  return { ok: true, extId: id, channel: ch, payload }
+}
+
+export function validateWindowResize(
+  width: unknown,
+  height: unknown
+): { ok: true; width: number; height: number } | { ok: false } {
+  if (typeof width !== 'number' || typeof height !== 'number') {
+    return { ok: false }
+  }
+  if (!Number.isFinite(width) || !Number.isFinite(height)) {
+    return { ok: false }
+  }
+  return { ok: true, width, height }
+}

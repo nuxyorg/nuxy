@@ -18,7 +18,7 @@ The Nuxy core repository will no longer contain any code for:
 - Vault
 - Terminal
 
-Instead, the Nuxy team (and the community) will build these as **separate, standalone repositories**. They will be compiled into `.nuxyext` zip files and placed into the user's `~/.local/share/nuxy/extensions/` folder.
+Instead, the Nuxy team (and the community) will build these as **separate, standalone repositories**. They will be compiled into `.nuxyext` zip files and placed into the user's `~/.nuxy/extensions/` folder.
 
 ## 3. The Path Forward: The Extension Engine
 The new Nuxy core consists *only* of:

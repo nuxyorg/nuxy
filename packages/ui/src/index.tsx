@@ -1,3 +1,5 @@
+import './styles/base.css'
+
 export { Card } from './components/Card'
 export { Input } from './components/Input'
 export { Button } from './components/Button'

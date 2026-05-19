@@ -1,0 +1,47 @@
+.nuxy-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) 0;
+  text-align: center;
+}
+
+.nuxy-empty-state--page {
+  padding: var(--space-6) var(--space-5);
+  max-width: 420px;
+  color: var(--syntax-variable);
+}
+
+.nuxy-empty-state__title {
+  font-size: var(--font-lg);
+  margin: 0 0 var(--space-3);
+  font-weight: 600;
+  color: var(--syntax-variable);
+}
+
+.nuxy-empty-state__message {
+  font-size: var(--font-md);
+  color: var(--syntax-keyword);
+  font-weight: 500;
+  margin: 0 0 var(--space-3);
+}
+
+.nuxy-empty-state--page .nuxy-empty-state__message {
+  font-size: var(--font-sm);
+  font-weight: 400;
+}
+
+.nuxy-empty-state__hint {
+  font-size: var(--font-sm);
+  color: var(--syntax-keyword);
+  opacity: 0.6;
+  margin: 0;
+}
+
+.nuxy-empty-state__error {
+  font-size: var(--font-xs);
+  color: var(--syntax-invalid);
+  font-family: monospace;
+  margin: 0;
+}

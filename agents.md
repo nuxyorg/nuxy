@@ -8,13 +8,13 @@ When modifying or generating code for this repository, you **MUST** strictly adh
 - If it can be an extension, it **MUST** be an extension.
 
 ## 2. Extension Architecture (Gnome-Style)
-- Extensions live in `~/.local/share/nuxy/extensions/` and run in completely isolated **Node.js Worker Threads**.
+- Extensions live in `~/.nuxy/extensions/` and run in completely isolated **Node.js Worker Threads** (`src/electron/worker/`).
 - Extensions **NEVER** use raw `require()`, `fs`, `http`, or `child_process`. They must use the secure, injected `CoreContext` proxy.
-- Extensions are full-stack (React Frontend + Node.js Backend). UI is dynamically imported.
+- Extensions are full-stack (React Frontend + Node.js Backend). UI is loaded via `nuxy-ext://<manifest.id>/…`.
 
 ## 3. Security & Communication
-- **Zero-Trust (Default Deny)**: Extensions are sandboxed and untrusted.
-- Extensions **CANNOT** communicate directly. All inter-extension communication is routed and schema-validated by the Core Kernel Message Broker.
+- **Zero-Trust (Default Deny)**: Host privileges require `permissions` in `manifest.json` (see `src/electron/permissions.ts`).
+- Extensions **CANNOT** communicate directly. Cross-extension calls use `core.extensions.invoke` via `src/electron/broker.ts`.
 - Use `pnpm` for package management.
 
 **Failure to follow these rules breaks the fundamental architecture of Nuxy.**

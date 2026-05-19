@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import fs from 'fs'
 import path from 'path'
-import { EXTENSION_DIR } from '../paths.js'
+import { EXTENSION_DIR } from '../config/paths.js'
 import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('DevScanner')
@@ -46,15 +46,44 @@ function isExtensionsRoot(dir: string): boolean {
   }
 }
 
+/** pnpm workspace symlinks under node_modules break copyFile and are useless in ~/.nuxy */
+const SKIP_DIR_NAMES = new Set(['node_modules', '.git'])
+
+export function shouldSyncPath(absolutePath: string): boolean {
+  return !absolutePath.split(path.sep).some((part) => SKIP_DIR_NAMES.has(part))
+}
+
 function syncDirectory(src: string, dest: string): void {
   fs.mkdirSync(dest, { recursive: true })
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
+    if (SKIP_DIR_NAMES.has(entry.name)) continue
+
     const srcPath = path.join(src, entry.name)
     const destPath = path.join(dest, entry.name)
+
     if (entry.isDirectory()) {
       syncDirectory(srcPath, destPath)
       continue
     }
+
+    if (entry.isSymbolicLink()) {
+      const linkTarget = fs.readlinkSync(srcPath)
+      const resolved = path.resolve(path.dirname(srcPath), linkTarget)
+      if (!fs.existsSync(resolved)) continue
+      if (fs.statSync(resolved).isDirectory()) {
+        syncDirectory(resolved, destPath)
+      } else {
+        const shouldCopy =
+          !fs.existsSync(destPath) ||
+          fs.statSync(resolved).mtimeMs > fs.statSync(destPath).mtimeMs
+        if (shouldCopy) {
+          fs.copyFileSync(resolved, destPath)
+          log.silly(`Synced ${path.relative(EXTENSION_DIR, destPath)}`)
+        }
+      }
+      continue
+    }
+
     const shouldCopy =
       !fs.existsSync(destPath) ||
       fs.statSync(srcPath).mtimeMs > fs.statSync(destPath).mtimeMs
@@ -63,6 +92,13 @@ function syncDirectory(src: string, dest: string): void {
       log.silly(`Synced ${path.relative(EXTENSION_DIR, destPath)}`)
     }
   }
+}
+
+function copyExtensionTree(srcPath: string, destPath: string): void {
+  fs.cpSync(srcPath, destPath, {
+    recursive: true,
+    filter: (source) => shouldSyncPath(source)
+  })
 }
 
 /** Set NUXY_DEV_OVERWRITE=1 to replace entire extension folders. */
@@ -94,10 +130,10 @@ export function copyDefaultExtensions(): void {
       const destPath = path.join(EXTENSION_DIR, ext)
       if (overwrite && fs.existsSync(destPath)) {
         fs.rmSync(destPath, { recursive: true, force: true })
-        fs.cpSync(srcPath, destPath, { recursive: true })
+        copyExtensionTree(srcPath, destPath)
         log.info(`Replaced workspace extension: ${ext}`)
       } else if (!fs.existsSync(destPath)) {
-        fs.cpSync(srcPath, destPath, { recursive: true })
+        copyExtensionTree(srcPath, destPath)
         log.info(`Installed workspace extension: ${ext}`)
       } else {
         syncDirectory(srcPath, destPath)

@@ -14,20 +14,17 @@ To enforce modular boundaries, Nuxy should be structured as a workspace (e.g. us
 │       ├── src/index.ts       # Exports Shadcn components & useExtensionContext hook
 │       └── package.json
 ├── src/                   # The Nuxy Kernel (Electron) & Shell (React)
-│   ├── electron/          # Backend (Kernel)
-│   │   ├── main.ts        # App boot, single instance lock
-│   │   ├── paths.ts       # ~/.nuxy path constants
-│   │   ├── registry.ts    # Extension id → folder registry
-│   │   ├── window.ts      # BrowserWindow manager
-│   │   ├── ipc.ts         # Message broker & validation
-│   │   ├── scanner.ts     # Extension loader
-│   │   ├── protocol.ts    # nuxy-ext:// custom protocol
-│   │   ├── themes/        # Kernel: copy bundled themes → ~/.nuxy/themes/
-│   │   └── worker/        # Worker thread sandbox
-│   │       ├── spawn.ts
-│   │       └── extension-host.ts
+│   ├── electron/          # Backend (Kernel), grouped by domain
+│   │   ├── bootstrap/     # main.ts, preload.ts
+│   │   ├── config/        # paths, nuxyconfig, storage-path
+│   │   ├── extensions/    # scanner, registry
+│   │   ├── spawn/         # worker spawn + host-handlers
+│   │   ├── ipc/           # register, validate
+│   │   ├── protocol/      # nuxy-ext://
+│   │   ├── window/        # manager, runtime, spring
+│   │   └── themes/        # install bundled themes → ~/.nuxy/themes/
 │   ├── themes/            # Bundled theme JSON (Tailwind + runtime)
-│   ├── src/               # Frontend (Canvas)
+│   ├── renderer/          # Frontend (Canvas)
 │   │   ├── App.tsx        # Central OmniBar and routing
 │   │   ├── main.tsx       # React DOM mount
 │   │   └── env.d.ts       # window.core.ipc typings
