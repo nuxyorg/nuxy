@@ -5,7 +5,11 @@ const maxHeightStyles: Record<string, string> = {
   md: 'nuxy-list--max-h-md'
 }
 
-export function List({ children, className, maxHeight, ...props }: any) {
+export interface ListProps extends React.HTMLAttributes<HTMLDivElement> {
+  maxHeight?: 'md'
+}
+
+export function List({ children, className, maxHeight, ...props }: ListProps) {
   const heightClass = maxHeight ? maxHeightStyles[maxHeight] || '' : ''
   return (
     <div

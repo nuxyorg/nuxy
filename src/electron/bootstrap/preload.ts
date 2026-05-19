@@ -11,14 +11,14 @@ contextBridge.exposeInMainWorld('core', {
     hide: () => ipcRenderer.send('window:hide'),
     esc: () => ipcRenderer.send('window:esc'),
     center: () => ipcRenderer.send('window:center'),
-    dragStart: () => ipcRenderer.send('window:dragStart'),
-    dragMove: () => ipcRenderer.send('window:dragMove'),
-    dragEnd: () => ipcRenderer.send('window:dragEnd'),
+    dragStart: () => ipcRenderer.send('window:drag-start'),
+    dragMove: () => ipcRenderer.send('window:drag-move'),
+    dragEnd: () => ipcRenderer.send('window:drag-end'),
     onShow: (callback: () => void) => {
       const listener = () => callback()
-      ipcRenderer.on('window-show', listener)
+      ipcRenderer.on('window:show', listener)
       return () => {
-        ipcRenderer.off('window-show', listener)
+        ipcRenderer.off('window:show', listener)
       }
     }
   }

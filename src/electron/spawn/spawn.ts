@@ -7,6 +7,7 @@ import { activeWorkers } from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
 import { mergeRuntimeSync } from '../extensions/registry.js'
 import { handleHostCall } from './host-handlers.js'
+import type { WorkerToHostMessage } from '@nuxy/core'
 
 export { activeWorkers } from './active-workers.js'
 
@@ -37,7 +38,7 @@ export function spawnExtension(
     }
   })
 
-  worker.on('message', async (msg) => {
+  worker.on('message', async (msg: WorkerToHostMessage) => {
     if (!msg) return
 
     if (msg.type === 'registry:sync') {
@@ -49,14 +50,15 @@ export function spawnExtension(
       return
     }
 
+    if (msg.type === 'registry:error') {
+      log.error(`Extension "${extId}" failed to load: ${msg.error}`)
+      return
+    }
+
     if (msg.type !== 'host:call') return
     const { id, channel, payload } = msg
     const reply = await handleHostCall(extId, channel, payload)
-    worker.postMessage({
-      type: 'host:reply',
-      id,
-      ...reply
-    })
+    worker.postMessage({ type: 'host:reply', id, ...reply })
   })
 
   worker.on('error', (err: Error) => {

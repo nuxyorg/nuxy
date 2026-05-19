@@ -1,6 +1,11 @@
 /// <reference types="vite/client" />
 
+declare const __NUXY_DEV__: boolean
+
 interface Window {
+  React: typeof import('react')
+  UI: typeof import('@nuxy/ui')
+  __NUXY_DEV__: boolean
   core: {
     ipc: {
       invoke: <R = unknown>(

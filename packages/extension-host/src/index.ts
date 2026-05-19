@@ -2,6 +2,7 @@ import { parentPort, workerData } from 'worker_threads'
 import { createCoreProxy } from './core-proxy.js'
 import { loadExtensionModule } from './load-extension.js'
 import { createWorkerLogger } from './worker-log.js'
+import type { HostToWorkerMessage, WorkerToHostMessage } from '@nuxy/core'
 
 interface WorkerData {
   extId: string
@@ -9,7 +10,20 @@ interface WorkerData {
   logLevel: string
 }
 
-const { extId, absolutePath, logLevel } = workerData as WorkerData
+function assertWorkerData(d: unknown): asserts d is WorkerData {
+  if (
+    typeof d !== 'object' ||
+    d === null ||
+    typeof (d as WorkerData).extId !== 'string' ||
+    typeof (d as WorkerData).absolutePath !== 'string' ||
+    typeof (d as WorkerData).logLevel !== 'string'
+  ) {
+    throw new Error('Invalid workerData: missing extId, absolutePath, or logLevel')
+  }
+}
+
+assertWorkerData(workerData)
+const { extId, absolutePath, logLevel } = workerData
 const logger = createWorkerLogger(extId, logLevel)
 
 const pendingHostCalls = new Map<
@@ -22,24 +36,24 @@ const channelHandlers = new Map<
   (payload: unknown) => Promise<unknown>
 >()
 
-parentPort!.on('message', (msg: Record<string, unknown>) => {
+parentPort!.on('message', (msg: HostToWorkerMessage) => {
   if (msg?.type === 'host:reply') {
-    const cb = pendingHostCalls.get(msg.id as string)
+    const cb = pendingHostCalls.get(msg.id)
     if (cb) {
-      pendingHostCalls.delete(msg.id as string)
-      if (msg.error) cb.reject(new Error(msg.error as string))
+      pendingHostCalls.delete(msg.id)
+      if (msg.error) cb.reject(new Error(msg.error))
       else cb.resolve(msg.result)
     }
     return
   }
 
-  if (msg?.channel && msg?.id) {
-    const handler = channelHandlers.get(msg.channel as string)
+  if ('channel' in msg && msg.channel && msg.id) {
+    const handler = channelHandlers.get(msg.channel)
     if (!handler) return
     void (async () => {
       try {
         const res = await handler(msg.payload)
-        parentPort!.postMessage({ id: msg.id, result: res })
+        parentPort!.postMessage({ id: msg.id, result: res } satisfies Omit<WorkerToHostMessage & object, 'type'>)
       } catch (e) {
         const err = e as Error
         parentPort!.postMessage({ id: msg.id, error: err.message })
@@ -50,9 +64,10 @@ parentPort!.on('message', (msg: Record<string, unknown>) => {
 
 function callHost(channel: string, payload?: unknown): Promise<unknown> {
   return new Promise((resolve, reject) => {
-    const id = Math.random().toString(36).slice(2)
+    const id = crypto.randomUUID()
     pendingHostCalls.set(id, { resolve, reject })
-    parentPort!.postMessage({ type: 'host:call', id, channel, payload })
+    const msg: WorkerToHostMessage = { type: 'host:call', id, channel, payload }
+    parentPort!.postMessage(msg)
   })
 }
 
@@ -65,9 +80,19 @@ const { core, getSyncPayload } = createCoreProxy(
 )
 
 void (async () => {
-  await loadExtensionModule(absolutePath, core, logger)
-  parentPort!.postMessage({
-    type: 'registry:sync',
-    ...getSyncPayload()
-  })
+  try {
+    await loadExtensionModule(absolutePath, core, logger)
+    const syncMsg: WorkerToHostMessage = {
+      type: 'registry:sync',
+      ...getSyncPayload()
+    }
+    parentPort!.postMessage(syncMsg)
+  } catch (e) {
+    const err = e as Error
+    logger.log('error', 'Worker', 'Extension failed to load: ' + err.message, {
+      stack: err.stack
+    })
+    const errMsg: WorkerToHostMessage = { type: 'registry:error', error: err.message }
+    parentPort!.postMessage(errMsg)
+  }
 })()

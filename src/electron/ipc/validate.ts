@@ -40,7 +40,7 @@ export function validateExtInvokeArgs(
   const id = extId.trim()
   const ch = channel.trim()
 
-  if (id === 'kernel' || id === 'core') {
+  if (id === 'kernel') {
     if (!KERNEL_CHANNELS.has(ch)) {
       return {
         ok: false,

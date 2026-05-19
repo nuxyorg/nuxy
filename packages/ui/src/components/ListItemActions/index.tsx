@@ -1,7 +1,9 @@
 import React from 'react'
 import './index.css'
 
-export function ListItemActions({ children, className, ...props }: any) {
+export type ListItemActionsProps = React.HTMLAttributes<HTMLDivElement>
+
+export function ListItemActions({ children, className, ...props }: ListItemActionsProps) {
   return (
     <div className={`nuxy-list-item-actions ${className || ''}`} {...props}>
       {children}

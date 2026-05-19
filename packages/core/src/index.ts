@@ -1,4 +1,5 @@
 import type { NowPlaying } from './media.js'
+import type { IpcResult } from './types.js'
 
 export type { NowPlaying } from './media.js'
 
@@ -19,20 +20,18 @@ export interface CoreContext {
       channel: string,
       handler: (payload: T) => Promise<R>
     ) => void
-    /** Planned — not implemented in the worker yet. */
-    broadcast: <T>(channel: string, payload: T) => void
   }
   registry: {
-    registerTool: (config: unknown) => void
-    registerProvider: (config: unknown) => void
-    registerOrchestrator: (handler: unknown) => void
+    registerTool: (config: { name: string; [key: string]: unknown }) => void
+    registerProvider: (config: { name: string; [key: string]: unknown }) => void
+    registerOrchestrator: (config: { [key: string]: unknown }) => void
   }
   extensions: {
     invoke: (
       targetId: string,
       channel: string,
       payload?: unknown
-    ) => Promise<unknown>
+    ) => Promise<IpcResult>
   }
   logger: {
     silly: (msg: string, meta?: unknown) => void
@@ -55,3 +54,4 @@ export type {
 } from './types.js'
 export { HostChannel } from './host-channels.js'
 export type { HostChannelName } from './host-channels.js'
+export type { WorkerToHostMessage, HostToWorkerMessage } from './messages.js'

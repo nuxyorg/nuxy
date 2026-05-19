@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { ipcMain, BrowserWindow, screen, app } from 'electron'
+import { ipcMain, BrowserWindow, screen, app, nativeTheme } from 'electron'
 import { loadedExtensions } from '../extensions/scanner.js'
 import {
   getDisplayName,
@@ -21,7 +21,7 @@ const MIN_CONTENT_HEIGHT = 48
 
 let dragOffset: { x: number; y: number } | null = null
 
-function listByType(type: 'tool' | 'provider' | 'orchestrator') {
+function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedExtensions {
   return loadedExtensions
     .filter((ext) => ext.manifest.type === type && !isBootstrapExtension(ext))
     .map((ext) => ({
@@ -42,7 +42,7 @@ export function registerIpc() {
       const { extId: id, channel: ch, payload: pl } = validated
       log.silly(`ext:invoke`, { extId: id, channel: ch, payload: pl })
 
-      if (id === 'kernel' || id === 'core') {
+      if (id === 'kernel') {
         if (ch === 'listTools') {
           return { success: true, data: listByType('tool') }
         }
@@ -63,7 +63,6 @@ export function registerIpc() {
           const cfg = getConfig()
           let themeName = cfg.theme || 'dark'
           if (themeName === 'system') {
-            const { nativeTheme } = await import('electron')
             themeName = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
           }
           return { success: true, data: loadTheme(themeName) }
@@ -109,7 +108,7 @@ export function registerIpc() {
     if (win) positionWindowOnDisplay(win)
   })
 
-  ipcMain.on('window:dragStart', (event) => {
+  ipcMain.on('window:drag-start', (event) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win || win.isDestroyed()) return
     const cursor = screen.getCursorScreenPoint()
@@ -118,7 +117,7 @@ export function registerIpc() {
     getOrCreateSpring(win).pause()
   })
 
-  ipcMain.on('window:dragMove', (event) => {
+  ipcMain.on('window:drag-move', (event) => {
     if (!dragOffset) return
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win || win.isDestroyed()) return
@@ -129,7 +128,7 @@ export function registerIpc() {
     )
   })
 
-  ipcMain.on('window:dragEnd', (event) => {
+  ipcMain.on('window:drag-end', (event) => {
     if (!dragOffset) return
     dragOffset = null
     const win = BrowserWindow.fromWebContents(event.sender)

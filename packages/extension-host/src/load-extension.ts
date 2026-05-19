@@ -2,7 +2,7 @@ import type { CoreContext } from '@nuxy/core'
 import type { WorkerLogger } from './worker-log.js'
 
 interface ExtensionModule {
-  register?: (core: CoreContext) => void | Promise<void>
+  register: (core: CoreContext) => void | Promise<void>
 }
 
 function resolveExtensionModule(
@@ -19,7 +19,7 @@ function resolveExtensionModule(
   if (nested && typeof nested.register === 'function') {
     return nested as ExtensionModule
   }
-  return (def ?? extModule) as ExtensionModule
+  return undefined
 }
 
 export async function loadExtensionModule(
@@ -28,29 +28,22 @@ export async function loadExtensionModule(
   logger: WorkerLogger
 ): Promise<void> {
   logger.log('info', 'Loader', 'Loading extension module: ' + absolutePath)
-  try {
-    const extModule = await import(/* @vite-ignore */ absolutePath)
-    logger.log(
-      'info',
-      'Loader',
-      'Module loaded. Keys: ' + Object.keys(extModule || {}).join(', ')
-    )
+  const extModule = await import(/* @vite-ignore */ absolutePath)
+  logger.log(
+    'info',
+    'Loader',
+    'Module loaded. Keys: ' + Object.keys(extModule || {}).join(', ')
+  )
 
-    const ext = resolveExtensionModule(
-      extModule as Record<string, unknown>
-    )
+  const ext = resolveExtensionModule(
+    extModule as Record<string, unknown>
+  )
 
-    if (ext?.register) {
-      logger.log('info', 'Loader', 'Calling ext.register(core)...')
-      await ext.register(core)
-      logger.log('info', 'Loader', 'Extension registered successfully.')
-    } else {
-      logger.log('warn', 'Loader', 'No register() function found on extension module.')
-    }
-  } catch (e) {
-    const err = e as Error
-    logger.log('error', 'Loader', 'Failed to load module: ' + err.message, {
-      stack: err.stack
-    })
+  if (ext?.register) {
+    logger.log('info', 'Loader', 'Calling ext.register(core)...')
+    await ext.register(core)
+    logger.log('info', 'Loader', 'Extension registered successfully.')
+  } else {
+    logger.log('warn', 'Loader', 'No register() function found on extension module.')
   }
 }

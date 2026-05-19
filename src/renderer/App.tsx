@@ -13,17 +13,39 @@ export default function App() {
   const [extensionCount, setExtensionCount] = useState<number | null>(null)
 
   useEffect(() => {
-    ;(window as any).core?.ipc
-      ?.invoke('kernel', 'listTools', {})
-      .then((res: IpcResult<unknown[]>) => {
-        if (res.success && Array.isArray(res.data)) {
-          setExtensionCount(res.data.length)
+    const core = (window as Window & { core?: { ipc?: { invoke: (extId: string, channel: string, payload: unknown) => Promise<IpcResult<unknown>> }; window?: { onShow?: (cb: () => void) => (() => void) | undefined } } }).core
+
+    Promise.all([
+      core?.ipc?.invoke('kernel', 'listTools', {}),
+      core?.ipc?.invoke('kernel', 'getTheme', {})
+    ])
+      .then(([toolsRes, themeRes]) => {
+        if (toolsRes?.success && Array.isArray(toolsRes.data)) {
+          setExtensionCount(toolsRes.data.length)
+        } else {
+          setExtensionCount(0)
+        }
+        const theme = themeRes as IpcResult<ThemeDefinition> | undefined
+        if (theme?.success && theme.data) {
+          const root = document.documentElement
+          const { colors, tokens } = theme.data
+          if (colors) {
+            Object.entries(colors).forEach(([key, val]) => {
+              root.style.setProperty(`--${key}`, val as string)
+            })
+          }
+          if (tokens) {
+            Object.entries(tokens).forEach(([key, val]) => {
+              root.style.setProperty(`--${key}`, val as string)
+            })
+          }
         }
       })
-      .catch(() => setExtensionCount(0))
-  }, [])
+      .catch((e: unknown) => {
+        console.error('Failed to load kernel data:', e)
+        setExtensionCount(0)
+      })
 
-  useEffect(() => {
     const dynamicImport = new Function('url', 'return import(url)')
     dynamicImport(`nuxy-ext://${BOOTSTRAP_ID}/frontend.js`)
       .then((mod: { default: React.ComponentType<{ query?: string }> }) => {
@@ -35,37 +57,14 @@ export default function App() {
         setLoadError(err.message)
         setShellComponent(null)
       })
-  }, [])
 
-  useEffect(() => {
     const handleWindowShow = () => {
       window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
     }
-    const cleanup = (window as any).core?.window?.onShow?.(handleWindowShow)
+    const cleanup = core?.window?.onShow?.(handleWindowShow)
     return () => {
       if (cleanup) cleanup()
     }
-  }, [])
-
-  useEffect(() => {
-    ;(window as any).core?.ipc
-      ?.invoke('kernel', 'getTheme', {})
-      .then((res: IpcResult<ThemeDefinition>) => {
-        if (!res.success || !res.data) return
-        const root = document.documentElement
-        const { colors, tokens } = res.data
-        if (colors) {
-          Object.entries(colors).forEach(([key, val]) => {
-            root.style.setProperty(`--${key}`, val as string)
-          })
-        }
-        if (tokens) {
-          Object.entries(tokens).forEach(([key, val]) => {
-            root.style.setProperty(`--${key}`, val as string)
-          })
-        }
-      })
-      .catch((e: unknown) => console.error('Failed to get theme:', e))
   }, [])
 
   if (loadError) {

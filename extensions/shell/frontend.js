@@ -87,8 +87,8 @@ export default function ShellView({ query: _queryProp }) {
         setTimeout(() => inputRef.current?.focus(), 50)
       }
     }
-    window.addEventListener('omniBar-control', handleOmniBarControl)
-    return () => window.removeEventListener('omniBar-control', handleOmniBarControl)
+    window.addEventListener('nuxy-shell-omni-bar-control', handleOmniBarControl)
+    return () => window.removeEventListener('nuxy-shell-omni-bar-control', handleOmniBarControl)
   }, [])
 
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function ShellView({ query: _queryProp }) {
         !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)
       ) {
         window.dispatchEvent(
-          new CustomEvent('omniBar-keydown', {
+          new CustomEvent('nuxy-shell-omni-bar-keydown', {
             detail: {
               key: e.key,
               code: e.code,
@@ -272,7 +272,7 @@ export default function ShellView({ query: _queryProp }) {
 
     if (activeTool) {
       window.dispatchEvent(
-        new CustomEvent('omniBar-keydown', {
+        new CustomEvent('nuxy-shell-omni-bar-keydown', {
           detail: {
             key: e.key,
             code: e.code,
@@ -343,16 +343,16 @@ export default function ShellView({ query: _queryProp }) {
 
   const itemClass = (index) =>
     index === selectedIndex
-      ? themeStyles?.itemActive ?? 'results-item results-item--active'
-      : themeStyles?.itemInactive ?? 'results-item'
+      ? themeStyles?.itemActive ?? 'nuxy-shell-results-item nuxy-shell-results-item--active'
+      : themeStyles?.itemInactive ?? 'nuxy-shell-results-item'
 
   return (
-    <div ref={containerRef} className={themeStyles?.container ?? 'app-container'}>
-      <div className="app-body">
+    <div ref={containerRef} className={themeStyles?.container ?? 'nuxy-shell-container'}>
+      <div className="nuxy-shell-body">
         <div>
           <div
             ref={omniBarRef}
-            className={`omni-bar ${showOmniBar ? '' : 'omni-bar--static'}`}
+            className={`nuxy-shell-omni-bar ${showOmniBar ? '' : 'nuxy-shell-omni-bar--static'}`}
             onClick={() => showOmniBar && inputRef.current?.focus()}
             onMouseDown={handleDragMouseDown}
           >
@@ -367,26 +367,26 @@ export default function ShellView({ query: _queryProp }) {
                 setSelectedIndex(-1)
               }}
               onKeyDown={handleKeyDown}
-              className="omni-bar__hidden-input"
+              className="nuxy-shell-omni-bar__hidden-input"
               aria-label="Search"
             />
-            <span className="omni-bar__icon">🔍</span>
-            <span className="omni-bar__sep">›</span>
+            <span className="nuxy-shell-omni-bar__icon" aria-hidden="true">🔍</span>
+            <span className="nuxy-shell-omni-bar__sep">›</span>
             {activeToolName && (
               <>
-                <span className="omni-bar__tool-name">{activeToolName}</span>
-                <span className="omni-bar__sep">›</span>
+                <span className="nuxy-shell-omni-bar__tool-name">{activeToolName}</span>
+                <span className="nuxy-shell-omni-bar__sep">›</span>
               </>
             )}
-            <span className="omni-bar__query-area">
+            <span className="nuxy-shell-omni-bar__query-area">
               {query ? (
-                <span className="omni-bar__typed">
+                <span className="nuxy-shell-omni-bar__typed">
                   {query}
-                  {showOmniBar && <span className="omni-bar__cursor" />}
+                  {showOmniBar && <span className="nuxy-shell-omni-bar__cursor" />}
                 </span>
               ) : (
-                <span className="omni-bar__placeholder">
-                  {showOmniBar && <span className="omni-bar__cursor" />}
+                <span className="nuxy-shell-omni-bar__placeholder">
+                  {showOmniBar && <span className="nuxy-shell-omni-bar__cursor" />}
                   {activeToolName
                     ? `Search ${activeToolName}`
                     : 'What do you have in mind?'}
@@ -397,15 +397,17 @@ export default function ShellView({ query: _queryProp }) {
         </div>
 
         {results.length > 0 && !activeTool && (
-          <div className="results-list">
+          <div className="nuxy-shell-results-list" role="listbox" aria-label="Results">
             {results.map((item, index) => (
               <div
                 key={item.id}
                 className={itemClass(index)}
+                role="option"
+                aria-selected={index === selectedIndex}
                 onClick={() => handleItemClick(item)}
               >
-                <span className="results-item__title">{item.title}</span>
-                <span className="results-item__subtitle">{item.subtitle}</span>
+                <span className="nuxy-shell-results-item__title">{item.title}</span>
+                <span className="nuxy-shell-results-item__subtitle">{item.subtitle}</span>
               </div>
             ))}
           </div>
@@ -413,9 +415,9 @@ export default function ShellView({ query: _queryProp }) {
 
         {ToolComponent && activeTool && (
           <React.Suspense
-            fallback={<div className="tool-loading">Loading…</div>}
+            fallback={<div className="nuxy-shell-tool-loading">Loading…</div>}
           >
-            <div className="tool-wrapper">
+            <div className="nuxy-shell-tool-wrapper">
               <ToolComponent query={query} />
             </div>
           </React.Suspense>

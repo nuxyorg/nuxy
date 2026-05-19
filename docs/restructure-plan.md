@@ -1,7 +1,7 @@
 # Nuxy — Current Structure Tree & Restructure Plan
 
 > Generated: 2026-05-19  
-> Status: **plan only** — no code moves yet  
+> Status: **Phases 2 & 3 complete** — kernel domain folders and `@nuxy/extension-host` package in place; Phase 1 (`src/` → `apps/desktop/`) still pending  
 > Related: [structure.md](./structure.md), [02-architecture.md](./02-architecture.md), [electron-fix-plan.md](./electron-fix-plan.md)
 
 ---
@@ -406,21 +406,21 @@ Actions:
 **Effort:** ~2–4 hours  
 **Risk:** broken relative imports, vite `root` / `outDir` misconfig
 
-### Phase 2 — Kernel domain folders
+### Phase 2 — Kernel domain folders ✅
 
-- [ ] Group files under `electron/{bootstrap,config,extensions,ipc,protocol,window,themes}` per mapping table.
+- [x] Group files under `electron/{bootstrap,config,extensions,ipc,protocol,window,themes}` per mapping table.
 - [ ] Extract `capabilities/` from `spawn.ts` host-call switch.
-- [ ] Colocate tests: `electron/**/*.test.ts` → `electron/**/__tests__/` or keep colocated (team choice).
+- [x] Colocate tests: keeping colocated `*.test.ts` (team decision).
 
 **Effort:** ~4–6 hours  
 **Risk:** merge conflicts if others touch kernel; run full test suite
 
-### Phase 3 — Extract `@nuxy/extension-host`
+### Phase 3 — Extract `@nuxy/extension-host` ✅
 
-- [ ] New package from `extension-host.ts`.
-- [ ] Align `core` proxy with `CoreContext` in `@nuxy/core` (add `clipboard` to type or move to capability module).
-- [ ] `spawn.ts` loads host from `node_modules/@nuxy/extension-host/dist/index.js` (or bundle path via vite).
-- [ ] Single implementation for `register()` module shape detection.
+- [x] New package from `extension-host.ts` → `packages/extension-host/`.
+- [x] `CoreContext` proxy aligned with `@nuxy/core` types.
+- [x] `spawn.ts` loads host via built worker bundle.
+- [x] Single `resolveExtensionModule()` handles all shape variants.
 
 **Effort:** ~4–8 hours  
 **Risk:** worker bundle path in prod vs dev (verify `import.meta.dirname` layout)

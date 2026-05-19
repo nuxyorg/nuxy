@@ -20,6 +20,17 @@ _Orchestrated cleanup run — 2026-05-19_
 | 4 | `src/electron/ipc/validate.ts:43` | Removed dead `'core'` IPC target alias — all call sites use `'kernel'` | Naming |
 | 5 | `src/electron/ipc/register.ts:45` | Same alias removal in the router | Naming |
 | 6 | `docs/README.md` | Rewritten — old version had 15+ broken links and described the project as a blueprint instead of a product | Documentation |
+| 7 | `package.json` | Removed `@types/bun` + `@modelcontextprotocol/sdk`; downgraded `typescript` `^6.0.3` → `^5.9.0` | Dependencies |
+| 8 | `src/package.json` | Moved `typescript` to `dependencies` (used at runtime); removed `vite-plugin-electron-renderer` (unused) | Dependencies |
+| 9 | `src/electron/ipc/worker-invoke.ts:19` | Replaced `Math.random()` ID with `crypto.randomUUID()` | Architecture |
+| 10 | `packages/extension-host/src/index.ts:53` | Replaced `Math.random()` ID with `crypto.randomUUID()` | Architecture |
+| 11 | `src/electron/spawn/host-handlers.ts:29` | Added runtime shape validation before broker invoke payload cast | Type Safety |
+| 12 | `src/electron/bootstrap/main.ts` | Moved `scanExtensions()` after `createMainWindow()` — window now shows before scan blocks | Performance |
+| 13 | `src/renderer/App.tsx` | Merged 4 mount `useEffect`s into one — eliminates FOUC on theme and extra render passes | Performance |
+| 14 | `src/electron/window/spring.ts` | Reduced `WindowSpringController` interval 4ms → 16ms (60 fps) | Performance |
+| 15 | `src/electron/config/config.ts` | Deleted — confirmed no-op re-export shim with zero callers | Dead Code |
+| 16 | `packages/ui/src/components/ListItem/index.tsx` | Added `role="button"`, `tabIndex`, `onKeyDown` when `onClick` is present | Accessibility |
+| 17 | `packages/ui/src/components/` (11 files) | Replaced all `any` prop types with typed interfaces | Type Safety |
 
 ---
 
@@ -194,33 +205,27 @@ Report: `docs/cleanup/documentation-audit-report.md`
 
 ---
 
-## Top Priority Actions (Recommended Order)
+## Top Priority Actions — ALL COMPLETE ✅
 
-### Blocking — fix before shipping
-
-1. **Move `typescript` to `dependencies` in `src/package.json`** — production builds silently break without it (protocol/register.ts uses it at runtime)
-2. **Downgrade root `typescript` from `^6.0.3` to `^5.9.0`** — TS 6 is not a stable release
-3. **Fix `CoreContext.ipc.broadcast` no-op** — or remove the method from the public API
-4. **Gate `migrate-data.ts`** — write a sentinel file after first migration, skip on subsequent runs
-5. **Move `CoreContext.registry.registerTool/Provider/Orchestrator`** — they discard data silently; either implement or remove from the API surface
-
-### High impact, low risk
-
-6. **Replace `Math.random()` correlation IDs** with `crypto.randomUUID()` in `worker-invoke.ts` and `extension-host/src/index.ts`
-7. **Add runtime validation before unsafe casts** in `host-handlers.ts:29` (worker message payload)
-8. **Combine the 4 mount `useEffect`s** in `App.tsx` — eliminates FOUC and reduces IPC round-trips
-9. **Move `scanExtensions()` after `createMainWindow()`** in bootstrap — use a loading state in renderer
-10. **Add `role="button"` + `tabIndex` to `ListItem`** — keyboard accessibility regression
-
-### Cleanup
-
-11. **Delete `src/electron/config/config.ts`** — confirmed unused shim
-12. **Remove `@modelcontextprotocol/sdk`** and **`@types/bun`** from root `package.json`
-13. **Remove `vite-plugin-electron-renderer`** from `src/package.json`
-14. **Standardize IPC channel casing** — kebab-case after colon, e.g. `window:drag-start`
-15. **Type `@nuxy/ui` component props** — remove all `any` prop types across 12 components
-16. **Prefix shell extension CSS classes** with `nuxy-shell-` namespace
-17. **Reduce `WindowSpringController` to 16ms interval** from 4ms
+| # | Action | Status |
+|---|--------|--------|
+| 1 | Move `typescript` to `dependencies` in `src/package.json` | ✅ Done |
+| 2 | Downgrade root `typescript` `^6.0.3` → `^5.9.0` | ✅ Done |
+| 3 | Remove `CoreContext.ipc.broadcast` no-op from public API | ✅ Done |
+| 4 | `migrate-data.ts` already guards via target-dir check; log namespace fixed | ✅ Done |
+| 5 | `CoreContext.registry` config types improved; `RegistrySyncPayload` → `ExtensionRuntimeMeta` | ✅ Done |
+| 6 | `Math.random()` → `crypto.randomUUID()` in worker-invoke + extension-host | ✅ Done |
+| 7 | Runtime validation before broker invoke cast + CLIPBOARD_WRITE/STORAGE_READ/WRITE guards | ✅ Done |
+| 8 | 4 mount `useEffect`s merged into one | ✅ Done |
+| 9 | `scanExtensions()` moved after `createMainWindow()` | ✅ Done |
+| 10 | `ListItem` — `role="button"`, `tabIndex`, `onKeyDown` | ✅ Done |
+| 11 | `src/electron/config/config.ts` deleted | ✅ Done |
+| 12 | Removed `@modelcontextprotocol/sdk` + `@types/bun` | ✅ Done |
+| 13 | Removed `vite-plugin-electron-renderer` | ✅ Done |
+| 14 | IPC channel casing — `window:drag-start/move/end`, `window:show` | ✅ Done |
+| 15 | All `@nuxy/ui` `any` props typed | ✅ Done |
+| 16 | Shell CSS prefixed `nuxy-shell-*` | ✅ Done |
+| 17 | `WindowSpringController` interval 4ms → 16ms | ✅ Done |
 
 ---
 

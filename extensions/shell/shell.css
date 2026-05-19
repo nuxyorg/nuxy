@@ -18,7 +18,7 @@
   }
 }
 
-.app-container {
+.nuxy-shell-container {
   width: 100%;
   height: fit-content;
   background-color: var(--bg-base);
@@ -27,12 +27,12 @@
   overflow: hidden;
 }
 
-.app-body {
+.nuxy-shell-body {
   width: 100%;
   color: var(--syntax-variable);
 }
 
-.omni-bar {
+.nuxy-shell-omni-bar {
   position: relative;
   display: flex;
   align-items: center;
@@ -42,11 +42,11 @@
   cursor: text;
 }
 
-.omni-bar--static {
+.nuxy-shell-omni-bar--static {
   cursor: default;
 }
 
-.omni-bar__hidden-input {
+.nuxy-shell-omni-bar__hidden-input {
   position: absolute;
   inset: 0;
   opacity: 0;
@@ -61,52 +61,52 @@
   z-index: 0;
 }
 
-.omni-bar__icon,
-.omni-bar__sep,
-.omni-bar__tool-name,
-.omni-bar__query-area {
+.nuxy-shell-omni-bar__icon,
+.nuxy-shell-omni-bar__sep,
+.nuxy-shell-omni-bar__tool-name,
+.nuxy-shell-omni-bar__query-area {
   z-index: 1;
   flex-shrink: 0;
 }
 
-.omni-bar__icon {
+.nuxy-shell-omni-bar__icon {
   display: flex;
   color: var(--syntax-comment);
 }
 
-.omni-bar__sep {
+.nuxy-shell-omni-bar__sep {
   color: var(--syntax-comment);
   font-size: var(--font-xl);
   line-height: 1;
   user-select: none;
 }
 
-.omni-bar__tool-name {
+.nuxy-shell-omni-bar__tool-name {
   font-size: var(--font-body);
   color: var(--syntax-operator);
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
-.omni-bar__query-area {
+.nuxy-shell-omni-bar__query-area {
   display: flex;
   flex: 1;
   min-width: 0;
   font-size: var(--font-body);
 }
 
-.omni-bar__typed {
+.nuxy-shell-omni-bar__typed {
   color: var(--syntax-variable);
   display: inline-flex;
   align-items: center;
   gap: var(--space-px);
 }
 
-.omni-bar__placeholder {
+.nuxy-shell-omni-bar__placeholder {
   color: var(--syntax-keyword);
 }
 
-.omni-bar__cursor {
+.nuxy-shell-omni-bar__cursor {
   display: inline-block;
   width: var(--space-0);
   height: 1em;
@@ -116,73 +116,89 @@
   animation: cursor-blink 1s step-start infinite;
 }
 
-.results-list {
+.nuxy-shell-results-list {
   border-top: 1px solid var(--syntax-comment);
   display: flex;
   flex-direction: column;
   max-height: 350px;
   overflow-y: auto;
   scrollbar-width: none;
+  role: listbox;
 }
 
-.results-list::-webkit-scrollbar {
+.nuxy-shell-results-list::-webkit-scrollbar {
   display: none;
 }
 
-.results-item {
+.nuxy-shell-results-item {
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: all 150ms;
+  transition: background-color 150ms, color 150ms;
   color: var(--syntax-variable);
 }
 
-.results-item:hover {
+.nuxy-shell-results-item:hover {
   background-color: color-mix(in srgb, var(--syntax-comment) 40%, transparent);
 }
 
-.results-item--active {
+.nuxy-shell-results-item--active {
   background-color: var(--syntax-comment);
 }
 
-.results-item__title {
+.nuxy-shell-results-item__title {
   font-size: var(--font-lg);
   font-weight: 500;
   transition: color 150ms;
   color: var(--syntax-variable);
 }
 
-.results-item--active .results-item__title {
+.nuxy-shell-results-item--active .nuxy-shell-results-item__title {
   color: var(--syntax-function);
 }
 
-.results-item__subtitle {
+.nuxy-shell-results-item__subtitle {
   font-size: var(--font-sm);
   font-family: monospace;
   padding: var(--space-0) var(--space-3);
   border-radius: var(--radius-sm);
-  transition:
-    color 150ms,
-    background-color 150ms;
+  transition: color 150ms, background-color 150ms;
   color: var(--syntax-peach);
   background-color: var(--syntax-comment);
 }
 
-.results-item--active .results-item__subtitle {
+.nuxy-shell-results-item--active .nuxy-shell-results-item__subtitle {
   color: var(--syntax-constant);
   background-color: var(--bg-base);
 }
 
-.tool-loading {
+.nuxy-shell-tool-loading {
   color: var(--syntax-variable);
   padding: var(--space-4) var(--space-5);
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   font-size: var(--font-md);
 }
 
-.tool-wrapper {
+.nuxy-shell-tool-wrapper {
   border-top: 1px solid var(--syntax-comment);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nuxy-shell-omni-bar__cursor {
+    animation: none;
+    opacity: 1;
+  }
+
+  .nuxy-shell-tool-loading {
+    animation: none;
+  }
+
+  .nuxy-shell-results-item,
+  .nuxy-shell-results-item__title,
+  .nuxy-shell-results-item__subtitle {
+    transition: none;
+  }
 }

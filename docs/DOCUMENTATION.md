@@ -23,13 +23,13 @@ Source: [electron-fix-plan.md](./electron-fix-plan.md), [structure.md](./structu
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Worker per extension | **Implemented** | `worker/spawn.ts` |
-| `nuxy-ext://` protocol | **Implemented** | `protocol-resolve.ts` |
-| Storage chroot | **Implemented** | `storage-path.ts` |
-| `permissions` manifest gate | **Implemented** | `permissions.ts` |
-| IPC channel allowlist | **Implemented** | `registry.ts`, `ipc-validate.ts` |
+| Worker per extension | **Implemented** | `src/electron/spawn/spawn.ts` |
+| `nuxy-ext://` protocol | **Implemented** | `src/electron/protocol/resolve.ts` |
+| Storage chroot | **Implemented** | `src/electron/config/storage-path.ts` |
+| `permissions` manifest gate | **Implemented** | `src/electron/config/permissions.ts` |
+| IPC channel allowlist | **Implemented** | `src/electron/extensions/registry.ts`, `src/electron/ipc/validate.ts` |
 | Registry worker sync | **Implemented** | `registry:sync` message |
-| Message broker | **Implemented** | `broker.ts` |
+| Message broker | **Implemented** | `src/electron/ipc/broker.ts` |
 | Shell as extension | **Implemented** | `extensions/shell/` |
 | Clipboard consent UI | **Planned** | Deny without permission today |
 | AI orchestrator | **Planned** | Type exists; optional extension |

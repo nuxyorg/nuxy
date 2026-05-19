@@ -1,4 +1,5 @@
 import fs from 'fs'
+import fsPromises from 'fs/promises'
 import { clipboard } from 'electron'
 import { HostChannel, kernelLogger } from '@nuxy/core'
 import { assertHostPermission } from '../config/permissions.js'
@@ -26,6 +27,14 @@ export async function handleHostCall(
   }
 
   if (channel === HostChannel.BROKER_INVOKE) {
+    if (
+      typeof payload !== 'object' ||
+      payload === null ||
+      typeof (payload as Record<string, unknown>).targetId !== 'string' ||
+      typeof (payload as Record<string, unknown>).channel !== 'string'
+    ) {
+      return { error: 'Invalid broker invoke payload: missing targetId or channel' }
+    }
     const { targetId, channel: targetChannel, payload: pl } = payload as {
       targetId: string
       channel: string
@@ -49,27 +58,39 @@ export async function handleHostCall(
         return { result: clipboard.readText() }
 
       case HostChannel.CLIPBOARD_WRITE:
-        clipboard.writeText(payload as string)
+        if (typeof payload !== 'string') {
+          return { error: 'CLIPBOARD_WRITE: payload must be a string' }
+        }
+        clipboard.writeText(payload)
         return { result: true }
 
       case HostChannel.STORAGE_READ: {
-        const dataDir = extensionDataDir(extId)
-        const filePath = resolveStoragePath(dataDir, payload as string)
-        if (fs.existsSync(filePath)) {
-          const fileContent = fs.readFileSync(filePath, 'utf8')
-          return { result: JSON.parse(fileContent) }
+        if (typeof payload !== 'string') {
+          return { error: 'STORAGE_READ: payload must be a file path string' }
         }
-        return { result: null }
+        const dataDir = extensionDataDir(extId)
+        const filePath = resolveStoragePath(dataDir, payload)
+        try {
+          const fileContent = await fsPromises.readFile(filePath, 'utf8')
+          return { result: JSON.parse(fileContent) }
+        } catch {
+          return { result: null }
+        }
       }
 
       case HostChannel.STORAGE_WRITE: {
+        if (
+          typeof payload !== 'object' ||
+          payload === null ||
+          typeof (payload as Record<string, unknown>).file !== 'string'
+        ) {
+          return { error: 'STORAGE_WRITE: payload must be { file: string, data: unknown }' }
+        }
         const { file, data } = payload as { file: string; data: unknown }
         const dataDir = extensionDataDir(extId)
-        if (!fs.existsSync(dataDir)) {
-          fs.mkdirSync(dataDir, { recursive: true })
-        }
+        await fsPromises.mkdir(dataDir, { recursive: true })
         const filePath = resolveStoragePath(dataDir, file)
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8')
+        await fsPromises.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8')
         return { result: true }
       }
 

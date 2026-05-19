@@ -5,8 +5,16 @@ import { bundledExtensionsDir } from './seed-bundled.js'
 describe('seed-bundled', () => {
   it('returns null when resourcesPath has no extensions', () => {
     const prev = process.resourcesPath
-    process.resourcesPath = path.join('/tmp', 'nuxy-test-no-extensions')
+    Object.defineProperty(process, 'resourcesPath', {
+      value: path.join('/tmp', 'nuxy-test-no-extensions'),
+      writable: true,
+      configurable: true
+    })
     expect(bundledExtensionsDir()).toBeNull()
-    process.resourcesPath = prev
+    Object.defineProperty(process, 'resourcesPath', {
+      value: prev,
+      writable: true,
+      configurable: true
+    })
   })
 })

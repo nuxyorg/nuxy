@@ -4,7 +4,7 @@
   font-size: var(--font-sm);
   font-weight: 600;
   border: 1px solid var(--syntax-comment);
-  transition: all 200ms;
+  transition: background-color 200ms, border-color 200ms, color 200ms, transform 200ms;
   display: inline-flex;
   align-items: center;
   justify-content: center;

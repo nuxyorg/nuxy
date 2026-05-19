@@ -16,7 +16,7 @@ export function invokeWorker(
   }
 
   return new Promise((resolve) => {
-    const msgId = Math.random().toString(36).slice(2)
+    const msgId = crypto.randomUUID()
     let settled = false
 
     const finish = (result: IpcResult) => {

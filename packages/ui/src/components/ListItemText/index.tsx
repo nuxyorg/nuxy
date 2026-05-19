@@ -6,7 +6,11 @@ const variantStyles: Record<string, string> = {
   success: 'nuxy-list-item-text--success'
 }
 
-export function ListItemText({ children, variant = 'default', className, ...props }: any) {
+export interface ListItemTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+  variant?: 'default' | 'success'
+}
+
+export function ListItemText({ children, variant = 'default', className, ...props }: ListItemTextProps) {
   return (
     <span
       className={`nuxy-list-item-text ${variantStyles[variant] || ''} ${className || ''}`}

@@ -51,7 +51,7 @@ if (!gotTheLock) {
 
       if (win.isMinimized()) win.restore()
       win.focus()
-      win.webContents.send('window-show')
+      win.webContents.send('window:show')
     }
   })
 
@@ -64,11 +64,11 @@ if (!gotTheLock) {
     log.silly('Registering IPC handlers')
     registerIpc()
 
-    log.info('Scanning extensions...')
-    await scanExtensions()
-
     log.info('Creating main window...')
     createMainWindow()
+
+    log.info('Scanning extensions...')
+    await scanExtensions()
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {

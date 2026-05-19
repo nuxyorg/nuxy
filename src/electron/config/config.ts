@@ -1,9 +1,0 @@
-export {
-  NUXY_HOME,
-  CONFIG_DIR,
-  CONFIG_PATH,
-  EXTENSION_DIR,
-  THEMES_DIR,
-  DATA_DIR,
-  LEGACY_DATA_DIR
-} from './paths.js'

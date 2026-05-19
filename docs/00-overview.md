@@ -16,7 +16,7 @@ The rebuild is guided by a radical engineering tenet: **The Core Must Be Useless
 When a user launches Nuxy for the first time without extensions, they see a message: "No extensions loaded. Please place extensions in ~/.nuxy/extensions/". Every piece of functionality—even the search bar itself—must be an extension.
 
 ### Tenet B: Absolute Extension Autonomy
-Extensions are pre-compiled bundles (Frontend React + Backend Node.js) created by developers anywhere in the world. They are dropped into the extensions folder. Nuxy reads their `manifest.json`, executes their backend in a secure V8 Sandbox (Node `vm`), and dynamically injects their React UI via a custom `nuxy-ext://` protocol.
+Extensions are pre-compiled bundles (Frontend React + Backend Node.js) created by developers anywhere in the world. They are dropped into the extensions folder. Nuxy reads their `manifest.json`, executes their backend in a dedicated `worker_threads` sandbox, and dynamically injects their React UI via a custom `nuxy-ext://` protocol.
 
 ### Tenet C: Zero-Trust Security
 Because Nuxy executes third-party code from the filesystem, it implements draconian security measures. Extensions cannot run raw `require('fs')`. They are injected with a restricted `CoreContext` API that limits them to their own sandboxed data directories.

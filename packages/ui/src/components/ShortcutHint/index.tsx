@@ -1,7 +1,9 @@
 import React from 'react'
 import './index.css'
 
-export function ShortcutHint({ children, className, ...props }: any) {
+export type ShortcutHintProps = React.HTMLAttributes<HTMLDivElement>
+
+export function ShortcutHint({ children, className, ...props }: ShortcutHintProps) {
   return (
     <div className={`nuxy-shortcut-hint ${className || ''}`} {...props}>
       {children}

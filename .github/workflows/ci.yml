@@ -25,4 +25,6 @@ jobs:
 
       - run: pnpm test
 
+      - run: pnpm -C src typecheck
+
       - run: pnpm -C src build

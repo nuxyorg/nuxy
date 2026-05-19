@@ -3,7 +3,7 @@ import path from 'path'
 import { DATA_DIR, LEGACY_DATA_DIR } from '../config/paths.js'
 import { kernelLogger } from '@nuxy/core'
 
-const log = kernelLogger.child('Spawn')
+const log = kernelLogger.child('MigrateData')
 
 export function extensionDataDir(extId: string): string {
   return path.join(DATA_DIR, extId)

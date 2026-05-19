@@ -1,11 +1,8 @@
-import type { CoreContext, NowPlaying } from '@nuxy/core'
+import type { CoreContext, ExtensionRuntimeMeta, NowPlaying } from '@nuxy/core'
 import { HostChannel } from '@nuxy/core'
 import type { WorkerLogger } from './worker-log.js'
 
-export interface RegistrySyncPayload {
-  ipcChannels: string[]
-  displayName?: string
-}
+export type { ExtensionRuntimeMeta as RegistrySyncPayload }
 
 export function createCoreProxy(
   callHost: (channel: string, payload?: unknown) => Promise<unknown>,
@@ -15,7 +12,7 @@ export function createCoreProxy(
     handler: (payload: unknown) => Promise<unknown>
   ) => void,
   onRegistryEntry?: (entry: { kind: string; displayName?: string }) => void
-): { core: CoreContext; getSyncPayload: () => RegistrySyncPayload } {
+): { core: CoreContext; getSyncPayload: () => ExtensionRuntimeMeta } {
   const ipcChannels: string[] = []
   let displayName: string | undefined
 
@@ -43,34 +40,18 @@ export function createCoreProxy(
           channel,
           handler as (payload: unknown) => Promise<unknown>
         )
-      },
-      broadcast: (channel, payload) => {
-        logger.log(
-          'warn',
-          'IPC',
-          `broadcast("${channel}") is not implemented yet`,
-          payload
-        )
       }
     },
     registry: {
       registerTool: (cfg) => {
-        const name =
-          cfg && typeof cfg === 'object' && 'name' in cfg
-            ? String((cfg as { name: unknown }).name)
-            : '(tool)'
-        displayName = name
-        onRegistryEntry?.({ kind: 'tool', displayName: name })
-        logger.log('info', 'Registry', 'Registered Tool: ' + name, cfg)
+        displayName = cfg.name
+        onRegistryEntry?.({ kind: 'tool', displayName: cfg.name })
+        logger.log('info', 'Registry', 'Registered Tool: ' + cfg.name, cfg)
       },
       registerProvider: (cfg) => {
-        const name =
-          cfg && typeof cfg === 'object' && 'name' in cfg
-            ? String((cfg as { name: unknown }).name)
-            : '(provider)'
-        displayName = name
-        onRegistryEntry?.({ kind: 'provider', displayName: name })
-        logger.log('info', 'Registry', 'Registered Provider: ' + name, cfg)
+        displayName = cfg.name
+        onRegistryEntry?.({ kind: 'provider', displayName: cfg.name })
+        logger.log('info', 'Registry', 'Registered Provider: ' + cfg.name, cfg)
       },
       registerOrchestrator: (cfg) => {
         onRegistryEntry?.({ kind: 'orchestrator' })
@@ -79,7 +60,7 @@ export function createCoreProxy(
     },
     extensions: {
       invoke: (targetId, channel, payload) =>
-        callHost(HostChannel.BROKER_INVOKE, { targetId, channel, payload })
+        callHost(HostChannel.BROKER_INVOKE, { targetId, channel, payload }) as ReturnType<CoreContext['extensions']['invoke']>
     },
     logger: {
       silly: logger.silly,
@@ -91,7 +72,7 @@ export function createCoreProxy(
 
   return {
     core,
-    getSyncPayload: () => ({
+    getSyncPayload: (): ExtensionRuntimeMeta => ({
       ipcChannels: [...ipcChannels],
       displayName
     })

@@ -41,7 +41,7 @@ function startExtensionWatcher(): void {
   log.silly('Watching extension directory for changes')
 }
 
-export async function scanExtensions() {
+export async function scanExtensions(): Promise<void> {
   log.info(`Scanning extension directory: ${EXTENSION_DIR}`)
   clearRegistry()
 

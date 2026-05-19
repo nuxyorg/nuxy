@@ -27,6 +27,12 @@ export default defineExtension({
 })
 ```
 
+> **Permissions required:** `core.clipboard` calls only work when `"clipboard"` is listed in your manifest's `permissions` array. Without it the kernel returns a `PERMISSION_DENIED` error at runtime.
+>
+> ```json
+> { "permissions": ["clipboard"] }
+> ```
+
 3. Set `manifest.id` (e.g. `com.nuxy.my-ext`) — used for IPC, storage, and `nuxy-ext://` URLs.
 4. Run `pnpm dev` from the repo; dev sync copies this folder into `~/.nuxy/extensions/`.
 

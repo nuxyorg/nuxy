@@ -1,7 +1,9 @@
 import React from 'react'
 import './index.css'
 
-export function Kbd({ children, className, ...props }: any) {
+export type KbdProps = React.HTMLAttributes<HTMLElement>
+
+export function Kbd({ children, className, ...props }: KbdProps) {
   return (
     <kbd className={`nuxy-kbd ${className || ''}`} {...props}>
       {children}
