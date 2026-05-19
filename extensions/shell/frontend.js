@@ -346,102 +346,81 @@ export default function ShellView({ query: _queryProp }) {
       ? themeStyles?.itemActive ?? 'results-item results-item--active'
       : themeStyles?.itemInactive ?? 'results-item'
 
-  return React.createElement(
-    'div',
-    { ref: containerRef, className: themeStyles?.container ?? 'app-container' },
-    React.createElement(
-      'div',
-      { className: 'app-body' },
-      React.createElement(
-        'div',
-        null,
-        React.createElement(
-          'div',
-          {
-            ref: omniBarRef,
-            className: `omni-bar ${showOmniBar ? '' : 'omni-bar--static'}`,
-            onClick: () => showOmniBar && inputRef.current?.focus(),
-            onMouseDown: handleDragMouseDown
-          },
-          React.createElement('input', {
-            autoFocus: true,
-            ref: inputRef,
-            disabled: !showOmniBar,
-            value: query,
-            onChange: (e) => {
-              setQuery(e.target.value)
-              setSavedQuery(e.target.value)
-              setSelectedIndex(-1)
-            },
-            onKeyDown: handleKeyDown,
-            className: 'omni-bar__hidden-input',
-            'aria-label': 'Search'
-          }),
-          React.createElement(
-            'span',
-            { className: 'omni-bar__icon' },
-            '🔍'
-          ),
-          React.createElement('span', { className: 'omni-bar__sep' }, '›'),
-          activeToolName &&
-            React.createElement(
-              React.Fragment,
-              null,
-              React.createElement('span', { className: 'omni-bar__tool-name' }, activeToolName),
-              React.createElement('span', { className: 'omni-bar__sep' }, '›')
-            ),
-          React.createElement(
-            'span',
-            { className: 'omni-bar__query-area' },
-            query
-              ? React.createElement(
-                  'span',
-                  { className: 'omni-bar__typed' },
-                  query,
-                  showOmniBar && React.createElement('span', { className: 'omni-bar__cursor' })
-                )
-              : React.createElement(
-                  'span',
-                  { className: 'omni-bar__placeholder' },
-                  showOmniBar && React.createElement('span', { className: 'omni-bar__cursor' }),
-                  activeToolName ? `Search ${activeToolName}` : 'What do you have in mind?'
-                )
-          )
-        )
-      ),
-      results.length > 0 &&
-        !activeTool &&
-        React.createElement(
-          'div',
-          { className: 'results-list' },
-          results.map((item, index) =>
-            React.createElement(
-              'div',
-              {
-                key: item.id,
-                className: itemClass(index),
-                onClick: () => handleItemClick(item)
-              },
-              React.createElement('span', { className: 'results-item__title' }, item.title),
-              React.createElement(
-                'span',
-                { className: 'results-item__subtitle' },
-                item.subtitle
-              )
-            )
-          )
-        ),
-      ToolComponent &&
-        activeTool &&
-        React.createElement(
-          React.Suspense,
-          { fallback: React.createElement('div', { className: 'tool-loading' }, 'Loading…') },
-          React.createElement(
-            'div',
-            { className: 'tool-wrapper' },
-            React.createElement(ToolComponent, { query })
-          )
-        )
-    )
+  return (
+    <div ref={containerRef} className={themeStyles?.container ?? 'app-container'}>
+      <div className="app-body">
+        <div>
+          <div
+            ref={omniBarRef}
+            className={`omni-bar ${showOmniBar ? '' : 'omni-bar--static'}`}
+            onClick={() => showOmniBar && inputRef.current?.focus()}
+            onMouseDown={handleDragMouseDown}
+          >
+            <input
+              autoFocus
+              ref={inputRef}
+              disabled={!showOmniBar}
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value)
+                setSavedQuery(e.target.value)
+                setSelectedIndex(-1)
+              }}
+              onKeyDown={handleKeyDown}
+              className="omni-bar__hidden-input"
+              aria-label="Search"
+            />
+            <span className="omni-bar__icon">🔍</span>
+            <span className="omni-bar__sep">›</span>
+            {activeToolName && (
+              <>
+                <span className="omni-bar__tool-name">{activeToolName}</span>
+                <span className="omni-bar__sep">›</span>
+              </>
+            )}
+            <span className="omni-bar__query-area">
+              {query ? (
+                <span className="omni-bar__typed">
+                  {query}
+                  {showOmniBar && <span className="omni-bar__cursor" />}
+                </span>
+              ) : (
+                <span className="omni-bar__placeholder">
+                  {showOmniBar && <span className="omni-bar__cursor" />}
+                  {activeToolName
+                    ? `Search ${activeToolName}`
+                    : 'What do you have in mind?'}
+                </span>
+              )}
+            </span>
+          </div>
+        </div>
+
+        {results.length > 0 && !activeTool && (
+          <div className="results-list">
+            {results.map((item, index) => (
+              <div
+                key={item.id}
+                className={itemClass(index)}
+                onClick={() => handleItemClick(item)}
+              >
+                <span className="results-item__title">{item.title}</span>
+                <span className="results-item__subtitle">{item.subtitle}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {ToolComponent && activeTool && (
+          <React.Suspense
+            fallback={<div className="tool-loading">Loading…</div>}
+          >
+            <div className="tool-wrapper">
+              <ToolComponent query={query} />
+            </div>
+          </React.Suspense>
+        )}
+      </div>
+    </div>
   )
 }
