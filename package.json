@@ -8,7 +8,9 @@
     "dev": "pnpm -C src dev",
     "build": "pnpm -C src build",
     "package": "pnpm -C src dist",
-    "test": "pnpm -C src test"
+    "test": "pnpm -C src test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,7 @@
   },
   "type": "module",
   "devDependencies": {
+    "prettier": "^3.8.3",
     "typescript": "^5.9.0"
   },
   "pnpm": {

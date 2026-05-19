@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-electron
+out
+release
+build
+coverage
+.pnpm-store
+.vite
+*.asar
+pnpm-lock.yaml
+*.min.js
+*.min.css
