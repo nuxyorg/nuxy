@@ -1,50 +1,107 @@
-# Nuxy Rebuild Documentation
+# Nuxy Documentation
 
-Welcome to the comprehensive documentation for the **Nuxy** rebuild project. This system is a powerful, extensible desktop launcher and productivity hub built with Electron, React, and Vite. 
-
-This documentation serves as a complete blueprint to reverse-engineer the current system and build a cleaner, modular, highly scalable, and dependency-light version from scratch using React and Shadcn UI.
-
-## 📖 Table of Contents
-
-### Core Documentation
-- [00. Overview](./00-overview.md)
-- [01. System Analysis](./01-system-analysis.md)
-- [02. Architecture](./02-architecture.md)
-- [03. Data Flow](./03-data-flow.md)
-- [04. Modules](./04-modules.md)
-
-### Design & Implementation
-- [05. API Design](./05-api-design.md)
-- [06. State Management](./06-state-management.md)
-- [07. Database Design](./07-database-design.md)
-- [08. Authentication](./08-authentication.md)
-
-### Quality & Lifecycle
-- [09. Error Handling](./09-error-handling.md)
-- [10. Security](./10-security.md)
-- [11. Performance](./11-performance.md)
-- [12. Testing Strategy](./12-testing-strategy.md)
-- [13. Deployment](./13-deployment.md)
-
-### Execution
-- [Documentation status index](./DOCUMENTATION.md) — implemented vs planned features
-- [Pain Points & Remediation Plan](./pain-points-plan.md) — gaps vs architecture, prioritized fixes
-- [14. Rebuild Roadmap](./14-rebuild-roadmap.md)
-- [15. Modular Plugin System](./15-modular-plugin-system.md)
-- [16. Omni-Input & Conflict Resolution](./16-omni-input-system.md)
-- [17. Frontend Extensions & UI Library](./17-frontend-extensions.md)
-- [18. Advanced Capabilities](./18-advanced-capabilities.md)
-- [19. MVP Roadmap (Execution Plan)](./19-mvp-roadmap.md)
-- [20. Logging](./20-logging.md)
-- [21. Extension Access & Permissions](./21-extension-access.md)
-
-### Implementation Guides
-- [01. Setup](./implementation/01-setup.md)
-- [02. Core Infrastructure](./implementation/02-core-infrastructure.md)
-- [03. Feature Implementation](./implementation/03-feature-implementation.md)
-- [04. Integration](./implementation/04-integration.md)
-- [05. Final Polish](./implementation/05-final-polish.md)
+Nuxy is an Electron desktop launcher (spotlight/command-palette style). The core shell is deliberately empty — all functionality is delivered by extensions installed in `~/.nuxy/extensions/`.
 
 ---
 
-**Next:** Start with the [System Overview](./00-overview.md)
+## Quick links
+
+| I want to… | Go to |
+|------------|-------|
+| Understand what Nuxy is | [00. Overview](./00-overview.md) |
+| See the full system design | [Architecture map](./architecture.md) |
+| Build an extension | [Extension authoring](./21-extension-access.md) |
+| Check what APIs are implemented | [Documentation status index](./DOCUMENTATION.md) |
+| Understand the current file layout | [Structure & restructure plan](./restructure-plan.md) |
+| See the MVP plan | [19. MVP Roadmap](./19-mvp-roadmap.md) |
+| See pain points and gaps | [Pain points plan](./pain-points-plan.md) |
+
+---
+
+## Repository layout
+
+```
+nuxy/                          # pnpm monorepo root
+├── src/                       # nuxy-desktop app (Electron + React)
+│   ├── electron/              # Main process (kernel)
+│   │   ├── bootstrap/         # main.ts, preload.ts — app lifecycle
+│   │   ├── config/            # paths, nuxyconfig, storage-path
+│   │   ├── extensions/        # scanner, registry, broker
+│   │   ├── ipc/               # register, validate, worker-invoke
+│   │   ├── protocol/          # nuxy-ext:// handler
+│   │   ├── spawn/             # worker spawn + host-call bridge
+│   │   ├── media/             # now-playing (Linux MPRIS; macOS/Win stubs)
+│   │   ├── window/            # BrowserWindow, spring animation
+│   │   └── themes/            # bundled theme install
+│   └── renderer/              # React shell (App.tsx, main.tsx)
+│
+├── packages/
+│   ├── core/                  # @nuxy/core — CoreContext type, manifest types, logger
+│   ├── extension-host/        # @nuxy/extension-host — worker bootstrap + CoreContext proxy
+│   ├── extension-sdk/         # @nuxy/extension-sdk — defineExtension helper, re-exports
+│   ├── ext-template/          # Starter template for new extensions
+│   └── ui/                    # @nuxy/ui — shared React component library
+│
+├── extensions/                # Sample extensions (synced to ~/.nuxy/extensions/ in dev)
+│   ├── calculator/            # provider: math evaluator
+│   ├── clipboard/             # tool: clipboard history
+│   └── shell/                 # bootstrap: OmniBar shell UI
+│
+└── docs/                      # This directory
+```
+
+---
+
+## How extensions work (short version)
+
+1. Place a folder with `manifest.json` + `backend.js` in `~/.nuxy/extensions/`.
+2. The kernel scanner reads the manifest and spawns one `worker_threads` Worker per backend.
+3. `@nuxy/extension-host` runs inside the worker and calls `register(core)` on your module.
+4. `core` is a `CoreContext` proxy — clipboard, storage, media, IPC, registry, logger.
+5. The renderer loads frontend UIs via the `nuxy-ext://<manifest.id>/frontend.js` protocol.
+
+Full API reference: [21. Extension Access & Permissions](./21-extension-access.md)  
+Starter template: `packages/ext-template/`
+
+---
+
+## Runtime paths
+
+| Path | Purpose |
+|------|---------|
+| `~/.nuxy/nuxyconfig` | User settings |
+| `~/.nuxy/extensions/` | Installed extensions |
+| `~/.nuxy/data/<manifest.id>/` | Extension storage (chroot-jailed) |
+| `~/.nuxy/themes/` | Runtime themes |
+
+---
+
+## Design docs
+
+The numbered series covers the architectural decisions behind Nuxy:
+
+- [00. Overview](./00-overview.md) — the "empty shell" philosophy
+- [01. System Analysis](./01-system-analysis.md)
+- [04. Modules](./04-modules.md)
+- [10. Security](./10-security.md) *(if present)*
+- [14. Rebuild Roadmap](./14-rebuild-roadmap.md)
+- [15. Modular Plugin System](./15-modular-plugin-system.md)
+- [18. Advanced Capabilities](./18-advanced-capabilities.md)
+- [19. MVP Roadmap](./19-mvp-roadmap.md)
+- [21. Extension Access & Permissions](./21-extension-access.md)
+
+### Implementation guides
+
+- [02. Core Infrastructure](./implementation/02-core-infrastructure.md)
+- [03. Feature Implementation](./implementation/03-feature-implementation.md)
+- [04. Integration](./implementation/04-integration.md)
+
+### Plans & audits
+
+- [Architecture map](./architecture.md)
+- [Structure & restructure plan](./restructure-plan.md)
+- [Pain points plan](./pain-points-plan.md)
+- [Electron fix plan](./electron-fix-plan.md)
+- [MVP plan](./mvp-plan.md)
+- [Documentation status index](./DOCUMENTATION.md)
+- [Documentation audit report](./cleanup/documentation-audit-report.md)
