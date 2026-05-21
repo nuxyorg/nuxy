@@ -33,22 +33,29 @@ export const Grid = React.forwardRef<HTMLDivElement, GridProps>(
 )
 Grid.displayName = 'Grid'
 
-export function GridItem({ active, className, children, ...rest }: GridItemProps) {
-  const itemRef = useRef<HTMLButtonElement>(null)
+export const GridItem = React.forwardRef<HTMLButtonElement, GridItemProps>(
+  ({ active, className, children, ...rest }, ref) => {
+    const itemRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => {
-    if (active && itemRef.current) {
-      smoothScrollIntoViewIfNeeded(itemRef.current)
-    }
-  }, [active])
+    useEffect(() => {
+      if (active && itemRef.current) {
+        smoothScrollIntoViewIfNeeded(itemRef.current)
+      }
+    }, [active])
 
-  return (
-    <button
-      ref={itemRef}
-      className={`nuxy-grid-item ${active ? 'nuxy-grid-item--active' : ''} ${className ?? ''}`}
-      {...rest}
-    >
-      {children}
-    </button>
-  )
-}
+    return (
+      <button
+        ref={(node) => {
+          itemRef.current = node
+          if (typeof ref === 'function') ref(node)
+          else if (ref) ref.current = node
+        }}
+        className={`nuxy-grid-item ${active ? 'nuxy-grid-item--active' : ''} ${className ?? ''}`}
+        {...rest}
+      >
+        {children}
+      </button>
+    )
+  }
+)
+GridItem.displayName = 'GridItem'

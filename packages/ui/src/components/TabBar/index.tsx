@@ -11,11 +11,12 @@ export interface TabBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
   tabs: TabOption[]
   active: string
   onChange: (id: string) => void
+  orientation?: 'horizontal' | 'vertical'
 }
 
-export function TabBar({ tabs, active, onChange, className, ...rest }: TabBarProps) {
+export function TabBar({ tabs, active, onChange, orientation = 'horizontal', className, ...rest }: TabBarProps) {
   return (
-    <div className={`nuxy-tab-bar ${className ?? ''}`} {...rest}>
+    <div className={`nuxy-tab-bar nuxy-tab-bar--${orientation} ${className ?? ''}`} {...rest}>
       {tabs.map((tab) => (
         <button
           key={tab.id}
