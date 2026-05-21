@@ -7,19 +7,23 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
+  position: relative;
+  color: inherit;
+  outline: none;
   transition: background 0.1s;
 }
 
 .nuxy-grid-item:hover {
-  background: var(--hover, rgba(255, 255, 255, 0.08));
+  background: var(--syntax-comment);
 }
 
 .nuxy-grid-item--active {
-  background: var(--accent-subtle, rgba(99, 102, 241, 0.15));
+  background: var(--syntax-comment);
+  box-shadow: inset 0 0 0 1px var(--syntax-operator);
 }

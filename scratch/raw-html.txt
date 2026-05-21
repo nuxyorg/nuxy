@@ -1,0 +1,102 @@
+extensions/angrysearch/frontend.js:111:    <div>
+extensions/angrysearch/frontend.js:120:        <div style={{ fontSize: '12px', color: regexMode ? '#ef4444' : 'var(--text-muted)' }}>
+extensions/angrysearch/frontend.js:123:        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+extensions/angrysearch/frontend.js:124:          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+extensions/angrysearch/frontend.js:159:                    <span style={{ marginRight: '6px', fontSize: '1.1em' }}>
+extensions/clipboard/frontend.js:90:      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+extensions/clipboard/frontend.js:91:      <polyline points="14 2 14 8 20 8" />
+extensions/clipboard/frontend.js:107:      <rect x="3" y="3" width="18" height="18" rx="2" />
+extensions/clipboard/frontend.js:108:      <circle cx="8.5" cy="8.5" r="1.5" />
+extensions/clipboard/frontend.js:109:      <polyline points="21 15 16 10 5 21" />
+extensions/clipboard/frontend.js:125:      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+extensions/clipboard/frontend.js:126:      <polyline points="14 2 14 8 20 8" />
+extensions/clipboard/frontend.js:127:      <polyline points="10 13 8 15 10 17" />
+extensions/clipboard/frontend.js:128:      <polyline points="14 13 16 15 14 17" />
+extensions/clipboard/frontend.js:144:      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+extensions/clipboard/frontend.js:145:      <polyline points="14 2 14 8 20 8" />
+extensions/clipboard/frontend.js:146:      <line x1="16" y1="13" x2="8" y2="13" />
+extensions/clipboard/frontend.js:147:      <line x1="16" y1="17" x2="8" y2="17" />
+extensions/clipboard/frontend.js:148:      <line x1="10" y1="9" x2="8" y2="9" />
+extensions/clipboard/frontend.js:164:      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+extensions/clipboard/frontend.js:165:      <polyline points="14 2 14 8 20 8" />
+extensions/clipboard/frontend.js:166:      <path d="M9 13h1.5a1 1 0 0 1 0 2H9v-4h1.5a1 1 0 0 1 1 1" />
+extensions/clipboard/frontend.js:182:      <polyline points="21 8 21 21 3 21 3 8" />
+extensions/clipboard/frontend.js:183:      <rect x="1" y="3" width="22" height="5" />
+extensions/clipboard/frontend.js:184:      <line x1="10" y1="12" x2="14" y2="12" />
+extensions/clipboard/frontend.js:200:      <circle cx="12" cy="12" r="10" />
+extensions/clipboard/frontend.js:201:      <line x1="2" y1="12" x2="22" y2="12" />
+extensions/clipboard/frontend.js:202:      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+extensions/clipboard/frontend.js:553:                    <span style={{ marginRight: 5, opacity: 0.6, fontSize: '11px' }}>📌</span>
+extensions/clipboard/frontend.js:608:          <div style={{ flex: '1 1 auto', overflowY: 'auto', marginBottom: '12px' }}>
+extensions/clipboard/frontend.js:707:              <div style={{ opacity: 0.5 }}>Type</div>
+extensions/clipboard/frontend.js:708:              <div style={{ textTransform: 'capitalize' }}>
+extensions/clipboard/frontend.js:714:                  <div style={{ opacity: 0.5 }}>Name</div>
+extensions/clipboard/frontend.js:715:                  <div>{getFilename(txt)}</div>
+extensions/clipboard/frontend.js:716:                  <div style={{ opacity: 0.5 }}>Path</div>
+extensions/clipboard/frontend.js:717:                  <div style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</div>
+extensions/clipboard/frontend.js:723:                  <div style={{ opacity: 0.5 }}>Dimensions</div>
+extensions/clipboard/frontend.js:724:                  <div>{imageDimensions}</div>
+extensions/clipboard/frontend.js:730:                  <div style={{ opacity: 0.5 }}>Value</div>
+extensions/clipboard/frontend.js:731:                  <div style={{ fontFamily: 'monospace' }}>{txt}</div>
+extensions/clipboard/frontend.js:735:              <div style={{ opacity: 0.5 }}>Copied</div>
+extensions/clipboard/frontend.js:736:              <div>{new Date(selectedItem.copiedAt).toLocaleString()}</div>
+extensions/clipboard/frontend.js:758:    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+extensions/clipboard/frontend.js:762:        <div style={{ display: 'flex', width: '100%', flex: 1, minHeight: 0 }}>
+extensions/emoji-picker/frontend.js:221:      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '6px 8px' }}>
+extensions/shell/CommandPalette.js:77:      <div className="nuxy-command-palette" style={style}>
+extensions/shell/CommandPalette.js:78:        <div className="nuxy-command-palette__input-wrapper">
+extensions/shell/CommandPalette.js:87:        <div className="nuxy-command-palette__list">
+extensions/shell/CommandPalette.js:89:            <div style={{ padding: '12px 16px', color: 'var(--syntax-comment)' }}>
+extensions/shell/CommandPalette.js:102:                <span>{action.label}</span>
+extensions/shell/CommandPalette.js:103:                <span className="nuxy-command-palette__shortcut">Enter</span>
+extensions/shell/ResultCard.js:15:      <div>
+extensions/shell/ResultCard.js:16:        <div className="nuxy-result-card__value">{item.value}</div>
+extensions/shell/ResultCard.js:17:        <div className="nuxy-result-card__title">{item.title}</div>
+extensions/shell/ResultCard.js:33:      <div className={`nuxy-result-card__copied ${isCopied ? 'nuxy-result-card__copied--show' : ''}`}>
+extensions/shell/ResultCard.js:55:      <div className="nuxy-compare-panel nuxy-compare-panel--left">
+extensions/shell/ResultCard.js:56:        <div className="nuxy-compare-panel__text">{meta.left.text}</div>
+extensions/shell/ResultCard.js:57:        <div className="nuxy-compare-panel__badge">{meta.left.badge}</div>
+extensions/shell/ResultCard.js:59:      <div className="nuxy-compare-arrow">→</div>
+extensions/shell/ResultCard.js:60:      <div className="nuxy-compare-panel">
+extensions/shell/ResultCard.js:61:        <div className="nuxy-compare-panel__text" style={{ color: 'var(--syntax-function)' }}>
+extensions/shell/ResultCard.js:64:        <div className="nuxy-compare-panel__badge">{meta.right.badge}</div>
+extensions/shell/ResultCard.js:66:      <div className={`nuxy-result-card__copied ${isCopied ? 'nuxy-result-card__copied--show' : ''}`}>
+extensions/shell/frontend.js:550:        <div className="nuxy-main-wrapper">
+extensions/shell/frontend.js:551:          <div className="nuxy-shell-body">
+extensions/shell/frontend.js:552:            <div>
+extensions/shell/frontend.js:559:                <span className="nuxy-shell-omni-bar__icon" aria-hidden="true">
+extensions/shell/frontend.js:569:                <span className="nuxy-shell-omni-bar__sep">›</span>
+extensions/shell/frontend.js:572:                    <span className="nuxy-shell-omni-bar__tool-name">{activeToolName}</span>
+extensions/shell/frontend.js:573:                    <span className="nuxy-shell-omni-bar__sep">›</span>
+extensions/shell/frontend.js:605:                        <div key={id} className="nuxy-provider-section">
+extensions/shell/frontend.js:606:                          <div className="nuxy-provider-section__header">
+extensions/shell/frontend.js:607:                            <span>{state.name}</span>
+extensions/shell/frontend.js:608:                            <div className="nuxy-provider-section__loading-dot" />
+extensions/shell/frontend.js:610:                          <div className="nuxy-skeleton-result nuxy-shimmer-bg" />
+extensions/shell/frontend.js:615:                      <div key={id} className="nuxy-provider-section">
+extensions/shell/frontend.js:616:                        <div className="nuxy-provider-section__header">
+extensions/shell/frontend.js:617:                          <span>{state.name}</span>
+extensions/shell/frontend.js:639:                        <div key={id} className="nuxy-provider-section">
+extensions/shell/frontend.js:640:                          <div className="nuxy-provider-section__header">
+extensions/shell/frontend.js:641:                            <span>{state.name}</span>
+extensions/shell/frontend.js:642:                            <div className="nuxy-provider-section__loading-dot" />
+extensions/shell/frontend.js:644:                          <div className="nuxy-skeleton-compare nuxy-shimmer-bg" />
+extensions/shell/frontend.js:649:                      <div key={id} className="nuxy-provider-section">
+extensions/shell/frontend.js:650:                        <div className="nuxy-provider-section__header">
+extensions/shell/frontend.js:651:                          <span>{state.name}</span>
+extensions/shell/frontend.js:686:                                <span className="nuxy-shell-results-item__subtitle">
+extensions/shell/frontend.js:697:                    <div className="nuxy-shell-results-list" role="listbox" aria-label="Results">
+extensions/shell/frontend.js:706:                          <span className="nuxy-shell-results-item__title">{item.title}</span>
+extensions/shell/frontend.js:707:                          <span className="nuxy-shell-results-item__subtitle">{item.subtitle}</span>
+extensions/shell/frontend.js:716:                  <div className="nuxy-skeleton-list">
+extensions/shell/frontend.js:717:                    <div className="nuxy-skeleton-list-item nuxy-shimmer-bg" />
+extensions/shell/frontend.js:728:              <React.Suspense fallback={<div className="nuxy-shell-tool-loading">Loading…</div>}>
+extensions/shell/frontend.js:729:                <div className="nuxy-shell-tool-wrapper">
+extensions/shell/frontend.js:746:                      <span>{a.label}</span>
+extensions/shell/frontend.js:750:                  <span>{tools.length + 1} extensions loaded</span>
+extensions/shell/frontend.js:756:                    <span>Press</span>
+extensions/shell/frontend.js:758:                    <span>to run</span>
+extensions/shell/frontend.js:764:                    <span>to actions</span>
+extensions/settings/frontend.js:291:    <div>
+extensions/settings/frontend.js:298:          <div key={section.label}>
+extensions/settings/frontend.js:299:            {SectionHeader ? <SectionHeader label={section.label} /> : <div>{section.label}</div>}

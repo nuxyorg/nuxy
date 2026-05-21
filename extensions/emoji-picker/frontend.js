@@ -13,8 +13,6 @@ export default function EmojiPicker({ query, extensionId }) {
   const [catId, setCatId] = React.useState('favorites')
   const [selectedIdx, setSelectedIdx] = React.useState(0)
   const [copiedEmoji, setCopiedEmoji] = React.useState(null)
-  const gridRef = React.useRef(null)
-
   // ── Load emoji data async ──
   React.useEffect(() => {
     fetch(`nuxy-ext://${extensionId}/emojis.json`)
@@ -70,12 +68,6 @@ export default function EmojiPicker({ query, extensionId }) {
   React.useEffect(() => {
     setSelectedIdx(0)
   }, [catId, query])
-
-  React.useEffect(() => {
-    if (!gridRef.current || visibleEmojis.length === 0) return
-    const el = gridRef.current.children[selectedIdx]
-    if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-  }, [selectedIdx])
 
   const isFav = (emoji) => favorites.includes(emoji)
 
@@ -237,47 +229,43 @@ export default function EmojiPicker({ query, extensionId }) {
               : 'No results.'}
           </div>
         ) : Grid ? (
-          <div ref={gridRef}>
-            <Grid cols={COLS} gap={2}>
-              {visibleEmojis.map((em, idx) => {
-                const fav = isFav(em.e)
-                return (
-                  GridItem && (
-                    <GridItem
-                      key={em.e + idx}
-                      active={idx === selectedIdx}
-                      title={`${em.n}${fav ? ' ⭐' : ''}`}
-                      onClick={() => copyEmoji(em.e)}
-                      onContextMenu={(e) => {
-                        e.preventDefault()
-                        toggleFavorite(em.e)
-                      }}
-                      style={{ fontSize: 22, lineHeight: 1, padding: '4px 0', position: 'relative' }}
-                    >
-                      {em.e}
-                      {fav && (
-                        <span
-                          style={{
-                            position: 'absolute',
-                            top: 1,
-                            right: 2,
-                            fontSize: 7,
-                            lineHeight: 1,
-                            opacity: 0.75,
-                          }}
-                        >
-                          ★
-                        </span>
-                      )}
-                    </GridItem>
-                  )
+          <Grid cols={COLS} gap={2}>
+            {visibleEmojis.map((em, idx) => {
+              const fav = isFav(em.e)
+              return (
+                GridItem && (
+                  <GridItem
+                    key={em.e + idx}
+                    active={idx === selectedIdx}
+                    title={`${em.n}${fav ? ' ⭐' : ''}`}
+                    onClick={() => copyEmoji(em.e)}
+                    onContextMenu={(e) => {
+                      e.preventDefault()
+                      toggleFavorite(em.e)
+                    }}
+                  >
+                    {em.e}
+                    {fav && (
+                      <span
+                        style={{
+                          position: 'absolute',
+                          top: 1,
+                          right: 2,
+                          fontSize: 7,
+                          lineHeight: 1,
+                          opacity: 0.75,
+                        }}
+                      >
+                        ★
+                      </span>
+                    )}
+                  </GridItem>
                 )
-              })}
-            </Grid>
-          </div>
+              )
+            })}
+          </Grid>
         ) : (
           <div
-            ref={gridRef}
             style={{
               display: 'grid',
               gridTemplateColumns: `repeat(${COLS}, 1fr)`,
@@ -297,18 +285,21 @@ export default function EmojiPicker({ query, extensionId }) {
                   }}
                   title={`${em.n}${fav ? ' ⭐' : ''}`}
                   style={{
-                    background: isSelected ? 'rgba(255,255,255,0.14)' : 'transparent',
-                    border: isSelected
-                      ? '1px solid rgba(255,255,255,0.28)'
-                      : '1px solid transparent',
-                    borderRadius: 7,
+                    background: isSelected ? 'var(--syntax-comment)' : 'transparent',
+                    boxShadow: isSelected ? 'inset 0 0 0 1px var(--syntax-operator)' : 'none',
+                    border: 'none',
+                    borderRadius: 'var(--radius-md)',
                     cursor: 'pointer',
-                    padding: '4px 0',
-                    fontSize: 22,
-                    lineHeight: 1,
+                    padding: 0,
+                    aspectRatio: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.25rem',
                     position: 'relative',
-                    transition: 'background 0.08s',
+                    transition: 'background 0.1s',
                     outline: 'none',
+                    color: 'inherit',
                   }}
                 >
                   {em.e}
