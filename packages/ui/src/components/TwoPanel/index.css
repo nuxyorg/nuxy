@@ -1,0 +1,16 @@
+.nuxy-two-panel {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+.nuxy-two-panel__left {
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+}
+
+.nuxy-two-panel__right {
+  flex: 1;
+  overflow-y: auto;
+}

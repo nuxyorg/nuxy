@@ -10,7 +10,7 @@ const { useShellInit, useProviders, useKeyboard } = await _imp('nuxy-ext://com.n
 ensureShellStyles()
 
 export default function ShellView({ query: _queryProp }) {
-  const { ShortcutBar, ShortcutHint, Kbd, List, ListItem, ListItemBody, ListItemText, ListItemActions } = window.UI || window.ui || {}
+  const { ShortcutBar, ShortcutHint, ShortcutSep, Kbd, List, ListItem, ListItemBody, ListItemText, ListItemActions } = window.UI || window.ui || {}
   
   const [query, setQuery] = useState('')
   const [savedQuery, setSavedQuery] = useState('')
@@ -34,6 +34,9 @@ export default function ShellView({ query: _queryProp }) {
   const [searchIcon, setSearchIcon] = useState(null)
   const [footerHints, setFooterHints] = useState(null)
 
+  const keyActionsGetterRef = useRef(null)
+  const [keyActionHints, setKeyActionHints] = useState([])
+
   const cfgRef = useRef(null)
   const hasDragged = useRef(false)
   const isDragging = useRef(false)
@@ -45,7 +48,7 @@ export default function ShellView({ query: _queryProp }) {
   // Initialize hooks
   useShellInit({ cfgRef, setTools, setProviders, setOrchestrators, setThemeStyles, setSettings, setSearchIcon, SHELL_EXT_ID })
   const { isAnyListProviderLoading } = useProviders({ activeTool, savedQuery, providers, providerStates, setProviderStates, queryGeneration })
-  useKeyboard({ activeTool, showCommandPalette, setShowCommandPalette, inputRef, setActiveTool, setToolComponent, setQuery, setSavedQuery, setSelectedIndex, setShowOmniBar })
+  useKeyboard({ activeTool, showCommandPalette, setShowCommandPalette, inputRef, setActiveTool, setToolComponent, setQuery, setSavedQuery, setSelectedIndex, setShowOmniBar, keyActionsGetterRef })
 
   const handleCopy = (id) => {
     setCopiedId(id)
@@ -182,6 +185,25 @@ export default function ShellView({ query: _queryProp }) {
   useEffect(() => { setToolActions([]) }, [activeTool])
 
   useEffect(() => {
+    const handleRegister = (e) => {
+      if (!e.detail) {
+        keyActionsGetterRef.current = null
+        setKeyActionHints([])
+      } else {
+        keyActionsGetterRef.current = e.detail.getActions
+        setKeyActionHints(e.detail.hints || [])
+      }
+    }
+    window.addEventListener('nuxy-register-key-actions', handleRegister)
+    return () => window.removeEventListener('nuxy-register-key-actions', handleRegister)
+  }, [])
+
+  useEffect(() => {
+    keyActionsGetterRef.current = null
+    setKeyActionHints([])
+  }, [activeTool])
+
+  useEffect(() => {
     const handleFooterHints = (e) => setFooterHints(e.detail || null)
     window.addEventListener('nuxy-shell-footer-hints', handleFooterHints)
     return () => window.removeEventListener('nuxy-shell-footer-hints', handleFooterHints)
@@ -206,9 +228,9 @@ export default function ShellView({ query: _queryProp }) {
 
   useEffect(() => {
     if (activeTool) return
-    if (selectedIndex === -1 || selectedIndex === 0) {
+    if (selectedIndex === -1) {
       setQuery(savedQuery)
-    } else if (selectedIndex > 0 && listResults[selectedIndex]) {
+    } else if (listResults[selectedIndex]) {
       setQuery(listResults[selectedIndex].title)
     }
   }, [selectedIndex, savedQuery, listResults, activeTool])
@@ -350,16 +372,6 @@ export default function ShellView({ query: _queryProp }) {
               onClick={() => showOmniBar && inputRef.current?.focus()}
               onMouseDown={handleDragMouseDown}
             >
-              <input
-                autoFocus
-                ref={inputRef}
-                disabled={!showOmniBar}
-                value={query}
-                onChange={(e) => { setQuery(e.target.value); setSavedQuery(e.target.value); setSelectedIndex(-1) }}
-                onKeyDown={handleKeyDown}
-                className="nuxy-shell-omni-bar__hidden-input"
-                aria-label="Search"
-              />
               <span className="nuxy-shell-omni-bar__icon" aria-hidden="true">
                 {searchIcon
                   ? <span dangerouslySetInnerHTML={{ __html: searchIcon }} style={{ display: 'flex', alignItems: 'center' }} />
@@ -372,19 +384,17 @@ export default function ShellView({ query: _queryProp }) {
                   <span className="nuxy-shell-omni-bar__sep">›</span>
                 </>
               )}
-              <span className="nuxy-shell-omni-bar__query-area">
-                {query ? (
-                  <span className="nuxy-shell-omni-bar__typed">
-                    {query}
-                    {showOmniBar && <span className="nuxy-shell-omni-bar__cursor" />}
-                  </span>
-                ) : (
-                  <span className="nuxy-shell-omni-bar__placeholder">
-                    {showOmniBar && <span className="nuxy-shell-omni-bar__cursor" />}
-                    {activeToolName ? `Search ${activeToolName}` : 'What do you have in mind?'}
-                  </span>
-                )}
-              </span>
+              <input
+                autoFocus
+                ref={inputRef}
+                disabled={!showOmniBar}
+                value={query}
+                onChange={(e) => { setQuery(e.target.value); setSavedQuery(e.target.value); setSelectedIndex(-1) }}
+                onKeyDown={handleKeyDown}
+                className="nuxy-shell-omni-bar__input"
+                aria-label="Search"
+                placeholder={activeToolName ? `Search ${activeToolName}` : 'What do you have in mind?'}
+              />
             </div>
           </div>
 
@@ -476,7 +486,7 @@ export default function ShellView({ query: _queryProp }) {
           {ToolComponent && activeTool && (
             <React.Suspense fallback={<div className="nuxy-shell-tool-loading">Loading…</div>}>
               <div className="nuxy-shell-tool-wrapper">
-                <ToolComponent query={query} />
+                <ToolComponent query={query} extensionId={activeTool} />
               </div>
             </React.Suspense>
           )}
@@ -485,7 +495,17 @@ export default function ShellView({ query: _queryProp }) {
         {ShortcutBar && (
           <ShortcutBar style={{ justifyContent: 'space-between' }}>
             <ShortcutHint>
-              {footerHints ? footerHints : <span>{tools.length + 1} extensions loaded</span>}
+              {footerHints ? footerHints
+                : activeTool && keyActionHints.length > 0
+                  ? keyActionHints.map((a, i) => (
+                      <React.Fragment key={a.key + (a.modifiers || []).join('')}>
+                        {i > 0 && ShortcutSep && <ShortcutSep />}
+                        {Kbd && <Kbd>{a.hint}</Kbd>}
+                        <span>{a.label}</span>
+                      </React.Fragment>
+                    ))
+                  : <span>{tools.length + 1} extensions loaded</span>
+              }
             </ShortcutHint>
             <ShortcutHint>
               {selectedIndex >= 0 && listResults.length > 0 && !activeTool ? (

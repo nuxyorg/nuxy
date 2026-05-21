@@ -111,6 +111,16 @@ export function useProviders({
   return { isAnyListProviderLoading }
 }
 
+function matchesAction(action, e) {
+  if (action.key !== e.key) return false
+  const mods = action.modifiers || []
+  if (mods.includes('ctrl') !== e.ctrlKey) return false
+  if (mods.includes('shift') !== e.shiftKey) return false
+  if (mods.includes('alt') !== e.altKey) return false
+  if (mods.includes('meta') !== e.metaKey) return false
+  return true
+}
+
 export function useKeyboard({
   activeTool,
   showCommandPalette,
@@ -121,7 +131,8 @@ export function useKeyboard({
   setQuery,
   setSavedQuery,
   setSelectedIndex,
-  setShowOmniBar
+  setShowOmniBar,
+  keyActionsGetterRef,
 }) {
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
@@ -152,12 +163,26 @@ export function useKeyboard({
         return
       }
       if (showCommandPalette) return
-      if (activeTool && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
-        window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-keydown', {
-          detail: { key: e.key, code: e.code, shiftKey: e.shiftKey, altKey: e.altKey, ctrlKey: e.ctrlKey, metaKey: e.metaKey },
-        }))
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space'].includes(e.key)) {
-          e.preventDefault()
+      if (activeTool) {
+        // Check registered key actions first — even when an input has focus,
+        // so tools can intercept arrow keys while the omni bar is still visible.
+        const actions = keyActionsGetterRef?.current?.()
+        if (actions && actions.length > 0) {
+          const matched = actions.find((a) => matchesAction(a, e))
+          if (matched) {
+            matched.handler()
+            e.preventDefault()
+            return
+          }
+        }
+        // Fall back to legacy event dispatch only for non-input targets (backward compat)
+        if (!(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+          window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-keydown', {
+            detail: { key: e.key, code: e.code, shiftKey: e.shiftKey, altKey: e.altKey, ctrlKey: e.ctrlKey, metaKey: e.metaKey },
+          }))
+          if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space'].includes(e.key)) {
+            e.preventDefault()
+          }
         }
       }
     }

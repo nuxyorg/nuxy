@@ -1,6 +1,8 @@
 const React = window.React
 const { useState, useEffect, useRef } = React
 
+const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
+
 const EXT_ID = 'com.nuxy.settings'
 
 const ZOOM_OPTIONS = [
@@ -119,6 +121,7 @@ export default function SettingsView() {
     ListItemActions,
     Kbd,
     SelectBox,
+    SectionHeader,
   } = window.UI || {}
 
   const [themes, setThemes] = useState([])
@@ -219,77 +222,67 @@ export default function SettingsView() {
       .catch(console.error)
   }, [])
 
-  useEffect(() => {
-    const handleKey = (e) => {
-      const { key } = e.detail
-      const { selectedRow, activeSelect, selectFocused, allRows } = stateRef.current
-
-      if (activeSelect !== null) {
-        const row = allRows.find((r) => r.key === activeSelect)
-        if (!row) return
-
-        if (key === 'ArrowDown') {
-          setSelectFocused((i) => Math.min(i + 1, row.options.length - 1))
-        } else if (key === 'ArrowUp') {
+  _useToolKeyActions([
+    {
+      key: 'ArrowUp',
+      label: 'Previous setting',
+      hint: '↑↓',
+      handler: () => {
+        const { activeSelect, selectFocused, allRows } = stateRef.current
+        if (activeSelect !== null) {
           setSelectFocused((i) => Math.max(i - 1, 0))
-        } else if (key === 'Enter') {
-          const opt = row.options[selectFocused]
-          if (opt) updateSetting(activeSelect, opt.value)
-          else setActiveSelect(null)
-        } else if (key === 'Escape') {
-          setActiveSelect(null)
+        } else {
+          setSelectedRow((i) => Math.max(i - 1, 0))
         }
-        return
-      }
-
-      if (key === 'ArrowDown') {
-        setSelectedRow((i) => Math.min(i + 1, allRows.length - 1))
-      } else if (key === 'ArrowUp') {
-        setSelectedRow((i) => Math.max(i - 1, 0))
-      } else if (key === 'Enter') {
-        const row = allRows[selectedRow]
-        if (row && row.options.length > 0) {
-          const currentIdx = row.options.findIndex(
-            (o) => String(o.value) === String(stateRef.current.settings[row.key])
-          )
-          setSelectFocused(Math.max(0, currentIdx))
-          setActiveSelect(row.key)
+      },
+    },
+    {
+      key: 'ArrowDown',
+      label: 'Next setting',
+      handler: () => {
+        const { activeSelect, selectFocused, allRows } = stateRef.current
+        if (activeSelect !== null) {
+          const row = allRows.find((r) => r.key === activeSelect)
+          if (row) setSelectFocused((i) => Math.min(i + 1, row.options.length - 1))
+        } else {
+          setSelectedRow((i) => Math.min(i + 1, allRows.length - 1))
         }
-      } else if (key === 'Escape') {
+      },
+    },
+    {
+      key: 'Enter',
+      label: 'Open setting',
+      hint: '↵',
+      handler: () => {
+        const { selectedRow, activeSelect, selectFocused, allRows } = stateRef.current
+        if (activeSelect !== null) {
+          const row = allRows.find((r) => r.key === activeSelect)
+          if (row) {
+            const opt = row.options[selectFocused]
+            if (opt) updateSetting(activeSelect, opt.value)
+            else setActiveSelect(null)
+          }
+        } else {
+          const row = allRows[selectedRow]
+          if (row && row.options.length > 0) {
+            const currentIdx = row.options.findIndex(
+              (o) => String(o.value) === String(stateRef.current.settings[row.key])
+            )
+            setSelectFocused(Math.max(0, currentIdx))
+            setActiveSelect(row.key)
+          }
+        }
+      },
+    },
+    {
+      key: 'Escape',
+      label: 'Close setting',
+      hint: 'Esc',
+      handler: () => {
         setActiveSelect(null)
-      }
-    }
-
-    window.addEventListener('nuxy-shell-omni-bar-keydown', handleKey)
-    return () => window.removeEventListener('nuxy-shell-omni-bar-keydown', handleKey)
-  }, [])
-
-  useEffect(() => {
-    const hints = (
-      <>
-        <Kbd>↑↓</Kbd>
-        <span>navigate</span>
-        <Kbd style={{ marginLeft: 6 }}>↵</Kbd>
-        <span>open</span>
-        <Kbd style={{ marginLeft: 6 }}>Esc</Kbd>
-        <span>close</span>
-      </>
-    )
-    window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: hints }))
-    return () => {
-      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
-    }
-  }, [])
-
-  const sectionStyle = {
-    padding: '6px 16px 4px',
-    fontSize: 'var(--font-xs)',
-    fontFamily: 'monospace',
-    color: 'var(--syntax-keyword)',
-    textTransform: 'uppercase',
-    letterSpacing: '0.08em',
-    borderBottom: '1px solid var(--syntax-comment)',
-  }
+      },
+    },
+  ])
 
   // Calculate row offsets for selectedRow mapping per section
   let rowOffset = 0
@@ -303,7 +296,7 @@ export default function SettingsView() {
 
         return (
           <div key={section.label}>
-            <div style={sectionStyle}>{section.label}</div>
+            {SectionHeader ? <SectionHeader label={section.label} /> : <div>{section.label}</div>}
 
             {List && (
               <List>

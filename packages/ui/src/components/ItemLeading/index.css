@@ -1,0 +1,24 @@
+.nuxy-item-leading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg-subtle, rgba(255, 255, 255, 0.06));
+}
+
+.nuxy-item-leading--sm {
+  width: 24px;
+  height: 24px;
+}
+
+.nuxy-item-leading--md {
+  width: 32px;
+  height: 32px;
+}
+
+.nuxy-item-leading--lg {
+  width: 40px;
+  height: 40px;
+}

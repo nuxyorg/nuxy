@@ -1,0 +1,20 @@
+.nuxy-section-header {
+  padding: 8px 12px 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.nuxy-section-header__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted, rgba(255, 255, 255, 0.4));
+  font-family: monospace;
+}
+
+.nuxy-section-header__desc {
+  font-size: 0.75rem;
+  color: var(--text-muted, rgba(255, 255, 255, 0.3));
+}

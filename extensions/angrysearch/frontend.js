@@ -1,5 +1,8 @@
 const EXT_ID = 'com.nuxy.angrysearch'
 
+const _useListNavigation = (window.UI || {}).useListNavigation ||
+  (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
+
 export default function AngrysearchView({ query }) {
   const {
     List,
@@ -9,16 +12,54 @@ export default function AngrysearchView({ query }) {
     ListItemMeta,
     ListItemActions,
     Button,
-    Kbd,
     EmptyState,
   } = window.UI || {}
 
   const [items, setItems] = React.useState([])
   const [regexMode, setRegexMode] = React.useState(false)
-  const [selectedIndex, setSelectedIndex] = React.useState(-1)
   const [status, setStatus] = React.useState(null)
 
   const searchQuery = query || ''
+
+  const selectedIndexRef = React.useRef(-1)
+
+  const handleOpen = (item) => {
+    if (!window.core?.ipc?.invoke || !item) return
+    window.core.ipc.invoke(EXT_ID, 'openFile', item.value).catch(console.error)
+  }
+
+  const handleOpenLocation = (item) => {
+    if (!window.core?.ipc?.invoke || !item) return
+    window.core.ipc.invoke(EXT_ID, 'openLocation', item.value).catch(console.error)
+  }
+
+  const { selectedIndex, setSelectedIndex } = _useListNavigation(items, {
+    onEnter: (item) => handleOpen(item),
+    enterLabel: 'Open file',
+    enterHint: 'Enter',
+    extraActions: [
+      {
+        key: 'Enter',
+        modifiers: ['shift'],
+        label: 'Open folder',
+        hint: '⇧Enter',
+        handler: () => {
+          const item = items[selectedIndexRef.current]
+          if (item) handleOpenLocation(item)
+        },
+      },
+      {
+        key: 'F8',
+        label: 'Toggle mode',
+        hint: 'F8',
+        handler: () => setRegexMode((m) => !m),
+      },
+    ],
+  })
+
+  React.useLayoutEffect(() => {
+    selectedIndexRef.current = selectedIndex
+  }, [selectedIndex])
 
   React.useEffect(() => {
     if (!window.core?.ipc?.invoke) return
@@ -42,8 +83,9 @@ export default function AngrysearchView({ query }) {
         .invoke(EXT_ID, 'search', { query: searchQuery, regex: regexMode })
         .then((res) => {
           if (res?.success) {
-            setItems(res.data?.items || [])
-            setSelectedIndex(res.data?.items?.length > 0 ? 0 : -1)
+            const newItems = res.data?.items || []
+            setItems(newItems)
+            setSelectedIndex(newItems.length > 0 ? 0 : -1)
           }
         })
         .catch(console.error)
@@ -51,43 +93,6 @@ export default function AngrysearchView({ query }) {
 
     return () => clearTimeout(timer)
   }, [searchQuery, regexMode])
-
-  const handleOpen = (item) => {
-    if (!window.core?.ipc?.invoke || !item) return
-    window.core.ipc.invoke(EXT_ID, 'openFile', item.value).catch(console.error)
-  }
-
-  const handleOpenLocation = (item) => {
-    if (!window.core?.ipc?.invoke || !item) return
-    window.core.ipc.invoke(EXT_ID, 'openLocation', item.value).catch(console.error)
-  }
-
-  React.useEffect(() => {
-    const handleKey = (e) => {
-      const { key, shiftKey, altKey } = e.detail
-
-      if (key === 'F8' || (key.toLowerCase() === 'r' && altKey)) {
-        setRegexMode((prev) => !prev)
-        return
-      }
-
-      if (items.length === 0) return
-
-      if (key === 'ArrowDown') {
-        setSelectedIndex((prev) => Math.min(prev + 1, items.length - 1))
-      } else if (key === 'ArrowUp') {
-        setSelectedIndex((prev) => (prev <= 0 ? 0 : prev - 1))
-      } else if (key === 'Enter') {
-        const item = items[selectedIndex]
-        if (item) {
-          if (shiftKey) handleOpenLocation(item)
-          else handleOpen(item)
-        }
-      }
-    }
-    window.addEventListener('nuxy-shell-omni-bar-keydown', handleKey)
-    return () => window.removeEventListener('nuxy-shell-omni-bar-keydown', handleKey)
-  }, [items, selectedIndex])
 
   const triggerUpdate = React.useCallback(() => {
     if (!window.core?.ipc?.invoke) return
@@ -101,27 +106,6 @@ export default function AngrysearchView({ query }) {
     window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
     return () => window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
   }, [triggerUpdate])
-
-  React.useEffect(() => {
-    const hints = (
-      <>
-        <Kbd>F8</Kbd>
-        <span>regex</span>
-        {selectedIndex >= 0 && (
-          <>
-            <Kbd style={{ marginLeft: 6 }}>⇧↵</Kbd>
-            <span>folder</span>
-            <Kbd style={{ marginLeft: 6 }}>↵</Kbd>
-            <span>open</span>
-          </>
-        )}
-      </>
-    )
-    window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: hints }))
-    return () => {
-      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
-    }
-  }, [selectedIndex])
 
   return (
     <div>
@@ -195,7 +179,6 @@ export default function AngrysearchView({ query }) {
           })
         )}
       </List>
-
     </div>
   )
 }

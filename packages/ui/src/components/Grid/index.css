@@ -1,0 +1,25 @@
+.nuxy-grid {
+  padding: 4px 8px;
+}
+
+.nuxy-grid-item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 6px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: background 0.1s;
+}
+
+.nuxy-grid-item:hover {
+  background: var(--hover, rgba(255, 255, 255, 0.08));
+}
+
+.nuxy-grid-item--active {
+  background: var(--accent-subtle, rgba(99, 102, 241, 0.15));
+}
