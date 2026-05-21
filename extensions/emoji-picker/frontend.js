@@ -857,7 +857,7 @@ const EMOJI_MAP = new Map(
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function EmojiPicker({ query }) {
-  const { ShortcutBar, ShortcutHint, Kbd } = window.UI || {}
+  const { Kbd } = window.UI || {}
 
   const [favorites, setFavorites] = React.useState([])
   const [catIdx, setCatIdx] = React.useState(0)
@@ -976,6 +976,33 @@ export default function EmojiPicker({ query }) {
   }, [visibleEmojis, selectedIdx, allCategories, searchResults, toggleFavorite, copyEmoji])
 
   const selectedEmoji = visibleEmojis[selectedIdx]
+
+  React.useEffect(() => {
+    const hints = (
+      <>
+        {copiedEmoji ? (
+          <span style={{ color: 'var(--color-success, #4ade80)' }}>Copied {copiedEmoji}</span>
+        ) : selectedEmoji ? (
+          <span style={{ opacity: 0.7 }}>{selectedEmoji.e}  {selectedEmoji.n}</span>
+        ) : null}
+        <Kbd style={{ marginLeft: 6 }}>↵</Kbd>
+        <span>copy</span>
+        <Kbd style={{ marginLeft: 6 }}>^F</Kbd>
+        <span>{selectedEmoji && isFav(selectedEmoji.e) ? 'unfav' : 'fav'}</span>
+        {!searchResults && (
+          <>
+            <Kbd style={{ marginLeft: 6 }}>^←</Kbd>
+            <Kbd>^→</Kbd>
+            <span>cat</span>
+          </>
+        )}
+      </>
+    )
+    window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: hints }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
+    }
+  }, [selectedEmoji, copiedEmoji, searchResults, favorites])
 
   return (
     <div
@@ -1117,56 +1144,7 @@ export default function EmojiPicker({ query }) {
         )}
       </div>
 
-      {/* ── Bottom bar ── */}
-      {ShortcutBar ? (
-        <ShortcutBar>
-          <div
-            style={{
-              flex: 1,
-              minWidth: 0,
-              fontSize: 12,
-              opacity: copiedEmoji ? 1 : 0.65,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              color: copiedEmoji ? 'var(--color-success, #4ade80)' : undefined,
-            }}
-          >
-            {copiedEmoji
-              ? `Copied ${copiedEmoji}`
-              : selectedEmoji
-                ? `${selectedEmoji.e}  ${selectedEmoji.n}`
-                : ''}
-          </div>
-          <ShortcutHint>
-            <Kbd>↵</Kbd>
-            <span>copy</span>
-          </ShortcutHint>
-          <ShortcutHint>
-            <Kbd>^F</Kbd>
-            <span>{selectedEmoji && isFav(selectedEmoji.e) ? 'unfav' : 'fav'}</span>
-          </ShortcutHint>
-          {!searchResults && (
-            <ShortcutHint>
-              <Kbd>^←</Kbd>
-              <Kbd>^→</Kbd>
-              <span>cat</span>
-            </ShortcutHint>
-          )}
-        </ShortcutBar>
-      ) : (
-        <div
-          style={{
-            padding: '6px 12px',
-            fontSize: 12,
-            opacity: 0.55,
-            borderTop: '1px solid rgba(128,128,128,0.18)',
-            flexShrink: 0,
-          }}
-        >
-          {copiedEmoji ? `Copied ${copiedEmoji}!` : selectedEmoji ? `${selectedEmoji.e} ${selectedEmoji.n}` : ''}
-        </div>
-      )}
+      {/* ── Bottom bar (removed — hints shown in shell footer) ── */}
     </div>
   )
 }

@@ -309,9 +309,6 @@ export default function ClipboardView({ query }) {
     Button,
     Kbd,
     EmptyState,
-    ShortcutBar,
-    ShortcutHint,
-    ShortcutSep,
   } = window.UI || {}
 
   const [items, setItems] = React.useState([])
@@ -343,6 +340,38 @@ export default function ClipboardView({ query }) {
     const q = searchQuery.toLowerCase()
     return items.filter((item) => item.text?.toLowerCase().includes(q))
   }, [items, searchQuery])
+
+  React.useEffect(() => {
+    const selectedItem = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
+    const type = selectedItem ? getItemType(selectedItem) : null
+    const isFile = type === 'file'
+
+    if (selectedIndex >= 0) {
+      const hints = (
+        <>
+          <Kbd>S</Kbd>
+          <span>search</span>
+          {selectedIndex !== 0 && (
+            <>
+              <Kbd style={{ marginLeft: 6 }}>D</Kbd>
+              <span>delete</span>
+            </>
+          )}
+          <Kbd style={{ marginLeft: 6 }}>C</Kbd>
+          <span>{isFile ? 'copy file' : 'copy'}</span>
+        </>
+      )
+      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: hints }))
+    } else {
+      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
+    }
+  }, [selectedIndex, filteredItems])
+
+  React.useEffect(() => {
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
+    }
+  }, [])
 
   React.useEffect(() => {
     setSelectedIndex(-1)
@@ -731,28 +760,6 @@ export default function ClipboardView({ query }) {
         >
           File not found — it may have been moved or deleted.
         </div>
-      )}
-      {selectedIndex >= 0 && (
-        <ShortcutBar>
-          <ShortcutHint>
-            <Kbd>S</Kbd>
-            <span>search</span>
-          </ShortcutHint>
-          {selectedIndex !== 0 && (
-            <ShortcutHint>
-              <Kbd>D</Kbd>
-              <span>delete</span>
-            </ShortcutHint>
-          )}
-          <ShortcutHint>
-            <Kbd>C</Kbd>
-            <ShortcutSep />
-            <Kbd>↵</Kbd>
-            <span>
-              {selectedItem && getItemType(selectedItem) === 'file' ? 'copy file' : 'copy'}
-            </span>
-          </ShortcutHint>
-        </ShortcutBar>
       )}
     </div>
   )

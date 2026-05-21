@@ -11,9 +11,6 @@ export default function AngrysearchView({ query }) {
     Button,
     Kbd,
     EmptyState,
-    ShortcutBar,
-    ShortcutHint,
-    ShortcutSep,
   } = window.UI || {}
 
   const [items, setItems] = React.useState([])
@@ -105,6 +102,27 @@ export default function AngrysearchView({ query }) {
     return () => window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
   }, [triggerUpdate])
 
+  React.useEffect(() => {
+    const hints = (
+      <>
+        <Kbd>F8</Kbd>
+        <span>regex</span>
+        {selectedIndex >= 0 && (
+          <>
+            <Kbd style={{ marginLeft: 6 }}>⇧↵</Kbd>
+            <span>folder</span>
+            <Kbd style={{ marginLeft: 6 }}>↵</Kbd>
+            <span>open</span>
+          </>
+        )}
+      </>
+    )
+    window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: hints }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
+    }
+  }, [selectedIndex])
+
   return (
     <div>
       <div
@@ -178,27 +196,6 @@ export default function AngrysearchView({ query }) {
         )}
       </List>
 
-      <ShortcutBar>
-        <ShortcutHint>
-          <Kbd>F8</Kbd>
-          <span>toggle regex</span>
-        </ShortcutHint>
-        <ShortcutSep />
-        {selectedIndex >= 0 && (
-          <>
-            <ShortcutHint>
-              <Kbd>⇧</Kbd>
-              <Kbd>↵</Kbd>
-              <span>open folder</span>
-            </ShortcutHint>
-            <ShortcutSep />
-            <ShortcutHint>
-              <Kbd>↵</Kbd>
-              <span>open file</span>
-            </ShortcutHint>
-          </>
-        )}
-      </ShortcutBar>
     </div>
   )
 }

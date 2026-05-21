@@ -12,12 +12,9 @@ const ZOOM_OPTIONS = [
   { value: '150%', label: '150%' },
 ]
 
-const FONT_OPTIONS = [
-  { value: 'system', label: 'System' },
+const FONT_OPTIONS_STATIC = [
+  { value: 'system', label: 'System Default' },
   { value: 'monospace', label: 'Monospace' },
-  { value: 'JetBrains Mono', label: 'JetBrains Mono' },
-  { value: 'Fira Code', label: 'Fira Code' },
-  { value: 'Cascadia Code', label: 'Cascadia Code' },
 ]
 
 const ESC_ACTION_OPTIONS = [
@@ -56,12 +53,20 @@ const BOOL_OPTIONS = [
   { value: false, label: 'No' },
 ]
 
-const FONT_FAMILY_MAP = {
-  system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
-  monospace: 'monospace',
-  'JetBrains Mono': `'JetBrains Mono', 'JetBrainsMono Nerd Font', monospace`,
-  'Fira Code': `'Fira Code', 'FiraCode Nerd Font', monospace`,
-  'Cascadia Code': `'Cascadia Code', monospace`,
+function buildFontFamilyMap(systemFonts) {
+  const base = {
+    system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
+    monospace: 'monospace',
+  }
+  systemFonts.forEach((name) => {
+    base[name] = `'${name}', sans-serif`
+  })
+  return base
+}
+
+function buildFontOptions(systemFonts) {
+  const extras = systemFonts.map((name) => ({ value: name, label: name }))
+  return [...FONT_OPTIONS_STATIC, ...extras]
 }
 
 const DEFAULT_SETTINGS = {
@@ -83,11 +88,11 @@ const DEFAULT_SETTINGS = {
 const SECTIONS = [
   {
     label: 'General',
-    rows: (themes, iconPacks) => [
+    rows: (themes, iconPacks, fontOptions) => [
       { key: 'theme', label: 'Theme', options: themes },
       { key: 'iconPack', label: 'Icon Pack', options: iconPacks },
       { key: 'zoom', label: 'Zoom', options: ZOOM_OPTIONS },
-      { key: 'font', label: 'Font', options: FONT_OPTIONS },
+      { key: 'font', label: 'Font', options: fontOptions, searchable: true },
     ],
   },
   {
@@ -112,23 +117,25 @@ export default function SettingsView() {
     ListItemBody,
     ListItemText,
     ListItemActions,
-    ShortcutBar,
-    ShortcutHint,
     Kbd,
     SelectBox,
   } = window.UI || {}
 
   const [themes, setThemes] = useState([])
   const [iconPacks, setIconPacks] = useState([])
+  const [systemFonts, setSystemFonts] = useState([])
   const [settings, setSettings] = useState(DEFAULT_SETTINGS)
   const [selectedRow, setSelectedRow] = useState(0)
   const [activeSelect, setActiveSelect] = useState(null)
   const [selectFocused, setSelectFocused] = useState(0)
 
+  const fontFamilyMap = buildFontFamilyMap(systemFonts)
+  const fontOptions = buildFontOptions(systemFonts)
+
   const stateRef = useRef({})
 
   // Build flat rows with section boundaries for navigation
-  const allRows = [...SECTIONS[0].rows(themes, iconPacks), ...SECTIONS[1].rows()]
+  const allRows = [...SECTIONS[0].rows(themes, iconPacks, fontOptions), ...SECTIONS[1].rows()]
 
   stateRef.current = { settings, selectedRow, activeSelect, selectFocused, allRows }
 
@@ -148,7 +155,7 @@ export default function SettingsView() {
 
   const applySettings = (s) => {
     if (s.zoom) document.documentElement.style.zoom = s.zoom
-    if (s.font) document.body.style.fontFamily = FONT_FAMILY_MAP[s.font] || s.font
+    if (s.font) document.body.style.fontFamily = fontFamilyMap[s.font] || s.font
     if (s.theme) applyTheme(s.theme)
   }
 
@@ -188,6 +195,15 @@ export default function SettingsView() {
       .then((res) => {
         if (res?.success && Array.isArray(res.data)) {
           setIconPacks(res.data.map((name) => ({ value: name, label: name })))
+        }
+      })
+      .catch(console.error)
+
+    window.core?.ipc
+      ?.invoke('kernel', 'listSystemFonts', {})
+      .then((res) => {
+        if (res?.success && Array.isArray(res.data)) {
+          setSystemFonts(res.data)
         }
       })
       .catch(console.error)
@@ -248,6 +264,23 @@ export default function SettingsView() {
     return () => window.removeEventListener('nuxy-shell-omni-bar-keydown', handleKey)
   }, [])
 
+  useEffect(() => {
+    const hints = (
+      <>
+        <Kbd>↑↓</Kbd>
+        <span>navigate</span>
+        <Kbd style={{ marginLeft: 6 }}>↵</Kbd>
+        <span>open</span>
+        <Kbd style={{ marginLeft: 6 }}>Esc</Kbd>
+        <span>close</span>
+      </>
+    )
+    window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: hints }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
+    }
+  }, [])
+
   const sectionStyle = {
     padding: '6px 16px 4px',
     fontSize: 'var(--font-xs)',
@@ -264,7 +297,7 @@ export default function SettingsView() {
   return (
     <div>
       {SECTIONS.map((section) => {
-        const sectionRows = section.rows(themes, iconPacks)
+        const sectionRows = section.rows(themes, iconPacks, fontOptions)
         const sectionStart = rowOffset
         rowOffset += sectionRows.length
 
@@ -297,6 +330,7 @@ export default function SettingsView() {
                                 open={activeSelect === row.key}
                                 focusedIndex={selectFocused}
                                 placeholder={row.options.length === 0 ? '(none)' : '—'}
+                                searchable={row.searchable || false}
                                 onSelect={(v) => updateSetting(row.key, v)}
                                 onClose={() => setActiveSelect(null)}
                                 onOpen={(idx) => {
@@ -318,26 +352,6 @@ export default function SettingsView() {
         )
       })}
 
-      {ShortcutBar && (
-        <ShortcutBar>
-          {ShortcutHint && Kbd && (
-            <>
-              <ShortcutHint>
-                <Kbd>↑↓</Kbd>
-                <span>navigate</span>
-              </ShortcutHint>
-              <ShortcutHint>
-                <Kbd>↵</Kbd>
-                <span>open</span>
-              </ShortcutHint>
-              <ShortcutHint>
-                <Kbd>Esc</Kbd>
-                <span>close</span>
-              </ShortcutHint>
-            </>
-          )}
-        </ShortcutBar>
-      )}
     </div>
   )
 }

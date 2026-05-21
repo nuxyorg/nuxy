@@ -1,5 +1,15 @@
 {
-  "cSpell.words": ["esbuild", "modelcontextprotocol", "nuxy", "nuxyconfig", "wlog"],
+  "cSpell.words": [
+    "angrysearch",
+    "esbuild",
+    "Glassmorphism",
+    "iconpack",
+    "modelcontextprotocol",
+    "nuxy",
+    "nuxyconfig",
+    "omnibar",
+    "wlog"
+  ],
   "css.lint.unknownAtRules": "ignore",
   "scss.lint.unknownAtRules": "ignore"
 }

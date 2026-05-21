@@ -16,6 +16,8 @@ export interface SelectBoxProps {
   /** Called when trigger is clicked — parent should set focusedIndex and open=true. */
   onOpen?: (startIndex: number) => void
   placeholder?: string
+  /** When true, shows a search input inside the dropdown to filter options. */
+  searchable?: boolean
 }
 
 export function SelectBox({
@@ -27,12 +29,27 @@ export function SelectBox({
   onClose,
   onOpen,
   placeholder = '—',
+  searchable = false,
 }: SelectBoxProps) {
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const searchRef = useRef<HTMLInputElement>(null)
   const [dropdownPos, setDropdownPos] = useState<{ top: number; right: number }>({
     top: 0,
     right: 0,
   })
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // Reset search when dropdown closes
+  useEffect(() => {
+    if (!open) setSearchQuery('')
+  }, [open])
+
+  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (open && searchable) {
+      setTimeout(() => searchRef.current?.focus(), 30)
+    }
+  }, [open, searchable])
 
   useLayoutEffect(() => {
     if (open && triggerRef.current) {
@@ -54,6 +71,13 @@ export function SelectBox({
       })
     }
   }, [open])
+
+  const filteredOptions = searchable && searchQuery.trim()
+    ? options.filter((o) =>
+        o.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        o.value.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : options
 
   const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder
 
@@ -94,31 +118,57 @@ export function SelectBox({
           style={{ top: dropdownPos.top, right: dropdownPos.right }}
           role="listbox"
         >
-          {options.map((option, i) => {
-            const isFocused = i === focusedIndex
-            const isSelected = option.value === value
-            return (
-              <div
-                key={option.value}
-                role="option"
-                aria-selected={isSelected}
-                className={[
-                  'nuxy-select-box__option',
-                  isFocused ? 'nuxy-select-box__option--focused' : '',
-                  isSelected ? 'nuxy-select-box__option--selected' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onSelect(option.value)
+          {searchable && (
+            <div className="nuxy-select-box__search-wrapper">
+              <input
+                ref={searchRef}
+                className="nuxy-select-box__search"
+                placeholder="Search…"
+                value={searchQuery}
+                tabIndex={-1}
+                onMouseDown={(e) => e.stopPropagation()}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  // Let parent handle ArrowUp/Down/Enter/Escape — but don't propagate
+                  if (['ArrowUp', 'ArrowDown', 'Enter', 'Escape'].includes(e.key)) {
+                    e.stopPropagation()
+                    if (e.key === 'Escape') onClose()
+                  }
                 }}
-              >
-                <span className="nuxy-select-box__option-label">{option.label}</span>
-                {isSelected && <span className="nuxy-select-box__option-check">✓</span>}
-              </div>
-            )
-          })}
+              />
+            </div>
+          )}
+          <div className="nuxy-select-box__options">
+            {filteredOptions.length === 0 ? (
+              <div className="nuxy-select-box__no-results">No results</div>
+            ) : (
+              filteredOptions.map((option, i) => {
+                const isFocused = i === focusedIndex
+                const isSelected = option.value === value
+                return (
+                  <div
+                    key={option.value}
+                    role="option"
+                    aria-selected={isSelected}
+                    className={[
+                      'nuxy-select-box__option',
+                      isFocused ? 'nuxy-select-box__option--focused' : '',
+                      isSelected ? 'nuxy-select-box__option--selected' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onSelect(option.value)
+                    }}
+                  >
+                    <span className="nuxy-select-box__option-label">{option.label}</span>
+                    {isSelected && <span className="nuxy-select-box__option-check">✓</span>}
+                  </div>
+                )
+              })
+            )}
+          </div>
         </div>
       )}
     </div>

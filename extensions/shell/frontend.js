@@ -1,174 +1,20 @@
 const React = window.React
 const { useState, useEffect, useRef, useLayoutEffect, useMemo } = React
 
-const SHELL_EXT_ID = 'com.nuxy.shell'
-const SHELL_CSS_ID = 'nuxy-shell-styles'
-
-function parseCoordinate(val, displayLength, winLength) {
-  if (!val) return Math.round((displayLength - winLength) / 2)
-  val = val.trim().toLowerCase()
-  if (val === 'center') return Math.round((displayLength - winLength) / 2)
-  if (val.endsWith('px')) {
-    const px = parseFloat(val)
-    return isNaN(px) ? Math.round((displayLength - winLength) / 2) : Math.round(px)
-  }
-  if (val.endsWith('%')) {
-    const pct = parseFloat(val)
-    if (!isNaN(pct)) return Math.round(displayLength * (pct / 100) - winLength / 2)
-  }
-  if (val.includes('/')) {
-    const parts = val.split('/')
-    if (parts.length === 2) {
-      const num = parseFloat(parts[0])
-      const den = parseFloat(parts[1])
-      if (!isNaN(num) && !isNaN(den) && den !== 0) {
-        return Math.round(displayLength * (num / den) - winLength / 2)
-      }
-    }
-  }
-  const ratio = parseFloat(val)
-  if (!isNaN(ratio)) {
-    if (ratio >= 0 && ratio <= 1) return Math.round(displayLength * ratio - winLength / 2)
-    return Math.round(ratio)
-  }
-  return Math.round((displayLength - winLength) / 2)
-}
-
-function ensureShellStyles() {
-  if (document.getElementById(SHELL_CSS_ID)) return
-  const link = document.createElement('link')
-  link.id = SHELL_CSS_ID
-  link.rel = 'stylesheet'
-  link.href = `nuxy-ext://${SHELL_EXT_ID}/shell.css`
-  document.head.appendChild(link)
-}
+const _imp = new Function('url', 'return import(url)')
+const { parseCoordinate, ensureShellStyles, SHELL_EXT_ID } = await _imp('nuxy-ext://com.nuxy.shell/utils.js')
+const { default: CommandPalette } = await _imp('nuxy-ext://com.nuxy.shell/CommandPalette.js')
+const { ResultCard, CompareCard } = await _imp('nuxy-ext://com.nuxy.shell/ResultCard.js')
+const { useShellInit, useProviders, useKeyboard } = await _imp('nuxy-ext://com.nuxy.shell/hooks.js')
 
 ensureShellStyles()
 
-function CommandPalette({ actions, onClose, containerRef, position }) {
-  const { useState, useEffect, useRef, useLayoutEffect } = React
-  const [query, setQuery] = useState('')
-  const [selectedIndex, setSelectedIndex] = useState(0)
-  const [style, setStyle] = useState({})
-  const inputRef = useRef(null)
-
-  const filteredActions = actions.filter((a) => a.label.toLowerCase().includes(query.toLowerCase()))
-
-  useLayoutEffect(() => {
-    if (containerRef?.current && position) {
-      const getZoom = () => {
-        const z = document.documentElement.style.zoom
-        if (!z) return 1
-        if (z.endsWith('%')) return parseFloat(z) / 100
-        return parseFloat(z) || 1
-      }
-      const zoom = getZoom()
-      const cssWindowHeight = window.innerHeight / zoom
-
-      const winWidth = containerRef.current.offsetWidth
-      const winHeight = containerRef.current.offsetHeight
-
-      let top = position.y + winHeight + 12
-      if (top + 350 > cssWindowHeight) {
-        if (position.y - 362 > 0) {
-          top = position.y - 362
-        } else {
-          top = Math.max(12, cssWindowHeight - 362)
-        }
-      }
-
-      let left = position.x + winWidth - 350
-      if (left < 12) left = 12
-
-      setStyle({
-        position: 'absolute',
-        top: top,
-        left: left,
-        width: 350,
-        margin: 0,
-      })
-    }
-  }, [containerRef, position])
-
-  useEffect(() => {
-    setSelectedIndex(0)
-  }, [query])
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') {
-        e.preventDefault()
-        e.stopPropagation()
-        onClose()
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault()
-        setSelectedIndex((prev) => Math.min(prev + 1, Math.max(0, filteredActions.length - 1)))
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault()
-        setSelectedIndex((prev) => Math.max(prev - 1, 0))
-      } else if (e.key === 'Enter') {
-        e.preventDefault()
-        const action = filteredActions[selectedIndex]
-        if (action && action.onExecute) {
-          action.onExecute()
-          onClose()
-        }
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [filteredActions, selectedIndex, onClose])
-
-  return (
-    <div
-      className="nuxy-command-palette-backdrop"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose()
-      }}
-    >
-      <div className="nuxy-command-palette" style={style}>
-        <div className="nuxy-command-palette__input-wrapper">
-          <input
-            ref={inputRef}
-            autoFocus
-            className="nuxy-command-palette__input"
-            placeholder="Search commands..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        <div className="nuxy-command-palette__list">
-          {filteredActions.length === 0 ? (
-            <div style={{ padding: '12px 16px', color: 'var(--syntax-comment)' }}>
-              No actions available.
-            </div>
-          ) : (
-            filteredActions.map((action, idx) => (
-              <div
-                key={action.id}
-                className={`nuxy-command-palette__item ${idx === selectedIndex ? 'nuxy-command-palette__item--active' : ''}`}
-                onClick={() => {
-                  if (action.onExecute) action.onExecute()
-                  onClose()
-                }}
-              >
-                <span>{action.label}</span>
-                <span className="nuxy-command-palette__shortcut">Enter</span>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function ShellView({ query: _queryProp }) {
-  const { ShortcutBar, ShortcutHint, Kbd } = window.ui || {}
+  const { ShortcutBar, ShortcutHint, Kbd, List, ListItem, ListItemBody, ListItemText, ListItemActions } = window.UI || window.ui || {}
+  
   const [query, setQuery] = useState('')
   const [savedQuery, setSavedQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(-1)
-  const [results, setResults] = useState([])
   const [tools, setTools] = useState([])
   const [providers, setProviders] = useState([])
   const [orchestrators, setOrchestrators] = useState([])
@@ -185,6 +31,21 @@ export default function ShellView({ query: _queryProp }) {
   const [settings, setSettings] = useState(null)
   const [providerStates, setProviderStates] = useState({})
   const [copiedId, setCopiedId] = useState(null)
+  const [searchIcon, setSearchIcon] = useState(null)
+  const [footerHints, setFooterHints] = useState(null)
+
+  const cfgRef = useRef(null)
+  const hasDragged = useRef(false)
+  const isDragging = useRef(false)
+  const containerRef = useRef(null)
+  const inputRef = useRef(null)
+  const omniBarRef = useRef(null)
+  const queryGeneration = useRef(0)
+
+  // Initialize hooks
+  useShellInit({ cfgRef, setTools, setProviders, setOrchestrators, setThemeStyles, setSettings, setSearchIcon, SHELL_EXT_ID })
+  const { isAnyListProviderLoading } = useProviders({ activeTool, savedQuery, providers, providerStates, setProviderStates, queryGeneration })
+  useKeyboard({ activeTool, showCommandPalette, setShowCommandPalette, inputRef, setActiveTool, setToolComponent, setQuery, setSavedQuery, setSelectedIndex, setShowOmniBar })
 
   const handleCopy = (id) => {
     setCopiedId(id)
@@ -192,16 +53,6 @@ export default function ShellView({ query: _queryProp }) {
   }
 
   const listResults = useMemo(() => {
-    if (window.__NUXY_DEV__ && savedQuery.trim().toLowerCase() === 'hoppidiktest') {
-      return [
-        {
-          id: 'hoppidik',
-          title: '🐰 Hoppidik Modu Aktif!',
-          subtitle: 'Boing! Boing! 🚀',
-        },
-      ]
-    }
-
     const toolItems = tools.map((t) => ({
       id: t.id,
       title: t.manifest.name,
@@ -230,30 +81,15 @@ export default function ShellView({ query: _queryProp }) {
     return [...filteredTools, ...listProviderItems]
   }, [tools, savedQuery, providerStates])
 
-  const isAnyListProviderLoading = useMemo(() => {
-    return Object.values(providerStates).some(
-      (state) => state.type === 'list' && state.loading
-    )
-  }, [providerStates])
-
-  const cfgRef = useRef(null)
-  const hasDragged = useRef(false)
-  const isDragging = useRef(false)
-  const dragStartPos = useRef({ x: 0, y: 0 })
-  const containerRef = useRef(null)
-  const inputRef = useRef(null)
-  const omniBarRef = useRef(null)
-  const lastReportedSize = useRef({ width: 0, height: 0 })
-  const queryGeneration = useRef(0)
+  const getZoom = () => {
+    const z = document.documentElement.style.zoom
+    if (!z) return 1
+    if (z.endsWith('%')) return parseFloat(z) / 100
+    return parseFloat(z) || 1
+  }
 
   useLayoutEffect(() => {
     if (!containerRef.current) return
-    const getZoom = () => {
-      const z = document.documentElement.style.zoom
-      if (!z) return 1
-      if (z.endsWith('%')) return parseFloat(z) / 100
-      return parseFloat(z) || 1
-    }
     const zoom = getZoom()
     const dw = window.innerWidth / zoom
     const dh = window.innerHeight / zoom
@@ -262,7 +98,6 @@ export default function ShellView({ query: _queryProp }) {
 
     const maxX = Math.max(0, dw - winWidth)
     const maxY = Math.max(0, dh - winHeight)
-
     const clampedX = Math.max(0, Math.min(position.x, maxX))
     const clampedY = Math.max(0, Math.min(position.y, maxY))
 
@@ -274,31 +109,18 @@ export default function ShellView({ query: _queryProp }) {
   useEffect(() => {
     let lastZoom = document.documentElement.style.zoom || '100%'
 
-    const getZoom = () => {
-      const z = document.documentElement.style.zoom
-      if (!z) return 1
-      if (z.endsWith('%')) return parseFloat(z) / 100
-      return parseFloat(z) || 1
-    }
-
     const updatePosition = (force = false) => {
-      if (
-        !cfgRef.current?.windowPosition ||
-        !containerRef.current ||
-        (!force && hasDragged.current)
-      )
-        return
+      if (!cfgRef.current?.windowPosition || !containerRef.current || (!force && hasDragged.current)) return
       const parts = cfgRef.current.windowPosition.split(/[\s,]+/)
       const winWidth = containerRef.current.offsetWidth
       const winHeight = containerRef.current.offsetHeight
       const zoom = getZoom()
       const dw = window.innerWidth / zoom
       const dh = window.innerHeight / zoom
-
-      let targetX = parseCoordinate(parts[0], dw, winWidth)
-      let targetY = parseCoordinate(parts.length >= 2 ? parts[1] : '', dh, winHeight)
-
-      setPosition({ x: targetX, y: targetY })
+      setPosition({
+        x: parseCoordinate(parts[0], dw, winWidth),
+        y: parseCoordinate(parts.length >= 2 ? parts[1] : '', dh, winHeight),
+      })
     }
 
     const observer = new MutationObserver((mutations) => {
@@ -329,14 +151,10 @@ export default function ShellView({ query: _queryProp }) {
       setTimeout(() => inputRef.current?.focus(), 50)
     }
     const onFocus = () => inputRef.current?.focus()
-
     const handleSettingsUpdate = (e) => {
-      console.log('[Shell] received nuxy-settings-updated', e.detail)
       if (e.detail) {
         setSettings(e.detail)
-        if (cfgRef.current) {
-          cfgRef.current = { ...cfgRef.current, ...e.detail }
-        }
+        if (cfgRef.current) cfgRef.current = { ...cfgRef.current, ...e.detail }
         setTimeout(() => updatePosition(true), 0)
       }
     }
@@ -361,9 +179,15 @@ export default function ShellView({ query: _queryProp }) {
     return () => window.removeEventListener('nuxy-register-actions', handleActions)
   }, [])
 
+  useEffect(() => { setToolActions([]) }, [activeTool])
+
   useEffect(() => {
-    setToolActions([])
-  }, [activeTool])
+    const handleFooterHints = (e) => setFooterHints(e.detail || null)
+    window.addEventListener('nuxy-shell-footer-hints', handleFooterHints)
+    return () => window.removeEventListener('nuxy-shell-footer-hints', handleFooterHints)
+  }, [])
+
+  useEffect(() => { setFooterHints(null) }, [activeTool])
 
   useEffect(() => {
     const handleOmniBarControl = (e) => {
@@ -381,182 +205,6 @@ export default function ShellView({ query: _queryProp }) {
   }, [])
 
   useEffect(() => {
-    const handleGlobalKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        setShowCommandPalette((prev) => !prev)
-        return
-      }
-
-      if (e.key === 'Escape') {
-        if (showCommandPalette) {
-          setShowCommandPalette(false)
-          setTimeout(() => inputRef.current?.focus(), 50)
-          return
-        }
-        if (activeTool) {
-          setActiveTool(null)
-          setToolComponent(null)
-          setQuery('')
-          setSavedQuery('')
-          setSelectedIndex(-1)
-          setShowOmniBar(true)
-        } else {
-          setQuery('')
-          setSavedQuery('')
-          setSelectedIndex(-1)
-          window.core?.window?.esc?.()
-        }
-        return
-      }
-
-      if (showCommandPalette) return
-
-      if (
-        activeTool &&
-        !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)
-      ) {
-        window.dispatchEvent(
-          new CustomEvent('nuxy-shell-omni-bar-keydown', {
-            detail: {
-              key: e.key,
-              code: e.code,
-              shiftKey: e.shiftKey,
-              altKey: e.altKey,
-              ctrlKey: e.ctrlKey,
-              metaKey: e.metaKey,
-            },
-          })
-        )
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space'].includes(e.key)) {
-          e.preventDefault()
-        }
-      }
-    }
-    window.addEventListener('keydown', handleGlobalKeyDown)
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
-  }, [activeTool, showCommandPalette])
-
-  useEffect(() => {
-    window.core?.ipc?.invoke('kernel', 'getConfig', {}).then((res) => {
-      if (res.success && res.data) {
-        cfgRef.current = res.data
-        window.dispatchEvent(new Event('resize'))
-      }
-    })
-
-    window.core?.ipc?.invoke('kernel', 'listTools', {}).then((res) => {
-      if (res.success && res.data) setTools(res.data.filter((t) => t.id !== SHELL_EXT_ID))
-    })
-    window.core?.ipc?.invoke('kernel', 'listProviders', {}).then((res) => {
-      if (res.success && res.data) setProviders(res.data)
-    })
-    window.core?.ipc?.invoke('kernel', 'listOrchestrators', {}).then((res) => {
-      if (res.success && res.data) setOrchestrators(res.data)
-    })
-    window.core?.ipc?.invoke('kernel', 'getTheme', {}).then((res) => {
-      if (res.success && res.data?.styles) setThemeStyles(res.data.styles)
-      if (res.success && res.data?.colors) {
-        const root = document.documentElement
-        Object.entries(res.data.colors).forEach(([key, val]) => {
-          root.style.setProperty(`--${key}`, val)
-        })
-      }
-    })
-
-    const FONT_FAMILY_MAP = {
-      system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
-      monospace: 'monospace',
-      'JetBrains Mono': `'JetBrains Mono', 'JetBrainsMono Nerd Font', monospace`,
-      'Fira Code': `'Fira Code', 'FiraCode Nerd Font', monospace`,
-      'Cascadia Code': `'Cascadia Code', monospace`,
-    }
-
-    window.core?.ipc
-      ?.invoke('com.nuxy.settings', 'getSettings', {})
-      .then((res) => {
-        if (!res?.success || !res.data) return
-        const s = res.data
-        setSettings(s)
-        if (s.zoom) document.documentElement.style.zoom = s.zoom
-        if (s.font) document.body.style.fontFamily = FONT_FAMILY_MAP[s.font] || s.font
-        if (s.theme) {
-          window.core.ipc
-            .invoke('kernel', 'getThemeByName', { name: s.theme })
-            .then((themeRes) => {
-              if (!themeRes?.success || !themeRes.data) return
-              const { colors, tokens } = themeRes.data
-              const root = document.documentElement
-              if (colors)
-                Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
-              if (tokens)
-                Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
-            })
-            .catch(console.error)
-        }
-      })
-      .catch(console.error)
-  }, [])
-
-  useEffect(() => {
-    if (activeTool) {
-      setProviderStates({})
-      return
-    }
-
-    const generation = ++queryGeneration.current
-
-    if (savedQuery.trim().length === 0) {
-      setProviderStates({})
-      return
-    }
-
-    // Fire each provider eval query asynchronously
-    providers.forEach((provider) => {
-      const type = provider.manifest?.providerType || 'list'
-      const name = provider.manifest?.name || provider.id
-
-      // Initialize loading state for this provider
-      setProviderStates((prev) => ({
-        ...prev,
-        [provider.id]: {
-          loading: true,
-          items: [],
-          type,
-          name,
-        },
-      }))
-
-      window.core?.ipc?.invoke(provider.id, 'eval', { text: savedQuery })
-        .then((res) => {
-          if (generation !== queryGeneration.current) return
-          setProviderStates((prev) => ({
-            ...prev,
-            [provider.id]: {
-              loading: false,
-              items: (res?.success && res.data?.items) ? res.data.items : [],
-              type,
-              name,
-            },
-          }))
-        })
-        .catch((e) => {
-          console.error(`Provider ${provider.id} failed:`, e)
-          if (generation !== queryGeneration.current) return
-          setProviderStates((prev) => ({
-            ...prev,
-            [provider.id]: {
-              loading: false,
-              items: [],
-              type,
-              name,
-            },
-          }))
-        })
-    })
-  }, [savedQuery, activeTool, providers])
-
-  useEffect(() => {
     if (activeTool) return
     if (selectedIndex === -1 || selectedIndex === 0) {
       setQuery(savedQuery)
@@ -567,7 +215,6 @@ export default function ShellView({ query: _queryProp }) {
 
   const openTool = (toolId) => {
     setActiveTool(toolId)
-    setResults([])
     setProviderStates({})
     setQuery('')
     setSavedQuery('')
@@ -583,9 +230,8 @@ export default function ShellView({ query: _queryProp }) {
 
   const tryOrchestratorRoute = async () => {
     if (!savedQuery.trim() || orchestrators.length === 0) return
-    const orch = orchestrators[0]
     try {
-      await window.core.ipc.invoke(orch.id, 'route', { text: savedQuery })
+      await window.core.ipc.invoke(orchestrators[0].id, 'route', { text: savedQuery })
     } catch (e) {
       console.error('Orchestrator route failed:', e)
     }
@@ -600,45 +246,21 @@ export default function ShellView({ query: _queryProp }) {
       setSavedQuery('')
       return
     }
-
-    if (activeTool) {
-      window.dispatchEvent(
-        new CustomEvent('nuxy-shell-omni-bar-keydown', {
-          detail: {
-            key: e.key,
-            code: e.code,
-            shiftKey: e.shiftKey,
-            altKey: e.altKey,
-            ctrlKey: e.ctrlKey,
-            metaKey: e.metaKey,
-          },
-        })
-      )
-      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') e.preventDefault()
-      if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && query === '') {
-        e.preventDefault()
-      }
-      return
-    }
+    
+    // If we're inside a tool, let useKeyboard handle forwarding events via IPC/CustomEvent
+    // BUT we still need to handle Arrow keys for navigation if not inside a tool
+    if (activeTool) return
 
     if (e.key === 'Enter' && selectedIndex < 0 && savedQuery.trim()) {
       void tryOrchestratorRoute()
     }
-
     if (listResults.length === 0) return
-
     if (e.key === 'ArrowDown') {
       e.preventDefault()
-      setSelectedIndex((prev) => {
-        const next = prev + 1
-        return next < listResults.length ? next : prev
-      })
+      setSelectedIndex((prev) => { const next = prev + 1; return next < listResults.length ? next : prev })
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
-      setSelectedIndex((prev) => {
-        const next = prev - 1
-        return next >= -1 ? next : prev
-      })
+      setSelectedIndex((prev) => { const next = prev - 1; return next >= -1 ? next : prev })
     } else if (e.key === 'ArrowRight') {
       if (selectedIndex === 0 && listResults[0]) {
         e.preventDefault()
@@ -665,7 +287,7 @@ export default function ShellView({ query: _queryProp }) {
 
   const handleDragMouseDown = (e) => {
     if (e.target instanceof HTMLInputElement) return
-    if (e.button !== 0) return // Only allow left click drag
+    if (e.button !== 0) return
     e.preventDefault()
     isDragging.current = true
     hasDragged.current = true
@@ -673,11 +295,7 @@ export default function ShellView({ query: _queryProp }) {
     let zoom = 1
     const zoomStyle = document.documentElement.style.zoom
     if (zoomStyle) {
-      if (zoomStyle.endsWith('%')) {
-        zoom = parseFloat(zoomStyle) / 100
-      } else {
-        zoom = parseFloat(zoomStyle)
-      }
+      zoom = zoomStyle.endsWith('%') ? parseFloat(zoomStyle) / 100 : parseFloat(zoomStyle)
     }
     if (isNaN(zoom) || zoom <= 0) zoom = 1
 
@@ -688,24 +306,15 @@ export default function ShellView({ query: _queryProp }) {
 
     const onMouseMove = (moveEvent) => {
       if (!isDragging.current) return
-
       const deltaX = (moveEvent.clientX - startClientX) / zoom
       const deltaY = (moveEvent.clientY - startClientY) / zoom
-
       const winWidth = containerRef.current ? containerRef.current.offsetWidth : 0
       const winHeight = containerRef.current ? containerRef.current.offsetHeight : 0
       const dw = window.innerWidth / zoom
       const dh = window.innerHeight / zoom
-
-      let targetX = startPosX + deltaX
-      let targetY = startPosY + deltaY
-
-      targetX = Math.max(0, Math.min(targetX, Math.max(0, dw - winWidth)))
-      targetY = Math.max(0, Math.min(targetY, Math.max(0, dh - winHeight)))
-
       setPosition({
-        x: targetX,
-        y: targetY,
+        x: Math.max(0, Math.min(startPosX + deltaX, Math.max(0, dw - winWidth))),
+        y: Math.max(0, Math.min(startPosY + deltaY, Math.max(0, dh - winHeight))),
       })
     }
     const onMouseUp = () => {
@@ -720,11 +329,7 @@ export default function ShellView({ query: _queryProp }) {
   return (
     <div
       className="nuxy-shell-backdrop"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) {
-          window.core?.window?.esc?.()
-        }
-      }}
+      onClick={(e) => { if (e.target === e.currentTarget) window.core?.window?.esc?.() }}
     >
       <div
         ref={containerRef}
@@ -750,17 +355,15 @@ export default function ShellView({ query: _queryProp }) {
                 ref={inputRef}
                 disabled={!showOmniBar}
                 value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value)
-                  setSavedQuery(e.target.value)
-                  setSelectedIndex(-1)
-                }}
+                onChange={(e) => { setQuery(e.target.value); setSavedQuery(e.target.value); setSelectedIndex(-1) }}
                 onKeyDown={handleKeyDown}
                 className="nuxy-shell-omni-bar__hidden-input"
                 aria-label="Search"
               />
               <span className="nuxy-shell-omni-bar__icon" aria-hidden="true">
-                🔍
+                {searchIcon
+                  ? <span dangerouslySetInnerHTML={{ __html: searchIcon }} style={{ display: 'flex', alignItems: 'center' }} />
+                  : '🔍'}
               </span>
               <span className="nuxy-shell-omni-bar__sep">›</span>
               {activeToolName && (
@@ -792,31 +395,21 @@ export default function ShellView({ query: _queryProp }) {
                 .filter((id) => providerStates[id].type === 'result')
                 .map((id) => {
                   const state = providerStates[id]
-                  if (state.loading) {
-                    return (
-                      <div key={id} className="nuxy-provider-section">
-                        <div className="nuxy-provider-section__header">
-                          <span>{state.name}</span>
-                          <div className="nuxy-provider-section__loading-dot" />
-                        </div>
-                        <div className="nuxy-skeleton-result nuxy-shimmer-bg" />
-                      </div>
-                    )
-                  }
-                  if (!state.items || state.items.length === 0) return null
-                  return (
+                  if (state.loading) return (
                     <div key={id} className="nuxy-provider-section">
                       <div className="nuxy-provider-section__header">
                         <span>{state.name}</span>
+                        <div className="nuxy-provider-section__loading-dot" />
                       </div>
+                      <div className="nuxy-skeleton-result nuxy-shimmer-bg" />
+                    </div>
+                  )
+                  if (!state.items || state.items.length === 0) return null
+                  return (
+                    <div key={id} className="nuxy-provider-section">
+                      <div className="nuxy-provider-section__header"><span>{state.name}</span></div>
                       {state.items.map((item) => (
-                        <ResultCard
-                          key={item.id}
-                          item={item}
-                          providerName={state.name}
-                          copiedId={copiedId}
-                          onCopy={handleCopy}
-                        />
+                        <ResultCard key={item.id} item={item} providerName={state.name} copiedId={copiedId} onCopy={handleCopy} />
                       ))}
                     </div>
                   )
@@ -827,47 +420,42 @@ export default function ShellView({ query: _queryProp }) {
                 .filter((id) => providerStates[id].type === 'compare')
                 .map((id) => {
                   const state = providerStates[id]
-                  if (state.loading) {
-                    return (
-                      <div key={id} className="nuxy-provider-section">
-                        <div className="nuxy-provider-section__header">
-                          <span>{state.name}</span>
-                          <div className="nuxy-provider-section__loading-dot" />
-                        </div>
-                        <div className="nuxy-skeleton-compare nuxy-shimmer-bg" />
-                      </div>
-                    )
-                  }
-                  if (!state.items || state.items.length === 0) return null
-                  return (
+                  if (state.loading) return (
                     <div key={id} className="nuxy-provider-section">
                       <div className="nuxy-provider-section__header">
                         <span>{state.name}</span>
+                        <div className="nuxy-provider-section__loading-dot" />
                       </div>
+                      <div className="nuxy-skeleton-compare nuxy-shimmer-bg" />
+                    </div>
+                  )
+                  if (!state.items || state.items.length === 0) return null
+                  return (
+                    <div key={id} className="nuxy-provider-section">
+                      <div className="nuxy-provider-section__header"><span>{state.name}</span></div>
                       {state.items.map((item) => (
-                        <CompareCard
-                          key={item.id}
-                          item={item}
-                          providerName={state.name}
-                          copiedId={copiedId}
-                          onCopy={handleCopy}
-                        />
+                        <CompareCard key={item.id} item={item} providerName={state.name} copiedId={copiedId} onCopy={handleCopy} />
                       ))}
                     </div>
                   )
                 })}
 
-              {/* 3. List Results (Tools + List Providers) */}
-              {listResults.length > 0 && (
+              {/* 3. List Results */}
+              {listResults.length > 0 && List ? (
+                <List role="listbox" aria-label="Results">
+                  {listResults.map((item, index) => (
+                    ListItem && (
+                      <ListItem key={item.id} active={index === selectedIndex} role="option" aria-selected={index === selectedIndex} onClick={() => handleItemClick(item)}>
+                        {ListItemBody && <ListItemBody>{ListItemText && <ListItemText>{item.title}</ListItemText>}</ListItemBody>}
+                        {ListItemActions && item.subtitle && <ListItemActions><span className="nuxy-shell-results-item__subtitle">{item.subtitle}</span></ListItemActions>}
+                      </ListItem>
+                    )
+                  ))}
+                </List>
+              ) : listResults.length > 0 && (
                 <div className="nuxy-shell-results-list" role="listbox" aria-label="Results">
                   {listResults.map((item, index) => (
-                    <div
-                      key={item.id}
-                      className={itemClass(index)}
-                      role="option"
-                      aria-selected={index === selectedIndex}
-                      onClick={() => handleItemClick(item)}
-                    >
+                    <div key={item.id} className={itemClass(index)} role="option" aria-selected={index === selectedIndex} onClick={() => handleItemClick(item)}>
                       <span className="nuxy-shell-results-item__title">{item.title}</span>
                       <span className="nuxy-shell-results-item__subtitle">{item.subtitle}</span>
                     </div>
@@ -893,110 +481,31 @@ export default function ShellView({ query: _queryProp }) {
             </React.Suspense>
           )}
         </div>
+
         {ShortcutBar && (
           <ShortcutBar style={{ justifyContent: 'space-between' }}>
             <ShortcutHint>
-              <span>{tools.length + 1} extensions loaded</span>
+              {footerHints ? footerHints : <span>{tools.length + 1} extensions loaded</span>}
             </ShortcutHint>
             <ShortcutHint>
               {selectedIndex >= 0 && listResults.length > 0 && !activeTool ? (
-                <>
-                  <span>Press</span>
-                  <Kbd>Enter</Kbd>
-                  <span>to run</span>
-                </>
+                <><span>Press</span><Kbd>Enter</Kbd><span>to run</span></>
               ) : (
-                <>
-                  <Kbd>Ctrl</Kbd>
-                  <Kbd>K</Kbd>
-                  <span>to actions</span>
-                </>
+                <><Kbd>Ctrl</Kbd><Kbd>K</Kbd><span>to actions</span></>
               )}
             </ShortcutHint>
           </ShortcutBar>
         )}
       </div>
+
       {showCommandPalette && (
         <CommandPalette
           actions={toolActions}
-          onClose={() => {
-            setShowCommandPalette(false)
-            setTimeout(() => inputRef.current?.focus(), 50)
-          }}
+          onClose={() => { setShowCommandPalette(false); setTimeout(() => inputRef.current?.focus(), 50) }}
           containerRef={containerRef}
           position={position}
         />
       )}
-    </div>
-  )
-}
-
-function ResultCard({ item, providerName, copiedId, onCopy }) {
-  const isCopied = copiedId === item.id
-  return (
-    <div
-      className="nuxy-result-card"
-      onClick={() => {
-        if (item.value) {
-          navigator.clipboard.writeText(item.value)
-          onCopy(item.id)
-        }
-      }}
-    >
-      <div>
-        <div className="nuxy-result-card__value">{item.value}</div>
-        <div className="nuxy-result-card__title">{item.title}</div>
-      </div>
-      <span
-        style={{
-          fontSize: 10,
-          fontWeight: 600,
-          letterSpacing: '0.5px',
-          padding: '2px 7px',
-          borderRadius: 20,
-          background: 'rgba(120, 80, 255, 0.12)',
-          border: '1px solid rgba(120, 80, 255, 0.25)',
-          color: 'rgba(160, 130, 255, 0.9)',
-        }}
-      >
-        {providerName}
-      </span>
-      <div className={`nuxy-result-card__copied ${isCopied ? 'nuxy-result-card__copied--show' : ''}`}>
-        Copied!
-      </div>
-    </div>
-  )
-}
-
-function CompareCard({ item, providerName, copiedId, onCopy }) {
-  const meta = item.meta
-  if (!meta || !meta.left || !meta.right) return null
-  const isCopied = copiedId === item.id
-
-  return (
-    <div
-      className="nuxy-compare-card"
-      onClick={() => {
-        if (item.value) {
-          navigator.clipboard.writeText(item.value)
-          onCopy(item.id)
-        }
-      }}
-    >
-      <div className="nuxy-compare-panel nuxy-compare-panel--left">
-        <div className="nuxy-compare-panel__text">{meta.left.text}</div>
-        <div className="nuxy-compare-panel__badge">{meta.left.badge}</div>
-      </div>
-      <div className="nuxy-compare-arrow">→</div>
-      <div className="nuxy-compare-panel">
-        <div className="nuxy-compare-panel__text" style={{ color: 'var(--syntax-function)' }}>
-          {meta.right.text}
-        </div>
-        <div className="nuxy-compare-panel__badge">{meta.right.badge}</div>
-      </div>
-      <div className={`nuxy-result-card__copied ${isCopied ? 'nuxy-result-card__copied--show' : ''}`}>
-        Copied!
-      </div>
     </div>
   )
 }

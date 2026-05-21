@@ -9,6 +9,7 @@
     "build": "pnpm -C src build",
     "package": "pnpm -C src dist",
     "test": "pnpm -C src test",
+    "test:e2e": "pnpm -C src test:e2e",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
