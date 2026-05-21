@@ -9,7 +9,7 @@
 ## Summary
 
 | Severity | Count |
-|----------|-------|
+| -------- | ----- |
 | High     | 2     |
 | Medium   | 5     |
 | Low      | 4     |
@@ -83,9 +83,11 @@
 ### 6. `typescript` declared as a runtime dependency in `src/package.json` (misplaced dep classification)
 
 - **Problem**: In `src/package.json`, `typescript` is in `devDependencies`. However, `src/electron/protocol/register.ts` dynamically imports it at runtime:
+
   ```ts
   ts = await import('typescript')
   ```
+
   This is used to transpile extension frontend files (`.tsx`/`.jsx`) on-the-fly via the `nuxy-ext://` custom protocol handler. If `typescript` is not bundled in the final packaged Electron app (electron-builder excludes devDependencies by default), this `import('typescript')` will throw at runtime and silently fall back to serving the raw file. The code already handles this gracefully with a `try/catch`, but it means the transpilation feature will silently not work in production builds.
 
 - **Impact**: Medium — extension `.tsx`/`.jsx` frontends that rely on runtime transpilation will not work in packaged builds (only in dev). The fallback is intentional but may be unexpected for extension authors.
@@ -98,9 +100,11 @@
 ### 7. `@nuxy/extension-sdk` declared in `extensions/calculator` and `extensions/clipboard` but only used via JSDoc
 
 - **Problem**: Both `extensions/calculator/package.json` and `extensions/clipboard/package.json` declare `"@nuxy/extension-sdk": "workspace:*"` as a runtime dependency. However, the actual files only use it in JSDoc type annotations:
+
   ```js
   /** @typedef {import('@nuxy/extension-sdk').CoreContext} CoreContext */
   ```
+
   No runtime `import` or `require` statement is present in either extension's source code.
 
 - **Impact**: Low — the workspace dep resolves within the monorepo so no external download occurs. However, it signals incorrect intent and may confuse tooling that distinguishes between runtime and type-only dependencies.
@@ -155,72 +159,81 @@
 ## Dependency Inventory by Package
 
 ### `/package.json` (root workspace)
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
-| `@modelcontextprotocol/sdk@^1.29.0` | dep | No | **Remove** |
-| `@types/bun@^1.3.14` | devDep | No | **Remove** |
-| `typescript@^6.0.3` | devDep | Indirectly (tsconfig) | **Fix version** (^5.9.0) |
+
+| Package                             | Type   | Used?                 | Verdict                  |
+| ----------------------------------- | ------ | --------------------- | ------------------------ |
+| `@modelcontextprotocol/sdk@^1.29.0` | dep    | No                    | **Remove**               |
+| `@types/bun@^1.3.14`                | devDep | No                    | **Remove**               |
+| `typescript@^6.0.3`                 | devDep | Indirectly (tsconfig) | **Fix version** (^5.9.0) |
 
 ### `/src/package.json` (nuxy-desktop)
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
-| `dbus-next@^0.10.2` | dep | Yes (mpris.ts, dynamic import) | OK |
-| `@nuxy/core` | devDep | Yes | OK |
-| `@nuxy/extension-host` | devDep | Yes (via Vite alias) | OK |
-| `@nuxy/ui` | devDep | Yes | OK |
-| `react@^18.2.0` | devDep | Yes | OK |
-| `react-dom@^18.2.0` | devDep | Yes | OK |
-| `@types/react@^18.2.15` | devDep | Yes | OK |
-| `@types/react-dom@^18.2.7` | devDep | Yes | OK |
-| `@vitejs/plugin-react@^4.0.3` | devDep | Yes (vite.config.ts) | OK |
-| `electron@^42.1.0` | devDep | Yes | OK |
-| `electron-builder@^25.1.8` | devDep | Yes (package script) | OK |
-| `typescript@^5.0.2` | devDep | Yes (build + runtime transpile) | **Move to deps** (see Finding 6) |
-| `vite@^4.4.5` | devDep | Yes | **Upgrade** (see Finding 10) |
-| `vite-plugin-electron@^0.28.0` | devDep | Yes (vite.config.ts) | OK |
-| `vite-plugin-electron-renderer@^0.14.0` | devDep | No | **Remove** |
-| `vitest@^3.0.5` | devDep | Yes | OK |
-| `@playwright/test@^1.51.0` | devDep | Yes (e2e tests) | OK |
+
+| Package                                 | Type   | Used?                           | Verdict                          |
+| --------------------------------------- | ------ | ------------------------------- | -------------------------------- |
+| `dbus-next@^0.10.2`                     | dep    | Yes (mpris.ts, dynamic import)  | OK                               |
+| `@nuxy/core`                            | devDep | Yes                             | OK                               |
+| `@nuxy/extension-host`                  | devDep | Yes (via Vite alias)            | OK                               |
+| `@nuxy/ui`                              | devDep | Yes                             | OK                               |
+| `react@^18.2.0`                         | devDep | Yes                             | OK                               |
+| `react-dom@^18.2.0`                     | devDep | Yes                             | OK                               |
+| `@types/react@^18.2.15`                 | devDep | Yes                             | OK                               |
+| `@types/react-dom@^18.2.7`              | devDep | Yes                             | OK                               |
+| `@vitejs/plugin-react@^4.0.3`           | devDep | Yes (vite.config.ts)            | OK                               |
+| `electron@^42.1.0`                      | devDep | Yes                             | OK                               |
+| `electron-builder@^25.1.8`              | devDep | Yes (package script)            | OK                               |
+| `typescript@^5.0.2`                     | devDep | Yes (build + runtime transpile) | **Move to deps** (see Finding 6) |
+| `vite@^4.4.5`                           | devDep | Yes                             | **Upgrade** (see Finding 10)     |
+| `vite-plugin-electron@^0.28.0`          | devDep | Yes (vite.config.ts)            | OK                               |
+| `vite-plugin-electron-renderer@^0.14.0` | devDep | No                              | **Remove**                       |
+| `vitest@^3.0.5`                         | devDep | Yes                             | OK                               |
+| `@playwright/test@^1.51.0`              | devDep | Yes (e2e tests)                 | OK                               |
 
 ### `/packages/core/package.json`
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
+
+| Package             | Type   | Used?              | Verdict                    |
+| ------------------- | ------ | ------------------ | -------------------------- |
 | `typescript@^5.0.0` | devDep | No (no build step) | **Remove** (hoist to root) |
 
 ### `/packages/extension-host/package.json`
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
-| `@nuxy/core` | dep | Yes | OK |
+
+| Package             | Type   | Used?              | Verdict                    |
+| ------------------- | ------ | ------------------ | -------------------------- |
+| `@nuxy/core`        | dep    | Yes                | OK                         |
 | `typescript@^5.0.0` | devDep | No (no build step) | **Remove** (hoist to root) |
 
 ### `/packages/extension-sdk/package.json`
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
-| `@nuxy/core` | dep | Yes | OK |
+
+| Package             | Type   | Used?              | Verdict                    |
+| ------------------- | ------ | ------------------ | -------------------------- |
+| `@nuxy/core`        | dep    | Yes                | OK                         |
 | `typescript@^5.0.0` | devDep | No (no build step) | **Remove** (hoist to root) |
 
 ### `/packages/ui/package.json`
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
-| `react@^18.0.0` | peerDep | Yes | OK |
-| `react-dom@^18.0.0` | peerDep | Yes | OK |
-| `@types/react@^18.3.28` | devDep | Yes | OK |
-| `typescript@^5.0.0` | devDep | No (no build step) | **Remove** (hoist to root) |
+
+| Package                 | Type    | Used?              | Verdict                    |
+| ----------------------- | ------- | ------------------ | -------------------------- |
+| `react@^18.0.0`         | peerDep | Yes                | OK                         |
+| `react-dom@^18.0.0`     | peerDep | Yes                | OK                         |
+| `@types/react@^18.3.28` | devDep  | Yes                | OK                         |
+| `typescript@^5.0.0`     | devDep  | No (no build step) | **Remove** (hoist to root) |
 
 ### `/extensions/calculator/package.json`
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
-| `@nuxy/extension-sdk` | dep | JSDoc-only | **Consider removing** (see Finding 7) |
+
+| Package               | Type | Used?      | Verdict                               |
+| --------------------- | ---- | ---------- | ------------------------------------- |
+| `@nuxy/extension-sdk` | dep  | JSDoc-only | **Consider removing** (see Finding 7) |
 
 ### `/extensions/clipboard/package.json`
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
-| `@nuxy/extension-sdk` | dep | JSDoc-only | **Consider removing** (see Finding 7) |
+
+| Package               | Type | Used?      | Verdict                               |
+| --------------------- | ---- | ---------- | ------------------------------------- |
+| `@nuxy/extension-sdk` | dep  | JSDoc-only | **Consider removing** (see Finding 7) |
 
 ### `/extensions/shell/package.json`
-| Package | Type | Used? | Verdict |
-|---------|------|-------|---------|
-| *(none)* | — | — | **Consider adding SDK dep** for consistency (see Finding 8) |
+
+| Package  | Type | Used? | Verdict                                                     |
+| -------- | ---- | ----- | ----------------------------------------------------------- |
+| _(none)_ | —    | —     | **Consider adding SDK dep** for consistency (see Finding 8) |
 
 ---
 

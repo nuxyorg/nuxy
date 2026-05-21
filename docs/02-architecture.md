@@ -13,7 +13,7 @@ graph TD
         WinMgr[Empty Window Manager]
         Broker[Kernel Message Broker & Validator]
         Loader[Directory Scanner]
-        
+
         App --> WinMgr
         App --> Loader
         Loader --> Broker
@@ -43,16 +43,20 @@ graph TD
 ## 2. Core Components Breakdown
 
 ### 2.1 The Kernel (`/electron/main/`)
-The Kernel is the ultimate authority. It runs in the main Node.js process and has full OS access. It intercepts all requests from the isolated workers. 
+
+The Kernel is the ultimate authority. It runs in the main Node.js process and has full OS access. It intercepts all requests from the isolated workers.
+
 - **Filesystem Firewall**: Prevents Path Traversal (Chroot).
 - **Schema Validator**: Ensures JSON payloads between modules strictly adhere to registered schemas.
 
 ### 2.2 The Isolated Threads (`Worker_Threads` / `isolated-vm`)
-To prevent malicious code from accessing the host or other extensions, the Backend logic of an extension does **not** run in the shared Node.js process. 
+
+To prevent malicious code from accessing the host or other extensions, the Backend logic of an extension does **not** run in the shared Node.js process.
 Each extension gets its own dedicated Worker. Memory is fundamentally physically separated. An extension cannot access another extension's variables.
 
 ### 2.3 The React Canvas (`/src/`)
-The React frontend is literally a blank `div`. It listens to the Kernel via IPC. When the Kernel announces "I loaded extension X", the React frontend uses a dynamic `import('nuxy-ext://X/frontend.js')` to fetch the UI code. 
+
+The React frontend is literally a blank `div`. It listens to the Kernel via IPC. When the Kernel announces "I loaded extension X", the React frontend uses a dynamic `import('nuxy-ext://X/frontend.js')` to fetch the UI code.
 Because the frontend also runs in Chromium with `contextIsolation: true` and `sandbox: true`, malicious UI code cannot breach the OS.
 
 ---

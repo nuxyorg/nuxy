@@ -4,7 +4,7 @@
 
 The core philosophy of Nuxy is that the executable itself is a completely useless shell. If `~/.nuxy/extensions/` is empty, Nuxy does absolutely nothing.
 
-## 2. The Strict Isolation Loading Sequence 
+## 2. The Strict Isolation Loading Sequence
 
 Nuxy treats every extension as potentially hostile. They must be isolated.
 
@@ -18,62 +18,68 @@ Nuxy treats every extension as potentially hostile. They must be isolated.
 
 ## 3. The Core Context (MessagePort Proxy)
 
-The `CoreContext` the extension sees is actually just a facade that serializes requests and sends them to the Kernel. 
+The `CoreContext` the extension sees is actually just a facade that serializes requests and sends them to the Kernel.
 
 ```typescript
 // @nuxy/core (NPM package for extension developers to get types)
 export interface CoreContext {
   registry: {
-    registerTool: (config: ToolConfig) => void;
+    registerTool: (config: ToolConfig) => void
     // ...
-  };
+  }
   extensions: {
     // Only available if 'caller: true' in manifest
     // Sends a message to the Kernel, which validates and routes to the target Worker.
-    invoke?: (extensionName: string, params: any) => Promise<any>;
-  };
+    invoke?: (extensionName: string, params: any) => Promise<any>
+  }
   storage: {
     // Kernel intercepts this, forcing path to ~/.nuxy/data/<ext_id>/
-    read: <T>(key: string) => Promise<T>;   
-    write: <T>(key: string, value: T) => Promise<void>;
-  };
+    read: <T>(key: string) => Promise<T>
+    write: <T>(key: string, value: T) => Promise<void>
+  }
 }
 ```
 
 ## 4. Developing an Orchestrator & Tool (Cross-Communication)
 
-Because of Worker Thread isolation, modules **never** touch each other. 
+Because of Worker Thread isolation, modules **never** touch each other.
 
 ### 4.1 The Tool (Currency Converter)
+
 **Manifest**: `"callable": true, "caller": false`
+
 ```typescript
 // Runs in Worker Thread A
 export function register(core: CoreContext) {
   core.registry.registerTool({
     name: 'currency',
-    schema: { /* ... */ },
+    schema: {
+      /* ... */
+    },
     execute: async (payload) => {
-       // Executed only when the Kernel forwards a valid request to this thread
-       return { result: payload.amt * 1.5 };
-    }
-  });
+      // Executed only when the Kernel forwards a valid request to this thread
+      return { result: payload.amt * 1.5 }
+    },
+  })
 }
 ```
 
 ### 4.2 The Orchestrator (AI Match Unmatched)
+
 **Manifest**: `"callable": false, "caller": true`
+
 ```typescript
 // Runs in Worker Thread B
 export function register(core: CoreContext) {
   core.registry.registerOrchestrator(async (rawTextInput) => {
-    const tools = core.registry.getCallableTools!();
-    const llmResponse = await ollama.functionCall(rawTextInput, tools);
-    
+    const tools = core.registry.getCallableTools!()
+    const llmResponse = await ollama.functionCall(rawTextInput, tools)
+
     // Thread B asks the Kernel to invoke the Currency Tool.
     // Thread B has zero direct access to Thread A.
-    const output = await core.extensions!.invoke(llmResponse.name, llmResponse.parameters);
-    core.notify("AI Result", JSON.stringify(output));
-  });
+    const output = await core.extensions!.invoke(llmResponse.name, llmResponse.parameters)
+    core.notify('AI Result', JSON.stringify(output))
+  })
 }
 ```
 

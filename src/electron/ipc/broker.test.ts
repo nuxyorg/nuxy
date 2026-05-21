@@ -4,7 +4,7 @@ import { registerExtension, clearRegistry, setExtensionChannels } from '../exten
 import type { LoadedExtension } from '@nuxy/core'
 
 vi.mock('./worker-invoke.js', () => ({
-  invokeWorker: vi.fn(async () => ({ success: true, data: { ok: true } }))
+  invokeWorker: vi.fn(async () => ({ success: true, data: { ok: true } })),
 }))
 
 import { invokeWorker } from './worker-invoke.js'
@@ -17,8 +17,8 @@ const caller: LoadedExtension = {
     name: 'Caller',
     version: '1.0.0',
     type: 'orchestrator',
-    capabilities: { caller: true, callable: false }
-  }
+    capabilities: { caller: true, callable: false },
+  },
 }
 
 const target: LoadedExtension = {
@@ -29,8 +29,8 @@ const target: LoadedExtension = {
     name: 'Target',
     version: '1.0.0',
     type: 'provider',
-    capabilities: { caller: false, callable: true }
-  }
+    capabilities: { caller: false, callable: true },
+  },
 }
 
 describe('invokeExtension', () => {
@@ -46,7 +46,7 @@ describe('invokeExtension', () => {
     registerExtension({
       ...caller,
       id: 'com.nuxy.bad',
-      manifest: { ...caller.manifest, id: 'com.nuxy.bad', capabilities: { caller: false } }
+      manifest: { ...caller.manifest, id: 'com.nuxy.bad', capabilities: { caller: false } },
     })
     const r = await invokeExtension('com.nuxy.bad', 'com.nuxy.target', 'eval', {})
     expect(r.code).toBe('CALLER_DENIED')
@@ -56,7 +56,7 @@ describe('invokeExtension', () => {
     registerExtension({
       ...target,
       id: 'com.nuxy.locked',
-      manifest: { ...target.manifest, id: 'com.nuxy.locked', capabilities: { callable: false } }
+      manifest: { ...target.manifest, id: 'com.nuxy.locked', capabilities: { callable: false } },
     })
     const r = await invokeExtension('com.nuxy.caller', 'com.nuxy.locked', 'eval', {})
     expect(r.code).toBe('CALLABLE_DENIED')
@@ -69,7 +69,7 @@ describe('invokeExtension', () => {
 
   it('forwards to worker when allowed', async () => {
     const r = await invokeExtension('com.nuxy.caller', 'com.nuxy.target', 'eval', {
-      text: '1+1'
+      text: '1+1',
     })
     expect(r.success).toBe(true)
     expect(invokeWorker).toHaveBeenCalledWith('com.nuxy.target', 'eval', { text: '1+1' })

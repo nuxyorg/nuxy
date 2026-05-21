@@ -1,15 +1,17 @@
 import type { IpcResult } from '@nuxy/core'
-import {
-  getExtensionById,
-  isChannelAllowed
-} from '../extensions/registry.js'
+import { getExtensionById, isChannelAllowed } from '../extensions/registry.js'
 
 const KERNEL_CHANNELS = new Set([
   'listTools',
   'listProviders',
   'listOrchestrators',
   'getConfig',
-  'getTheme'
+  'applyWindowSettings',
+  'getTheme',
+  'listThemes',
+  'getThemeByName',
+  'getIcon',
+  'listIconPacks',
 ])
 
 export function validateExtInvokeArgs(
@@ -22,7 +24,7 @@ export function validateExtInvokeArgs(
   if (typeof extId !== 'string' || extId.trim() === '') {
     return {
       ok: false,
-      result: { success: false, error: 'Invalid extId', code: 'INVALID_ARGS' }
+      result: { success: false, error: 'Invalid extId', code: 'INVALID_ARGS' },
     }
   }
 
@@ -32,8 +34,8 @@ export function validateExtInvokeArgs(
       result: {
         success: false,
         error: 'Invalid channel',
-        code: 'INVALID_ARGS'
-      }
+        code: 'INVALID_ARGS',
+      },
     }
   }
 
@@ -47,8 +49,8 @@ export function validateExtInvokeArgs(
         result: {
           success: false,
           error: `Unknown kernel channel: ${ch}`,
-          code: 'UNKNOWN_CHANNEL'
-        }
+          code: 'UNKNOWN_CHANNEL',
+        },
       }
     }
     if (payload !== undefined && payload !== null && typeof payload !== 'object') {
@@ -57,8 +59,8 @@ export function validateExtInvokeArgs(
         result: {
           success: false,
           error: 'Kernel channel payload must be an object',
-          code: 'INVALID_ARGS'
-        }
+          code: 'INVALID_ARGS',
+        },
       }
     }
     return { ok: true, extId: id, channel: ch, payload }
@@ -70,8 +72,8 @@ export function validateExtInvokeArgs(
       result: {
         success: false,
         error: `Extension not found: ${id}`,
-        code: 'EXTENSION_NOT_FOUND'
-      }
+        code: 'EXTENSION_NOT_FOUND',
+      },
     }
   }
 
@@ -81,8 +83,8 @@ export function validateExtInvokeArgs(
       result: {
         success: false,
         error: `Unknown channel: ${ch}`,
-        code: 'UNKNOWN_CHANNEL'
-      }
+        code: 'UNKNOWN_CHANNEL',
+      },
     }
   }
 

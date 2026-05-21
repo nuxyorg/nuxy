@@ -7,7 +7,7 @@ const base: ExtensionManifest = {
   id: 'com.nuxy.test',
   name: 'Test',
   version: '1.0.0',
-  type: 'tool'
+  type: 'tool',
 }
 
 describe('effectivePermissions', () => {
@@ -19,7 +19,7 @@ describe('effectivePermissions', () => {
     expect(
       effectivePermissions({
         ...base,
-        permissions: ['clipboard', 'storage']
+        permissions: ['clipboard', 'storage'],
       })
     ).toEqual(['clipboard', 'storage'])
   })

@@ -1,32 +1,34 @@
 # 13 - Deployment & CI/CD
 
 ## 1. Electron Builder Configuration
+
 Packaging an application with native dependencies (like `node-pty` used in the AI Terminal module) requires robust configuration. Nuxy uses `electron-builder` to create installers for Linux, macOS, and Windows.
 
 ### 1.1 Key Config (`electron-builder.json5`)
+
 ```json5
 {
-  appId: "com.nuxy.app",
-  productName: "Nuxy",
+  appId: 'com.nuxy.app',
+  productName: 'Nuxy',
   directories: {
-    output: "release"
+    output: 'release',
   },
   files: [
-    "dist/**/*",        // React Build
-    "dist-electron/**/*"// Main Process Build
+    'dist/**/*', // React Build
+    'dist-electron/**/*', // Main Process Build
   ],
   linux: {
-    target: ["AppImage", "deb"],
-    category: "Utility"
+    target: ['AppImage', 'deb'],
+    category: 'Utility',
   },
   mac: {
-    target: ["dmg"],
+    target: ['dmg'],
     hardenedRuntime: true,
-    entitlements: "build/entitlements.mac.plist" // Required for global hotkeys
+    entitlements: 'build/entitlements.mac.plist', // Required for global hotkeys
   },
   win: {
-    target: ["nsis"] // Standard Windows installer
-  }
+    target: ['nsis'], // Standard Windows installer
+  },
 }
 ```
 
@@ -45,16 +47,16 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-    
+
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-          
+
       - name: Install Dependencies
         run: npm ci
-        
+
       - name: Build and Package
         run: npm run build
         env:
@@ -62,26 +64,27 @@ jobs:
 ```
 
 ## 3. Seamless Auto-Updates
+
 Using `electron-updater`, Nuxy checks for updates silently in the background.
 
 ```typescript
 // electron/main/updater.ts
-import { autoUpdater } from 'electron-updater';
-import { CoreContext } from '@core/types';
+import { autoUpdater } from 'electron-updater'
+import { CoreContext } from '@core/types'
 
 export function initializeUpdater(core: CoreContext) {
   autoUpdater.on('update-available', () => {
-    core.notify('Nuxy Update', 'A new version is downloading...');
-  });
+    core.notify('Nuxy Update', 'A new version is downloading...')
+  })
 
   autoUpdater.on('update-downloaded', () => {
-    core.notify('Nuxy Update', 'Update ready. App will restart on next launch.');
+    core.notify('Nuxy Update', 'Update ready. App will restart on next launch.')
     // Can optionally call autoUpdater.quitAndInstall()
-  });
+  })
 
   // Check once on boot, then every 24 hours
-  autoUpdater.checkForUpdatesAndNotify();
-  setInterval(() => autoUpdater.checkForUpdatesAndNotify(), 86400000);
+  autoUpdater.checkForUpdatesAndNotify()
+  setInterval(() => autoUpdater.checkForUpdatesAndNotify(), 86400000)
 }
 ```
 

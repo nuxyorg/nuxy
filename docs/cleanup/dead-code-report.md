@@ -78,12 +78,12 @@ Generated: 2026-05-19
 
 ## Summary
 
-| # | Location | Kind | Risk | Auto-Fixed |
-|---|----------|------|------|------------|
-| 1 | `src/electron/dev/extensions.ts.bak` | Stale backup file | Low | Yes |
-| 2 | `src/electron/config/config.ts` | Dead re-export shim | Low | No |
-| 3 | `ipc/worker-invoke.ts:19`, `extension-host/src/index.ts:53` | Duplicate insecure ID generator | Medium | No |
-| 4 | `CoreContext.ipc.broadcast` | Unimplemented no-op API | Medium | No |
-| 5 | `CoreContext.registry.*` | Stub registry methods, silently discarded | Medium | No |
-| 6 | `media/platforms/darwin`, `media/platforms/win32` | Unimplemented platform stubs | Low | No |
-| 7 | `spawn/migrate-data.ts`, `paths.ts:LEGACY_DATA_DIR` | Unbounded legacy migration | Medium | No |
+| #   | Location                                                    | Kind                                      | Risk   | Auto-Fixed |
+| --- | ----------------------------------------------------------- | ----------------------------------------- | ------ | ---------- |
+| 1   | `src/electron/dev/extensions.ts.bak`                        | Stale backup file                         | Low    | Yes        |
+| 2   | `src/electron/config/config.ts`                             | Dead re-export shim                       | Low    | No         |
+| 3   | `ipc/worker-invoke.ts:19`, `extension-host/src/index.ts:53` | Duplicate insecure ID generator           | Medium | No         |
+| 4   | `CoreContext.ipc.broadcast`                                 | Unimplemented no-op API                   | Medium | No         |
+| 5   | `CoreContext.registry.*`                                    | Stub registry methods, silently discarded | Medium | No         |
+| 6   | `media/platforms/darwin`, `media/platforms/win32`           | Unimplemented platform stubs              | Low    | No         |
+| 7   | `spawn/migrate-data.ts`, `paths.ts:LEGACY_DATA_DIR`         | Unbounded legacy migration                | Medium | No         |

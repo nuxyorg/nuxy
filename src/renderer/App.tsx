@@ -13,11 +13,24 @@ export default function App() {
   const [extensionCount, setExtensionCount] = useState<number | null>(null)
 
   useEffect(() => {
-    const core = (window as Window & { core?: { ipc?: { invoke: (extId: string, channel: string, payload: unknown) => Promise<IpcResult<unknown>> }; window?: { onShow?: (cb: () => void) => (() => void) | undefined } } }).core
+    const core = (
+      window as Window & {
+        core?: {
+          ipc?: {
+            invoke: (
+              extId: string,
+              channel: string,
+              payload: unknown
+            ) => Promise<IpcResult<unknown>>
+          }
+          window?: { onShow?: (cb: () => void) => (() => void) | undefined }
+        }
+      }
+    ).core
 
     Promise.all([
       core?.ipc?.invoke('kernel', 'listTools', {}),
-      core?.ipc?.invoke('kernel', 'getTheme', {})
+      core?.ipc?.invoke('kernel', 'getTheme', {}),
     ])
       .then(([toolsRes, themeRes]) => {
         if (toolsRes?.success && Array.isArray(toolsRes.data)) {
@@ -89,8 +102,7 @@ export default function App() {
         title="No extensions loaded"
         message={
           <>
-            Place extensions in <code>{EXTENSIONS_PATH}</code> to give Nuxy
-            functionality.
+            Place extensions in <code>{EXTENSIONS_PATH}</code> to give Nuxy functionality.
           </>
         }
       />

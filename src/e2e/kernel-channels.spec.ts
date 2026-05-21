@@ -1,12 +1,9 @@
 import { test, expect } from '@playwright/test'
-import {
-  validateExtInvokeArgs,
-  validateWindowResize
-} from '../electron/ipc/validate.js'
+import { validateExtInvokeArgs, validateWindowResize } from '../electron/ipc/validate.js'
 import {
   clearRegistry,
   registerExtension,
-  setExtensionChannels
+  setExtensionChannels,
 } from '../electron/extensions/registry.js'
 import type { LoadedExtension } from '@nuxy/core'
 
@@ -17,8 +14,8 @@ const sample: LoadedExtension = {
     id: 'com.nuxy.e2e',
     name: 'E2E',
     version: '1.0.0',
-    type: 'provider'
-  }
+    type: 'provider',
+  },
 }
 
 test.describe('kernel IPC validation (unit-style e2e)', () => {

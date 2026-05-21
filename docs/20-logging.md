@@ -10,11 +10,11 @@ Nuxy uses a structured, leveled logging system built into the Kernel. All loggin
 
 ## Log Levels
 
-| Level   | Value | When to use |
-|---------|-------|-------------|
-| `error` | 3     | Unrecoverable runtime failures, unhandled exceptions |
-| `warn`  | 2     | Non-fatal issues, unexpected-but-handled states |
-| `info`  | 1     | Normal lifecycle events (module loads, IPC registration, worker spawns). **Default.** |
+| Level   | Value | When to use                                                                             |
+| ------- | ----- | --------------------------------------------------------------------------------------- |
+| `error` | 3     | Unrecoverable runtime failures, unhandled exceptions                                    |
+| `warn`  | 2     | Non-fatal issues, unexpected-but-handled states                                         |
+| `info`  | 1     | Normal lifecycle events (module loads, IPC registration, worker spawns). **Default.**   |
 | `silly` | 0     | Hyper-verbose trace: every IPC message payload, every manifest field, every regex match |
 
 Levels are additive upwards — setting `silly` shows everything.
@@ -41,27 +41,27 @@ LOG_LEVEL=warn pnpm --dir /home/xava/Documents/functiongemma dev
 ## Kernel Logger (Main Process)
 
 ```ts
-import { kernelLogger } from '../../../packages/core/src/logger.js';
+import { kernelLogger } from '../../../packages/core/src/logger.js'
 
-const log = kernelLogger.child('MyModule');
+const log = kernelLogger.child('MyModule')
 
-log.info('Module initialized');
-log.silly('Raw payload received', payload);
-log.warn('Unexpected state', { state });
-log.error('Fatal error', err);
+log.info('Module initialized')
+log.silly('Raw payload received', payload)
+log.warn('Unexpected state', { state })
+log.error('Fatal error', err)
 ```
 
 ### Namespaces
 
 Each module creates a child logger so output is easy to filter:
 
-| Namespace              | Module                         |
-|------------------------|-------------------------------|
-| `Kernel:App`           | `electron/main.ts`            |
-| `Kernel:Scanner`       | `electron/scanner.ts`         |
-| `Kernel:IPC`           | `electron/ipc.ts`             |
-| `Kernel:Spawn`         | `electron/worker/spawn.ts`    |
-| `Worker:<extId>:IPC`   | Injected into each worker     |
+| Namespace                 | Module                     |
+| ------------------------- | -------------------------- |
+| `Kernel:App`              | `electron/main.ts`         |
+| `Kernel:Scanner`          | `electron/scanner.ts`      |
+| `Kernel:IPC`              | `electron/ipc.ts`          |
+| `Kernel:Spawn`            | `electron/worker/spawn.ts` |
+| `Worker:<extId>:IPC`      | Injected into each worker  |
 | `Worker:<extId>:Registry` | Injected into each worker  |
 
 ---
@@ -77,14 +77,14 @@ Extensions receive a scoped logger through `core.logger`:
 // extensions/my-ext/backend.js
 module.exports = {
   register: (core) => {
-    core.logger.info('Extension booted');
+    core.logger.info('Extension booted')
 
     core.ipc.handle('my-channel', async (payload) => {
-      core.logger.silly('Received payload', payload);
+      core.logger.silly('Received payload', payload)
       // ...
-    });
-  }
-};
+    })
+  },
+}
 ```
 
 > Extensions **MUST NOT** use `console.log` directly. Use `core.logger` instead.
@@ -94,6 +94,7 @@ module.exports = {
 ## What Gets Logged
 
 ### `silly`
+
 - Every IPC message payload (id, channel, payload, result)
 - Every file found during extension scan
 - Manifest fields after parse
@@ -102,6 +103,7 @@ module.exports = {
 - Active worker map state
 
 ### `info`
+
 - App lifecycle: ready, window created, bootstrap complete
 - Extension scan start/end
 - Worker spawned for extension X
@@ -110,6 +112,7 @@ module.exports = {
 - Tool / Provider / Orchestrator registered
 
 ### `warn`
+
 - Worker not found for `ext:invoke`
 - Extension has no backend entry
 - Worker exited with non-zero code
@@ -117,6 +120,7 @@ module.exports = {
 - No `register()` function on extension module
 
 ### `error`
+
 - Module import failed
 - Worker emitted error event
 - Failed to load/parse extension manifest

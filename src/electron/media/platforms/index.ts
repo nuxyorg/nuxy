@@ -7,7 +7,7 @@ const unsupportedProvider: MediaPlatformProvider = {
   platform: 'unsupported',
   async getNowPlaying() {
     return null
-  }
+  },
 }
 
 /** Resolve the media backend for the current OS. */

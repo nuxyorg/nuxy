@@ -13,9 +13,7 @@ export function platformId(): MediaPlatform {
 }
 
 /** Replace provider (tests) or refresh after hot reload. */
-export function setMediaProvider(
-  next: ReturnType<typeof createPlatformMediaProvider>
-): void {
+export function setMediaProvider(next: ReturnType<typeof createPlatformMediaProvider>): void {
   provider = next
 }
 

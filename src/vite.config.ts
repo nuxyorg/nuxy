@@ -10,19 +10,13 @@ const repoRoot = path.resolve(__dirname, '..')
 const workspaceAliases = {
   '@nuxy/core': path.resolve(repoRoot, 'packages/core/src/index.ts'),
   '@nuxy/ui': path.resolve(repoRoot, 'packages/ui/src/index.tsx'),
-  '@nuxy/extension-host': path.resolve(
-    repoRoot,
-    'packages/extension-host/src/index.ts'
-  ),
-  '@nuxy/extension-sdk': path.resolve(
-    repoRoot,
-    'packages/extension-sdk/src/index.ts'
-  )
+  '@nuxy/extension-host': path.resolve(repoRoot, 'packages/extension-host/src/index.ts'),
+  '@nuxy/extension-sdk': path.resolve(repoRoot, 'packages/extension-sdk/src/index.ts'),
 }
 
 export default defineConfig({
   resolve: {
-    alias: workspaceAliases
+    alias: workspaceAliases,
   },
   plugins: [
     react(),
@@ -31,7 +25,7 @@ export default defineConfig({
         entry: 'electron/bootstrap/main.ts',
         vite: {
           resolve: {
-            alias: workspaceAliases
+            alias: workspaceAliases,
           },
           build: {
             rollupOptions: {
@@ -40,18 +34,17 @@ export default defineConfig({
                 'worker/extension-host': path.resolve(
                   repoRoot,
                   'packages/extension-host/src/index.ts'
-                )
+                ),
               },
-              external: ['typescript', 'dbus-next', 'electron']
-            }
-          }
-        }
+              external: ['typescript', 'dbus-next', 'electron'],
+            },
+          },
+        },
       },
       preload: {
-        input: 'electron/bootstrap/preload.ts'
+        input: 'electron/bootstrap/preload.ts',
       },
-      renderer: {}
-    })
+    }),
   ],
-  base: './'
+  base: './',
 })

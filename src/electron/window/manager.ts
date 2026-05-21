@@ -24,19 +24,20 @@ export function createMainWindow() {
 
   mainWindow = new BrowserWindow({
     width: cfg.windowWidth,
-    height: cfg.windowMaxHeight,
     transparent: true,
+    backgroundColor: '#00000000',
     frame: false,
+    hasShadow: false,
     alwaysOnTop: cfg.alwaysOnTop,
     skipTaskbar: !cfg.showInTaskbar,
-    opacity: cfg.opacity,
+    opacity: 1,
     show: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
-      preload: path.join(app.getAppPath(), 'dist-electron', 'preload.mjs')
-    }
+      preload: path.join(app.getAppPath(), 'dist-electron', 'preload.mjs'),
+    },
   })
 
   applyConfigToWindow(mainWindow)
@@ -46,7 +47,25 @@ export function createMainWindow() {
     mainWindow?.webContents.send('window-show')
   })
 
-  if (!cfg.startHidden) {
+  mainWindow.on('blur', () => {
+    const { blurAction } = getConfig()
+    switch (blurAction) {
+      case 'minimize':
+        mainWindow?.minimize()
+        break
+      case 'quit':
+        app.quit()
+        break
+      case 'none':
+        break
+      case 'hide':
+      default:
+        mainWindow?.hide()
+        break
+    }
+  })
+
+  if (cfg.showOnStartup) {
     try {
       const cursorPoint = screen.getCursorScreenPoint()
       const display = screen.getDisplayNearestPoint(cursorPoint)

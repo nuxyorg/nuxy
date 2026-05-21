@@ -5,9 +5,7 @@ interface ExtensionModule {
   register: (core: CoreContext) => void | Promise<void>
 }
 
-function resolveExtensionModule(
-  extModule: Record<string, unknown>
-): ExtensionModule | undefined {
+function resolveExtensionModule(extModule: Record<string, unknown>): ExtensionModule | undefined {
   if (extModule && typeof extModule.register === 'function') {
     return extModule as ExtensionModule
   }
@@ -29,15 +27,9 @@ export async function loadExtensionModule(
 ): Promise<void> {
   logger.log('info', 'Loader', 'Loading extension module: ' + absolutePath)
   const extModule = await import(/* @vite-ignore */ absolutePath)
-  logger.log(
-    'info',
-    'Loader',
-    'Module loaded. Keys: ' + Object.keys(extModule || {}).join(', ')
-  )
+  logger.log('info', 'Loader', 'Module loaded. Keys: ' + Object.keys(extModule || {}).join(', '))
 
-  const ext = resolveExtensionModule(
-    extModule as Record<string, unknown>
-  )
+  const ext = resolveExtensionModule(extModule as Record<string, unknown>)
 
   if (ext?.register) {
     logger.log('info', 'Loader', 'Calling ext.register(core)...')

@@ -6,15 +6,15 @@ Nuxy is an Electron desktop launcher (spotlight/command-palette style). The core
 
 ## Quick links
 
-| I want to… | Go to |
-|------------|-------|
-| Understand what Nuxy is | [00. Overview](./00-overview.md) |
-| See the full system design | [Architecture map](./architecture.md) |
-| Build an extension | [Extension authoring](./21-extension-access.md) |
-| Check what APIs are implemented | [Documentation status index](./DOCUMENTATION.md) |
+| I want to…                         | Go to                                                 |
+| ---------------------------------- | ----------------------------------------------------- |
+| Understand what Nuxy is            | [00. Overview](./00-overview.md)                      |
+| See the full system design         | [Architecture map](./architecture.md)                 |
+| Build an extension                 | [Extension authoring](./21-extension-access.md)       |
+| Check what APIs are implemented    | [Documentation status index](./DOCUMENTATION.md)      |
 | Understand the current file layout | [Structure & restructure plan](./restructure-plan.md) |
-| See the MVP plan | [19. MVP Roadmap](./19-mvp-roadmap.md) |
-| See pain points and gaps | [Pain points plan](./pain-points-plan.md) |
+| See the MVP plan                   | [19. MVP Roadmap](./19-mvp-roadmap.md)                |
+| See pain points and gaps           | [Pain points plan](./pain-points-plan.md)             |
 
 ---
 
@@ -67,12 +67,12 @@ Starter template: `packages/ext-template/`
 
 ## Runtime paths
 
-| Path | Purpose |
-|------|---------|
-| `~/.nuxy/nuxyconfig` | User settings |
-| `~/.nuxy/extensions/` | Installed extensions |
+| Path                          | Purpose                           |
+| ----------------------------- | --------------------------------- |
+| `~/.nuxy/nuxyconfig`          | User settings                     |
+| `~/.nuxy/extensions/`         | Installed extensions              |
 | `~/.nuxy/data/<manifest.id>/` | Extension storage (chroot-jailed) |
-| `~/.nuxy/themes/` | Runtime themes |
+| `~/.nuxy/themes/`             | Runtime themes                    |
 
 ---
 
@@ -83,7 +83,7 @@ The numbered series covers the architectural decisions behind Nuxy:
 - [00. Overview](./00-overview.md) — the "empty shell" philosophy
 - [01. System Analysis](./01-system-analysis.md)
 - [04. Modules](./04-modules.md)
-- [10. Security](./10-security.md) *(if present)*
+- [10. Security](./10-security.md) _(if present)_
 - [14. Rebuild Roadmap](./14-rebuild-roadmap.md)
 - [15. Modular Plugin System](./15-modular-plugin-system.md)
 - [18. Advanced Capabilities](./18-advanced-capabilities.md)

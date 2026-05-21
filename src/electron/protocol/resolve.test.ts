@@ -24,8 +24,8 @@ describe('resolveExtensionFile', () => {
         name: 'Clipboard',
         version: '1.0.0',
         type: 'tool',
-        entry: { frontend: 'frontend.js' }
-      }
+        entry: { frontend: 'frontend.js' },
+      },
     }
     registerExtension(ext)
   })
@@ -36,16 +36,10 @@ describe('resolveExtensionFile', () => {
   })
 
   it('resolves by manifest id', () => {
-    const r = resolveExtensionFile(
-      'com.nuxy.clipboard',
-      'frontend.js',
-      tmpRoot
-    )
+    const r = resolveExtensionFile('com.nuxy.clipboard', 'frontend.js', tmpRoot)
     expect(r).not.toBeNull()
     expect(r!.extensionId).toBe('com.nuxy.clipboard')
-    expect(r!.absolutePath).toBe(
-      path.join(tmpRoot, 'clipboard', 'frontend.js')
-    )
+    expect(r!.absolutePath).toBe(path.join(tmpRoot, 'clipboard', 'frontend.js'))
   })
 
   it('resolves by folder name', () => {
@@ -55,20 +49,12 @@ describe('resolveExtensionFile', () => {
   })
 
   it('blocks path traversal', () => {
-    const r = resolveExtensionFile(
-      'com.nuxy.clipboard',
-      '../../../etc/passwd',
-      tmpRoot
-    )
+    const r = resolveExtensionFile('com.nuxy.clipboard', '../../../etc/passwd', tmpRoot)
     expect(r).toBeNull()
   })
 
   it('returns null for missing file', () => {
-    const r = resolveExtensionFile(
-      'com.nuxy.clipboard',
-      'missing.js',
-      tmpRoot
-    )
+    const r = resolveExtensionFile('com.nuxy.clipboard', 'missing.js', tmpRoot)
     expect(r).toBeNull()
   })
 })

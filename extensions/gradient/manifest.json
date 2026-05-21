@@ -1,0 +1,10 @@
+{
+  "id": "com.nuxy.gradient",
+  "name": "Gradient",
+  "version": "1.0.0",
+  "type": "tool",
+  "permissions": [],
+  "entry": {
+    "frontend": "frontend.js"
+  }
+}

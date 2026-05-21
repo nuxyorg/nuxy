@@ -1,0 +1,120 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Commands
+
+All commands run from the repo root. `pnpm` is required (enforced by `preinstall`).
+
+```bash
+pnpm dev          # Start Electron app in dev mode (hot-reload, copies extensions)
+pnpm build        # Run tests then build renderer + Electron main
+pnpm package      # Build + package distributable via electron-builder
+pnpm test         # Run vitest unit tests (from src/)
+pnpm format       # Format all files with Prettier
+pnpm format:check # Check formatting without writing
+```
+
+Run from `src/` directly for more granular control:
+
+```bash
+pnpm -C src test           # Run unit tests once
+pnpm -C src test:watch     # Watch mode
+pnpm -C src test:e2e       # Playwright e2e tests
+pnpm -C src typecheck      # TypeScript check without emit
+```
+
+Single test file: `pnpm -C src test -- electron/ipc/validate.test.ts`
+
+Logging verbosity: `LOG_LEVEL=silly pnpm dev` (levels: `silly` | `info` | `warn` | `error`)
+
+## Architecture
+
+Nuxy is a frameless, transparent Electron launcher — a popup shell that extensions give functionality to.
+
+### Monorepo layout
+
+```
+packages/core          → @nuxy/core      — shared types, logger, IPC message types
+packages/ui            → @nuxy/ui        — React component library (Card, List, Input, etc.)
+packages/extension-host→ @nuxy/extension-host — worker runner that loads backend extensions
+packages/extension-sdk → @nuxy/extension-sdk  — extension authoring API (re-exports @nuxy/core)
+extensions/            → bundled extensions (shell, clipboard, calculator, angrysearch)
+src/                   → Electron + Vite app (renderer + main process)
+```
+
+Workspace aliases are resolved at build time in `src/vite.config.ts` — package source files are pointed to directly (no build step needed for packages).
+
+### Electron main process (`src/electron/`)
+
+Bootstrap order in `main.ts`:
+
+1. Register `nuxy-ext://` privileged protocol
+2. Register IPC handlers
+3. Create main window
+4. Scan and spawn extensions
+
+Key modules:
+
+- `config/nuxyconfig.ts` — reads/watches `~/.nuxy/nuxyconfig` (key=value format, hot-reloads on change)
+- `window/manager.ts` — creates the frameless transparent `BrowserWindow`
+- `window/runtime.ts` — applies config options and positions window on the nearest display
+- `window/spring.ts` — `WindowSpringController`: spring-physics animated window resizing triggered by `window:resize` IPC
+- `ipc/register.ts` — all `ipcMain` handlers; `ext:invoke` routes to either kernel built-ins or worker extensions
+- `extensions/scanner.ts` — scans `~/.nuxy/extensions/`, spawns a Worker thread per extension backend
+- `spawn/spawn.ts` — manages Worker threads; `extension-host` worker bundle runs in each thread
+- `protocol/register.ts` — serves extension assets (`frontend.js`, CSS, etc.) via `nuxy-ext://<ext-id>/...`
+
+A UNIX socket at `/tmp/nuxy.sock` accepts `toggle` and `show` commands from `nuxy.sh` or other processes.
+
+### Renderer (`src/renderer/`)
+
+Single-page React app. `App.tsx` dynamically imports `nuxy-ext://com.nuxy.shell/frontend.js` as the UI shell. The `window.core` object (injected by `preload.ts` via `contextBridge`) provides:
+
+- `core.ipc.invoke(extId, channel, payload)` → routes through `ext:invoke` IPC
+- `core.window.*` → resize, hide, esc, drag, center, onShow
+
+### Extension system
+
+**Extension format** (place under `~/.nuxy/extensions/<folder>/`):
+
+- `manifest.json` — required; fields: `id`, `name`, `version`, `type` (`tool`|`provider`|`orchestrator`), `bootstrap`, `permissions`, `entry.backend`, `entry.frontend`
+- `backend.js` — runs in a Worker thread; receives a `CoreContext` proxy
+- `frontend.js` — optional React component loaded by the shell via `nuxy-ext://`
+
+**Backend API** (`CoreContext` from `@nuxy/extension-sdk`):
+
+- `core.registry.registerTool/registerProvider/registerOrchestrator` — register with the kernel
+- `core.ipc.handle(channel, handler)` — expose a channel callable via `ext:invoke`
+- `core.clipboard`, `core.media`, `core.storage` — require matching `permissions` in manifest
+- `core.extensions.invoke(targetId, channel, payload)` — cross-extension calls
+
+**Worker isolation**: each backend runs in its own Worker thread. Calls to `core.*` send `host:call` messages to the main thread via `parentPort`; replies come back as `host:reply`. The broker in `packages/extension-host` manages this.
+
+**Dev sync**: `pnpm dev` copies `extensions/` into `~/.nuxy/extensions/`. Override with `NUXY_EXTENSIONS_SRC=/path` or force full replacement with `NUXY_DEV_OVERWRITE=1`.
+
+### Config file (`~/.nuxy/nuxyconfig`)
+
+Plain key=value format, auto-created on first run. Key options:
+
+- `theme` — `dark` | `light` | `system`
+- `escAction` / `blurAction` — `hide` | `minimize` | `quit` | `none`
+- `windowWidth`, `windowMaxHeight`
+- `windowPosition` — `center`, `50%`, `1/3`, `200px`, or `"x y"` pair
+- `alwaysOnTop`, `opacity`, `showInTaskbar`, `showOnStartup`
+
+### Themes & Icons
+
+**Theme extensions** (`type: "theme"`, `entry.theme: "theme.json"`): Scanner reads the JSON and registers it in `src/electron/themes/extension-themes.ts`. `loadTheme(name)` checks the extension registry first, then `~/.nuxy/themes/{name}.json`. Setting `theme = ocean` in nuxyconfig activates it. Kernel channel `getThemeByName` lets the renderer fetch any theme's CSS variables.
+
+**Icon pack extensions** (`type: "iconpack"`, `entry.icons: "icons.json"`): Scanner reads the JSON into `src/electron/icons/registry.ts`. Renderer accesses icons via `window.core.icons.get(name, pack?)`. The `icons.json` format is `{ version, name, icons: { [name]: svgString } }`.
+
+**Renderer API** (from preload):
+
+- `window.core.themes.list()` — all available theme names
+- `window.core.icons.get(name, pack?)` — SVG string for an icon
+- `window.core.icons.listPacks()` — all loaded icon pack names
+
+**`@nuxy/ui` SelectBox component**: keyboard-controlled dropdown placed in `ListItemActions`. Parent manages `open`, `focusedIndex`, `onSelect`, `onClose`, `onOpen` — component is fully controlled. Used by the Settings tool for theme/icon/zoom/font pickers.
+
+JSON theme files live in `src/themes/` and are copied to `~/.nuxy/themes/` on startup. Theme variables are applied as CSS custom properties on `document.documentElement`.

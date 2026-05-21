@@ -6,6 +6,6 @@ export function createWin32MediaProvider(): MediaPlatformProvider {
     platform: 'win32',
     async getNowPlaying() {
       return null
-    }
+    },
   }
 }

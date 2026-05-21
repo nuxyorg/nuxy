@@ -1,11 +1,6 @@
-export type ExtensionType = 'tool' | 'provider' | 'orchestrator'
+export type ExtensionType = 'tool' | 'provider' | 'orchestrator' | 'theme' | 'iconpack'
 
-export type ExtensionPermission =
-  | 'storage'
-  | 'clipboard'
-  | 'network'
-  | 'notifications'
-  | 'media'
+export type ExtensionPermission = 'storage' | 'clipboard' | 'network' | 'notifications' | 'media'
 
 export interface ExtensionManifest {
   id: string
@@ -22,6 +17,10 @@ export interface ExtensionManifest {
   entry?: {
     backend?: string
     frontend?: string
+    /** Path to a ThemeDefinition JSON file within the extension folder. */
+    theme?: string
+    /** Path to an IconPackDefinition JSON file within the extension folder. */
+    icons?: string
   }
 }
 
@@ -51,4 +50,13 @@ export interface ThemeDefinition {
   name: string
   colors: Record<string, string>
   tokens?: Record<string, string>
+  /** CSS class name overrides for shell UI elements (e.g. container, itemActive). */
+  styles?: Record<string, string>
+}
+
+export interface IconPackDefinition {
+  version: number
+  name: string
+  /** Map of logical icon name → SVG string. */
+  icons: Record<string, string>
 }

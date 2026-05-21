@@ -9,7 +9,7 @@ import {
   setExtensionChannels,
   isChannelAllowed,
   mergeRuntimeSync,
-  getDisplayName
+  getDisplayName,
 } from './registry.js'
 import type { LoadedExtension } from '@nuxy/core'
 
@@ -20,8 +20,8 @@ const ext: LoadedExtension = {
     id: 'com.nuxy.clipboard',
     name: 'Clipboard',
     version: '1.0.0',
-    type: 'tool'
-  }
+    type: 'tool',
+  },
 }
 
 describe('registry', () => {
@@ -55,7 +55,7 @@ describe('registry', () => {
   it('merges runtime display name', () => {
     mergeRuntimeSync('com.nuxy.clipboard', {
       ipcChannels: ['eval'],
-      displayName: 'Clip'
+      displayName: 'Clip',
     })
     const loaded = getExtensionById('com.nuxy.clipboard')!
     expect(getDisplayName(loaded)).toBe('Clip')

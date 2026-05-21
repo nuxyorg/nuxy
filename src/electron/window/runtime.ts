@@ -8,12 +8,10 @@ export function applyConfigToWindow(win: BrowserWindow): void {
   if (win.isDestroyed()) return
   const cfg = getConfig()
   win.setAlwaysOnTop(cfg.alwaysOnTop)
-  win.setOpacity(cfg.opacity)
   win.setSkipTaskbar(!cfg.showInTaskbar)
   log.silly('Applied config to window', {
     alwaysOnTop: cfg.alwaysOnTop,
-    opacity: cfg.opacity,
-    showInTaskbar: cfg.showInTaskbar
+    showInTaskbar: cfg.showInTaskbar,
   })
 }
 
@@ -22,6 +20,7 @@ export function positionWindowOnDisplay(win: BrowserWindow): void {
   try {
     const cursorPoint = screen.getCursorScreenPoint()
     const display = screen.getDisplayNearestPoint(cursorPoint)
+    win.setBounds(display.workArea)
     log.silly(`Positioned window on display ${display.id}`)
   } catch (err) {
     log.warn('Failed to position window', err)

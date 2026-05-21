@@ -6,6 +6,6 @@ export function createDarwinMediaProvider(): MediaPlatformProvider {
     platform: 'darwin',
     async getNowPlaying() {
       return null
-    }
+    },
   }
 }

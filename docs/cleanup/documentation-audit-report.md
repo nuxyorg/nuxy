@@ -104,6 +104,7 @@ The feature table references `storage-path.ts` for "Storage chroot." The file is
 
 **Problem:**  
 Notes column shows `registry.ts` and `ipc-validate.ts`. Actual locations are:
+
 - `src/electron/extensions/registry.ts`
 - `src/electron/ipc/validate.ts`
 
@@ -211,7 +212,7 @@ The authoring example in `extensions/README.md` demonstrates:
 export default defineExtension({
   register(core) {
     core.clipboard.readText()
-  }
+  },
 })
 ```
 
@@ -308,24 +309,24 @@ Extensions are loaded via ESM `import()` inside a worker. The equivalent restric
 
 ## Summary Table
 
-| # | File | Problem | Severity | Applied? |
-|---|------|---------|----------|---------|
-| 1 | `docs/README.md` | Framed as rebuild blueprint; full of broken links | High | Yes |
-| 2 | `docs/restructure-plan.md` | `src/src/` shown as current — Phase 1 already complete | Medium | No |
-| 3 | `docs/DOCUMENTATION.md` | `worker/spawn.ts` → `src/electron/spawn/spawn.ts` | Low | No |
-| 4 | `docs/DOCUMENTATION.md` | `protocol-resolve.ts` → `src/electron/protocol/resolve.ts` | Low | No |
-| 5 | `docs/DOCUMENTATION.md` | `storage-path.ts` → `src/electron/config/storage-path.ts` | Low | No |
-| 6 | `docs/DOCUMENTATION.md` | `registry.ts` / `ipc-validate.ts` missing domain prefix | Low | No |
-| 7 | `docs/DOCUMENTATION.md` | `broker.ts` → `src/electron/extensions/broker.ts` | Low | No |
-| 8 | `docs/DOCUMENTATION.md` | `src/e2e/` path accurate; no change needed | Info | No |
-| 9 | `docs/architecture.md` | `electron/core/ipc.ts` does not exist | Low | No |
-| 10 | `docs/architecture.md` | "MessagePort" wording slightly inaccurate | Very Low | No |
-| 11 | `docs/00-overview.md`, `19-mvp-roadmap.md` | "Node `vm` sandbox" — actual isolation is `worker_threads` | Medium | No |
-| 12 | `extensions/README.md` | Clipboard example missing `permissions` requirement note | Low | No |
-| 13 | `packages/ext-template/README.md` | `bootstrap: true` pattern undocumented | Low | No |
-| 14 | `docs/restructure-plan.md` | All phase checklists unchecked — Phases 1–3 complete | Medium | No |
-| 15 | `docs/README.md` | 15+ broken links to non-existent doc files | High | Yes |
-| 16 | `docs/00-overview.md` | `require('fs')` wording; extensions use ESM not CJS | Low | No |
+| #   | File                                       | Problem                                                    | Severity | Applied? |
+| --- | ------------------------------------------ | ---------------------------------------------------------- | -------- | -------- |
+| 1   | `docs/README.md`                           | Framed as rebuild blueprint; full of broken links          | High     | Yes      |
+| 2   | `docs/restructure-plan.md`                 | `src/src/` shown as current — Phase 1 already complete     | Medium   | No       |
+| 3   | `docs/DOCUMENTATION.md`                    | `worker/spawn.ts` → `src/electron/spawn/spawn.ts`          | Low      | No       |
+| 4   | `docs/DOCUMENTATION.md`                    | `protocol-resolve.ts` → `src/electron/protocol/resolve.ts` | Low      | No       |
+| 5   | `docs/DOCUMENTATION.md`                    | `storage-path.ts` → `src/electron/config/storage-path.ts`  | Low      | No       |
+| 6   | `docs/DOCUMENTATION.md`                    | `registry.ts` / `ipc-validate.ts` missing domain prefix    | Low      | No       |
+| 7   | `docs/DOCUMENTATION.md`                    | `broker.ts` → `src/electron/extensions/broker.ts`          | Low      | No       |
+| 8   | `docs/DOCUMENTATION.md`                    | `src/e2e/` path accurate; no change needed                 | Info     | No       |
+| 9   | `docs/architecture.md`                     | `electron/core/ipc.ts` does not exist                      | Low      | No       |
+| 10  | `docs/architecture.md`                     | "MessagePort" wording slightly inaccurate                  | Very Low | No       |
+| 11  | `docs/00-overview.md`, `19-mvp-roadmap.md` | "Node `vm` sandbox" — actual isolation is `worker_threads` | Medium   | No       |
+| 12  | `extensions/README.md`                     | Clipboard example missing `permissions` requirement note   | Low      | No       |
+| 13  | `packages/ext-template/README.md`          | `bootstrap: true` pattern undocumented                     | Low      | No       |
+| 14  | `docs/restructure-plan.md`                 | All phase checklists unchecked — Phases 1–3 complete       | Medium   | No       |
+| 15  | `docs/README.md`                           | 15+ broken links to non-existent doc files                 | High     | Yes      |
+| 16  | `docs/00-overview.md`                      | `require('fs')` wording; extensions use ESM not CJS        | Low      | No       |
 
 ---
 

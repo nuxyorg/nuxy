@@ -2,13 +2,15 @@
 
 **Goal**: Prove the "Empty Shell + Worker Thread Extension" paradigm works.
 
-**Scope Exclusions**: 
+**Scope Exclusions**:
+
 - AI Orchestrator integration (Ollama/Functiongemma)
 - Strict Chroot Jails and Sandbox Permissions (Trust by default for MVP)
 - Dynamic Permission Consent UI
 - WebAssembly (WASM) & Hot Reloading
 
 ## Milestone 1: The Bare Metal Shell
+
 - **Scope**: Scaffold the core application and UI canvas.
 - **Goal**: Have a blank transparent window that utilizes a Single Instance Daemon pattern.
 - **Key Features**:
@@ -18,6 +20,7 @@
   - `app.requestSingleInstanceLock()` to toggle visibility via global hotkeys (simulated via `/tmp/nuxy.sock` or OS shortcuts).
 
 ## Milestone 2: The Extension Engine
+
 - **Scope**: Build the Core Kernel components that discover and sandbox plugins.
 - **Goal**: The Kernel can find an extension folder and spawn its backend in a `worker_threads` instance.
 - **Key Features**:
@@ -27,6 +30,7 @@
   - Register custom `nuxy-ext://` protocol in Electron to serve frontend files locally.
 
 ## Milestone 3: The First Provider (Calculator)
+
 - **Scope**: Prove real-time input arbitration ("Provider" pattern).
 - **Goal**: User types math, the Calculator extension evaluates it via worker thread.
 - **Key Features**:
@@ -35,6 +39,7 @@
   - React UI sends typed text to Kernel -> Calculator Worker evaluates -> Returns answer -> React dropdown displays it.
 
 ## Milestone 4: The First Tool (Clipboard)
+
 - **Scope**: Prove custom UI mounting ("Tool" pattern).
 - **Goal**: User invokes the tool, and its React UI is dynamically mounted.
 - **Key Features**:

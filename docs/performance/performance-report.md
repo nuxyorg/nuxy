@@ -34,7 +34,8 @@ The codebase is generally well-structured for an Electron launcher, but has seve
   4. `kernel/getTheme` (line 50)
 
   Each one causes a separate renderer→main round-trip. Effects 1 and 4 (`listTools` and `getTheme`) are pure data fetches with no dependency on each other and could be issued in a single IPC call. Effect 3 is a listener registration (no IPC cost, but a separate render pass). Effect 2 triggers a protocol fetch which waits on the extension-host worker being alive.
-- **Impact**: The renderer makes at minimum 3 sequential render passes (mount → effect cleanup → individual state updates) and 2–3 IPC round-trips before it can show the shell. `getTheme` applies CSS variables *after* first paint, causing a flash of un-themed content if the initial render is fast.
+
+- **Impact**: The renderer makes at minimum 3 sequential render passes (mount → effect cleanup → individual state updates) and 2–3 IPC round-trips before it can show the shell. `getTheme` applies CSS variables _after_ first paint, causing a flash of un-themed content if the initial render is fast.
 - **Proposed Fix**: (a) Combine `listTools` and `getTheme` into a single `kernel/bootstrap` IPC channel that returns both in one reply, eliminating one round-trip. (b) Move theme application to the preload script so CSS variables are set before React hydration. (c) The `onShow` listener registration (effect 3) does not need to be in a separate effect — it can share a cleanup function with effect 2 or be moved to a dedicated hook so the intent is clearer.
 - **Risk Level**: Medium
 - **Applied Automatically?**: No
@@ -44,7 +45,7 @@ The codebase is generally well-structured for an Electron launcher, but has seve
 ### 3. `WindowSpringController` fires `setInterval` at 4 ms (250 Hz) in the main process
 
 - **Problem**: `src/electron/window/spring.ts:17,107` — `intervalMs` defaults to `4` (250 frames/sec). On each tick the handler calls `this.win.setContentSize(...)` (line 155), which is a synchronous cross-process Electron call that goes to the OS compositor. With `stiffness: 0.14` and `damping: 0.3` an animation can take 30–80 ticks to settle. The timer is started from the main process IPC handler for `window:resize` (`src/electron/ipc/register.ts:96`) which is itself called from the renderer on every resize event emitted by the shell extension.
-- **Impact**: 250 `setContentSize` calls per second saturates the OS window server connection during a resize animation. On Linux (X11/Wayland) this causes visible jank if any other main-process work (IPC, media query, config reload) runs concurrently, because Node.js's event loop must service both. The interval is never paused during window drag (`pause()` is called on `dragStart` — correct) but it *is* active any time the shell extension resizes the window, even for small increments.
+- **Impact**: 250 `setContentSize` calls per second saturates the OS window server connection during a resize animation. On Linux (X11/Wayland) this causes visible jank if any other main-process work (IPC, media query, config reload) runs concurrently, because Node.js's event loop must service both. The interval is never paused during window drag (`pause()` is called on `dragStart` — correct) but it _is_ active any time the shell extension resizes the window, even for small increments.
 - **Proposed Fix**: Increase `intervalMs` to `16` (60 Hz) which matches display refresh rate for most monitors without any perceptible difference in spring feel. For hi-DPI / 120 Hz displays `intervalMs: 8` is still half the current rate. Additionally, add a minimum delta threshold: skip `setContentSize` on ticks where both `|vw| < 1` and `|vh| < 1` to avoid IPC noise near the rest position.
 - **Risk Level**: Low
 - **Applied Automatically?**: No
@@ -63,9 +64,9 @@ The codebase is generally well-structured for an Electron launcher, but has seve
 
 ### 5. Per-IPC-call `worker.on('message', listener)` accumulates listeners
 
-- **Problem**: `src/electron/ipc/worker-invoke.ts:53` — each call to `invokeWorker` attaches a new `'message'` event listener to the worker via `worker.on('message', listener)`. The listener is correctly cleaned up via `worker.off('message', listener)` inside `finish()`. However, `finish()` is *also* called from the `setTimeout` timer after 15 seconds. If a burst of IPC calls is made before any of them resolve, each in-flight call adds a listener; Node.js emits an `MaxListenersExceededWarning` at 10 listeners by default. While the listeners do eventually clean up, the warning indicates a risk window.
+- **Problem**: `src/electron/ipc/worker-invoke.ts:53` — each call to `invokeWorker` attaches a new `'message'` event listener to the worker via `worker.on('message', listener)`. The listener is correctly cleaned up via `worker.off('message', listener)` inside `finish()`. However, `finish()` is _also_ called from the `setTimeout` timer after 15 seconds. If a burst of IPC calls is made before any of them resolve, each in-flight call adds a listener; Node.js emits an `MaxListenersExceededWarning` at 10 listeners by default. While the listeners do eventually clean up, the warning indicates a risk window.
 - **Impact**: In a burst scenario (e.g., shell extension issues several parallel `ext:invoke` calls), the warning can appear in logs and signals that the pattern does not scale well beyond ~10 concurrent in-flight calls to the same worker. It does not cause a memory leak because each listener cleans itself up.
-- **Proposed Fix**: Use a single persistent `'message'` listener per worker (a dispatch table keyed by `msgId`), which is already the pattern used *inside* the worker itself (`pendingHostCalls` Map in `packages/extension-host/src/index.ts:15`). Apply the same pattern in `invokeWorker`: register one `worker.on('message', dispatcher)` at spawn time and route by `msg.id` in the dispatcher, storing `{resolve, reject, timer}` in a `Map<string, …>`.
+- **Proposed Fix**: Use a single persistent `'message'` listener per worker (a dispatch table keyed by `msgId`), which is already the pattern used _inside_ the worker itself (`pendingHostCalls` Map in `packages/extension-host/src/index.ts:15`). Apply the same pattern in `invokeWorker`: register one `worker.on('message', dispatcher)` at spawn time and route by `msg.id` in the dispatcher, storing `{resolve, reject, timer}` in a `Map<string, …>`.
 - **Risk Level**: Low
 - **Applied Automatically?**: No
 
@@ -152,16 +153,16 @@ The codebase is generally well-structured for an Electron launcher, but has seve
 
 ## Priority Order
 
-| Priority | Item | File | Risk |
-|----------|------|------|------|
-| 1 | Extension scan blocks window creation | `bootstrap/main.ts:68`, `scanner.ts:63` | Medium |
-| 2 | 250 Hz spring interval in main process | `spring.ts:17` | Low |
-| 3 | Four uncoordinated useEffect IPC calls | `App.tsx:15-69` | Medium |
-| 4 | Synchronous fs in hot IPC handler | `host-handlers.ts:58-72` | Low |
-| 5 | Per-call worker message listener accumulation | `worker-invoke.ts:53` | Low |
-| 6 | Spring interval leak on destroyed window | `spring.ts:152` | Low |
-| 7 | migrateLegacyData on every spawn | `migrate-data.ts:12` | Low |
-| 8 | Dynamic electron import in IPC handler | `register.ts:66` | Low |
-| 9 | ensureUserThemes in startup critical path | `nuxyconfig.ts:127` | Low |
-| 10 | Full @nuxy/ui barrel import at renderer entry | `main.tsx:4` | Low |
-| 11 | fs.watch recursive on Linux (dev mode) | `scanner.ts:34` | Low (dev only) |
+| Priority | Item                                          | File                                    | Risk           |
+| -------- | --------------------------------------------- | --------------------------------------- | -------------- |
+| 1        | Extension scan blocks window creation         | `bootstrap/main.ts:68`, `scanner.ts:63` | Medium         |
+| 2        | 250 Hz spring interval in main process        | `spring.ts:17`                          | Low            |
+| 3        | Four uncoordinated useEffect IPC calls        | `App.tsx:15-69`                         | Medium         |
+| 4        | Synchronous fs in hot IPC handler             | `host-handlers.ts:58-72`                | Low            |
+| 5        | Per-call worker message listener accumulation | `worker-invoke.ts:53`                   | Low            |
+| 6        | Spring interval leak on destroyed window      | `spring.ts:152`                         | Low            |
+| 7        | migrateLegacyData on every spawn              | `migrate-data.ts:12`                    | Low            |
+| 8        | Dynamic electron import in IPC handler        | `register.ts:66`                        | Low            |
+| 9        | ensureUserThemes in startup critical path     | `nuxyconfig.ts:127`                     | Low            |
+| 10       | Full @nuxy/ui barrel import at renderer entry | `main.tsx:4`                            | Low            |
+| 11       | fs.watch recursive on Linux (dev mode)        | `scanner.ts:34`                         | Low (dev only) |

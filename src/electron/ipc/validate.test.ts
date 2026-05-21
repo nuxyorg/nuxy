@@ -1,13 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import {
-  validateExtInvokeArgs,
-  validateWindowResize
-} from './validate.js'
-import {
-  registerExtension,
-  clearRegistry,
-  setExtensionChannels
-} from '../extensions/registry.js'
+import { validateExtInvokeArgs, validateWindowResize } from './validate.js'
+import { registerExtension, clearRegistry, setExtensionChannels } from '../extensions/registry.js'
 import type { LoadedExtension } from '@nuxy/core'
 
 const sampleExt: LoadedExtension = {
@@ -17,8 +10,8 @@ const sampleExt: LoadedExtension = {
     id: 'com.nuxy.test',
     name: 'Test',
     version: '1.0.0',
-    type: 'tool'
-  }
+    type: 'tool',
+  },
 }
 
 describe('validateExtInvokeArgs', () => {

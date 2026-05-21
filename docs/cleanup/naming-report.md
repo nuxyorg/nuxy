@@ -9,6 +9,7 @@ Excluded: `node_modules`, `.git`, `src/release`, `src/dist*`
 ## 1. "kernel" vs "core" as IPC target ID
 
 **Problem**: The reserved IPC target used to call main-process built-ins is accepted under two different names — `'kernel'` and `'core'` — at two locations:
+
 - `src/electron/ipc/validate.ts:43` — `if (id === 'kernel' || id === 'core')`
 - `src/electron/ipc/register.ts:45` — `if (id === 'kernel' || id === 'core')`
 
@@ -35,6 +36,7 @@ All call sites (`src/renderer/App.tsx:17,52`, `extensions/shell/frontend.js:144-
 ## 3. Duplicate `ExtensionModule` interface
 
 **Problem**: `ExtensionModule` is declared in two separate files with identical shapes:
+
 - `packages/extension-sdk/src/index.ts:15` — `export interface ExtensionModule { register(core): void | Promise<void> }`
 - `packages/extension-host/src/load-extension.ts:4` — `interface ExtensionModule { register?(core): void | Promise<void> }` (note: `register` is optional here vs required in SDK)
 
@@ -50,6 +52,7 @@ The subtle difference (`register?` vs `register`) means the host silently accept
 ## 4. IPC channel name casing: `window:dragStart` (camelCase) vs `window:resize` (lowercase)
 
 **Problem**: Electron IPC `ipcMain.on` channel names mix lowercase-after-colon and camelCase-after-colon:
+
 - `'window:resize'`, `'window:hide'`, `'window:esc'`, `'window:center'` — all lowercase
 - `'window:dragStart'`, `'window:dragMove'`, `'window:dragEnd'` — camelCase
 
@@ -65,6 +68,7 @@ Affected files: `src/electron/bootstrap/preload.ts:14-16`, `src/electron/ipc/reg
 ## 5. IPC push event uses dash separator while IPC request channels use colon
 
 **Problem**: The event pushed from main → renderer uses `'window-show'` (dash):
+
 - `src/electron/window/manager.ts:46` — `mainWindow?.webContents.send('window-show')`
 - `src/electron/bootstrap/main.ts:54` — `win.webContents.send('window-show')`
 - `src/electron/bootstrap/preload.ts:19` — `ipcRenderer.on('window-show', …)`
@@ -81,6 +85,7 @@ All request channels (renderer → main) use colon: `'window:resize'`, `'window:
 ## 6. Custom DOM event names mix `camelCase` and `kebab-case`
 
 **Problem**: Custom `window.dispatchEvent` / `addEventListener` event names are inconsistent:
+
 - `'nuxy-shell-reset'` — kebab-case (`extensions/shell/frontend.js:47`, `src/renderer/App.tsx:42`)
 - `'omniBar-control'` — mixed camelCase+dash (`extensions/shell/frontend.js:90`, `extensions/clipboard/frontend.js:55`)
 - `'omniBar-keydown'` — mixed (`extensions/shell/frontend.js:119`, `extensions/clipboard/frontend.js:142`)
@@ -106,6 +111,7 @@ All request channels (renderer → main) use colon: `'window:resize'`, `'window:
 ## 8. BEM element separator inconsistency in `packages/ui` CSS
 
 **Problem**: Most `packages/ui` components use the double-underscore BEM element separator (`__`) for children, e.g.:
+
 - `nuxy-empty-state__title`, `nuxy-empty-state__message` (EmptyState/index.css)
 - `nuxy-list-item-text__*` does not exist — `ListItemText` has no child elements
 - `nuxy-list-item-meta__text` (ListItemMeta/index.css:7)
@@ -122,6 +128,7 @@ However `nuxy-shortcut-sep` in `ShortcutHint/index.css:9` is a **standalone clas
 ## 9. All `packages/ui` component props typed as `any`
 
 **Problem**: Every exported React component in `packages/ui/src/components/` uses `any` for its props type:
+
 - `Button/index.tsx:4` — `{ children, className, variant, ...props }: any`
 - `Badge/index.tsx:4`, `Card/index.tsx:4`, `Input/index.tsx:4`, `List/index.tsx:8`, `ListItem/index.tsx:4`, `ListItemBody/index.tsx:4`, `ListItemText/index.tsx:9`, `ListItemMeta/index.tsx:4`, `ListItemActions/index.tsx:4`, `Kbd/index.tsx:4`, `ShortcutBar/index.tsx:4`, `ShortcutHint/index.tsx:4` — all `any`
 
@@ -137,6 +144,7 @@ Only `EmptyState` has a real interface (`EmptyStateProps`, `EmptyState/index.tsx
 ## 10. `RegistrySyncPayload` in `extension-host` duplicates fields from `ExtensionRuntimeMeta` in `core`
 
 **Problem**:
+
 - `packages/core/src/types.ts:28` — `interface ExtensionRuntimeMeta { ipcChannels: string[]; displayName?: string }`
 - `packages/extension-host/src/core-proxy.ts:5` — `export interface RegistrySyncPayload { ipcChannels: string[]; displayName?: string }`
 
@@ -151,15 +159,15 @@ The two interfaces are structurally identical.
 
 ## Summary Table
 
-| # | Issue | Files | Risk |
-|---|-------|-------|------|
-| 1 | `'kernel'` vs `'core'` dual IPC target alias | `validate.ts`, `register.ts` | Low |
-| 2 | `kernelLogger` vs `window.core` conceptual split undocumented | `logger.ts`, `host-channels.ts` | Low |
-| 3 | Duplicate `ExtensionModule` interface with divergent `register` optionality | `extension-sdk/index.ts`, `load-extension.ts` | Medium |
-| 4 | IPC channel casing: `window:dragStart` vs `window:resize` | `preload.ts`, `register.ts` | Low |
-| 5 | IPC push event `window-show` uses dash while request channels use colon | `manager.ts`, `main.ts`, `preload.ts` | Low |
-| 6 | Custom DOM events: `omniBar-control` mixed case vs `nuxy-shell-reset` kebab | `shell/frontend.js`, `clipboard/frontend.js` | Low |
-| 7 | Shell CSS has no namespace prefix, risk of collision with `nuxy-` prefix convention | `shell/shell.css`, `shell/frontend.js` | Medium |
-| 8 | `nuxy-shortcut-sep` missing BEM `__` parent prefix | `ShortcutHint/index.css`, `ShortcutHint/index.tsx` | Low |
-| 9 | All `packages/ui` component props typed as `any` (except `EmptyState`) | All `packages/ui/src/components/*/index.tsx` | Medium |
-| 10 | `RegistrySyncPayload` duplicates `ExtensionRuntimeMeta` | `core-proxy.ts`, `types.ts` | Low |
+| #   | Issue                                                                               | Files                                              | Risk   |
+| --- | ----------------------------------------------------------------------------------- | -------------------------------------------------- | ------ |
+| 1   | `'kernel'` vs `'core'` dual IPC target alias                                        | `validate.ts`, `register.ts`                       | Low    |
+| 2   | `kernelLogger` vs `window.core` conceptual split undocumented                       | `logger.ts`, `host-channels.ts`                    | Low    |
+| 3   | Duplicate `ExtensionModule` interface with divergent `register` optionality         | `extension-sdk/index.ts`, `load-extension.ts`      | Medium |
+| 4   | IPC channel casing: `window:dragStart` vs `window:resize`                           | `preload.ts`, `register.ts`                        | Low    |
+| 5   | IPC push event `window-show` uses dash while request channels use colon             | `manager.ts`, `main.ts`, `preload.ts`              | Low    |
+| 6   | Custom DOM events: `omniBar-control` mixed case vs `nuxy-shell-reset` kebab         | `shell/frontend.js`, `clipboard/frontend.js`       | Low    |
+| 7   | Shell CSS has no namespace prefix, risk of collision with `nuxy-` prefix convention | `shell/shell.css`, `shell/frontend.js`             | Medium |
+| 8   | `nuxy-shortcut-sep` missing BEM `__` parent prefix                                  | `ShortcutHint/index.css`, `ShortcutHint/index.tsx` | Low    |
+| 9   | All `packages/ui` component props typed as `any` (except `EmptyState`)              | All `packages/ui/src/components/*/index.tsx`       | Medium |
+| 10  | `RegistrySyncPayload` duplicates `ExtensionRuntimeMeta`                             | `core-proxy.ts`, `types.ts`                        | Low    |

@@ -1,16 +1,15 @@
 /// <reference types="vite/client" />
-import { ipcMain, BrowserWindow, screen, app, nativeTheme } from 'electron'
+import { ipcMain, BrowserWindow, screen, app } from 'electron'
 import { loadedExtensions } from '../extensions/scanner.js'
-import {
-  getDisplayName,
-  isBootstrapExtension
-} from '../extensions/registry.js'
+import { getDisplayName, isBootstrapExtension } from '../extensions/registry.js'
 import { getOrCreateSpring } from '../window/spring.js'
 import { kernelLogger } from '@nuxy/core'
 import type { IpcResult } from '@nuxy/core'
-import { getConfig } from '../config/nuxyconfig.js'
-import { loadTheme } from '../themes/install.js'
-import { positionWindowOnDisplay } from '../window/runtime.js'
+import { getConfig, reloadConfig } from '../config/nuxyconfig.js'
+import { loadTheme, listFileThemeNames } from '../themes/install.js'
+import { listExtensionThemeNames } from '../themes/extension-themes.js'
+import { getIcon, listIconPacks } from '../icons/registry.js'
+import { positionWindowOnDisplay, applyConfigToWindow } from '../window/runtime.js'
 import { validateExtInvokeArgs, validateWindowResize } from './validate.js'
 import { invokeWorker } from './worker-invoke.js'
 
@@ -26,7 +25,7 @@ function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedEx
     .filter((ext) => ext.manifest.type === type && !isBootstrapExtension(ext))
     .map((ext) => ({
       ...ext,
-      manifest: { ...ext.manifest, name: getDisplayName(ext) }
+      manifest: { ...ext.manifest, name: getDisplayName(ext) },
     }))
 }
 
@@ -59,13 +58,50 @@ export function registerIpc() {
           return { success: true, data: getConfig() }
         }
 
+        if (ch === 'applyWindowSettings') {
+          // Settings extension calls this after saving to apply changes immediately
+          reloadConfig()
+          const win = BrowserWindow.getAllWindows()[0]
+          if (win && !win.isDestroyed()) applyConfigToWindow(win)
+          return { success: true }
+        }
+
         if (ch === 'getTheme') {
-          const cfg = getConfig()
-          let themeName = cfg.theme || 'dark'
-          if (themeName === 'system') {
-            themeName = nativeTheme.shouldUseDarkColors ? 'dark' : 'light'
+          // Theme is managed by the settings extension; default to 'dark' here
+          return { success: true, data: loadTheme('dark') }
+        }
+
+        if (ch === 'getThemeByName') {
+          const args = pl as { name?: string } | undefined
+          const name = args?.name
+          if (!name || typeof name !== 'string') {
+            return { success: false, error: 'Missing theme name', code: 'INVALID_ARGS' }
           }
-          return { success: true, data: loadTheme(themeName) }
+          return { success: true, data: loadTheme(name) }
+        }
+
+        if (ch === 'listThemes') {
+          const extNames = listExtensionThemeNames()
+          const fileNames = listFileThemeNames()
+          const all = [...new Set([...extNames, ...fileNames])]
+          return { success: true, data: all }
+        }
+
+        if (ch === 'getIcon') {
+          const args = pl as { name?: string; pack?: string } | undefined
+          const name = args?.name
+          if (!name || typeof name !== 'string') {
+            return { success: false, error: 'Missing icon name', code: 'INVALID_ARGS' }
+          }
+          const svg = getIcon(name, args?.pack)
+          if (!svg) {
+            return { success: false, error: `Icon not found: ${name}`, code: 'NOT_FOUND' }
+          }
+          return { success: true, data: svg }
+        }
+
+        if (ch === 'listIconPacks') {
+          return { success: true, data: listIconPacks() }
         }
       }
 
@@ -73,34 +109,11 @@ export function registerIpc() {
     }
   )
 
-  ipcMain.on('window:resize', (event, width: unknown, height: unknown) => {
-    const dims = validateWindowResize(width, height)
-    if (!dims.ok) {
-      log.warn('window:resize rejected — invalid dimensions', { width, height })
-      return
-    }
-
-    const win = BrowserWindow.fromWebContents(event.sender)
-    if (!win) return
-
-    const maxH = getConfig().windowMaxHeight
-    const targetW = Math.max(MIN_CONTENT_WIDTH, Math.round(dims.width))
-    const targetH = Math.min(
-      maxH,
-      Math.max(MIN_CONTENT_HEIGHT, Math.round(dims.height))
-    )
-
-    try {
-      const [, ch] = win.getContentSize()
-      const spring = getOrCreateSpring(win)
-      spring.setTarget({ width: targetW, height: targetH })
-      if (!win.isVisible() || ch < MIN_CONTENT_HEIGHT) {
-        spring.snapToTarget()
-      }
-    } catch (error) {
-      log.error('window:resize failed', error)
-      win.setContentSize(targetW, targetH)
-    }
+  ipcMain.on('window:resize', (_event, width: unknown, height: unknown) => {
+    log.silly('window:resize ignored because window is a transparent full-screen overlay', {
+      width,
+      height,
+    })
   })
 
   ipcMain.on('window:center', (event) => {
@@ -122,10 +135,7 @@ export function registerIpc() {
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win || win.isDestroyed()) return
     const cursor = screen.getCursorScreenPoint()
-    win.setPosition(
-      Math.round(cursor.x + dragOffset.x),
-      Math.round(cursor.y + dragOffset.y)
-    )
+    win.setPosition(Math.round(cursor.x + dragOffset.x), Math.round(cursor.y + dragOffset.y))
   })
 
   ipcMain.on('window:drag-end', (event) => {

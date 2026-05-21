@@ -5,11 +5,7 @@ import { activeWorkers } from '../spawn/spawn.js'
 const log = kernelLogger.child('WorkerInvoke')
 const EXT_INVOKE_TIMEOUT_MS = 15_000
 
-export function invokeWorker(
-  extId: string,
-  channel: string,
-  payload: unknown
-): Promise<IpcResult> {
+export function invokeWorker(extId: string, channel: string, payload: unknown): Promise<IpcResult> {
   const worker = activeWorkers.get(extId)
   if (!worker) {
     return Promise.resolve({ success: false, error: 'Worker not found' })
@@ -32,15 +28,11 @@ export function invokeWorker(
       finish({
         success: false,
         error: 'Worker did not respond in time',
-        code: 'TIMEOUT'
+        code: 'TIMEOUT',
       })
     }, EXT_INVOKE_TIMEOUT_MS)
 
-    const listener = (msg: {
-      id?: string
-      error?: string
-      result?: unknown
-    }) => {
+    const listener = (msg: { id?: string; error?: string; result?: unknown }) => {
       if (msg.id !== msgId) return
       if (msg.error) {
         log.warn(`Worker "${extId}" error on "${channel}"`, msg.error)

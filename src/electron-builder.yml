@@ -5,7 +5,7 @@ npmRebuild: false
 buildDependenciesFromSource: false
 asar: true
 asarUnpack:
-  - "**/*.node"
+  - '**/*.node'
 directories:
   output: release
   buildResources: build
@@ -13,14 +13,14 @@ files:
   - dist/**/*
   - dist-electron/**/*
   - package.json
-  - "!**/*.map"
-  - "!node_modules/@nuxy/**"
+  - '!**/*.map'
+  - '!node_modules/@nuxy/**'
 extraResources:
   - from: ../extensions
     to: extensions
     filter:
-      - "**/*"
-      - "!**/node_modules/**"
+      - '**/*'
+      - '!**/node_modules/**'
 linux:
   target:
     - AppImage

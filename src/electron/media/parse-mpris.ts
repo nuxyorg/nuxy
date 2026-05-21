@@ -45,8 +45,7 @@ export function parseMprisPlayer(
       : {}
 
   const title =
-    stringFromMetadataField(meta['xesam:title']) ??
-    stringFromMetadataField(meta['mpris:trackid'])
+    stringFromMetadataField(meta['xesam:title']) ?? stringFromMetadataField(meta['mpris:trackid'])
   const artist = stringFromMetadataField(meta['xesam:artist'])
   const album = stringFromMetadataField(meta['xesam:album'])
   const artworkUrl = stringFromMetadataField(meta['mpris:artUrl'])
@@ -65,7 +64,7 @@ export function parseMprisPlayer(
     album,
     playing,
     source: mprisBusNameToSource(busName),
-    artworkUrl
+    artworkUrl,
   }
 }
 

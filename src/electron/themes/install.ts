@@ -3,6 +3,7 @@ import path from 'path'
 import { THEMES_DIR } from '../config/paths.js'
 import { kernelLogger } from '@nuxy/core'
 import type { ThemeDefinition } from '@nuxy/core'
+import { getExtensionTheme } from './extension-themes.js'
 import darkBundled from '../../themes/default-dark.json'
 import lightBundled from '../../themes/default-light.json'
 
@@ -29,7 +30,7 @@ export function ensureUserThemes(): void {
 
   const pairs: Array<{ file: string; theme: ThemeDefinition }> = [
     { file: 'dark.json', theme: DEFAULT_DARK_THEME },
-    { file: 'light.json', theme: DEFAULT_LIGHT_THEME }
+    { file: 'light.json', theme: DEFAULT_LIGHT_THEME },
   ]
 
   for (const { file, theme } of pairs) {
@@ -42,6 +43,9 @@ export function ensureUserThemes(): void {
 }
 
 export function loadTheme(name: string): ThemeDefinition {
+  const extTheme = getExtensionTheme(name)
+  if (extTheme) return extTheme
+
   const themePath = path.join(THEMES_DIR, `${name}.json`)
   if (fs.existsSync(themePath)) {
     try {
@@ -52,4 +56,12 @@ export function loadTheme(name: string): ThemeDefinition {
   }
   if (name === 'light') return DEFAULT_LIGHT_THEME
   return DEFAULT_DARK_THEME
+}
+
+export function listFileThemeNames(): string[] {
+  if (!fs.existsSync(THEMES_DIR)) return ['dark', 'light']
+  return fs
+    .readdirSync(THEMES_DIR)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => f.slice(0, -5))
 }

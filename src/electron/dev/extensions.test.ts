@@ -8,20 +8,16 @@ describe('findWorkspaceExtensionsDir', () => {
     const devDir = fileURLToPath(new URL('.', import.meta.url))
     const found = findWorkspaceExtensionsDir(devDir)
     expect(found).toBeTruthy()
-    expect(found).toBe(
-      path.resolve(devDir, '../../../extensions')
-    )
+    expect(found).toBe(path.resolve(devDir, '../../../extensions'))
     expect(path.basename(found!)).toBe('extensions')
   })
 })
 
 describe('shouldSyncPath', () => {
   it('excludes node_modules (pnpm workspace symlinks)', () => {
-    expect(
-      shouldSyncPath(
-        '/repo/extensions/calculator/node_modules/@nuxy/extension-sdk'
-      )
-    ).toBe(false)
+    expect(shouldSyncPath('/repo/extensions/calculator/node_modules/@nuxy/extension-sdk')).toBe(
+      false
+    )
   })
 
   it('includes extension source files', () => {

@@ -16,7 +16,7 @@ export function findWorkspaceExtensionsDir(startDir: string): string | null {
 
   const cwdCandidates = [
     path.resolve(process.cwd(), 'extensions'),
-    path.resolve(process.cwd(), '../extensions')
+    path.resolve(process.cwd(), '../extensions'),
   ]
   for (const candidate of cwdCandidates) {
     if (isExtensionsRoot(candidate)) return candidate
@@ -74,8 +74,7 @@ function syncDirectory(src: string, dest: string): void {
         syncDirectory(resolved, destPath)
       } else {
         const shouldCopy =
-          !fs.existsSync(destPath) ||
-          fs.statSync(resolved).mtimeMs > fs.statSync(destPath).mtimeMs
+          !fs.existsSync(destPath) || fs.statSync(resolved).mtimeMs > fs.statSync(destPath).mtimeMs
         if (shouldCopy) {
           fs.copyFileSync(resolved, destPath)
           log.silly(`Synced ${path.relative(EXTENSION_DIR, destPath)}`)
@@ -85,8 +84,7 @@ function syncDirectory(src: string, dest: string): void {
     }
 
     const shouldCopy =
-      !fs.existsSync(destPath) ||
-      fs.statSync(srcPath).mtimeMs > fs.statSync(destPath).mtimeMs
+      !fs.existsSync(destPath) || fs.statSync(srcPath).mtimeMs > fs.statSync(destPath).mtimeMs
     if (shouldCopy) {
       fs.copyFileSync(srcPath, destPath)
       log.silly(`Synced ${path.relative(EXTENSION_DIR, destPath)}`)
@@ -97,7 +95,7 @@ function syncDirectory(src: string, dest: string): void {
 function copyExtensionTree(srcPath: string, destPath: string): void {
   fs.cpSync(srcPath, destPath, {
     recursive: true,
-    filter: (source) => shouldSyncPath(source)
+    filter: (source) => shouldSyncPath(source),
   })
 }
 
@@ -114,9 +112,7 @@ export function copyDefaultExtensions(): void {
     return
   }
 
-  log.info(
-    `Dev extension sync (overwrite=${overwrite}) ${workspaceExtensions} → ${EXTENSION_DIR}`
-  )
+  log.info(`Dev extension sync (overwrite=${overwrite}) ${workspaceExtensions} → ${EXTENSION_DIR}`)
 
   try {
     if (!fs.existsSync(EXTENSION_DIR)) {

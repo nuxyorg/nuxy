@@ -1,6 +1,7 @@
 # 12 - Testing Strategy
 
 ## 1. Multi-Tiered Quality Assurance
+
 Given the architectural separation between the React Frontend, the Context Bridge, and the Electron Backend, testing must be isolated to prevent brittle integration tests while still ensuring end-to-end functionality.
 
 ## 2. Unit Testing (Vitest)
@@ -20,47 +21,49 @@ Current coverage (`src/electron/`):
 - `registry.test.ts` — manifest id ↔ folder mapping
 
 ### 2.1 Backend Services
+
 Test pure logic (e.g., Cryptography, File string parsing) in isolation. Mock the `CoreContext` completely.
 
 ```typescript
 // electron/storage-path.test.ts
-import { describe, it, expect } from 'vitest';
-import { resolveStoragePath } from './storage-path.js';
+import { describe, it, expect } from 'vitest'
+import { resolveStoragePath } from './storage-path.js'
 
 describe('resolveStoragePath', () => {
   it('blocks parent traversal', () => {
     expect(() =>
       resolveStoragePath('/home/user/.nuxy/data/com.nuxy.test', '../other/secret.json')
-    ).toThrow(/Path traversal/);
-  });
-});
+    ).toThrow(/Path traversal/)
+  })
+})
 ```
 
 ### 2.2 React Custom Hooks
+
 Use `@testing-library/react-hooks` (or native React 18 testing utils) to test the UI state logic while mocking the global IPC object.
 
 ```typescript
 // test/useNotes.test.ts
-import { renderHook, act } from '@testing-library/react';
-import { useNotes } from '../src/modules/notes/frontend/useNotes';
+import { renderHook, act } from '@testing-library/react'
+import { useNotes } from '../src/modules/notes/frontend/useNotes'
 
 // Mock the global IPC
 window.core = {
   ipc: {
-    invoke: vi.fn().mockResolvedValue({ success: true, data: [] })
-  }
-};
+    invoke: vi.fn().mockResolvedValue({ success: true, data: [] }),
+  },
+}
 
 test('useNotes initializes empty', async () => {
-  const { result } = renderHook(() => useNotes());
-  expect(result.current.isLoading).toBe(true);
-  
+  const { result } = renderHook(() => useNotes())
+  expect(result.current.isLoading).toBe(true)
+
   // Wait for the mock promise to resolve
-  await act(async () => {});
-  
-  expect(result.current.notes).toEqual([]);
-  expect(result.current.isLoading).toBe(false);
-});
+  await act(async () => {})
+
+  expect(result.current.notes).toEqual([])
+  expect(result.current.isLoading).toBe(false)
+})
 ```
 
 ## 3. End-to-End Testing (Playwright)
@@ -69,19 +72,19 @@ For E2E, Playwright officially supports Electron. This tests the actual compiled
 
 ```typescript
 // test/e2e.test.ts
-import { test, expect, _electron as electron } from '@playwright/test';
+import { test, expect, _electron as electron } from '@playwright/test'
 
 test('App boots and renders Launcher', async () => {
-  const electronApp = await electron.launch({ args: ['.'] });
-  
+  const electronApp = await electron.launch({ args: ['.'] })
+
   // Get the first window that the app opens
-  const window = await electronApp.firstWindow();
-  
+  const window = await electronApp.firstWindow()
+
   // Expect Shadcn search bar to be visible
-  await expect(window.locator('input[placeholder="Search apps..."]')).toBeVisible();
-  
-  await electronApp.close();
-});
+  await expect(window.locator('input[placeholder="Search apps..."]')).toBeVisible()
+
+  await electronApp.close()
+})
 ```
 
 ---

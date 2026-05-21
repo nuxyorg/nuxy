@@ -1,9 +1,11 @@
 # Implementation Phase 1: Setup
 
 ## Goal
+
 Initialize a clean, strictly-typed monorepo environment for the Electron + React 18 project with minimal dependencies using Shadcn UI.
 
 ## Step 1: Scaffold the Project
+
 We utilize Vite's official React-TypeScript template and inject Electron.
 
 ```bash
@@ -19,6 +21,7 @@ npm install lucide-react clsx tailwind-merge
 ```
 
 ## Step 2: Tailwind & Shadcn Setup
+
 To ensure UI components are copy-pasted (zero hidden dependencies), we configure Shadcn UI.
 
 ```bash
@@ -35,6 +38,7 @@ npx shadcn-ui@latest add button input scroll-area card dialog toast
 ```
 
 ## Step 3: Folder Structure Setup
+
 Ensure your working directory matches the exact modular blueprint.
 
 ```bash
@@ -42,6 +46,7 @@ mkdir -p electron/main electron/core electron/sandbox src/components src/shared/
 ```
 
 **Resulting Structure:**
+
 ```text
 /
 ├── electron/
@@ -60,6 +65,7 @@ mkdir -p electron/main electron/core electron/sandbox src/components src/shared/
 ```
 
 ## Step 4: Tooling & Strict Configuration
+
 Modify `tsconfig.json` to enforce absolute strictness.
 
 ```json

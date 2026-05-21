@@ -1,10 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 import { EXTENSION_DIR } from '../config/paths.js'
-import {
-  getExtensionFolder,
-  resolveExtensionId
-} from '../extensions/registry.js'
+import { getExtensionFolder, resolveExtensionId } from '../extensions/registry.js'
 
 export interface ResolvedExtensionFile {
   absolutePath: string

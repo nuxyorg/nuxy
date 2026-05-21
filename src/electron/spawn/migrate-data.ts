@@ -18,7 +18,7 @@ export function migrateLegacyData(extId: string, folderName: string): void {
   const sources = [
     path.join(LEGACY_DATA_DIR, extId),
     path.join(LEGACY_DATA_DIR, folderName),
-    path.join(DATA_DIR, folderName)
+    path.join(DATA_DIR, folderName),
   ]
 
   for (const sourceDir of sources) {

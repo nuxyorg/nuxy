@@ -4,7 +4,7 @@ import { safeEvalMath } from './safe-eval.js'
 /** @param {CoreContext} core */
 export function register(core) {
   core.registry.registerProvider({
-    name: 'calculator'
+    name: 'calculator',
   })
 
   core.ipc.handle('eval', async (payload) => {
@@ -19,9 +19,9 @@ export function register(core) {
                 id: 'calc-result',
                 title: `= ${result}`,
                 subtitle: 'Calculator Provider',
-                value: result
-              }
-            ]
+                value: result,
+              },
+            ],
           }
         }
       }

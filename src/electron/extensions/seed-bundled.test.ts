@@ -8,13 +8,13 @@ describe('seed-bundled', () => {
     Object.defineProperty(process, 'resourcesPath', {
       value: path.join('/tmp', 'nuxy-test-no-extensions'),
       writable: true,
-      configurable: true
+      configurable: true,
     })
     expect(bundledExtensionsDir()).toBeNull()
     Object.defineProperty(process, 'resourcesPath', {
       value: prev,
       writable: true,
-      configurable: true
+      configurable: true,
     })
   })
 })

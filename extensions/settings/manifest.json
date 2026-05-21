@@ -1,0 +1,11 @@
+{
+  "id": "com.nuxy.settings",
+  "name": "Settings",
+  "version": "1.0.0",
+  "type": "tool",
+  "permissions": ["storage"],
+  "entry": {
+    "backend": "backend.js",
+    "frontend": "frontend.js"
+  }
+}

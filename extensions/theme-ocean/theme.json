@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "name": "ocean",
+  "colors": {
+    "bg-base": "#0a1628",
+    "syntax-comment": "#1e3a5f",
+    "syntax-variable": "#cdd9e5",
+    "syntax-constant": "#f0a050",
+    "syntax-invalid": "#ff6b6b",
+    "syntax-deprecated": "#9b8fcc",
+    "syntax-keyword": "#4a7fa0",
+    "syntax-operator": "#56b6c2",
+    "syntax-tag": "#e06c8a",
+    "syntax-function": "#4ec9b0",
+    "syntax-orange": "#d08060",
+    "syntax-peach": "#e8956d",
+    "syntax-green": "#98c379"
+  },
+  "tokens": {
+    "space-px": "1px",
+    "space-0": "2px",
+    "space-1": "4px",
+    "space-2": "6px",
+    "space-3": "8px",
+    "space-4": "12px",
+    "space-5": "16px",
+    "space-6": "32px",
+    "font-xs": "10px",
+    "font-sm": "12px",
+    "font-md": "14px",
+    "font-body": "15px",
+    "font-lg": "16px",
+    "font-xl": "18px",
+    "radius-sm": "4px",
+    "radius-md": "6px",
+    "radius-lg": "8px",
+    "radius-xl": "12px"
+  }
+}

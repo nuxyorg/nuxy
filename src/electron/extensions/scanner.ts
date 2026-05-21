@@ -5,10 +5,14 @@ import { EXTENSION_DIR } from '../config/paths.js'
 import { spawnExtension, activeWorkers } from '../spawn/spawn.js'
 import { registerExtension, clearRegistry } from './registry.js'
 import { seedBundledExtensions } from './seed-bundled.js'
+import { registerExtensionTheme, clearExtensionThemes } from '../themes/extension-themes.js'
+import { registerIconPack, clearIconRegistry } from '../icons/registry.js'
 import { kernelLogger } from '@nuxy/core'
 import type {
   ExtensionManifest,
-  LoadedExtension
+  LoadedExtension,
+  ThemeDefinition,
+  IconPackDefinition,
 } from '@nuxy/core'
 
 export { loadedExtensions } from './registry.js'
@@ -44,6 +48,8 @@ function startExtensionWatcher(): void {
 export async function scanExtensions(): Promise<void> {
   log.info(`Scanning extension directory: ${EXTENSION_DIR}`)
   clearRegistry()
+  clearExtensionThemes()
+  clearIconRegistry()
 
   if (import.meta.env.DEV) {
     try {
@@ -77,31 +83,47 @@ export async function scanExtensions(): Promise<void> {
     }
 
     try {
-      const manifest = JSON.parse(
-        fs.readFileSync(manifestPath, 'utf8')
-      ) as ExtensionManifest
+      const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as ExtensionManifest
       log.silly(`Parsed manifest for "${folderName}"`, manifest)
 
       const extId = manifest.id || folderName
       if (!manifest.id) {
-        log.warn(
-          `Extension "${folderName}" has no manifest.id — using folder name`
-        )
+        log.warn(`Extension "${folderName}" has no manifest.id — using folder name`)
       }
 
       const loaded: LoadedExtension = {
         id: extId,
         folderName,
-        manifest: { ...manifest, id: extId }
+        manifest: { ...manifest, id: extId },
       }
 
-      if (manifest.entry?.backend) {
-        log.info(
-          `Loading extension: ${extId} (backend: ${manifest.entry.backend})`
-        )
+      if (manifest.type === 'theme' && manifest.entry?.theme) {
+        const themePath = path.join(itemPath, manifest.entry.theme)
+        if (fs.existsSync(themePath)) {
+          try {
+            const def = JSON.parse(fs.readFileSync(themePath, 'utf8')) as ThemeDefinition
+            registerExtensionTheme(def)
+            log.info(`Loaded theme "${def.name}" from extension: ${extId}`)
+          } catch (e) {
+            log.error(`Failed to parse theme file for "${extId}"`, e)
+          }
+        }
+      } else if (manifest.type === 'iconpack' && manifest.entry?.icons) {
+        const iconsPath = path.join(itemPath, manifest.entry.icons)
+        if (fs.existsSync(iconsPath)) {
+          try {
+            const def = JSON.parse(fs.readFileSync(iconsPath, 'utf8')) as IconPackDefinition
+            registerIconPack(def)
+            log.info(`Loaded icon pack "${def.name}" from extension: ${extId}`)
+          } catch (e) {
+            log.error(`Failed to parse icons file for "${extId}"`, e)
+          }
+        }
+      } else if (manifest.entry?.backend) {
+        log.info(`Loading extension: ${extId} (backend: ${manifest.entry.backend})`)
         spawnExtension(extId, folderName, manifest.entry.backend)
         log.info(`Sandboxed worker started for: ${extId}`)
-      } else {
+      } else if (manifest.type !== 'theme' && manifest.type !== 'iconpack') {
         log.warn(`Extension "${extId}" has no backend entry — skipping worker.`)
       }
 
@@ -111,9 +133,7 @@ export async function scanExtensions(): Promise<void> {
     }
   }
 
-  log.info(
-    `Extension scan complete. Loaded: ${[...activeWorkers.keys()].join(', ') || '(none)'}`
-  )
+  log.info(`Extension scan complete. Loaded: ${[...activeWorkers.keys()].join(', ') || '(none)'}`)
 
   startExtensionWatcher()
 }

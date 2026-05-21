@@ -5,7 +5,7 @@ Generated: 2026-05-19
 ## Summary
 
 | Severity | Count |
-|----------|-------|
+| -------- | ----- |
 | High     | 3     |
 | Medium   | 6     |
 | Low      | 5     |
@@ -39,12 +39,14 @@ All type issues below were found despite strict mode because they involve explic
 
 - **Problem**: `src/renderer/main.tsx:6,7,8` — three `(window as any)` assignments expose `React`, `UI`, and `__NUXY_DEV__` to dynamically-loaded frontend extensions.
   ```ts
-  (window as any).React = React
-  (window as any).UI = UI
-  (window as any).__NUXY_DEV__ = import.meta.env.DEV
+  ;(window as any).React =
+    React(window as any).UI =
+    UI(window as any).__NUXY_DEV__ =
+      import.meta.env.DEV
   ```
 - **Impact**: Any code reading `window.React` or `window.UI` in an extension gets an implicit `any`. Type errors in extensions that destructure these globals are silently ignored. **Runtime risk: low** (assignment is safe), **maintainability: high** (no discoverability, no refactor safety).
 - **Proposed Fix**: Add three declarations to `src/renderer/env.d.ts`:
+
   ```ts
   import type React from 'react'
   import type * as UI from '@nuxy/ui'
@@ -56,7 +58,9 @@ All type issues below were found despite strict mode because they involve explic
     __NUXY_DEV__: boolean
   }
   ```
+
   Then replace the three `as any` assignments with plain `window.X = ...` in `main.tsx`.
+
 - **Risk Level**: Low
 - **Applied Automatically?**: No — `env.d.ts` was read-only during this session (permission denied)
 
@@ -80,6 +84,7 @@ All type issues below were found despite strict mode because they involve explic
   - `Kbd/index.tsx:4` — `({ children, className, ...props }: any)`
 - **Impact**: Callers get no autocomplete, no type errors on wrong props (e.g. passing a number for `className`), and no IDE hover docs. The `...props` spread onto native DOM elements is entirely unchecked — any attribute name or type is accepted. **Maintainability: high**, **Runtime risk: low**.
 - **Proposed Fix**: Replace `any` with proper HTML-element-extending interfaces. Pattern for each component:
+
   ```ts
   // Button
   export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -98,7 +103,9 @@ All type issues below were found despite strict mode because they involve explic
   // Kbd → extend React.HTMLAttributes<HTMLElement>
   // ListItemText → extend React.HTMLAttributes<HTMLSpanElement>
   ```
+
   Add a `variant` literal union where applicable (e.g. `ListItemText`'s `variant: 'default' | 'success'`).
+
 - **Risk Level**: Medium (widespread change across exported public API; callers that pass non-standard props will see new errors)
 - **Applied Automatically?**: No — the fix touches the entire public API surface; all downstream extension frontends need a compatibility check first
 
@@ -116,6 +123,7 @@ All type issues below were found despite strict mode because they involve explic
   ```
 - **Impact**: Extension authors calling `core.registry.registerTool({ name: 'my-tool' })` receive no type checking on the registration config object. The corresponding implementation in `core-proxy.ts` manually guards with `typeof cfg === 'object' && 'name' in cfg`, which will silently accept anything. **Maintainability: medium** — there is no shared schema that tooling can enforce.
 - **Proposed Fix**: Define a typed config interface and use it:
+
   ```ts
   // In packages/core/src/types.ts
   export interface ToolConfig {
@@ -136,6 +144,7 @@ All type issues below were found despite strict mode because they involve explic
     registerOrchestrator: (handler: OrchestratorHandler) => void
   }
   ```
+
 - **Risk Level**: Medium (changes the public SDK contract; existing extensions using the SDK will need to satisfy the new types)
 - **Applied Automatically?**: No — requires a schema decision
 
@@ -151,6 +160,7 @@ All type issues below were found despite strict mode because they involve explic
   ```
 - **Impact**: Every caller of `core.extensions.invoke(...)` receives `unknown` and must cast or use type guards before using the result. The actual runtime value is an `IpcResult<unknown>` (see `broker.ts`), so callers face an untyped response. **Runtime risk: medium** — unchecked casts on the result can silently pass wrong types through.
 - **Proposed Fix**: Return `Promise<IpcResult>` which is already defined in the same package:
+
   ```ts
   import type { IpcResult } from './types.js'
 
@@ -158,7 +168,9 @@ All type issues below were found despite strict mode because they involve explic
     invoke: (targetId: string, channel: string, payload?: unknown) => Promise<IpcResult>
   }
   ```
+
   The implementation in `core-proxy.ts` already calls `callHost(HostChannel.BROKER_INVOKE, ...)` which returns `Promise<unknown>`, but it can be cast at the proxy boundary.
+
 - **Risk Level**: Low (widens the type contract in a backwards-compatible direction)
 - **Applied Automatically?**: No — requires updating both `index.ts` and `core-proxy.ts`
 
@@ -168,7 +180,11 @@ All type issues below were found despite strict mode because they involve explic
 
 - **Problem**: `src/electron/spawn/host-handlers.ts:29-33`:
   ```ts
-  const { targetId, channel: targetChannel, payload: pl } = payload as {
+  const {
+    targetId,
+    channel: targetChannel,
+    payload: pl,
+  } = payload as {
     targetId: string
     channel: string
     payload?: unknown
@@ -186,7 +202,11 @@ All type issues below were found despite strict mode because they involve explic
   ) {
     return { error: 'Invalid broker:invoke payload' }
   }
-  const { targetId, channel: targetChannel, payload: pl } = payload as {
+  const {
+    targetId,
+    channel: targetChannel,
+    payload: pl,
+  } = payload as {
     targetId: string
     channel: string
     payload?: unknown
@@ -231,6 +251,7 @@ All type issues below were found despite strict mode because they involve explic
   `msg` is implicitly typed as `any` because Node's `Worker` event typing uses `any` for message payloads (from `worker_threads`).
 - **Impact**: All property accesses on `msg` (`msg.type`, `msg.ipcChannels`, `msg.displayName`, `msg.id`, `msg.channel`, `msg.payload`) are unchecked. **Maintainability: medium** — structural drift between worker send and main-process receive is invisible.
 - **Proposed Fix**: Define a discriminated union for the worker-to-host message protocol:
+
   ```ts
   type WorkerToHostMessage =
     | { type: 'registry:sync'; ipcChannels: string[]; displayName?: string }
@@ -241,7 +262,9 @@ All type issues below were found despite strict mode because they involve explic
     if (msg.type === 'host:call') { ... }
   })
   ```
+
   A matching `HostToWorkerMessage` type would similarly cover the reverse direction in `extension-host/src/index.ts`.
+
 - **Risk Level**: Medium
 - **Applied Automatically?**: No — requires a new shared type definition (ideally in `@nuxy/core`)
 
@@ -263,11 +286,13 @@ All type issues below were found despite strict mode because they involve explic
   ```ts
   function assertWorkerData(d: unknown): asserts d is WorkerData {
     if (
-      typeof d !== 'object' || d === null ||
+      typeof d !== 'object' ||
+      d === null ||
       typeof (d as WorkerData).extId !== 'string' ||
       typeof (d as WorkerData).absolutePath !== 'string' ||
       typeof (d as WorkerData).logLevel !== 'string'
-    ) throw new TypeError('Invalid workerData')
+    )
+      throw new TypeError('Invalid workerData')
   }
   assertWorkerData(workerData)
   const { extId, absolutePath, logLevel } = workerData
@@ -288,7 +313,7 @@ All type issues below were found despite strict mode because they involve explic
 - **Proposed Fix**: Return `undefined` explicitly when no module is resolved, and let the caller handle it:
   ```ts
   // at the end of resolveExtensionModule
-  return undefined  // instead of (def ?? extModule) as ExtensionModule
+  return undefined // instead of (def ?? extModule) as ExtensionModule
   ```
   The caller `loadExtensionModule` already handles `ext?.register` with optional chaining so this is safe.
 - **Risk Level**: Low
@@ -342,7 +367,7 @@ All type issues below were found despite strict mode because they involve explic
   ```ts
   const result: Partial<NuxyConfig> = {}
   // ... switch cases assign to result.theme, result.windowWidth, etc. directly
-  return result  // no cast needed
+  return result // no cast needed
   ```
 - **Risk Level**: Low
 - **Applied Automatically?**: No
@@ -358,6 +383,7 @@ The `env.d.ts` is missing declarations for the three globals set in `main.tsx` (
 ## Extension SDK Assessment
 
 `packages/extension-sdk/src/index.ts` has good type coverage:
+
 - `ExtensionModule.register(core: CoreContext)` is fully typed
 - `defineExtension` is properly typed and returns `ExtensionModule`
 - All re-exports from `@nuxy/core` are clean type-only imports

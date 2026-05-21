@@ -11,14 +11,10 @@ describe('resolveStoragePath', () => {
   })
 
   it('blocks parent traversal', () => {
-    expect(() => resolveStoragePath(dataDir, '../other/secret.json')).toThrow(
-      /Path traversal/
-    )
+    expect(() => resolveStoragePath(dataDir, '../other/secret.json')).toThrow(/Path traversal/)
   })
 
   it('blocks absolute paths outside the jail', () => {
-    expect(() => resolveStoragePath(dataDir, '/etc/passwd')).toThrow(
-      /Path traversal/
-    )
+    expect(() => resolveStoragePath(dataDir, '/etc/passwd')).toThrow(/Path traversal/)
   })
 })

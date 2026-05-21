@@ -136,18 +136,18 @@ nuxy/                                    # monorepo root (pnpm workspace)
 
 ## 2. Problems with the current layout
 
-| Area | Issue | Impact |
-|------|--------|--------|
-| **Naming** | `src/src/` for the React app | Confusing imports, hard to explain to contributors |
-| **Monorepo** | `pnpm-workspace.yaml` lists `apps/*` but folder does not exist | Workspace contract lies; `src/` is a pseudo-app at wrong level |
-| **Kernel flatness** | 20+ files directly under `electron/` | Hard to navigate as kernel grows; no domain boundaries |
-| **Duplicated API** | `extension-host.ts` builds `core` inline; `packages/core` defines `CoreContext` | Drift risk — host already has `clipboard` not in `CoreContext` type |
-| **Host bridge** | `spawn.ts` implements clipboard/storage host handlers | Mixes process management with capability implementation |
-| **Extensions** | Loose `backend.js` / `frontend.js`, no build step in workspace | No typecheck, no shared SDK, hard to publish |
-| **Themes** | `src/themes/` (assets) vs `electron/themes/` (copy logic) | Split responsibility for one concern |
-| **Tests** | Colocated `*.test.ts` next to production files | Fine for now, but kernel domains will want `__tests__/` or `packages/*/test` |
-| **Docs** | 33 files, overlapping titles (`architecture.md` vs `02-architecture.md`) | Hard to find canonical truth |
-| **Build output** | Many hashed files under `dist-electron/` (gitignored) | OK if ignored; noisy locally |
+| Area                | Issue                                                                           | Impact                                                                       |
+| ------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| **Naming**          | `src/src/` for the React app                                                    | Confusing imports, hard to explain to contributors                           |
+| **Monorepo**        | `pnpm-workspace.yaml` lists `apps/*` but folder does not exist                  | Workspace contract lies; `src/` is a pseudo-app at wrong level               |
+| **Kernel flatness** | 20+ files directly under `electron/`                                            | Hard to navigate as kernel grows; no domain boundaries                       |
+| **Duplicated API**  | `extension-host.ts` builds `core` inline; `packages/core` defines `CoreContext` | Drift risk — host already has `clipboard` not in `CoreContext` type          |
+| **Host bridge**     | `spawn.ts` implements clipboard/storage host handlers                           | Mixes process management with capability implementation                      |
+| **Extensions**      | Loose `backend.js` / `frontend.js`, no build step in workspace                  | No typecheck, no shared SDK, hard to publish                                 |
+| **Themes**          | `src/themes/` (assets) vs `electron/themes/` (copy logic)                       | Split responsibility for one concern                                         |
+| **Tests**           | Colocated `*.test.ts` next to production files                                  | Fine for now, but kernel domains will want `__tests__/` or `packages/*/test` |
+| **Docs**            | 33 files, overlapping titles (`architecture.md` vs `02-architecture.md`)        | Hard to find canonical truth                                                 |
+| **Build output**    | Many hashed files under `dist-electron/` (gitignored)                           | OK if ignored; noisy locally                                                 |
 
 ---
 
@@ -273,26 +273,26 @@ Rules:
 
 ### 4.2 File mapping (current → target)
 
-| Current | Target |
-|---------|--------|
-| `src/electron/main.ts` | `apps/desktop/electron/bootstrap/main.ts` |
-| `src/electron/preload.ts` | `apps/desktop/electron/bootstrap/preload.ts` |
-| `src/electron/scanner.ts` | `apps/desktop/electron/extensions/scanner.ts` |
-| `src/electron/registry.ts` | `apps/desktop/electron/extensions/registry.ts` |
-| `src/electron/worker/spawn.ts` | `apps/desktop/electron/extensions/worker/spawn.ts` |
-| `src/electron/worker/extension-host.ts` | `packages/extension-host/src/index.ts` |
-| `src/electron/ipc.ts` | `apps/desktop/electron/ipc/register.ts` |
-| `src/electron/ipc-validate.ts` | `apps/desktop/electron/ipc/validate.ts` |
-| `src/electron/protocol*.ts` | `apps/desktop/electron/protocol/` |
-| `src/electron/window.ts` | `apps/desktop/electron/window/manager.ts` |
-| `src/electron/config-runtime.ts` | `apps/desktop/electron/window/runtime.ts` |
-| `src/electron/nuxyconfig.ts` | `apps/desktop/electron/config/nuxyconfig.ts` |
-| `src/electron/paths.ts` | `apps/desktop/electron/config/paths.ts` |
-| `src/electron/storage-path.ts` | `apps/desktop/electron/config/storage-path.ts` |
-| `src/electron/themes/index.ts` | `apps/desktop/electron/themes/install.ts` |
-| `src/src/*` | `apps/desktop/renderer/*` |
-| `src/themes/*` | `apps/desktop/assets/themes/*` |
-| `extensions/*/backend.js` | `extensions/*/src/backend.ts` → build → `dist/backend.js` |
+| Current                                 | Target                                                    |
+| --------------------------------------- | --------------------------------------------------------- |
+| `src/electron/main.ts`                  | `apps/desktop/electron/bootstrap/main.ts`                 |
+| `src/electron/preload.ts`               | `apps/desktop/electron/bootstrap/preload.ts`              |
+| `src/electron/scanner.ts`               | `apps/desktop/electron/extensions/scanner.ts`             |
+| `src/electron/registry.ts`              | `apps/desktop/electron/extensions/registry.ts`            |
+| `src/electron/worker/spawn.ts`          | `apps/desktop/electron/extensions/worker/spawn.ts`        |
+| `src/electron/worker/extension-host.ts` | `packages/extension-host/src/index.ts`                    |
+| `src/electron/ipc.ts`                   | `apps/desktop/electron/ipc/register.ts`                   |
+| `src/electron/ipc-validate.ts`          | `apps/desktop/electron/ipc/validate.ts`                   |
+| `src/electron/protocol*.ts`             | `apps/desktop/electron/protocol/`                         |
+| `src/electron/window.ts`                | `apps/desktop/electron/window/manager.ts`                 |
+| `src/electron/config-runtime.ts`        | `apps/desktop/electron/window/runtime.ts`                 |
+| `src/electron/nuxyconfig.ts`            | `apps/desktop/electron/config/nuxyconfig.ts`              |
+| `src/electron/paths.ts`                 | `apps/desktop/electron/config/paths.ts`                   |
+| `src/electron/storage-path.ts`          | `apps/desktop/electron/config/storage-path.ts`            |
+| `src/electron/themes/index.ts`          | `apps/desktop/electron/themes/install.ts`                 |
+| `src/src/*`                             | `apps/desktop/renderer/*`                                 |
+| `src/themes/*`                          | `apps/desktop/assets/themes/*`                            |
+| `extensions/*/backend.js`               | `extensions/*/src/backend.ts` → build → `dist/backend.js` |
 
 ---
 
@@ -300,17 +300,17 @@ Rules:
 
 After restructure, each folder owns one concern:
 
-| Module | Responsibility | Must not |
-|--------|----------------|----------|
-| `bootstrap/` | `app` lifecycle, protocol scheme registration, boot order | Extension logic, IPC channel details |
-| `config/` | Paths, `nuxyconfig`, storage path resolution | UI or worker code |
-| `extensions/` | Scan, registry, spawn workers | Direct `clipboard` / `fs` in scanner |
-| `capabilities/` | Implement host-call channels (`clipboard:*`, `storage:*`) | Spawn workers |
-| `ipc/` | `ipcMain` registration, validation, invoke worker | Filesystem paths |
-| `protocol/` | `nuxy-ext://` handler + path jail | Window management |
-| `window/` | BrowserWindow, drag, resize, spring animation | Extension scanning |
-| `themes/` | Install bundled JSON to `~/.nuxy/themes` | React code |
-| `dev/` | Sync workspace extensions, debug utilities | Ship in production bundle |
+| Module          | Responsibility                                            | Must not                             |
+| --------------- | --------------------------------------------------------- | ------------------------------------ |
+| `bootstrap/`    | `app` lifecycle, protocol scheme registration, boot order | Extension logic, IPC channel details |
+| `config/`       | Paths, `nuxyconfig`, storage path resolution              | UI or worker code                    |
+| `extensions/`   | Scan, registry, spawn workers                             | Direct `clipboard` / `fs` in scanner |
+| `capabilities/` | Implement host-call channels (`clipboard:*`, `storage:*`) | Spawn workers                        |
+| `ipc/`          | `ipcMain` registration, validation, invoke worker         | Filesystem paths                     |
+| `protocol/`     | `nuxy-ext://` handler + path jail                         | Window management                    |
+| `window/`       | BrowserWindow, drag, resize, spring animation             | Extension scanning                   |
+| `themes/`       | Install bundled JSON to `~/.nuxy/themes`                  | React code                           |
+| `dev/`          | Sync workspace extensions, debug utilities                | Ship in production bundle            |
 
 **extension-host** (separate package):
 
@@ -379,7 +379,7 @@ Actions:
 
 - Merge or redirect `architecture.md` → `design/02-architecture.md`.
 - Update `structure.md` to point at this plan once phase 1 lands.
-- Add one paragraph in `README.md`: "canonical layout = apps/desktop + packages/*".
+- Add one paragraph in `README.md`: "canonical layout = apps/desktop + packages/\*".
 
 ---
 
@@ -458,15 +458,15 @@ Actions:
 
 ## 10. Success criteria
 
-| Check | Command / observation |
-|-------|------------------------|
-| Workspace resolves | `pnpm install` at root without warnings |
-| Tests pass | `pnpm test` |
-| Production build | `pnpm -C apps/desktop build` |
-| Dev extensions load | `pnpm dev` → clipboard + calculator in `~/.nuxy/extensions/` |
-| Worker isolation | extension crash does not take down main process |
-| Tree clarity | New contributor finds kernel IPC in `electron/ipc/` without reading 24 flat files |
-| API parity | `CoreContext` type matches worker proxy surface |
+| Check               | Command / observation                                                             |
+| ------------------- | --------------------------------------------------------------------------------- |
+| Workspace resolves  | `pnpm install` at root without warnings                                           |
+| Tests pass          | `pnpm test`                                                                       |
+| Production build    | `pnpm -C apps/desktop build`                                                      |
+| Dev extensions load | `pnpm dev` → clipboard + calculator in `~/.nuxy/extensions/`                      |
+| Worker isolation    | extension crash does not take down main process                                   |
+| Tree clarity        | New contributor finds kernel IPC in `electron/ipc/` without reading 24 flat files |
+| API parity          | `CoreContext` type matches worker proxy surface                                   |
 
 ---
 

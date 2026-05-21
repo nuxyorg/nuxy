@@ -11,15 +11,15 @@ export interface SpringConfig {
 }
 
 const DEFAULTS: SpringConfig = {
-  stiffness: 0.14,
-  damping: 0.3,
+  stiffness: 0.7,
+  damping: 0.2,
   restThreshold: 0.5,
-  intervalMs: 16
+  intervalMs: 16,
 }
 
 export const CRITICAL_DAMPING: Partial<SpringConfig> = {
   stiffness: 0.14,
-  damping: 0.88
+  damping: 0.88,
 }
 
 interface State {
@@ -47,7 +47,7 @@ export class WindowSpringController {
       vw: 0,
       vh: 0,
       tw: cw,
-      th: ch
+      th: ch,
     }
   }
 
@@ -152,10 +152,7 @@ export class WindowSpringController {
   private _applyFrame(): void {
     if (this.win.isDestroyed()) return
     const s = this.s
-    this.win.setContentSize(
-      Math.max(1, Math.round(s.w)),
-      Math.max(1, Math.round(s.h))
-    )
+    this.win.setContentSize(Math.max(1, Math.round(s.w)), Math.max(1, Math.round(s.h)))
   }
 }
 

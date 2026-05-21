@@ -24,6 +24,7 @@ sequenceDiagram
 ```
 
 ## 2. Real-Time Event Streams
+
 For extensions that monitor system states (e.g., a Clipboard extension or a CPU monitor extension), the flow is reversed using a Publisher-Subscriber pattern.
 
 1. **Sandboxed Backend Emits**: The backend uses the injected `core.ipc.broadcast('ext_id:event', payload)`.

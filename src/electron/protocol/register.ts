@@ -21,11 +21,7 @@ export function registerProtocols() {
 
     const { absolutePath } = resolved
 
-    if (
-      filePath.endsWith('.js') ||
-      filePath.endsWith('.jsx') ||
-      filePath.endsWith('.tsx')
-    ) {
+    if (filePath.endsWith('.js') || filePath.endsWith('.jsx') || filePath.endsWith('.tsx')) {
       try {
         const mtime = fs.statSync(absolutePath).mtimeMs
         const cached = transpileCache.get(absolutePath)
@@ -33,8 +29,8 @@ export function registerProtocols() {
           return new Response(cached.output, {
             headers: {
               'Content-Type': 'application/javascript',
-              'Access-Control-Allow-Origin': '*'
-            }
+              'Access-Control-Allow-Origin': '*',
+            },
           })
         }
 
@@ -49,9 +45,7 @@ export function registerProtocols() {
           try {
             ts = await import('typescript')
           } catch {
-            log.warn(
-              'TypeScript not available for transpilation — serving raw file'
-            )
+            log.warn('TypeScript not available for transpilation — serving raw file')
           }
 
           if (ts) {
@@ -59,8 +53,8 @@ export function registerProtocols() {
               compilerOptions: {
                 jsx: ts.JsxEmit.React,
                 module: ts.ModuleKind.ESNext,
-                target: ts.ScriptTarget.ESNext
-              }
+                target: ts.ScriptTarget.ESNext,
+              },
             })
             let output = transpiled.outputText
             if (!output.includes('const React =')) {
@@ -70,8 +64,8 @@ export function registerProtocols() {
             return new Response(output, {
               headers: {
                 'Content-Type': 'application/javascript',
-                'Access-Control-Allow-Origin': '*'
-              }
+                'Access-Control-Allow-Origin': '*',
+              },
             })
           }
         }

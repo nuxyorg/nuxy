@@ -1,0 +1,10 @@
+{
+  "id": "com.nuxy.icons-default",
+  "name": "Default Icons",
+  "version": "1.0.0",
+  "type": "iconpack",
+  "permissions": [],
+  "entry": {
+    "icons": "icons.json"
+  }
+}

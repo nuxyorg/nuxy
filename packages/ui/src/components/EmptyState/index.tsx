@@ -1,8 +1,7 @@
 import React from 'react'
 import './index.css'
 
-export interface EmptyStateProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
+export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title?: React.ReactNode
   message?: React.ReactNode
   hint?: React.ReactNode
@@ -20,11 +19,7 @@ export function EmptyState({
   children,
   ...props
 }: EmptyStateProps) {
-  const rootClass = [
-    'nuxy-empty-state',
-    page ? 'nuxy-empty-state--page' : '',
-    className || ''
-  ]
+  const rootClass = ['nuxy-empty-state', page ? 'nuxy-empty-state--page' : '', className || '']
     .filter(Boolean)
     .join(' ')
 
@@ -38,4 +33,3 @@ export function EmptyState({
     </div>
   )
 }
-

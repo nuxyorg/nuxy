@@ -1,6 +1,7 @@
 # 10 - Security & Strict Isolation
 
 ## 1. The Danger of Untrusted Code
+
 Nuxy executes third-party extensions downloaded from the internet. If an extension contains malware, or if an AI Orchestrator is tricked via prompt injection to exploit another module, the system must remain impenetrable.
 
 A simple Node.js `vm` sandbox is **not** a security mechanism. To achieve true Gnome Extensions-style plug-and-play without risking the host OS, Nuxy relies on **Hardware-Level Thread Isolation** and **Chroot File Boundaries**.
@@ -10,6 +11,7 @@ A simple Node.js `vm` sandbox is **not** a security mechanism. To achieve true G
 Modules **do not** run in the main Node.js process. When the Nuxy Kernel boots an extension, it spawns a dedicated Node.js `Worker` thread (or utilizes the `isolated-vm` native package).
 
 ### 2.1 The Worker Boundary
+
 1. **No Memory Sharing**: The AI Extension and the Currency Extension run in completely separate V8 Isolates/Threads. They physically cannot access each other's variables, prototypes, or memory space.
 2. **No Native `require`**: The Worker thread is stripped of the ability to `require('fs')` or `require('child_process')`.
 3. **MessagePort Communication**: The only way the extension communicates with the outside world is via a serialized `MessagePort` connected directly to the Nuxy Kernel.
@@ -19,6 +21,7 @@ Modules **do not** run in the main Node.js process. When the Nuxy Kernel boots a
 If a module attempts to read files, it must use the injected `core.storage` API. This API is actually an IPC wrapper that asks the Kernel to perform the I/O.
 
 The Kernel enforces a strict virtual filesystem jail (similar to `chroot`):
+
 - When `com.nuxy.notes` requests `core.storage.read('secret.txt')`, the Kernel translates this to `~/.nuxy/data/com.nuxy.notes/secret.txt`.
 - If a malicious module requests `core.storage.read('../com.nuxy.vault/passwords.json')`, the Kernel detects the path traversal attempt via `path.relative` and rejects the request.
 
@@ -47,21 +50,25 @@ sequenceDiagram
 ```
 
 By routing all cross-module calls through the **Kernel Message Broker**:
+
 1. Modules remain completely blind to each other's existence (other than knowing their public schema).
 2. The Kernel acts as a strict firewall. If the AI hallucinates bad data, the Kernel rejects it before the Currency thread even sees the request.
 
 ## 5. Frontend UI Isolation (iframes / WebViews)
-If extensions are highly untrusted, their React UI components can be rendered inside `<webview>` tags or Sandboxed IFrames rather than directly in the main DOM. This prevents a malicious extension from reading the DOM of the Password Vault extension via `document.querySelector`. 
+
+If extensions are highly untrusted, their React UI components can be rendered inside `<webview>` tags or Sandboxed IFrames rather than directly in the main DOM. This prevents a malicious extension from reading the DOM of the Password Vault extension via `document.querySelector`.
 
 Nuxy enforces `contextIsolation: true` in Electron, and blocks external network requests via a strict Content Security Policy (CSP).
 
 ## 6. Dynamic Permission Prompts (User Consent)
+
 Even with strict Worker isolation, if an extension asks the Kernel to read the clipboard (and it declared the `clipboard` permission in its manifest), the Kernel does not blindly trust it.
 
 Nuxy implements an **OS-Style Permission Prompt**:
+
 1. Extension A's Worker thread calls `core.clipboard.readText()`.
 2. The Kernel pauses the execution of the Worker thread (via Atomics or asynchronous blocking).
-3. The Kernel sends a message to the React UI: *"Extension A wants to read your clipboard."*
+3. The Kernel sends a message to the React UI: _"Extension A wants to read your clipboard."_
 4. The user clicks **[Allow]** or **[Deny]**.
 5. The Kernel resumes the Worker thread, either returning the clipboard text or throwing an `UnauthorizedError`.
 

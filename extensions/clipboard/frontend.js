@@ -1,5 +1,303 @@
 const EXT_ID = 'com.nuxy.clipboard'
 
+// ── helpers ──────────────────────────────────────────────────────────────────
+
+function getItemType(item) {
+  const txt = item.text?.trim() || ''
+  if (item.image) return 'image'
+  if (/^#([0-9a-f]{3,8})$/i.test(txt) || /^rgba?\(\s*[\d.]+/.test(txt) || /^hsla?\(/.test(txt))
+    return 'color'
+  if (/^https?:\/\//i.test(txt)) return 'url'
+  if (/^(\/|~\/)/.test(txt) && txt.length > 2) return 'file'
+  if (/^[a-zA-Z]:\\/.test(txt)) return 'file'
+  return 'text'
+}
+
+function getFilename(path) {
+  return path.split(/[\\/]/).filter(Boolean).pop() || path
+}
+
+function getParentDir(path) {
+  const parts = path.split(/[\\/]/).filter(Boolean)
+  if (parts.length <= 1) return ''
+  return parts.slice(0, -1).join('/').replace(/^\//, '')
+}
+
+function getFileExtension(path) {
+  const name = getFilename(path)
+  const dot = name.lastIndexOf('.')
+  return dot >= 0 ? name.slice(dot + 1).toLowerCase() : ''
+}
+
+function getFileIconType(ext) {
+  if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp', 'ico', 'tiff', 'avif'].includes(ext))
+    return 'image-file'
+  if (['pdf'].includes(ext)) return 'pdf'
+  if (
+    [
+      'js',
+      'ts',
+      'jsx',
+      'tsx',
+      'py',
+      'rb',
+      'go',
+      'rs',
+      'java',
+      'c',
+      'cpp',
+      'h',
+      'cs',
+      'php',
+      'html',
+      'css',
+      'json',
+      'yaml',
+      'yml',
+      'sh',
+      'bash',
+      'fish',
+      'zsh',
+      'toml',
+      'xml',
+      'vue',
+      'svelte',
+      'kt',
+      'swift',
+    ].includes(ext)
+  )
+    return 'code'
+  if (['zip', 'tar', 'gz', 'bz2', 'xz', '7z', 'rar'].includes(ext)) return 'archive'
+  if (['md', 'txt', 'doc', 'docx', 'odt', 'rtf', 'pages'].includes(ext)) return 'document'
+  return 'file'
+}
+
+// ── SVG icons ─────────────────────────────────────────────────────────────────
+
+const ICON_STYLE = { width: 18, height: 18, opacity: 0.65 }
+
+function IconFile() {
+  return (
+    <svg
+      style={ICON_STYLE}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+    </svg>
+  )
+}
+
+function IconImageFile() {
+  return (
+    <svg
+      style={ICON_STYLE}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <polyline points="21 15 16 10 5 21" />
+    </svg>
+  )
+}
+
+function IconCode() {
+  return (
+    <svg
+      style={ICON_STYLE}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <polyline points="10 13 8 15 10 17" />
+      <polyline points="14 13 16 15 14 17" />
+    </svg>
+  )
+}
+
+function IconDocument() {
+  return (
+    <svg
+      style={ICON_STYLE}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+      <line x1="10" y1="9" x2="8" y2="9" />
+    </svg>
+  )
+}
+
+function IconPdf() {
+  return (
+    <svg
+      style={{ ...ICON_STYLE, opacity: 0.75, color: '#e55' }}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <path d="M9 13h1.5a1 1 0 0 1 0 2H9v-4h1.5a1 1 0 0 1 1 1" />
+    </svg>
+  )
+}
+
+function IconArchive() {
+  return (
+    <svg
+      style={ICON_STYLE}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="21 8 21 21 3 21 3 8" />
+      <rect x="1" y="3" width="22" height="5" />
+      <line x1="10" y1="12" x2="14" y2="12" />
+    </svg>
+  )
+}
+
+function IconGlobe() {
+  return (
+    <svg
+      style={ICON_STYLE}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" y1="12" x2="22" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  )
+}
+
+function FileIconFor({ ext }) {
+  const t = getFileIconType(ext)
+  if (t === 'image-file') return <IconImageFile />
+  if (t === 'code') return <IconCode />
+  if (t === 'document') return <IconDocument />
+  if (t === 'pdf') return <IconPdf />
+  if (t === 'archive') return <IconArchive />
+  return <IconFile />
+}
+
+// ── ItemLeading ───────────────────────────────────────────────────────────────
+
+function ItemLeading({ item, type }) {
+  const base = {
+    width: 36,
+    height: 36,
+    flexShrink: 0,
+    borderRadius: 6,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  }
+
+  if (type === 'image') {
+    return (
+      <div style={{ ...base, overflow: 'hidden', background: 'rgba(0,0,0,0.25)' }}>
+        <img
+          src={item.image}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          alt=""
+        />
+      </div>
+    )
+  }
+
+  if (type === 'color') {
+    const txt = item.text?.trim() || ''
+    return (
+      <div
+        style={{
+          ...base,
+          background: txt,
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 0 0 1px rgba(0,0,0,0.25)',
+        }}
+      />
+    )
+  }
+
+  if (type === 'file') {
+    const ext = getFileExtension(item.text?.trim() || '')
+    return (
+      <div style={{ ...base, background: 'rgba(255,255,255,0.06)' }}>
+        <FileIconFor ext={ext} />
+      </div>
+    )
+  }
+
+  if (type === 'url') {
+    return (
+      <div style={{ ...base, background: 'rgba(255,255,255,0.06)' }}>
+        <IconGlobe />
+      </div>
+    )
+  }
+
+  return null
+}
+
+// ── display helpers ───────────────────────────────────────────────────────────
+
+function getListLabel(item, type, isCopied) {
+  if (isCopied) return 'Copied!'
+  const txt = item.text?.trim() || ''
+  if (type === 'image') return item.text && item.text !== 'Image' ? item.text : 'Image'
+  if (type === 'file') return getFilename(txt)
+  return txt
+}
+
+function getListMeta(item, type, timeAgo) {
+  const txt = item.text?.trim() || ''
+  if (type === 'file') {
+    const parent = getParentDir(txt)
+    return parent ? `…/${parent}` : timeAgo(item.copiedAt)
+  }
+  if (type === 'color') return 'Color'
+  if (type === 'url') return 'URL'
+  if (type === 'image') return 'Image'
+  return timeAgo(item.copiedAt)
+}
+
+// ── main component ────────────────────────────────────────────────────────────
+
 export default function ClipboardView({ query }) {
   const {
     List,
@@ -13,13 +311,14 @@ export default function ClipboardView({ query }) {
     EmptyState,
     ShortcutBar,
     ShortcutHint,
-    ShortcutSep
+    ShortcutSep,
   } = window.UI || {}
 
   const [items, setItems] = React.useState([])
   const [copiedId, setCopiedId] = React.useState(null)
   const [selectedIndex, setSelectedIndex] = React.useState(-1)
-  const [actionFocus, setActionFocus] = React.useState('card')
+  const [imageDimensions, setImageDimensions] = React.useState(null)
+  const [fileExists, setFileExists] = React.useState(null)
 
   const searchQuery = query || ''
 
@@ -51,27 +350,43 @@ export default function ClipboardView({ query }) {
 
   React.useEffect(() => {
     const action = selectedIndex >= 0 ? 'hide' : 'show'
-    window.dispatchEvent(
-      new CustomEvent('omniBar-control', { detail: { action } })
-    )
+    window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action } }))
   }, [selectedIndex])
 
   React.useEffect(() => {
     return () => {
       window.dispatchEvent(
-        new CustomEvent('omniBar-control', { detail: { action: 'show' } })
+        new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } })
       )
     }
   }, [])
 
   React.useEffect(() => {
-    setActionFocus('card')
-  }, [selectedIndex])
+    const selectedItem = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
+    if (selectedItem?.image) {
+      const img = new Image()
+      img.onload = () => setImageDimensions(`${img.width} × ${img.height}`)
+      img.src = selectedItem.image
+    } else {
+      setImageDimensions(null)
+    }
+  }, [selectedIndex, filteredItems])
 
   React.useEffect(() => {
-    const el = document.querySelector('[data-selected="true"]')
-    if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-  }, [selectedIndex])
+    const selectedItem = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
+    const type = selectedItem ? getItemType(selectedItem) : null
+    if (type !== 'file') {
+      setFileExists(null)
+      return
+    }
+    setFileExists(null)
+    window.core?.ipc
+      ?.invoke(EXT_ID, 'checkFile', selectedItem.text?.trim())
+      .then((res) => {
+        if (res?.success) setFileExists(!!res.data)
+      })
+      .catch(() => setFileExists(false))
+  }, [selectedIndex, filteredItems])
 
   const handleCopy = (id, eStop) => {
     if (eStop) eStop.stopPropagation()
@@ -83,17 +398,28 @@ export default function ClipboardView({ query }) {
         setItems(res.data || [])
         setCopiedId(id)
         setTimeout(() => setCopiedId(null), 1800)
-        setTimeout(() => {
-          window.core?.window?.hide?.()
-        }, 150)
+        setTimeout(() => window.core?.window?.hide?.(), 150)
+      })
+      .catch(console.error)
+  }
+
+  const handleCopyFile = (id, eStop) => {
+    if (eStop) eStop.stopPropagation()
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(EXT_ID, 'copyFile', id)
+      .then((res) => {
+        if (!res?.success) return
+        setItems(res.data || [])
+        setCopiedId(id)
+        setTimeout(() => setCopiedId(null), 1800)
+        setTimeout(() => window.core?.window?.hide?.(), 150)
       })
       .catch(console.error)
   }
 
   const handleDelete = (id, eStop) => {
     if (eStop) eStop.stopPropagation()
-    const targetIdx = filteredItems.findIndex((item) => item.id === id)
-    if (targetIdx === 0) return
     if (!window.core?.ipc?.invoke) return
     window.core.ipc
       .invoke(EXT_ID, 'deleteItem', id)
@@ -104,9 +430,8 @@ export default function ClipboardView({ query }) {
         setSelectedIndex((prev) => {
           if (prev < 0) return prev
           const newLen = searchQuery.trim()
-            ? newItems.filter((i) =>
-                i.text?.toLowerCase().includes(searchQuery.toLowerCase())
-              ).length
+            ? newItems.filter((i) => i.text?.toLowerCase().includes(searchQuery.toLowerCase()))
+                .length
             : newItems.length
           return newLen === 0 ? -1 : Math.min(prev, newLen - 1)
         })
@@ -123,10 +448,6 @@ export default function ClipboardView({ query }) {
         setSelectedIndex((prev) => Math.min(prev + 1, filteredItems.length - 1))
       } else if (key === 'ArrowUp') {
         setSelectedIndex((prev) => (prev <= 0 ? -1 : prev - 1))
-      } else if (key === 'ArrowRight') {
-        setActionFocus('delete')
-      } else if (key === 'ArrowLeft') {
-        setActionFocus('card')
       } else if (selectedIndex >= 0) {
         if (key.toLowerCase() === 's') {
           setSelectedIndex(-1)
@@ -135,13 +456,16 @@ export default function ClipboardView({ query }) {
           if (item) handleDelete(item.id)
         } else if (key.toLowerCase() === 'c' || key === 'Enter') {
           const item = filteredItems[selectedIndex]
-          if (item) handleCopy(item.id)
+          if (item) {
+            if (getItemType(item) === 'file') handleCopyFile(item.id)
+            else handleCopy(item.id)
+          }
         }
       }
     }
-    window.addEventListener('omniBar-keydown', handleKey)
-    return () => window.removeEventListener('omniBar-keydown', handleKey)
-  }, [filteredItems, selectedIndex, actionFocus])
+    window.addEventListener('nuxy-shell-omni-bar-keydown', handleKey)
+    return () => window.removeEventListener('nuxy-shell-omni-bar-keydown', handleKey)
+  }, [filteredItems, selectedIndex])
 
   const timeAgo = (dateString) => {
     if (!dateString) return ''
@@ -150,65 +474,264 @@ export default function ClipboardView({ query }) {
     if (m < 60) return `${m}m`
     const h = Math.floor(m / 60)
     if (h < 24) return `${h}h`
-    return new Date(dateString).toLocaleDateString(undefined, {
-      month: 'short',
-      day: 'numeric'
-    })
+    return new Date(dateString).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
   }
 
-  return (
-    <div>
-      <List maxHeight="md">
-        {filteredItems.length === 0 ? (
-          <EmptyState
-            message={searchQuery ? 'No matches.' : 'History is empty.'}
-            hint={
-              searchQuery
-                ? 'Try a different search.'
-                : 'Copied text will appear here.'
-            }
-          />
-        ) : (
-          filteredItems.map((item, idx) => {
-            const isCopied = copiedId === item.id
-            const isActive = idx === selectedIndex
-            return (
-              <ListItem
-                key={item.id}
-                active={isActive}
-                onClick={() => handleCopy(item.id)}
-                data-selected={isActive ? 'true' : 'false'}
-              >
-                <ListItemBody>
-                  <ListItemText variant={isCopied ? 'success' : 'default'}>
-                    {isCopied ? 'Copied!' : item.text}
-                  </ListItemText>
-                  <ListItemMeta>{timeAgo(item.copiedAt)}</ListItemMeta>
-                </ListItemBody>
-                <ListItemActions>
-                  {!isCopied && idx !== 0 && (
-                    <Button
-                      variant="danger"
-                      onClick={(ev) => handleDelete(item.id, ev)}
-                    >
-                      ×
-                    </Button>
-                  )}
-                  {!isCopied && (
-                    <Button
-                      variant="primary"
-                      onClick={(ev) => handleCopy(item.id, ev)}
-                    >
-                      Copy
-                    </Button>
-                  )}
-                </ListItemActions>
-              </ListItem>
-            )
-          })
-        )}
-      </List>
+  const selectedItem = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
 
+  return (
+    <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', width: '100%', flex: 1, minHeight: 0 }}>
+        {/* ── list ── */}
+        <div
+          style={{
+            flex: '1 1 50%',
+            minWidth: 0,
+            overflowY: 'auto',
+            borderRight: '1px solid rgba(128,128,128,0.2)',
+          }}
+        >
+          <List>
+            {filteredItems.length === 0 ? (
+              <EmptyState
+                message={searchQuery ? 'No matches.' : 'History is empty.'}
+                hint={searchQuery ? 'Try a different search.' : 'Copied text will appear here.'}
+              />
+            ) : (
+              filteredItems.map((item, idx) => {
+                const isCopied = copiedId === item.id
+                const isActive = idx === selectedIndex
+                const type = getItemType(item)
+                const label = getListLabel(item, type, isCopied)
+                const meta = getListMeta(item, type, timeAgo)
+                return (
+                  <ListItem
+                    key={item.id}
+                    active={isActive}
+                    onClick={() =>
+                      type === 'file' ? handleCopyFile(item.id) : handleCopy(item.id)
+                    }
+                  >
+                    <ItemLeading item={item} type={type} />
+                    <ListItemBody>
+                      <ListItemText variant={isCopied ? 'success' : 'default'}>
+                        {label}
+                      </ListItemText>
+                      <ListItemMeta>{meta}</ListItemMeta>
+                    </ListItemBody>
+                    <ListItemActions>
+                      {!isCopied && idx !== 0 && (
+                        <Button variant="danger" onClick={(ev) => handleDelete(item.id, ev)}>
+                          ×
+                        </Button>
+                      )}
+                      {!isCopied && type === 'file' && (
+                        <Button variant="primary" onClick={(ev) => handleCopyFile(item.id, ev)}>
+                          Copy File
+                        </Button>
+                      )}
+                      {!isCopied && type !== 'file' && (
+                        <Button variant="primary" onClick={(ev) => handleCopy(item.id, ev)}>
+                          Copy
+                        </Button>
+                      )}
+                    </ListItemActions>
+                  </ListItem>
+                )
+              })
+            )}
+          </List>
+        </div>
+
+        {/* ── detail panel ── */}
+        <div
+          style={{
+            flex: '1 1 50%',
+            padding: '16px',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+          }}
+        >
+          {selectedItem ? (
+            (() => {
+              const type = getItemType(selectedItem)
+              const txt = selectedItem.text?.trim() || ''
+
+              return (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* preview area */}
+                  <div style={{ flex: '1 1 auto', overflowY: 'auto', marginBottom: '12px' }}>
+                    {type === 'image' ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          height: '100%',
+                          borderRadius: '8px',
+                          background: 'rgba(0,0,0,0.2)',
+                          padding: '8px',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <img
+                          src={selectedItem.image}
+                          style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                          alt="Clipboard preview"
+                        />
+                      </div>
+                    ) : type === 'color' ? (
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px',
+                          height: '100%',
+                        }}
+                      >
+                        <div
+                          style={{
+                            flex: 1,
+                            borderRadius: '8px',
+                            background: txt,
+                            border: '1px solid rgba(255,255,255,0.1)',
+                            minHeight: '80px',
+                          }}
+                        />
+                        <div
+                          style={{
+                            fontFamily: 'monospace',
+                            fontSize: '15px',
+                            textAlign: 'center',
+                            opacity: 0.85,
+                            padding: '4px',
+                          }}
+                        >
+                          {txt}
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          fontSize: '13px',
+                          lineHeight: 1.55,
+                          opacity: 0.8,
+                          whiteSpace: 'pre-wrap',
+                          wordBreak: 'break-word',
+                          fontFamily: type === 'text' ? 'inherit' : 'monospace',
+                          padding: '12px',
+                          background: 'rgba(0,0,0,0.2)',
+                          borderRadius: '8px',
+                          minHeight: '100%',
+                        }}
+                      >
+                        {selectedItem.text}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* properties */}
+                  <div
+                    style={{
+                      flex: '0 0 auto',
+                      padding: '10px 12px',
+                      background: 'rgba(255,255,255,0.05)',
+                      borderRadius: '8px',
+                      fontSize: '12px',
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        marginBottom: '8px',
+                        borderBottom: '1px solid rgba(255,255,255,0.1)',
+                        paddingBottom: '5px',
+                        opacity: 0.9,
+                      }}
+                    >
+                      Properties
+                    </div>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: '90px 1fr',
+                        gap: '5px 10px',
+                        opacity: 0.85,
+                      }}
+                    >
+                      <div style={{ opacity: 0.5 }}>Type</div>
+                      <div style={{ textTransform: 'capitalize' }}>
+                        {type === 'image-file' ? 'Image File' : type}
+                      </div>
+
+                      {type === 'file' && (
+                        <>
+                          <div style={{ opacity: 0.5 }}>Name</div>
+                          <div>{getFilename(txt)}</div>
+                          <div style={{ opacity: 0.5 }}>Path</div>
+                          <div style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</div>
+                        </>
+                      )}
+
+                      {type === 'image' && imageDimensions && (
+                        <>
+                          <div style={{ opacity: 0.5 }}>Dimensions</div>
+                          <div>{imageDimensions}</div>
+                        </>
+                      )}
+
+                      {type === 'color' && (
+                        <>
+                          <div style={{ opacity: 0.5 }}>Value</div>
+                          <div style={{ fontFamily: 'monospace' }}>{txt}</div>
+                        </>
+                      )}
+
+                      <div style={{ opacity: 0.5 }}>Copied</div>
+                      <div>{new Date(selectedItem.copiedAt).toLocaleString()}</div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })()
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                opacity: 0.4,
+                fontSize: '13px',
+              }}
+            >
+              Select an item to preview
+            </div>
+          )}
+        </div>
+      </div>
+
+      {fileExists === false && (
+        <div
+          style={{
+            padding: '7px 14px',
+            fontSize: '12px',
+            color: 'var(--color-danger, #e55)',
+            background: 'rgba(220,50,50,0.08)',
+            borderTop: '1px solid rgba(220,50,50,0.2)',
+          }}
+        >
+          File not found — it may have been moved or deleted.
+        </div>
+      )}
       {selectedIndex >= 0 && (
         <ShortcutBar>
           <ShortcutHint>
@@ -225,7 +748,9 @@ export default function ClipboardView({ query }) {
             <Kbd>C</Kbd>
             <ShortcutSep />
             <Kbd>↵</Kbd>
-            <span>copy</span>
+            <span>
+              {selectedItem && getItemType(selectedItem) === 'file' ? 'copy file' : 'copy'}
+            </span>
           </ShortcutHint>
         </ShortcutBar>
       )}

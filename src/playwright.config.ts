@@ -5,6 +5,6 @@ export default defineConfig({
   timeout: 60_000,
   retries: 0,
   use: {
-    trace: 'on-first-retry'
-  }
+    trace: 'on-first-retry',
+  },
 })

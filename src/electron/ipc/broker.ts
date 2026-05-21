@@ -1,8 +1,5 @@
 import type { IpcResult } from '@nuxy/core'
-import {
-  getExtensionById,
-  isChannelAllowed
-} from '../extensions/registry.js'
+import { getExtensionById, isChannelAllowed } from '../extensions/registry.js'
 import { invokeWorker } from './worker-invoke.js'
 
 export async function invokeExtension(
@@ -16,7 +13,7 @@ export async function invokeExtension(
     return {
       success: false,
       error: `Caller extension not found: ${callerId}`,
-      code: 'EXTENSION_NOT_FOUND'
+      code: 'EXTENSION_NOT_FOUND',
     }
   }
 
@@ -25,7 +22,7 @@ export async function invokeExtension(
     return {
       success: false,
       error: `Target extension not found: ${targetId}`,
-      code: 'EXTENSION_NOT_FOUND'
+      code: 'EXTENSION_NOT_FOUND',
     }
   }
 
@@ -33,7 +30,7 @@ export async function invokeExtension(
     return {
       success: false,
       error: 'Caller lacks caller capability',
-      code: 'CALLER_DENIED'
+      code: 'CALLER_DENIED',
     }
   }
 
@@ -41,7 +38,7 @@ export async function invokeExtension(
     return {
       success: false,
       error: 'Target is not callable',
-      code: 'CALLABLE_DENIED'
+      code: 'CALLABLE_DENIED',
     }
   }
 
@@ -49,7 +46,7 @@ export async function invokeExtension(
     return {
       success: false,
       error: `Unknown channel: ${channel}`,
-      code: 'UNKNOWN_CHANNEL'
+      code: 'UNKNOWN_CHANNEL',
     }
   }
 

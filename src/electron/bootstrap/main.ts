@@ -1,4 +1,8 @@
 import { app, protocol, BrowserWindow } from 'electron'
+import net from 'net'
+import os from 'os'
+import fs from 'fs'
+import path from 'path'
 
 import { createMainWindow, getMainWindow } from '../window/manager.js'
 import { applyConfigToWindow, positionWindowOnDisplay } from '../window/runtime.js'
@@ -10,6 +14,16 @@ import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('App')
 
+process.on('uncaughtException', (err: any) => {
+  if (err?.code === 'EIO' || err?.message === 'write EIO') {
+    return
+  }
+  log.error('Uncaught Exception:', err)
+  if (process.env.NODE_ENV !== 'development') {
+    app.quit()
+  }
+})
+
 const gotTheLock = app.requestSingleInstanceLock()
 
 protocol.registerSchemesAsPrivileged([
@@ -20,9 +34,9 @@ protocol.registerSchemesAsPrivileged([
       standard: true,
       supportFetchAPI: true,
       bypassCSP: true,
-      corsEnabled: true
-    }
-  }
+      corsEnabled: true,
+    },
+  },
 ])
 
 if (!gotTheLock) {
@@ -78,6 +92,53 @@ if (!gotTheLock) {
     })
 
     log.info('Kernel bootstrap complete.')
+
+    const socketPath = path.join(os.tmpdir(), 'nuxy.sock')
+    if (fs.existsSync(socketPath)) {
+      try {
+        fs.unlinkSync(socketPath)
+      } catch (e) {
+        log.error('Failed to unlink existing socket:', e)
+      }
+    }
+
+    const server = net.createServer((socket) => {
+      socket.on('data', (data) => {
+        const cmd = data.toString().trim()
+        log.info(`Received socket command: ${cmd}`)
+
+        const win = getMainWindow() ?? BrowserWindow.getAllWindows()[0]
+        if (!win || win.isDestroyed()) return
+
+        if (cmd === 'toggle') {
+          if (win.isVisible()) {
+            win.hide()
+          } else {
+            applyConfigToWindow(win)
+            positionWindowOnDisplay(win)
+            win.show()
+            if (win.isMinimized()) win.restore()
+            win.focus()
+            win.webContents.send('window:show')
+          }
+        } else if (cmd === 'show') {
+          applyConfigToWindow(win)
+          if (!win.isVisible()) {
+            positionWindowOnDisplay(win)
+            win.show()
+          } else {
+            positionWindowOnDisplay(win)
+          }
+          if (win.isMinimized()) win.restore()
+          win.focus()
+          win.webContents.send('window:show')
+        }
+      })
+    })
+
+    server.listen(socketPath, () => {
+      log.info(`Listening on UNIX socket at ${socketPath}`)
+    })
   })
 
   app.on('window-all-closed', () => {

@@ -17,26 +17,26 @@ Recommended order: fix **truth in docs + agents.md** (cheap), then **capability 
 
 ## Pain point matrix
 
-| ID | Pain point | Severity | Evidence |
-|----|------------|----------|----------|
-| P1 | **“Empty shell” violated — launcher logic lives in core** | High | `App.tsx` (~540 lines): omni bar, provider fan-out, tool routing, keyboard UX |
-| P2 | **`core.registry.*` in workers is a no-op** | High | `extension-host.ts` only logs; `scanner.ts` registers from `manifest.json` only |
-| P3 | **No kernel message broker / `core.extensions.invoke`** | High | Docs (`10-security`, `15-modular-plugin-system`, `agents.md`); not implemented in `ipc.ts` / workers |
-| P4 | **Manifest `capabilities` ignored** | High | `clipboard`/`calculator` declare `callable`/`caller`; kernel never checks before host calls |
-| P5 | **Clipboard is a global host privilege** | High | `spawn.ts` serves `clipboard:*` to every worker |
-| P6 | **Extension IPC channels are not allowlisted** | Medium | `ipc-validate.ts` checks ext exists, not `channel` ∈ manifest |
-| P7 | **Worker sandbox is weaker than documented** | Medium | `extension-host.ts` uses `import(absolutePath)` — not `vm` / `isolated-vm`; malicious backend could bundle native deps |
-| P8 | **Calculator uses `eval()`** | Medium | `extensions/calculator/backend.js` |
-| P9 | **Massive documentation drift** | Medium | 20+ docs + `agents.md` still say `~/.local/share/nuxy`, Node `vm`, Shadcn; code uses `~/.nuxy`, workers, `@nuxy/ui` |
-| P10 | **Extension author DX is ad hoc** | Medium | `main.tsx` exposes `window.React` / `window.UI`; extensions are hand-written `.js`, not built TSX packages |
-| P11 | **No empty-state UX** | Medium | `00-overview.md` promises “no extensions” message; `App.tsx` always shows full launcher |
-| P12 | **Orchestrator / Enter fallback not wired** | Medium | `type: orchestrator` in types; no `registerOrchestrator` handler in kernel; Enter only opens tools |
-| P13 | **Provider fan-out on every keystroke** | Medium | `App.tsx` invokes all providers in parallel per `savedQuery` (50ms debounce only) |
-| P14 | **No E2E / integration tests** | Medium | `12-testing-strategy.md` describes Playwright; none exist; `electron-fix-plan.md` manual checklist mostly open |
-| P15 | **No extension lifecycle** | Low | No hot reload, crash restart, or version/conflict resolution (`18-advanced-capabilities.md`) |
-| P16 | **Global shortcut / daemon story incomplete** | Low | `19-mvp-roadmap.md` mentions `/tmp/nuxy.sock`; `main.ts` only uses `requestSingleInstanceLock` |
-| P17 | **Toolchain / release gaps** | Low | Roadmap mentions eslint, prettier, `electron-builder`, CI — not present in repo |
-| P18 | **Package manager split** | Low | Root `package.json`: `pnpm` for dev, `bun run` for `start` |
+| ID  | Pain point                                                | Severity | Evidence                                                                                                               |
+| --- | --------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| P1  | **“Empty shell” violated — launcher logic lives in core** | High     | `App.tsx` (~540 lines): omni bar, provider fan-out, tool routing, keyboard UX                                          |
+| P2  | **`core.registry.*` in workers is a no-op**               | High     | `extension-host.ts` only logs; `scanner.ts` registers from `manifest.json` only                                        |
+| P3  | **No kernel message broker / `core.extensions.invoke`**   | High     | Docs (`10-security`, `15-modular-plugin-system`, `agents.md`); not implemented in `ipc.ts` / workers                   |
+| P4  | **Manifest `capabilities` ignored**                       | High     | `clipboard`/`calculator` declare `callable`/`caller`; kernel never checks before host calls                            |
+| P5  | **Clipboard is a global host privilege**                  | High     | `spawn.ts` serves `clipboard:*` to every worker                                                                        |
+| P6  | **Extension IPC channels are not allowlisted**            | Medium   | `ipc-validate.ts` checks ext exists, not `channel` ∈ manifest                                                          |
+| P7  | **Worker sandbox is weaker than documented**              | Medium   | `extension-host.ts` uses `import(absolutePath)` — not `vm` / `isolated-vm`; malicious backend could bundle native deps |
+| P8  | **Calculator uses `eval()`**                              | Medium   | `extensions/calculator/backend.js`                                                                                     |
+| P9  | **Massive documentation drift**                           | Medium   | 20+ docs + `agents.md` still say `~/.local/share/nuxy`, Node `vm`, Shadcn; code uses `~/.nuxy`, workers, `@nuxy/ui`    |
+| P10 | **Extension author DX is ad hoc**                         | Medium   | `main.tsx` exposes `window.React` / `window.UI`; extensions are hand-written `.js`, not built TSX packages             |
+| P11 | **No empty-state UX**                                     | Medium   | `00-overview.md` promises “no extensions” message; `App.tsx` always shows full launcher                                |
+| P12 | **Orchestrator / Enter fallback not wired**               | Medium   | `type: orchestrator` in types; no `registerOrchestrator` handler in kernel; Enter only opens tools                     |
+| P13 | **Provider fan-out on every keystroke**                   | Medium   | `App.tsx` invokes all providers in parallel per `savedQuery` (50ms debounce only)                                      |
+| P14 | **No E2E / integration tests**                            | Medium   | `12-testing-strategy.md` describes Playwright; none exist; `electron-fix-plan.md` manual checklist mostly open         |
+| P15 | **No extension lifecycle**                                | Low      | No hot reload, crash restart, or version/conflict resolution (`18-advanced-capabilities.md`)                           |
+| P16 | **Global shortcut / daemon story incomplete**             | Low      | `19-mvp-roadmap.md` mentions `/tmp/nuxy.sock`; `main.ts` only uses `requestSingleInstanceLock`                         |
+| P17 | **Toolchain / release gaps**                              | Low      | Roadmap mentions eslint, prettier, `electron-builder`, CI — not present in repo                                        |
+| P18 | **Package manager split**                                 | Low      | Root `package.json`: `pnpm` for dev, `bun run` for `start`                                                             |
 
 ---
 
@@ -132,11 +132,11 @@ Recommended order: fix **truth in docs + agents.md** (cheap), then **capability 
 
 **Recommended solution (phased):**
 
-| Phase | Approach |
-|-------|----------|
-| **Short** | Document actual model; only load extensions from signed/trusted paths in prod |
-| **Medium** | Pre-bundle extension backends with esbuild (no node builtins) before spawn |
-| **Long** | Evaluate `isolated-vm` or separate utility process per extension |
+| Phase      | Approach                                                                      |
+| ---------- | ----------------------------------------------------------------------------- |
+| **Short**  | Document actual model; only load extensions from signed/trusted paths in prod |
+| **Medium** | Pre-bundle extension backends with esbuild (no node builtins) before spawn    |
+| **Long**   | Evaluate `isolated-vm` or separate utility process per extension              |
 
 **Acceptance criteria:** Official extension template cannot `import('fs')` at runtime in production build.
 
@@ -219,12 +219,12 @@ Recommended order: fix **truth in docs + agents.md** (cheap), then **capability 
 
 ### P15–P18 — Lower priority
 
-| ID | Quick recommendation |
-|----|----------------------|
-| P15 | `fs.watch` on `EXTENSION_DIR` + worker terminate/respawn; manifest version check |
+| ID  | Quick recommendation                                                                  |
+| --- | ------------------------------------------------------------------------------------- |
+| P15 | `fs.watch` on `EXTENSION_DIR` + worker terminate/respawn; manifest version check      |
 | P16 | Document single-instance as MVP; add optional UNIX socket later for CLI `nuxy toggle` |
-| P17 | Add `electron-builder`, GitHub Actions `pnpm test && pnpm build`, eslint flat config |
-| P18 | Remove or document `bun run start`; standardize on `pnpm dev` |
+| P17 | Add `electron-builder`, GitHub Actions `pnpm test && pnpm build`, eslint flat config  |
+| P18 | Remove or document `bun run start`; standardize on `pnpm dev`                         |
 
 ---
 
@@ -273,27 +273,27 @@ Recommended order: fix **truth in docs + agents.md** (cheap), then **capability 
 
 ## Success metrics
 
-| Metric | Current | Target (V1) |
-|--------|---------|-------------|
-| Kernel unit tests | 19 | 30+ (broker, permissions) |
-| E2E tests | 0 | ≥ 3 critical paths |
-| Docs path consistency | ~20 stale refs | 0 stale refs |
-| Core `App.tsx` LOC | ~540 | < 100 |
-| Extensions needing core edit for new provider | Yes | No |
-| Cross-extension invoke with capability deny | N/A | Tested + passing |
+| Metric                                        | Current        | Target (V1)               |
+| --------------------------------------------- | -------------- | ------------------------- |
+| Kernel unit tests                             | 19             | 30+ (broker, permissions) |
+| E2E tests                                     | 0              | ≥ 3 critical paths        |
+| Docs path consistency                         | ~20 stale refs | 0 stale refs              |
+| Core `App.tsx` LOC                            | ~540           | < 100                     |
+| Extensions needing core edit for new provider | Yes            | No                        |
+| Cross-extension invoke with capability deny   | N/A            | Tested + passing          |
 
 ---
 
 ## Related documents
 
-| Topic | Doc |
-|-------|-----|
-| Canonical paths & kernel fixes | [electron-fix-plan.md](./electron-fix-plan.md) |
-| MVP scope | [19-mvp-roadmap.md](./19-mvp-roadmap.md) |
-| Security target state | [10-security.md](./10-security.md) |
-| Extension types & omni input | [16-omni-input-system.md](./16-omni-input-system.md) |
-| Testing | [12-testing-strategy.md](./12-testing-strategy.md) |
-| Agent rules (update after Phase 0) | [../agents.md](../agents.md) |
+| Topic                              | Doc                                                  |
+| ---------------------------------- | ---------------------------------------------------- |
+| Canonical paths & kernel fixes     | [electron-fix-plan.md](./electron-fix-plan.md)       |
+| MVP scope                          | [19-mvp-roadmap.md](./19-mvp-roadmap.md)             |
+| Security target state              | [10-security.md](./10-security.md)                   |
+| Extension types & omni input       | [16-omni-input-system.md](./16-omni-input-system.md) |
+| Testing                            | [12-testing-strategy.md](./12-testing-strategy.md)   |
+| Agent rules (update after Phase 0) | [../agents.md](../agents.md)                         |
 
 ---
 

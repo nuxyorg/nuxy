@@ -5,6 +5,6 @@ import { getMprisNowPlaying } from './mpris.js'
 export function createLinuxMediaProvider(): MediaPlatformProvider {
   return {
     platform: 'linux',
-    getNowPlaying: getMprisNowPlaying
+    getNowPlaying: getMprisNowPlaying,
   }
 }

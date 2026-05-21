@@ -18,18 +18,35 @@
   }
 }
 
+.nuxy-shell-backdrop {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  z-index: 9999;
+}
+
 .nuxy-shell-container {
+  position: absolute;
   width: 100%;
+  max-width: 800px;
   height: fit-content;
   background-color: var(--bg-base);
+  border: 2px solid var(--syntax-comment);
   border-radius: var(--radius-xl);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .nuxy-shell-body {
   width: 100%;
   color: var(--syntax-variable);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .nuxy-shell-omni-bar {
@@ -39,7 +56,11 @@
   gap: var(--space-2);
   padding: 13px var(--space-5);
   min-height: 52px;
-  cursor: text;
+  cursor: grab;
+}
+
+.nuxy-shell-omni-bar:active {
+  cursor: grabbing;
 }
 
 .nuxy-shell-omni-bar--static {
@@ -48,11 +69,11 @@
 
 .nuxy-shell-omni-bar__hidden-input {
   position: absolute;
-  inset: 0;
+  top: -9999px;
+  left: -9999px;
   opacity: 0;
-  width: 100%;
-  height: 100%;
-  cursor: text;
+  width: 1px;
+  height: 1px;
   background: transparent;
   border: 0;
   outline: none;
@@ -90,9 +111,9 @@
 
 .nuxy-shell-omni-bar__query-area {
   display: flex;
-  flex: 1;
   min-width: 0;
   font-size: var(--font-body);
+  cursor: text;
 }
 
 .nuxy-shell-omni-bar__typed {
@@ -137,7 +158,9 @@
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: background-color 150ms, color 150ms;
+  transition:
+    background-color 150ms,
+    color 150ms;
   color: var(--syntax-variable);
 }
 
@@ -165,7 +188,9 @@
   font-family: monospace;
   padding: var(--space-0) var(--space-3);
   border-radius: var(--radius-sm);
-  transition: color 150ms, background-color 150ms;
+  transition:
+    color 150ms,
+    background-color 150ms;
   color: var(--syntax-peach);
   background-color: var(--syntax-comment);
 }
@@ -184,6 +209,16 @@
 
 .nuxy-shell-tool-wrapper {
   border-top: 1px solid var(--syntax-comment);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  display: flex;
+  flex-direction: column;
+}
+
+.nuxy-shell-tool-wrapper::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -201,4 +236,95 @@
   .nuxy-shell-results-item__subtitle {
     transition: none;
   }
+}
+
+.nuxy-command-palette-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 32px;
+  background-color: transparent;
+  z-index: 10000;
+}
+
+.nuxy-command-palette {
+  width: 100%;
+  max-width: 350px;
+  background-color: var(--bg-base);
+  border: 1px solid var(--syntax-comment);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: slide-up 150ms ease-out;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nuxy-command-palette__input-wrapper {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--syntax-comment);
+}
+
+.nuxy-command-palette__input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--syntax-variable);
+  font-size: var(--font-lg);
+}
+
+.nuxy-command-palette__input::placeholder {
+  color: var(--syntax-keyword);
+}
+
+.nuxy-command-palette__list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px 0;
+  scrollbar-width: none;
+}
+.nuxy-command-palette__list::-webkit-scrollbar {
+  display: none;
+}
+
+.nuxy-command-palette__item {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: var(--syntax-variable);
+  transition:
+    background-color 150ms,
+    color 150ms;
+}
+
+.nuxy-command-palette__item:hover {
+  background-color: color-mix(in srgb, var(--syntax-comment) 40%, transparent);
+}
+
+.nuxy-command-palette__item--active {
+  background-color: var(--syntax-comment);
+  color: var(--syntax-function);
+}
+
+.nuxy-command-palette__shortcut {
+  font-family: monospace;
+  font-size: var(--font-sm);
+  background-color: color-mix(in srgb, var(--bg-base) 80%, var(--syntax-comment));
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  color: var(--syntax-peach);
 }

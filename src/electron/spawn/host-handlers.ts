@@ -1,13 +1,16 @@
 import fs from 'fs'
 import fsPromises from 'fs/promises'
-import { clipboard } from 'electron'
+import { clipboard, nativeImage } from 'electron'
 import { HostChannel, kernelLogger } from '@nuxy/core'
+import type { ThemeDefinition, IconPackDefinition } from '@nuxy/core'
 import { assertHostPermission } from '../config/permissions.js'
 import { resolveStoragePath } from '../config/storage-path.js'
 import { getExtensionById } from '../extensions/registry.js'
 import { invokeExtension } from '../ipc/broker.js'
 import { getNowPlaying } from '../media/index.js'
 import { extensionDataDir } from './migrate-data.js'
+import { registerExtensionTheme } from '../themes/extension-themes.js'
+import { registerIconPack } from '../icons/registry.js'
 
 const log = kernelLogger.child('HostHandlers')
 
@@ -35,7 +38,11 @@ export async function handleHostCall(
     ) {
       return { error: 'Invalid broker invoke payload: missing targetId or channel' }
     }
-    const { targetId, channel: targetChannel, payload: pl } = payload as {
+    const {
+      targetId,
+      channel: targetChannel,
+      payload: pl,
+    } = payload as {
       targetId: string
       channel: string
       payload?: unknown
@@ -63,6 +70,47 @@ export async function handleHostCall(
         }
         clipboard.writeText(payload)
         return { result: true }
+
+      case HostChannel.CLIPBOARD_READ_IMAGE: {
+        const image = clipboard.readImage()
+        if (!image.isEmpty()) {
+          return { result: image.toDataURL() }
+        }
+        return { result: null }
+      }
+
+      case HostChannel.CLIPBOARD_WRITE_IMAGE: {
+        if (typeof payload !== 'string') {
+          return { error: 'CLIPBOARD_WRITE_IMAGE: payload must be a dataURL string' }
+        }
+        const img = nativeImage.createFromDataURL(payload)
+        clipboard.writeImage(img)
+        return { result: true }
+      }
+
+      case HostChannel.CLIPBOARD_WRITE_FILES: {
+        if (!Array.isArray(payload) || !payload.every((p) => typeof p === 'string')) {
+          return { error: 'CLIPBOARD_WRITE_FILES: payload must be string[]' }
+        }
+        const paths = payload as string[]
+        const uriList = paths.map((p) => `file://${p}`).join('\n') + '\n'
+        if (process.platform === 'linux') {
+          clipboard.writeBuffer(
+            'x-special/nautilus-clipboard',
+            Buffer.from(`copy\n${uriList}`, 'utf8')
+          )
+        } else {
+          clipboard.writeBuffer('text/uri-list', Buffer.from(uriList, 'utf8'))
+        }
+        return { result: true }
+      }
+
+      case HostChannel.FS_FILE_EXISTS: {
+        if (typeof payload !== 'string') {
+          return { error: 'FS_FILE_EXISTS: payload must be a path string' }
+        }
+        return { result: fs.existsSync(payload) }
+      }
 
       case HostChannel.STORAGE_READ: {
         if (typeof payload !== 'string') {
@@ -97,13 +145,33 @@ export async function handleHostCall(
       case HostChannel.MEDIA_GET_NOW_PLAYING:
         return { result: await getNowPlaying() }
 
+      case HostChannel.THEME_REGISTER: {
+        const def = payload as ThemeDefinition
+        if (!def?.name || typeof def.name !== 'string' || !def.colors) {
+          return { error: 'Invalid ThemeDefinition: missing name or colors' }
+        }
+        registerExtensionTheme(def)
+        log.info(`Extension "${extId}" registered theme: ${def.name}`)
+        return { result: true }
+      }
+
+      case HostChannel.ICONPACK_REGISTER: {
+        const def = payload as IconPackDefinition
+        if (!def?.name || typeof def.name !== 'string' || !def.icons) {
+          return { error: 'Invalid IconPackDefinition: missing name or icons' }
+        }
+        registerIconPack(def)
+        log.info(`Extension "${extId}" registered icon pack: ${def.name}`)
+        return { result: true }
+      }
+
       default:
         return { error: `Unknown host channel: ${channel}` }
     }
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err)
     log.error(`Host call error on channel "${channel}" in "${extId}"`, {
-      error: message
+      error: message,
     })
     return { error: message }
   }

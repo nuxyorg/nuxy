@@ -1,0 +1,79 @@
+.nuxy-select-box {
+  position: relative;
+  display: inline-flex;
+}
+
+.nuxy-select-box__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background: var(--syntax-comment);
+  border: 1px solid var(--syntax-keyword);
+  border-radius: var(--radius-sm);
+  font-family: monospace;
+  font-size: var(--font-xs);
+  color: var(--syntax-variable);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 150ms;
+  outline: none;
+  min-width: 80px;
+  justify-content: space-between;
+}
+
+.nuxy-select-box__trigger:hover,
+.nuxy-select-box__trigger--open {
+  border-color: var(--syntax-operator);
+}
+
+.nuxy-select-box__chevron {
+  opacity: 0.5;
+  font-size: 9px;
+  transition: transform 150ms;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.nuxy-select-box__chevron--open {
+  transform: rotate(180deg);
+}
+
+.nuxy-select-box__dropdown {
+  position: fixed;
+  min-width: 150px;
+  background: var(--bg-base);
+  border: 1px solid var(--syntax-comment);
+  border-top-color: var(--syntax-operator);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  z-index: 200;
+}
+
+.nuxy-select-box__option {
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-family: monospace;
+  font-size: var(--font-sm);
+  color: var(--syntax-variable);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background-color 80ms;
+  white-space: nowrap;
+}
+
+.nuxy-select-box__option:hover,
+.nuxy-select-box__option--focused {
+  background: var(--syntax-comment);
+  border-left-color: var(--syntax-operator);
+}
+
+.nuxy-select-box__option-check {
+  color: var(--syntax-function);
+  font-size: var(--font-xs);
+  flex-shrink: 0;
+}

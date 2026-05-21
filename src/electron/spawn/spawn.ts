@@ -16,15 +16,9 @@ const log = kernelLogger.child('Spawn')
 /** dist-electron/worker/extension-host.js (built from @nuxy/extension-host) */
 const hostScript = path.join(import.meta.dirname, 'worker', 'extension-host.js')
 
-export function spawnExtension(
-  extId: string,
-  folderName: string,
-  entryFile: string
-): Worker {
+export function spawnExtension(extId: string, folderName: string, entryFile: string): Worker {
   const absolutePath = path.join(EXTENSION_DIR, folderName, entryFile)
-  log.info(
-    `Spawning worker for extension "${extId}" (folder: ${folderName}) → ${absolutePath}`
-  )
+  log.info(`Spawning worker for extension "${extId}" (folder: ${folderName}) → ${absolutePath}`)
 
   migrateLegacyData(extId, folderName)
 
@@ -34,8 +28,8 @@ export function spawnExtension(
     workerData: {
       extId,
       absolutePath: pathToFileURL(absolutePath).href,
-      logLevel
-    }
+      logLevel,
+    },
   })
 
   worker.on('message', async (msg: WorkerToHostMessage) => {
@@ -44,7 +38,7 @@ export function spawnExtension(
     if (msg.type === 'registry:sync') {
       mergeRuntimeSync(extId, {
         ipcChannels: msg.ipcChannels ?? [],
-        displayName: msg.displayName
+        displayName: msg.displayName,
       })
       log.silly(`Registry sync for "${extId}"`, msg.ipcChannels)
       return
@@ -64,7 +58,7 @@ export function spawnExtension(
   worker.on('error', (err: Error) => {
     log.error(`Worker for "${extId}" emitted an error`, {
       message: err.message,
-      stack: err.stack
+      stack: err.stack,
     })
   })
 
@@ -80,8 +74,6 @@ export function spawnExtension(
   })
 
   activeWorkers.set(extId, worker)
-  log.silly(
-    `Worker registered. Active: ${[...activeWorkers.keys()].join(', ')}`
-  )
+  log.silly(`Worker registered. Active: ${[...activeWorkers.keys()].join(', ')}`)
   return worker
 }

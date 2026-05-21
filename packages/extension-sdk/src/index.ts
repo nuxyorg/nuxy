@@ -6,7 +6,7 @@ export type {
   ExtensionType,
   IpcResult,
   HostChannel,
-  HostChannelName
+  HostChannelName,
 } from '@nuxy/core'
 
 export { HostChannel } from '@nuxy/core'

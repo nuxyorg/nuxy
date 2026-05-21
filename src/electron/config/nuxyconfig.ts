@@ -1,115 +1,71 @@
 import fs from 'fs'
 import path from 'path'
-import os from 'os'
 import { kernelLogger } from '@nuxy/core'
-import { CONFIG_DIR, CONFIG_PATH } from './paths.js'
+import { DATA_DIR, CONFIG_DIR } from './paths.js'
 import { ensureUserThemes } from '../themes/install.js'
 
 const log = kernelLogger.child('NuxyConfig')
 
 export type EscAction = 'hide' | 'minimize' | 'quit' | 'none'
-export type Theme = 'dark' | 'light' | 'system'
 
 export interface NuxyConfig {
-  theme: Theme
   escAction: EscAction
+  blurAction: EscAction
   windowWidth: number
   windowMaxHeight: number
   alwaysOnTop: boolean
   opacity: number
   showInTaskbar: boolean
-  startHidden: boolean
+  showOnStartup: boolean
   windowPosition?: string
+  extensions: Record<string, Record<string, string>>
 }
 
 const DEFAULTS: NuxyConfig = {
-  theme: 'dark',
   escAction: 'hide',
+  blurAction: 'hide',
   windowWidth: 800,
   windowMaxHeight: 600,
   alwaysOnTop: false,
   opacity: 1,
   showInTaskbar: false,
-  startHidden: false
+  showOnStartup: false,
+  extensions: {},
 }
 
-export { CONFIG_DIR, CONFIG_PATH, THEMES_DIR } from './paths.js'
+export { CONFIG_DIR, THEMES_DIR } from './paths.js'
 export { DEFAULT_DARK_THEME, DEFAULT_LIGHT_THEME } from '../themes/install.js'
 
-function parseConfig(raw: string): Partial<NuxyConfig> {
-  const result: Record<string, unknown> = {}
+/** Path to the settings.json written by the settings extension. */
+const SETTINGS_JSON_PATH = path.join(DATA_DIR, 'com.nuxy.settings', 'settings.json')
 
-  for (const rawLine of raw.split('\n')) {
-    const line = rawLine.trim()
-    if (!line || line.startsWith('#')) continue
+function readSettingsJson(): Partial<NuxyConfig> {
+  try {
+    if (!fs.existsSync(SETTINGS_JSON_PATH)) return {}
+    const raw = fs.readFileSync(SETTINGS_JSON_PATH, 'utf-8')
+    const parsed = JSON.parse(raw)
+    const result: Partial<NuxyConfig> = {}
 
-    const eqIdx = line.indexOf('=')
-    if (eqIdx === -1) continue
+    if (['hide', 'minimize', 'quit', 'none'].includes(parsed.escAction))
+      result.escAction = parsed.escAction
+    if (['hide', 'minimize', 'quit', 'none'].includes(parsed.blurAction))
+      result.blurAction = parsed.blurAction
+    if (typeof parsed.windowWidth === 'number' && parsed.windowWidth >= 200)
+      result.windowWidth = parsed.windowWidth
+    if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)
+      result.windowMaxHeight = parsed.windowMaxHeight
+    if (typeof parsed.alwaysOnTop === 'boolean') result.alwaysOnTop = parsed.alwaysOnTop
+    if (typeof parsed.opacity === 'number')
+      result.opacity = Math.min(1, Math.max(0, parsed.opacity))
+    if (typeof parsed.showInTaskbar === 'boolean') result.showInTaskbar = parsed.showInTaskbar
+    if (typeof parsed.showOnStartup === 'boolean') result.showOnStartup = parsed.showOnStartup
+    if (typeof parsed.windowPosition === 'string') result.windowPosition = parsed.windowPosition
 
-    const key = line.slice(0, eqIdx).trim()
-    const value = line
-      .slice(eqIdx + 1)
-      .trim()
-      .replace(/^["']|["']$/g, '')
-
-    switch (key) {
-      case 'theme':
-        if (['dark', 'light', 'system'].includes(value))
-          result.theme = value as Theme
-        break
-      case 'escAction':
-        if (['hide', 'minimize', 'quit', 'none'].includes(value))
-          result.escAction = value as EscAction
-        break
-      case 'windowWidth': {
-        const w = Number(value)
-        if (!Number.isNaN(w) && w >= 200 && w <= 4096) result.windowWidth = w
-        break
-      }
-      case 'windowMaxHeight': {
-        const h = Number(value)
-        if (!Number.isNaN(h) && h >= 48 && h <= 4096) result.windowMaxHeight = h
-        break
-      }
-      case 'alwaysOnTop':
-        result.alwaysOnTop = value === 'true'
-        break
-      case 'opacity':
-        result.opacity = Math.min(1, Math.max(0, Number(value)))
-        break
-      case 'showInTaskbar':
-        result.showInTaskbar = value === 'true'
-        break
-      case 'startHidden':
-        result.startHidden = value === 'true'
-        break
-      case 'windowPosition':
-        result.windowPosition = value
-        break
-      default:
-        log.warn(`Unknown config key ignored: "${key}"`)
-    }
+    return result
+  } catch (err) {
+    log.warn('Failed to read settings.json — using defaults.', err)
+    return {}
   }
-
-  return result as Partial<NuxyConfig>
-}
-
-function writeDefaultConfig(): void {
-  const content = `# Nuxy Configuration File
-# Located at: ~/.nuxy/nuxyconfig
-
-theme = dark
-escAction = hide
-windowWidth     = 800
-windowMaxHeight = 600
-alwaysOnTop = false
-opacity = 1
-showInTaskbar = false
-startHidden = false
-`
-
-  fs.writeFileSync(CONFIG_PATH, content, 'utf-8')
-  log.info(`Created default config at ${CONFIG_PATH}`)
 }
 
 let _config: NuxyConfig | null = null
@@ -119,7 +75,6 @@ export function loadConfig(): NuxyConfig {
   if (_config) return _config
 
   if (!fs.existsSync(CONFIG_DIR)) {
-    log.info(`Creating config directory at ${CONFIG_DIR}`)
     fs.mkdirSync(CONFIG_DIR, { recursive: true })
   }
 
@@ -129,27 +84,15 @@ export function loadConfig(): NuxyConfig {
     log.error('Failed to initialize user themes:', e)
   }
 
-  const oldConfigPath = path.join(os.homedir(), '.nuxyconfig')
-  if (fs.existsSync(oldConfigPath)) {
-    log.info(
-      `Found old config at ${oldConfigPath} — migrating to ${CONFIG_PATH}`
-    )
-    try {
-      const rawOld = fs.readFileSync(oldConfigPath, 'utf-8')
-      fs.writeFileSync(CONFIG_PATH, rawOld, 'utf-8')
-      fs.unlinkSync(oldConfigPath)
-    } catch (err) {
-      log.error(`Failed to migrate old config:`, err)
-    }
-  }
-
-  function watchConfig() {
+  function watchSettings() {
     if (isWatching) return
     isWatching = true
+    const settingsDir = path.dirname(SETTINGS_JSON_PATH)
+    if (!fs.existsSync(settingsDir)) return
     try {
-      fs.watch(CONFIG_DIR, (eventType, filename) => {
-        if (filename === 'nuxyconfig') {
-          log.info('nuxyconfig changed on disk — reloading config.')
+      fs.watch(settingsDir, (_, filename) => {
+        if (filename === 'settings.json') {
+          log.info('settings.json changed — reloading config.')
           try {
             reloadConfig()
             void import('../window/runtime.js').then(({ applyConfigToWindow }) =>
@@ -159,55 +102,26 @@ export function loadConfig(): NuxyConfig {
               })
             )
           } catch (e) {
-            log.error('Failed to reload config on file change:', e)
+            log.error('Failed to reload config on settings.json change:', e)
           }
         }
       })
     } catch (err) {
-      log.error('Failed to watch config directory:', err)
+      log.error('Failed to watch settings directory:', err)
     }
   }
 
-  if (!fs.existsSync(CONFIG_PATH)) {
-    log.info(`No config found at ${CONFIG_PATH} — writing defaults.`)
-    writeDefaultConfig()
-    _config = { ...DEFAULTS }
-    watchConfig()
-    return _config
-  }
+  const fromSettings = readSettingsJson()
+  _config = { ...DEFAULTS, ...fromSettings, extensions: {} }
+  log.info('Config loaded from settings.json', _config)
 
-  try {
-    const raw = fs.readFileSync(CONFIG_PATH, 'utf-8')
-    const parsed = parseConfig(raw)
-    _config = normalizeConfig({ ...DEFAULTS, ...parsed })
-    log.info(`Config loaded from ${CONFIG_PATH}`, _config)
-  } catch (err) {
-    log.error(`Failed to read config — falling back to defaults.`, err)
-    _config = { ...DEFAULTS }
-  }
-
-  watchConfig()
+  watchSettings()
   return _config
 }
 
 export function reloadConfig(): NuxyConfig {
   _config = null
   return loadConfig()
-}
-
-function normalizeConfig(cfg: NuxyConfig): NuxyConfig {
-  return {
-    ...cfg,
-    windowWidth:
-      Number.isFinite(cfg.windowWidth) && cfg.windowWidth >= 200
-        ? cfg.windowWidth
-        : DEFAULTS.windowWidth,
-    windowMaxHeight:
-      Number.isFinite(cfg.windowMaxHeight) && cfg.windowMaxHeight >= 48
-        ? cfg.windowMaxHeight
-        : DEFAULTS.windowMaxHeight,
-    opacity: Math.min(1, Math.max(0, cfg.opacity ?? DEFAULTS.opacity))
-  }
 }
 
 export function getConfig(): NuxyConfig {
@@ -239,11 +153,7 @@ export function getWindowPosition(
   return { x: targetX, y: targetY }
 }
 
-function parseCoordinate(
-  val: string,
-  displayLength: number,
-  winLength: number
-): number {
+function parseCoordinate(val: string, displayLength: number, winLength: number): number {
   val = val.trim().toLowerCase()
 
   if (val === 'center') {
@@ -252,9 +162,7 @@ function parseCoordinate(
 
   if (val.endsWith('px')) {
     const px = parseFloat(val)
-    return isNaN(px)
-      ? Math.round((displayLength - winLength) / 2)
-      : Math.round(px)
+    return isNaN(px) ? Math.round((displayLength - winLength) / 2) : Math.round(px)
   }
 
   if (val.endsWith('%')) {

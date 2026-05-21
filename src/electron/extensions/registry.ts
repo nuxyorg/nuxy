@@ -43,10 +43,7 @@ export function isChannelAllowed(extId: string, channel: string): boolean {
   return allowed.has(channel)
 }
 
-export function mergeRuntimeSync(
-  extId: string,
-  payload: ExtensionRuntimeMeta
-): void {
+export function mergeRuntimeSync(extId: string, payload: ExtensionRuntimeMeta): void {
   const ext = byId.get(extId)
   if (!ext) return
   ext.runtime = payload

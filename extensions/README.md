@@ -23,7 +23,7 @@ import { defineExtension } from '@nuxy/extension-sdk'
 export default defineExtension({
   register(core) {
     core.clipboard.readText()
-  }
+  },
 })
 ```
 

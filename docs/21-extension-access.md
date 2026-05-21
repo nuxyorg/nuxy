@@ -4,12 +4,12 @@ This document lists everything extensions can reach in Nuxy: host privileges, re
 
 **Legend**
 
-| Status | Meaning |
-|--------|---------|
-| **Implemented** | Available in code; extensions can use it now. |
-| **Partial** | API exists but behavior is incomplete (e.g. logs only, no enforcement). |
-| **Planned** | Described in design docs or examples; not wired in the kernel yet. |
-| **Not enforced** | Runtime grants access without checking manifest or user consent. |
+| Status           | Meaning                                                                 |
+| ---------------- | ----------------------------------------------------------------------- |
+| **Implemented**  | Available in code; extensions can use it now.                           |
+| **Partial**      | API exists but behavior is incomplete (e.g. logs only, no enforcement). |
+| **Planned**      | Described in design docs or examples; not wired in the kernel yet.      |
+| **Not enforced** | Runtime grants access without checking manifest or user consent.        |
 
 **Source of truth (runtime)**
 
@@ -28,42 +28,42 @@ These APIs are passed into `register(core)` inside an isolated worker thread. Ex
 
 ### Implemented
 
-| Access | API | What it allows | Kernel channel / notes |
-|--------|-----|----------------|------------------------|
-| **Clipboard (read)** | `core.clipboard.readText()` | Read the OS clipboard as plain text | `clipboard:readText` → Electron `clipboard.readText()` |
-| **Clipboard (write)** | `core.clipboard.writeText(text)` | Write plain text to the OS clipboard | `clipboard:writeText` |
-| **Scoped storage (read)** | `core.storage.read(file)` | Read a JSON file under `~/.nuxy/data/<extension-id>/` | `storage:read`; path traversal blocked (`storage-path.ts`) |
-| **Scoped storage (write)** | `core.storage.write(file, data)` | Write JSON in the same chroot | `storage:write` |
-| **Custom IPC (backend)** | `core.ipc.handle(channel, handler)` | Register channels the extension frontend (or shell) can invoke | Handled in worker; forwarded via `ext:invoke` |
-| **Now playing (read)** | `core.media.getNowPlaying()` | Title, artist, album, playing state, source, artwork URL | `media:getNowPlaying` → platform backend (Linux: MPRIS) |
-| **Logging** | `core.logger.silly/info/warn/error` | Scoped logs for the extension worker | Worker-local; respects `LOG_LEVEL` |
+| Access                     | API                                 | What it allows                                                 | Kernel channel / notes                                     |
+| -------------------------- | ----------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Clipboard (read)**       | `core.clipboard.readText()`         | Read the OS clipboard as plain text                            | `clipboard:readText` → Electron `clipboard.readText()`     |
+| **Clipboard (write)**      | `core.clipboard.writeText(text)`    | Write plain text to the OS clipboard                           | `clipboard:writeText`                                      |
+| **Scoped storage (read)**  | `core.storage.read(file)`           | Read a JSON file under `~/.nuxy/data/<extension-id>/`          | `storage:read`; path traversal blocked (`storage-path.ts`) |
+| **Scoped storage (write)** | `core.storage.write(file, data)`    | Write JSON in the same chroot                                  | `storage:write`                                            |
+| **Custom IPC (backend)**   | `core.ipc.handle(channel, handler)` | Register channels the extension frontend (or shell) can invoke | Handled in worker; forwarded via `ext:invoke`              |
+| **Now playing (read)**     | `core.media.getNowPlaying()`        | Title, artist, album, playing state, source, artwork URL       | `media:getNowPlaying` → platform backend (Linux: MPRIS)    |
+| **Logging**                | `core.logger.silly/info/warn/error` | Scoped logs for the extension worker                           | Worker-local; respects `LOG_LEVEL`                         |
 
 ### Implemented (registry sync)
 
-| Access | API | Current behavior |
-|--------|-----|------------------|
-| **Omni tool registration** | `core.registry.registerTool(cfg)` | Syncs `displayName` to kernel; listed via `listTools` (excludes `bootstrap` extensions) |
-| **Live provider registration** | `core.registry.registerProvider(cfg)` | Syncs display name; shell invokes registered `eval` channel |
-| **Orchestrator registration** | `core.registry.registerOrchestrator(cfg)` | Registered; shell Enter invokes first orchestrator’s `route` channel when present |
-| **Cross-extension invoke** | `core.extensions.invoke(targetId, channel, payload)` | Routed via `broker:invoke`; requires `caller` / `callable` capabilities |
+| Access                         | API                                                  | Current behavior                                                                        |
+| ------------------------------ | ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Omni tool registration**     | `core.registry.registerTool(cfg)`                    | Syncs `displayName` to kernel; listed via `listTools` (excludes `bootstrap` extensions) |
+| **Live provider registration** | `core.registry.registerProvider(cfg)`                | Syncs display name; shell invokes registered `eval` channel                             |
+| **Orchestrator registration**  | `core.registry.registerOrchestrator(cfg)`            | Registered; shell Enter invokes first orchestrator’s `route` channel when present       |
+| **Cross-extension invoke**     | `core.extensions.invoke(targetId, channel, payload)` | Routed via `broker:invoke`; requires `caller` / `callable` capabilities                 |
 
 ### Planned (documented, not in worker)
 
-| Access | API | Intended use |
-|--------|-----|--------------|
-| **OS notifications** | `core.notify(title, body)` | Desktop notifications |
-| **IPC push to UI** | `core.ipc.broadcast(channel, payload)` | Push events to extension frontend without polling (stub logs warning today) |
-| **Callable tool listing** | `core.registry.getCallableTools()` | List tools the extension may invoke when `caller: true` |
+| Access                    | API                                    | Intended use                                                                |
+| ------------------------- | -------------------------------------- | --------------------------------------------------------------------------- |
+| **OS notifications**      | `core.notify(title, body)`             | Desktop notifications                                                       |
+| **IPC push to UI**        | `core.ipc.broadcast(channel, payload)` | Push events to extension frontend without polling (stub logs warning today) |
+| **Callable tool listing** | `core.registry.getCallableTools()`     | List tools the extension may invoke when `caller: true`                     |
 
 ### Planned host privileges (not implemented)
 
-| Permission / access | Intended API (proposal) | What it should allow |
-|--------------------|-------------------------|----------------------|
-| **`network`** | TBD (proxied fetch / allowlisted hosts) | HTTP(S) from backend without raw sockets in worker |
-| **`media` (consent)** | `core.media.getNowPlaying()` | Manifest gate + user consent (API implemented; enforcement planned) |
-| **`notifications`** | `core.notify` + manifest `notifications` | Same as notify API, gated by permission |
-| **`shell` / `commands`** | TBD | Run allowlisted shell commands (high risk; strict sandbox) |
-| **`clipboard` (consent)** | Same `core.clipboard` | User prompt before read/write (see [Security](./10-security.md)) |
+| Permission / access       | Intended API (proposal)                  | What it should allow                                                |
+| ------------------------- | ---------------------------------------- | ------------------------------------------------------------------- |
+| **`network`**             | TBD (proxied fetch / allowlisted hosts)  | HTTP(S) from backend without raw sockets in worker                  |
+| **`media` (consent)**     | `core.media.getNowPlaying()`             | Manifest gate + user consent (API implemented; enforcement planned) |
+| **`notifications`**       | `core.notify` + manifest `notifications` | Same as notify API, gated by permission                             |
+| **`shell` / `commands`**  | TBD                                      | Run allowlisted shell commands (high risk; strict sandbox)          |
+| **`clipboard` (consent)** | Same `core.clipboard`                    | User prompt before read/write (see [Security](./10-security.md))    |
 
 > **Note:** `core.clipboard` is part of `CoreContext` in `@nuxy/core`. The worker proxy in `@nuxy/extension-host` is built from that type so the API cannot drift.
 
@@ -75,43 +75,43 @@ Exposed on `window.core` via `contextBridge` (`preload.ts`). Used by extension U
 
 ### Implemented
 
-| Access | API | What it allows |
-|--------|-----|----------------|
+| Access             | API                                         | What it allows                                                                                 |
+| ------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | **Invoke backend** | `core.ipc.invoke(extId, channel, payload?)` | Call any loaded extension’s registered handler, or kernel pseudo-extension (`kernel` / `core`) |
-| **Window resize** | `core.window.resize(width, height)` | Resize the frameless host window |
-| **Window hide** | `core.window.hide()` | Hide the launcher window |
-| **Escape action** | `core.window.esc()` | Trigger configured Esc behavior (hide / minimize / quit) |
-| **Window center** | `core.window.center()` | Reposition on current display |
-| **Window drag** | `core.window.dragStart/Move/End()` | Drag frameless window |
-| **Show callback** | `core.window.onShow(callback)` | Subscribe to `window-show` events |
+| **Window resize**  | `core.window.resize(width, height)`         | Resize the frameless host window                                                               |
+| **Window hide**    | `core.window.hide()`                        | Hide the launcher window                                                                       |
+| **Escape action**  | `core.window.esc()`                         | Trigger configured Esc behavior (hide / minimize / quit)                                       |
+| **Window center**  | `core.window.center()`                      | Reposition on current display                                                                  |
+| **Window drag**    | `core.window.dragStart/Move/End()`          | Drag frameless window                                                                          |
+| **Show callback**  | `core.window.onShow(callback)`              | Subscribe to `window-show` events                                                              |
 
 ### Kernel channels (`extId`: `kernel` or `core`)
 
-| Channel | Returns / does |
-|---------|----------------|
-| `listTools` | Extensions with `manifest.type === "tool"` |
-| `listProviders` | Extensions with `manifest.type === "provider"` |
+| Channel             | Returns / does                                     |
+| ------------------- | -------------------------------------------------- |
+| `listTools`         | Extensions with `manifest.type === "tool"`         |
+| `listProviders`     | Extensions with `manifest.type === "provider"`     |
 | `listOrchestrators` | Extensions with `manifest.type === "orchestrator"` |
-| `getConfig` | Application config |
-| `getTheme` | Active theme definition |
+| `getConfig`         | Application config                                 |
+| `getTheme`          | Active theme definition                            |
 
 ### Partial / implicit (no dedicated permission)
 
-| Access | Mechanism | Notes |
-|--------|-----------|--------|
-| **Extension assets** | `nuxy-ext://<manifest.id>/<file>` | Protocol resolves under extension folder; escape paths rejected |
-| **Omni bar keyboard** | `window` event `omniBar-keydown` | Tool UIs receive keys when omni bar is hidden |
-| **Omni bar visibility** | `window` event `omniBar-control` | Tool can show/hide omni bar |
-| **Shared UI kit** | `window.UI` | Set in `renderer/main.tsx` from `@nuxy/ui` |
-| **React global** | `window.React` | Set in `renderer/main.tsx` for extension frontends |
-| **Bootstrap shell** | `com.nuxy.shell` extension | Core `App.tsx` loads `nuxy-ext://com.nuxy.shell/frontend.js` |
+| Access                  | Mechanism                         | Notes                                                           |
+| ----------------------- | --------------------------------- | --------------------------------------------------------------- |
+| **Extension assets**    | `nuxy-ext://<manifest.id>/<file>` | Protocol resolves under extension folder; escape paths rejected |
+| **Omni bar keyboard**   | `window` event `omniBar-keydown`  | Tool UIs receive keys when omni bar is hidden                   |
+| **Omni bar visibility** | `window` event `omniBar-control`  | Tool can show/hide omni bar                                     |
+| **Shared UI kit**       | `window.UI`                       | Set in `renderer/main.tsx` from `@nuxy/ui`                      |
+| **React global**        | `window.React`                    | Set in `renderer/main.tsx` for extension frontends              |
+| **Bootstrap shell**     | `com.nuxy.shell` extension        | Core `App.tsx` loads `nuxy-ext://com.nuxy.shell/frontend.js`    |
 
 ### Planned (renderer)
 
-| Access | API | Intended use |
-|--------|-----|--------------|
-| **IPC subscribe** | `core.ipc.on(channel, listener)` | Listen for `core.ipc.broadcast` from backend |
-| **Typed `IpcResponse`** | Wrapper on all invokes | Documented in [API Design](./05-api-design.md); worker returns raw `{ result, error }` today |
+| Access                  | API                              | Intended use                                                                                 |
+| ----------------------- | -------------------------------- | -------------------------------------------------------------------------------------------- |
+| **IPC subscribe**       | `core.ipc.on(channel, listener)` | Listen for `core.ipc.broadcast` from backend                                                 |
+| **Typed `IpcResponse`** | Wrapper on all invokes           | Documented in [API Design](./05-api-design.md); worker returns raw `{ result, error }` today |
 
 ---
 
@@ -119,14 +119,14 @@ Exposed on `window.core` via `contextBridge` (`preload.ts`). Used by extension U
 
 Defined in `packages/core/src/types.ts` and extension `manifest.json`.
 
-| Field | Values | Status | Effect |
-|-------|--------|--------|--------|
-| `type` | `tool` \| `provider` \| `orchestrator` | **Implemented** | Shell routing: tools get custom UI; providers answer live search via `eval` |
-| `capabilities.callable` | `boolean` | **Implemented** | Enforced in `broker.ts` for `core.extensions.invoke` targets |
-| `capabilities.caller` | `boolean` | **Implemented** | Enforced in `broker.ts` for callers |
-| `permissions` | `string[]` | **Implemented** | Enforced in `permissions.ts` at host boundary (`storage`, `clipboard`, `media`, …) |
-| `bootstrap` | `boolean` | **Implemented** | Frontend-only shell loaded by core; excluded from `listTools` |
-| `peerExtensions` | version map | **Planned** | Dependency graph before boot |
+| Field                   | Values                                 | Status          | Effect                                                                             |
+| ----------------------- | -------------------------------------- | --------------- | ---------------------------------------------------------------------------------- |
+| `type`                  | `tool` \| `provider` \| `orchestrator` | **Implemented** | Shell routing: tools get custom UI; providers answer live search via `eval`        |
+| `capabilities.callable` | `boolean`                              | **Implemented** | Enforced in `broker.ts` for `core.extensions.invoke` targets                       |
+| `capabilities.caller`   | `boolean`                              | **Implemented** | Enforced in `broker.ts` for callers                                                |
+| `permissions`           | `string[]`                             | **Implemented** | Enforced in `permissions.ts` at host boundary (`storage`, `clipboard`, `media`, …) |
+| `bootstrap`             | `boolean`                              | **Implemented** | Frontend-only shell loaded by core; excluded from `listTools`                      |
+| `peerExtensions`        | version map                            | **Planned**     | Dependency graph before boot                                                       |
 
 ### Example manifest permissions
 
@@ -134,23 +134,17 @@ Extensions should declare host privileges they need. The kernel will eventually 
 
 ```json
 {
-  "permissions": [
-    "storage",
-    "clipboard",
-    "media",
-    "network",
-    "notifications"
-  ]
+  "permissions": ["storage", "clipboard", "media", "network", "notifications"]
 }
 ```
 
-| Permission | Sensitive? | Planned behavior |
-|------------|--------------|------------------|
-| `storage` | Low | Default for persistent extension data under `~/.nuxy/data/<id>/` |
-| `clipboard` | **High** | User prompt on first read (and optionally write) per extension |
-| `media` | Medium | Read now-playing metadata only (no arbitrary audio capture) |
-| `network` | Medium | Proxied HTTP with host allowlist |
-| `notifications` | Low | OS notification surface |
+| Permission      | Sensitive? | Planned behavior                                                 |
+| --------------- | ---------- | ---------------------------------------------------------------- |
+| `storage`       | Low        | Default for persistent extension data under `~/.nuxy/data/<id>/` |
+| `clipboard`     | **High**   | User prompt on first read (and optionally write) per extension   |
+| `media`         | Medium     | Read now-playing metadata only (no arbitrary audio capture)      |
+| `network`       | Medium     | Proxied HTTP with host allowlist                                 |
+| `notifications` | Low        | OS notification surface                                          |
 
 ---
 
@@ -158,32 +152,32 @@ Extensions should declare host privileges they need. The kernel will eventually 
 
 Any extension may define arbitrary backend channels via `core.ipc.handle`. These are **not** global permissions; they are namespaced by `extId` when invoked from the renderer.
 
-| Extension | Type | Channels | Host APIs used |
-|-----------|------|----------|----------------|
-| `com.nuxy.clipboard` | `tool` | `getHistory`, `clearHistory`, `deleteItem`, `copyItem` | `clipboard`, `storage`, `logger` |
-| `com.nuxy.calculator` | `provider` | `eval` (shell always uses this name for providers) | `logger` (optional); evaluates user math in worker |
+| Extension             | Type       | Channels                                               | Host APIs used                                     |
+| --------------------- | ---------- | ------------------------------------------------------ | -------------------------------------------------- |
+| `com.nuxy.clipboard`  | `tool`     | `getHistory`, `clearHistory`, `deleteItem`, `copyItem` | `clipboard`, `storage`, `logger`                   |
+| `com.nuxy.calculator` | `provider` | `eval` (shell always uses this name for providers)     | `logger` (optional); evaluates user math in worker |
 
 ---
 
 ## 5. What extensions cannot access (by design)
 
-| Blocked | Reason |
-|---------|--------|
-| Raw filesystem (`fs`, arbitrary paths) | Only chrooted `core.storage` |
-| Raw `require('electron')` / main process | Worker has no native Electron in sandbox |
-| Other extensions’ memory or variables | Separate worker per extension |
-| Other extensions’ data dirs | Storage jail is per `manifest.id` |
-| Arbitrary `ipcRenderer` | Preload exposes only `window.core` |
-| Direct DOM of other extensions | Separate UI bundles / future sandboxed webviews |
+| Blocked                                  | Reason                                          |
+| ---------------------------------------- | ----------------------------------------------- |
+| Raw filesystem (`fs`, arbitrary paths)   | Only chrooted `core.storage`                    |
+| Raw `require('electron')` / main process | Worker has no native Electron in sandbox        |
+| Other extensions’ memory or variables    | Separate worker per extension                   |
+| Other extensions’ data dirs              | Storage jail is per `manifest.id`               |
+| Arbitrary `ipcRenderer`                  | Preload exposes only `window.core`              |
+| Direct DOM of other extensions           | Separate UI bundles / future sandboxed webviews |
 
 ---
 
 ## 6. Built-in extensions (current usage)
 
-| Extension | Clipboard | Storage | Network | Media (now playing) | Custom IPC |
-|-----------|-----------|---------|---------|---------------------|------------|
-| Clipboard Manager | Yes (poll + copy) | Yes (`history.json`) | No | No | 4 channels |
-| Calculator | No | No | No | No | `eval` only |
+| Extension         | Clipboard         | Storage              | Network | Media (now playing) | Custom IPC  |
+| ----------------- | ----------------- | -------------------- | ------- | ------------------- | ----------- |
+| Clipboard Manager | Yes (poll + copy) | Yes (`history.json`) | No      | No                  | 4 channels  |
+| Calculator        | No                | No                   | No      | No                  | `eval` only |
 
 ---
 
@@ -215,11 +209,11 @@ src/electron/media/
         └── index.ts         # stub — SMTC planned
 ```
 
-| Platform | Backend | Status |
-|----------|---------|--------|
-| Linux | MPRIS via `dbus-next` | **Implemented** |
-| macOS | MediaPlayer / Now Playing | **Planned** (`platforms/darwin/`) |
-| Windows | System Media Transport Controls | **Planned** (`platforms/win32/`) |
+| Platform | Backend                         | Status                            |
+| -------- | ------------------------------- | --------------------------------- |
+| Linux    | MPRIS via `dbus-next`           | **Implemented**                   |
+| macOS    | MediaPlayer / Now Playing       | **Planned** (`platforms/darwin/`) |
+| Windows  | System Media Transport Controls | **Planned** (`platforms/win32/`)  |
 
 ### Planned controls
 
@@ -231,14 +225,14 @@ Manifest `permissions: ["media"]` is **enforced** at the host boundary; user con
 
 ## 8. Security model (summary)
 
-| Topic | Today | Target |
-|-------|-------|--------|
-| Worker isolation | **Yes** — one worker per extension | Same |
-| Storage chroot | **Yes** | Same |
-| Clipboard | **`clipboard` permission required** | Optional consent UI |
-| Cross-extension calls | **Broker** with `callable` / `caller` + IPC allowlist | JSON Schema validation |
-| Manifest `permissions` | **Enforced** at `callHost` boundary | Same |
-| IPC channels | **Allowlist** from worker `registry:sync` | Same |
+| Topic                  | Today                                                 | Target                 |
+| ---------------------- | ----------------------------------------------------- | ---------------------- |
+| Worker isolation       | **Yes** — one worker per extension                    | Same                   |
+| Storage chroot         | **Yes**                                               | Same                   |
+| Clipboard              | **`clipboard` permission required**                   | Optional consent UI    |
+| Cross-extension calls  | **Broker** with `callable` / `caller` + IPC allowlist | JSON Schema validation |
+| Manifest `permissions` | **Enforced** at `callHost` boundary                   | Same                   |
+| IPC channels           | **Allowlist** from worker `registry:sync`             | Same                   |
 
 See [Security & Strict Isolation](./10-security.md) for the full threat model and consent flow.
 

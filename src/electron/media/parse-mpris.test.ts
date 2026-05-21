@@ -1,15 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import {
-  mprisBusNameToSource,
-  parseMprisPlayer,
-  pickBestMprisPlayer
-} from './parse-mpris.js'
+import { mprisBusNameToSource, parseMprisPlayer, pickBestMprisPlayer } from './parse-mpris.js'
 
 describe('mprisBusNameToSource', () => {
   it('strips the MPRIS prefix', () => {
-    expect(mprisBusNameToSource('org.mpris.MediaPlayer2.spotify')).toBe(
-      'spotify'
-    )
+    expect(mprisBusNameToSource('org.mpris.MediaPlayer2.spotify')).toBe('spotify')
   })
 })
 
@@ -21,7 +15,7 @@ describe('parseMprisPlayer', () => {
         'xesam:title': { value: 'Track' },
         'xesam:artist': { value: ['Artist A'] },
         'xesam:album': { value: 'Album' },
-        'mpris:artUrl': { value: 'https://example.com/cover.jpg' }
+        'mpris:artUrl': { value: 'https://example.com/cover.jpg' },
       },
       { value: 'Playing' }
     )
@@ -32,18 +26,12 @@ describe('parseMprisPlayer', () => {
       album: 'Album',
       playing: true,
       source: 'spotify',
-      artworkUrl: 'https://example.com/cover.jpg'
+      artworkUrl: 'https://example.com/cover.jpg',
     })
   })
 
   it('returns null for stopped with no metadata', () => {
-    expect(
-      parseMprisPlayer(
-        'org.mpris.MediaPlayer2.vlc',
-        {},
-        { value: 'Stopped' }
-      )
-    ).toBeNull()
+    expect(parseMprisPlayer('org.mpris.MediaPlayer2.vlc', {}, { value: 'Stopped' })).toBeNull()
   })
 })
 
@@ -55,17 +43,17 @@ describe('pickBestMprisPlayer', () => {
         nowPlaying: {
           title: 'Paused',
           playing: false,
-          source: 'firefox'
-        }
+          source: 'firefox',
+        },
       },
       {
         busName: 'org.mpris.MediaPlayer2.spotify',
         nowPlaying: {
           title: 'Live',
           playing: true,
-          source: 'spotify'
-        }
-      }
+          source: 'spotify',
+        },
+      },
     ])
 
     expect(picked?.source).toBe('spotify')

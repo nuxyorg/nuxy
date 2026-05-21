@@ -31,10 +31,7 @@ const pendingHostCalls = new Map<
   { resolve: (v: unknown) => void; reject: (e: Error) => void }
 >()
 
-const channelHandlers = new Map<
-  string,
-  (payload: unknown) => Promise<unknown>
->()
+const channelHandlers = new Map<string, (payload: unknown) => Promise<unknown>>()
 
 parentPort!.on('message', (msg: HostToWorkerMessage) => {
   if (msg?.type === 'host:reply') {
@@ -53,7 +50,10 @@ parentPort!.on('message', (msg: HostToWorkerMessage) => {
     void (async () => {
       try {
         const res = await handler(msg.payload)
-        parentPort!.postMessage({ id: msg.id, result: res } satisfies Omit<WorkerToHostMessage & object, 'type'>)
+        parentPort!.postMessage({ id: msg.id, result: res } satisfies Omit<
+          WorkerToHostMessage & object,
+          'type'
+        >)
       } catch (e) {
         const err = e as Error
         parentPort!.postMessage({ id: msg.id, error: err.message })
@@ -71,26 +71,22 @@ function callHost(channel: string, payload?: unknown): Promise<unknown> {
   })
 }
 
-const { core, getSyncPayload } = createCoreProxy(
-  callHost,
-  logger,
-  (channel, handler) => {
-    channelHandlers.set(channel, handler)
-  }
-)
+const { core, getSyncPayload } = createCoreProxy(callHost, logger, (channel, handler) => {
+  channelHandlers.set(channel, handler)
+})
 
 void (async () => {
   try {
     await loadExtensionModule(absolutePath, core, logger)
     const syncMsg: WorkerToHostMessage = {
       type: 'registry:sync',
-      ...getSyncPayload()
+      ...getSyncPayload(),
     }
     parentPort!.postMessage(syncMsg)
   } catch (e) {
     const err = e as Error
     logger.log('error', 'Worker', 'Extension failed to load: ' + err.message, {
-      stack: err.stack
+      stack: err.stack,
     })
     const errMsg: WorkerToHostMessage = { type: 'registry:error', error: err.message }
     parentPort!.postMessage(errMsg)
