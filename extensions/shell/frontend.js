@@ -24,6 +24,7 @@ export default function ShellView({ query: _queryProp }) {
     ListItemBody,
     ListItemText,
     ListItemActions,
+    Toaster,
   } = window.UI || window.ui || {}
 
   const [query, setQuery] = useState('')
@@ -327,6 +328,7 @@ export default function ShellView({ query: _queryProp }) {
       setToolComponent(null)
       setQuery('')
       setSavedQuery('')
+      setSelectedIndex(0)
       return
     }
 
@@ -779,6 +781,7 @@ export default function ShellView({ query: _queryProp }) {
           position={position}
         />
       )}
+      {Toaster && <Toaster />}
     </div>
   )
 }

@@ -128,7 +128,7 @@ export default function SettingsView() {
   const [iconPacks, setIconPacks] = useState([])
   const [systemFonts, setSystemFonts] = useState([])
   const [settings, setSettings] = useState(DEFAULT_SETTINGS)
-  const [selectedRow, setSelectedRow] = useState(0)
+  const [selectedRow, setSelectedRow] = useState(-1)
   const [activeSelect, setActiveSelect] = useState(null)
   const [selectFocused, setSelectFocused] = useState(0)
 
@@ -232,7 +232,7 @@ export default function SettingsView() {
         if (activeSelect !== null) {
           setSelectFocused((i) => Math.max(i - 1, 0))
         } else {
-          setSelectedRow((i) => Math.max(i - 1, 0))
+          setSelectedRow((i) => Math.max(i - 1, -1))
         }
       },
     },

@@ -174,7 +174,7 @@ export function useKeyboard({
           setToolComponent(null)
           setQuery('')
           setSavedQuery('')
-          setSelectedIndex(-1)
+          setSelectedIndex(0)
           setShowOmniBar(true)
         } else {
           setQuery('')

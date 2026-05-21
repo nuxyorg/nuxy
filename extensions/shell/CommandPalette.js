@@ -22,21 +22,15 @@ export default function CommandPalette({ actions, onClose, containerRef, positio
       const winWidth = containerRef.current.offsetWidth
       const winHeight = containerRef.current.offsetHeight
 
-      let top = position.y + winHeight + 12
-      if (top + 350 > cssWindowHeight) {
-        if (position.y - 362 > 0) {
-          top = position.y - 362
-        } else {
-          top = Math.max(12, cssWindowHeight - 362)
-        }
-      }
-
       let left = position.x + winWidth - 350
       if (left < 12) left = 12
 
+      let bottom = cssWindowHeight - (position.y + winHeight)
+      if (bottom < 12) bottom = 12
+
       setStyle({
         position: 'absolute',
-        top: top,
+        bottom: bottom,
         left: left,
         width: 350,
         margin: 0,

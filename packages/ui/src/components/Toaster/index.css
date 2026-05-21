@@ -1,0 +1,102 @@
+.nuxy-toaster {
+  position: fixed;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: var(--z-toast, 10002);
+  pointer-events: none;
+}
+
+.nuxy-toast {
+  background-color: var(--bg-base);
+  border: 1px solid var(--syntax-comment);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  min-width: 280px;
+  max-width: 360px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  
+  /* Animation */
+  animation: nuxy-toast-slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Toast Exiting Animation Class */
+.nuxy-toast--exiting {
+  animation: nuxy-toast-slide-out 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.nuxy-toast-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-1);
+}
+
+.nuxy-toast-title {
+  font-weight: 600;
+  font-size: var(--font-md);
+  color: var(--syntax-variable);
+}
+
+.nuxy-toast-close {
+  background: transparent;
+  border: none;
+  color: var(--syntax-keyword);
+  cursor: pointer;
+  padding: var(--space-0);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.nuxy-toast-close:hover {
+  background-color: var(--syntax-comment);
+  color: var(--syntax-variable);
+}
+
+.nuxy-toast-message {
+  font-size: var(--font-body);
+  color: var(--syntax-keyword);
+  line-height: 1.4;
+}
+
+/* Type variations */
+.nuxy-toast--info {
+  border-left: 3px solid var(--syntax-operator);
+}
+.nuxy-toast--success {
+  border-left: 3px solid var(--syntax-green);
+}
+.nuxy-toast--warning {
+  border-left: 3px solid var(--syntax-constant);
+}
+.nuxy-toast--error {
+  border-left: 3px solid var(--syntax-invalid);
+}
+
+@keyframes nuxy-toast-slide-in {
+  from {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes nuxy-toast-slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(110%);
+    opacity: 0;
+  }
+}
