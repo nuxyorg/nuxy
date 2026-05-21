@@ -38,6 +38,12 @@
   --radius-md: 6px;
   --radius-lg: 8px;
   --radius-xl: 12px;
+
+  /* Z-index */
+  --z-1: 1;
+  --z-backdrop: 9999;
+  --z-modal: 10000;
+  --z-popover: 10001;
 }
 
 body {

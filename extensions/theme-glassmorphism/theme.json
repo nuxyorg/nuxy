@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "name": "glassmorphism",
+  "colors": {
+    "bg-base": "rgba(20, 25, 35, 0.45)",
+    "syntax-comment": "rgba(50, 70, 95, 0.4)",
+    "syntax-variable": "#ffffff",
+    "syntax-constant": "#f0a050",
+    "syntax-invalid": "#ff6b6b",
+    "syntax-deprecated": "#9b8fcc",
+    "syntax-keyword": "#6fafe0",
+    "syntax-operator": "#86e6f2",
+    "syntax-tag": "#f07c9a",
+    "syntax-function": "#6ee9d0",
+    "syntax-orange": "#e09070",
+    "syntax-peach": "#f8a57d",
+    "syntax-green": "#a8d389"
+  },
+  "tokens": {
+    "space-px": "1px",
+    "space-0": "2px",
+    "space-1": "4px",
+    "space-2": "6px",
+    "space-3": "8px",
+    "space-4": "12px",
+    "space-5": "16px",
+    "space-6": "32px",
+    "font-xs": "10px",
+    "font-sm": "12px",
+    "font-md": "14px",
+    "font-body": "15px",
+    "font-lg": "16px",
+    "font-xl": "18px",
+    "radius-sm": "4px",
+    "radius-md": "6px",
+    "radius-lg": "8px",
+    "radius-xl": "12px"
+  }
+}

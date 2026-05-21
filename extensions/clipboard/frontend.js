@@ -402,6 +402,24 @@ export default function ClipboardView({ query }) {
       .catch(console.error)
   }
 
+  const handlePin = (id, eStop) => {
+    if (eStop) eStop.stopPropagation()
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(EXT_ID, 'pinItem', id)
+      .then((res) => { if (res?.success) setItems(res.data || []) })
+      .catch(console.error)
+  }
+
+  const handleUnpin = (id, eStop) => {
+    if (eStop) eStop.stopPropagation()
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(EXT_ID, 'unpinItem', id)
+      .then((res) => { if (res?.success) setItems(res.data || []) })
+      .catch(console.error)
+  }
+
   const handleDelete = (id, eStop) => {
     if (eStop) eStop.stopPropagation()
     if (!window.core?.ipc?.invoke) return
@@ -481,6 +499,17 @@ export default function ClipboardView({ query }) {
         setSelectedIndex(-1)
       },
     },
+    {
+      key: 'p',
+      label: 'Pin / Unpin',
+      hint: 'P',
+      handler: () => {
+        const item = filteredItems[selectedIndex]
+        if (!item) return
+        if (item.pinned) handleUnpin(item.id)
+        else handlePin(item.id)
+      },
+    },
   ])
 
   const timeAgo = (dateString) => {
@@ -520,12 +549,24 @@ export default function ClipboardView({ query }) {
               <ClipboardItemLeading item={item} type={type} />
               <ListItemBody>
                 <ListItemText variant={isCopied ? 'success' : 'default'}>
+                  {item.pinned && (
+                    <span style={{ marginRight: 5, opacity: 0.6, fontSize: '11px' }}>📌</span>
+                  )}
                   {label}
                 </ListItemText>
                 <ListItemMeta>{meta}</ListItemMeta>
               </ListItemBody>
               <ListItemActions>
-                {!isCopied && idx !== 0 && (
+                {!isCopied && (
+                  <Button
+                    variant={item.pinned ? 'secondary' : 'ghost'}
+                    title={item.pinned ? 'Unpin' : 'Pin'}
+                    onClick={(ev) => item.pinned ? handleUnpin(item.id, ev) : handlePin(item.id, ev)}
+                  >
+                    📌
+                  </Button>
+                )}
+                {!isCopied && !item.pinned && (
                   <Button variant="danger" onClick={(ev) => handleDelete(item.id, ev)}>
                     ×
                   </Button>

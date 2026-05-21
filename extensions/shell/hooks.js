@@ -1,5 +1,5 @@
 const React = window.React
-const { useEffect, useMemo } = React
+const { useEffect, useMemo, useState } = React
 
 export function useShellInit({
   cfgRef,
@@ -119,6 +119,28 @@ function matchesAction(action, e) {
   if (mods.includes('alt') !== e.altKey) return false
   if (mods.includes('meta') !== e.metaKey) return false
   return true
+}
+
+export function useToolHistory(SHELL_EXT_ID) {
+  const [recentToolIds, setRecentToolIds] = useState([])
+
+  useEffect(() => {
+    window.core?.ipc?.invoke(SHELL_EXT_ID, 'getRecentTools', {})
+      .then((res) => {
+        if (res?.success && Array.isArray(res.data)) setRecentToolIds(res.data)
+      })
+      .catch(() => {})
+  }, [])
+
+  function recordToolUsed(toolId) {
+    window.core?.ipc?.invoke(SHELL_EXT_ID, 'recordToolUsed', toolId)
+      .then((res) => {
+        if (res?.success && Array.isArray(res.data)) setRecentToolIds(res.data)
+      })
+      .catch(() => {})
+  }
+
+  return { recentToolIds, recordToolUsed }
 }
 
 export function useKeyboard({

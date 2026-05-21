@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
+import { createPortal } from 'react-dom'
 import './index.css'
 
 export interface SelectOption {
@@ -13,10 +14,8 @@ export interface SelectBoxProps {
   focusedIndex: number
   onSelect: (value: string) => void
   onClose: () => void
-  /** Called when trigger is clicked — parent should set focusedIndex and open=true. */
   onOpen?: (startIndex: number) => void
   placeholder?: string
-  /** When true, shows a search input inside the dropdown to filter options. */
   searchable?: boolean
 }
 
@@ -33,18 +32,36 @@ export function SelectBox({
 }: SelectBoxProps) {
   const triggerRef = useRef<HTMLButtonElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
-  const [dropdownPos, setDropdownPos] = useState<{ top: number; right: number }>({
-    top: 0,
-    right: 0,
-  })
+  const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 })
   const [searchQuery, setSearchQuery] = useState('')
+  const [internalFocused, setInternalFocused] = useState(0)
+  const onCloseRef = useRef(onClose)
+  useEffect(() => { onCloseRef.current = onClose }, [onClose])
 
-  // Reset search when dropdown closes
   useEffect(() => {
-    if (!open) setSearchQuery('')
+    if (!open) return
+    const handleKeyCapture = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        onCloseRef.current()
+      }
+    }
+    document.addEventListener('keydown', handleKeyCapture, true)
+    return () => document.removeEventListener('keydown', handleKeyCapture, true)
   }, [open])
 
-  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (open) {
+      const idx = Math.max(0, options.findIndex((o) => o.value === value))
+      setInternalFocused(idx)
+      setSearchQuery('')
+    }
+  }, [open])
+
+  useEffect(() => {
+    if (searchQuery.trim()) setInternalFocused(0)
+  }, [searchQuery])
+
   useEffect(() => {
     if (open && searchable) {
       setTimeout(() => searchRef.current?.focus(), 30)
@@ -53,32 +70,27 @@ export function SelectBox({
 
   useLayoutEffect(() => {
     if (open && triggerRef.current) {
-      let zoom = 1
-      const zoomStyle = document.documentElement.style.zoom
-      if (zoomStyle) {
-        if (zoomStyle.endsWith('%')) {
-          zoom = parseFloat(zoomStyle) / 100
-        } else {
-          zoom = parseFloat(zoomStyle)
-        }
-      }
-      if (isNaN(zoom) || zoom <= 0) zoom = 1
-
       const r = triggerRef.current.getBoundingClientRect()
+      const zoomStr = document.documentElement.style.zoom
+      const zoom = zoomStr
+        ? (zoomStr.endsWith('%') ? parseFloat(zoomStr) / 100 : parseFloat(zoomStr)) || 1
+        : 1
       setDropdownPos({
         top: r.bottom / zoom + 4,
-        right: (window.innerWidth - r.right) / zoom,
+        left: r.right / zoom,
       })
     }
   }, [open])
 
   const filteredOptions = searchable && searchQuery.trim()
-    ? options.filter((o) =>
-        o.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        o.value.toLowerCase().includes(searchQuery.toLowerCase())
+    ? options.filter(
+        (o) =>
+          o.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          o.value.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : options
 
+  const activeFocusedIndex = searchable ? internalFocused : focusedIndex
   const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder
 
   const handleTriggerClick = (e: React.MouseEvent) => {
@@ -86,11 +98,28 @@ export function SelectBox({
     if (open) {
       onClose()
     } else {
-      const idx = Math.max(
-        0,
-        options.findIndex((o) => o.value === value)
-      )
+      const idx = Math.max(0, options.findIndex((o) => o.value === value))
       onOpen?.(idx)
+    }
+  }
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      e.stopPropagation()
+      setInternalFocused((i) => Math.min(i + 1, filteredOptions.length - 1))
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      e.stopPropagation()
+      setInternalFocused((i) => Math.max(i - 1, 0))
+    } else if (e.key === 'Enter') {
+      e.preventDefault()
+      e.stopPropagation()
+      const opt = filteredOptions[internalFocused]
+      if (opt) onSelect(opt.value)
+    } else if (e.key === 'Escape') {
+      e.stopPropagation()
+      onClose()
     }
   }
 
@@ -105,17 +134,15 @@ export function SelectBox({
         onClick={handleTriggerClick}
       >
         <span className="nuxy-select-box__value">{currentLabel}</span>
-        <span
-          className={`nuxy-select-box__chevron${open ? ' nuxy-select-box__chevron--open' : ''}`}
-        >
+        <span className={`nuxy-select-box__chevron${open ? ' nuxy-select-box__chevron--open' : ''}`}>
           ▾
         </span>
       </button>
 
-      {open && options.length > 0 && (
+      {open && options.length > 0 && createPortal(
         <div
           className="nuxy-select-box__dropdown"
-          style={{ top: dropdownPos.top, right: dropdownPos.right }}
+          style={{ top: dropdownPos.top, left: dropdownPos.left, transform: 'translateX(-100%)' }}
           role="listbox"
         >
           {searchable && (
@@ -128,13 +155,7 @@ export function SelectBox({
                 tabIndex={-1}
                 onMouseDown={(e) => e.stopPropagation()}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  // Let parent handle ArrowUp/Down/Enter/Escape — but don't propagate
-                  if (['ArrowUp', 'ArrowDown', 'Enter', 'Escape'].includes(e.key)) {
-                    e.stopPropagation()
-                    if (e.key === 'Escape') onClose()
-                  }
-                }}
+                onKeyDown={handleSearchKeyDown}
               />
             </div>
           )}
@@ -143,7 +164,7 @@ export function SelectBox({
               <div className="nuxy-select-box__no-results">No results</div>
             ) : (
               filteredOptions.map((option, i) => {
-                const isFocused = i === focusedIndex
+                const isFocused = i === activeFocusedIndex
                 const isSelected = option.value === value
                 return (
                   <div
@@ -163,13 +184,16 @@ export function SelectBox({
                     }}
                   >
                     <span className="nuxy-select-box__option-label">{option.label}</span>
-                    {isSelected && <span className="nuxy-select-box__option-check">✓</span>}
+                    {isSelected && (
+                      <span className="nuxy-select-box__option-check">✓</span>
+                    )}
                   </div>
                 )
               })
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

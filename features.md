@@ -125,7 +125,7 @@
 ### 🏗️ Core / Infrastructure
 
 - [ ] **Extension marketplace** — Discover, install, and update community extensions
-- [ ] **Extension hot-reload** — Automatically reload extensions when their files change during development
+- [x] **Extension hot-reload** — Automatically reload extensions when their files change during development
 - [ ] **Extension versioning** — Dependency resolution and breaking-change management
 - [ ] **Extension settings schema** — Each extension can declare its own `settings.json` schema; Settings UI renders it automatically
 - [ ] **Electron Builder packaging** — Distribution packages for all platforms: `.deb`, `.AppImage`, macOS `.dmg`
@@ -136,10 +136,10 @@
 ### 🐚 Shell Extension
 
 - [ ] **Pinned tools / favorites** — Pin frequently used tools above the omnibar
-- [ ] **Tool history** — Remember recently used tools and surface them at the top of the list
+- [x] **Tool history** — Remember recently used tools and surface them at the top of the list
 - [ ] **Multi-provider ranking** — Intelligently rank provider results by relevance/importance
-- [ ] **Glassmorphism theme mode** — Modern backdrop-filter UI with a frosted glass blur effect
-- [ ] **Animated transitions** — Smooth slide/fade animations for opening and closing tools
+- [x] **Glassmorphism theme mode** — Modern backdrop-filter UI with a frosted glass blur effect
+- [x] **Animated transitions** — Smooth slide/fade animations for opening and closing tools
 - [ ] **Omnibar token tags** — Display active filters or categories as chips/badges
 
 ### ⚙️ Settings Extension
@@ -162,7 +162,7 @@
 
 - [ ] **Automatic database update** — Update the database in the background when the filesystem changes
 - [ ] **File type filtering** — Filter search results by extension or MIME type
-- [ ] **Open file / reveal in manager** — Open the file with an application or show it in the file manager from a result
+- [x] **Open file / reveal in manager** — Open the file with an application or show it in the file manager from a result
 
 ### 😀 Emoji Picker Extension
 
@@ -171,9 +171,9 @@
 
 ### 📋 Clipboard Extension
 
-- [ ] **Persistent history** — Reload clipboard history when the application restarts
-- [ ] **Pinning** — Pin important clipboard entries to protect them from being cleared
-- [ ] **Search** — Text search within clipboard history
+- [x] **Persistent history** — Reload clipboard history when the application restarts
+- [x] **Pinning** — Pin important clipboard entries to protect them from being cleared
+- [x] **Search** — Text search within clipboard history
 - [ ] **Template system** — Save frequently used text snippets as reusable templates
 
 ### 🎨 Theme and Icon System

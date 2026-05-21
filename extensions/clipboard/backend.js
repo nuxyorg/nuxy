@@ -65,6 +65,10 @@ export function register(core) {
     }, 1000)
   }
 
+  function sortHistory() {
+    history = [...history.filter((i) => i.pinned), ...history.filter((i) => !i.pinned)]
+  }
+
   // Add an item to the history, deduplicate, and persist
   async function addHistoryItem(item) {
     const newItem = {
@@ -72,6 +76,7 @@ export function register(core) {
       text: item.text,
       image: item.image,
       copiedAt: new Date().toISOString(),
+      pinned: false,
     }
 
     // De-duplicate: remove older items with exact same text (if no image), or exact same image
@@ -83,10 +88,12 @@ export function register(core) {
       }),
     ]
 
-    // Cap at 100 entries
-    if (history.length > 100) {
-      history = history.slice(0, 100)
-    }
+    // Cap at 100 unpinned entries (pinned items are never evicted)
+    const pinned = history.filter((i) => i.pinned)
+    const unpinned = history.filter((i) => !i.pinned)
+    history = [...pinned, ...unpinned.slice(0, 100)]
+
+    sortHistory()
 
     // Persist to sandboxed storage
     try {
@@ -101,13 +108,43 @@ export function register(core) {
     return history
   })
 
-  // IPC Handler: clear all items
+  // IPC Handler: clear all items (preserves pinned)
   core.ipc.handle('clearHistory', async () => {
-    history = []
+    history = history.filter((i) => i.pinned)
     try {
       await core.storage.write('history.json', history)
     } catch (err) {
       core.logger.error('Failed to clear clipboard storage.', err)
+    }
+    return history
+  })
+
+  // IPC Handler: pin an item
+  core.ipc.handle('pinItem', async (id) => {
+    const item = history.find((i) => i.id === id)
+    if (item) {
+      item.pinned = true
+      sortHistory()
+      try {
+        await core.storage.write('history.json', history)
+      } catch (err) {
+        core.logger.error('Failed to update clipboard storage after pin.', err)
+      }
+    }
+    return history
+  })
+
+  // IPC Handler: unpin an item
+  core.ipc.handle('unpinItem', async (id) => {
+    const item = history.find((i) => i.id === id)
+    if (item) {
+      item.pinned = false
+      sortHistory()
+      try {
+        await core.storage.write('history.json', history)
+      } catch (err) {
+        core.logger.error('Failed to update clipboard storage after unpin.', err)
+      }
     }
     return history
   })
@@ -159,9 +196,10 @@ export function register(core) {
         }
         // Prevent triggering the poll loop since we set it ourselves
 
-        // Re-sort: Move this item to the top of the history list
+        // Re-sort: move this item to the top of its group (pinned stays in pinned section)
         found.copiedAt = new Date().toISOString()
         history = [found, ...history.filter((item) => item.id !== id)]
+        sortHistory()
         await core.storage.write('history.json', history)
       } catch (err) {
         core.logger.error(`Failed to copy item "${id}" to clipboard.`, err)

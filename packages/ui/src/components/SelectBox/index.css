@@ -6,57 +6,65 @@
 .nuxy-select-box__trigger {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-1) var(--space-3);
-  background: var(--syntax-comment);
-  border: 1px solid var(--syntax-keyword);
-  border-radius: var(--radius-sm);
-  font-family: monospace;
-  font-size: var(--font-xs);
-  color: var(--syntax-variable);
+  gap: var(--space-1);
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--syntax-keyword);
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 150ms;
   outline: none;
-  min-width: 80px;
-  justify-content: space-between;
+  transition: color 120ms;
 }
 
 .nuxy-select-box__trigger:hover,
 .nuxy-select-box__trigger--open {
-  border-color: var(--syntax-operator);
+  color: var(--syntax-variable);
+}
+
+.nuxy-select-box__value {
+  line-height: 1;
 }
 
 .nuxy-select-box__chevron {
-  opacity: 0.5;
+  opacity: 0.4;
   font-size: 9px;
-  transition: transform 150ms;
   line-height: 1;
   flex-shrink: 0;
+  transition: transform 150ms, opacity 150ms;
+}
+
+.nuxy-select-box__trigger:hover .nuxy-select-box__chevron,
+.nuxy-select-box__trigger--open .nuxy-select-box__chevron {
+  opacity: 0.7;
 }
 
 .nuxy-select-box__chevron--open {
   transform: rotate(180deg);
 }
 
+/* Action menu dropdown — positioned via inline style: left=trigger.right, translateX(-100%) right-aligns */
 .nuxy-select-box__dropdown {
   position: fixed;
-  min-width: 180px;
-  background: var(--bg-base);
-  border: 1px solid var(--syntax-comment);
-  border-top-color: var(--syntax-operator);
-  border-radius: var(--radius-md);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  min-width: 160px;
+  background: color-mix(in srgb, var(--bg-base) 88%, white 12%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.25),
+    0 12px 28px rgba(0, 0, 0, 0.55);
   overflow: hidden;
-  z-index: 200;
+  z-index: var(--z-popover);
   display: flex;
   flex-direction: column;
-  max-height: 320px;
+  max-height: 300px;
 }
 
 .nuxy-select-box__search-wrapper {
   padding: var(--space-2) var(--space-3);
-  border-bottom: 1px solid var(--syntax-comment);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
 }
 
@@ -64,60 +72,57 @@
   width: 100%;
   box-sizing: border-box;
   background: transparent;
-  border: 1px solid var(--syntax-keyword);
-  border-radius: var(--radius-sm);
-  padding: var(--space-1) var(--space-2);
-  font-family: monospace;
-  font-size: var(--font-xs);
+  border: none;
+  padding: var(--space-1) 0;
+  font-family: inherit;
+  font-size: var(--font-sm);
   color: var(--syntax-variable);
   outline: none;
-  transition: border-color 150ms;
-}
-
-.nuxy-select-box__search:focus {
-  border-color: var(--syntax-operator);
 }
 
 .nuxy-select-box__search::placeholder {
-  color: var(--syntax-comment);
+  color: var(--syntax-keyword);
   opacity: 1;
 }
 
 .nuxy-select-box__options {
   overflow-y: auto;
   flex: 1;
+  padding: var(--space-1) 0;
 }
 
 .nuxy-select-box__no-results {
   padding: var(--space-3) var(--space-4);
-  font-family: monospace;
   font-size: var(--font-sm);
-  color: var(--syntax-comment);
+  color: var(--syntax-keyword);
 }
 
 .nuxy-select-box__option {
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-3);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  font-family: monospace;
   font-size: var(--font-sm);
   color: var(--syntax-variable);
   cursor: pointer;
-  border-left: 2px solid transparent;
-  transition: background-color 80ms;
   white-space: nowrap;
+  transition: background-color 60ms;
 }
 
 .nuxy-select-box__option:hover,
 .nuxy-select-box__option--focused {
-  background: var(--syntax-comment);
-  border-left-color: var(--syntax-operator);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.nuxy-select-box__option-label {
+  flex: 1;
+  min-width: 0;
 }
 
 .nuxy-select-box__option-check {
-  color: var(--syntax-function);
+  color: var(--syntax-operator);
   font-size: var(--font-xs);
   flex-shrink: 0;
+  opacity: 0.9;
 }

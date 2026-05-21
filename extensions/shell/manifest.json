@@ -4,8 +4,9 @@
   "version": "1.0.0",
   "type": "tool",
   "bootstrap": true,
-  "permissions": [],
+  "permissions": ["storage"],
   "entry": {
+    "backend": "backend.js",
     "frontend": "frontend.js"
   }
 }
