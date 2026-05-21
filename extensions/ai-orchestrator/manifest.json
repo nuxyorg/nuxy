@@ -1,0 +1,14 @@
+{
+  "id": "com.nuxy.ai-orchestrator",
+  "name": "AI Orchestrator",
+  "version": "1.0.0",
+  "type": "orchestrator",
+  "permissions": [],
+  "capabilities": {
+    "callable": false,
+    "caller": true
+  },
+  "entry": {
+    "backend": "backend.js"
+  }
+}

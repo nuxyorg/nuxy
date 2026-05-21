@@ -268,6 +268,12 @@ importers:
         specifier: ^5.9.0
         version: 5.9.3
 
+  extensions/ai-orchestrator:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
   extensions/calculator:
     dependencies:
       '@nuxy/extension-sdk':
@@ -280,7 +286,19 @@ importers:
         specifier: workspace:*
         version: link:../../packages/extension-sdk
 
+  extensions/emoji-picker:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
   extensions/shell: {}
+
+  extensions/time-calculator:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
 
   packages/core:
     devDependencies:

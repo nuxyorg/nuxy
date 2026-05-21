@@ -1,15 +1,16 @@
 {
-  "id": "com.nuxy.calculator",
-  "name": "Calculator",
+  "id": "com.nuxy.time-calculator",
+  "name": "Time Calculator",
   "version": "1.0.0",
   "type": "provider",
-  "providerType": "result",
+  "providerType": "compare",
   "permissions": [],
   "capabilities": {
     "callable": true,
     "caller": false
   },
   "entry": {
-    "backend": "backend.js"
+    "backend": "backend.js",
+    "frontend": "frontend.js"
   }
 }
