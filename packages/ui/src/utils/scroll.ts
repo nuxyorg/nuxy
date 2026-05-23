@@ -53,8 +53,17 @@ export function smoothScrollIntoViewIfNeeded(el: HTMLElement) {
       ? currentTargetTop
       : parent.scrollTop
 
-  const futureElTop = elRect.top + (parent.scrollTop - targetScrollTop)
+  let futureElTop = elRect.top + (parent.scrollTop - targetScrollTop)
   const futureElBottom = futureElTop + elRect.height
+
+  // If this is the first item in its list container, check if a section header precedes the container
+  if (el.parentElement && !el.previousElementSibling) {
+    const listSibling = el.parentElement.previousElementSibling as HTMLElement
+    if (listSibling && listSibling.classList.contains('nuxy-section-header')) {
+      const headerHeight = listSibling.getBoundingClientRect().height
+      futureElTop -= headerHeight
+    }
+  }
 
   if (futureElBottom > parentRect.bottom) {
     targetScrollTop += futureElBottom - parentRect.bottom

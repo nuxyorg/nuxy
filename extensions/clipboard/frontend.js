@@ -183,7 +183,18 @@ export default function ClipboardView({ query }) {
     window.core.ipc
       .invoke(EXT_ID, 'getHistory')
       .then((res) => {
-        if (res?.success) setItems(res.data || [])
+        if (res?.success) {
+          const newData = res.data || []
+          setItems((prev) => {
+            if (prev.length !== newData.length) return newData
+            for (let i = 0; i < prev.length; i++) {
+              if (prev[i].id !== newData[i].id) return newData
+              if (prev[i].copiedAt !== newData[i].copiedAt) return newData
+              if (prev[i].pinned !== newData[i].pinned) return newData
+            }
+            return prev
+          })
+        }
       })
       .catch(console.error)
   }

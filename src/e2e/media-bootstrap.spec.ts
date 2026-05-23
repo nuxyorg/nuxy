@@ -6,17 +6,14 @@
  * main-process require path in evaluate().
  */
 import { test, expect } from './fixtures.js'
+import fs from 'node:fs'
+import path from 'node:path'
+import os from 'node:os'
 
 test.describe('media / getNowPlaying (main process)', () => {
   test('getNowPlaying returns null or a valid NowPlaying shape', async ({ electronApp }) => {
     const result = await electronApp.evaluate(async () => {
-      // Call the media module directly from the main-process context
-      const media = require(
-        require('path').join(__dirname, 'electron/media/index.js')
-      ) as {
-        getNowPlaying(): Promise<{ title?: string; playing: boolean; source: string } | null>
-        platformId(): string
-      }
+      const media = (globalThis as any).__test_media
       return {
         platform: media.platformId(),
         nowPlaying: await media.getNowPlaying().catch(() => null),
@@ -34,9 +31,7 @@ test.describe('media / getNowPlaying (main process)', () => {
 
   test('platformId matches the current OS', async ({ electronApp }) => {
     const result = await electronApp.evaluate(() => {
-      const media = require(
-        require('path').join(__dirname, 'electron/media/index.js')
-      ) as { platformId(): string }
+      const media = (globalThis as any).__test_media
       return { platform: media.platformId(), processPlatform: process.platform }
     })
 
@@ -52,57 +47,51 @@ test.describe('media / getNowPlaying (main process)', () => {
 })
 
 test.describe('extension bootstrapping', () => {
-  test('bundled extensions are loaded (workers spawned or registered)', async ({
-    electronApp,
-  }) => {
-    const result = await electronApp.evaluate(async ({ app }) => {
-      // Check that the extension scanner ran and registered extensions
-      const extDir = require('path').join(
-        app.getPath('home'),
-        '.nuxy',
-        'extensions'
-      )
-      const fs = require('fs') as typeof import('fs')
-      if (!fs.existsSync(extDir)) return { exists: false, extensions: [] }
+  test('bundled extensions are loaded (workers spawned or registered)', async () => {
+    // Check that the extension scanner ran and registered extensions
+    const extDir = path.join(os.homedir(), '.nuxy', 'extensions')
+    const exists = fs.existsSync(extDir)
+    if (!exists) {
+      expect(exists).toBe(true)
+      return
+    }
 
-      const items = fs.readdirSync(extDir).filter((item: string) => {
-        const p = require('path').join(extDir, item)
-        return (
-          fs.statSync(p).isDirectory() &&
-          fs.existsSync(require('path').join(p, 'manifest.json'))
-        )
-      })
-      return { exists: true, extensions: items }
+    const items = fs.readdirSync(extDir).filter((item: string) => {
+      const p = path.join(extDir, item)
+      return (
+        fs.statSync(p).isDirectory() &&
+        fs.existsSync(path.join(p, 'manifest.json'))
+      )
     })
 
-    expect(result.exists).toBe(true)
-    expect(result.extensions.length).toBeGreaterThan(0)
+    expect(exists).toBe(true)
+    expect(items.length).toBeGreaterThan(0)
   })
 
-  test('extensions directory contains manifest.json files', async ({ electronApp }) => {
-    const manifests = await electronApp.evaluate(async ({ app }) => {
-      const extDir = require('path').join(app.getPath('home'), '.nuxy', 'extensions')
-      const fs = require('fs') as typeof import('fs')
-      const path = require('path') as typeof import('path')
-      if (!fs.existsSync(extDir)) return []
+  test('extensions directory contains manifest.json files', async () => {
+    const extDir = path.join(os.homedir(), '.nuxy', 'extensions')
+    const exists = fs.existsSync(extDir)
+    if (!exists) {
+      expect(exists).toBe(true)
+      return
+    }
 
-      return fs
-        .readdirSync(extDir)
-        .filter((item: string) => {
+    const manifests = fs
+      .readdirSync(extDir)
+      .filter((item: string) => {
+        const mp = path.join(extDir, item, 'manifest.json')
+        return fs.existsSync(mp)
+      })
+      .map((item: string) => {
+        try {
           const mp = path.join(extDir, item, 'manifest.json')
-          return fs.existsSync(mp)
-        })
-        .map((item: string) => {
-          try {
-            const mp = path.join(extDir, item, 'manifest.json')
-            const manifest = JSON.parse(fs.readFileSync(mp, 'utf8'))
-            return { id: manifest.id, type: manifest.type, name: manifest.name }
-          } catch {
-            return null
-          }
-        })
-        .filter(Boolean)
-    })
+          const manifest = JSON.parse(fs.readFileSync(mp, 'utf8'))
+          return { id: manifest.id, type: manifest.type, name: manifest.name }
+        } catch {
+          return null
+        }
+      })
+      .filter(Boolean) as { id: string; type: string; name: string }[]
 
     expect(manifests.length).toBeGreaterThan(0)
     for (const m of manifests) {

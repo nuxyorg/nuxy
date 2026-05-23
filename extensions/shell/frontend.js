@@ -212,7 +212,14 @@ export default function ShellView({ query: _queryProp }) {
       updatePosition(true)
       setTimeout(() => inputRef.current?.focus(), 50)
     }
-    const onFocus = () => inputRef.current?.focus()
+    const onFocus = () => {
+      const paletteInput = document.querySelector('.nuxy-command-palette__input')
+      if (paletteInput) {
+        paletteInput.focus()
+      } else {
+        inputRef.current?.focus()
+      }
+    }
     const handleSettingsUpdate = (e) => {
       if (e.detail) {
         setSettings(e.detail)

@@ -11,6 +11,10 @@ import { registerIpc } from '../ipc/register.js'
 import { scanExtensions } from '../extensions/scanner.js'
 import { reloadConfig } from '../config/nuxyconfig.js'
 import { kernelLogger } from '@nuxy/core'
+import { platformId, getNowPlaying } from '../media/index.js'
+
+// Expose media functions on globalThis for E2E tests
+;(globalThis as any).__test_media = { platformId, getNowPlaying }
 
 const log = kernelLogger.child('App')
 

@@ -103,7 +103,10 @@ export default function AngrysearchView({ query }) {
   }, [])
 
   React.useEffect(() => {
-    const actions = [{ id: 'update-db', label: 'Update Database', onExecute: triggerUpdate }]
+    const actions = [
+      { id: 'update-db', label: 'Update Database', onExecute: triggerUpdate },
+      { id: 'toggle-regex', label: 'Toggle Regex Mode', onExecute: () => setRegexMode((m) => !m) },
+    ]
     window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
     return () => window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
   }, [triggerUpdate])

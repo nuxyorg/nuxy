@@ -23,7 +23,13 @@ let dragOffset: { x: number; y: number } | null = null
 
 function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedExtensions {
   return loadedExtensions
-    .filter((ext) => ext.manifest.type === type && !isBootstrapExtension(ext))
+    .filter((ext) => {
+      if (isBootstrapExtension(ext)) return false
+      if (ext.id === 'com.nuxy.time-calculator') {
+        return type === 'tool' || type === 'provider'
+      }
+      return ext.manifest.type === type
+    })
     .map((ext) => ({
       ...ext,
       manifest: { ...ext.manifest, name: getDisplayName(ext) },

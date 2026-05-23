@@ -179,6 +179,7 @@ export function useKeyboard({
           setSavedQuery('')
           setSelectedIndex(0)
           setShowOmniBar(true)
+          setTimeout(() => inputRef.current?.focus(), 50)
         } else {
           setQuery('')
           setSavedQuery('')
@@ -189,11 +190,16 @@ export function useKeyboard({
       }
       if (showCommandPalette) return
       if (activeTool) {
-        // Check registered key actions first — even when an input has focus,
-        // so tools can intercept arrow keys while the omni bar is still visible.
+        // Check registered key actions. Skip modifier-free single-char actions when
+        // an input/textarea has focus so the user can type freely.
+        const isTyping = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement
         const actions = keyActionsGetterRef?.current?.()
         if (actions && actions.length > 0) {
-          const matched = actions.find((a) => matchesAction(a, e))
+          const matched = actions.find((a) => {
+            if (!matchesAction(a, e)) return false
+            if (isTyping && !(a.modifiers?.length) && a.key.length === 1) return false
+            return true
+          })
           if (matched) {
             matched.handler()
             e.preventDefault()

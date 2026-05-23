@@ -1,41 +1,37 @@
 import { test, expect, type Page } from '../../src/e2e/fixtures.js'
 
-async function resetShell(page: Page) {
-  await page.keyboard.press('Escape')
-  await page.waitForTimeout(300)
-  await page.keyboard.press('Control+a')
-  await page.keyboard.press('Delete')
-  await page.waitForTimeout(200)
+async function resetShell(page: any) {
+  await page.evaluate(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
+  })
+  await page.waitForFunction(
+    () => {
+      const toolName = document.querySelector('.nuxy-shell-omni-bar__tool-name')
+      const palette = document.querySelector('.nuxy-command-palette')
+      const input = document.querySelector('input') as HTMLInputElement | null
+      return toolName === null && palette === null && (input?.value ?? '') === ''
+    },
+    { timeout: 400 }
+  )
+  await page.locator('input').focus()
 }
 
 async function openTool(page: import('@playwright/test').Page, toolName: string) {
-  await page.keyboard.press('Escape')
-  await page.waitForTimeout(300)
-  await page.keyboard.press('Control+a')
-  await page.keyboard.press('Delete')
-  await page.waitForTimeout(200)
-
+  await resetShell(page)
   await page.keyboard.type(toolName)
-  await page.waitForTimeout(800)
-  await page.keyboard.press('ArrowDown')
-  await page.waitForTimeout(300)
-  await page.keyboard.press('Enter')
-  await page.waitForTimeout(2000)
+  const option = page.locator('[role="option"]', { hasText: toolName })
+  await option.first().click()
+  await page.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 400 })
+  await page.locator('input').focus()
 }
 
 async function openSettings(page: import('@playwright/test').Page) {
-  await resetShell(page)
-  await page.keyboard.type('settings')
-  await page.waitForTimeout(800)
-  await page.keyboard.press('ArrowDown')
-  await page.waitForTimeout(300)
-  await page.keyboard.press('Enter')
-  await page.waitForTimeout(2000)
+  await openTool(page, 'settings')
 }
 
 test.describe('settings tool', () => {
   test('opens settings tool via search', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 8000 })
+    await appPage.waitForSelector('input', { timeout: 400 })
     await openTool(appPage, 'settings')
 
     const body = await appPage.evaluate(() => document.body.innerText)
@@ -43,7 +39,7 @@ test.describe('settings tool', () => {
   })
 
   test('settings UI renders appearance section', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 8000 })
+    await appPage.waitForSelector('input', { timeout: 400 })
     await openTool(appPage, 'settings')
 
     const body = await appPage.evaluate(() => document.body.innerText)
@@ -51,7 +47,7 @@ test.describe('settings tool', () => {
   })
 
   test('settings UI renders window section', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 8000 })
+    await appPage.waitForSelector('input', { timeout: 400 })
     await openTool(appPage, 'settings')
 
     const body = await appPage.evaluate(() => document.body.innerText)
@@ -59,26 +55,493 @@ test.describe('settings tool', () => {
   })
 
   test('settings rows are navigable with keyboard', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 8000 })
+    await appPage.waitForSelector('input', { timeout: 400 })
     await openTool(appPage, 'settings')
 
     await appPage.keyboard.press('ArrowDown')
-    await appPage.waitForTimeout(200)
     await appPage.keyboard.press('ArrowDown')
-    await appPage.waitForTimeout(200)
+    await appPage.evaluate(() => new Promise((r) => requestAnimationFrame(r)))
 
     const body = await appPage.evaluate(() => document.body.innerText)
     expect(body.toLowerCase()).toMatch(/settings|appearance|theme/)
   })
 
   test('core API is available inside settings tool', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 8000 })
+    await appPage.waitForSelector('input', { timeout: 400 })
     await openTool(appPage, 'settings')
 
     const hasCore = await appPage.evaluate(() => typeof (window as any).core === 'object')
     expect(hasCore).toBe(true)
   })
+
+  const settingRows = [
+    {
+      name: 'theme',
+      label: 'Theme',
+      index: 0,
+      getExpectedCount: async (appPage: Page) => {
+        const res = await appPage.evaluate(async () => (window as any).core.themes.list())
+        return res.data.length
+      },
+    },
+    {
+      name: 'iconPack',
+      label: 'Icon Pack',
+      index: 1,
+      getExpectedCount: async (appPage: Page) => {
+        const res = await appPage.evaluate(async () => (window as any).core.icons.listPacks())
+        return res.data.length
+      },
+    },
+    { name: 'zoom', label: 'Zoom', index: 2, getExpectedCount: async () => 6 },
+    {
+      name: 'font',
+      label: 'Font',
+      index: 3,
+      getExpectedCount: async (appPage: Page) => {
+        const res = await appPage.evaluate(async () =>
+          (window as any).core.ipc.invoke('kernel', 'listSystemFonts', {})
+        )
+        return res.data.length + 2
+      },
+    },
+    { name: 'escAction', label: 'Esc Key Action', index: 4, getExpectedCount: async () => 4 },
+    { name: 'blurAction', label: 'Focus-Out Action', index: 5, getExpectedCount: async () => 4 },
+    { name: 'windowWidth', label: 'Window Width', index: 6, getExpectedCount: async () => 6 },
+    { name: 'windowMaxHeight', label: 'Max Height', index: 7, getExpectedCount: async () => 5 },
+    { name: 'opacity', label: 'Opacity', index: 8, getExpectedCount: async () => 4 },
+    { name: 'alwaysOnTop', label: 'Always on Top', index: 9, getExpectedCount: async () => 2 },
+    { name: 'showInTaskbar', label: 'Show in Taskbar', index: 10, getExpectedCount: async () => 2 },
+    { name: 'showOnStartup', label: 'Show on Startup', index: 11, getExpectedCount: async () => 2 },
+  ]
+
+  for (const row of settingRows) {
+    test(`dropdown renders options correctly for ${row.label}`, async ({ appPage }) => {
+      const expectedCount = await row.getExpectedCount(appPage)
+
+      await appPage.waitForSelector('input', { timeout: 400 })
+      await openSettings(appPage)
+
+      // Move selection to row (Theme is index 0, so 1 ArrowDown from starting index -1)
+      for (let i = 0; i <= row.index; i++) {
+        await appPage.keyboard.press('ArrowDown')
+      }
+
+      // Verify selected row is correct
+      const activeItem = appPage.locator('.nuxy-list-item--active')
+      await expect(activeItem).toContainText(row.label)
+
+      // Open dropdown
+      await appPage.keyboard.press('Enter')
+
+      const dropdown = appPage.locator('.nuxy-select-box__dropdown')
+      if (expectedCount > 0) {
+        await expect(dropdown).toBeVisible()
+        const options = dropdown.locator('.nuxy-select-box__option')
+        await expect(options).toHaveCount(expectedCount)
+
+        // Close dropdown
+        await appPage.keyboard.press('Escape')
+      } else {
+        await expect(dropdown).not.toBeVisible()
+      }
+    })
+  }
+
+  test('font dropdown search filters options correctly', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Move selection to Font row (index 3: Theme -> Icon Pack -> Zoom -> Font)
+    for (let i = 0; i <= 3; i++) {
+      await appPage.keyboard.press('ArrowDown')
+    }
+
+    // Open dropdown
+    await appPage.keyboard.press('Enter')
+
+    const searchInput = appPage.locator('.nuxy-select-box__search')
+    await expect(searchInput).toBeVisible()
+
+    // Type "mono" in search input
+    await searchInput.fill('mono')
+
+    // Verify only matching options are displayed
+    const options = appPage.locator('.nuxy-select-box__dropdown .nuxy-select-box__option')
+    const optionTexts = await options.allInnerTexts()
+
+    expect(optionTexts.every((txt) => txt.toLowerCase().includes('mono'))).toBe(true)
+    expect(optionTexts.length).toBeGreaterThan(0)
+
+    // Close dropdown
+    await appPage.keyboard.press('Escape')
+  })
+
+  test('changing zoom setting via UI updates style immediately and persists value', async ({
+    appPage,
+  }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Move to Zoom row (0: Theme, 1: Icon Pack, 2: Zoom)
+    for (let i = 0; i <= 2; i++) {
+      await appPage.keyboard.press('ArrowDown')
+    }
+
+    // Open dropdown
+    await appPage.keyboard.press('Enter')
+
+    // Navigate to 90% (one option up from default 100%)
+    await appPage.keyboard.press('ArrowUp')
+    await appPage.keyboard.press('Enter')
+
+    // 1. Verify CSS zoom style is updated immediately
+    const zoomStyle = await appPage.evaluate(() => document.documentElement.style.zoom)
+    expect(zoomStyle).toBe('90%')
+
+    // 2. Verify settings are persisted to the backend/IPC
+    const settingsResult = await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})
+    )
+    expect(settingsResult.success).toBe(true)
+    expect(settingsResult.data.zoom).toBe('90%')
+
+    // Restore to 100% to keep things clean
+    await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...(await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})).data,
+        zoom: '100%',
+      })
+    )
+  })
+
+  test('dispatches nuxy-settings-updated event when settings change', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Set up window listener that stores received details
+    await appPage.evaluate(() => {
+      ;(window as any).__lastSettingsUpdate = null
+      window.addEventListener('nuxy-settings-updated', (e: any) => {
+        ;(window as any).__lastSettingsUpdate = e.detail
+      })
+    })
+
+    // Move to Zoom row (0: Theme, 1: Icon Pack, 2: Zoom)
+    for (let i = 0; i <= 2; i++) {
+      await appPage.keyboard.press('ArrowDown')
+    }
+
+    // Open dropdown, go up to 90%, select it
+    await appPage.keyboard.press('Enter')
+    await appPage.keyboard.press('ArrowUp')
+    await appPage.keyboard.press('Enter')
+
+    // Check if event was received with the updated zoom value
+    const receivedSettings = await appPage.evaluate(() => (window as any).__lastSettingsUpdate)
+    expect(receivedSettings).toBeTruthy()
+    expect(receivedSettings.zoom).toBe('90%')
+
+    // Restore zoom setting
+    await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...(await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})).data,
+        zoom: '100%',
+      })
+    )
+  })
+
+  test('font dropdown search shows "No results" when no matching fonts found', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Move selection to Font row (index 3)
+    for (let i = 0; i <= 3; i++) {
+      await appPage.keyboard.press('ArrowDown')
+    }
+
+    // Open dropdown
+    await appPage.keyboard.press('Enter')
+
+    const searchInput = appPage.locator('.nuxy-select-box__search')
+    await expect(searchInput).toBeVisible()
+
+    // Type a random non-existent font name
+    await searchInput.fill('NonExistentFontxyz123')
+
+    // Verify "No results" message is shown
+    const noResults = appPage.locator('.nuxy-select-box__no-results')
+    await expect(noResults).toBeVisible()
+    await expect(noResults).toHaveText('No results')
+
+    // Close dropdown
+    await appPage.keyboard.press('Escape')
+  })
+
+  test('changing font setting via UI updates body font-family immediately', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Move to Font row (index 3)
+    for (let i = 0; i <= 3; i++) {
+      await appPage.keyboard.press('ArrowDown')
+    }
+
+    // Open dropdown
+    await appPage.keyboard.press('Enter')
+
+    // Press ArrowDown once to focus "Monospace" (index 1, since default is system at index 0)
+    await appPage.keyboard.press('ArrowDown')
+    await appPage.keyboard.press('Enter')
+
+    // Verify body font-family is monospace
+    const fontFamily = await appPage.evaluate(() => document.body.style.fontFamily)
+    expect(fontFamily).toBe('monospace')
+
+    // Restore to default system font
+    await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...(await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})).data,
+        font: 'system',
+      })
+    )
+  })
+
+  test('changing theme setting via UI updates CSS variables immediately', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Selection starts at Theme row (index 0). Press ArrowDown once to focus it.
+    await appPage.keyboard.press('ArrowDown')
+
+    // Verify row is indeed Theme
+    const activeItem = appPage.locator('.nuxy-list-item--active')
+    await expect(activeItem).toContainText('Theme')
+
+    // Open dropdown
+    await appPage.keyboard.press('Enter')
+
+    // Press ArrowDown to select light theme (first option is dark, second is light)
+    await appPage.keyboard.press('ArrowDown')
+    await appPage.keyboard.press('Enter')
+
+    // Verify CSS variables are updated to light theme values
+    const bgBase = await appPage.evaluate(() =>
+      getComputedStyle(document.documentElement).getPropertyValue('--bg-base').trim().toLowerCase()
+    )
+    // Accept either rgb(244, 244, 245) or hex #f4f4f5
+    expect(bgBase === 'rgb(244, 244, 245)' || bgBase === '#f4f4f5').toBe(true)
+
+    // Restore to dark theme
+    await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...(await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})).data,
+        theme: 'dark',
+      })
+    )
+  })
+
+  test('escape key navigation flow in settings tool', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    const settingsWrapper = appPage.locator('.nuxy-shell-tool-wrapper')
+    await expect(settingsWrapper).toBeVisible()
+
+    // 1. Open a dropdown (Theme)
+    await appPage.keyboard.press('ArrowDown')
+    await appPage.keyboard.press('Enter')
+
+    const dropdown = appPage.locator('.nuxy-select-box__dropdown')
+    await expect(dropdown).toBeVisible()
+
+    // 2. Press Escape when dropdown is open -> only closes the dropdown
+    await appPage.keyboard.press('Escape')
+    await expect(dropdown).not.toBeVisible()
+    await expect(settingsWrapper).toBeVisible()
+
+    // 3. Press Escape when dropdown is closed -> closes the settings tool and returns to shell
+    await appPage.keyboard.press('Escape')
+    await expect(settingsWrapper).not.toBeVisible()
+
+    // Shell input should be visible again and focused
+    const searchInput = appPage.locator('input')
+    await expect(searchInput).toBeFocused()
+  })
+
+  test('keyboard navigation respects boundaries and does not wrap around or crash', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Press ArrowUp multiple times at the top boundary
+    for (let i = 0; i < 5; i++) {
+      await appPage.keyboard.press('ArrowUp')
+    }
+    // Verify no row is active (active index is -1)
+    const activeItemAtTop = appPage.locator('.nuxy-list-item--active')
+    await expect(activeItemAtTop).toHaveCount(0)
+
+    // Press ArrowDown 20 times to exceed total rows (12 rows, indexes 0 to 11)
+    for (let i = 0; i < 20; i++) {
+      await appPage.keyboard.press('ArrowDown')
+    }
+    // Verify selection stops at the last row ("Show on Startup")
+    const activeItemAtBottom = appPage.locator('.nuxy-list-item--active')
+    await expect(activeItemAtBottom).toContainText('Show on Startup')
+  })
+
+  test('updating settings via mouse clicks saves and persists value', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Locate the "Always on Top" row and click its SelectBox trigger
+    const row = appPage.locator('.nuxy-list-item', { hasText: 'Always on Top' })
+    const trigger = row.locator('.nuxy-select-box__trigger')
+    await trigger.click()
+
+    // Verify dropdown is open
+    const dropdown = appPage.locator('.nuxy-select-box__dropdown')
+    await expect(dropdown).toBeVisible()
+
+    // Click the "Yes" option
+    const option = dropdown.locator('.nuxy-select-box__option', { hasText: 'Yes' })
+    await option.click()
+
+    // Verify setting is persisted via getSettings IPC
+    const settingsResult = await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})
+    )
+    expect(settingsResult.success).toBe(true)
+    expect(settingsResult.data.alwaysOnTop).toBe(true)
+
+    // Restore to false
+    await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...(await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})).data,
+        alwaysOnTop: false,
+      })
+    )
+  })
+
+  test('keyboard navigation still works after clicking a dropdown with the mouse', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Locate the "Always on Top" row and click its SelectBox trigger
+    const row = appPage.locator('.nuxy-list-item', { hasText: 'Always on Top' })
+    const trigger = row.locator('.nuxy-select-box__trigger')
+    await trigger.click()
+
+    // Verify dropdown is open
+    const dropdown = appPage.locator('.nuxy-select-box__dropdown')
+    await expect(dropdown).toBeVisible()
+
+    // Click the "Yes" option
+    const option = dropdown.locator('.nuxy-select-box__option', { hasText: 'Yes' })
+    await option.click()
+
+    // Press ArrowDown keyboard button to navigate to the next row (Show in Taskbar)
+    await appPage.keyboard.press('ArrowDown')
+
+    // Verify that the active item is now "Show in Taskbar"
+    const activeItem = appPage.locator('.nuxy-list-item--active')
+    await expect(activeItem).toContainText('Show in Taskbar')
+
+    // Restore Always on Top setting to false
+    await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...(await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})).data,
+        alwaysOnTop: false,
+      })
+    )
+  })
+
+  test('keyboard navigation still works after search filtering and selecting via mouse in searchable dropdown', async ({
+    appPage,
+  }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Locate the "Font" row and click its SelectBox trigger
+    const row = appPage.locator('.nuxy-list-item', { hasText: 'Font' })
+    const trigger = row.locator('.nuxy-select-box__trigger')
+    await trigger.click()
+
+    // Verify dropdown is open
+    const dropdown = appPage.locator('.nuxy-select-box__dropdown')
+    await expect(dropdown).toBeVisible()
+
+    // Search input should be focused. Type "mono" to filter
+    const searchInput = appPage.locator('.nuxy-select-box__search')
+    await expect(searchInput).toBeFocused()
+    await searchInput.fill('mono')
+
+    // Click the filtered "Monospace" option
+    const option = dropdown.locator('.nuxy-select-box__option', { hasText: 'Monospace' })
+    await option.click()
+
+    // Press ArrowDown keyboard button to navigate to the next row (Esc Key Action)
+    await appPage.keyboard.press('ArrowDown')
+
+    // Verify that active item is now "Esc Key Action"
+    const activeItem = appPage.locator('.nuxy-list-item--active')
+    await expect(activeItem).toContainText('Esc Key Action')
+
+    // Restore Font setting to system
+    await appPage.evaluate(async () =>
+      (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...(await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})).data,
+        font: 'system',
+      })
+    )
+  })
+
+  test('section header is fully visible when navigating back to the top of a section', async ({ appPage }) => {
+    test.setTimeout(15000)
+    await openSettings(appPage)
+
+    const header = appPage.locator('.nuxy-section-header', { hasText: 'General' })
+    const scrollContainer = appPage.locator('.nuxy-shell-tool-wrapper')
+
+    // 1. Scroll all the way to the bottom to ensure the page scrolls
+    for (let i = 0; i < 12; i++) {
+      await appPage.keyboard.press('ArrowDown')
+    }
+
+    // Wait for smooth scroll animation to finish
+    await appPage.waitForTimeout(400)
+
+    // 2. Navigate back to the very top (Theme, index 0)
+    for (let i = 0; i < 12; i++) {
+      await appPage.keyboard.press('ArrowUp')
+    }
+
+    // Wait for smooth scroll animation to finish
+    await appPage.waitForTimeout(400)
+
+    const headerBox = await header.boundingBox()
+    const containerBox = await scrollContainer.boundingBox()
+
+    expect(headerBox).toBeTruthy()
+    expect(containerBox).toBeTruthy()
+
+    if (headerBox && containerBox) {
+      // The top of the section header should not be above the top of the scroll container
+      expect(headerBox.y).toBeGreaterThanOrEqual(containerBox.y - 1)
+    }
+
+  })
+
+
+
 })
+
+
+
+
+
+
+
 
 test.describe('settings IPC channels', () => {
   test('getSettings channel returns full settings object', async ({ appPage }) => {
@@ -99,8 +562,8 @@ test.describe('settings IPC channels', () => {
       return (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
         theme: 'dark',
         zoom: '100%',
-        escAction: 'hide',
-        blurAction: 'hide',
+        escAction: 'none',
+        blurAction: 'none',
         windowWidth: 800,
         windowMaxHeight: 600,
         alwaysOnTop: false,
@@ -118,7 +581,7 @@ test.describe('settings IPC channels', () => {
   })
 
   test('settings tool UI shows current zoom value', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 8000 })
+    await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
 
     const body = await appPage.evaluate(() => document.body.innerText)
@@ -126,7 +589,7 @@ test.describe('settings IPC channels', () => {
   })
 
   test('settings tool UI shows theme options', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 8000 })
+    await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
 
     const body = await appPage.evaluate(() => document.body.innerText)

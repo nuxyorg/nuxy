@@ -5,12 +5,20 @@
  */
 import { test, expect } from './fixtures.js'
 
-async function resetShell(page: import('@playwright/test').Page) {
-  await page.keyboard.press('Escape')
-  await page.waitForTimeout(300)
-  await page.keyboard.press('Control+a')
-  await page.keyboard.press('Delete')
-  await page.waitForTimeout(200)
+async function resetShell(page: any) {
+  await page.evaluate(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
+  })
+  await page.waitForFunction(
+    () => {
+      const toolName = document.querySelector('.nuxy-shell-omni-bar__tool-name')
+      const palette = document.querySelector('.nuxy-command-palette')
+      const input = document.querySelector('input') as HTMLInputElement | null
+      return toolName === null && palette === null && (input?.value ?? '') === ''
+    },
+    { timeout: 400 }
+  )
+  await page.locator('input').focus()
 }
 
 test.describe('angrysearch extension', () => {
@@ -135,17 +143,15 @@ test.describe('time-calculator provider via IPC', () => {
   test('convert channel performs time conversion', async ({ appPage }) => {
     const result = await appPage.evaluate(async () =>
       (window as any).core.ipc.invoke('com.nuxy.time-calculator', 'convert', {
-        hours: 12,
-        minutes: 0,
-        sourceTz: 'UTC',
-        targetTz: 'Asia/Tokyo',
-        label: 'Tokyo',
+        time: '12pm',
+        from: 'UTC',
+        to: 'tokyo',
       })
     )
     expect(result.success).toBe(true)
     const d = result.data
-    expect(typeof d.timeStr).toBe('string')
-    expect(typeof d.label).toBe('string')
+    expect(typeof d.convertedTime).toBe('string')
+    expect(typeof d.timezone).toBe('string')
   })
 })
 
@@ -164,13 +170,18 @@ test.describe('shell extension via IPC', () => {
 
 test.describe('orchestrator routing', () => {
   test('typing query and pressing Enter does not crash', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 8000 })
+    await appPage.waitForSelector('input', { timeout: 400 })
     await resetShell(appPage)
 
     await appPage.keyboard.type('what is the meaning of life')
-    await appPage.waitForTimeout(400)
+    await appPage.waitForFunction(
+      () =>
+        (document.querySelector('input') as HTMLInputElement | null)?.value ===
+        'what is the meaning of life',
+      { timeout: 400 }
+    )
     await appPage.keyboard.press('Enter')
-    await appPage.waitForTimeout(1000)
+    await appPage.waitForFunction(() => document.querySelector('input') !== null, { timeout: 400 })
 
     // App should still be responsive
     const inputExists = await appPage.evaluate(() => document.querySelector('input') !== null)

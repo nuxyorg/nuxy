@@ -52,7 +52,7 @@ test.describe('window.core.window API', () => {
 
 test.describe('window dragging', () => {
   test('shell container is draggable (has drag handle)', async ({ appPage }) => {
-    await appPage.waitForSelector('.nuxy-shell-omni-bar', { timeout: 8000 })
+    await appPage.waitForSelector('.nuxy-shell-omni-bar', { timeout: 400 })
 
     const hasDragHandle = await appPage.evaluate(() => {
       return document.querySelector('.nuxy-shell-omni-bar') !== null
@@ -61,7 +61,7 @@ test.describe('window dragging', () => {
   })
 
   test('mousedown on omnibar initiates drag', async ({ appPage }) => {
-    await appPage.waitForSelector('.nuxy-shell-omni-bar', { timeout: 8000 })
+    await appPage.waitForSelector('.nuxy-shell-omni-bar', { timeout: 400 })
 
     const omnibar = await appPage.$('.nuxy-shell-omni-bar')
     expect(omnibar).not.toBeNull()
@@ -74,7 +74,6 @@ test.describe('window dragging', () => {
     await appPage.mouse.down()
     await appPage.mouse.move(box!.x + box!.width / 2 + 10, box!.y + box!.height / 2 + 5)
     await appPage.mouse.up()
-    await appPage.waitForTimeout(200)
 
     // App should still be alive
     const inputExists = await appPage.evaluate(() => document.querySelector('input') !== null)
@@ -86,7 +85,7 @@ test.describe('window resize handles', () => {
   test('resize handle elements exist in the shell container', async ({ appPage }) => {
     // The shell renders 8 resize handles (n, s, e, w, ne, nw, se, sw)
     // They are absolutely-positioned divs without specific class names
-    await appPage.waitForSelector('.nuxy-main-wrapper', { timeout: 8000 })
+    await appPage.waitForSelector('.nuxy-main-wrapper', { timeout: 400 })
 
     const hasMainWrapper = await appPage.evaluate(() => {
       return document.querySelector('.nuxy-main-wrapper') !== null
@@ -111,7 +110,6 @@ test.describe('window resize via IPC', () => {
     await appPage.evaluate(() => {
       ;(window as any).core.window.resize(810, 550)
     })
-    await appPage.waitForTimeout(500)
 
     const after = await electronApp.evaluate(({ BrowserWindow }) => {
       const win = BrowserWindow.getAllWindows()[0]
@@ -133,20 +131,28 @@ test.describe('window resize via IPC', () => {
     await appPage.evaluate(() => {
       ;(window as any).core.window.hide()
     })
-    await appPage.waitForTimeout(400)
 
-    const isAfter = await electronApp.evaluate(({ BrowserWindow }) => {
-      const win = BrowserWindow.getAllWindows()[0]
-      return win ? win.isVisible() : null
-    })
-    expect(isAfter).toBe(false)
+    // Poll until the window is hidden in the main process
+    await expect.poll(async () => {
+      return await electronApp.evaluate(({ BrowserWindow }) => {
+        const win = BrowserWindow.getAllWindows()[0]
+        return win ? win.isVisible() : null
+      })
+    }, { timeout: 200 }).toBe(false)
 
     // Restore window so subsequent tests can interact with the renderer
     await electronApp.evaluate(({ BrowserWindow }) => {
       const win = BrowserWindow.getAllWindows()[0]
       if (win) win.show()
     })
-    await appPage.waitForTimeout(300)
+
+    // Poll until the window is visible in the main process
+    await expect.poll(async () => {
+      return await electronApp.evaluate(({ BrowserWindow }) => {
+        const win = BrowserWindow.getAllWindows()[0]
+        return win ? win.isVisible() : null
+      })
+    }, { timeout: 200 }).toBe(true)
   })
 
   test('window content size covers the display work area', async ({ electronApp }) => {
