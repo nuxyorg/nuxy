@@ -28,3 +28,15 @@ export { useListNavigation } from './hooks/useListNavigation'
 export type { UseListNavigationOptions, UseListNavigationResult } from './hooks/useListNavigation'
 export { Toaster, toast } from './components/Toaster'
 export type { ToastOptions } from './components/Toaster'
+export { Alert } from './components/Alert'
+export type { AlertProps } from './components/Alert'
+export {
+  IconFile,
+  IconImageFile,
+  IconCode,
+  IconDocument,
+  IconPdf,
+  IconArchive,
+  IconGlobe,
+} from './components/Icon'
+export type { IconProps } from './components/Icon'

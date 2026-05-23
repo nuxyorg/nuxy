@@ -1,0 +1,29 @@
+.nuxy-alert {
+  padding: 7px 14px;
+  fontSize: 12px;
+  border-top: 1px solid transparent;
+}
+
+.nuxy-alert--danger {
+  color: var(--color-danger, #e55);
+  background: rgba(220, 50, 50, 0.08);
+  border-top-color: rgba(220, 50, 50, 0.2);
+}
+
+.nuxy-alert--warning {
+  color: var(--color-warning, #eab308);
+  background: rgba(234, 179, 8, 0.08);
+  border-top-color: rgba(234, 179, 8, 0.2);
+}
+
+.nuxy-alert--info {
+  color: var(--color-info, #3b82f6);
+  background: rgba(59, 130, 246, 0.08);
+  border-top-color: rgba(59, 130, 246, 0.2);
+}
+
+.nuxy-alert--success {
+  color: var(--color-success, #22c55e);
+  background: rgba(34, 197, 94, 0.08);
+  border-top-color: rgba(34, 197, 94, 0.2);
+}

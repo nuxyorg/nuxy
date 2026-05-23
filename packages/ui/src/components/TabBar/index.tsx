@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import './index.css'
+import { smoothScrollIntoViewIfNeeded } from '../../utils/scroll'
 
 export interface TabOption {
   id: string
@@ -15,8 +16,18 @@ export interface TabBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
 }
 
 export function TabBar({ tabs, active, onChange, orientation = 'horizontal', className, ...rest }: TabBarProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+    const activeEl = containerRef.current.querySelector('.nuxy-tab--active')
+    if (activeEl) {
+      smoothScrollIntoViewIfNeeded(activeEl as HTMLElement)
+    }
+  }, [active])
+
   return (
-    <div className={`nuxy-tab-bar nuxy-tab-bar--${orientation} ${className ?? ''}`} {...rest}>
+    <div ref={containerRef} className={`nuxy-tab-bar nuxy-tab-bar--${orientation} ${className ?? ''}`} {...rest}>
       {tabs.map((tab) => (
         <button
           key={tab.id}

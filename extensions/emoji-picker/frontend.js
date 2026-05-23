@@ -345,7 +345,7 @@ export default function EmojiPicker({ query, extensionId }) {
 
   return (
     <TwoPanel
-      split="140px"
+      split="auto"
       style={{ flex: 1, minHeight: 0 }}
       left={
         TabBar ? (

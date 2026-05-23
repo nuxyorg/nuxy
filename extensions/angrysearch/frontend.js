@@ -13,6 +13,7 @@ export default function AngrysearchView({ query }) {
     ListItemActions,
     Button,
     EmptyState,
+    ShortcutSep,
   } = window.UI || {}
 
   const [items, setItems] = React.useState([])
@@ -42,7 +43,7 @@ export default function AngrysearchView({ query }) {
         key: 'Enter',
         modifiers: ['shift'],
         label: 'Open folder',
-        hint: '⇧Enter',
+        hint: ['⇧', 'Enter'],
         handler: () => {
           const item = items[selectedIndexRef.current]
           if (item) handleOpenLocation(item)
@@ -107,78 +108,61 @@ export default function AngrysearchView({ query }) {
     return () => window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
   }, [triggerUpdate])
 
-  return (
-    <div>
-      <div
-        style={{
-          padding: '0 12px 12px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <div style={{ fontSize: '12px', color: regexMode ? '#ef4444' : 'var(--text-muted)' }}>
-          {regexMode ? '● REGEX MODE ACTIVE' : '○ STANDARD MODE'}
-        </div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-            {status === null
-              ? 'Loading...'
-              : status.isUpdating
-                ? 'Updating DB...'
-                : status.exists
-                  ? 'DB Ready'
-                  : 'DB Missing'}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={triggerUpdate}
-            disabled={status?.isUpdating || status === null}
-          >
-            {status?.isUpdating ? 'Updating...' : 'Update DB'}
-          </Button>
-        </div>
-      </div>
+  React.useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent('nuxy-shell-footer-hints', {
+        detail: (
+          <>
+            <span style={{ color: regexMode ? '#ef4444' : 'var(--text-muted)' }}>
+              {regexMode ? 'Regex Mode' : 'Normal Mode'}
+            </span>
+            {ShortcutSep ? <ShortcutSep /> : <span className="nuxy-shortcut-sep">/</span>}
+            <span>
+              {status === null
+                ? 'Loading...'
+                : status.isUpdating
+                  ? 'Updating DB...'
+                  : status.exists
+                    ? 'DB Ready'
+                    : 'DB Missing'}
+            </span>
+          </>
+        ),
+      }),
+    )
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
+    }
+  }, [regexMode, status])
 
-      <List maxHeight="md">
-        {items.length === 0 ? (
-          <EmptyState
-            message={searchQuery.length < 3 ? 'Type to search...' : 'No matches.'}
-            hint={
-              searchQuery.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'
-            }
-          />
-        ) : (
-          items.map((item, idx) => {
-            const isActive = idx === selectedIndex
-            return (
-              <ListItem key={item.id} active={isActive} onClick={() => handleOpen(item)}>
-                <ListItemBody>
-                  <ListItemText>
-                    <span style={{ marginRight: '6px', fontSize: '1.1em' }}>
-                      {item.isDir ? '📁' : '📄'}
-                    </span>
-                    {item.title}
-                  </ListItemText>
-                  <ListItemMeta>{item.subtitle}</ListItemMeta>
-                </ListItemBody>
-                <ListItemActions>
-                  <Button
-                    variant="outline"
-                    onClick={(ev) => {
-                      ev.stopPropagation()
-                      handleOpenLocation(item)
-                    }}
-                  >
-                    {item.isDir ? 'Parent' : 'Folder'}
-                  </Button>
-                </ListItemActions>
-              </ListItem>
-            )
-          })
-        )}
-      </List>
-    </div>
+  return (
+    <List maxHeight="md">
+      {items.length === 0 ? (
+        <EmptyState
+          message={searchQuery.length < 3 ? 'Type to search...' : 'No matches.'}
+          hint={
+            searchQuery.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'
+          }
+        />
+      ) : (
+        items.map((item, idx) => {
+          const isActive = idx === selectedIndex
+          return (
+            <ListItem key={item.id} active={isActive} onClick={() => handleOpen(item)}>
+              <ListItemBody>
+                <ListItemText>
+                  <span style={{ marginRight: '6px', fontSize: '1.1em' }}>
+                    {item.isDir ? '📁' : '📄'}
+                  </span>
+                  {item.title}
+                </ListItemText>
+                <ListItemMeta>{item.subtitle}</ListItemMeta>
+              </ListItemBody>
+
+            </ListItem>
+          )
+        })
+      )}
+    </List>
   )
 }

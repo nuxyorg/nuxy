@@ -51,6 +51,7 @@ export default function ShellView({ query: _queryProp }) {
   const [footerHints, setFooterHints] = useState(null)
 
   const keyActionsGetterRef = useRef(null)
+  const toolActionsRef = useRef([])
   const [keyActionHints, setKeyActionHints] = useState([])
 
   const cfgRef = useRef(null)
@@ -93,6 +94,7 @@ export default function ShellView({ query: _queryProp }) {
     setSelectedIndex,
     setShowOmniBar,
     keyActionsGetterRef,
+    toolActionsRef,
   })
   const { recentToolIds, recordToolUsed } = useToolHistory(SHELL_EXT_ID)
 
@@ -242,6 +244,10 @@ export default function ShellView({ query: _queryProp }) {
   useEffect(() => {
     setToolActions([])
   }, [activeTool])
+
+  useEffect(() => {
+    toolActionsRef.current = toolActions
+  }, [toolActions])
 
   useEffect(() => {
     const handleRegister = (e) => {
@@ -736,16 +742,20 @@ export default function ShellView({ query: _queryProp }) {
           {ShortcutBar && (
             <ShortcutBar style={{ justifyContent: 'space-between' }}>
               <ShortcutHint>
-                {footerHints ? (
-                  footerHints
-                ) : activeTool && keyActionHints.length > 0 ? (
-                  keyActionHints.map((a, i) => (
-                    <React.Fragment key={a.key + (a.modifiers || []).join('')}>
-                      {i > 0 && ShortcutSep && <ShortcutSep />}
-                      {Kbd && <Kbd>{a.hint}</Kbd>}
-                      <span>{a.label}</span>
-                    </React.Fragment>
-                  ))
+                {footerHints || (activeTool && keyActionHints.length > 0) ? (
+                  <>
+                    {footerHints}
+                    {activeTool && keyActionHints.map((a, i) => (
+                      <React.Fragment key={a.key + (a.modifiers || []).join('')}>
+                        {(i > 0 || footerHints) && ShortcutSep && <ShortcutSep />}
+                        {Kbd && (Array.isArray(a.hint)
+                          ? a.hint.map((k, ki) => <Kbd key={ki}>{k}</Kbd>)
+                          : <Kbd>{a.hint}</Kbd>
+                        )}
+                        <span>{a.label}</span>
+                      </React.Fragment>
+                    ))}
+                  </>
                 ) : (
                   <span>{tools.length + 1} extensions loaded</span>
                 )}
@@ -757,13 +767,13 @@ export default function ShellView({ query: _queryProp }) {
                     <Kbd>Enter</Kbd>
                     <span>to run</span>
                   </>
-                ) : (
+                ) : toolActions.length > 0 ? (
                   <>
                     <Kbd>Ctrl</Kbd>
                     <Kbd>K</Kbd>
                     <span>to actions</span>
                   </>
-                )}
+                ) : null}
               </ShortcutHint>
             </ShortcutBar>
           )}

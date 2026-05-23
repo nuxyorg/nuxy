@@ -72,146 +72,15 @@ function getFileIconType(ext) {
   return 'file'
 }
 
-// ── SVG icons ─────────────────────────────────────────────────────────────────
-
-const ICON_STYLE = { width: 18, height: 18, opacity: 0.65 }
-
-function IconFile() {
-  return (
-    <svg
-      style={ICON_STYLE}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-    </svg>
-  )
-}
-
-function IconImageFile() {
-  return (
-    <svg
-      style={ICON_STYLE}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-      <circle cx="8.5" cy="8.5" r="1.5" />
-      <polyline points="21 15 16 10 5 21" />
-    </svg>
-  )
-}
-
-function IconCode() {
-  return (
-    <svg
-      style={ICON_STYLE}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <polyline points="10 13 8 15 10 17" />
-      <polyline points="14 13 16 15 14 17" />
-    </svg>
-  )
-}
-
-function IconDocument() {
-  return (
-    <svg
-      style={ICON_STYLE}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <line x1="16" y1="13" x2="8" y2="13" />
-      <line x1="16" y1="17" x2="8" y2="17" />
-      <line x1="10" y1="9" x2="8" y2="9" />
-    </svg>
-  )
-}
-
-function IconPdf() {
-  return (
-    <svg
-      style={{ ...ICON_STYLE, opacity: 0.75, color: '#e55' }}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <path d="M9 13h1.5a1 1 0 0 1 0 2H9v-4h1.5a1 1 0 0 1 1 1" />
-    </svg>
-  )
-}
-
-function IconArchive() {
-  return (
-    <svg
-      style={ICON_STYLE}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="21 8 21 21 3 21 3 8" />
-      <rect x="1" y="3" width="22" height="5" />
-      <line x1="10" y1="12" x2="14" y2="12" />
-    </svg>
-  )
-}
-
-function IconGlobe() {
-  return (
-    <svg
-      style={ICON_STYLE}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <line x1="2" y1="12" x2="22" y2="12" />
-      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
-  )
-}
-
 function FileIconFor({ ext }) {
+  const { IconImageFile, IconCode, IconDocument, IconPdf, IconArchive, IconFile } = window.UI || {}
   const t = getFileIconType(ext)
-  if (t === 'image-file') return <IconImageFile />
-  if (t === 'code') return <IconCode />
-  if (t === 'document') return <IconDocument />
-  if (t === 'pdf') return <IconPdf />
-  if (t === 'archive') return <IconArchive />
-  return <IconFile />
+  if (t === 'image-file') return IconImageFile ? <IconImageFile /> : null
+  if (t === 'code') return IconCode ? <IconCode /> : null
+  if (t === 'document') return IconDocument ? <IconDocument /> : null
+  if (t === 'pdf') return IconPdf ? <IconPdf /> : null
+  if (t === 'archive') return IconArchive ? <IconArchive /> : null
+  return IconFile ? <IconFile /> : null
 }
 
 // ── ItemLeading helper ────────────────────────────────────────────────────────
@@ -248,9 +117,10 @@ function ClipboardItemLeading({ item, type }) {
   }
 
   if (type === 'url') {
+    const { IconGlobe } = window.UI || {}
     return (
       <ItemLeading>
-        <IconGlobe />
+        {IconGlobe && <IconGlobe />}
       </ItemLeading>
     )
   }
@@ -295,6 +165,7 @@ export default function ClipboardView({ query }) {
     Kbd,
     EmptyState,
     TwoPanel,
+    Alert,
   } = window.UI || {}
 
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
@@ -764,17 +635,23 @@ export default function ClipboardView({ query }) {
       )}
 
       {fileExists === false && (
-        <div
-          style={{
-            padding: '7px 14px',
-            fontSize: '12px',
-            color: 'var(--color-danger, #e55)',
-            background: 'rgba(220,50,50,0.08)',
-            borderTop: '1px solid rgba(220,50,50,0.2)',
-          }}
-        >
-          File not found — it may have been moved or deleted.
-        </div>
+        Alert ? (
+          <Alert variant="danger" style={{ borderRadius: 0 }}>
+            File not found — it may have been moved or deleted.
+          </Alert>
+        ) : (
+          <div
+            style={{
+              padding: '7px 14px',
+              fontSize: '12px',
+              color: 'var(--color-danger, #e55)',
+              background: 'rgba(220,50,50,0.08)',
+              borderTop: '1px solid rgba(220,50,50,0.2)',
+            }}
+          >
+            File not found — it may have been moved or deleted.
+          </div>
+        )
       )}
     </div>
   )

@@ -4,7 +4,7 @@ export interface KeyAction {
   key: string
   modifiers?: ('ctrl' | 'shift' | 'alt' | 'meta')[]
   label: string
-  hint?: string
+  hint?: string | string[]
   handler: () => void
 }
 

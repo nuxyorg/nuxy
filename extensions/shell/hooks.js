@@ -155,12 +155,15 @@ export function useKeyboard({
   setSelectedIndex,
   setShowOmniBar,
   keyActionsGetterRef,
+  toolActionsRef,
 }) {
   useEffect(() => {
     const handleGlobalKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
-        setShowCommandPalette((prev) => !prev)
+        if (toolActionsRef?.current?.length > 0) {
+          setShowCommandPalette((prev) => !prev)
+        }
         return
       }
       if (e.key === 'Escape') {
