@@ -4,7 +4,7 @@ const COLS = 9
 const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
 export default function EmojiPicker({ query, extensionId }) {
-  const { Grid, GridItem, TwoPanel, List, ListItem, ListItemBody, ListItemText, ItemLeading, TabBar } = window.UI || {}
+  const { Grid, GridItem, TwoPanel, List, ListItem, ListItemBody, ListItemText, ItemLeading, TabBar, SectionHeader } = window.UI || {}
 
   const [emojiCategories, setEmojiCategories] = React.useState(null)
   const [emojiMap, setEmojiMap] = React.useState(null)
@@ -19,6 +19,7 @@ export default function EmojiPicker({ query, extensionId }) {
 
   const rightPanelRef = React.useRef(null)
   const categoryRefs = React.useRef({})
+  const sectionRefs = React.useRef({})
 
   React.useEffect(() => {
     fetch(`nuxy-ext://${extensionId}/emojis.json`)
@@ -121,7 +122,13 @@ export default function EmojiPicker({ query, extensionId }) {
       .then(() => {
         setCopiedEmoji(emoji)
         setTimeout(() => setCopiedEmoji(null), 1200)
-        setTimeout(() => window.core?.window?.hide?.(), 150)
+        setTimeout(() => {
+          window.core?.window?.hide?.()
+          // Wait briefly for window to hide and focus to return to previous app
+          setTimeout(() => {
+            window.core?.ipc?.invoke(EXT_ID, 'paste')
+          }, 50)
+        }, 150)
       })
       .catch(console.error)
   }, [])
@@ -129,9 +136,13 @@ export default function EmojiPicker({ query, extensionId }) {
   // Auto-scroll when category selected in left pane
   React.useEffect(() => {
     if (focusArea === 'left' && !searchResults) {
-      const idx = categoryIndices[catId]
-      if (idx !== undefined && categoryRefs.current[idx]) {
-        categoryRefs.current[idx].scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (sectionRefs.current[catId]) {
+        sectionRefs.current[catId].scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else {
+        const idx = categoryIndices[catId]
+        if (idx !== undefined && categoryRefs.current[idx]) {
+          categoryRefs.current[idx].scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
       }
     }
   }, [catId, focusArea, searchResults, categoryIndices])
@@ -155,13 +166,26 @@ export default function EmojiPicker({ query, extensionId }) {
     let nextIdx = selectedIdx + delta
     
     // Switch to left focus if at left edge and going left
-    if (delta === -1 && selectedIdx % COLS === 0 && !searchResults) {
-      setFocusArea('left')
-      return
+    if (delta === -1 && !searchResults) {
+      let isLeftEdge = false
+      let localIdx = selectedIdx
+      for (const cat of allCategories) {
+        if (cat.emojis.length > 0) {
+          if (localIdx < cat.emojis.length) {
+            isLeftEdge = localIdx % COLS === 0
+            break
+          }
+          localIdx -= cat.emojis.length
+        }
+      }
+      if (isLeftEdge) {
+        setFocusArea('left')
+        return
+      }
     }
 
     setSelectedIdx(Math.max(0, Math.min(nextIdx, len - 1)))
-  }, [visibleEmojis, selectedIdx, searchResults])
+  }, [visibleEmojis, selectedIdx, searchResults, allCategories])
 
   const handleCopyFocused = React.useCallback(() => {
     const em = visibleEmojis[selectedIdx]
@@ -218,6 +242,39 @@ export default function EmojiPicker({ query, extensionId }) {
 
   if (!emojiCategories) return null
 
+  const renderEmoji = (em, idx) => {
+    const fav = isFav(em.e)
+    return (
+      <GridItem
+        key={em.e + idx}
+        ref={(el) => (categoryRefs.current[idx] = el)}
+        active={focusArea === 'right' && idx === selectedIdx}
+        title={`${em.n}${fav ? ' ⭐' : ''}`}
+        onClick={() => copyEmoji(em.e)}
+        onContextMenu={(e) => {
+          e.preventDefault()
+          toggleFavorite(em.e)
+        }}
+      >
+        {em.e}
+        {fav && (
+          <span
+            style={{
+              position: 'absolute',
+              top: 1,
+              right: 2,
+              fontSize: 7,
+              lineHeight: 1,
+              opacity: 0.75,
+            }}
+          >
+            ★
+          </span>
+        )}
+      </GridItem>
+    )
+  }
+
   const rightContent = (
     <div 
       ref={rightPanelRef}
@@ -247,40 +304,37 @@ export default function EmojiPicker({ query, extensionId }) {
             : 'No results.'}
         </div>
       ) : Grid ? (
-        <Grid cols={COLS} gap={2}>
-          {visibleEmojis.map((em, idx) => {
-            const fav = isFav(em.e)
-            return (
-              <GridItem
-                key={em.e + idx}
-                ref={(el) => (categoryRefs.current[idx] = el)}
-                active={focusArea === 'right' && idx === selectedIdx}
-                title={`${em.n}${fav ? ' ⭐' : ''}`}
-                onClick={() => copyEmoji(em.e)}
-                onContextMenu={(e) => {
-                  e.preventDefault()
-                  toggleFavorite(em.e)
-                }}
-              >
-                  {em.e}
-                  {fav && (
-                    <span
-                      style={{
-                        position: 'absolute',
-                        top: 1,
-                        right: 2,
-                        fontSize: 7,
-                        lineHeight: 1,
-                        opacity: 0.75,
-                      }}
-                    >
-                      ★
-                    </span>
-                  )}
-                </GridItem>
-            )
-          })}
-        </Grid>
+        searchResults ? (
+          <Grid cols={COLS} gap={2}>
+            {visibleEmojis.map((em, idx) => renderEmoji(em, idx))}
+          </Grid>
+        ) : (
+          <div>
+            {(() => {
+              let globalIdx = 0
+              return allCategories.map((cat) => {
+                if (cat.emojis.length === 0) return null
+                const sectionStart = globalIdx
+                globalIdx += cat.emojis.length
+
+                return (
+                  <div key={cat.id} ref={(el) => (sectionRefs.current[cat.id] = el)} style={{ marginBottom: 12 }}>
+                    {SectionHeader ? (
+                      <SectionHeader label={cat.label} />
+                    ) : (
+                      <div style={{ padding: '4px 12px', fontSize: 12, opacity: 0.5, fontWeight: 500 }}>
+                        {cat.label}
+                      </div>
+                    )}
+                    <Grid cols={COLS} gap={2}>
+                      {cat.emojis.map((em, i) => renderEmoji(em, sectionStart + i))}
+                    </Grid>
+                  </div>
+                )
+              })
+            })()}
+          </div>
+        )
       ) : null}
     </div>
   )

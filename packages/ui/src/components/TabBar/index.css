@@ -5,20 +5,19 @@
 }
 
 .nuxy-tab-bar--horizontal {
-  overflow-x: auto;
+  overflow-x: overlay;
   padding: 4px 8px;
   border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
 }
 
 .nuxy-tab-bar--vertical {
   flex-direction: column;
-  overflow-y: auto;
-  padding: 8px 4px;
+  overflow-y: overlay;
   border-right: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  gap: 0;
 }
 
 .nuxy-tab-bar::-webkit-scrollbar {
-  display: none;
 }
 
 .nuxy-tab {
@@ -54,4 +53,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Vertical Tab Theme Overrides (Match List/ListItem) */
+.nuxy-tab-bar--vertical .nuxy-tab {
+  border-radius: 0;
+  padding: var(--space-4) var(--space-5);
+  border-left: 2px solid transparent;
+  color: inherit;
+  font-size: 0.85rem;
+}
+
+.nuxy-tab-bar--vertical .nuxy-tab:not(.nuxy-tab--active):hover {
+  background-color: var(--syntax-comment);
+  border-left-color: var(--syntax-comment);
+  color: var(--text, rgba(255, 255, 255, 0.8));
+}
+
+.nuxy-tab-bar--vertical .nuxy-tab--active {
+  background-color: var(--syntax-comment);
+  border-left-color: var(--syntax-operator);
+  color: var(--text, rgba(255, 255, 255, 0.8));
 }

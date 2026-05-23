@@ -13,7 +13,11 @@
   --syntax-function: #00feca;
   --syntax-orange: #f9672b;
   --syntax-peach: #ff8b5a;
-  --syntax-green: #ccff2d;
+    --syntax-green: #ccff2d;
+  
+    /* Scrollbar */
+    --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
 
   /* Spacing */
   --space-px: 1px;
@@ -55,4 +59,32 @@ body {
   background-color: transparent;
   color: var(--syntax-variable);
   overflow: hidden;
+}
+
+/* Global scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-xl);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

@@ -28,6 +28,27 @@ Single test file: `pnpm -C src test -- electron/ipc/validate.test.ts`
 
 Logging verbosity: `LOG_LEVEL=silly pnpm dev` (levels: `silly` | `info` | `warn` | `error`)
 
+## Development workflow
+
+**TDD is mandatory for all new features.** Follow this order strictly:
+
+1. Write the test(s) first — they must fail initially
+2. Write the minimum implementation to make them pass
+3. Run `pnpm -C src test` (or the scoped single-file command) and iterate until all tests are green
+4. Do not consider a feature done until the full suite passes
+
+Tests live next to the code they test:
+- Extension logic → `extensions/<name>/*.test.js`
+- Electron main process → `src/electron/**/*.test.ts`
+
+For extension backends, mock `CoreContext` inline (see existing `*.test.js` files for the pattern). For modules that import Node built-ins (`fs`, `child_process`), prefer `vi.spyOn(module, 'method')` in `beforeEach` + `vi.restoreAllMocks()` in `afterEach` — it patches the live `module.exports` object and is more reliable than `vi.mock` factories for CJS modules. For ESM-only built-ins (`node:sqlite`), use a hoisted `vi.mock` factory.
+
+For Electron main-process modules, mock `electron` and any modules that do file I/O. Use `vi.hoisted()` when a value must be available inside a `vi.mock` factory (e.g., a tmp directory path).
+
+**Playwright e2e tests** live in `src/e2e/`. Two kinds:
+- *Unit-style* (no Electron app): import TypeScript modules directly, use `@playwright/test`. Avoid importing modules that transitively import `@nuxy/core` value exports (only type imports work without Vite alias resolution).
+- *Full UI* (Electron app launch): use the worker-scoped `electronApp`/`appPage` fixtures from `fixtures.ts`.
+
 ## Architecture
 
 Nuxy is a frameless, transparent Electron launcher — a popup shell that extensions give functionality to.

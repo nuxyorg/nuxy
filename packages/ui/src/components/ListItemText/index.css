@@ -1,6 +1,5 @@
 .nuxy-list-item-text {
   font-size: var(--font-md);
-  font-family: monospace;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

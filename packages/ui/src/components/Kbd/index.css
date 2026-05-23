@@ -3,7 +3,6 @@
   border-radius: var(--radius-sm);
   background-color: var(--syntax-comment);
   border: 1px solid var(--syntax-keyword);
-  font-family: monospace;
   font-size: var(--font-xs);
   color: var(--syntax-variable);
 }

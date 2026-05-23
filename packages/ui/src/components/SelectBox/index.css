@@ -86,7 +86,7 @@
 }
 
 .nuxy-select-box__options {
-  overflow-y: auto;
+  overflow-y: overlay;
   flex: 1;
   padding: var(--space-1) 0;
 }

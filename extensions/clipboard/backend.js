@@ -66,7 +66,16 @@ export function register(core) {
   }
 
   function sortHistory() {
-    history = [...history.filter((i) => i.pinned), ...history.filter((i) => !i.pinned)]
+    history.sort((a, b) => new Date(b.copiedAt).getTime() - new Date(a.copiedAt).getTime())
+    if (history.length > 0) {
+      const mostRecent = history[0]
+      const others = history.slice(1)
+      history = [
+        mostRecent,
+        ...others.filter((i) => i.pinned),
+        ...others.filter((i) => !i.pinned),
+      ]
+    }
   }
 
   // Add an item to the history, deduplicate, and persist

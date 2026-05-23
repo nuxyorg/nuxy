@@ -42,6 +42,5 @@
 .nuxy-empty-state__error {
   font-size: var(--font-xs);
   color: var(--syntax-invalid);
-  font-family: monospace;
   margin: 0;
 }

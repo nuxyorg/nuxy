@@ -53,7 +53,6 @@ const CARD_STYLES = `
     letter-spacing: -0.5px;
     color: rgba(255, 255, 255, 0.92);
     line-height: 1;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
 
   .tc-panel__time--large {

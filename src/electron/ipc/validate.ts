@@ -12,6 +12,7 @@ const KERNEL_CHANNELS = new Set([
   'getThemeByName',
   'getIcon',
   'listIconPacks',
+  'listSystemFonts',
 ])
 
 export function validateExtInvokeArgs(

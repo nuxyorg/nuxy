@@ -14,7 +14,9 @@
     "syntax-function": "#6ee9d0",
     "syntax-orange": "#e09070",
     "syntax-peach": "#f8a57d",
-    "syntax-green": "#a8d389"
+    "syntax-green": "#a8d389",
+    "scrollbar-thumb": "rgba(255, 255, 255, 0.15)",
+    "scrollbar-thumb-hover": "rgba(255, 255, 255, 0.25)"
   },
   "tokens": {
     "space-px": "1px",

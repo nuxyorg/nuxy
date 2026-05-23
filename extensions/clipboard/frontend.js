@@ -268,7 +268,8 @@ function getListLabel(item, type, isCopied) {
   return txt
 }
 
-function getListMeta(item, type, timeAgo) {
+function getListMeta(item, type, isCurrent, timeAgo) {
+  if (isCurrent) return 'current'
   const txt = item.text?.trim() || ''
   if (type === 'file') {
     const parent = getParentDir(txt)
@@ -407,7 +408,9 @@ export default function ClipboardView({ query }) {
     if (!window.core?.ipc?.invoke) return
     window.core.ipc
       .invoke(EXT_ID, 'pinItem', id)
-      .then((res) => { if (res?.success) setItems(res.data || []) })
+      .then((res) => {
+        if (res?.success) setItems(res.data || [])
+      })
       .catch(console.error)
   }
 
@@ -416,7 +419,9 @@ export default function ClipboardView({ query }) {
     if (!window.core?.ipc?.invoke) return
     window.core.ipc
       .invoke(EXT_ID, 'unpinItem', id)
-      .then((res) => { if (res?.success) setItems(res.data || []) })
+      .then((res) => {
+        if (res?.success) setItems(res.data || [])
+      })
       .catch(console.error)
   }
 
@@ -515,7 +520,7 @@ export default function ClipboardView({ query }) {
   const timeAgo = (dateString) => {
     if (!dateString) return ''
     const m = Math.floor((Date.now() - new Date(dateString)) / 60000)
-    if (m < 1) return 'current'
+    if (m < 1) return 'now'
     if (m < 60) return `${m}m`
     const h = Math.floor(m / 60)
     if (h < 24) return `${h}h`
@@ -535,16 +540,15 @@ export default function ClipboardView({ query }) {
         filteredItems.map((item, idx) => {
           const isCopied = copiedId === item.id
           const isActive = idx === selectedIndex
+          const isCurrent = items.length > 0 && item.id === items[0].id
           const type = getItemType(item)
           const label = getListLabel(item, type, isCopied)
-          const meta = getListMeta(item, type, timeAgo)
+          const meta = getListMeta(item, type, isCurrent, timeAgo)
           return (
             <ListItem
               key={item.id}
               active={isActive}
-              onClick={() =>
-                type === 'file' ? handleCopyFile(item.id) : handleCopy(item.id)
-              }
+              onClick={() => (type === 'file' ? handleCopyFile(item.id) : handleCopy(item.id))}
             >
               <ClipboardItemLeading item={item} type={type} />
               <ListItemBody>
@@ -556,32 +560,6 @@ export default function ClipboardView({ query }) {
                 </ListItemText>
                 <ListItemMeta>{meta}</ListItemMeta>
               </ListItemBody>
-              <ListItemActions>
-                {!isCopied && (
-                  <Button
-                    variant={item.pinned ? 'secondary' : 'ghost'}
-                    title={item.pinned ? 'Unpin' : 'Pin'}
-                    onClick={(ev) => item.pinned ? handleUnpin(item.id, ev) : handlePin(item.id, ev)}
-                  >
-                    📌
-                  </Button>
-                )}
-                {!isCopied && !item.pinned && (
-                  <Button variant="danger" onClick={(ev) => handleDelete(item.id, ev)}>
-                    ×
-                  </Button>
-                )}
-                {!isCopied && type === 'file' && (
-                  <Button variant="primary" onClick={(ev) => handleCopyFile(item.id, ev)}>
-                    Copy File
-                  </Button>
-                )}
-                {!isCopied && type !== 'file' && (
-                  <Button variant="primary" onClick={(ev) => handleCopy(item.id, ev)}>
-                    Copy
-                  </Button>
-                )}
-              </ListItemActions>
             </ListItem>
           )
         })
@@ -599,24 +577,25 @@ export default function ClipboardView({ query }) {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            height: '100%',
             padding: '16px',
             overflow: 'hidden',
+            justifyContent: 'space-between',
+            height: 'calc(100% - 32px)',
           }}
         >
           {/* preview area */}
-          <div style={{ flex: '1 1 auto', overflowY: 'auto', marginBottom: '12px' }}>
+          <div style={{ flex: '1 1 auto', overflowY: 'auto', marginBottom: '12px', minHeight: 0 }}>
             {type === 'image' ? (
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  height: '100%',
                   borderRadius: '8px',
                   background: 'rgba(0,0,0,0.2)',
                   padding: '8px',
                   overflow: 'hidden',
+                  height: 'calc(100% - 16px)',
                 }}
               >
                 <img
@@ -631,7 +610,7 @@ export default function ClipboardView({ query }) {
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '8px',
-                  height: '100%',
+                  height: 'calc(100% - 16px)',
                 }}
               >
                 <div
@@ -664,10 +643,11 @@ export default function ClipboardView({ query }) {
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
                   fontFamily: type === 'text' ? 'inherit' : 'monospace',
-                  padding: '12px',
+                  padding: '8px',
                   background: 'rgba(0,0,0,0.2)',
                   borderRadius: '8px',
-                  minHeight: '100%',
+                  height: 'calc(100% - 16px)',
+                  overflow: 'auto',
                 }}
               >
                 {selectedItem.text}
@@ -743,7 +723,7 @@ export default function ClipboardView({ query }) {
     <div
       style={{
         display: 'flex',
-        height: '100%',
+        height: 'calc(100% - 16px)',
         justifyContent: 'center',
         alignItems: 'center',
         opacity: 0.4,

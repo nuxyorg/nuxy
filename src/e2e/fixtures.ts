@@ -76,3 +76,4 @@ export const test = base.extend<{}, ElectronWorkerFixtures>({
 })
 
 export { expect } from '@playwright/test'
+export type { Page } from '@playwright/test'

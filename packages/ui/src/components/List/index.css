@@ -1,12 +1,10 @@
 .nuxy-list {
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  scrollbar-width: none;
+  overflow-y: overlay;
 }
 
 .nuxy-list::-webkit-scrollbar {
-  display: none;
 }
 
 .nuxy-list--max-h-md {
