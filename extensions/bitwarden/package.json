@@ -1,0 +1,9 @@
+{
+  "name": "@nuxy-ext/bitwarden",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "dependencies": {
+    "@nuxy/extension-sdk": "workspace:*"
+  }
+}

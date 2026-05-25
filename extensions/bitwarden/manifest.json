@@ -1,0 +1,9 @@
+{
+  "id": "com.nuxy.bitwarden",
+  "name": "Bitwarden",
+  "version": "1.0.0",
+  "type": "tool",
+  "permissions": ["clipboard", "storage"],
+  "capabilities": { "callable": false, "caller": false },
+  "entry": { "backend": "backend.js", "frontend": "frontend.js" }
+}

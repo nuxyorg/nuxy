@@ -264,6 +264,111 @@ export default function EmojiPicker({ query, extensionId }) {
     setSelectedIdx(Math.max(0, Math.min(nextIdx, len - 1)))
   }, [visibleEmojis, selectedIdx, searchResults, allCategories])
 
+  const moveFocusUpDown = React.useCallback((direction) => {
+    const len = visibleEmojis.length
+    if (len === 0) return
+
+    // If searching, navigate in a single flat grid of COLS columns
+    if (searchResults) {
+      const row = Math.floor(selectedIdx / COLS)
+      const col = selectedIdx % COLS
+      const nextRow = row + direction
+      const nextIdx = nextRow * COLS + col
+      if (nextIdx >= 0 && nextIdx < len) {
+        setSelectedIdx(nextIdx)
+      } else if (direction === 1 && nextIdx >= len) {
+        const lastRow = Math.floor((len - 1) / COLS)
+        if (row < lastRow) {
+          setSelectedIdx(len - 1)
+        }
+      }
+      return
+    }
+
+    // Category mode: find current category
+    let currentCat = null
+    let sectionStart = 0
+    let localIdx = selectedIdx
+
+    for (const cat of allCategories) {
+      if (cat.emojis.length > 0) {
+        if (localIdx < cat.emojis.length) {
+          currentCat = cat
+          break
+        }
+        localIdx -= cat.emojis.length
+        sectionStart += cat.emojis.length
+      }
+    }
+
+    if (!currentCat) return
+
+    const catLen = currentCat.emojis.length
+    const row = Math.floor(localIdx / COLS)
+    const col = localIdx % COLS
+
+    if (direction === -1) {
+      // Move UP
+      if (row > 0) {
+        // Stay in same category
+        const nextLocalIdx = (row - 1) * COLS + col
+        setSelectedIdx(sectionStart + nextLocalIdx)
+      } else {
+        // Move to previous non-empty category
+        let prevCat = null
+        let prevSectionStart = 0
+        const currentCatIdx = allCategories.findIndex(c => c.id === currentCat.id)
+        for (let i = currentCatIdx - 1; i >= 0; i--) {
+          const cat = allCategories[i]
+          if (cat.emojis.length > 0) {
+            prevCat = cat
+            prevSectionStart = 0
+            for (let j = 0; j < i; j++) {
+              if (allCategories[j].emojis.length > 0) {
+                prevSectionStart += allCategories[j].emojis.length
+              }
+            }
+            break
+          }
+        }
+
+        if (prevCat) {
+          const prevLen = prevCat.emojis.length
+          const prevLastRow = Math.floor((prevLen - 1) / COLS)
+          const nextLocalIdx = Math.min(prevLen - 1, prevLastRow * COLS + col)
+          setSelectedIdx(prevSectionStart + nextLocalIdx)
+        }
+      }
+    } else {
+      // Move DOWN
+      const nextRowStart = (row + 1) * COLS
+      if (nextRowStart < catLen) {
+        // Stay in same category
+        const nextLocalIdx = Math.min(catLen - 1, nextRowStart + col)
+        setSelectedIdx(sectionStart + nextLocalIdx)
+      } else {
+        // Move to next non-empty category
+        let nextCat = null
+        let nextSectionStart = sectionStart + catLen
+        const currentCatIdx = allCategories.findIndex(c => c.id === currentCat.id)
+        for (let i = currentCatIdx + 1; i < allCategories.length; i++) {
+          const cat = allCategories[i]
+          if (cat.emojis.length > 0) {
+            nextCat = cat
+            break
+          }
+          nextSectionStart += cat.emojis.length
+        }
+
+        if (nextCat) {
+          const nextLen = nextCat.emojis.length
+          const nextLocalIdx = Math.min(nextLen - 1, col)
+          setSelectedIdx(nextSectionStart + nextLocalIdx)
+        }
+      }
+    }
+  }, [visibleEmojis, selectedIdx, searchResults, allCategories])
+
   const handleCopyFocused = React.useCallback(() => {
     const em = visibleEmojis[selectedIdx]
     if (em) copyEmoji(em.e)
@@ -278,12 +383,12 @@ export default function EmojiPicker({ query, extensionId }) {
     { 
       key: 'ArrowUp', 
       label: 'Move up', 
-      handler: () => focusArea === 'left' ? moveFocusLeft(-1) : moveFocusRight(-COLS) 
+      handler: () => focusArea === 'left' ? moveFocusLeft(-1) : moveFocusUpDown(-1) 
     },
     { 
       key: 'ArrowDown', 
       label: 'Move down', 
-      handler: () => focusArea === 'left' ? moveFocusLeft(1) : moveFocusRight(COLS) 
+      handler: () => focusArea === 'left' ? moveFocusLeft(1) : moveFocusUpDown(1) 
     },
     { 
       key: 'ArrowLeft', 

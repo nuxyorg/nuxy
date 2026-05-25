@@ -1,0 +1,9 @@
+{
+  "id": "com.nuxy.n8n",
+  "name": "n8n",
+  "version": "1.0.0",
+  "type": "tool",
+  "permissions": ["storage"],
+  "capabilities": { "callable": false, "caller": false },
+  "entry": { "backend": "backend.js", "frontend": "frontend.js" }
+}

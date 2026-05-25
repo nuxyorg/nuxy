@@ -274,6 +274,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/extension-sdk
 
+  extensions/bitwarden:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
   extensions/calculator:
     dependencies:
       '@nuxy/extension-sdk':
@@ -287,6 +293,12 @@ importers:
         version: link:../../packages/extension-sdk
 
   extensions/emoji-picker:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
+  extensions/n8n:
     dependencies:
       '@nuxy/extension-sdk':
         specifier: workspace:*
