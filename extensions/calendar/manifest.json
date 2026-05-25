@@ -1,0 +1,9 @@
+{
+  "id": "com.nuxy.calendar",
+  "name": "Calendar",
+  "version": "1.0.0",
+  "type": "tool",
+  "permissions": ["storage"],
+  "capabilities": { "callable": true, "caller": false },
+  "entry": { "backend": "backend.js", "frontend": "frontend.js" }
+}

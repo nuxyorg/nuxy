@@ -286,6 +286,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/extension-sdk
 
+  extensions/calendar:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
   extensions/clipboard:
     dependencies:
       '@nuxy/extension-sdk':
