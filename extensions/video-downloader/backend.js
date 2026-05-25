@@ -30,9 +30,11 @@ export async function register(core) {
 
   core.registry.registerTool({ name: 'video-downloader' })
 
+  core.ipc.handle('ytdlp:status', async () => ({ installed }))
+
   core.ipc.handle('ytdlp:getFormats', ({ url }) => {
     return new Promise((resolve, reject) => {
-      execFile('yt-dlp', ['-J', '--no-download', url], (err, stdout) => {
+      execFile('yt-dlp', ['-J', '--no-download', url], { maxBuffer: 10 * 1024 * 1024 }, (err, stdout) => {
         if (err) {
           if (err.code === 'ENOENT') {
             reject(new Error('yt-dlp is not installed. Install it with: pip install yt-dlp'))

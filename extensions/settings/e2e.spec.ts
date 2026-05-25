@@ -122,8 +122,16 @@ test.describe('settings tool', () => {
       await appPage.waitForSelector('input', { timeout: 400 })
       await openSettings(appPage)
 
-      // Move selection to row (Theme is index 0, so 1 ArrowDown from starting index -1)
-      for (let i = 0; i <= row.index; i++) {
+      // Switch to the correct tab/section
+      if (row.index >= 4) {
+        await appPage.locator('.nuxy-tab', { hasText: 'Window' }).click()
+      } else {
+        await appPage.locator('.nuxy-tab', { hasText: 'General' }).click()
+      }
+
+      // Move selection to row
+      const targetIndex = row.index >= 4 ? row.index - 4 : row.index
+      for (let i = 0; i <= targetIndex; i++) {
         await appPage.keyboard.press('ArrowDown')
       }
 
@@ -373,6 +381,9 @@ test.describe('settings tool', () => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
 
+    // Switch to "Window" tab so we can check boundary at "Show on Startup"
+    await appPage.locator('.nuxy-tab', { hasText: 'Window' }).click()
+
     // Press ArrowUp multiple times at the top boundary
     for (let i = 0; i < 5; i++) {
       await appPage.keyboard.press('ArrowUp')
@@ -381,7 +392,7 @@ test.describe('settings tool', () => {
     const activeItemAtTop = appPage.locator('.nuxy-list-item--active')
     await expect(activeItemAtTop).toHaveCount(0)
 
-    // Press ArrowDown 20 times to exceed total rows (12 rows, indexes 0 to 11)
+    // Press ArrowDown 20 times to exceed total rows in Window section (8 rows, indexes 0 to 7)
     for (let i = 0; i < 20; i++) {
       await appPage.keyboard.press('ArrowDown')
     }
@@ -393,6 +404,9 @@ test.describe('settings tool', () => {
   test('updating settings via mouse clicks saves and persists value', async ({ appPage }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
+
+    // Switch to Window tab
+    await appPage.locator('.nuxy-tab', { hasText: 'Window' }).click()
 
     // Locate the "Always on Top" row and click its SelectBox trigger
     const row = appPage.locator('.nuxy-list-item', { hasText: 'Always on Top' })
@@ -426,6 +440,9 @@ test.describe('settings tool', () => {
   test('keyboard navigation still works after clicking a dropdown with the mouse', async ({ appPage }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
+
+    // Switch to Window tab
+    await appPage.locator('.nuxy-tab', { hasText: 'Window' }).click()
 
     // Locate the "Always on Top" row and click its SelectBox trigger
     const row = appPage.locator('.nuxy-list-item', { hasText: 'Always on Top' })
@@ -480,12 +497,12 @@ test.describe('settings tool', () => {
     const option = dropdown.locator('.nuxy-select-box__option', { hasText: 'Monospace' })
     await option.click()
 
-    // Press ArrowDown keyboard button to navigate to the next row (Esc Key Action)
-    await appPage.keyboard.press('ArrowDown')
+    // Press ArrowUp keyboard button to navigate to the previous row (Zoom)
+    await appPage.keyboard.press('ArrowUp')
 
-    // Verify that active item is now "Esc Key Action"
+    // Verify that active item is now "Zoom"
     const activeItem = appPage.locator('.nuxy-list-item--active')
-    await expect(activeItem).toContainText('Esc Key Action')
+    await expect(activeItem).toContainText('Zoom')
 
     // Restore Font setting to system
     await appPage.evaluate(async () =>
@@ -496,15 +513,15 @@ test.describe('settings tool', () => {
     )
   })
 
-  test('section header is fully visible when navigating back to the top of a section', async ({ appPage }) => {
+  test('first row is fully visible when navigating back to the top', async ({ appPage }) => {
     test.setTimeout(15000)
     await openSettings(appPage)
 
-    const header = appPage.locator('.nuxy-section-header', { hasText: 'General' })
+    const row = appPage.locator('.nuxy-list-item', { hasText: 'Theme' })
     const scrollContainer = appPage.locator('.nuxy-shell-tool-wrapper')
 
-    // 1. Scroll all the way to the bottom to ensure the page scrolls
-    for (let i = 0; i < 12; i++) {
+    // 1. Scroll all the way to the bottom of General section to ensure page scrolls
+    for (let i = 0; i < 4; i++) {
       await appPage.keyboard.press('ArrowDown')
     }
 
@@ -512,24 +529,23 @@ test.describe('settings tool', () => {
     await appPage.waitForTimeout(400)
 
     // 2. Navigate back to the very top (Theme, index 0)
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 4; i++) {
       await appPage.keyboard.press('ArrowUp')
     }
 
     // Wait for smooth scroll animation to finish
     await appPage.waitForTimeout(400)
 
-    const headerBox = await header.boundingBox()
+    const rowBox = await row.boundingBox()
     const containerBox = await scrollContainer.boundingBox()
 
-    expect(headerBox).toBeTruthy()
+    expect(rowBox).toBeTruthy()
     expect(containerBox).toBeTruthy()
 
-    if (headerBox && containerBox) {
-      // The top of the section header should not be above the top of the scroll container
-      expect(headerBox.y).toBeGreaterThanOrEqual(containerBox.y - 1)
+    if (rowBox && containerBox) {
+      // The top of the row should not be above the top of the scroll container
+      expect(rowBox.y).toBeGreaterThanOrEqual(containerBox.y - 1)
     }
-
   })
 
 

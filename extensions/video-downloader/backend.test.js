@@ -48,6 +48,28 @@ describe('video-downloader backend', () => {
     expect(core.registry.registerTool).toHaveBeenCalledWith({ name: 'video-downloader' })
   })
 
+  // ─── ytdlp:status ────────────────────────────────────────────────────────────
+
+  describe('ytdlp:status', () => {
+    it('returns { installed: true } when yt-dlp binary is found', async () => {
+      execFile.mockImplementation((_cmd, _args, cb) => cb(null, '/usr/bin/yt-dlp', ''))
+      const register = await freshBackend()
+      const { core, handlers } = createCore()
+      await register(core)
+      const result = await handlers['ytdlp:status']()
+      expect(result).toEqual({ installed: true })
+    })
+
+    it('returns { installed: false } when yt-dlp binary is missing', async () => {
+      execFile.mockImplementation((_cmd, _args, cb) => cb(new Error('not found'), '', ''))
+      const register = await freshBackend()
+      const { core, handlers } = createCore()
+      await register(core)
+      const result = await handlers['ytdlp:status']()
+      expect(result).toEqual({ installed: false })
+    })
+  })
+
   // ─── ytdlp:getFormats ────────────────────────────────────────────────────────
 
   describe('ytdlp:getFormats', () => {
@@ -57,7 +79,7 @@ describe('video-downloader backend', () => {
       await register(core)
 
       const { execFile: mockExecFile } = await import('child_process')
-      mockExecFile.mockImplementationOnce((_cmd, _args, cb) =>
+      mockExecFile.mockImplementationOnce((_cmd, _args, _opts, cb) =>
         cb(null, JSON.stringify({ formats: [] }), '')
       )
 
@@ -65,6 +87,7 @@ describe('video-downloader backend', () => {
       expect(mockExecFile).toHaveBeenCalledWith(
         'yt-dlp',
         ['-J', '--no-download', 'https://youtube.com/watch?v=test'],
+        { maxBuffer: 10 * 1024 * 1024 },
         expect.any(Function)
       )
     })
@@ -79,7 +102,7 @@ describe('video-downloader backend', () => {
         { format_id: '137', ext: 'mp4', resolution: '1920x1080', filesize: 102400, format_note: 'HD' },
         { format_id: '140', ext: 'm4a', resolution: null, filesize: null, format_note: 'audio only' },
       ]
-      mockExecFile.mockImplementationOnce((_cmd, _args, cb) =>
+      mockExecFile.mockImplementationOnce((_cmd, _args, _opts, cb) =>
         cb(null, JSON.stringify({ formats: fakeFormats }), '')
       )
 
@@ -109,7 +132,7 @@ describe('video-downloader backend', () => {
       const { execFile: mockExecFile } = await import('child_process')
       const enoentErr = new Error('spawn yt-dlp ENOENT')
       enoentErr.code = 'ENOENT'
-      mockExecFile.mockImplementationOnce((_cmd, _args, cb) => cb(enoentErr, '', ''))
+      mockExecFile.mockImplementationOnce((_cmd, _args, _opts, cb) => cb(enoentErr, '', ''))
 
       await expect(handlers['ytdlp:getFormats']({ url: 'https://example.com/video' }))
         .rejects.toThrow('yt-dlp is not installed. Install it with: pip install yt-dlp')

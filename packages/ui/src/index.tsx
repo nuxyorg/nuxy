@@ -26,6 +26,8 @@ export { TwoPanel } from './components/TwoPanel'
 export { SectionHeader } from './components/SectionHeader'
 export { useListNavigation } from './hooks/useListNavigation'
 export type { UseListNavigationOptions, UseListNavigationResult } from './hooks/useListNavigation'
+export { useTwoPanelNav } from './hooks/useTwoPanelNav'
+export type { TwoPanelNavSection, TwoPanelFocusArea, UseTwoPanelNavOptions, UseTwoPanelNavResult } from './hooks/useTwoPanelNav'
 export { Toaster, toast } from './components/Toaster'
 export type { ToastOptions } from './components/Toaster'
 export { Alert } from './components/Alert'
@@ -38,5 +40,6 @@ export {
   IconPdf,
   IconArchive,
   IconGlobe,
+  IconPin,
 } from './components/Icon'
 export type { IconProps } from './components/Icon'

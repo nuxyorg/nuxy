@@ -1,5 +1,4 @@
 const { useState, useEffect, useRef } = window.React
-const h = window.React.createElement
 
 export default function NotesApp() {
   const [notes, setNotes] = useState([])
@@ -13,7 +12,13 @@ export default function NotesApp() {
   const chunksRef = useRef([])
 
   const invoke = (channel, payload) =>
-    window.core.ipc.invoke('com.nuxy.notes', channel, payload)
+    window.core.ipc
+      .invoke('com.nuxy.notes', channel, payload)
+      .then((res) => {
+        if (!res?.success) throw new Error(res?.error || 'IPC call failed')
+        return res.data
+      })
+
 
   useEffect(() => {
     invoke('notes:list', {}).then(setNotes).catch(() => {})
@@ -107,79 +112,155 @@ export default function NotesApp() {
   const rightStyle = { flex: 1, display: 'flex', flexDirection: 'column', padding: '8px' }
   const listHeaderStyle = { display: 'flex', alignItems: 'center', padding: '6px 8px', gap: '6px' }
   const searchStyle = {
-    flex: 1, padding: '4px 8px', borderRadius: '4px',
+    flex: 1,
+    padding: '4px 8px',
+    borderRadius: '4px',
     border: '1px solid var(--border-color, #333)',
-    background: 'var(--input-bg, #1a1a1a)', color: 'var(--text-color, #fff)', fontSize: '13px',
+    background: 'var(--input-bg, #1a1a1a)',
+    color: 'var(--text-color, #fff)',
+    fontSize: '13px',
   }
   const newBtnStyle = {
-    padding: '4px 10px', borderRadius: '4px', cursor: 'pointer',
-    background: 'var(--accent-color, #4a9eff)', color: '#fff', border: 'none', fontSize: '16px',
+    padding: '4px 10px',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    background: 'var(--accent-color, #4a9eff)',
+    color: '#fff',
+    border: 'none',
+    fontSize: '16px',
   }
   const itemStyle = (isSelected) => ({
-    padding: '8px 10px', cursor: 'pointer', borderBottom: '1px solid var(--border-color, #222)',
+    padding: '8px 10px',
+    cursor: 'pointer',
+    borderBottom: '1px solid var(--border-color, #222)',
     background: isSelected ? 'var(--selected-bg, #2a2a3a)' : 'transparent',
   })
   const inputStyle = {
-    width: '100%', padding: '6px 8px', marginBottom: '6px', borderRadius: '4px',
+    width: '100%',
+    padding: '6px 8px',
+    marginBottom: '6px',
+    borderRadius: '4px',
     border: '1px solid var(--border-color, #333)',
-    background: 'var(--input-bg, #1a1a1a)', color: 'var(--text-color, #fff)',
-    fontSize: '15px', fontWeight: 'bold', boxSizing: 'border-box',
+    background: 'var(--input-bg, #1a1a1a)',
+    color: 'var(--text-color, #fff)',
+    fontSize: '15px',
+    fontWeight: 'bold',
+    boxSizing: 'border-box',
   }
   const textareaStyle = {
-    flex: 1, width: '100%', padding: '6px 8px', borderRadius: '4px',
+    flex: 1,
+    width: '100%',
+    padding: '6px 8px',
+    borderRadius: '4px',
     border: '1px solid var(--border-color, #333)',
-    background: 'var(--input-bg, #1a1a1a)', color: 'var(--text-color, #fff)',
-    fontSize: '13px', resize: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
+    background: 'var(--input-bg, #1a1a1a)',
+    color: 'var(--text-color, #fff)',
+    fontSize: '13px',
+    resize: 'none',
+    boxSizing: 'border-box',
+    fontFamily: 'inherit',
   }
   const toolbarStyle = { display: 'flex', gap: '8px', marginTop: '6px', alignItems: 'center' }
   const btnStyle = (variant) => ({
-    padding: '5px 14px', borderRadius: '4px', cursor: 'pointer', border: 'none',
-    background: variant === 'primary' ? 'var(--accent-color, #4a9eff)' : 'var(--btn-bg, #333)',
-    color: '#fff', fontSize: '13px',
+    padding: '5px 14px',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    border: 'none',
+    background:
+      variant === 'primary' ? 'var(--accent-color, #4a9eff)' : 'var(--btn-bg, #333)',
+    color: '#fff',
+    fontSize: '13px',
   })
 
-  return h('div', { style: panelStyle },
-    h('div', { style: leftStyle },
-      h('div', { style: listHeaderStyle },
-        h('input', {
-          style: searchStyle, placeholder: 'Search…', value: search,
-          onChange: (e) => setSearch(e.target.value),
-        }),
-        h('button', { style: newBtnStyle, onClick: handleNew, title: 'New note' }, '+')
-      ),
-      h('div', { style: { flex: 1, overflowY: 'auto' } },
-        filteredNotes.map((note) =>
-          h('div', {
-            key: note.id,
-            style: itemStyle(selected?.id === note.id),
-            onClick: () => selectNote(note),
-          },
-            h('div', { style: { fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, note.title),
-            h('div', { style: { fontSize: '11px', opacity: 0.6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } },
-              note.body.slice(0, 60)
-            )
-          )
-        )
-      )
-    ),
-    h('div', { style: rightStyle },
-      selected
-        ? h(window.React.Fragment, null,
-            h('input', { style: inputStyle, value: title, onChange: (e) => setTitle(e.target.value), placeholder: 'Title' }),
-            h('textarea', { style: textareaStyle, value: body, onChange: (e) => setBody(e.target.value), placeholder: 'Start writing…' }),
-            h('div', { style: toolbarStyle },
-              h('button', { style: btnStyle('primary'), onClick: handleSave }, 'Save'),
-              h('button', { style: btnStyle(), onClick: handleDelete }, 'Delete'),
-              h('div', { style: { flex: 1 } }),
-              h('button', {
-                style: { ...btnStyle(), background: recording ? '#c00' : transcribing ? '#665500' : 'var(--btn-bg, #333)' },
-                onClick: recording ? handleStopRecord : handleRecord,
-                disabled: transcribing,
-                title: recording ? 'Stop recording' : 'Record voice',
-              }, transcribing ? 'Transcribing…' : recording ? '⏹ Stop' : '🎤')
-            )
-          )
-        : h('div', { style: { opacity: 0.4, margin: 'auto', fontSize: '14px' } }, 'Select a note or create a new one')
-    )
+  return (
+    <div style={panelStyle}>
+      <div style={leftStyle}>
+        <div style={listHeaderStyle}>
+          <input
+            style={searchStyle}
+            placeholder="Search…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button style={newBtnStyle} onClick={handleNew} title="New note">
+            +
+          </button>
+        </div>
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          {filteredNotes.map((note) => (
+            <div
+              key={note.id}
+              style={itemStyle(selected?.id === note.id)}
+              onClick={() => selectNote(note)}
+            >
+              <div
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: '13px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {note.title}
+              </div>
+              <div
+                style={{
+                  fontSize: '11px',
+                  opacity: 0.6,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {note.body.slice(0, 60)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={rightStyle}>
+        {selected ? (
+          <>
+            <input
+              style={inputStyle}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title"
+            />
+            <textarea
+              style={textareaStyle}
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder="Start writing…"
+            />
+            <div style={toolbarStyle}>
+              <button style={btnStyle('primary')} onClick={handleSave}>
+                Save
+              </button>
+              <button style={btnStyle()} onClick={handleDelete}>
+                Delete
+              </button>
+              <div style={{ flex: 1 }} />
+              <button
+                style={{
+                  ...btnStyle(),
+                  background: recording ? '#c00' : transcribing ? '#665500' : 'var(--btn-bg, #333)',
+                }}
+                onClick={recording ? handleStopRecord : handleRecord}
+                disabled={transcribing}
+                title={recording ? 'Stop recording' : 'Record voice'}
+              >
+                {transcribing ? 'Transcribing…' : recording ? '⏹ Stop' : '🎤'}
+              </button>
+            </div>
+          </>
+        ) : (
+          <div style={{ opacity: 0.4, margin: 'auto', fontSize: '14px' }}>
+            Select a note or create a new one
+          </div>
+        )}
+      </div>
+    </div>
   )
 }

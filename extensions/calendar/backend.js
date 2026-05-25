@@ -48,7 +48,7 @@ export function checkReminders(core, getDb) {
   const promises = rows.map(async (row) => {
     core.logger.info(`Reminder firing for event: ${row.title}`)
     try {
-      await core.ipc.invoke('kernel', 'notification:send', {
+      await core.extensions.invoke('kernel', 'notification:send', {
         title: 'Reminder',
         body: row.title,
       })

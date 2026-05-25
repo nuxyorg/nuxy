@@ -32,7 +32,8 @@ function createCore() {
   const handlers = {}
   const core = {
     registry: { registerTool: vi.fn() },
-    ipc: { handle: (ch, fn) => { handlers[ch] = fn }, invoke: vi.fn().mockResolvedValue(undefined) },
+    ipc: { handle: (ch, fn) => { handlers[ch] = fn } },
+    extensions: { invoke: vi.fn().mockResolvedValue(undefined) },
     logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn() },
   }
   return { core, handlers }
@@ -277,7 +278,7 @@ describe('calendar backend', () => {
 
       await checkReminders(core, () => db)
 
-      expect(core.ipc.invoke).toHaveBeenCalledWith(
+      expect(core.extensions.invoke).toHaveBeenCalledWith(
         'kernel',
         'notification:send',
         expect.objectContaining({ title: 'Reminder', body: 'Stand-up' })
@@ -307,7 +308,7 @@ describe('calendar backend', () => {
 
       await checkReminders(core, () => db)
 
-      expect(core.ipc.invoke).not.toHaveBeenCalled()
+      expect(core.extensions.invoke).not.toHaveBeenCalled()
     })
 
     it('does NOT fire for events whose reminder time has already passed', async () => {
@@ -336,10 +337,10 @@ describe('calendar backend', () => {
 
       await checkReminders(core, () => db)
 
-      expect(core.ipc.invoke).not.toHaveBeenCalled()
+      expect(core.extensions.invoke).not.toHaveBeenCalled()
     })
 
-    it('catches and ignores errors from core.ipc.invoke', async () => {
+    it('catches and ignores errors from core.extensions.invoke', async () => {
       const now = 1700000060000
       vi.spyOn(Date, 'now').mockReturnValue(now)
 
@@ -360,7 +361,7 @@ describe('calendar backend', () => {
 
       const { register, checkReminders } = await freshBackend()
       const { core } = createCore()
-      core.ipc.invoke = vi.fn().mockRejectedValue(new Error('notification bridge offline'))
+      core.extensions.invoke = vi.fn().mockRejectedValue(new Error('notification bridge offline'))
       register(core)
 
       await expect(checkReminders(core, () => db)).resolves.not.toThrow()

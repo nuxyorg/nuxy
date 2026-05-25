@@ -29,13 +29,54 @@ async function freshBackend() {
   return mod.register
 }
 
-function mockWhich({ rbw = false, bw = false } = {}) {
+let rbwConfigEmail = 'user@example.com'
+let rbwUnlockedState = true
+
+beforeEach(() => {
+  vi.resetModules()
+  rbwConfigEmail = 'user@example.com'
+  rbwUnlockedState = true
+})
+
+function mockWhich({ rbw = false, bw = false, email = 'user@example.com', unlocked = true } = {}) {
+  rbwConfigEmail = email
+  rbwUnlockedState = unlocked
+
   execFile.mockImplementation((cmd, args, cb) => {
     if (cmd === 'which') {
       const bin = args[0]
       if (bin === 'rbw' && rbw) return cb(null, '/usr/bin/rbw', '')
       if (bin === 'bw' && bw) return cb(null, '/usr/bin/bw', '')
       return cb(new Error('not found'), '', '')
+    }
+    if (cmd === 'cat' && args[0] === '/etc/os-release') {
+      return cb(null, 'NAME="Arch Linux"\nID=arch\n', '')
+    }
+    if (cmd === 'rbw') {
+      const sub = args[0]
+      if (sub === 'config') {
+        if (args[1] === 'show') {
+          if (rbwConfigEmail) {
+            return cb(null, `email: ${rbwConfigEmail}\nbase_url: https://api.bitwarden.com\n`, '')
+          }
+          return cb(null, 'base_url: https://api.bitwarden.com\n', '')
+        }
+        if (args[1] === 'set' && args[2] === 'email') {
+          rbwConfigEmail = args[3]
+          return cb(null, '', '')
+        }
+      }
+      if (sub === 'unlocked') {
+        if (rbwUnlockedState) return cb(null, '', '')
+        return cb(new Error('locked'), '', '')
+      }
+      if (sub === 'unlock') {
+        rbwUnlockedState = true
+        return cb(null, '', '')
+      }
+      if (sub === 'sync') {
+        return cb(null, '', '')
+      }
     }
     cb(null, '', '')
   })
@@ -207,35 +248,115 @@ describe('bitwarden backend', () => {
     vi.useRealTimers()
   })
 
+  // ─── bw:copyTotp ──────────────────────────────────────────────────────────
+
+  it('bw:copyTotp writes the code to core.clipboard.writeText', async () => {
+    mockWhich({ rbw: true })
+    const register = await freshBackend()
+    const { core, handlers } = createCore()
+    await register(core)
+
+    await handlers['bw:copyTotp']({ code: '123456' })
+    expect(core.clipboard.writeText).toHaveBeenCalledWith('123456')
+  })
+
+  it('bw:copyTotp schedules clipboard clear after 30s', async () => {
+    vi.useFakeTimers()
+    mockWhich({ rbw: true })
+    const register = await freshBackend()
+    const { core, handlers } = createCore()
+    await register(core)
+
+    await handlers['bw:copyTotp']({ code: '654321' })
+    expect(core.clipboard.writeText).toHaveBeenCalledTimes(1)
+
+    vi.advanceTimersByTime(30_000)
+    await Promise.resolve()
+    expect(core.clipboard.writeText).toHaveBeenLastCalledWith('')
+
+    vi.useRealTimers()
+  })
+
   // ─── bw:status — rbw path ─────────────────────────────────────────────────
 
   it('bw:status (rbw path) returns { locked: false } when rbw unlocked exits 0', async () => {
-    mockWhich({ rbw: true })
+    mockWhich({ rbw: true, email: 'user@example.com', unlocked: true })
     const register = await freshBackend()
     const { core, handlers } = createCore()
     await register(core)
 
-    execFile.mockImplementationOnce((cmd, args, cb) => {
-      expect(cmd).toBe('rbw')
-      expect(args).toEqual(['unlocked'])
-      cb(null, '', '')
-    })
-
     const status = await handlers['bw:status']()
-    expect(status).toEqual({ locked: false, backend: 'rbw' })
+    expect(status).toEqual({
+      installed: true,
+      configured: true,
+      email: 'user@example.com',
+      locked: false,
+      backend: 'rbw',
+      os: 'arch'
+    })
   })
 
   it('bw:status (rbw path) returns { locked: true } when rbw unlocked exits non-zero', async () => {
-    mockWhich({ rbw: true })
+    mockWhich({ rbw: true, email: 'user@example.com', unlocked: false })
     const register = await freshBackend()
     const { core, handlers } = createCore()
     await register(core)
 
-    execFile.mockImplementationOnce((cmd, args, cb) => {
-      cb(new Error('locked'), '', '')
+    const status = await handlers['bw:status']()
+    expect(status).toEqual({
+      installed: true,
+      configured: true,
+      email: 'user@example.com',
+      locked: true,
+      backend: 'rbw',
+      os: 'arch'
     })
+  })
+
+  it('bw:status (rbw path) returns configured: false when email is not configured', async () => {
+    mockWhich({ rbw: true, email: null })
+    const register = await freshBackend()
+    const { core, handlers } = createCore()
+    await register(core)
 
     const status = await handlers['bw:status']()
-    expect(status).toEqual({ locked: true, backend: 'rbw' })
+    expect(status).toEqual({
+      installed: true,
+      configured: false,
+      email: null,
+      locked: true,
+      backend: 'rbw',
+      os: 'arch'
+    })
+  })
+
+  it('bw:setEmail configures the email address', async () => {
+    mockWhich({ rbw: true, email: null })
+    const register = await freshBackend()
+    const { core, handlers } = createCore()
+    await register(core)
+
+    await handlers['bw:setEmail']({ email: 'new@example.com' })
+    expect(rbwConfigEmail).toBe('new@example.com')
+  })
+
+  it('bw:unlock unlocks the vault', async () => {
+    mockWhich({ rbw: true, email: 'user@example.com', unlocked: false })
+    const register = await freshBackend()
+    const { core, handlers } = createCore()
+    await register(core)
+
+    await handlers['bw:unlock']()
+    expect(rbwUnlockedState).toBe(true)
+  })
+
+  it('bw:sync synchronizes the vault successfully', async () => {
+    mockWhich({ rbw: true, email: 'user@example.com', unlocked: true })
+    const register = await freshBackend()
+    const { core, handlers } = createCore()
+    await register(core)
+
+    const result = await handlers['bw:sync']()
+    expect(result).toEqual({ ok: true })
   })
 })

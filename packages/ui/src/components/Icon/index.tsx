@@ -106,3 +106,13 @@ export function IconGlobe(props: IconProps) {
     </svg>
   )
 }
+
+export function IconPin(props: IconProps) {
+  return (
+    <svg {...mergeProps(props)}>
+      <line x1="12" y1="17" x2="12" y2="22" />
+      <path d="M5 17h14v-1.76a2 2 0 0 0-.44-1.24l-2.78-3.5A2 2 0 0 1 15 9.24V5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v4.24c0 .43-.15.85-.44 1.24l-2.78 3.5a2 2 0 0 0-.44 1.24V17z" />
+    </svg>
+  )
+}
+

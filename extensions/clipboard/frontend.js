@@ -160,12 +160,10 @@ export default function ClipboardView({ query }) {
     ListItemBody,
     ListItemText,
     ListItemMeta,
-    ListItemActions,
-    Button,
-    Kbd,
     EmptyState,
     TwoPanel,
     Alert,
+    IconPin,
   } = window.UI || {}
 
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
@@ -435,8 +433,14 @@ export default function ClipboardView({ query }) {
               <ClipboardItemLeading item={item} type={type} />
               <ListItemBody>
                 <ListItemText variant={isCopied ? 'success' : 'default'}>
-                  {item.pinned && (
-                    <span style={{ marginRight: 5, opacity: 0.6, fontSize: '11px' }}>📌</span>
+                  {item.pinned && IconPin && (
+                    <IconPin
+                      size="14"
+                      style={{
+                        marginRight: 'var(--space-2)',
+                        verticalAlign: 'middle',
+                      }}
+                    />
                   )}
                   {label}
                 </ListItemText>
@@ -459,25 +463,25 @@ export default function ClipboardView({ query }) {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            padding: '16px',
+            padding: 'var(--space-5)',
             overflow: 'hidden',
             justifyContent: 'space-between',
-            height: 'calc(100% - 32px)',
+            height: 'calc(100% - var(--space-6))',
           }}
         >
           {/* preview area */}
-          <div style={{ flex: '1 1 auto', overflowY: 'auto', marginBottom: '12px', minHeight: 0 }}>
+          <div style={{ flex: '1 1 auto', overflowY: 'auto', marginBottom: 'var(--space-4)', minHeight: 0 }}>
             {type === 'image' ? (
               <div
                 style={{
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  borderRadius: '8px',
-                  background: 'rgba(0,0,0,0.2)',
-                  padding: '8px',
+                  borderRadius: 'var(--radius-lg)',
+                  background: 'var(--color-preview-bg, rgba(0, 0, 0, 0.2))',
+                  padding: 'var(--space-3)',
                   overflow: 'hidden',
-                  height: 'calc(100% - 16px)',
+                  height: 'calc(100% - var(--space-5))',
                 }}
               >
                 <img
@@ -491,26 +495,26 @@ export default function ClipboardView({ query }) {
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '8px',
-                  height: 'calc(100% - 16px)',
+                  gap: 'var(--space-3)',
+                  height: 'calc(100% - var(--space-5))',
                 }}
               >
                 <div
                   style={{
                     flex: 1,
-                    borderRadius: '8px',
+                    borderRadius: 'var(--radius-lg)',
                     background: txt,
-                    border: '1px solid rgba(255,255,255,0.1)',
+                    border: 'var(--space-px) solid var(--color-border, rgba(255, 255, 255, 0.1))',
                     minHeight: '80px',
                   }}
                 />
                 <div
                   style={{
                     fontFamily: 'monospace',
-                    fontSize: '15px',
+                    fontSize: 'var(--font-body)',
                     textAlign: 'center',
                     opacity: 0.85,
-                    padding: '4px',
+                    padding: 'var(--space-1)',
                   }}
                 >
                   {txt}
@@ -519,16 +523,16 @@ export default function ClipboardView({ query }) {
             ) : (
               <div
                 style={{
-                  fontSize: '13px',
+                  fontSize: 'var(--font-sm)',
                   lineHeight: 1.55,
                   opacity: 0.8,
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word',
                   fontFamily: type === 'text' ? 'inherit' : 'monospace',
-                  padding: '8px',
-                  background: 'rgba(0,0,0,0.2)',
-                  borderRadius: '8px',
-                  height: 'calc(100% - 16px)',
+                  padding: 'var(--space-3)',
+                  background: 'var(--color-preview-bg, rgba(0, 0, 0, 0.2))',
+                  borderRadius: 'var(--radius-lg)',
+                  height: 'calc(100% - var(--space-5))',
                   overflow: 'auto',
                 }}
               >
@@ -541,18 +545,18 @@ export default function ClipboardView({ query }) {
           <div
             style={{
               flex: '0 0 auto',
-              padding: '10px 12px',
-              background: 'rgba(255,255,255,0.05)',
-              borderRadius: '8px',
-              fontSize: '12px',
+              padding: 'var(--space-3) var(--space-4)',
+              background: 'var(--color-surface, rgba(255, 255, 255, 0.05))',
+              borderRadius: 'var(--radius-lg)',
+              fontSize: 'var(--font-sm)',
             }}
           >
             <div
               style={{
                 fontWeight: 600,
-                marginBottom: '8px',
-                borderBottom: '1px solid rgba(255,255,255,0.1)',
-                paddingBottom: '5px',
+                marginBottom: 'var(--space-3)',
+                borderBottom: 'var(--space-px) solid var(--color-border, rgba(255, 255, 255, 0.1))',
+                paddingBottom: 'var(--space-2)',
                 opacity: 0.9,
               }}
             >
@@ -562,7 +566,7 @@ export default function ClipboardView({ query }) {
               style={{
                 display: 'grid',
                 gridTemplateColumns: '90px 1fr',
-                gap: '5px 10px',
+                gap: 'var(--space-2) var(--space-4)',
                 opacity: 0.85,
               }}
             >
@@ -627,7 +631,7 @@ export default function ClipboardView({ query }) {
               flex: '1 1 50%',
               minWidth: 0,
               overflowY: 'auto',
-              borderRight: '1px solid rgba(128,128,128,0.2)',
+              borderRight: 'var(--space-px) solid var(--color-border, rgba(128, 128, 128, 0.2))',
             }}
           >
             {leftPanel}
@@ -653,11 +657,11 @@ export default function ClipboardView({ query }) {
         ) : (
           <div
             style={{
-              padding: '7px 14px',
-              fontSize: '12px',
+              padding: 'var(--space-3) var(--space-5)',
+              fontSize: 'var(--font-sm)',
               color: 'var(--color-danger, #e55)',
-              background: 'rgba(220,50,50,0.08)',
-              borderTop: '1px solid rgba(220,50,50,0.2)',
+              background: 'var(--color-danger-bg, rgba(220, 50, 50, 0.08))',
+              borderTop: 'var(--space-px) solid var(--color-danger-border, rgba(220, 50, 50, 0.2))',
             }}
           >
             File not found — it may have been moved or deleted.

@@ -1,34 +1,38 @@
 const EXT_ID = 'com.nuxy.emoji-picker'
 const COLS = 9
 
-const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
+const _useTwoPanelNav = (window.UI || {}).useTwoPanelNav || null
 
 export default function EmojiPicker({ query, extensionId }) {
-  const { Grid, GridItem, TwoPanel, List, ListItem, ListItemBody, ListItemText, ItemLeading, TabBar, SectionHeader } = window.UI || {}
+  const {
+    Grid,
+    GridItem,
+    TwoPanel,
+    List,
+    ListItem,
+    ListItemBody,
+    ListItemText,
+    ItemLeading,
+    TabBar,
+    SectionHeader,
+  } = window.UI || {}
 
   const [emojiCategories, setEmojiCategories] = React.useState(null)
   const [emojiMap, setEmojiMap] = React.useState(null)
   const [favorites, setFavorites] = React.useState([])
-  
-  // Navigation states
-  const [focusArea, setFocusArea] = React.useState('left') // 'left' | 'right'
-  const [catId, setCatId] = React.useState(null)
   const [selectedIdx, setSelectedIdx] = React.useState(0)
-  
   const [copiedEmoji, setCopiedEmoji] = React.useState(null)
 
+  const navRef = React.useRef(null)
   const rightPanelRef = React.useRef(null)
   const categoryRefs = React.useRef({})
   const sectionRefs = React.useRef({})
-
   const isProgrammaticScrollRef = React.useRef(false)
   const programmaticScrollTimeoutRef = React.useRef(null)
 
   const startProgrammaticScroll = React.useCallback(() => {
     isProgrammaticScrollRef.current = true
-    if (programmaticScrollTimeoutRef.current) {
-      clearTimeout(programmaticScrollTimeoutRef.current)
-    }
+    if (programmaticScrollTimeoutRef.current) clearTimeout(programmaticScrollTimeoutRef.current)
     programmaticScrollTimeoutRef.current = setTimeout(() => {
       isProgrammaticScrollRef.current = false
     }, 1000)
@@ -36,9 +40,7 @@ export default function EmojiPicker({ query, extensionId }) {
 
   React.useEffect(() => {
     return () => {
-      if (programmaticScrollTimeoutRef.current) {
-        clearTimeout(programmaticScrollTimeoutRef.current)
-      }
+      if (programmaticScrollTimeoutRef.current) clearTimeout(programmaticScrollTimeoutRef.current)
     }
   }, [])
 
@@ -64,10 +66,7 @@ export default function EmojiPicker({ query, extensionId }) {
 
   const allCategories = React.useMemo(() => {
     if (!emojiCategories || !emojiMap) return []
-    const favEmojis = favorites
-      .map((e) => emojiMap.get(e) || { e, n: e, k: '' })
-      .filter(Boolean)
-    
+    const favEmojis = favorites.map((e) => emojiMap.get(e) || { e, n: e, k: '' }).filter(Boolean)
     const cats = [...emojiCategories]
     if (favEmojis.length > 0) {
       cats.unshift({ id: 'favorites', label: 'Favorites', icon: '⭐', emojis: favEmojis })
@@ -95,9 +94,7 @@ export default function EmojiPicker({ query, extensionId }) {
   }, [query, emojiCategories])
 
   const { visibleEmojis, categoryIndices } = React.useMemo(() => {
-    if (searchResults) {
-      return { visibleEmojis: searchResults, categoryIndices: {} }
-    }
+    if (searchResults) return { visibleEmojis: searchResults, categoryIndices: {} }
     const flat = []
     const indices = {}
     for (const cat of allCategories) {
@@ -109,23 +106,18 @@ export default function EmojiPicker({ query, extensionId }) {
     return { visibleEmojis: flat, categoryIndices: indices }
   }, [searchResults, allCategories])
 
-  React.useEffect(() => {
-    if (!catId && allCategories.length > 0) {
-      setCatId(allCategories[0].id)
-    }
-  }, [allCategories, catId])
-
-
-  // Reset focus when query changes
-  React.useEffect(() => {
-    if (searchResults) {
-      setFocusArea('right')
-      setSelectedIdx(0)
-    } else {
-      startProgrammaticScroll()
-      setFocusArea('left')
-    }
-  }, [query, searchResults, startProgrammaticScroll])
+  const navSections = React.useMemo(
+    () =>
+      allCategories
+        .filter((cat) => cat.emojis.length > 0)
+        .map((cat) => ({
+          id: cat.id,
+          label: cat.label,
+          icon: cat.icon,
+          itemCount: cat.emojis.length,
+        })),
+    [allCategories]
+  )
 
   const isFav = (emoji) => favorites.includes(emoji)
 
@@ -146,7 +138,6 @@ export default function EmojiPicker({ query, extensionId }) {
         setTimeout(() => setCopiedEmoji(null), 1200)
         setTimeout(() => {
           window.core?.window?.hide?.()
-          // Wait briefly for window to hide and focus to return to previous app
           setTimeout(() => {
             window.core?.ipc?.invoke(EXT_ID, 'paste')
           }, 50)
@@ -155,219 +146,123 @@ export default function EmojiPicker({ query, extensionId }) {
       .catch(console.error)
   }, [])
 
-  // Auto-scroll when category selected in left pane
-  React.useEffect(() => {
-    if (focusArea === 'left' && !searchResults && isProgrammaticScrollRef.current) {
-      if (sectionRefs.current[catId]) {
-        sectionRefs.current[catId].scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else {
-        const idx = categoryIndices[catId]
-        if (idx !== undefined && categoryRefs.current[idx]) {
-          categoryRefs.current[idx].scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // Grid left/right: switches to left panel when at left edge of any row
+  const moveFocusRight = React.useCallback(
+    (delta) => {
+      const len = visibleEmojis.length
+      if (len === 0) return
+
+      if (delta === -1 && !searchResults) {
+        let isLeftEdge = false
+        let localIdx = selectedIdx
+        for (const cat of allCategories) {
+          if (cat.emojis.length > 0) {
+            if (localIdx < cat.emojis.length) {
+              isLeftEdge = localIdx % COLS === 0
+              break
+            }
+            localIdx -= cat.emojis.length
+          }
+        }
+        if (isLeftEdge) {
+          navRef.current?.setFocusArea('left')
+          return
         }
       }
-    }
-  }, [catId, focusArea, searchResults, categoryIndices])
 
-  const getCatIdFromIdx = React.useCallback((idx) => {
-    let activeCatId = null
-    for (const cat of allCategories) {
-      const startIdx = categoryIndices[cat.id]
-      if (startIdx !== undefined && idx >= startIdx) {
-        activeCatId = cat.id
-      }
-    }
-    return activeCatId
-  }, [allCategories, categoryIndices])
+      setSelectedIdx(Math.max(0, Math.min(selectedIdx + delta, len - 1)))
+    },
+    [visibleEmojis, selectedIdx, searchResults, allCategories]
+  )
 
-  React.useEffect(() => {
-    if (focusArea === 'right' && !searchResults) {
-      const newCatId = getCatIdFromIdx(selectedIdx)
-      if (newCatId && newCatId !== catId) {
-        setCatId(newCatId)
-      }
-    }
-  }, [selectedIdx, focusArea, searchResults, getCatIdFromIdx, catId])
+  // Grid up/down: stays within category rows, crossing category boundaries
+  const moveFocusUpDown = React.useCallback(
+    (direction) => {
+      const len = visibleEmojis.length
+      if (len === 0) return
 
-  const handleScroll = React.useCallback(() => {
-    if (isProgrammaticScrollRef.current) return
-
-    const container = rightPanelRef.current
-    if (!container) return
-
-    const containerRect = container.getBoundingClientRect()
-    let currentCatId = null
-
-    // Check if we are scrolled to the bottom of the container
-    const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5
-
-    if (isAtBottom && allCategories.length > 0) {
-      currentCatId = allCategories[allCategories.length - 1].id
-    } else {
-      const threshold = containerRect.top + 30
-      for (const cat of allCategories) {
-        const sectionEl = sectionRefs.current[cat.id]
-        if (!sectionEl) continue
-        
-        const rect = sectionEl.getBoundingClientRect()
-        if (rect.top <= threshold) {
-          currentCatId = cat.id
-        } else {
-          break
+      if (searchResults) {
+        const row = Math.floor(selectedIdx / COLS)
+        const col = selectedIdx % COLS
+        const nextIdx = (row + direction) * COLS + col
+        if (nextIdx >= 0 && nextIdx < len) {
+          setSelectedIdx(nextIdx)
+        } else if (direction === 1 && nextIdx >= len) {
+          const lastRow = Math.floor((len - 1) / COLS)
+          if (row < lastRow) setSelectedIdx(len - 1)
         }
+        return
       }
-    }
 
-    if (currentCatId && currentCatId !== catId) {
-      setCatId(currentCatId)
-    }
-  }, [allCategories, catId])
-
-  // Scroll to active right item when navigating
-  React.useEffect(() => {
-    if (focusArea === 'right' && categoryRefs.current[selectedIdx]) {
-      categoryRefs.current[selectedIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    }
-  }, [selectedIdx, focusArea])
-
-  const moveFocusLeft = React.useCallback((delta) => {
-    const idx = allCategories.findIndex((c) => c.id === catId)
-    const nextIdx = Math.max(0, Math.min(idx + delta, allCategories.length - 1))
-    startProgrammaticScroll()
-    setCatId(allCategories[nextIdx].id)
-  }, [allCategories, catId, startProgrammaticScroll])
-
-  const moveFocusRight = React.useCallback((delta) => {
-    const len = visibleEmojis.length
-    if (len === 0) return
-    let nextIdx = selectedIdx + delta
-    
-    // Switch to left focus if at left edge and going left
-    if (delta === -1 && !searchResults) {
-      let isLeftEdge = false
+      let currentCat = null
+      let sectionStart = 0
       let localIdx = selectedIdx
       for (const cat of allCategories) {
         if (cat.emojis.length > 0) {
           if (localIdx < cat.emojis.length) {
-            isLeftEdge = localIdx % COLS === 0
+            currentCat = cat
             break
           }
           localIdx -= cat.emojis.length
+          sectionStart += cat.emojis.length
         }
       }
-      if (isLeftEdge) {
-        setFocusArea('left')
-        return
-      }
-    }
+      if (!currentCat) return
 
-    setSelectedIdx(Math.max(0, Math.min(nextIdx, len - 1)))
-  }, [visibleEmojis, selectedIdx, searchResults, allCategories])
+      const catLen = currentCat.emojis.length
+      const row = Math.floor(localIdx / COLS)
+      const col = localIdx % COLS
 
-  const moveFocusUpDown = React.useCallback((direction) => {
-    const len = visibleEmojis.length
-    if (len === 0) return
-
-    // If searching, navigate in a single flat grid of COLS columns
-    if (searchResults) {
-      const row = Math.floor(selectedIdx / COLS)
-      const col = selectedIdx % COLS
-      const nextRow = row + direction
-      const nextIdx = nextRow * COLS + col
-      if (nextIdx >= 0 && nextIdx < len) {
-        setSelectedIdx(nextIdx)
-      } else if (direction === 1 && nextIdx >= len) {
-        const lastRow = Math.floor((len - 1) / COLS)
-        if (row < lastRow) {
-          setSelectedIdx(len - 1)
-        }
-      }
-      return
-    }
-
-    // Category mode: find current category
-    let currentCat = null
-    let sectionStart = 0
-    let localIdx = selectedIdx
-
-    for (const cat of allCategories) {
-      if (cat.emojis.length > 0) {
-        if (localIdx < cat.emojis.length) {
-          currentCat = cat
-          break
-        }
-        localIdx -= cat.emojis.length
-        sectionStart += cat.emojis.length
-      }
-    }
-
-    if (!currentCat) return
-
-    const catLen = currentCat.emojis.length
-    const row = Math.floor(localIdx / COLS)
-    const col = localIdx % COLS
-
-    if (direction === -1) {
-      // Move UP
-      if (row > 0) {
-        // Stay in same category
-        const nextLocalIdx = (row - 1) * COLS + col
-        setSelectedIdx(sectionStart + nextLocalIdx)
-      } else {
-        // Move to previous non-empty category
-        let prevCat = null
-        let prevSectionStart = 0
-        const currentCatIdx = allCategories.findIndex(c => c.id === currentCat.id)
-        for (let i = currentCatIdx - 1; i >= 0; i--) {
-          const cat = allCategories[i]
-          if (cat.emojis.length > 0) {
-            prevCat = cat
-            prevSectionStart = 0
-            for (let j = 0; j < i; j++) {
-              if (allCategories[j].emojis.length > 0) {
-                prevSectionStart += allCategories[j].emojis.length
+      if (direction === -1) {
+        if (row > 0) {
+          setSelectedIdx(sectionStart + (row - 1) * COLS + col)
+        } else {
+          let prevCat = null
+          let prevSectionStart = 0
+          const currentCatIdx = allCategories.findIndex((c) => c.id === currentCat.id)
+          for (let i = currentCatIdx - 1; i >= 0; i--) {
+            const cat = allCategories[i]
+            if (cat.emojis.length > 0) {
+              prevCat = cat
+              prevSectionStart = 0
+              for (let j = 0; j < i; j++) {
+                if (allCategories[j].emojis.length > 0)
+                  prevSectionStart += allCategories[j].emojis.length
               }
+              break
             }
-            break
+          }
+          if (prevCat) {
+            const prevLastRow = Math.floor((prevCat.emojis.length - 1) / COLS)
+            setSelectedIdx(
+              prevSectionStart + Math.min(prevCat.emojis.length - 1, prevLastRow * COLS + col)
+            )
           }
         }
-
-        if (prevCat) {
-          const prevLen = prevCat.emojis.length
-          const prevLastRow = Math.floor((prevLen - 1) / COLS)
-          const nextLocalIdx = Math.min(prevLen - 1, prevLastRow * COLS + col)
-          setSelectedIdx(prevSectionStart + nextLocalIdx)
-        }
-      }
-    } else {
-      // Move DOWN
-      const nextRowStart = (row + 1) * COLS
-      if (nextRowStart < catLen) {
-        // Stay in same category
-        const nextLocalIdx = Math.min(catLen - 1, nextRowStart + col)
-        setSelectedIdx(sectionStart + nextLocalIdx)
       } else {
-        // Move to next non-empty category
-        let nextCat = null
-        let nextSectionStart = sectionStart + catLen
-        const currentCatIdx = allCategories.findIndex(c => c.id === currentCat.id)
-        for (let i = currentCatIdx + 1; i < allCategories.length; i++) {
-          const cat = allCategories[i]
-          if (cat.emojis.length > 0) {
-            nextCat = cat
-            break
+        const nextRowStart = (row + 1) * COLS
+        if (nextRowStart < catLen) {
+          setSelectedIdx(sectionStart + Math.min(catLen - 1, nextRowStart + col))
+        } else {
+          let nextCat = null
+          let nextSectionStart = sectionStart + catLen
+          const currentCatIdx = allCategories.findIndex((c) => c.id === currentCat.id)
+          for (let i = currentCatIdx + 1; i < allCategories.length; i++) {
+            const cat = allCategories[i]
+            if (cat.emojis.length > 0) {
+              nextCat = cat
+              break
+            }
+            nextSectionStart += cat.emojis.length
           }
-          nextSectionStart += cat.emojis.length
-        }
-
-        if (nextCat) {
-          const nextLen = nextCat.emojis.length
-          const nextLocalIdx = Math.min(nextLen - 1, col)
-          setSelectedIdx(nextSectionStart + nextLocalIdx)
+          if (nextCat) {
+            setSelectedIdx(nextSectionStart + Math.min(nextCat.emojis.length - 1, col))
+          }
         }
       }
-    }
-  }, [visibleEmojis, selectedIdx, searchResults, allCategories])
+    },
+    [visibleEmojis, selectedIdx, searchResults, allCategories]
+  )
 
   const handleCopyFocused = React.useCallback(() => {
     const em = visibleEmojis[selectedIdx]
@@ -379,48 +274,94 @@ export default function EmojiPicker({ query, extensionId }) {
     if (em) toggleFavorite(em.e)
   }, [visibleEmojis, selectedIdx, toggleFavorite])
 
-  _useToolKeyActions([
-    { 
-      key: 'ArrowUp', 
-      label: 'Move up', 
-      handler: () => focusArea === 'left' ? moveFocusLeft(-1) : moveFocusUpDown(-1) 
-    },
-    { 
-      key: 'ArrowDown', 
-      label: 'Move down', 
-      handler: () => focusArea === 'left' ? moveFocusLeft(1) : moveFocusUpDown(1) 
-    },
-    { 
-      key: 'ArrowLeft', 
-      label: 'Move left', 
-      handler: () => {
-        if (focusArea === 'right') moveFocusRight(-1)
-      } 
-    },
-    { 
-      key: 'ArrowRight', 
-      label: 'Move right', 
-      handler: () => {
-        if (focusArea === 'left') {
-          setFocusArea('right')
-          const idx = categoryIndices[catId] || 0
-          setSelectedIdx(idx)
-        } else {
-          moveFocusRight(1)
-        }
-      } 
-    },
-    { key: 'Enter', label: 'Copy/Jump', handler: () => {
-        if (focusArea === 'left') {
-          setFocusArea('right')
-          const idx = categoryIndices[catId] || 0
-          setSelectedIdx(idx)
-        } else {
-          handleCopyFocused()
-        }
-    }},
-    { key: 'f', modifiers: ['ctrl'], label: 'Toggle favorite', handler: handleToggleFavorite },
-  ])
+  const rightPanelActions = React.useMemo(
+    () => [
+      { key: 'ArrowLeft', label: 'Move left', handler: () => moveFocusRight(-1) },
+      { key: 'ArrowRight', label: 'Move right', handler: () => moveFocusRight(1) },
+      { key: 'ArrowUp', label: 'Move up', hint: '↑↓', handler: () => moveFocusUpDown(-1) },
+      { key: 'ArrowDown', label: 'Move down', handler: () => moveFocusUpDown(1) },
+      { key: 'Enter', label: 'Copy emoji', hint: '↵', handler: handleCopyFocused },
+      { key: 'f', modifiers: ['ctrl'], label: 'Toggle favorite', handler: handleToggleFavorite },
+    ],
+    [moveFocusRight, moveFocusUpDown, handleCopyFocused, handleToggleFavorite]
+  )
+
+  const nav = _useTwoPanelNav
+    ? _useTwoPanelNav({
+        sections: navSections,
+        initialFocusArea: 'left',
+        onSectionChange: (id) => {
+          startProgrammaticScroll()
+          if (sectionRefs.current[id]) {
+            sectionRefs.current[id].scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        },
+        onFocusRight: (id) => {
+          setSelectedIdx(categoryIndices[id] ?? 0)
+        },
+        rightPanelActions,
+      })
+    : null
+
+  navRef.current = nav
+
+  const focusArea = nav?.focusArea ?? 'left'
+  const catId = nav?.activeSectionId || allCategories[0]?.id || null
+
+  // Sync activeSectionId once categories first load (hook initialised before data arrived)
+  React.useEffect(() => {
+    if (navSections.length > 0 && !navRef.current?.activeSectionId) {
+      navRef.current?.setActiveSection(navSections[0].id)
+    }
+  }, [navSections])
+
+  // Reset focus and selection when search query changes
+  React.useEffect(() => {
+    if (searchResults) {
+      navRef.current?.setFocusArea('right')
+      setSelectedIdx(0)
+    } else {
+      startProgrammaticScroll()
+      navRef.current?.setFocusArea('left')
+    }
+  }, [query, searchResults, startProgrammaticScroll])
+
+  // Keep hook's activeSectionId in sync as the user navigates the right grid
+  React.useEffect(() => {
+    if (focusArea === 'right' && !searchResults) {
+      navRef.current?.onItemSelected(selectedIdx)
+    }
+  }, [selectedIdx, focusArea, searchResults])
+
+  // Scroll focused emoji into view when navigating right panel
+  React.useEffect(() => {
+    if (focusArea === 'right' && categoryRefs.current[selectedIdx]) {
+      categoryRefs.current[selectedIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [selectedIdx, focusArea])
+
+  // Update active tab while the user manually scrolls the right panel
+  const handleScroll = React.useCallback(() => {
+    if (isProgrammaticScrollRef.current) return
+    const container = rightPanelRef.current
+    if (!container) return
+
+    const containerRect = container.getBoundingClientRect()
+    let currentCatId = null
+
+    const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5
+    if (isAtBottom && allCategories.length > 0) {
+      currentCatId = allCategories[allCategories.length - 1].id
+    } else {
+      const threshold = containerRect.top + 30
+      for (const cat of allCategories) {
+        const sectionEl = sectionRefs.current[cat.id]
+        if (!sectionEl) continue
+        if (sectionEl.getBoundingClientRect().top <= threshold) currentCatId = cat.id
+        else break
+      }
+    }
+  }, [allCategories, catId])
 
   if (!emojiCategories) return null
 
@@ -458,14 +399,22 @@ export default function EmojiPicker({ query, extensionId }) {
   }
 
   const rightContent = (
-    <div 
+    <div
       ref={rightPanelRef}
       className="nuxy-emoji-picker__right-panel"
       style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '6px 8px' }}
       onScroll={handleScroll}
     >
       {searchResults && (
-        <div style={{ padding: '4px 12px 10px', fontSize: 11, opacity: 0.45, flexShrink: 0, letterSpacing: 0.2 }}>
+        <div
+          style={{
+            padding: '4px 12px 10px',
+            fontSize: 11,
+            opacity: 0.45,
+            flexShrink: 0,
+            letterSpacing: 0.2,
+          }}
+        >
           {searchResults.length} emoji{searchResults.length !== 1 ? 's' : ''} found
         </div>
       )}
@@ -500,13 +449,18 @@ export default function EmojiPicker({ query, extensionId }) {
                 if (cat.emojis.length === 0) return null
                 const sectionStart = globalIdx
                 globalIdx += cat.emojis.length
-
                 return (
-                  <div key={cat.id} ref={(el) => (sectionRefs.current[cat.id] = el)} style={{ marginBottom: 12 }}>
+                  <div
+                    key={cat.id}
+                    ref={(el) => (sectionRefs.current[cat.id] = el)}
+                    style={{ marginBottom: 12 }}
+                  >
                     {SectionHeader ? (
                       <SectionHeader label={cat.label} />
                     ) : (
-                      <div style={{ padding: '4px 12px', fontSize: 12, opacity: 0.5, fontWeight: 500 }}>
+                      <div
+                        style={{ padding: '4px 12px', fontSize: 12, opacity: 0.5, fontWeight: 500 }}
+                      >
                         {cat.label}
                       </div>
                     )}
@@ -523,9 +477,7 @@ export default function EmojiPicker({ query, extensionId }) {
     </div>
   )
 
-  if (searchResults) {
-    return rightContent
-  }
+  if (searchResults) return rightContent
 
   return (
     <TwoPanel
@@ -536,33 +488,31 @@ export default function EmojiPicker({ query, extensionId }) {
           <TabBar
             orientation="vertical"
             style={{ borderRight: 'none', height: '100%' }}
-            tabs={allCategories.map(c => ({ id: c.id, label: c.label, icon: c.icon }))}
+            tabs={allCategories.map((c) => ({ id: c.id, label: c.label, icon: c.icon }))}
             active={catId}
             onChange={(id) => {
-              startProgrammaticScroll()
-              setCatId(id)
-              setFocusArea('left')
+              nav?.goToSection(id)
+              nav?.setFocusArea('left')
             }}
           />
         ) : (
-             <List>
-              {allCategories.map((cat) => (
-                <ListItem
-                  key={cat.id}
-                  active={cat.id === catId}
-                  onClick={() => {
-                    startProgrammaticScroll()
-                    setCatId(cat.id)
-                    setFocusArea('left')
-                  }}
-                >
-                  <ItemLeading>{cat.icon}</ItemLeading>
-                  <ListItemBody>
-                    <ListItemText>{cat.label}</ListItemText>
-                  </ListItemBody>
-                </ListItem>
-              ))}
-            </List>
+          <List>
+            {allCategories.map((cat) => (
+              <ListItem
+                key={cat.id}
+                active={cat.id === catId}
+                onClick={() => {
+                  nav?.goToSection(cat.id)
+                  nav?.setFocusArea('left')
+                }}
+              >
+                <ItemLeading>{cat.icon}</ItemLeading>
+                <ListItemBody>
+                  <ListItemText>{cat.label}</ListItemText>
+                </ListItemBody>
+              </ListItem>
+            ))}
+          </List>
         )
       }
       right={rightContent}

@@ -21,6 +21,32 @@ async function fetchPassword(item) {
   throw new Error('No supported backend available')
 }
 
+async function detectOS() {
+  if (process.platform === 'darwin') return 'macos'
+  try {
+    const stdout = await execFilePromise('cat', ['/etc/os-release'])
+    if (stdout.includes('cachyos') || stdout.includes('arch')) return 'arch'
+    if (stdout.includes('ubuntu') || stdout.includes('debian')) return 'debian'
+  } catch {}
+  return 'linux'
+}
+
+async function getRbwConfig() {
+  try {
+    const stdout = await execFilePromise('rbw', ['config', 'show'])
+    const config = {}
+    stdout.split('\n').forEach((line) => {
+      const match = line.match(/^([^:]+):\s*(.*)$/)
+      if (match) {
+        config[match[1].trim()] = match[2].trim()
+      }
+    })
+    return config
+  } catch {
+    return {}
+  }
+}
+
 /** @param {CoreContext} core */
 export async function register(core) {
   if (await hasBinary('rbw')) {
@@ -34,20 +60,50 @@ export async function register(core) {
   core.registry.registerTool({ name: 'bitwarden' })
 
   core.ipc.handle('bw:status', async () => {
+    const os = await detectOS()
     if (detectedBackend === 'none') {
-      return { locked: true, backend: 'none' }
+      return { installed: false, configured: false, locked: true, backend: 'none', os }
     }
 
     if (detectedBackend === 'rbw') {
-      try {
-        await execFilePromise('rbw', ['unlocked'])
-        return { locked: false, backend: 'rbw' }
-      } catch {
-        return { locked: true, backend: 'rbw' }
+      const config = await getRbwConfig()
+      const email = config.email || null
+      const configured = !!email
+      let locked = true
+      if (configured) {
+        try {
+          await execFilePromise('rbw', ['unlocked'])
+          locked = false
+        } catch {
+          locked = true
+        }
       }
+      return { installed: true, configured, email, locked, backend: 'rbw', os }
     }
 
-    return { locked: true, backend: 'bw' }
+    return { installed: true, configured: false, email: null, locked: true, backend: 'bw', os }
+  })
+
+  core.ipc.handle('bw:setEmail', async ({ email } = {}) => {
+    if (!email) throw new Error('Email is required')
+    await execFilePromise('rbw', ['config', 'set', 'email', email])
+    return { ok: true }
+  })
+
+  core.ipc.handle('bw:unlock', async () => {
+    if (detectedBackend === 'rbw') {
+      await execFilePromise('rbw', ['unlock'])
+      return { ok: true }
+    }
+    throw new Error('Unlock is only supported via rbw backend')
+  })
+
+  core.ipc.handle('bw:sync', async () => {
+    if (detectedBackend === 'rbw') {
+      await execFilePromise('rbw', ['sync'])
+      return { ok: true }
+    }
+    throw new Error('Sync is only supported via rbw backend')
   })
 
   core.ipc.handle('bw:search', async ({ query = '' } = {}) => {
@@ -95,4 +151,10 @@ export async function register(core) {
     await core.clipboard.writeText(item.username ?? '')
     setTimeout(async () => { await core.clipboard.writeText('') }, 30_000)
   })
+
+  core.ipc.handle('bw:copyTotp', async ({ code }) => {
+    await core.clipboard.writeText(code)
+    setTimeout(async () => { await core.clipboard.writeText('') }, 30_000)
+  })
 }
+

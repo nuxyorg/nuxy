@@ -15,7 +15,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "echo \"lütfen testleri extension bazlı çalıştırın\" && exit 1",
+    "test:e2e:core": "playwright test src/e2e"
   },
   "dependencies": {
     "dbus-next": "^0.10.2",

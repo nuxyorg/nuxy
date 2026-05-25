@@ -1,5 +1,4 @@
 const { useState, useEffect } = window.React
-const h = window.React.createElement
 
 const REMINDER_OPTIONS = [
   { label: 'None', value: 0 },
@@ -20,13 +19,18 @@ function formatDatetimeLocal(ts) {
 function formatDisplay(ts) {
   if (!ts) return ''
   return new Date(ts).toLocaleString(undefined, {
-    month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 
 function EmptyState() {
-  return h('div', { style: { padding: '16px', color: 'var(--color-text-muted, #888)', textAlign: 'center' } },
-    'No upcoming events in the next 7 days.'
+  return (
+    <div style={{ padding: '16px', color: 'var(--color-text-muted, #888)', textAlign: 'center' }}>
+      No upcoming events in the next 7 days.
+    </div>
   )
 }
 
@@ -36,15 +40,25 @@ export default function CalendarApp() {
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState({ title: '', datetime: '', notes: '', remindMin: 0 })
 
+  const ipc = async (channel, payload) => {
+    const res = await window.core.ipc.invoke('com.nuxy.calendar', channel, payload)
+    if (res && res.success) {
+      return res.data
+    }
+    throw new Error(res?.error || 'IPC call failed')
+  }
+
   function loadEvents() {
     const from = Date.now()
     const to = from + 7 * 24 * 60 * 60 * 1000
-    window.core.ipc.invoke('com.nuxy.calendar', 'calendar:list', { from, to })
+    ipc('calendar:list', { from, to })
       .then((evts) => setEvents(evts || []))
       .catch(() => {})
   }
 
-  useEffect(() => { loadEvents() }, [])
+  useEffect(() => {
+    loadEvents()
+  }, [])
 
   function openNewForm() {
     setEditing(null)
@@ -72,7 +86,7 @@ export default function CalendarApp() {
     if (!form.title.trim() || !form.datetime) return
     const datetimeMs = new Date(form.datetime).getTime()
     if (editing) {
-      await window.core.ipc.invoke('com.nuxy.calendar', 'calendar:update', {
+      await ipc('calendar:update', {
         id: editing.id,
         title: form.title,
         datetime: datetimeMs,
@@ -80,7 +94,7 @@ export default function CalendarApp() {
         remindMin: Number(form.remindMin),
       })
     } else {
-      await window.core.ipc.invoke('com.nuxy.calendar', 'calendar:create', {
+      await ipc('calendar:create', {
         title: form.title,
         datetime: datetimeMs,
         notes: form.notes,
@@ -93,88 +107,190 @@ export default function CalendarApp() {
 
   async function handleDelete() {
     if (!editing) return
-    await window.core.ipc.invoke('com.nuxy.calendar', 'calendar:delete', { id: editing.id })
+    await ipc('calendar:delete', { id: editing.id })
     closeForm()
     loadEvents()
   }
 
-  const todayLabel = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
+  const todayLabel = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  })
 
-  return h('div', { style: { fontFamily: 'var(--font-family, sans-serif)', padding: '12px', minWidth: 320 } },
-    h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 } },
-      h('span', { style: { fontWeight: 600, fontSize: 14, color: 'var(--color-text, #eee)' } }, todayLabel),
-      h('button', {
-        onClick: openNewForm,
-        style: {
-          background: 'var(--color-accent, #7c6eee)',
-          color: '#fff', border: 'none', borderRadius: 6,
-          padding: '4px 12px', cursor: 'pointer', fontSize: 13,
-        },
-      }, '+ New Event')
-    ),
-    !showForm && (
-      events.length === 0
-        ? h(EmptyState, null)
-        : h('ul', { style: { listStyle: 'none', margin: 0, padding: 0 } },
-            events.map((evt) =>
-              h('li', {
-                key: evt.id,
-                onClick: () => openEditForm(evt),
-                style: {
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '8px 10px', borderRadius: 6, cursor: 'pointer',
+  return (
+    <div style={{ fontFamily: 'var(--font-family, sans-serif)', padding: '12px', minWidth: 320 }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 12,
+        }}
+      >
+        <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--color-text, #eee)' }}>
+          {todayLabel}
+        </span>
+        <button
+          onClick={openNewForm}
+          style={{
+            background: 'var(--color-accent, #7c6eee)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 6,
+            padding: '4px 12px',
+            cursor: 'pointer',
+            fontSize: 13,
+          }}
+        >
+          + New Event
+        </button>
+      </div>
+      {!showForm &&
+        (events.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+            {events.map((evt) => (
+              <li
+                key={evt.id}
+                onClick={() => openEditForm(evt)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 10px',
+                  borderRadius: 6,
+                  cursor: 'pointer',
                   marginBottom: 4,
                   background: 'var(--color-surface, rgba(255,255,255,0.06))',
-                },
-              },
-                h('span', { style: { fontSize: 12, color: 'var(--color-text-muted, #888)', minWidth: 100 } },
-                  formatDisplay(evt.datetime)
-                ),
-                h('span', { style: { flex: 1, fontSize: 13, color: 'var(--color-text, #eee)' } }, evt.title),
-                evt.remindMin > 0 && h('span', { title: `Reminder: ${evt.remindMin} min before` }, '🔔')
-              )
-            )
-          )
-    ),
-    showForm && h('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
-      h('input', {
-        placeholder: 'Title',
-        value: form.title,
-        onChange: (e) => setForm({ ...form, title: e.target.value }),
-        style: { padding: '6px 10px', borderRadius: 6, border: '1px solid var(--color-border, #444)', background: 'var(--color-input, #222)', color: 'var(--color-text, #eee)', fontSize: 13 },
-      }),
-      h('input', {
-        type: 'datetime-local',
-        value: form.datetime,
-        onChange: (e) => setForm({ ...form, datetime: e.target.value }),
-        style: { padding: '6px 10px', borderRadius: 6, border: '1px solid var(--color-border, #444)', background: 'var(--color-input, #222)', color: 'var(--color-text, #eee)', fontSize: 13 },
-      }),
-      h('textarea', {
-        placeholder: 'Notes (optional)',
-        value: form.notes,
-        rows: 2,
-        onChange: (e) => setForm({ ...form, notes: e.target.value }),
-        style: { padding: '6px 10px', borderRadius: 6, border: '1px solid var(--color-border, #444)', background: 'var(--color-input, #222)', color: 'var(--color-text, #eee)', fontSize: 13, resize: 'vertical' },
-      }),
-      h('select', {
-        value: form.remindMin,
-        onChange: (e) => setForm({ ...form, remindMin: Number(e.target.value) }),
-        style: { padding: '6px 10px', borderRadius: 6, border: '1px solid var(--color-border, #444)', background: 'var(--color-input, #222)', color: 'var(--color-text, #eee)', fontSize: 13 },
-      }, REMINDER_OPTIONS.map((o) => h('option', { key: o.value, value: o.value }, o.label))),
-      h('div', { style: { display: 'flex', gap: 8 } },
-        h('button', {
-          onClick: handleSave,
-          style: { flex: 1, padding: '6px 0', borderRadius: 6, border: 'none', background: 'var(--color-accent, #7c6eee)', color: '#fff', cursor: 'pointer', fontSize: 13 },
-        }, 'Save'),
-        editing && h('button', {
-          onClick: handleDelete,
-          style: { padding: '6px 16px', borderRadius: 6, border: 'none', background: 'var(--color-danger, #e05555)', color: '#fff', cursor: 'pointer', fontSize: 13 },
-        }, 'Delete'),
-        h('button', {
-          onClick: closeForm,
-          style: { padding: '6px 16px', borderRadius: 6, border: '1px solid var(--color-border, #444)', background: 'transparent', color: 'var(--color-text, #eee)', cursor: 'pointer', fontSize: 13 },
-        }, 'Cancel')
-      )
-    )
+                }}
+              >
+                <span
+                  style={{ fontSize: 12, color: 'var(--color-text-muted, #888)', minWidth: 100 }}
+                >
+                  {formatDisplay(evt.datetime)}
+                </span>
+                <span style={{ flex: 1, fontSize: 13, color: 'var(--color-text, #eee)' }}>
+                  {evt.title}
+                </span>
+                {evt.remindMin > 0 && (
+                  <span title={`Reminder: ${evt.remindMin} min before`}>🔔</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        ))}
+      {showForm && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <input
+            placeholder="Title"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            style={{
+              padding: '6px 10px',
+              borderRadius: 6,
+              border: '1px solid var(--color-border, #444)',
+              background: 'var(--color-input, #222)',
+              color: 'var(--color-text, #eee)',
+              fontSize: 13,
+            }}
+          />
+          <input
+            type="datetime-local"
+            value={form.datetime}
+            onChange={(e) => setForm({ ...form, datetime: e.target.value })}
+            style={{
+              padding: '6px 10px',
+              borderRadius: 6,
+              border: '1px solid var(--color-border, #444)',
+              background: 'var(--color-input, #222)',
+              color: 'var(--color-text, #eee)',
+              fontSize: 13,
+            }}
+          />
+          <textarea
+            placeholder="Notes (optional)"
+            value={form.notes}
+            rows={2}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            style={{
+              padding: '6px 10px',
+              borderRadius: 6,
+              border: '1px solid var(--color-border, #444)',
+              background: 'var(--color-input, #222)',
+              color: 'var(--color-text, #eee)',
+              fontSize: 13,
+              resize: 'vertical',
+            }}
+          />
+          <select
+            value={form.remindMin}
+            onChange={(e) => setForm({ ...form, remindMin: Number(e.target.value) })}
+            style={{
+              padding: '6px 10px',
+              borderRadius: 6,
+              border: '1px solid var(--color-border, #444)',
+              background: 'var(--color-input, #222)',
+              color: 'var(--color-text, #eee)',
+              fontSize: 13,
+            }}
+          >
+            {REMINDER_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button
+              onClick={handleSave}
+              style={{
+                flex: 1,
+                padding: '6px 0',
+                borderRadius: 6,
+                border: 'none',
+                background: 'var(--color-accent, #7c6eee)',
+                color: '#fff',
+                cursor: 'pointer',
+                fontSize: 13,
+              }}
+            >
+              Save
+            </button>
+            {editing && (
+              <button
+                onClick={handleDelete}
+                style={{
+                  padding: '6px 16px',
+                  borderRadius: 6,
+                  border: 'none',
+                  background: 'var(--color-danger, #e05555)',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  fontSize: 13,
+                }}
+              >
+                Delete
+              </button>
+            )}
+            <button
+              onClick={closeForm}
+              style={{
+                padding: '6px 16px',
+                borderRadius: 6,
+                border: '1px solid var(--color-border, #444)',
+                background: 'transparent',
+                color: 'var(--color-text, #eee)',
+                cursor: 'pointer',
+                fontSize: 13,
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

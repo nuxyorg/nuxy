@@ -20,7 +20,7 @@ Run from `src/` directly for more granular control:
 ```bash
 pnpm -C src test           # Run unit tests once
 pnpm -C src test:watch     # Watch mode
-pnpm -C src test:e2e       # Playwright e2e tests
+pnpm -C src test:e2e:core  # Playwright core e2e tests (restricted to src/e2e)
 pnpm -C src typecheck      # TypeScript check without emit
 ```
 
@@ -96,6 +96,8 @@ Single-page React app. `App.tsx` dynamically imports `nuxy-ext://com.nuxy.shell/
 - `core.window.*` → resize, hide, esc, drag, center, onShow
 
 ### Extension system
+
+> **Extension authoring rules**: See [`extensions/EXTENSION_GUIDE.md`](extensions/EXTENSION_GUIDE.md) for the full mandatory ruleset. AI agents must read and follow that document when writing or reviewing any extension.
 
 **Extension format** (place under `~/.nuxy/extensions/<folder>/`):
 
