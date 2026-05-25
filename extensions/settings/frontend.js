@@ -89,7 +89,9 @@ const DEFAULT_SETTINGS = {
 
 const SECTIONS = [
   {
+    id: 'general',
     label: 'General',
+    icon: '⚙️',
     rows: (themes, iconPacks, fontOptions) => [
       { key: 'theme', label: 'Theme', options: themes },
       { key: 'iconPack', label: 'Icon Pack', options: iconPacks },
@@ -98,7 +100,9 @@ const SECTIONS = [
     ],
   },
   {
+    id: 'window',
     label: 'Window',
+    icon: '🪟',
     rows: () => [
       { key: 'escAction', label: 'Esc Key Action', options: ESC_ACTION_OPTIONS },
       { key: 'blurAction', label: 'Focus-Out Action', options: ESC_ACTION_OPTIONS },
@@ -119,9 +123,9 @@ export default function SettingsView() {
     ListItemBody,
     ListItemText,
     ListItemActions,
-    Kbd,
     SelectBox,
-    SectionHeader,
+    TwoPanel,
+    TabBar,
   } = window.UI || {}
 
   const [themes, setThemes] = useState([])
@@ -131,14 +135,15 @@ export default function SettingsView() {
   const [selectedRow, setSelectedRow] = useState(-1)
   const [activeSelect, setActiveSelect] = useState(null)
   const [selectFocused, setSelectFocused] = useState(0)
+  const [activeSection, setActiveSection] = useState(SECTIONS[0].id)
 
   const fontFamilyMap = buildFontFamilyMap(systemFonts)
   const fontOptions = buildFontOptions(systemFonts)
 
   const stateRef = useRef({})
 
-  // Build flat rows with section boundaries for navigation
-  const allRows = [...SECTIONS[0].rows(themes, iconPacks, fontOptions), ...SECTIONS[1].rows()]
+  const section = SECTIONS.find((s) => s.id === activeSection) ?? SECTIONS[0]
+  const allRows = section.rows(themes, iconPacks, fontOptions)
 
   stateRef.current = { settings, selectedRow, activeSelect, selectFocused, allRows }
 
@@ -228,7 +233,7 @@ export default function SettingsView() {
       label: 'Previous setting',
       hint: '↑↓',
       handler: () => {
-        const { activeSelect, selectFocused, allRows } = stateRef.current
+        const { activeSelect } = stateRef.current
         if (activeSelect !== null) {
           setSelectFocused((i) => Math.max(i - 1, 0))
         } else {
@@ -240,7 +245,7 @@ export default function SettingsView() {
       key: 'ArrowDown',
       label: 'Next setting',
       handler: () => {
-        const { activeSelect, selectFocused, allRows } = stateRef.current
+        const { activeSelect, allRows } = stateRef.current
         if (activeSelect !== null) {
           const row = allRows.find((r) => r.key === activeSelect)
           if (row) setSelectFocused((i) => Math.min(i + 1, row.options.length - 1))
@@ -284,67 +289,65 @@ export default function SettingsView() {
     },
   ])
 
-  // Calculate row offsets for selectedRow mapping per section
-  let rowOffset = 0
+  const tabs = SECTIONS.map((s) => ({ id: s.id, label: s.label, icon: s.icon }))
 
-  return (
-    <div>
-      {SECTIONS.map((section) => {
-        const sectionRows = section.rows(themes, iconPacks, fontOptions)
-        const sectionStart = rowOffset
-        rowOffset += sectionRows.length
+  const left = TabBar ? (
+    <TabBar
+      tabs={tabs}
+      active={activeSection}
+      orientation="vertical"
+      onChange={(id) => {
+        setActiveSection(id)
+        setSelectedRow(-1)
+        setActiveSelect(null)
+      }}
+    />
+  ) : null
 
-        return (
-          <div key={section.label}>
-            {SectionHeader ? <SectionHeader label={section.label} /> : <div>{section.label}</div>}
-
-            {List && (
-              <List>
-                {sectionRows.map((row, i) => {
-                  const globalIdx = sectionStart + i
-                  return (
-                    ListItem && (
-                      <ListItem
-                        key={row.key}
-                        active={globalIdx === selectedRow && activeSelect === null}
-                        onClick={() => setSelectedRow(globalIdx)}
-                      >
-                        {ListItemBody && (
-                          <ListItemBody>
-                            {ListItemText && <ListItemText>{row.label}</ListItemText>}
-                          </ListItemBody>
-                        )}
-                        {ListItemActions && (
-                          <ListItemActions>
-                            {SelectBox && (
-                              <SelectBox
-                                options={row.options}
-                                value={settings[row.key]}
-                                open={activeSelect === row.key}
-                                focusedIndex={selectFocused}
-                                placeholder={row.options.length === 0 ? '(none)' : '—'}
-                                searchable={row.searchable || false}
-                                onSelect={(v) => updateSetting(row.key, v)}
-                                onClose={() => setActiveSelect(null)}
-                                onOpen={(idx) => {
-                                  setSelectedRow(globalIdx)
-                                  setSelectFocused(idx)
-                                  setActiveSelect(row.key)
-                                }}
-                              />
-                            )}
-                          </ListItemActions>
-                        )}
-                      </ListItem>
-                    )
-                  )
-                })}
-              </List>
+  const right = List ? (
+    <List>
+      {allRows.map((row, i) => (
+        ListItem && (
+          <ListItem
+            key={row.key}
+            active={i === selectedRow && activeSelect === null}
+            onClick={() => setSelectedRow(i)}
+          >
+            {ListItemBody && (
+              <ListItemBody>
+                {ListItemText && <ListItemText>{row.label}</ListItemText>}
+              </ListItemBody>
             )}
-          </div>
+            {ListItemActions && (
+              <ListItemActions>
+                {SelectBox && (
+                  <SelectBox
+                    options={row.options}
+                    value={settings[row.key]}
+                    open={activeSelect === row.key}
+                    focusedIndex={selectFocused}
+                    placeholder={row.options.length === 0 ? '(none)' : '—'}
+                    searchable={row.searchable || false}
+                    onSelect={(v) => updateSetting(row.key, v)}
+                    onClose={() => setActiveSelect(null)}
+                    onOpen={(idx) => {
+                      setSelectedRow(i)
+                      setSelectFocused(idx)
+                      setActiveSelect(row.key)
+                    }}
+                  />
+                )}
+              </ListItemActions>
+            )}
+          </ListItem>
         )
-      })}
+      ))}
+    </List>
+  ) : null
 
-    </div>
-  )
+  if (TwoPanel) {
+    return <TwoPanel left={left} right={right} split="140px" />
+  }
+
+  return <div>{right}</div>
 }
