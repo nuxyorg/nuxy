@@ -21,6 +21,27 @@ export default function EmojiPicker({ query, extensionId }) {
   const categoryRefs = React.useRef({})
   const sectionRefs = React.useRef({})
 
+  const isProgrammaticScrollRef = React.useRef(false)
+  const programmaticScrollTimeoutRef = React.useRef(null)
+
+  const startProgrammaticScroll = React.useCallback(() => {
+    isProgrammaticScrollRef.current = true
+    if (programmaticScrollTimeoutRef.current) {
+      clearTimeout(programmaticScrollTimeoutRef.current)
+    }
+    programmaticScrollTimeoutRef.current = setTimeout(() => {
+      isProgrammaticScrollRef.current = false
+    }, 1000)
+  }, [])
+
+  React.useEffect(() => {
+    return () => {
+      if (programmaticScrollTimeoutRef.current) {
+        clearTimeout(programmaticScrollTimeoutRef.current)
+      }
+    }
+  }, [])
+
   React.useEffect(() => {
     fetch(`nuxy-ext://${extensionId}/emojis.json`)
       .then((r) => r.json())
@@ -101,9 +122,10 @@ export default function EmojiPicker({ query, extensionId }) {
       setFocusArea('right')
       setSelectedIdx(0)
     } else {
+      startProgrammaticScroll()
       setFocusArea('left')
     }
-  }, [query, searchResults])
+  }, [query, searchResults, startProgrammaticScroll])
 
   const isFav = (emoji) => favorites.includes(emoji)
 
@@ -135,7 +157,7 @@ export default function EmojiPicker({ query, extensionId }) {
 
   // Auto-scroll when category selected in left pane
   React.useEffect(() => {
-    if (focusArea === 'left' && !searchResults) {
+    if (focusArea === 'left' && !searchResults && isProgrammaticScrollRef.current) {
       if (sectionRefs.current[catId]) {
         sectionRefs.current[catId].scrollIntoView({ behavior: 'smooth', block: 'start' })
       } else {
@@ -147,6 +169,60 @@ export default function EmojiPicker({ query, extensionId }) {
     }
   }, [catId, focusArea, searchResults, categoryIndices])
 
+  const getCatIdFromIdx = React.useCallback((idx) => {
+    let activeCatId = null
+    for (const cat of allCategories) {
+      const startIdx = categoryIndices[cat.id]
+      if (startIdx !== undefined && idx >= startIdx) {
+        activeCatId = cat.id
+      }
+    }
+    return activeCatId
+  }, [allCategories, categoryIndices])
+
+  React.useEffect(() => {
+    if (focusArea === 'right' && !searchResults) {
+      const newCatId = getCatIdFromIdx(selectedIdx)
+      if (newCatId && newCatId !== catId) {
+        setCatId(newCatId)
+      }
+    }
+  }, [selectedIdx, focusArea, searchResults, getCatIdFromIdx, catId])
+
+  const handleScroll = React.useCallback(() => {
+    if (isProgrammaticScrollRef.current) return
+
+    const container = rightPanelRef.current
+    if (!container) return
+
+    const containerRect = container.getBoundingClientRect()
+    let currentCatId = null
+
+    // Check if we are scrolled to the bottom of the container
+    const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5
+
+    if (isAtBottom && allCategories.length > 0) {
+      currentCatId = allCategories[allCategories.length - 1].id
+    } else {
+      const threshold = containerRect.top + 30
+      for (const cat of allCategories) {
+        const sectionEl = sectionRefs.current[cat.id]
+        if (!sectionEl) continue
+        
+        const rect = sectionEl.getBoundingClientRect()
+        if (rect.top <= threshold) {
+          currentCatId = cat.id
+        } else {
+          break
+        }
+      }
+    }
+
+    if (currentCatId && currentCatId !== catId) {
+      setCatId(currentCatId)
+    }
+  }, [allCategories, catId])
+
   // Scroll to active right item when navigating
   React.useEffect(() => {
     if (focusArea === 'right' && categoryRefs.current[selectedIdx]) {
@@ -157,8 +233,9 @@ export default function EmojiPicker({ query, extensionId }) {
   const moveFocusLeft = React.useCallback((delta) => {
     const idx = allCategories.findIndex((c) => c.id === catId)
     const nextIdx = Math.max(0, Math.min(idx + delta, allCategories.length - 1))
+    startProgrammaticScroll()
     setCatId(allCategories[nextIdx].id)
-  }, [allCategories, catId])
+  }, [allCategories, catId, startProgrammaticScroll])
 
   const moveFocusRight = React.useCallback((delta) => {
     const len = visibleEmojis.length
@@ -278,7 +355,9 @@ export default function EmojiPicker({ query, extensionId }) {
   const rightContent = (
     <div 
       ref={rightPanelRef}
+      className="nuxy-emoji-picker__right-panel"
       style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '6px 8px' }}
+      onScroll={handleScroll}
     >
       {searchResults && (
         <div style={{ padding: '4px 12px 10px', fontSize: 11, opacity: 0.45, flexShrink: 0, letterSpacing: 0.2 }}>
@@ -355,6 +434,7 @@ export default function EmojiPicker({ query, extensionId }) {
             tabs={allCategories.map(c => ({ id: c.id, label: c.label, icon: c.icon }))}
             active={catId}
             onChange={(id) => {
+              startProgrammaticScroll()
               setCatId(id)
               setFocusArea('left')
             }}
@@ -366,6 +446,7 @@ export default function EmojiPicker({ query, extensionId }) {
                   key={cat.id}
                   active={cat.id === catId}
                   onClick={() => {
+                    startProgrammaticScroll()
                     setCatId(cat.id)
                     setFocusArea('left')
                   }}

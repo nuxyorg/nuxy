@@ -3,6 +3,7 @@ import { defineConfig } from '@playwright/test'
 export default defineConfig({
   testDir: '..', // monorepo root — testMatch narrows which files are picked up
   testMatch: ['src/e2e/**/*.spec.ts', 'extensions/**/e2e.spec.ts'],
+  testIgnore: ['**/.claude/**'],
   timeout: 5000,
   expect: {
     timeout: 400,

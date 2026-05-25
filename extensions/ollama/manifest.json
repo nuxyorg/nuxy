@@ -1,0 +1,16 @@
+{
+  "id": "com.nuxy.ollama",
+  "name": "Ollama",
+  "version": "1.0.0",
+  "type": "orchestrator",
+  "orchestratorType": "chatbot",
+  "permissions": [],
+  "capabilities": {
+    "callable": true,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.js",
+    "frontend": "frontend.js"
+  }
+}

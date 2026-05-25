@@ -3,6 +3,7 @@
   "name": "AI Orchestrator",
   "version": "1.0.0",
   "type": "orchestrator",
+  "orchestratorType": "tool_caller",
   "permissions": [],
   "capabilities": {
     "callable": false,

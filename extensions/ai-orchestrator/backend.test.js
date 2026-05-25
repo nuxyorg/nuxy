@@ -310,6 +310,90 @@ describe('ai-orchestrator backend', () => {
       )
       expect(setLastResultCalls).toHaveLength(0)
     })
+
+    it('delegates to Ollama when functiongemma returns no tool_call and Ollama is available', async () => {
+      const { core, handlers } = createCore({
+        fetchImpl: () =>
+          Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                message: { role: 'assistant', content: 'fallback text', tool_calls: undefined },
+              }),
+            text: () => Promise.resolve(''),
+          }),
+      })
+      // Override Ollama invoke to return a chat result
+      core.extensions.invoke.mockResolvedValue({ content: 'Ollama says hello' })
+      register(core)
+      await handlers.route({ text: 'tell me a joke' })
+      expect(core.extensions.invoke).toHaveBeenCalledWith(
+        'com.nuxy.ollama',
+        'chat',
+        expect.objectContaining({ messages: expect.any(Array) })
+      )
+      expect(core.ipc.broadcast).toHaveBeenCalledWith(
+        'orchestrator-result',
+        expect.objectContaining({ type: 'direct', answer: 'Ollama says hello' })
+      )
+    })
+
+    it('falls back to functiongemma answer when Ollama invoke throws', async () => {
+      const { core, handlers } = createCore({
+        fetchImpl: () =>
+          Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                message: { role: 'assistant', content: 'functiongemma answer', tool_calls: undefined },
+              }),
+            text: () => Promise.resolve(''),
+          }),
+      })
+      core.extensions.invoke.mockRejectedValue(new Error('Ollama not running'))
+      register(core)
+      await handlers.route({ text: 'tell me a joke' })
+      expect(core.ipc.broadcast).toHaveBeenCalledWith(
+        'orchestrator-result',
+        expect.objectContaining({ type: 'direct', answer: 'functiongemma answer' })
+      )
+    })
+
+    it('does NOT invoke Ollama when a tool_call was made', async () => {
+      let callCount = 0
+      const { core, handlers } = createCore({
+        fetchImpl: () => {
+          callCount++
+          if (callCount === 1) {
+            return Promise.resolve({
+              ok: true,
+              json: () =>
+                Promise.resolve({
+                  message: {
+                    role: 'assistant',
+                    content: '',
+                    tool_calls: [{ function: { name: 'calculator', arguments: { text: '2+2' } } }],
+                  },
+                }),
+              text: () => Promise.resolve(''),
+            })
+          }
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({ message: { role: 'assistant', content: 'Result is 4.' } }),
+            text: () => Promise.resolve(''),
+          })
+        },
+      })
+      core.extensions.invoke.mockResolvedValue({ result: 4, display: '4' })
+      register(core)
+      await handlers.route({ text: '2+2' })
+      const ollamaCalls = core.extensions.invoke.mock.calls.filter(
+        ([extId, channel]) => extId === 'com.nuxy.ollama' && channel === 'chat'
+      )
+      expect(ollamaCalls).toHaveLength(0)
+    })
   })
 
   describe('buildToolDef name normalisation', () => {

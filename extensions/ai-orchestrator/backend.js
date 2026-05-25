@@ -296,14 +296,22 @@ async function handleRoute(core, rawText) {
         toolCalls: assistantMsg.tool_calls,
       })
     } else {
-      // No tool call — plain text answer
-      const content = assistantMsg.content ?? ''
-      core.logger.info(`[AI Orchestrator] Direct answer: ${content}`)
-
+      let answer = assistantMsg.content ?? ''
+      try {
+        const ollamaResult = await core.extensions.invoke(
+          'com.nuxy.ollama',
+          'chat',
+          { messages }
+        )
+        answer = ollamaResult?.content ?? answer
+      } catch (_) {
+        // Ollama not available — use functiongemma's direct answer
+      }
+      core.logger.info(`[AI Orchestrator] Answer: ${answer}`)
       broadcastResult(core, {
         type: 'direct',
         query: rawText,
-        answer: content,
+        answer,
       })
     }
   } catch (err) {

@@ -1,0 +1,15 @@
+{
+  "id": "com.nuxy.notes",
+  "name": "Notes",
+  "version": "1.0.0",
+  "type": "tool",
+  "permissions": ["storage", "media"],
+  "capabilities": {
+    "callable": true,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.js",
+    "frontend": "frontend.js"
+  }
+}

@@ -292,9 +292,27 @@ importers:
         specifier: workspace:*
         version: link:../../packages/extension-sdk
 
+  extensions/notes:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
+  extensions/ollama:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
   extensions/shell: {}
 
   extensions/time-calculator:
+    dependencies:
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
+  extensions/video-downloader:
     dependencies:
       '@nuxy/extension-sdk':
         specifier: workspace:*

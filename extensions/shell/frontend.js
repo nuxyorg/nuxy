@@ -513,7 +513,11 @@ export default function ShellView({ query: _queryProp }) {
             : settings?.windowWidth
               ? `${settings.windowWidth}px`
               : undefined,
-          height: size.height ? `${size.height}px` : undefined,
+          height: size.height
+            ? `${size.height}px`
+            : activeTool
+              ? `${settings?.windowMaxHeight ?? 600}px`
+              : undefined,
           maxWidth: size.width
             ? 'none'
             : settings?.windowWidth
@@ -521,9 +525,7 @@ export default function ShellView({ query: _queryProp }) {
               : undefined,
           maxHeight: size.height
             ? 'none'
-            : settings?.windowMaxHeight
-              ? `${settings.windowMaxHeight}px`
-              : undefined,
+            : `${settings?.windowMaxHeight ?? 600}px`,
           opacity: settings?.opacity !== undefined ? settings.opacity : undefined,
           transition: isDraggingState
             ? 'none'

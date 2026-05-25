@@ -12,5 +12,7 @@
 
 .nuxy-two-panel__right {
   flex: 1;
-  overflow-y: overlay;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
