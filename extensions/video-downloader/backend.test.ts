@@ -147,25 +147,43 @@ describe('video-downloader backend', () => {
         },
       ]
       ;(core.shell.exec as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-        stdout: JSON.stringify({ formats: fakeFormats }),
+        stdout: JSON.stringify({
+          title: 'Test Video Title',
+          thumbnail: 'https://example.com/thumb.jpg',
+          duration: 360,
+          uploader: 'Test Channel',
+          formats: fakeFormats,
+        }),
         code: 0,
       })
 
-      const result = await handlers['ytdlp:getFormats']({ url: 'https://example.com/video' })
-      expect(result).toHaveLength(2)
-      expect((result as unknown[])[0]).toEqual({
+      const result = (await handlers['ytdlp:getFormats']({ url: 'https://example.com/video' })) as any
+      expect(result.title).toBe('Test Video Title')
+      expect(result.thumbnail).toBe('https://example.com/thumb.jpg')
+      expect(result.duration).toBe(360)
+      expect(result.uploader).toBe('Test Channel')
+      expect(result.formats).toHaveLength(2)
+      expect(result.formats[0]).toEqual({
         formatId: '137',
         ext: 'mp4',
         resolution: '1920x1080',
         filesize: 102400,
         note: 'HD',
+        vcodec: 'none',
+        acodec: 'none',
+        fps: null,
+        tbr: null,
       })
-      expect((result as unknown[])[1]).toEqual({
+      expect(result.formats[1]).toEqual({
         formatId: '140',
         ext: 'm4a',
         resolution: 'audio only',
         filesize: null,
         note: 'audio only',
+        vcodec: 'none',
+        acodec: 'none',
+        fps: null,
+        tbr: null,
       })
     })
 

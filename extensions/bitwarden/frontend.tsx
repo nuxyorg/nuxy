@@ -5,6 +5,9 @@ import type { BitwardenStatus, BitwardenItem } from './types.ts'
 
 const EXT_ID = 'com.nuxy.bitwarden'
 
+const _useListNavigation =
+  (window.UI as { useListNavigation?: any } | undefined)?.useListNavigation ?? null
+
 const ipc = async (channel: string, payload?: unknown): Promise<unknown> => {
   const res = (await window.core.ipc.invoke(EXT_ID, channel, payload)) as {
     success?: boolean
@@ -43,6 +46,46 @@ export default function BitwardenView({ query }: Props) {
   const [results, setResults] = useState<BitwardenItem[]>([])
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const { selectedIndex, setSelectedIndex } = _useListNavigation
+    ? _useListNavigation(results, {
+        onEnter: (item: BitwardenItem) => copyPassword(item),
+        enterLabel: 'Şifreyi Kopyala',
+        enterHint: 'Enter',
+        extraActions: [
+          {
+            key: 'Enter',
+            modifiers: ['shift'],
+            label: 'Kullanıcı Adını Kopyala',
+            hint: ['⇧', 'Enter'],
+            activeOn: () => selectedIndex >= 0,
+            handler: () => {
+              const item = results[selectedIndex]
+              if (item) copyUsername(item)
+            },
+          },
+          {
+            key: 'Enter',
+            modifiers: ['ctrl'],
+            label: 'TOTP Kopyala',
+            hint: ['Ctrl', 'Enter'],
+            activeOn: () => selectedIndex >= 0,
+            handler: () => {
+              const item = results[selectedIndex]
+              if (item) copyTotp(item)
+            },
+          },
+        ],
+      })
+    : { selectedIndex: -1, setSelectedIndex: () => {} }
+
+  useEffect(() => {
+    setSelectedIndex(-1)
+  }, [results, setSelectedIndex])
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
+  }, [selectedIndex, results])
 
   // Wizard state
   const [activeTab, setActiveTab] = useState<string>('arch')
@@ -180,7 +223,7 @@ export default function BitwardenView({ query }: Props) {
   // 1. Status Loading
   if (status === null) {
     return (
-      <div style={{ padding: '24px', fontSize: '13px', opacity: 0.85 }}>
+      <div style={{ padding: 'var(--space-5)', fontSize: 'var(--font-sm)', opacity: 0.85 }}>
         Kasa durumu kontrol ediliyor...
       </div>
     )
@@ -191,13 +234,13 @@ export default function BitwardenView({ query }: Props) {
     return (
       <div
         style={{
-          padding: '24px',
-          fontSize: '13px',
+          padding: 'var(--space-5)',
+          fontSize: 'var(--font-sm)',
           lineHeight: 1.6,
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
+          gap: 'var(--space-5)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -244,7 +287,7 @@ export default function BitwardenView({ query }: Props) {
 
         {/* Tab Contents */}
         {Card && (
-          <Card style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Card style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {activeTab === 'arch' && (
               <>
                 <strong>Arch Linux / CachyOS için Kurulum:</strong>
@@ -340,12 +383,12 @@ export default function BitwardenView({ query }: Props) {
     return (
       <div
         style={{
-          padding: '24px',
-          fontSize: '13px',
+          padding: 'var(--space-5)',
+          fontSize: 'var(--font-sm)',
           lineHeight: 1.6,
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
+          gap: 'var(--space-5)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -360,7 +403,7 @@ export default function BitwardenView({ query }: Props) {
         </p>
 
         {Card && (
-          <Card style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <Card style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontWeight: '600' }}>Bitwarden E-posta Adresi:</label>
               {Input && (
@@ -400,12 +443,12 @@ export default function BitwardenView({ query }: Props) {
     return (
       <div
         style={{
-          padding: '24px',
-          fontSize: '13px',
+          padding: 'var(--space-5)',
+          fontSize: 'var(--font-sm)',
           lineHeight: 1.6,
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
+          gap: 'var(--space-5)',
           overflowY: 'auto',
         }}
       >
@@ -420,7 +463,7 @@ export default function BitwardenView({ query }: Props) {
         </p>
 
         {Card && (
-          <Card style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <Card style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
             <div>
               <p style={{ margin: 0, opacity: 0.8 }}>
                 Kasanın kilidini açmak için aşağıdaki butona basın. Bilgisayarınızda bir şifre giriş
@@ -494,8 +537,12 @@ export default function BitwardenView({ query }: Props) {
                 message={query ? 'Sonuç bulunamadı.' : 'Aramak istediğiniz şifre adını yazın.'}
               />
             ) : (
-              results.map((item) => (
-                <ListItem key={item.id}>
+              results.map((item, idx) => (
+                <ListItem
+                  key={item.id}
+                  active={idx === selectedIndex}
+                  onClick={() => setSelectedIndex(idx)}
+                >
                   <ListItemBody>
                     <ListItemText>{item.name}</ListItemText>
                     <ListItemMeta>{item.username}</ListItemMeta>

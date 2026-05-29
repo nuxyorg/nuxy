@@ -30,6 +30,7 @@ export default function NotesApp({ query }: Props) {
     EmptyState,
     Button,
     Input,
+    Textarea,
     SectionHeader,
     IconMic,
     IconStop,
@@ -200,24 +201,17 @@ export default function NotesApp({ query }: Props) {
           placeholder="Title"
         />
       )}
-      <textarea
-        value={body}
-        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
-        placeholder="Start writing…"
-        style={{
-          flex: 1,
-          width: '100%',
-          resize: 'none',
-          padding: 'var(--space-2)',
-          background: 'var(--surface-overlay)',
-          color: 'var(--text-primary)',
-          border: '1px solid var(--border-subtle)',
-          borderRadius: 'var(--radius-md)',
-          fontFamily: 'inherit',
-          fontSize: 'inherit',
-          boxSizing: 'border-box',
-        }}
-      />
+      {Textarea && (
+        <Textarea
+          value={body}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
+          placeholder="Start writing…"
+          style={{
+            flex: 1,
+            resize: 'none',
+          }}
+        />
+      )}
       <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
         {Button && <Button onClick={() => { void handleSave() }}>Save</Button>}
         {Button && <Button onClick={() => { void handleDelete() }}>Delete</Button>}

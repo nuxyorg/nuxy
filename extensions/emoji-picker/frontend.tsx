@@ -436,19 +436,17 @@ export default function EmojiPicker({ query, extensionId }: Props) {
         }}
       >
         {em.e}
-        {fav && (
-          <span
+        {fav && IconStar && (
+          <IconStar
             style={{
               position: 'absolute',
               top: 1,
-              right: 2,
-              fontSize: 7,
-              lineHeight: 1,
-              opacity: 0.75,
+              right: 1,
+              width: '8px',
+              height: '8px',
+              color: 'var(--syntax-constant)',
             }}
-          >
-            ★
-          </span>
+          />
         )}
       </GridItem>
     )
@@ -458,7 +456,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
     <div
       ref={rightPanelRef}
       className="nuxy-emoji-picker__right-panel"
-      style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '6px 8px' }}
+      style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: 'var(--space-2) var(--space-3)' }}
       onScroll={handleScroll}
     >
       {searchResults && (
@@ -515,7 +513,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
                       <SectionHeader label={cat.label} />
                     ) : (
                       <div
-                        style={{ padding: '4px 12px', fontSize: 12, opacity: 0.5, fontWeight: 500 }}
+                        style={{ padding: 'var(--space-1) var(--space-4)', fontSize: 'var(--font-sm)', opacity: 0.5, fontWeight: 500 }}
                       >
                         {cat.label}
                       </div>

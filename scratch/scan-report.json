@@ -1,0 +1,724 @@
+{
+  "ai-orchestrator": {
+    "manifest": {
+      "id": "com.nuxy.ai-orchestrator",
+      "name": "AI Orchestrator",
+      "version": "1.0.0",
+      "type": "orchestrator",
+      "icon": "ai",
+      "orchestratorType": "tool_caller",
+      "permissions": [
+        "network"
+      ],
+      "capabilities": {
+        "callable": false,
+        "caller": true
+      },
+      "entry": {
+        "backend": "backend.ts"
+      }
+    },
+    "violations": [],
+    "filesCount": 5,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": false
+  },
+  "angrysearch": {
+    "manifest": {
+      "id": "com.nuxy.angrysearch",
+      "name": "ANGRYsearch",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "search",
+      "permissions": [
+        "storage",
+        "shell"
+      ],
+      "capabilities": {
+        "callable": true,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [],
+    "filesCount": 5,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "bitwarden": {
+    "manifest": {
+      "id": "com.nuxy.bitwarden",
+      "name": "Bitwarden",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "bitwarden",
+      "permissions": [
+        "clipboard",
+        "storage",
+        "shell"
+      ],
+      "capabilities": {
+        "callable": false,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [
+      {
+        "file": "frontend.tsx:183",
+        "rule": "No Hardcoded Styles",
+        "message": "Found hardcoded style/color: \"<div style={{ padding: '24px', fontSize: '13px', opacity: 0.85 }}>\". Use CSS variables/theme tokens instead.",
+        "severity": "medium"
+      },
+      {
+        "file": "frontend.tsx:226",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => setActiveTab('arch')} variant={activeTab === 'arch' ? 'primary' : 'ghost'}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:232",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => setActiveTab('debian')} variant={activeTab === 'debian' ? 'primary' : 'ghost'}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:238",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => setActiveTab('macos')} variant={activeTab === 'macos' ? 'primary' : 'ghost'}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:247",
+        "rule": "No Hardcoded Styles",
+        "message": "Found hardcoded style/color: \"<Card style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>\". Use CSS variables/theme tokens instead.",
+        "severity": "medium"
+      },
+      {
+        "file": "frontend.tsx:268",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:296",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => ipc('bw:copyText', { text: 'sudo apt install rbw' }).catch(() => {})}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:322",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => ipc('bw:copyText', { text: 'brew install rbw' }).catch(() => {})}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:332",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={refreshStatus}>Kurulumu Tamamladım, Yeniden Denetle</Button>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:363",
+        "rule": "No Hardcoded Styles",
+        "message": "Found hardcoded style/color: \"<Card style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>\". Use CSS variables/theme tokens instead.",
+        "severity": "medium"
+      },
+      {
+        "file": "frontend.tsx:367",
+        "rule": "No HTML Input Elements",
+        "message": "Frontend contains raw <input> element: \"<Input\". All text input must come through the shell's omnibar query.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:383",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={handleSaveEmail} disabled={isConfiguring}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:387",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => setEditingEmail(false)} disabled={isConfiguring}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:423",
+        "rule": "No Hardcoded Styles",
+        "message": "Found hardcoded style/color: \"<Card style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>\". Use CSS variables/theme tokens instead.",
+        "severity": "medium"
+      },
+      {
+        "file": "frontend.tsx:440",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={handleUnlock} disabled={isUnlocking || isSyncing}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:443",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={handleSync} disabled={isUnlocking || isSyncing}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:446",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={refreshStatus} disabled={isUnlocking || isSyncing}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:449",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:479",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => ipc('bw:copyText', { text: 'rbw unlock' }).catch(() => {})}>Kopyala</Button>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:504",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => copyPassword(item)}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:507",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => copyUsername(item)}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:510",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => copyTotp(item)}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      }
+    ],
+    "filesCount": 6,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "calculator": {
+    "manifest": {
+      "id": "com.nuxy.calculator",
+      "name": "Calculator",
+      "version": "1.0.0",
+      "type": "provider",
+      "icon": "calculator",
+      "providerType": "result",
+      "permissions": [],
+      "capabilities": {
+        "callable": true,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts"
+      }
+    },
+    "violations": [],
+    "filesCount": 7,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": false
+  },
+  "calendar": {
+    "manifest": {
+      "id": "com.nuxy.calendar",
+      "name": "Calendar",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "calendar",
+      "permissions": [
+        "storage"
+      ],
+      "capabilities": {
+        "callable": true,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [],
+    "filesCount": 6,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "clipboard": {
+    "manifest": {
+      "id": "com.nuxy.clipboard",
+      "name": "Clipboard Manager",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "clipboard",
+      "permissions": [
+        "clipboard",
+        "storage"
+      ],
+      "capabilities": {
+        "callable": true,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [],
+    "filesCount": 7,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "emoji-picker": {
+    "manifest": {
+      "id": "com.nuxy.emoji-picker",
+      "name": "Emoji Picker",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "emoji",
+      "permissions": [
+        "clipboard",
+        "storage",
+        "shell"
+      ],
+      "capabilities": {
+        "callable": true,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [
+      {
+        "file": "frontend.tsx:450",
+        "rule": "No Emojis in UI",
+        "message": "Found emoji character: \"★\". Use icon components from window.UI instead.",
+        "severity": "medium"
+      },
+      {
+        "file": "frontend.tsx:461",
+        "rule": "No Hardcoded Styles",
+        "message": "Found hardcoded style/color: \"style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '6px 8px' }}\". Use CSS variables/theme tokens instead.",
+        "severity": "medium"
+      },
+      {
+        "file": "frontend.tsx:518",
+        "rule": "No Hardcoded Styles",
+        "message": "Found hardcoded style/color: \"style={{ padding: '4px 12px', fontSize: 12, opacity: 0.5, fontWeight: 500 }}\". Use CSS variables/theme tokens instead.",
+        "severity": "medium"
+      },
+      {
+        "file": "frontend.tsx",
+        "rule": "Undeclared Permission (network)",
+        "message": "Uses fetch() but \"network\" permission is not declared in manifest.json",
+        "severity": "high"
+      }
+    ],
+    "filesCount": 8,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "gradient": {
+    "manifest": {
+      "id": "com.nuxy.gradient",
+      "name": "Gradient",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "gradient",
+      "permissions": [],
+      "capabilities": {
+        "callable": false,
+        "caller": false
+      },
+      "entry": {
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [],
+    "filesCount": 3,
+    "hasBackend": false,
+    "hasBackendTest": false,
+    "hasFrontend": true
+  },
+  "icons-default": {
+    "manifest": {
+      "id": "com.nuxy.icons-default",
+      "name": "Default Icons",
+      "version": "1.0.0",
+      "type": "iconpack",
+      "permissions": [],
+      "entry": {
+        "icons": "icons.json"
+      }
+    },
+    "violations": [],
+    "filesCount": 2,
+    "hasBackend": false,
+    "hasBackendTest": false,
+    "hasFrontend": false
+  },
+  "n8n": {
+    "manifest": {
+      "id": "com.nuxy.n8n",
+      "name": "n8n",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "workflow",
+      "permissions": [
+        "storage",
+        "network"
+      ],
+      "capabilities": {
+        "callable": false,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [
+      {
+        "file": "frontend.tsx:135",
+        "rule": "No HTML Input Elements",
+        "message": "Frontend contains raw <input> element: \"<Input\". All text input must come through the shell's omnibar query.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:143",
+        "rule": "No HTML Input Elements",
+        "message": "Frontend contains raw <input> element: \"<Input\". All text input must come through the shell's omnibar query.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:152",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => { void handleSaveConfig() }}>Save</Button>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:155",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => setShowConfig(false)}>Cancel</Button>\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:169",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<SectionHeader title=\"Workflows\" action={Button ? <Button onClick={() => { void handleRefresh() }} disabled={loading}>{loading ? '…' : 'Refresh'}</Button> : undefined} />\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:188",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => { void handleRunWebhook(wf) }}>Run</Button>\". Use window.UI.Button instead.",
+        "severity": "high"
+      }
+    ],
+    "filesCount": 6,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "notes": {
+    "manifest": {
+      "id": "com.nuxy.notes",
+      "name": "Notes",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "notes",
+      "permissions": [
+        "storage",
+        "network"
+      ],
+      "capabilities": {
+        "callable": true,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [
+      {
+        "file": "frontend.tsx:170",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"action={Button ? <Button onClick={() => { void handleNew() }}>+</Button> : undefined}\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:197",
+        "rule": "No HTML Input Elements",
+        "message": "Frontend contains raw <input> element: \"<Input\". All text input must come through the shell's omnibar query.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:203",
+        "rule": "No HTML Textarea Elements",
+        "message": "Frontend contains raw <textarea> element: \"<textarea\".",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:222",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"{Button && <Button onClick={() => { void handleSave() }}>Save</Button>}\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:223",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"{Button && <Button onClick={() => { void handleDelete() }}>Delete</Button>}\". Use window.UI.Button instead.",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:226",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button\". Use window.UI.Button instead.",
+        "severity": "high"
+      }
+    ],
+    "filesCount": 6,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "ollama": {
+    "manifest": {
+      "id": "com.nuxy.ollama",
+      "name": "Ollama",
+      "version": "1.0.0",
+      "type": "orchestrator",
+      "icon": "ai",
+      "orchestratorType": "chatbot",
+      "permissions": [
+        "storage",
+        "network"
+      ],
+      "capabilities": {
+        "callable": true,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [
+      {
+        "file": "frontend.tsx:136",
+        "rule": "No HTML Textarea Elements",
+        "message": "Frontend contains raw <textarea> element: \"<textarea\".",
+        "severity": "high"
+      },
+      {
+        "file": "frontend.tsx:160",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => { void handleSend() }} disabled={loading || !input.trim()}>\". Use window.UI.Button instead.",
+        "severity": "high"
+      }
+    ],
+    "filesCount": 6,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "settings": {
+    "manifest": {
+      "id": "com.nuxy.settings",
+      "name": "Settings",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "settings",
+      "permissions": [
+        "storage"
+      ],
+      "capabilities": {
+        "callable": false,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [],
+    "filesCount": 6,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "shell": {
+    "manifest": {
+      "id": "com.nuxy.shell",
+      "name": "Nuxy Shell",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "shell",
+      "bootstrap": true,
+      "permissions": [
+        "storage"
+      ],
+      "capabilities": {
+        "callable": false,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [
+      {
+        "file": "frontend.tsx:622",
+        "rule": "No Emojis in UI",
+        "message": "Found emoji character: \"'🔍'\". Use icon components from window.UI instead.",
+        "severity": "medium"
+      },
+      {
+        "file": "frontend.tsx:632",
+        "rule": "No HTML Input Elements",
+        "message": "Frontend contains raw <input> element: \"<input\". All text input must come through the shell's omnibar query.",
+        "severity": "high"
+      }
+    ],
+    "filesCount": 13,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "theme-glassmorphism": {
+    "manifest": {
+      "id": "com.nuxy.theme-glassmorphism",
+      "name": "Glassmorphism",
+      "version": "1.0.0",
+      "type": "theme",
+      "permissions": [],
+      "entry": {
+        "theme": "theme.json"
+      }
+    },
+    "violations": [],
+    "filesCount": 2,
+    "hasBackend": false,
+    "hasBackendTest": false,
+    "hasFrontend": false
+  },
+  "theme-ocean": {
+    "manifest": {
+      "id": "com.nuxy.theme-ocean",
+      "name": "Ocean Theme",
+      "version": "1.0.0",
+      "type": "theme",
+      "permissions": [],
+      "entry": {
+        "theme": "theme.json"
+      }
+    },
+    "violations": [],
+    "filesCount": 2,
+    "hasBackend": false,
+    "hasBackendTest": false,
+    "hasFrontend": false
+  },
+  "time-calculator": {
+    "manifest": {
+      "id": "com.nuxy.time-calculator",
+      "name": "Time Calculator",
+      "version": "1.0.0",
+      "type": "provider",
+      "icon": "clock",
+      "providerType": "compare",
+      "permissions": [],
+      "capabilities": {
+        "callable": true,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [],
+    "filesCount": 7,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  },
+  "ui-default": {
+    "manifest": {
+      "id": "com.nuxy.ui-default",
+      "name": "Default UIKit",
+      "version": "1.0.0",
+      "type": "uikit",
+      "priority": 0,
+      "permissions": [],
+      "entry": {
+        "frontend": "frontend.js"
+      }
+    },
+    "violations": [
+      {
+        "file": "frontend.js",
+        "rule": "TypeScript only (No .js)",
+        "message": "JavaScript source files are banned. All source files must be TypeScript.",
+        "severity": "high"
+      }
+    ],
+    "filesCount": 126,
+    "hasBackend": false,
+    "hasBackendTest": false,
+    "hasFrontend": false
+  },
+  "video-downloader": {
+    "manifest": {
+      "id": "com.nuxy.video-downloader",
+      "name": "Video Downloader",
+      "version": "1.0.0",
+      "type": "tool",
+      "icon": "video",
+      "permissions": [
+        "storage",
+        "shell"
+      ],
+      "capabilities": {
+        "callable": false,
+        "caller": false
+      },
+      "entry": {
+        "backend": "backend.ts",
+        "frontend": "frontend.tsx"
+      }
+    },
+    "violations": [
+      {
+        "file": "frontend.tsx:240",
+        "rule": "No HTML Button Elements",
+        "message": "Frontend contains raw <button> element: \"<Button onClick={() => { void cancelJob(job.jobId) }}>Cancel</Button>\". Use window.UI.Button instead.",
+        "severity": "high"
+      }
+    ],
+    "filesCount": 6,
+    "hasBackend": true,
+    "hasBackendTest": true,
+    "hasFrontend": true
+  }
+}

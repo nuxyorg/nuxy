@@ -44,11 +44,16 @@ async function launchApp(userDataDir: string): Promise<ElectronApplication> {
     rmSync(socketPath, { force: true })
   } catch {}
 
+  const cleanEnv = { ...process.env }
+  // If running in a Wayland environment, delete WAYLAND_DISPLAY so Electron falls back
+  // to X11 (and thus correctly uses the virtual display set by xvfb-run).
+  delete cleanEnv.WAYLAND_DISPLAY
+
   return electron.launch({
     executablePath: ELECTRON_BIN,
     args: ['--no-sandbox', `--user-data-dir=${userDataDir}`, APP_DIR],
     env: {
-      ...process.env,
+      ...cleanEnv,
       DISPLAY: process.env.DISPLAY ?? ':0',
       ELECTRON_OZONE_PLATFORM_HINT: 'x11',
       NUXY_DATA_DIR: nuxyDataDir,

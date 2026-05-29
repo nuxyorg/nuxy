@@ -1,5 +1,5 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
-import type { VideoFormat, DownloadJob, DownloadJobPublic, VideoDownloaderConfig } from './types.ts'
+import type { VideoFormat, DownloadJob, DownloadJobPublic, VideoDownloaderConfig, VideoMetadata } from './types.ts'
 
 const PROGRESS_RE = /\[download\]\s+([\d.]+)%/
 
@@ -27,7 +27,7 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.ipc.handle('ytdlp:status', async () => ({ installed }))
 
-  core.ipc.handle('ytdlp:getFormats', async (payload: unknown) => {
+  core.ipc.handle('ytdlp:getFormats', async (payload: unknown): Promise<VideoMetadata> => {
     const { url } = payload as { url: string }
     let stdout: string
     try {
@@ -41,23 +41,54 @@ export async function register(core: CoreContext): Promise<void> {
       throw err
     }
     const data = JSON.parse(stdout) as {
+      title?: string
+      thumbnail?: string
+      thumbnails?: Array<{ url: string }>
+      duration?: number
+      uploader?: string
+      channel?: string
       formats: Array<{
         format_id: string
         ext: string
         resolution?: string
+        width?: number
+        height?: number
         filesize?: number | null
+        filesize_approx?: number | null
         format_note?: string
+        vcodec?: string
+        acodec?: string
+        fps?: number | null
+        tbr?: number | null
       }>
     }
-    return data.formats.map(
+
+    const title = data.title ?? 'Unknown Video'
+    const thumbnail = data.thumbnail ?? (data.thumbnails && data.thumbnails.length > 0 ? data.thumbnails[data.thumbnails.length - 1].url : null) ?? null
+    const duration = typeof data.duration === 'number' ? data.duration : null
+    const uploader = data.uploader ?? data.channel ?? null
+
+    const formats = data.formats.map(
       (f): VideoFormat => ({
         formatId: f.format_id,
         ext: f.ext,
-        resolution: f.resolution ?? f.format_note ?? 'audio only',
-        filesize: f.filesize ?? null,
-        note: f.format_note ?? '',
+        resolution: f.resolution ?? (f.vcodec !== 'none' && f.height ? `${f.width}x${f.height}` : 'audio only'),
+        filesize: f.filesize ?? f.filesize_approx ?? null,
+        note: f.format_note ?? f.resolution ?? '',
+        vcodec: f.vcodec ?? 'none',
+        acodec: f.acodec ?? 'none',
+        fps: f.fps ?? null,
+        tbr: f.tbr ?? null,
       })
     )
+
+    return {
+      title,
+      thumbnail,
+      duration,
+      uploader,
+      formats,
+    }
   })
 
   core.ipc.handle('ytdlp:download', async (payload: unknown) => {

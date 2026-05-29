@@ -26,6 +26,7 @@ export default function OllamaApp({ query: _query }: Props) {
     Button,
     SelectBox,
     Alert,
+    Textarea,
   } = window.UI || {}
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -133,29 +134,24 @@ export default function OllamaApp({ query: _query }: Props) {
         <div ref={bottomRef} />
       </div>
       <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-        <textarea
-          value={input}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
-          onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault()
-              void handleSend()
-            }
-          }}
-          placeholder="Ask Ollama… (Enter to send, Shift+Enter for newline)"
-          rows={2}
-          style={{
-            flex: 1,
-            resize: 'none',
-            padding: 'var(--space-2)',
-            background: 'var(--surface-overlay)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-md)',
-            fontFamily: 'inherit',
-            fontSize: 'inherit',
-          }}
-        />
+        {Textarea && (
+          <Textarea
+            value={input}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
+            onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                void handleSend()
+              }
+            }}
+            placeholder="Ask Ollama… (Enter to send, Shift+Enter for newline)"
+            rows={2}
+            style={{
+              flex: 1,
+              resize: 'none',
+            }}
+          />
+        )}
         {Button && (
           <Button onClick={() => { void handleSend() }} disabled={loading || !input.trim()}>
             Send

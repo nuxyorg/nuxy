@@ -217,7 +217,12 @@ function TimeCard({ meta }: TimeCardProps) {
     ),
 
     // Arrow
-    React.createElement('div', { className: 'tc-arrow' }, '→'),
+    (window.UI || {}).IconArrowRight
+      ? React.createElement((window.UI || {}).IconArrowRight, {
+          className: 'tc-arrow',
+          style: { width: '20px', height: '20px' },
+        })
+      : React.createElement('div', { className: 'tc-arrow' }, '→'),
 
     // Right panel — destination
     React.createElement(

@@ -4,6 +4,18 @@ export interface VideoFormat {
   resolution: string
   filesize: number | null
   note: string
+  vcodec?: string
+  acodec?: string
+  fps?: number | null
+  tbr?: number | null
+}
+
+export interface VideoMetadata {
+  title: string
+  thumbnail: string | null
+  duration: number | null
+  uploader: string | null
+  formats: VideoFormat[]
 }
 
 export interface DownloadJob {
