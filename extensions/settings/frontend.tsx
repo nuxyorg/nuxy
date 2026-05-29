@@ -1,43 +1,33 @@
 const React = window.React
 const { useState, useEffect, useRef, useMemo } = React
 
-import type { NuxySettings } from './types.ts'
-
-const _useTwoPanelNav = (window.UI || {}).useTwoPanelNav || null
+import type {
+  NuxySettings,
+  SelectOption,
+  SectionRow,
+  SectionDef,
+  ResolvedSection,
+  NavSection,
+  StateSnapshot,
+} from './types.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 
-interface SelectOption<T = unknown> {
-  value: T
-  label: string
-}
-
-interface SectionRow {
-  key: keyof NuxySettings
-  label: string
-  options: SelectOption[]
-  searchable?: boolean
-}
-
-interface SectionDef {
-  id: string
-  label: string
-  rows: (
-    themes: SelectOption[],
-    iconPacks: SelectOption[],
-    fontOptions: SelectOption[]
-  ) => SectionRow[]
-}
-
-interface ResolvedSection extends SectionDef {
-  resolvedRows: SectionRow[]
-}
-
-interface NavSection {
-  id: string
-  label: string
-  itemCount: number
-}
+const _useTwoPanelNav =
+  (window.UI || {}).useTwoPanelNav ||
+  (({ sections }: { sections: NavSection[] }) => ({
+    focusArea: 'right' as const,
+    setFocusArea: (_: string) => {},
+    activeSectionId: sections[0]?.id ?? '',
+    goToSection: (_: string) => {},
+    sectionStartIndex: sections.reduce((acc: Record<string, number>, s: NavSection, i: number) => {
+      acc[s.id] = sections.slice(0, i).reduce((sum: number, prev: NavSection) => sum + prev.itemCount, 0)
+      return acc
+    }, {} as Record<string, number>),
+    getSectionIdForIndex: (_: number) => sections[0]?.id ?? '',
+    onItemSelected: (_: number) => {},
+    setActiveSection: (_: string) => {},
+  }))
 
 interface Props {
   query: string
@@ -82,16 +72,16 @@ const WINDOW_MAX_HEIGHT_OPTIONS: SelectOption<number>[] = [
 ]
 
 const WINDOW_POSITION_OPTIONS: SelectOption<string>[] = [
-  { value: '1/2, 1/6', label: '↑  Top Center' },
-  { value: '1/6, 1/2', label: '←  Left Center' },
-  { value: '1/2, 1/2', label: '⊙  Screen Center' },
-  { value: '5/6, 1/2', label: '→  Right Center' },
-  { value: '1/2, 5/6', label: '↓  Bottom Center' },
-  { value: '1/6, 1/6', label: '↖  Top Left' },
-  { value: '5/6, 1/6', label: '↗  Top Right' },
-  { value: '1/6, 5/6', label: '↙  Bottom Left' },
-  { value: '5/6, 5/6', label: '↘  Bottom Right' },
-  { value: '1/2, 1/3', label: '◎  Upper Center (default)' },
+  { value: '1/2, 1/6', label: 'Top Center' },
+  { value: '1/6, 1/2', label: 'Left Center' },
+  { value: '1/2, 1/2', label: 'Screen Center' },
+  { value: '5/6, 1/2', label: 'Right Center' },
+  { value: '1/2, 5/6', label: 'Bottom Center' },
+  { value: '1/6, 1/6', label: 'Top Left' },
+  { value: '5/6, 1/6', label: 'Top Right' },
+  { value: '1/6, 5/6', label: 'Bottom Left' },
+  { value: '5/6, 5/6', label: 'Bottom Right' },
+  { value: '1/2, 1/3', label: 'Upper Center (default)' },
 ]
 
 const OPACITY_OPTIONS: SelectOption<number>[] = [
@@ -118,8 +108,7 @@ function buildFontFamilyMap(systemFonts: string[]): Record<string, string> {
 }
 
 function buildFontOptions(systemFonts: string[]): SelectOption<string>[] {
-  const extras = systemFonts.map((name) => ({ value: name, label: name }))
-  return [...FONT_OPTIONS_STATIC, ...extras]
+  return [...FONT_OPTIONS_STATIC, ...systemFonts.map((name) => ({ value: name, label: name }))]
 }
 
 const DEFAULT_SETTINGS: NuxySettings = {
@@ -177,6 +166,7 @@ export default function SettingsView({ query: _query }: Props) {
     TwoPanel,
     TabBar,
     SectionHeader,
+    ScrollArea,
   } = window.UI || {}
 
   const [themes, setThemes] = useState<SelectOption[]>([])
@@ -187,122 +177,115 @@ export default function SettingsView({ query: _query }: Props) {
   const [activeSelect, setActiveSelect] = useState<string | null>(null)
   const [selectFocused, setSelectFocused] = useState<number>(0)
 
-  const fontFamilyMap = buildFontFamilyMap(systemFonts)
-  const fontOptions = buildFontOptions(systemFonts)
+  const fontFamilyMap = useMemo(() => buildFontFamilyMap(systemFonts), [systemFonts])
+  const fontOptions = useMemo(() => buildFontOptions(systemFonts), [systemFonts])
 
-  // Scroll refs
   const rightPanelRef = useRef<HTMLDivElement | null>(null)
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
-  // Resolve rows per section
   const allSections = useMemo<ResolvedSection[]>(
-    () => SECTIONS.map((s) => ({ ...s, resolvedRows: s.rows(themes, iconPacks, fontOptions) })),
+    () => SECTIONS.map((s: SectionDef) => ({ ...s, resolvedRows: s.rows(themes, iconPacks, fontOptions) })),
     [themes, iconPacks, fontOptions]
   )
 
-  const allRows = useMemo<SectionRow[]>(() => allSections.flatMap((s) => s.resolvedRows), [allSections])
+  const allRows = useMemo<SectionRow[]>(() => allSections.flatMap((s: ResolvedSection) => s.resolvedRows), [allSections])
 
-  // useTwoPanelNav — shared UIkit hook
   const navSections = useMemo<NavSection[]>(
-    () => allSections.map((s) => ({ id: s.id, label: s.label, itemCount: s.resolvedRows.length })),
+    () => allSections.map((s: ResolvedSection) => ({ id: s.id, label: s.label, itemCount: s.resolvedRows.length })),
     [allSections]
   )
-
-  interface StateSnapshot {
-    settings: NuxySettings
-    selectedRow: number
-    activeSelect: string | null
-    selectFocused: number
-    allRows: SectionRow[]
-  }
 
   const stateRef = useRef<StateSnapshot>({} as StateSnapshot)
   stateRef.current = { settings, selectedRow, activeSelect, selectFocused, allRows }
 
-  // Right-panel Up/Down/Enter actions (passed into the hook)
-  const rightPanelActions = useMemo(() => [
-    {
-      key: 'ArrowUp',
-      label: 'Previous setting',
-      hint: '↑↓',
-      handler: () => {
-        const { activeSelect } = stateRef.current
-        if (activeSelect !== null) {
-          setSelectFocused((i: number) => Math.max(i - 1, 0))
-        } else {
-          setSelectedRow((i: number) => Math.max(i - 1, -1))
-        }
-      },
-    },
-    {
-      key: 'ArrowDown',
-      label: 'Next setting',
-      handler: () => {
-        const { activeSelect, allRows } = stateRef.current
-        if (activeSelect !== null) {
-          const row = allRows.find((r) => r.key === activeSelect)
-          if (row) setSelectFocused((i: number) => Math.min(i + 1, row.options.length - 1))
-        } else {
-          setSelectedRow((i: number) => Math.min(i + 1, allRows.length - 1))
-        }
-      },
-    },
-    {
-      key: 'Enter',
-      label: 'Open setting',
-      hint: '↵',
-      handler: () => {
-        const { selectedRow, activeSelect, selectFocused, allRows } = stateRef.current
-        if (activeSelect !== null) {
-          const row = allRows.find((r) => r.key === activeSelect)
-          if (row) {
-            const opt = row.options[selectFocused]
-            if (opt) updateSetting(activeSelect as keyof NuxySettings, opt.value)
-            else setActiveSelect(null)
-          }
-        } else {
-          const row = allRows[selectedRow]
-          if (row && row.options.length > 0) {
-            const currentIdx = row.options.findIndex(
-              (o) => String(o.value) === String(stateRef.current.settings[row.key])
-            )
-            setSelectFocused(Math.max(0, currentIdx))
-            setActiveSelect(row.key)
-          }
-        }
-      },
-    },
-    {
-      key: 'Escape',
-      label: 'Close setting',
-      hint: 'Esc',
-      handler: () => setActiveSelect(null),
-    },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  ], [])
-
-  const nav = _useTwoPanelNav
-    ? _useTwoPanelNav({
-        sections: navSections,
-        selectOpen: activeSelect !== null,
-        initialFocusArea: 'right',
-        onSectionChange: (id: string) => {
-          const el = sectionRefs.current[id]
-          if (el && rightPanelRef.current) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const rightPanelActions = useMemo(
+    () => [
+      {
+        key: 'ArrowUp',
+        label: 'Previous setting',
+        hint: '↑↓',
+        handler: () => {
+          const { activeSelect } = stateRef.current
+          if (activeSelect !== null) {
+            setSelectFocused((i: number) => Math.max(i - 1, 0))
+          } else {
+            setSelectedRow((i: number) => Math.max(i - 1, -1))
           }
         },
-        onFocusRight: (id: string) => {
-          const startIdx = nav?.sectionStartIndex[id] ?? 0
-          setSelectedRow(startIdx)
-          setActiveSelect(null)
+      },
+      {
+        key: 'ArrowDown',
+        label: 'Next setting',
+        handler: () => {
+          const { activeSelect, allRows } = stateRef.current
+          if (activeSelect !== null) {
+            const row = allRows.find((r: SectionRow) => r.key === activeSelect)
+            if (row) setSelectFocused((i: number) => Math.min(i + 1, row.options.length - 1))
+          } else {
+            setSelectedRow((i: number) => Math.min(i + 1, allRows.length - 1))
+          }
         },
-        rightPanelActions,
-      })
-    : null
+      },
+      {
+        key: 'Enter',
+        label: 'Open setting',
+        hint: '↵',
+        handler: () => {
+          const { selectedRow, activeSelect, selectFocused, allRows } = stateRef.current
+          if (activeSelect !== null) {
+            const row = allRows.find((r: SectionRow) => r.key === activeSelect)
+            if (row) {
+              const opt = row.options[selectFocused]
+              if (opt) updateSetting(activeSelect as keyof NuxySettings, opt.value)
+              else setActiveSelect(null)
+            }
+          } else {
+            const row = allRows[selectedRow]
+            if (row && row.options.length > 0) {
+              const currentIdx = row.options.findIndex(
+                (o: SelectOption) => String(o.value) === String(stateRef.current.settings[row.key])
+              )
+              setSelectFocused(Math.max(0, currentIdx))
+              setActiveSelect(row.key)
+            }
+          }
+        },
+      },
+      {
+        key: 'Escape',
+        label: 'Close setting',
+        hint: 'Esc',
+        handler: () => setActiveSelect(null),
+      },
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
 
-  const focusArea: string = nav?.focusArea ?? 'right'
-  const activeSectionId: string = nav?.activeSectionId ?? SECTIONS[0].id
+  // navRef avoids referencing nav before assignment inside onFocusRight closure
+  const navRef = useRef<any>(null)
+
+  const nav = _useTwoPanelNav({
+    sections: navSections,
+    selectOpen: activeSelect !== null,
+    initialFocusArea: 'right',
+    onSectionChange: (id: string) => {
+      const el = sectionRefs.current[id]
+      if (el && rightPanelRef.current) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    },
+    onFocusRight: (id: string) => {
+      const startIdx = navRef.current?.sectionStartIndex[id] ?? 0
+      setSelectedRow(startIdx)
+      setActiveSelect(null)
+    },
+    rightPanelActions,
+  })
+  navRef.current = nav
+
+  const focusArea: string = nav.focusArea ?? 'right'
+  const activeSectionId: string = nav.activeSectionId ?? SECTIONS[0].id
 
   const applyTheme = (name: string): void => {
     if (!name || !window.core?.ipc?.invoke) return
@@ -385,7 +368,10 @@ export default function SettingsView({ query: _query }: Props) {
         }
       })
       .catch(console.error)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  if (!TwoPanel) return null
 
   const tabs = SECTIONS.map((s) => ({ id: s.id, label: s.label }))
 
@@ -394,35 +380,30 @@ export default function SettingsView({ query: _query }: Props) {
       tabs={tabs}
       active={activeSectionId}
       orientation="vertical"
-      style={{ borderRight: 'none', height: '100%' }}
       onChange={(id: string) => {
-        // Place cursor just before the section start so the first ArrowDown selects the first row
-        const startIdx = nav?.sectionStartIndex[id] ?? 0
+        const startIdx = nav.sectionStartIndex[id] ?? 0
         setSelectedRow(startIdx - 1)
-        nav?.goToSection(id)
+        nav.goToSection(id)
         setActiveSelect(null)
       }}
     />
   ) : null
 
-  let globalRowOffset = 0
-  const right = (
-    <div ref={rightPanelRef} style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
-      {List &&
-        allSections.map((section) => {
-          const sectionOffset = globalRowOffset
-          globalRowOffset += section.resolvedRows.length
-          return (
-            <div key={section.id} ref={(el: HTMLDivElement | null) => (sectionRefs.current[section.id] = el)} style={{ marginBottom: 8 }}>
-              {SectionHeader ? (
-                <SectionHeader label={section.label} />
-              ) : (
-                <div style={{ padding: '6px 12px', fontSize: 12, opacity: 0.5, fontWeight: 500 }}>
-                  {section.label}
-                </div>
-              )}
+  const right = ScrollArea ? (
+    <ScrollArea ref={rightPanelRef} style={{ flex: 1 }}>
+      {allSections.map((section: ResolvedSection) => {
+        const sectionOffset = nav.sectionStartIndex[section.id] ?? 0
+        return (
+          <React.Fragment key={section.id}>
+            {SectionHeader && (
+              <SectionHeader
+                ref={(el: HTMLDivElement | null) => { sectionRefs.current[section.id] = el }}
+                label={section.label}
+              />
+            )}
+            {List && (
               <List>
-                {section.resolvedRows.map((row, i) => {
+                {section.resolvedRows.map((row: SectionRow, i: number) => {
                   const globalIdx = sectionOffset + i
                   return (
                     ListItem && (
@@ -431,8 +412,8 @@ export default function SettingsView({ query: _query }: Props) {
                         active={focusArea === 'right' && globalIdx === selectedRow && activeSelect === null}
                         onClick={() => {
                           setSelectedRow(globalIdx)
-                          nav?.onItemSelected(globalIdx)
-                          nav?.setFocusArea('right')
+                          nav.onItemSelected(globalIdx)
+                          nav.setFocusArea('right')
                         }}
                       >
                         {ListItemBody && (
@@ -454,8 +435,8 @@ export default function SettingsView({ query: _query }: Props) {
                                 onClose={() => setActiveSelect(null)}
                                 onOpen={(idx: number) => {
                                   setSelectedRow(globalIdx)
-                                  nav?.onItemSelected(globalIdx)
-                                  nav?.setFocusArea('right')
+                                  nav.onItemSelected(globalIdx)
+                                  nav.setFocusArea('right')
                                   setSelectFocused(idx)
                                   setActiveSelect(row.key)
                                 }}
@@ -468,15 +449,12 @@ export default function SettingsView({ query: _query }: Props) {
                   )
                 })}
               </List>
-            </div>
-          )
-        })}
-    </div>
-  )
+            )}
+          </React.Fragment>
+        )
+      })}
+    </ScrollArea>
+  ) : null
 
-  if (TwoPanel) {
-    return <TwoPanel left={left} right={right} split="auto" style={{ flex: 1, minHeight: 0 }} />
-  }
-
-  return <div>{right}</div>
+  return <TwoPanel left={left} right={right} split="auto" />
 }

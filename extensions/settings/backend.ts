@@ -1,5 +1,5 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
-import type { NuxySettings, SaveSettingsPayload } from './types.ts'
+import type { NuxySettings } from './types.ts'
 
 const DEFAULT: NuxySettings = {
   // Appearance
@@ -25,8 +25,8 @@ export function register(core: CoreContext): void {
     return { ...DEFAULT, ...(saved || {}) }
   })
 
-  core.ipc.handle('saveSettings', async (data: SaveSettingsPayload): Promise<NuxySettings> => {
-    const next: NuxySettings = { ...DEFAULT, ...data }
+  core.ipc.handle('saveSettings', async (payload: unknown): Promise<NuxySettings> => {
+    const next: NuxySettings = { ...DEFAULT, ...(payload as Partial<NuxySettings>) }
     await core.storage.write('settings.json', next)
     return next
   })

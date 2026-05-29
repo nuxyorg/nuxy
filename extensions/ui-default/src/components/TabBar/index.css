@@ -13,11 +13,7 @@
 .nuxy-tab-bar--vertical {
   flex-direction: column;
   overflow-y: overlay;
-  border-right: 1px solid var(--border, rgba(255, 255, 255, 0.08));
   gap: 0;
-}
-
-.nuxy-tab-bar::-webkit-scrollbar {
 }
 
 .nuxy-tab {

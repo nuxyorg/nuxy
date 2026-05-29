@@ -634,7 +634,29 @@ export default function MyView({ query }: Props) {
 }
 ```
 
-### 5.5 TypeScript config
+### 5.5 `ui-default` component authoring — `forwardRef` pattern
+
+Components in `extensions/ui-default/src/components/` that need to forward a DOM `ref` must use `React.forwardRef`. Write proper types — **no `any`**:
+
+```tsx
+// CORRECT
+export const MyComponent = React.forwardRef<HTMLDivElement, MyComponentProps>(
+  ({ label, className, ...rest }, ref) => (
+    <div ref={ref} className={`nuxy-my-component ${className ?? ''}`} {...rest}>{label}</div>
+  )
+)
+MyComponent.displayName = 'MyComponent'
+```
+
+**Do NOT** use `any` as a workaround for missing types, and **do NOT** add `& { className?: string }` intersection hacks — `className` and all other HTML attributes come from `React.HTMLAttributes<HTMLDivElement>` which is in the interface.
+
+`extensions/tsconfig.json` declares `typeRoots` pointing to `packages/ui/node_modules/@types` and `src/node_modules/@types` so that `@types/react` is resolvable for both extensions and ui-default components. If React types are not found, fix the tsconfig — do not add `any`.
+
+If a component does not need ref forwarding, keep it as a plain function component.
+
+---
+
+### 5.6 TypeScript config
 
 Extensions are covered by `extensions/tsconfig.json`. The config:
 - Uses `"jsx": "react"` with `jsxFactory: "React.createElement"` (classic JSX — requires `window.React` to be in scope)

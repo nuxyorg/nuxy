@@ -7,8 +7,11 @@ export interface SectionHeaderProps extends React.HTMLAttributes<HTMLDivElement>
   description?: string
 }
 
-export function SectionHeader(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.SectionHeader || (() => null);
-  return <Impl {...props} />;
-}
+export const SectionHeader = React.forwardRef<HTMLDivElement, SectionHeaderProps>(
+  (props, ref) => {
+    const Impl = (window.UI as any)?.SectionHeader || (() => null)
+    return <Impl ref={ref} {...props} />
+  }
+)
+SectionHeader.displayName = 'SectionHeader'
 
