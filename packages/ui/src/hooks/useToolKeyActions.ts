@@ -5,6 +5,13 @@ export interface KeyAction {
   modifiers?: ('ctrl' | 'shift' | 'alt' | 'meta')[]
   label: string
   hint?: string | string[]
+  /**
+   * Optional predicate evaluated on every keydown (and on hint refresh).
+   * When it returns `false`, the action is skipped silently — neither the
+   * handler runs nor the hint is shown in the shortcut bar.
+   * Omitting `activeOn` keeps the action always active (backward compatible).
+   */
+  activeOn?: () => boolean
   handler: () => void
 }
 
@@ -19,10 +26,9 @@ export function useToolKeyActions(actions: KeyAction[]): void {
 
   useEffect(() => {
     const getter = () => actionsRef.current
-    const hints = actions.filter((a) => a.hint)
     window.dispatchEvent(
       new CustomEvent('nuxy-register-key-actions', {
-        detail: { getActions: getter, hints },
+        detail: { getActions: getter },
       })
     )
     return () => {

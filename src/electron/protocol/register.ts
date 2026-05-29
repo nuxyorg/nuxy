@@ -21,7 +21,13 @@ export function registerProtocols() {
 
     const { absolutePath } = resolved
 
-    if (filePath.endsWith('.js') || filePath.endsWith('.jsx') || filePath.endsWith('.tsx')) {
+    const isScript =
+      filePath.endsWith('.js') ||
+      filePath.endsWith('.jsx') ||
+      filePath.endsWith('.ts') ||
+      filePath.endsWith('.tsx')
+
+    if (isScript) {
       try {
         const mtime = fs.statSync(absolutePath).mtimeMs
         const cached = transpileCache.get(absolutePath)
@@ -35,12 +41,14 @@ export function registerProtocols() {
         }
 
         let code = fs.readFileSync(absolutePath, 'utf8')
-        if (
+        const needsJsx =
           filePath.endsWith('.jsx') ||
           filePath.endsWith('.tsx') ||
           code.includes('React.createElement') ||
           /<[a-zA-Z]+/.test(code)
-        ) {
+        const needsTranspile = filePath.endsWith('.ts') || filePath.endsWith('.tsx') || needsJsx
+
+        if (needsTranspile) {
           let ts: typeof import('typescript') | undefined
           try {
             ts = await import('typescript')
@@ -51,13 +59,13 @@ export function registerProtocols() {
           if (ts) {
             const transpiled = ts.transpileModule(code, {
               compilerOptions: {
-                jsx: ts.JsxEmit.React,
+                jsx: needsJsx ? ts.JsxEmit.React : ts.JsxEmit.None,
                 module: ts.ModuleKind.ESNext,
                 target: ts.ScriptTarget.ESNext,
               },
             })
             let output = transpiled.outputText
-            if (!output.includes('const React =')) {
+            if (needsJsx && !output.includes('const React =')) {
               output = `const React = window.React;\n` + output
             }
             transpileCache.set(absolutePath, { mtime, output })

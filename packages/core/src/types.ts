@@ -1,6 +1,6 @@
-export type ExtensionType = 'tool' | 'provider' | 'orchestrator' | 'theme' | 'iconpack'
+export type ExtensionType = 'tool' | 'provider' | 'orchestrator' | 'theme' | 'iconpack' | 'uikit'
 
-export type ExtensionPermission = 'storage' | 'clipboard' | 'network' | 'notifications' | 'media'
+export type ExtensionPermission = 'storage' | 'clipboard' | 'network' | 'notifications' | 'media' | 'shell'
 
 export interface ExtensionManifest {
   id: string
@@ -9,11 +9,18 @@ export interface ExtensionManifest {
   type: ExtensionType
   /** When true, core loads this extension's frontend as the launcher shell. */
   bootstrap?: boolean
+  /** Logical icon name from the active icon pack (e.g. "clipboard", "calendar"). */
+  icon?: string
   permissions?: ExtensionPermission[]
   capabilities?: {
     callable?: boolean
     caller?: boolean
   }
+  /**
+   * Load order priority for uikit extensions. Lower numbers load first.
+   * Only relevant when type is 'uikit'. Defaults to 100.
+   */
+  priority?: number
   entry?: {
     backend?: string
     frontend?: string

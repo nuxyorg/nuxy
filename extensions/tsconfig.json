@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "jsx": "react",
+    "jsxFactory": "React.createElement",
+    "jsxFragmentFactory": "React.Fragment",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@nuxy/extension-sdk": ["../packages/extension-sdk/src/index.ts"],
+      "@nuxy/core": ["../packages/core/src/index.ts"],
+      "@nuxy/ui": ["../packages/ui/src/index.tsx"],
+      "vitest": ["../src/node_modules/vitest/dist/index.d.ts"],
+      "vitest/*": ["../src/node_modules/vitest/dist/*"]
+    }
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.tsx",
+    "./global.d.ts"
+  ],
+  "exclude": [
+    "../node_modules",
+    "../src",
+    "../packages"
+  ]
+}

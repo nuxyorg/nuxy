@@ -1,0 +1,11 @@
+{
+  "id": "com.nuxy.ui-default",
+  "name": "Default UIKit",
+  "version": "1.0.0",
+  "type": "uikit",
+  "priority": 0,
+  "permissions": [],
+  "entry": {
+    "frontend": "frontend.js"
+  }
+}

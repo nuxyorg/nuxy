@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "pnpm -C src dev",
+    "dev": "pnpm --parallel --filter nuxy-desktop --filter @nuxy/ui-default dev",
     "build": "pnpm -C src build",
     "package": "pnpm -C src dist",
     "test": "pnpm -C src test",

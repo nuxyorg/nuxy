@@ -3,6 +3,7 @@
   "name": "Ollama",
   "version": "1.0.0",
   "type": "orchestrator",
+  "icon": "ai",
   "orchestratorType": "chatbot",
   "permissions": [],
   "capabilities": {
@@ -10,7 +11,7 @@
     "caller": false
   },
   "entry": {
-    "backend": "backend.js",
-    "frontend": "frontend.js"
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
   }
 }

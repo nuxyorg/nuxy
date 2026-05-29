@@ -19,7 +19,13 @@ export function useListNavigation<T>(
   items: T[],
   options: UseListNavigationOptions<T> = {}
 ): UseListNavigationResult<T> {
-  const { onEnter, enterLabel = 'Select', enterHint = 'Enter', loop = false, extraActions = [] } = options
+  const {
+    onEnter,
+    enterLabel = 'Select',
+    enterHint = 'Enter',
+    loop = false,
+    extraActions = [],
+  } = options
 
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
@@ -47,14 +53,17 @@ export function useListNavigation<T>(
   }, [items, onEnter])
 
   const navActions: KeyAction[] = [
-    { key: 'ArrowUp', label: 'Previous item', hint: '↑↓', handler: moveUp },
-    { key: 'ArrowDown', label: 'Next item', handler: moveDown },
-    ...(onEnter ? [{ key: 'Enter', label: enterLabel, hint: enterHint, handler: handleEnter }] : []),
+    { key: 'ArrowUp', label: 'Navigate', hint: '↑↓', handler: moveUp },
+    { key: 'ArrowDown', label: '', handler: moveDown },
+    ...(onEnter
+      ? [{ key: 'Enter', label: enterLabel, hint: enterHint, handler: handleEnter }]
+      : []),
   ]
 
   useToolKeyActions([...navActions, ...extraActions])
 
-  const selectedItem = selectedIndex >= 0 && selectedIndex < items.length ? items[selectedIndex] : null
+  const selectedItem =
+    selectedIndex >= 0 && selectedIndex < items.length ? items[selectedIndex] : null
 
   return { selectedIndex, setSelectedIndex, selectedItem }
 }

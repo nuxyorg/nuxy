@@ -26,6 +26,15 @@ export function resolveExtensionFile(
   }
 
   if (!fs.existsSync(absolutePath)) {
+    if (filePath.endsWith('.js')) {
+      const stem = absolutePath.slice(0, -3)
+      for (const ext of ['.tsx', '.ts', '.jsx']) {
+        const alt = stem + ext
+        if (fs.existsSync(alt)) {
+          return { absolutePath: alt, folderName, extensionId }
+        }
+      }
+    }
     return null
   }
 

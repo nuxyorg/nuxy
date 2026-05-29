@@ -4,7 +4,7 @@ import path from 'path'
 export default defineConfig({
   test: {
     environment: 'node',
-    include: ['electron/**/*.test.ts', '../extensions/**/*.test.js'],
+    include: ['electron/**/*.test.ts', '../extensions/**/*.test.js', '../extensions/**/*.test.ts'],
   },
   resolve: {
     alias: {

@@ -3,10 +3,13 @@
   "name": "Nuxy Shell",
   "version": "1.0.0",
   "type": "tool",
+  "icon": "shell",
   "bootstrap": true,
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "entry": {
-    "backend": "backend.js",
-    "frontend": "frontend.js"
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
   }
 }

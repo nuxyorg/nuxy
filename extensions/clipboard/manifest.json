@@ -3,13 +3,14 @@
   "name": "Clipboard Manager",
   "version": "1.0.0",
   "type": "tool",
+  "icon": "clipboard",
   "permissions": ["clipboard", "storage"],
   "capabilities": {
     "callable": true,
     "caller": false
   },
   "entry": {
-    "backend": "backend.js",
-    "frontend": "frontend.js"
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
   }
 }

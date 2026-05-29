@@ -5,6 +5,7 @@ const KERNEL_CHANNELS = new Set([
   'listTools',
   'listProviders',
   'listOrchestrators',
+  'listUikitExtensions',
   'getConfig',
   'applyWindowSettings',
   'getTheme',

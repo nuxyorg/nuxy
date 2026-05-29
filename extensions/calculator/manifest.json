@@ -3,6 +3,7 @@
   "name": "Calculator",
   "version": "1.0.0",
   "type": "provider",
+  "icon": "calculator",
   "providerType": "result",
   "permissions": [],
   "capabilities": {
@@ -10,6 +11,6 @@
     "caller": false
   },
   "entry": {
-    "backend": "backend.js"
+    "backend": "backend.ts"
   }
 }

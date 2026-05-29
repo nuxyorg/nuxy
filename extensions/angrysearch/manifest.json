@@ -3,13 +3,14 @@
   "name": "ANGRYsearch",
   "version": "1.0.0",
   "type": "tool",
-  "permissions": [],
+  "icon": "search",
+  "permissions": ["storage", "shell"],
   "capabilities": {
     "callable": true,
     "caller": false
   },
   "entry": {
-    "backend": "backend.js",
-    "frontend": "frontend.js"
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
   }
 }

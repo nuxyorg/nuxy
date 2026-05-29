@@ -3,6 +3,36 @@ import type { IpcResult, ThemeDefinition, IconPackDefinition } from './types.js'
 
 export type { NowPlaying } from './media.js'
 
+export interface DbHandle {
+  exec(sql: string): void
+  prepare(sql: string): PreparedStatement
+  close(): void
+  function(name: string, fn: (...args: unknown[]) => unknown): void
+}
+
+export interface PreparedStatement {
+  run(...args: unknown[]): void
+  get(...args: unknown[]): Record<string, unknown> | undefined
+  all(...args: unknown[]): Record<string, unknown>[]
+}
+
+export interface DirEntry {
+  name: string
+  isDir: boolean
+}
+
+export interface FileStat {
+  isDir: boolean
+  size: number
+  mtimeMs: number
+}
+
+export interface SpawnHandle {
+  onData(handler: (chunk: string) => void): void
+  onClose(handler: (code: number | null) => void): void
+  kill(signal?: string): void
+}
+
 export interface CoreContext {
   clipboard: {
     readText: () => Promise<string>
@@ -13,6 +43,24 @@ export interface CoreContext {
   }
   fs: {
     fileExists: (path: string) => Promise<boolean>
+    readDir: (path: string) => Promise<DirEntry[]>
+    readFile: (path: string, encoding?: 'utf8') => Promise<string>
+    readFileBinary: (path: string) => Promise<Uint8Array>
+    writeFile: (path: string, data: string | Uint8Array) => Promise<void>
+    mkdir: (path: string, opts?: { recursive?: boolean }) => Promise<void>
+    rename: (src: string, dest: string) => Promise<void>
+    rm: (path: string) => Promise<void>
+    stat: (path: string) => Promise<FileStat>
+    homedir: () => string
+    tmpdir: () => string
+  }
+  db: {
+    open: (name: string) => DbHandle
+  }
+  shell: {
+    open: (pathOrUrl: string) => Promise<void>
+    exec: (cmd: string, args: string[], opts?: { maxBuffer?: number }) => Promise<{ stdout: string; code: number }>
+    spawn: (cmd: string, args: string[]) => SpawnHandle
   }
   media: {
     getNowPlaying: () => Promise<NowPlaying | null>

@@ -36,6 +36,12 @@ function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedEx
     }))
 }
 
+function listUikitExtensions(): typeof loadedExtensions {
+  return loadedExtensions
+    .filter((ext) => ext.manifest.type === 'uikit' && ext.manifest.entry?.frontend)
+    .sort((a, b) => (a.manifest.priority ?? 100) - (b.manifest.priority ?? 100))
+}
+
 export function registerIpc() {
   log.info('Registering IPC handlers...')
 
@@ -59,6 +65,10 @@ export function registerIpc() {
 
         if (ch === 'listOrchestrators') {
           return { success: true, data: listByType('orchestrator') }
+        }
+
+        if (ch === 'listUikitExtensions') {
+          return { success: true, data: listUikitExtensions() }
         }
 
         if (ch === 'getConfig') {

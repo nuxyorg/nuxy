@@ -3,9 +3,12 @@
   "name": "Settings",
   "version": "1.0.0",
   "type": "tool",
-  "permissions": ["storage"],
+  "icon": "settings",
+  "permissions": [
+    "storage"
+  ],
   "entry": {
-    "backend": "backend.js",
-    "frontend": "frontend.js"
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
   }
 }

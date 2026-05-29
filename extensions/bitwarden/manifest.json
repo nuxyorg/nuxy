@@ -3,7 +3,18 @@
   "name": "Bitwarden",
   "version": "1.0.0",
   "type": "tool",
-  "permissions": ["clipboard", "storage"],
-  "capabilities": { "callable": false, "caller": false },
-  "entry": { "backend": "backend.js", "frontend": "frontend.js" }
+  "icon": "bitwarden",
+  "permissions": [
+    "clipboard",
+    "storage",
+    "shell"
+  ],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
+  }
 }

@@ -3,13 +3,17 @@
   "name": "Video Downloader",
   "version": "1.0.0",
   "type": "tool",
-  "permissions": ["storage"],
+  "icon": "video",
+  "permissions": [
+    "storage",
+    "shell"
+  ],
   "capabilities": {
     "callable": false,
     "caller": false
   },
   "entry": {
-    "backend": "backend.js",
-    "frontend": "frontend.js"
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
   }
 }

@@ -3,8 +3,9 @@
   "name": "Gradient",
   "version": "1.0.0",
   "type": "tool",
+  "icon": "gradient",
   "permissions": [],
   "entry": {
-    "frontend": "frontend.js"
+    "frontend": "frontend.tsx"
   }
 }

@@ -3,6 +3,7 @@
   "name": "Time Calculator",
   "version": "1.0.0",
   "type": "provider",
+  "icon": "clock",
   "providerType": "compare",
   "permissions": [],
   "capabilities": {
@@ -10,7 +11,7 @@
     "caller": false
   },
   "entry": {
-    "backend": "backend.js",
-    "frontend": "frontend.js"
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
   }
 }

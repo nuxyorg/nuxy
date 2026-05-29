@@ -119,6 +119,15 @@ export async function scanExtensions(): Promise<void> {
             log.error(`Failed to parse icons file for "${extId}"`, e)
           }
         }
+      } else if (manifest.type === 'uikit') {
+        // uikit extensions are pure renderer-side — no backend worker.
+        // The renderer loads their frontend.js early, before the shell bootstrap,
+        // allowing them to extend or override window.UI components at runtime.
+        if (!manifest.entry?.frontend) {
+          log.warn(`UIKit extension "${extId}" has no frontend entry — it will have no effect.`)
+        } else {
+          log.info(`UIKit extension registered: ${extId} (frontend: ${manifest.entry.frontend})`)
+        }
       } else if (manifest.entry?.backend) {
         log.info(`Loading extension: ${extId} (backend: ${manifest.entry.backend})`)
         spawnExtension(extId, folderName, manifest.entry.backend)

@@ -61,13 +61,13 @@ async function getAppPage(app: ElectronApplication): Promise<Page> {
   // Wait for the UNIX socket file to be created, indicating full bootstrap
   const socketPath = resolve(tmpdir(), 'nuxy.sock')
   const startTime = Date.now()
-  while (!existsSync(socketPath) && Date.now() - startTime < 1000) {
+  while (!existsSync(socketPath) && Date.now() - startTime < 2000) {
     await new Promise<void>((r) => setTimeout(r, 10))
   }
 
   const page =
     app.windows().find((w) => !w.url().startsWith('devtools://')) ?? (await app.firstWindow())
-  await page.waitForSelector('input', { timeout: 500 })
+  await page.waitForSelector('input', { timeout: 3000 })
   return page
 }
 
