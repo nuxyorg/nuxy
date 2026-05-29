@@ -34,8 +34,9 @@ async function fetchPassword(core: CoreContext, item: BitwardenItem): Promise<st
 }
 
 async function detectOS(core: CoreContext): Promise<OsType> {
-  if (process.platform === 'darwin') return 'macos'
   try {
+    const uname = await execCmd(core, 'uname', ['-s']).catch(() => '')
+    if (uname.trim().toLowerCase() === 'darwin') return 'macos'
     const stdout = await execCmd(core, 'cat', ['/etc/os-release'])
     if (stdout.includes('cachyos') || stdout.includes('arch')) return 'arch'
     if (stdout.includes('ubuntu') || stdout.includes('debian')) return 'debian'
@@ -95,7 +96,8 @@ export async function register(core: CoreContext): Promise<void> {
     return { installed: true, configured: false, email: null, locked: true, backend: 'bw', os }
   })
 
-  core.ipc.handle('bw:setEmail', async ({ email }: SetEmailPayload = {}): Promise<{ ok: boolean }> => {
+  core.ipc.handle('bw:setEmail', async (payload: unknown): Promise<{ ok: boolean }> => {
+    const { email } = (payload as SetEmailPayload) ?? {}
     if (!email) throw new Error('Email is required')
     await execCmd(core, 'rbw', ['config', 'set', 'email', email])
     return { ok: true }
@@ -117,7 +119,8 @@ export async function register(core: CoreContext): Promise<void> {
     throw new Error('Sync is only supported via rbw backend')
   })
 
-  core.ipc.handle('bw:search', async ({ query = '' }: SearchPayload = {}): Promise<BitwardenItem[]> => {
+  core.ipc.handle('bw:search', async (payload: unknown): Promise<BitwardenItem[]> => {
+    const { query = '' } = (payload as SearchPayload) ?? {}
     if (detectedBackend === 'none') return []
 
     if (detectedBackend === 'rbw') {
@@ -139,12 +142,13 @@ export async function register(core: CoreContext): Promise<void> {
     return []
   })
 
-  core.ipc.handle('bw:getPassword', async (item: BitwardenItem): Promise<GetPasswordResult> => {
-    const password = await fetchPassword(core, item)
+  core.ipc.handle('bw:getPassword', async (payload: unknown): Promise<GetPasswordResult> => {
+    const password = await fetchPassword(core, payload as BitwardenItem)
     return { password }
   })
 
-  core.ipc.handle('bw:getTotp', async ({ name }: GetTotpPayload): Promise<GetTotpResult> => {
+  core.ipc.handle('bw:getTotp', async (payload: unknown): Promise<GetTotpResult> => {
+    const { name } = payload as GetTotpPayload
     if (detectedBackend === 'rbw') {
       const stdout = await execCmd(core, 'rbw', ['get', 'totp', name])
       return { code: stdout.trim() }
@@ -152,19 +156,26 @@ export async function register(core: CoreContext): Promise<void> {
     throw new Error('No supported backend available')
   })
 
-  core.ipc.handle('bw:copyPassword', async (item: BitwardenItem): Promise<void> => {
-    const password = await fetchPassword(core, item)
+  core.ipc.handle('bw:copyPassword', async (payload: unknown): Promise<void> => {
+    const password = await fetchPassword(core, payload as BitwardenItem)
     await core.clipboard.writeText(password)
     setTimeout(async () => { await core.clipboard.writeText('') }, 30_000)
   })
 
-  core.ipc.handle('bw:copyUsername', async (item: BitwardenItem): Promise<void> => {
+  core.ipc.handle('bw:copyUsername', async (payload: unknown): Promise<void> => {
+    const item = payload as BitwardenItem
     await core.clipboard.writeText(item.username ?? '')
     setTimeout(async () => { await core.clipboard.writeText('') }, 30_000)
   })
 
-  core.ipc.handle('bw:copyTotp', async ({ code }: CopyTotpPayload): Promise<void> => {
+  core.ipc.handle('bw:copyTotp', async (payload: unknown): Promise<void> => {
+    const { code } = payload as CopyTotpPayload
     await core.clipboard.writeText(code)
     setTimeout(async () => { await core.clipboard.writeText('') }, 30_000)
+  })
+
+  core.ipc.handle('bw:copyText', async (payload: unknown): Promise<void> => {
+    const { text } = payload as { text: string }
+    await core.clipboard.writeText(text)
   })
 }

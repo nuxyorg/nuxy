@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface ModalProps {
   isOpen: boolean
   onClose: () => void
@@ -13,7 +11,6 @@ export interface ModalProps {
 }
 
 export function Modal(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Modal || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Modal || (() => null)
+  return <Impl {...props} />
 }
-

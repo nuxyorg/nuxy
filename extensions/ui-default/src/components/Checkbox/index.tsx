@@ -11,7 +11,15 @@ export interface CheckboxProps {
   className?: string
 }
 
-export function Checkbox({ checked, defaultChecked, onChange, disabled, label, id, className }: CheckboxProps) {
+export function Checkbox({
+  checked,
+  defaultChecked,
+  onChange,
+  disabled,
+  label,
+  id,
+  className,
+}: CheckboxProps) {
   const [internalChecked, setInternalChecked] = React.useState(defaultChecked ?? false)
   const isControlled = checked !== undefined
   const isChecked = isControlled ? checked : internalChecked

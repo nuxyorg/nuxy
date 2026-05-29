@@ -10,12 +10,25 @@ export interface ProgressBarProps {
   className?: string
 }
 
-export function ProgressBar({ value, max = 100, size = 'md', label, showValue = false, className }: ProgressBarProps) {
+export function ProgressBar({
+  value,
+  max = 100,
+  size = 'md',
+  label,
+  showValue = false,
+  className,
+}: ProgressBarProps) {
   const indeterminate = value === undefined
   const pct = indeterminate ? 0 : Math.min(100, Math.max(0, (value / max) * 100))
 
   return (
-    <div className={`nuxy-progress ${className || ''}`} role="progressbar" aria-valuenow={indeterminate ? undefined : pct} aria-valuemin={0} aria-valuemax={100}>
+    <div
+      className={`nuxy-progress ${className || ''}`}
+      role="progressbar"
+      aria-valuenow={indeterminate ? undefined : pct}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
       {(label || showValue) && (
         <div className="nuxy-progress__header">
           {label && <span>{label}</span>}

@@ -14,8 +14,18 @@ export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
         ref={ref}
         className={`nuxy-scroll-area ${axis !== 'both' ? `nuxy-scroll-area--${axis}` : ''} ${className || ''}`}
         style={{
-          maxHeight: maxHeight !== undefined ? (typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight) : undefined,
-          maxWidth: maxWidth !== undefined ? (typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth) : undefined,
+          maxHeight:
+            maxHeight !== undefined
+              ? typeof maxHeight === 'number'
+                ? `${maxHeight}px`
+                : maxHeight
+              : undefined,
+          maxWidth:
+            maxWidth !== undefined
+              ? typeof maxWidth === 'number'
+                ? `${maxWidth}px`
+                : maxWidth
+              : undefined,
           ...style,
         }}
         {...props}

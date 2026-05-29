@@ -1,14 +1,10 @@
 import React from 'react'
 
-
-
 export interface RadioOption {
   value: string
   label: React.ReactNode
   disabled?: boolean
 }
-
-
 
 export interface RadioGroupProps {
   options: RadioOption[]
@@ -22,7 +18,6 @@ export interface RadioGroupProps {
 }
 
 export function RadioGroup(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.RadioGroup || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.RadioGroup || (() => null)
+  return <Impl {...props} />
 }
-

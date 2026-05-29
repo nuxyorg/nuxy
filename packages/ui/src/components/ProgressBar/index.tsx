@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface ProgressBarProps {
   value?: number // 0-100, omit for indeterminate
   max?: number
@@ -12,7 +10,6 @@ export interface ProgressBarProps {
 }
 
 export function ProgressBar(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ProgressBar || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.ProgressBar || (() => null)
+  return <Impl {...props} />
 }
-

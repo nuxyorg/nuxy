@@ -149,11 +149,7 @@ function parseTime(text: string): TimeParsed | null {
   const lower = text.toLowerCase()
 
   // Match "3:30 pm", "12:00am", "3pm", "15:00", etc.
-  const patterns = [
-    /(\d{1,2}):(\d{2})\s*(am|pm)/i,
-    /(\d{1,2})\s*(am|pm)/i,
-    /(\d{1,2}):(\d{2})/,
-  ]
+  const patterns = [/(\d{1,2}):(\d{2})\s*(am|pm)/i, /(\d{1,2})\s*(am|pm)/i, /(\d{1,2}):(\d{2})/]
 
   for (const re of patterns) {
     const m = lower.match(re)
@@ -176,8 +172,7 @@ function parseTime(text: string): TimeParsed | null {
  */
 function isTimeQuery(text: string): boolean {
   const lower = text.toLowerCase()
-  const hasTime =
-    /\d{1,2}(:\d{2})?\s*(am|pm)/i.test(lower) || /\b\d{1,2}:\d{2}\b/.test(lower)
+  const hasTime = /\d{1,2}(:\d{2})?\s*(am|pm)/i.test(lower) || /\b\d{1,2}:\d{2}\b/.test(lower)
   return hasTime
 }
 
@@ -197,7 +192,12 @@ function extractSourceTz(text: string): TimezoneMatch {
 /**
  * Convert a { hours, minutes } in sourceTz to targetTz.
  */
-function convertTime(hours: number, minutes: number, sourceTz: string, targetTz: string): ConvertResult {
+function convertTime(
+  hours: number,
+  minutes: number,
+  sourceTz: string,
+  targetTz: string
+): ConvertResult {
   const now = new Date()
 
   const srcParts = new Intl.DateTimeFormat('en-US', {
@@ -327,12 +327,12 @@ export function register(core: CoreContext): void {
               destTzLabel: result.tzLabel,
               left: {
                 text: text,
-                badge: srcFormatted
+                badge: srcFormatted,
               },
               right: {
                 text: displayTime,
-                badge: `${dest.label}, ${result.tzLabel}`
-              }
+                badge: `${dest.label}, ${result.tzLabel}`,
+              },
             },
           },
         ],
@@ -350,7 +350,13 @@ export function register(core: CoreContext): void {
     if (!time) return { error: 'Missing required parameter: time' }
 
     const LOCAL_ALIASES = new Set([
-      'local', 'local time', 'here', 'my time', 'my timezone', 'current', 'system',
+      'local',
+      'local time',
+      'here',
+      'my time',
+      'my timezone',
+      'current',
+      'system',
     ])
 
     const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -361,17 +367,15 @@ export function register(core: CoreContext): void {
 
       const fromKey = (from ?? '').toLowerCase().trim()
       const fromTz =
-        LOCAL_ALIASES.has(fromKey) || !fromKey
-          ? localTz
-          : (CITY_TO_TZ[fromKey] ?? localTz)
+        LOCAL_ALIASES.has(fromKey) || !fromKey ? localTz : (CITY_TO_TZ[fromKey] ?? localTz)
 
       const toKey = (to ?? '').toLowerCase().trim()
-      const toTz =
-        LOCAL_ALIASES.has(toKey) || !toKey
-          ? localTz
-          : CITY_TO_TZ[toKey]
+      const toTz = LOCAL_ALIASES.has(toKey) || !toKey ? localTz : CITY_TO_TZ[toKey]
 
-      if (!toTz) return { error: `Unknown timezone/city: "${to}". Try a city name like "london", "tokyo", "new york".` }
+      if (!toTz)
+        return {
+          error: `Unknown timezone/city: "${to}". Try a city name like "london", "tokyo", "new york".`,
+        }
 
       const result = convertTime(parsed.hours, parsed.minutes, fromTz, toTz)
       const srcFormatted = formatTime12h(parsed.hours, parsed.minutes)
@@ -391,12 +395,12 @@ export function register(core: CoreContext): void {
           destTzLabel: result.tzLabel,
           left: {
             text: `${srcFormatted}${fromKey && !LOCAL_ALIASES.has(fromKey) ? ' · ' + toTitleCase(fromKey) : ''}`,
-            badge: srcFormatted
+            badge: srcFormatted,
           },
           right: {
             text: result.time24.replace(/^0/, '') || result.time24,
-            badge: `${toKey ? toTitleCase(toKey) : 'Destination'}, ${result.tzLabel}`
-          }
+            badge: `${toKey ? toTitleCase(toKey) : 'Destination'}, ${result.tzLabel}`,
+          },
         },
       }
 

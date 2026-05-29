@@ -118,7 +118,9 @@ test.describe('emoji picker', () => {
     await openEmojiPicker(appPage)
 
     // Wait for emoji grid to fully render before navigating
-    await appPage.waitForFunction(() => document.querySelector('.nuxy-grid') !== null, { timeout: 400 })
+    await appPage.waitForFunction(() => document.querySelector('.nuxy-grid') !== null, {
+      timeout: 400,
+    })
 
     // Focus the right panel (enters right grid at index 0, first category, Column 0)
     await appPage.keyboard.press('ArrowRight')

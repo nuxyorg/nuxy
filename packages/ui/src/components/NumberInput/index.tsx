@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface NumberInputProps {
   value?: number
   defaultValue?: number
@@ -15,7 +13,6 @@ export interface NumberInputProps {
 }
 
 export function NumberInput(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.NumberInput || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.NumberInput || (() => null)
+  return <Impl {...props} />
 }
-

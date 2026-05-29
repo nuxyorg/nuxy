@@ -54,7 +54,9 @@ export function ResultCard({ item, providerName, copiedId, onCopy }: ResultCardP
       >
         {providerName}
       </span>
-      <div className={`nuxy-result-card__copied ${isCopied ? 'nuxy-result-card__copied--show' : ''}`}>
+      <div
+        className={`nuxy-result-card__copied ${isCopied ? 'nuxy-result-card__copied--show' : ''}`}
+      >
         Copied!
       </div>
     </div>
@@ -87,7 +89,9 @@ export function CompareCard({ item, providerName, copiedId, onCopy }: CompareCar
         </div>
         <div className="nuxy-compare-panel__badge">{meta.right.badge}</div>
       </div>
-      <div className={`nuxy-result-card__copied ${isCopied ? 'nuxy-result-card__copied--show' : ''}`}>
+      <div
+        className={`nuxy-result-card__copied ${isCopied ? 'nuxy-result-card__copied--show' : ''}`}
+      >
         Copied!
       </div>
     </div>

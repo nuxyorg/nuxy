@@ -1,5 +1,4 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
-import type { DbHandle } from '@nuxy/core'
 import type {
   Note,
   NotesCreatePayload,
@@ -13,7 +12,7 @@ import type {
   FtsRow,
 } from './types.ts'
 
-let db: DbHandle | null = null
+let db: ReturnType<CoreContext['db']['open']> | null = null
 let extDataDir: string | null = null
 
 function notePath(id: string): string {
@@ -47,7 +46,11 @@ async function whisperTranscribe(
   language: string = 'en'
 ): Promise<string> {
   const form = new FormData()
-  form.append('file', new Blob([audioBuffer as unknown as BlobPart], { type: 'audio/webm' }), 'audio.webm')
+  form.append(
+    'file',
+    new Blob([audioBuffer as unknown as BlobPart], { type: 'audio/webm' }),
+    'audio.webm'
+  )
   form.append('model', 'whisper-1')
   if (language) form.append('language', language)
 
@@ -71,7 +74,7 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.registry.registerTool({ name: 'notes' })
 
-  core.ipc.handle('notes:list', async () => {
+  core.ipc.handle('notes:list', async (): Promise<Note[]> => {
     const entries = await core.fs.readDir(extDataDir!)
     const notes = await Promise.all(
       entries
@@ -81,7 +84,8 @@ export async function register(core: CoreContext): Promise<void> {
     return notes.sort((a, b) => b.updatedAt - a.updatedAt)
   })
 
-  core.ipc.handle('notes:create', async ({ title, body }: NotesCreatePayload): Promise<Note> => {
+  core.ipc.handle('notes:create', async (payload: unknown): Promise<Note> => {
+    const { title, body } = payload as NotesCreatePayload
     const now = Date.now()
     const note: Note = {
       id: crypto.randomUUID(),
@@ -95,7 +99,8 @@ export async function register(core: CoreContext): Promise<void> {
     return note
   })
 
-  core.ipc.handle('notes:update', async ({ id, title, body }: NotesUpdatePayload): Promise<Note> => {
+  core.ipc.handle('notes:update', async (payload: unknown): Promise<Note> => {
+    const { id, title, body } = payload as NotesUpdatePayload
     const existing = await readNote(core, id)
     const updated: Note = {
       ...existing,
@@ -108,12 +113,14 @@ export async function register(core: CoreContext): Promise<void> {
     return updated
   })
 
-  core.ipc.handle('notes:delete', async ({ id }: NotesDeletePayload): Promise<void> => {
+  core.ipc.handle('notes:delete', async (payload: unknown): Promise<void> => {
+    const { id } = payload as NotesDeletePayload
     await core.fs.rm(notePath(id))
     deleteFts(id)
   })
 
-  core.ipc.handle('notes:search', async ({ query }: NotesSearchPayload): Promise<Note[]> => {
+  core.ipc.handle('notes:search', async (payload: unknown): Promise<Note[]> => {
+    const { query } = payload as NotesSearchPayload
     if (!query || query.trim() === '') return []
     const stmt = db!.prepare(
       'SELECT id, title, body FROM notes_fts WHERE notes_fts MATCH ? ORDER BY rank'
@@ -130,37 +137,33 @@ export async function register(core: CoreContext): Promise<void> {
     )
   })
 
-  core.ipc.handle(
-    'notes:transcribe',
-    async ({ audioBuffer, language }: NotesTranscribePayload): Promise<TranscribeResult> => {
-      const config = await core.storage.read<NotesConfig>('config.json')
-      if (!config?.openaiApiKey) throw new Error('OpenAI API key not configured')
+  core.ipc.handle('notes:transcribe', async (payload: unknown): Promise<TranscribeResult> => {
+    const { audioBuffer, language } = payload as NotesTranscribePayload
+    const config = await core.storage.read<NotesConfig>('config.json')
+    if (!config?.openaiApiKey) throw new Error('OpenAI API key not configured')
 
-      const tmpPath = `${core.fs.tmpdir()}/nuxy-voice-${Date.now()}.webm`
-      await core.fs.writeFile(tmpPath, new Uint8Array(audioBuffer))
-      try {
-        const transcript = await whisperTranscribe(
-          new Uint8Array(audioBuffer),
-          config.openaiApiKey,
-          language ?? config.language ?? 'en'
-        )
-        return { transcript }
-      } finally {
-        await core.fs.rm(tmpPath).catch(() => {})
-      }
+    const tmpPath = `${core.fs.tmpdir()}/nuxy-voice-${Date.now()}.webm`
+    await core.fs.writeFile(tmpPath, new Uint8Array(audioBuffer))
+    try {
+      const transcript = await whisperTranscribe(
+        new Uint8Array(audioBuffer),
+        config.openaiApiKey,
+        language ?? config.language ?? 'en'
+      )
+      return { transcript }
+    } finally {
+      await core.fs.rm(tmpPath).catch(() => {})
     }
-  )
+  })
 
-  core.ipc.handle(
-    'notes:configure',
-    async ({ openaiApiKey, language }: NotesConfigurePayload = {}): Promise<void> => {
-      const existing = (await core.storage.read<NotesConfig>('config.json')) ?? {}
-      const updated: NotesConfig = {
-        ...existing,
-        ...(openaiApiKey !== undefined ? { openaiApiKey } : {}),
-        ...(language !== undefined ? { language } : {}),
-      }
-      await core.storage.write('config.json', updated)
+  core.ipc.handle('notes:configure', async (payload: unknown): Promise<void> => {
+    const { openaiApiKey, language } = (payload as NotesConfigurePayload) ?? {}
+    const existing = (await core.storage.read<NotesConfig>('config.json')) ?? {}
+    const updated: NotesConfig = {
+      ...existing,
+      ...(openaiApiKey !== undefined ? { openaiApiKey } : {}),
+      ...(language !== undefined ? { language } : {}),
     }
-  )
+    await core.storage.write('config.json', updated)
+  })
 }

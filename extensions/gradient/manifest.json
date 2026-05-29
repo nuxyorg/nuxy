@@ -5,6 +5,10 @@
   "type": "tool",
   "icon": "gradient",
   "permissions": [],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
   "entry": {
     "frontend": "frontend.tsx"
   }

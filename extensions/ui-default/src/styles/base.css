@@ -13,11 +13,11 @@
   --syntax-function: #00feca;
   --syntax-orange: #f9672b;
   --syntax-peach: #ff8b5a;
-    --syntax-green: #ccff2d;
-  
-    /* Scrollbar */
-    --scrollbar-thumb: rgba(255, 255, 255, 0.15);
-    --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
+  --syntax-green: #ccff2d;
+
+  /* Scrollbar */
+  --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.25);
 
   /* Spacing */
   --space-px: 1px;
@@ -59,6 +59,13 @@ body {
   background-color: transparent;
   color: var(--syntax-variable);
   overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 /* Global scrollbar styles */

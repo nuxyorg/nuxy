@@ -45,8 +45,8 @@ export default defineConfig({
         fs.unlinkSync(cssPath)
 
         console.log(`[inline-css] Inlined ${css.length} bytes of CSS into frontend.js`)
-      }
-    }
+      },
+    },
   ],
   build: {
     lib: {
@@ -73,4 +73,3 @@ export default defineConfig({
     },
   },
 })
-

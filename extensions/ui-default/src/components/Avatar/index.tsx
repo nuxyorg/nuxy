@@ -37,7 +37,9 @@ export function Avatar({
         `nuxy-avatar--${size}`,
         variant === 'square' ? 'nuxy-avatar--square' : '',
         className || '',
-      ].filter(Boolean).join(' ')}
+      ]
+        .filter(Boolean)
+        .join(' ')}
       title={name || undefined}
     >
       {src ? (
@@ -46,10 +48,7 @@ export function Avatar({
         <span>{initials}</span>
       )}
       {status && (
-        <span
-          className={`nuxy-avatar__badge nuxy-avatar__badge--${status}`}
-          role="presentation"
-        />
+        <span className={`nuxy-avatar__badge nuxy-avatar__badge--${status}`} role="presentation" />
       )}
     </span>
   )

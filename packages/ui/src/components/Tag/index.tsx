@@ -8,8 +8,8 @@ export interface TagProps {
 }
 
 export function Tag(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Tag || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Tag || (() => null)
+  return <Impl {...props} />
 }
 
 export { Tag as Chip }

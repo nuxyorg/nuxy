@@ -1,13 +1,13 @@
 .nuxy-divider {
   border: none;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   margin: var(--space-3) 0;
   width: 100%;
 }
 
 .nuxy-divider--vertical {
   border-top: none;
-  border-left: 1px solid rgba(255,255,255,0.08);
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
   height: 100%;
   width: 0;
   margin: 0 var(--space-3);
@@ -27,7 +27,7 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .nuxy-divider__label-text {

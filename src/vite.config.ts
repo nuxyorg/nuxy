@@ -42,7 +42,7 @@ export default defineConfig({
           } else {
             fs.mkdirSync(path.dirname(extDestDir), { recursive: true })
           }
-          
+
           fs.symlinkSync(extSrcDir, extDestDir, 'dir')
           console.log(`[symlink-extensions] Created symlink: ${extDestDir} -> ${extSrcDir}`)
         } catch (e) {

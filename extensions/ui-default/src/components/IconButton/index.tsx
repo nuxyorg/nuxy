@@ -19,7 +19,9 @@ export function IconButton({
     `nuxy-icon-button--${size}`,
     variant !== 'default' ? `nuxy-icon-button--${variant}` : '',
     className || '',
-  ].filter(Boolean).join(' ')
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <button className={classes} {...props}>

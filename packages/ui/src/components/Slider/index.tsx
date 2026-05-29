@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface SliderProps {
   value?: number
   defaultValue?: number
@@ -17,7 +15,6 @@ export interface SliderProps {
 }
 
 export function Slider(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Slider || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Slider || (() => null)
+  return <Impl {...props} />
 }
-

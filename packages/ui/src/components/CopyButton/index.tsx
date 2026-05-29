@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface CopyButtonProps {
   value: string
   label?: string
@@ -11,7 +9,6 @@ export interface CopyButtonProps {
 }
 
 export function CopyButton(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.CopyButton || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.CopyButton || (() => null)
+  return <Impl {...props} />
 }
-

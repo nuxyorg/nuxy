@@ -248,4 +248,3 @@ test.describe('resolveStoragePath', () => {
     expect(r).toContain('cache/foo.db')
   })
 })
-

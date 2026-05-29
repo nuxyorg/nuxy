@@ -10,7 +10,12 @@ interface CommandPaletteProps {
   position: Position
 }
 
-export default function CommandPalette({ actions, onClose, containerRef, position }: CommandPaletteProps) {
+export default function CommandPalette({
+  actions,
+  onClose,
+  containerRef,
+  position,
+}: CommandPaletteProps) {
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [style, setStyle] = useState<React.CSSProperties>({})

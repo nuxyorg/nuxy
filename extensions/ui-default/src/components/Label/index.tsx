@@ -20,7 +20,12 @@ export interface HelperTextProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: 'default' | 'error' | 'success'
 }
 
-export function HelperText({ children, variant = 'default', className, ...props }: HelperTextProps) {
+export function HelperText({
+  children,
+  variant = 'default',
+  className,
+  ...props
+}: HelperTextProps) {
   return (
     <span
       className={`nuxy-helper-text ${variant !== 'default' ? `nuxy-helper-text--${variant}` : ''} ${className || ''}`}

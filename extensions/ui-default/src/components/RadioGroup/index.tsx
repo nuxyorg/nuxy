@@ -62,7 +62,11 @@ export function RadioGroup({
               onChange={() => handleChange(opt.value, opt.disabled)}
               aria-checked={isChecked}
             />
-            <span className="nuxy-radio__circle" onClick={() => handleChange(opt.value, opt.disabled)} aria-hidden="true">
+            <span
+              className="nuxy-radio__circle"
+              onClick={() => handleChange(opt.value, opt.disabled)}
+              aria-hidden="true"
+            >
               <span className="nuxy-radio__dot" />
             </span>
             <span>{opt.label}</span>

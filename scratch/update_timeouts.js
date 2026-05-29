@@ -35,12 +35,12 @@ const configPath = path.join(projectRoot, 'src/playwright.config.ts')
 if (fs.existsSync(configPath)) {
   console.log('Updating src/playwright.config.ts')
   let configContent = fs.readFileSync(configPath, 'utf8')
-  
+
   configContent = configContent.replace('timeout: 3000', 'timeout: 5000')
   configContent = configContent.replace('timeout: 100', 'timeout: 400')
   configContent = configContent.replace('actionTimeout: 100', 'actionTimeout: 400')
   configContent = configContent.replace('navigationTimeout: 1000', 'navigationTimeout: 2000')
-  
+
   fs.writeFileSync(configPath, configContent, 'utf8')
 }
 

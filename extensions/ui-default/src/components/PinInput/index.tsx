@@ -92,7 +92,9 @@ export function PinInput({
                 'nuxy-pin-input__cell',
                 val ? 'nuxy-pin-input__cell--filled' : '',
                 error ? 'nuxy-pin-input__cell--error' : '',
-              ].filter(Boolean).join(' ')}
+              ]
+                .filter(Boolean)
+                .join(' ')}
               aria-label={`Digit ${idx + 1}`}
             />
             {idx === Math.floor(length / 2) - 1 && length > 4 && (

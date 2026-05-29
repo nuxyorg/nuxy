@@ -9,11 +9,7 @@ export interface TwoPanelNavSection {
   itemCount: number
 }
 
-
-
 export type TwoPanelFocusArea = 'left' | 'right'
-
-
 
 export interface UseTwoPanelNavOptions {
   sections: TwoPanelNavSection[]
@@ -38,8 +34,6 @@ export interface UseTwoPanelNavOptions {
    */
   rightPanelActions?: KeyAction[]
 }
-
-
 
 export interface UseTwoPanelNavResult {
   /** Which panel currently has keyboard focus */
@@ -72,6 +66,7 @@ export interface UseTwoPanelNavResult {
 }
 
 export function useTwoPanelNav(...args: any[]): any {
-  return (window.UI as any)?.useTwoPanelNav ? (window.UI as any).useTwoPanelNav(...args) : ({} as any);
+  return (window.UI as any)?.useTwoPanelNav
+    ? (window.UI as any).useTwoPanelNav(...args)
+    : ({} as any)
 }
-

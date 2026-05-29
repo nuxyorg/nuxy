@@ -26,7 +26,9 @@ export function TableRow({ children, className, interactive, ...props }: TableRo
         'nuxy-table__tr',
         interactive ? 'nuxy-table__tr--interactive' : '',
         className || '',
-      ].filter(Boolean).join(' ')}
+      ]
+        .filter(Boolean)
+        .join(' ')}
       {...props}
     >
       {children}
@@ -100,7 +102,9 @@ export function Stat({ label, value, change, helpText, className }: StatProps) {
             'nuxy-stat__help',
             isUp ? 'nuxy-stat__help--up' : '',
             isDown ? 'nuxy-stat__help--down' : '',
-          ].filter(Boolean).join(' ')}
+          ]
+            .filter(Boolean)
+            .join(' ')}
         >
           {change !== undefined && (
             <span>

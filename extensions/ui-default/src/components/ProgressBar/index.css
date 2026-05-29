@@ -15,14 +15,20 @@
 .nuxy-progress__track {
   width: 100%;
   height: 6px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-xl);
   overflow: hidden;
 }
 
-.nuxy-progress__track--sm { height: 3px; }
-.nuxy-progress__track--md { height: 6px; }
-.nuxy-progress__track--lg { height: 10px; }
+.nuxy-progress__track--sm {
+  height: 3px;
+}
+.nuxy-progress__track--md {
+  height: 6px;
+}
+.nuxy-progress__track--lg {
+  height: 10px;
+}
 
 .nuxy-progress__fill {
   height: 100%;
@@ -37,8 +43,12 @@
 }
 
 @keyframes nuxy-progress-indeterminate {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(350%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
 }
 
 /* Spinner */
@@ -53,8 +63,12 @@
 }
 
 @keyframes nuxy-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .nuxy-spinner__circle {
@@ -67,7 +81,7 @@
 /* Skeleton */
 .nuxy-skeleton {
   border-radius: var(--radius-md);
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   overflow: hidden;
   position: relative;
 }
@@ -79,15 +93,19 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255,255,255,0.06) 50%,
+    rgba(255, 255, 255, 0.06) 50%,
     transparent 100%
   );
   animation: nuxy-shimmer 1.5s ease infinite;
 }
 
 @keyframes nuxy-shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .nuxy-skeleton--text {
@@ -106,29 +124,29 @@
   padding: var(--space-4) var(--space-4);
   border-radius: var(--radius-lg);
   border-left: 3px solid transparent;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255, 255, 255, 0.03);
   font-size: var(--font-md);
   line-height: 1.5;
 }
 
 .nuxy-callout--info {
   border-left-color: var(--syntax-operator);
-  background: rgba(42,192,255,0.05);
+  background: rgba(42, 192, 255, 0.05);
 }
 
 .nuxy-callout--warning {
   border-left-color: var(--syntax-constant);
-  background: rgba(255,170,1,0.05);
+  background: rgba(255, 170, 1, 0.05);
 }
 
 .nuxy-callout--error {
   border-left-color: var(--syntax-invalid);
-  background: rgba(255,29,100,0.05);
+  background: rgba(255, 29, 100, 0.05);
 }
 
 .nuxy-callout--success {
   border-left-color: var(--syntax-green);
-  background: rgba(204,255,45,0.04);
+  background: rgba(204, 255, 45, 0.04);
 }
 
 .nuxy-callout__icon {
@@ -138,7 +156,8 @@
   align-items: flex-start;
 }
 
-.nuxy-callout__body {}
+.nuxy-callout__body {
+}
 
 .nuxy-callout__title {
   font-weight: 600;

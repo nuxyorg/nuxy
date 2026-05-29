@@ -9,7 +9,11 @@ export interface SpinnerProps {
   'aria-label'?: string
 }
 
-export function Spinner({ size = 'md', className, 'aria-label': ariaLabel = 'Loading…' }: SpinnerProps) {
+export function Spinner({
+  size = 'md',
+  className,
+  'aria-label': ariaLabel = 'Loading…',
+}: SpinnerProps) {
   const px = typeof size === 'number' ? size : SIZES[size]
   const r = (px / 2) * 0.7
   const circumference = 2 * Math.PI * r

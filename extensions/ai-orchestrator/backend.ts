@@ -14,7 +14,10 @@ const MODEL = 'functiongemma'
 
 // ─── Ollama chat helper ───────────────────────────────────────────────────────
 
-async function ollamaChat(messages: OllamaMessage[], tools: ToolDef[] = []): Promise<OllamaChatResponse> {
+async function ollamaChat(
+  messages: OllamaMessage[],
+  tools: ToolDef[] = []
+): Promise<OllamaChatResponse> {
   const body: Record<string, unknown> = {
     model: MODEL,
     messages,
@@ -95,8 +98,7 @@ const BUILTIN_TOOL_SCHEMAS: Record<string, JsonSchema> = {
     properties: {
       text: {
         type: 'string',
-        description:
-          'A math expression to evaluate, e.g. "2 + 2", "sqrt(16)", "(3 * 4) / 2".',
+        description: 'A math expression to evaluate, e.g. "2 + 2", "sqrt(16)", "(3 * 4) / 2".',
       },
     },
     required: ['text'],
@@ -116,8 +118,8 @@ export function register(core: CoreContext): void {
     await handleRoute(core, rawText)
   })
 
-  core.ipc.handle('route', async (payload: RoutePayload) => {
-    const text = payload?.text ?? ''
+  core.ipc.handle('route', async (payload: unknown) => {
+    const text = (payload as RoutePayload)?.text ?? ''
     if (!text.trim()) return { error: 'Empty query' }
     await handleRoute(core, text)
     return { ok: true }
@@ -130,7 +132,10 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
   try {
     let callableTools: CallableExtension[] = []
     try {
-      callableTools = (core.registry as unknown as { getCallableTools?: () => CallableExtension[] }).getCallableTools?.() ?? []
+      callableTools =
+        (
+          core.registry as unknown as { getCallableTools?: () => CallableExtension[] }
+        ).getCallableTools?.() ?? []
     } catch (_) {
       core.logger.warn('[AI Orchestrator] getCallableTools not available, using empty list')
     }
@@ -201,9 +206,7 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
         const fnName = toolCall.function?.name
         const args = toolCall.function?.arguments ?? {}
 
-        core.logger.info(
-          `[AI Orchestrator] Tool call: ${fnName}(${JSON.stringify(args)})`
-        )
+        core.logger.info(`[AI Orchestrator] Tool call: ${fnName}(${JSON.stringify(args)})`)
 
         const matchedDef = toolDefs.find((d) => d.function.name === fnName)
         const extId = matchedDef?.function.__extId
@@ -256,11 +259,9 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
     } else {
       let answer = assistantMsg.content ?? ''
       try {
-        const ollamaResult = await core.extensions.invoke(
-          'com.nuxy.ollama',
-          'chat',
-          { messages }
-        ) as { content?: string } | null
+        const ollamaResult = (await core.extensions.invoke('com.nuxy.ollama', 'chat', {
+          messages,
+        })) as { content?: string } | null
         answer = ollamaResult?.content ?? answer
       } catch (_) {
         // Ollama not available — use functiongemma's direct answer
@@ -285,7 +286,10 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
 
 function broadcastResult(core: CoreContext, data: OrchestratorResult): void {
   try {
-    (core.ipc as unknown as { broadcast?: (channel: string, data: unknown) => void }).broadcast?.('orchestrator-result', data)
+    ;(core.ipc as unknown as { broadcast?: (channel: string, data: unknown) => void }).broadcast?.(
+      'orchestrator-result',
+      data
+    )
   } catch (_) {
     // not yet implemented
   }

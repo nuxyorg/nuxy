@@ -1,14 +1,10 @@
 import React, { useRef, useEffect } from 'react'
 
-
-
 export interface TabOption {
   id: string
   label: string
   icon?: string
 }
-
-
 
 export interface TabBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   tabs: TabOption[]
@@ -18,7 +14,6 @@ export interface TabBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
 }
 
 export function TabBar(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.TabBar || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.TabBar || (() => null)
+  return <Impl {...props} />
 }
-

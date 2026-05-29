@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'ghost' | 'danger'
@@ -9,7 +7,6 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
 }
 
 export function IconButton(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.IconButton || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.IconButton || (() => null)
+  return <Impl {...props} />
 }
-

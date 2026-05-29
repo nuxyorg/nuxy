@@ -51,7 +51,10 @@ export default function ShellView({ query: _queryProp }: Props) {
   const [providers, setProviders] = useState<Provider[]>([])
   const [orchestrators, setOrchestrators] = useState<Orchestrator[]>([])
   const [activeTool, setActiveTool] = useState<string | null>(null)
-  const [ToolComponent, setToolComponent] = useState<React.ComponentType<{ query: string; extensionId?: string }> | null>(null)
+  const [ToolComponent, setToolComponent] = useState<React.ComponentType<{
+    query: string
+    extensionId?: string
+  }> | null>(null)
   const [showOmniBar, setShowOmniBar] = useState<boolean>(true)
   const [themeStyles, setThemeStyles] = useState<Record<string, string> | null>(null)
   const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false)
@@ -137,7 +140,9 @@ export default function ShellView({ query: _queryProp }: Props) {
           item.id.toLowerCase().includes(savedQuery.toLowerCase())
       )
     } else if (recentToolIds.length > 0) {
-      const recent = recentToolIds.map((id) => toolItems.find((t) => t.id === id)).filter((x): x is ListItem => Boolean(x))
+      const recent = recentToolIds
+        .map((id) => toolItems.find((t) => t.id === id))
+        .filter((x): x is ListItem => Boolean(x))
       const rest = toolItems.filter((t) => !recentToolIds.includes(t.id))
       filteredTools = [...recent, ...rest]
     } else {
@@ -232,7 +237,7 @@ export default function ShellView({ query: _queryProp }: Props) {
     const onFocus = () => {
       const paletteInput = document.querySelector('.nuxy-command-palette__input')
       if (paletteInput) {
-        (paletteInput as HTMLInputElement).focus()
+        ;(paletteInput as HTMLInputElement).focus()
       } else {
         inputRef.current?.focus()
       }
@@ -261,7 +266,8 @@ export default function ShellView({ query: _queryProp }: Props) {
   }, [])
 
   useEffect(() => {
-    const handleActions = (e: Event) => setToolActions((e as CustomEvent<CommandPaletteAction[]>).detail || [])
+    const handleActions = (e: Event) =>
+      setToolActions((e as CustomEvent<CommandPaletteAction[]>).detail || [])
     window.addEventListener('nuxy-register-actions', handleActions)
     return () => window.removeEventListener('nuxy-register-actions', handleActions)
   }, [])
@@ -310,7 +316,8 @@ export default function ShellView({ query: _queryProp }: Props) {
   }, [activeTool])
 
   useEffect(() => {
-    const handleFooterHints = (e: Event) => setFooterHints((e as CustomEvent<React.ReactNode>).detail || null)
+    const handleFooterHints = (e: Event) =>
+      setFooterHints((e as CustomEvent<React.ReactNode>).detail || null)
     window.addEventListener('nuxy-shell-footer-hints', handleFooterHints)
     return () => window.removeEventListener('nuxy-shell-footer-hints', handleFooterHints)
   }, [])
@@ -351,7 +358,9 @@ export default function ShellView({ query: _queryProp }: Props) {
     recordToolUsed(toolId)
     const dynamicImport = new Function('url', 'return import(url)')
     dynamicImport(`nuxy-ext://${toolId}/frontend.js`)
-      .then((module: { default: React.ComponentType<{ query: string; extensionId?: string }> }) => setToolComponent(() => module.default))
+      .then((module: { default: React.ComponentType<{ query: string; extensionId?: string }> }) =>
+        setToolComponent(() => module.default)
+      )
       .catch(console.error)
   }
 
@@ -557,9 +566,7 @@ export default function ShellView({ query: _queryProp }: Props) {
             : settings?.windowWidth
               ? `${settings.windowWidth}px`
               : undefined,
-          maxHeight: size.height
-            ? 'none'
-            : `${settings?.windowMaxHeight ?? 600}px`,
+          maxHeight: size.height ? 'none' : `${settings?.windowMaxHeight ?? 600}px`,
           opacity: settings?.opacity !== undefined ? settings.opacity : undefined,
           transition: isDraggingState
             ? 'none'
@@ -788,16 +795,19 @@ export default function ShellView({ query: _queryProp }: Props) {
                 {footerHints || (activeTool && keyActionHints.length > 0) ? (
                   <>
                     {footerHints}
-                    {activeTool && keyActionHints.map((a, i) => (
-                      <React.Fragment key={a.key + (a.modifiers || []).join('')}>
-                        {(i > 0 || footerHints) && ShortcutSep && <ShortcutSep />}
-                        {Kbd && (Array.isArray(a.hint)
-                          ? a.hint.map((k, ki) => <Kbd key={ki}>{k}</Kbd>)
-                          : <Kbd>{a.hint}</Kbd>
-                        )}
-                        <span>{a.label}</span>
-                      </React.Fragment>
-                    ))}
+                    {activeTool &&
+                      keyActionHints.map((a, i) => (
+                        <React.Fragment key={a.key + (a.modifiers || []).join('')}>
+                          {(i > 0 || footerHints) && ShortcutSep && <ShortcutSep />}
+                          {Kbd &&
+                            (Array.isArray(a.hint) ? (
+                              a.hint.map((k, ki) => <Kbd key={ki}>{k}</Kbd>)
+                            ) : (
+                              <Kbd>{a.hint}</Kbd>
+                            ))}
+                          <span>{a.label}</span>
+                        </React.Fragment>
+                      ))}
                   </>
                 ) : (
                   <span>{tools.length + 1} extensions loaded</span>

@@ -5,7 +5,8 @@ import type { AngrysearchItem, DbStatus } from './types.ts'
 
 const EXT_ID = 'com.nuxy.angrysearch'
 
-const _useListNavigation = (window.UI || {}).useListNavigation ||
+const _useListNavigation =
+  (window.UI || {}).useListNavigation ||
   (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
 
 interface Props {
@@ -111,14 +112,18 @@ export default function AngrysearchView({ query }: Props) {
   const triggerUpdate = useCallback((): void => {
     if (!window.core?.ipc?.invoke) return
     window.core.ipc.invoke(EXT_ID, 'updateDatabase').then(() => {
-      setStatus((prev) => prev ? { ...prev, isUpdating: true } : prev)
+      setStatus((prev) => (prev ? { ...prev, isUpdating: true } : prev))
     })
   }, [])
 
   useEffect(() => {
     const actions = [
       { id: 'update-db', label: 'Update Database', onExecute: triggerUpdate },
-      { id: 'toggle-regex', label: 'Toggle Regex Mode', onExecute: () => setRegexMode((m: boolean) => !m) },
+      {
+        id: 'toggle-regex',
+        label: 'Toggle Regex Mode',
+        onExecute: () => setRegexMode((m: boolean) => !m),
+      },
     ]
     window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
     return () => window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
@@ -144,7 +149,7 @@ export default function AngrysearchView({ query }: Props) {
             </span>
           </>
         ),
-      }),
+      })
     )
     return () => {
       window.dispatchEvent(new CustomEvent('nuxy-shell-footer-hints', { detail: null }))
@@ -156,9 +161,7 @@ export default function AngrysearchView({ query }: Props) {
       {items.length === 0 ? (
         <EmptyState
           message={searchQuery.length < 3 ? 'Type to search...' : 'No matches.'}
-          hint={
-            searchQuery.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'
-          }
+          hint={searchQuery.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'}
         />
       ) : (
         items.map((item, idx) => {
@@ -168,14 +171,30 @@ export default function AngrysearchView({ query }: Props) {
               <ListItemBody>
                 <ListItemText>
                   {item.isDir
-                    ? (IconFolder && <IconFolder style={{ width: '1em', height: '1em', marginRight: 'var(--space-1)', verticalAlign: 'middle' }} />)
-                    : (IconFile && <IconFile style={{ width: '1em', height: '1em', marginRight: 'var(--space-1)', verticalAlign: 'middle' }} />)
-                  }
+                    ? IconFolder && (
+                        <IconFolder
+                          style={{
+                            width: '1em',
+                            height: '1em',
+                            marginRight: 'var(--space-1)',
+                            verticalAlign: 'middle',
+                          }}
+                        />
+                      )
+                    : IconFile && (
+                        <IconFile
+                          style={{
+                            width: '1em',
+                            height: '1em',
+                            marginRight: 'var(--space-1)',
+                            verticalAlign: 'middle',
+                          }}
+                        />
+                      )}
                   {item.title}
                 </ListItemText>
                 <ListItemMeta>{item.subtitle}</ListItemMeta>
               </ListItemBody>
-
             </ListItem>
           )
         })

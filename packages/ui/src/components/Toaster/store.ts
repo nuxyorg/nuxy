@@ -1,8 +1,6 @@
-import React from 'react';
+import React from 'react'
 
 export type ToastType = 'info' | 'success' | 'warning' | 'error'
-
-
 
 export interface ToastOptions {
   id?: string
@@ -12,22 +10,17 @@ export interface ToastOptions {
   duration?: number
 }
 
-
-
 export interface Toast extends ToastOptions {
   id: string
 }
 
-
-
 type Subscriber = (toasts: Toast[]) => void
 
 export function toastStore(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.toastStore || (() => null);
-  return React.createElement(Impl, props);
+  const Impl = (window.UI as any)?.toastStore || (() => null)
+  return React.createElement(Impl, props)
 }
 
 export const toast = (...args: any[]): any => {
-  return (window.UI as any)?.toast ? (window.UI as any).toast(...args) : undefined;
-};
-
+  return (window.UI as any)?.toast ? (window.UI as any).toast(...args) : undefined
+}

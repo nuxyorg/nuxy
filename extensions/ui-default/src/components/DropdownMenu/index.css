@@ -10,9 +10,9 @@
   right: 0;
   z-index: var(--z-popover);
   background: var(--bg-base);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-lg);
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
   min-width: 180px;
   padding: var(--space-2) 0;
   animation: nuxy-slide-up 0.15s ease;
@@ -31,8 +31,14 @@
 }
 
 @keyframes nuxy-slide-up {
-  from { transform: translateY(4px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(4px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .nuxy-dropdown-item {
@@ -47,14 +53,16 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  transition: background 0.1s ease, color 0.1s ease;
+  transition:
+    background 0.1s ease,
+    color 0.1s ease;
   outline: none;
   font-family: inherit;
 }
 
 .nuxy-dropdown-item:hover:not(:disabled),
 .nuxy-dropdown-item:focus:not(:disabled) {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--syntax-operator);
 }
 
@@ -64,7 +72,7 @@
 
 .nuxy-dropdown-item--danger:hover:not(:disabled),
 .nuxy-dropdown-item--danger:focus:not(:disabled) {
-  background: rgba(255,29,100,0.08);
+  background: rgba(255, 29, 100, 0.08);
   color: var(--syntax-invalid);
 }
 
@@ -75,7 +83,7 @@
 
 .nuxy-dropdown-divider {
   height: 1px;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255, 255, 255, 0.06);
   margin: var(--space-1) 0;
 }
 

@@ -269,7 +269,12 @@ export default function CalendarApp({ query }: Props) {
           if (!field) return
           const opts = getFieldOptions(field)
           const currentVal = getFieldCurrentValue(field)
-          setSelectFocused(Math.max(0, opts.findIndex((o) => o.value === currentVal)))
+          setSelectFocused(
+            Math.max(
+              0,
+              opts.findIndex((o) => o.value === currentVal)
+            )
+          )
           setActiveSelect(field)
         }
       },
@@ -294,10 +299,7 @@ export default function CalendarApp({ query }: Props) {
       },
       handler: () => {
         const s = stateRef.current
-        const id =
-          s.view === 'list'
-            ? s.filteredEvents[s.listIdx]?.id
-            : s.editingEvent?.id
+        const id = s.view === 'list' ? s.filteredEvents[s.listIdx]?.id : s.editingEvent?.id
         if (!id) return
         ipcCall('calendar:delete', { id })
           .then(() => {
@@ -390,11 +392,7 @@ export default function CalendarApp({ query }: Props) {
           : List && (
               <List>
                 {filteredEvents.map((evt, idx) => (
-                  <ListItem
-                    key={evt.id}
-                    active={idx === listIdx}
-                    onClick={() => enterDetail(evt)}
-                  >
+                  <ListItem key={evt.id} active={idx === listIdx} onClick={() => enterDetail(evt)}>
                     <ListItemBody>
                       <ListItemText>{evt.title}</ListItemText>
                       <ListItemMeta>{formatDisplay(evt.datetime)}</ListItemMeta>
@@ -423,7 +421,11 @@ export default function CalendarApp({ query }: Props) {
   if (view === 'create') {
     const title = (query || '').trim()
     const fieldLabel: Record<string, string> = { date: 'Date', time: 'Time', reminder: 'Reminder' }
-    const fieldCurrentValues: Record<string, string> = { date: dateValue, time: timeValue, reminder: reminderValue }
+    const fieldCurrentValues: Record<string, string> = {
+      date: dateValue,
+      time: timeValue,
+      reminder: reminderValue,
+    }
 
     return (
       <div>
@@ -448,7 +450,12 @@ export default function CalendarApp({ query }: Props) {
                   active={isFieldFocused}
                   onClick={() => {
                     setFormFieldIdx(idx)
-                    setSelectFocused(Math.max(0, opts.findIndex((o) => o.value === currentVal)))
+                    setSelectFocused(
+                      Math.max(
+                        0,
+                        opts.findIndex((o) => o.value === currentVal)
+                      )
+                    )
                     setActiveSelect(field)
                   }}
                 >
@@ -495,9 +502,7 @@ export default function CalendarApp({ query }: Props) {
     return (
       <div>
         <div style={{ padding: 'var(--space-3) var(--space-4) var(--space-1)' }}>
-          <div style={{ fontWeight: 600, fontSize: 'var(--font-base)' }}>
-            {editingEvent.title}
-          </div>
+          <div style={{ fontWeight: 600, fontSize: 'var(--font-base)' }}>{editingEvent.title}</div>
           <div
             style={{
               fontSize: 'var(--font-sm)',
@@ -513,7 +518,12 @@ export default function CalendarApp({ query }: Props) {
             <ListItem
               active={activeSelect === null}
               onClick={() => {
-                setSelectFocused(Math.max(0, opts.findIndex((o) => o.value === reminderValue)))
+                setSelectFocused(
+                  Math.max(
+                    0,
+                    opts.findIndex((o) => o.value === reminderValue)
+                  )
+                )
                 setActiveSelect('reminder')
               }}
             >

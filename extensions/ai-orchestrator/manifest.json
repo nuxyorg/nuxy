@@ -5,7 +5,7 @@
   "type": "orchestrator",
   "icon": "ai",
   "orchestratorType": "tool_caller",
-  "permissions": [],
+  "permissions": ["network"],
   "capabilities": {
     "callable": false,
     "caller": true

@@ -36,7 +36,8 @@ export async function register(core: CoreContext): Promise<void> {
       }))
     } catch (err) {
       const e = err as { code?: string }
-      if (e.code === 'ENOENT') throw new Error('yt-dlp is not installed. Install it with: pip install yt-dlp')
+      if (e.code === 'ENOENT')
+        throw new Error('yt-dlp is not installed. Install it with: pip install yt-dlp')
       throw err
     }
     const data = JSON.parse(stdout) as {
@@ -48,22 +49,35 @@ export async function register(core: CoreContext): Promise<void> {
         format_note?: string
       }>
     }
-    return data.formats.map((f): VideoFormat => ({
-      formatId: f.format_id,
-      ext: f.ext,
-      resolution: f.resolution ?? f.format_note ?? 'audio only',
-      filesize: f.filesize ?? null,
-      note: f.format_note ?? '',
-    }))
+    return data.formats.map(
+      (f): VideoFormat => ({
+        formatId: f.format_id,
+        ext: f.ext,
+        resolution: f.resolution ?? f.format_note ?? 'audio only',
+        filesize: f.filesize ?? null,
+        note: f.format_note ?? '',
+      })
+    )
   })
 
   core.ipc.handle('ytdlp:download', async (payload: unknown) => {
-    const { url, formatId, outputDir } = payload as { url: string; formatId: string; outputDir?: string }
+    const { url, formatId, outputDir } = payload as {
+      url: string
+      formatId: string
+      outputDir?: string
+    }
     const jobId = crypto.randomUUID()
     const dir = outputDir ?? config.outputDir
     const outputTemplate = `${dir}/%(title)s.%(ext)s`
 
-    const handle = core.shell.spawn('yt-dlp', ['--newline', '-f', formatId, '-o', outputTemplate, url])
+    const handle = core.shell.spawn('yt-dlp', [
+      '--newline',
+      '-f',
+      formatId,
+      '-o',
+      outputTemplate,
+      url,
+    ])
 
     const job: DownloadJob = { jobId, url, formatId, progress: 0, status: 'running', handle }
     jobs.set(jobId, job)
@@ -83,14 +97,16 @@ export async function register(core: CoreContext): Promise<void> {
   })
 
   core.ipc.handle('ytdlp:queue', async () => {
-    return Array.from(jobs.values()).map(({ jobId, url, formatId, progress, status, outputPath }): DownloadJobPublic => ({
-      jobId,
-      url,
-      formatId,
-      progress,
-      status,
-      ...(outputPath !== undefined ? { outputPath } : {}),
-    }))
+    return Array.from(jobs.values()).map(
+      ({ jobId, url, formatId, progress, status, outputPath }): DownloadJobPublic => ({
+        jobId,
+        url,
+        formatId,
+        progress,
+        status,
+        ...(outputPath !== undefined ? { outputPath } : {}),
+      })
+    )
   })
 
   core.ipc.handle('ytdlp:cancel', async (payload: unknown) => {

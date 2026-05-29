@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface PinInputProps {
   length?: number
   value?: string
@@ -15,7 +13,6 @@ export interface PinInputProps {
 }
 
 export function PinInput(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.PinInput || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.PinInput || (() => null)
+  return <Impl {...props} />
 }
-

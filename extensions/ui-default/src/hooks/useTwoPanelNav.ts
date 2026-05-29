@@ -82,8 +82,24 @@ export function useTwoPanelNav({
   const [activeSectionId, setActiveSectionId] = useState<string>(sections[0]?.id ?? '')
 
   // Keep a stable ref so key handlers always see latest state + right-panel actions
-  const stateRef = useRef({ focusArea, activeSectionId, sections, selectOpen, onSectionChange, onFocusRight, rightPanelActions })
-  stateRef.current = { focusArea, activeSectionId, sections, selectOpen, onSectionChange, onFocusRight, rightPanelActions }
+  const stateRef = useRef({
+    focusArea,
+    activeSectionId,
+    sections,
+    selectOpen,
+    onSectionChange,
+    onFocusRight,
+    rightPanelActions,
+  })
+  stateRef.current = {
+    focusArea,
+    activeSectionId,
+    sections,
+    selectOpen,
+    onSectionChange,
+    onFocusRight,
+    rightPanelActions,
+  }
 
   // Precompute section start indices from itemCount
   const sectionStartIndex = useMemo(() => {
@@ -148,7 +164,9 @@ export function useTwoPanelNav({
 
   // Dispatch a right-panel action by key — always reads the freshest handler via ref
   const callRightAction = useCallback((key: string) => {
-    const action = stateRef.current.rightPanelActions.find((a) => a.key === key && !a.modifiers?.length)
+    const action = stateRef.current.rightPanelActions.find(
+      (a) => a.key === key && !a.modifiers?.length
+    )
     action?.handler()
   }, [])
 
@@ -159,7 +177,9 @@ export function useTwoPanelNav({
       handler: () => {
         const { focusArea, selectOpen, rightPanelActions } = stateRef.current
         if (focusArea !== 'right' || selectOpen) return
-        const rightAction = rightPanelActions.find((a) => a.key === 'ArrowLeft' && !a.modifiers?.length)
+        const rightAction = rightPanelActions.find(
+          (a) => a.key === 'ArrowLeft' && !a.modifiers?.length
+        )
         if (rightAction) rightAction.handler()
         else setFocusArea('left')
       },

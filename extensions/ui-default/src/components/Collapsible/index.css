@@ -1,4 +1,5 @@
-.nuxy-collapsible {}
+.nuxy-collapsible {
+}
 
 .nuxy-collapsible__trigger {
   display: flex;
@@ -49,5 +50,5 @@
 }
 
 .nuxy-accordion .nuxy-collapsible + .nuxy-collapsible {
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }

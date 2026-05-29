@@ -17,9 +17,7 @@ export interface TabsProps {
 }
 
 export function Tabs({ items, activeId, defaultActiveId, onChange, className }: TabsProps) {
-  const [internalActive, setInternalActive] = React.useState(
-    defaultActiveId ?? items[0]?.id
-  )
+  const [internalActive, setInternalActive] = React.useState(defaultActiveId ?? items[0]?.id)
   const isControlled = activeId !== undefined
   const active = isControlled ? activeId : internalActive
 
@@ -44,10 +42,9 @@ export function Tabs({ items, activeId, defaultActiveId, onChange, className }: 
               aria-controls={`panel-${item.id}`}
               id={`tab-${item.id}`}
               disabled={item.disabled}
-              className={[
-                'nuxy-tabs__trigger',
-                isActive ? 'nuxy-tabs__trigger--active' : '',
-              ].filter(Boolean).join(' ')}
+              className={['nuxy-tabs__trigger', isActive ? 'nuxy-tabs__trigger--active' : '']
+                .filter(Boolean)
+                .join(' ')}
               onClick={() => handleSelect(item.id, item.disabled)}
             >
               {item.label}

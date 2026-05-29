@@ -1,14 +1,10 @@
 import React from 'react'
 
-
-
 export interface BreadcrumbItem {
   label: React.ReactNode
   href?: string
   onClick?: (e: React.MouseEvent) => void
 }
-
-
 
 export interface BreadcrumbProps {
   items: BreadcrumbItem[]
@@ -17,7 +13,6 @@ export interface BreadcrumbProps {
 }
 
 export function Breadcrumb(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Breadcrumb || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Breadcrumb || (() => null)
+  return <Impl {...props} />
 }
-

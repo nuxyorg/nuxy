@@ -124,18 +124,23 @@ export function registerIpc() {
         if (ch === 'listSystemFonts') {
           try {
             const fonts = await new Promise<string[]>((resolve, reject) => {
-              execFile('fc-list', ['--format=%{family}\n'], { maxBuffer: 4 * 1024 * 1024 }, (err, stdout) => {
-                if (err) return reject(err)
-                const names = stdout
-                  .split('\n')
-                  .flatMap((line) => line.split(','))
-                  .map((s) => s.trim())
-                  .filter((s) => s.length > 0)
-                const unique = [...new Set(names)].sort((a, b) =>
-                  a.localeCompare(b, undefined, { sensitivity: 'base' })
-                )
-                resolve(unique)
-              })
+              execFile(
+                'fc-list',
+                ['--format=%{family}\n'],
+                { maxBuffer: 4 * 1024 * 1024 },
+                (err, stdout) => {
+                  if (err) return reject(err)
+                  const names = stdout
+                    .split('\n')
+                    .flatMap((line) => line.split(','))
+                    .map((s) => s.trim())
+                    .filter((s) => s.length > 0)
+                  const unique = [...new Set(names)].sort((a, b) =>
+                    a.localeCompare(b, undefined, { sensitivity: 'base' })
+                  )
+                  resolve(unique)
+                }
+              )
             })
             return { success: true, data: fonts }
           } catch (e) {

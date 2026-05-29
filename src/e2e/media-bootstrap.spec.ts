@@ -58,10 +58,7 @@ test.describe('extension bootstrapping', () => {
 
     const items = fs.readdirSync(extDir).filter((item: string) => {
       const p = path.join(extDir, item)
-      return (
-        fs.statSync(p).isDirectory() &&
-        fs.existsSync(path.join(p, 'manifest.json'))
-      )
+      return fs.statSync(p).isDirectory() && fs.existsSync(path.join(p, 'manifest.json'))
     })
 
     expect(exists).toBe(true)

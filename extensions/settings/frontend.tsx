@@ -20,10 +20,15 @@ const _useTwoPanelNav =
     setFocusArea: (_: string) => {},
     activeSectionId: sections[0]?.id ?? '',
     goToSection: (_: string) => {},
-    sectionStartIndex: sections.reduce((acc: Record<string, number>, s: NavSection, i: number) => {
-      acc[s.id] = sections.slice(0, i).reduce((sum: number, prev: NavSection) => sum + prev.itemCount, 0)
-      return acc
-    }, {} as Record<string, number>),
+    sectionStartIndex: sections.reduce(
+      (acc: Record<string, number>, s: NavSection, i: number) => {
+        acc[s.id] = sections
+          .slice(0, i)
+          .reduce((sum: number, prev: NavSection) => sum + prev.itemCount, 0)
+        return acc
+      },
+      {} as Record<string, number>
+    ),
     getSectionIdForIndex: (_: number) => sections[0]?.id ?? '',
     onItemSelected: (_: number) => {},
     setActiveSection: (_: string) => {},
@@ -184,14 +189,26 @@ export default function SettingsView({ query: _query }: Props) {
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
   const allSections = useMemo<ResolvedSection[]>(
-    () => SECTIONS.map((s: SectionDef) => ({ ...s, resolvedRows: s.rows(themes, iconPacks, fontOptions) })),
+    () =>
+      SECTIONS.map((s: SectionDef) => ({
+        ...s,
+        resolvedRows: s.rows(themes, iconPacks, fontOptions),
+      })),
     [themes, iconPacks, fontOptions]
   )
 
-  const allRows = useMemo<SectionRow[]>(() => allSections.flatMap((s: ResolvedSection) => s.resolvedRows), [allSections])
+  const allRows = useMemo<SectionRow[]>(
+    () => allSections.flatMap((s: ResolvedSection) => s.resolvedRows),
+    [allSections]
+  )
 
   const navSections = useMemo<NavSection[]>(
-    () => allSections.map((s: ResolvedSection) => ({ id: s.id, label: s.label, itemCount: s.resolvedRows.length })),
+    () =>
+      allSections.map((s: ResolvedSection) => ({
+        id: s.id,
+        label: s.label,
+        itemCount: s.resolvedRows.length,
+      })),
     [allSections]
   )
 
@@ -292,7 +309,10 @@ export default function SettingsView({ query: _query }: Props) {
     window.core.ipc
       .invoke('kernel', 'getThemeByName', { name })
       .then((res) => {
-        const r = res as { success: boolean; data?: { colors?: Record<string, string>; tokens?: Record<string, string> } }
+        const r = res as {
+          success: boolean
+          data?: { colors?: Record<string, string>; tokens?: Record<string, string> }
+        }
         if (!r?.success || !r.data) return
         const { colors, tokens } = r.data
         const root = document.documentElement
@@ -368,7 +388,7 @@ export default function SettingsView({ query: _query }: Props) {
         }
       })
       .catch(console.error)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!TwoPanel) return null
@@ -397,7 +417,9 @@ export default function SettingsView({ query: _query }: Props) {
           <React.Fragment key={section.id}>
             {SectionHeader && (
               <SectionHeader
-                ref={(el: HTMLDivElement | null) => { sectionRefs.current[section.id] = el }}
+                ref={(el: HTMLDivElement | null) => {
+                  sectionRefs.current[section.id] = el
+                }}
                 label={section.label}
               />
             )}
@@ -409,7 +431,11 @@ export default function SettingsView({ query: _query }: Props) {
                     ListItem && (
                       <ListItem
                         key={row.key}
-                        active={focusArea === 'right' && globalIdx === selectedRow && activeSelect === null}
+                        active={
+                          focusArea === 'right' &&
+                          globalIdx === selectedRow &&
+                          activeSelect === null
+                        }
                         onClick={() => {
                           setSelectedRow(globalIdx)
                           nav.onItemSelected(globalIdx)

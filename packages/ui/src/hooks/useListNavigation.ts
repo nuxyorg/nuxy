@@ -9,8 +9,6 @@ export interface UseListNavigationOptions<T> {
   extraActions?: KeyAction[]
 }
 
-
-
 export interface UseListNavigationResult<T> {
   selectedIndex: number
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
@@ -18,6 +16,7 @@ export interface UseListNavigationResult<T> {
 }
 
 export function useListNavigation(...args: any[]): any {
-  return (window.UI as any)?.useListNavigation ? (window.UI as any).useListNavigation(...args) : ({} as any);
+  return (window.UI as any)?.useListNavigation
+    ? (window.UI as any).useListNavigation(...args)
+    : ({} as any)
 }
-

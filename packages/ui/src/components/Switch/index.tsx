@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface SwitchProps {
   checked?: boolean
   defaultChecked?: boolean
@@ -13,7 +11,6 @@ export interface SwitchProps {
 }
 
 export function Switch(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Switch || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Switch || (() => null)
+  return <Impl {...props} />
 }
-

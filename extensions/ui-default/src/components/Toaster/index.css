@@ -18,7 +18,7 @@
   max-width: 360px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   pointer-events: auto;
-  
+
   /* Animation */
   animation: nuxy-toast-slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -51,7 +51,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .nuxy-toast-close:hover {

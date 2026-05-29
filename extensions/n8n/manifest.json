@@ -4,9 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "workflow",
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage", "network"],
   "capabilities": {
     "callable": false,
     "caller": false

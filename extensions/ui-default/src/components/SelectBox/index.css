@@ -33,7 +33,9 @@
   font-size: 9px;
   line-height: 1;
   flex-shrink: 0;
-  transition: transform 150ms, opacity 150ms;
+  transition:
+    transform 150ms,
+    opacity 150ms;
 }
 
 .nuxy-select-box__trigger:hover .nuxy-select-box__chevron,

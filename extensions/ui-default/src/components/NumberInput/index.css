@@ -24,14 +24,16 @@
   justify-content: center;
   font-size: var(--font-lg);
   opacity: 0.6;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease;
   flex-shrink: 0;
   outline: none;
 }
 
 .nuxy-number-input__btn:hover:not(:disabled) {
   opacity: 1;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .nuxy-number-input__btn:disabled {

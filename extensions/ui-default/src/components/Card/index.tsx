@@ -8,11 +8,9 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Card({ children, className, interactive, ...props }: CardProps) {
   return (
     <div
-      className={[
-        'nuxy-card',
-        interactive ? 'nuxy-card--interactive' : '',
-        className || '',
-      ].filter(Boolean).join(' ')}
+      className={['nuxy-card', interactive ? 'nuxy-card--interactive' : '', className || '']
+        .filter(Boolean)
+        .join(' ')}
       {...props}
     >
       {children}

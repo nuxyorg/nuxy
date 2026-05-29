@@ -48,7 +48,9 @@ export function CircularProgress({
           className={[
             'nuxy-circular-progress__fill',
             indeterminate ? 'nuxy-circular-progress__fill--indeterminate' : '',
-          ].filter(Boolean).join(' ')}
+          ]
+            .filter(Boolean)
+            .join(' ')}
           cx={size / 2}
           cy={size / 2}
           r={r}
@@ -84,7 +86,16 @@ export function ErrorState({
   return (
     <div className={`nuxy-error-state ${className || ''}`} role="alert">
       <span className="nuxy-error-state__icon" aria-hidden="true">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <circle cx="12" cy="12" r="10" />
           <line x1="12" y1="8" x2="12" y2="12" />
           <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -93,11 +104,7 @@ export function ErrorState({
       <h3 className="nuxy-error-state__title">{title}</h3>
       <p className="nuxy-error-state__message">{message}</p>
       {onRetry && (
-        <button
-          type="button"
-          className="nuxy-button nuxy-button--default"
-          onClick={onRetry}
-        >
+        <button type="button" className="nuxy-button nuxy-button--default" onClick={onRetry}>
           {retryLabel}
         </button>
       )}
@@ -124,7 +131,16 @@ export function Banner({ variant = 'info', children, onClose, className }: Banne
           onClick={onClose}
           aria-label="Dismiss banner"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>

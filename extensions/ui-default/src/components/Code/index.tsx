@@ -19,23 +19,14 @@ export interface CodeBlockProps {
   className?: string
 }
 
-export function CodeBlock({
-  code,
-  language = 'text',
-  showCopy = true,
-  className,
-}: CodeBlockProps) {
+export function CodeBlock({ code, language = 'text', showCopy = true, className }: CodeBlockProps) {
   return (
     <div className={`nuxy-code-block ${className || ''}`}>
       {(language || showCopy) && (
         <div className="nuxy-code-block__header">
           <span className="nuxy-code-block__lang">{language}</span>
           {showCopy && (
-            <CopyButton
-              value={code}
-              label="Copy code"
-              className="nuxy-code-block__copy"
-            />
+            <CopyButton value={code} label="Copy code" className="nuxy-code-block__copy" />
           )}
         </div>
       )}

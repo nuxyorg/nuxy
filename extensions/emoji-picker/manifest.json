@@ -4,11 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "emoji",
-  "permissions": [
-    "clipboard",
-    "storage",
-    "shell"
-  ],
+  "permissions": ["clipboard", "storage", "shell"],
   "capabilities": {
     "callable": true,
     "caller": false

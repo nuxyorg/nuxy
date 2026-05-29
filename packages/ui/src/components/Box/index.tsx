@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
   as?: React.ElementType
   display?: React.CSSProperties['display']
@@ -12,7 +10,6 @@ export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function Box(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Box || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Box || (() => null)
+  return <Impl {...props} />
 }
-

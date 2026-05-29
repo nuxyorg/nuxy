@@ -51,9 +51,7 @@ export function register(core: CoreContext): void {
 
     if (code !== 0) {
       core.logger.warn('Shift+Insert paste failed, trying ctrl+v')
-      await core.shell
-        .exec('xdotool', ['key', '--clearmodifiers', 'ctrl+v'])
-        .catch(() => {})
+      await core.shell.exec('xdotool', ['key', '--clearmodifiers', 'ctrl+v']).catch(() => {})
     }
 
     return { ok: true }

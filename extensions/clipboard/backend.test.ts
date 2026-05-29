@@ -14,14 +14,28 @@ function makeItem(overrides: Partial<ClipboardItem> = {}): ClipboardItem {
   }
 }
 
-function createCore({ storageData = null as ClipboardItem[] | null, clipText = '', clipImage = null as string | null } = {}): {
+function createCore({
+  storageData = null as ClipboardItem[] | null,
+  clipText = '',
+  clipImage = null as string | null,
+} = {}): {
   core: CoreContext
   handlers: Record<string, (payload?: unknown) => Promise<unknown>>
 } {
   const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
   const core = {
-    registry: { registerTool: vi.fn(), registerProvider: vi.fn(), registerOrchestrator: vi.fn(), registerTheme: vi.fn(), registerIconPack: vi.fn() },
-    ipc: { handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => { handlers[ch] = fn } },
+    registry: {
+      registerTool: vi.fn(),
+      registerProvider: vi.fn(),
+      registerOrchestrator: vi.fn(),
+      registerTheme: vi.fn(),
+      registerIconPack: vi.fn(),
+    },
+    ipc: {
+      handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
+        handlers[ch] = fn
+      },
+    },
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
       write: vi.fn().mockResolvedValue(undefined),
@@ -35,7 +49,16 @@ function createCore({ storageData = null as ClipboardItem[] | null, clipText = '
     },
     fs: {
       fileExists: vi.fn().mockResolvedValue(true),
-      readDir: vi.fn(), readFile: vi.fn(), readFileBinary: vi.fn(), writeFile: vi.fn(), mkdir: vi.fn(), rename: vi.fn(), rm: vi.fn(), stat: vi.fn(), homedir: vi.fn().mockReturnValue('/home/user'), tmpdir: vi.fn().mockReturnValue('/tmp'),
+      readDir: vi.fn(),
+      readFile: vi.fn(),
+      readFileBinary: vi.fn(),
+      writeFile: vi.fn(),
+      mkdir: vi.fn(),
+      rename: vi.fn(),
+      rm: vi.fn(),
+      stat: vi.fn(),
+      homedir: vi.fn().mockReturnValue('/home/user'),
+      tmpdir: vi.fn().mockReturnValue('/tmp'),
     },
     db: { open: vi.fn() },
     shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
@@ -67,11 +90,42 @@ describe('clipboard backend', () => {
     it('returns empty array before init resolves', async () => {
       const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
       register({
-        registry: { registerTool: vi.fn(), registerProvider: vi.fn(), registerOrchestrator: vi.fn(), registerTheme: vi.fn(), registerIconPack: vi.fn() },
-        ipc: { handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => { handlers[ch] = fn } },
-        storage: { read: vi.fn().mockResolvedValue(null), write: vi.fn().mockResolvedValue(undefined) },
-        clipboard: { readText: vi.fn().mockResolvedValue(''), readImage: vi.fn().mockResolvedValue(null), writeText: vi.fn(), writeImage: vi.fn(), writeFiles: vi.fn() },
-        fs: { fileExists: vi.fn(), readDir: vi.fn(), readFile: vi.fn(), readFileBinary: vi.fn(), writeFile: vi.fn(), mkdir: vi.fn(), rename: vi.fn(), rm: vi.fn(), stat: vi.fn(), homedir: vi.fn().mockReturnValue('/home/user'), tmpdir: vi.fn().mockReturnValue('/tmp') },
+        registry: {
+          registerTool: vi.fn(),
+          registerProvider: vi.fn(),
+          registerOrchestrator: vi.fn(),
+          registerTheme: vi.fn(),
+          registerIconPack: vi.fn(),
+        },
+        ipc: {
+          handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
+            handlers[ch] = fn
+          },
+        },
+        storage: {
+          read: vi.fn().mockResolvedValue(null),
+          write: vi.fn().mockResolvedValue(undefined),
+        },
+        clipboard: {
+          readText: vi.fn().mockResolvedValue(''),
+          readImage: vi.fn().mockResolvedValue(null),
+          writeText: vi.fn(),
+          writeImage: vi.fn(),
+          writeFiles: vi.fn(),
+        },
+        fs: {
+          fileExists: vi.fn(),
+          readDir: vi.fn(),
+          readFile: vi.fn(),
+          readFileBinary: vi.fn(),
+          writeFile: vi.fn(),
+          mkdir: vi.fn(),
+          rename: vi.fn(),
+          rm: vi.fn(),
+          stat: vi.fn(),
+          homedir: vi.fn().mockReturnValue('/home/user'),
+          tmpdir: vi.fn().mockReturnValue('/tmp'),
+        },
         db: { open: vi.fn() },
         shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
         media: { getNowPlaying: vi.fn() },
@@ -87,7 +141,7 @@ describe('clipboard backend', () => {
       const { core, handlers } = createCore({ storageData: items })
       register(core)
       await flush()
-      const result = await handlers.getHistory() as ClipboardItem[]
+      const result = (await handlers.getHistory()) as ClipboardItem[]
       expect(result).toHaveLength(2)
       expect(result[0].text).toBe('hello')
     })
@@ -113,7 +167,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.clearHistory() as ClipboardItem[]
+      const result = (await handlers.clearHistory()) as ClipboardItem[]
       expect(result).toHaveLength(1)
       expect(result[0].id).toBe('a')
       expect(result[0].pinned).toBe(true)
@@ -137,7 +191,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.pinItem('a') as ClipboardItem[]
+      const result = (await handlers.pinItem('a')) as ClipboardItem[]
       const item = result.find((i) => i.id === 'a')
       expect(item!.pinned).toBe(true)
     })
@@ -151,7 +205,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.pinItem('b') as ClipboardItem[]
+      const result = (await handlers.pinItem('b')) as ClipboardItem[]
       expect(result[0].id).toBe('b')
     })
 
@@ -161,7 +215,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.pinItem('nonexistent') as ClipboardItem[]
+      const result = (await handlers.pinItem('nonexistent')) as ClipboardItem[]
       expect(result).toHaveLength(1)
       expect(result[0].id).toBe('a')
     })
@@ -185,7 +239,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.unpinItem('a') as ClipboardItem[]
+      const result = (await handlers.unpinItem('a')) as ClipboardItem[]
       expect(result[0].pinned).toBe(false)
     })
 
@@ -198,7 +252,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.unpinItem('a') as ClipboardItem[]
+      const result = (await handlers.unpinItem('a')) as ClipboardItem[]
       const pinned = result.filter((i) => i.pinned)
       const unpinned = result.filter((i) => !i.pinned)
       // All pinned items come before unpinned
@@ -213,7 +267,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.deleteItem('a') as ClipboardItem[]
+      const result = (await handlers.deleteItem('a')) as ClipboardItem[]
       expect(result.find((i) => i.id === 'a')).toBeUndefined()
       expect(result).toHaveLength(1)
     })
@@ -224,7 +278,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.deleteItem('ghost') as ClipboardItem[]
+      const result = (await handlers.deleteItem('ghost')) as ClipboardItem[]
       expect(result).toHaveLength(1)
     })
 
@@ -252,15 +306,12 @@ describe('clipboard backend', () => {
     })
 
     it('moves the copied item to the top of history', async () => {
-      const items = [
-        makeItem({ id: 'a', text: 'first' }),
-        makeItem({ id: 'b', text: 'second' }),
-      ]
+      const items = [makeItem({ id: 'a', text: 'first' }), makeItem({ id: 'b', text: 'second' })]
       const { core, handlers } = createCore({ storageData: items })
       register(core)
       await flush()
 
-      const result = await handlers.copyItem('b') as ClipboardItem[]
+      const result = (await handlers.copyItem('b')) as ClipboardItem[]
       expect(result[0].id).toBe('b')
     })
 
@@ -270,7 +321,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.copyItem('ghost') as ClipboardItem[]
+      const result = (await handlers.copyItem('ghost')) as ClipboardItem[]
       expect(result).toHaveLength(1)
     })
 
@@ -340,7 +391,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.copyFile('b') as ClipboardItem[]
+      const result = (await handlers.copyFile('b')) as ClipboardItem[]
       expect(result[0].id).toBe('b')
     })
 
@@ -350,7 +401,7 @@ describe('clipboard backend', () => {
       register(core)
       await flush()
 
-      const result = await handlers.copyFile('ghost') as ClipboardItem[]
+      const result = (await handlers.copyFile('ghost')) as ClipboardItem[]
       expect(result).toHaveLength(1)
       expect(result[0].id).toBe('a')
       // writeFiles must not have been called
@@ -370,7 +421,7 @@ describe('clipboard backend', () => {
       await flush()
 
       // Pinning 'c' (last item) should move it to the front
-      const result = await handlers.pinItem('c') as ClipboardItem[]
+      const result = (await handlers.pinItem('c')) as ClipboardItem[]
       const firstUnpinnedIdx = result.findIndex((i) => !i.pinned)
       const lastPinnedIdx = result.map((i) => i.pinned).lastIndexOf(true)
       expect(lastPinnedIdx).toBeLessThan(firstUnpinnedIdx)
@@ -392,7 +443,7 @@ describe('clipboard backend', () => {
       await handlers.pinItem('d')
 
       // Now unpin b — only d should remain pinned at front
-      const afterUnpin = await handlers.unpinItem('b') as ClipboardItem[]
+      const afterUnpin = (await handlers.unpinItem('b')) as ClipboardItem[]
 
       const pinnedItems = afterUnpin.filter((i) => i.pinned)
       const unpinnedItems = afterUnpin.filter((i) => !i.pinned)
@@ -434,7 +485,7 @@ describe('clipboard backend', () => {
       // Third tick: different text to force a second poll cycle change detection
       // (the second tick won't fire because lastText already equals 'duplicate text')
       // So after two ticks only one entry should exist
-      const result = await handlers.getHistory() as ClipboardItem[]
+      const result = (await handlers.getHistory()) as ClipboardItem[]
       const dupes = result.filter((i) => i.text === 'duplicate text')
       expect(dupes).toHaveLength(1)
     })
@@ -462,7 +513,7 @@ describe('clipboard backend', () => {
       await vi.advanceTimersByTimeAsync(1000)
       await flush()
 
-      const result = await handlers.getHistory() as ClipboardItem[]
+      const result = (await handlers.getHistory()) as ClipboardItem[]
       const withSameImage = result.filter((i) => i.image === 'img-data-abc')
       // Deduplication: only one entry for 'img-data-abc' should exist
       expect(withSameImage).toHaveLength(1)
@@ -471,10 +522,10 @@ describe('clipboard backend', () => {
     it('the 100-item cap evicts oldest unpinned items but preserves pinned ones', async () => {
       // Build exactly 100 unpinned items + 5 pinned items; adding one more via poll must evict the oldest
       const unpinned = Array.from({ length: 100 }, (_, i) =>
-        makeItem({ id: `u${i}`, text: `text-${i}`, pinned: false }),
+        makeItem({ id: `u${i}`, text: `text-${i}`, pinned: false })
       )
       const pinned = Array.from({ length: 5 }, (_, i) =>
-        makeItem({ id: `p${i}`, text: `pinned-${i}`, pinned: true }),
+        makeItem({ id: `p${i}`, text: `pinned-${i}`, pinned: true })
       )
       // sortHistory puts pinned first, then unpinned
       const storageData = [...pinned, ...unpinned]
@@ -489,7 +540,7 @@ describe('clipboard backend', () => {
       await vi.advanceTimersByTimeAsync(1000)
       await flush()
 
-      const result = await handlers.getHistory() as ClipboardItem[]
+      const result = (await handlers.getHistory()) as ClipboardItem[]
 
       // All 5 pinned items must still be present
       const pinnedResult = result.filter((i) => i.pinned)
@@ -527,7 +578,7 @@ describe('clipboard backend', () => {
       await vi.advanceTimersByTimeAsync(1000)
       await flush()
 
-      const result = await handlers.getHistory() as ClipboardItem[]
+      const result = (await handlers.getHistory()) as ClipboardItem[]
       expect(result).toHaveLength(1)
       expect(result[0].text).toBe('polled text')
     })
@@ -543,7 +594,7 @@ describe('clipboard backend', () => {
       await vi.advanceTimersByTimeAsync(1000)
       await flush()
 
-      const result = await handlers.getHistory() as ClipboardItem[]
+      const result = (await handlers.getHistory()) as ClipboardItem[]
       // The initial clipboard value was added during init (history was empty + text was non-empty)
       // But the poll tick should NOT add a duplicate
       const stableEntries = result.filter((i) => i.text === 'stable text')
@@ -554,16 +605,13 @@ describe('clipboard backend', () => {
   // Integration: realistic clipboard usage flows
   describe('e2e: clipboard lifecycle', () => {
     it('pin item, clear history, pinned item survives', async () => {
-      const items = [
-        makeItem({ id: 'a', text: 'important' }),
-        makeItem({ id: 'b', text: 'junk' }),
-      ]
+      const items = [makeItem({ id: 'a', text: 'important' }), makeItem({ id: 'b', text: 'junk' })]
       const { core, handlers } = createCore({ storageData: items })
       register(core)
       await flush()
 
       await handlers.pinItem('a')
-      const afterClear = await handlers.clearHistory() as ClipboardItem[]
+      const afterClear = (await handlers.clearHistory()) as ClipboardItem[]
 
       expect(afterClear).toHaveLength(1)
       expect(afterClear[0].id).toBe('a')
@@ -581,7 +629,7 @@ describe('clipboard backend', () => {
       await flush()
 
       await handlers.copyItem('c')
-      const result = await handlers.getHistory() as ClipboardItem[]
+      const result = (await handlers.getHistory()) as ClipboardItem[]
       expect(result[0].id).toBe('c')
     })
 
@@ -597,7 +645,7 @@ describe('clipboard backend', () => {
 
       await handlers.deleteItem('a')
       await handlers.deleteItem('c')
-      const result = await handlers.getHistory() as ClipboardItem[]
+      const result = (await handlers.getHistory()) as ClipboardItem[]
 
       expect(result).toHaveLength(1)
       expect(result[0].id).toBe('b')

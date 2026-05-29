@@ -13,7 +13,10 @@ interface MockDb {
   close: ReturnType<typeof vi.fn>
 }
 
-function makeMockDb(rows: unknown[] = [], getRow: unknown = null): { db: MockDb; mockPrepare: ReturnType<typeof vi.fn>; preparedStmt: MockPreparedStmt } {
+function makeMockDb(
+  rows: unknown[] = [],
+  getRow: unknown = null
+): { db: MockDb; mockPrepare: ReturnType<typeof vi.fn>; preparedStmt: MockPreparedStmt } {
   const preparedStmt: MockPreparedStmt = {
     run: vi.fn(),
     get: vi.fn().mockReturnValue(getRow),
@@ -28,7 +31,13 @@ function makeMockDb(rows: unknown[] = [], getRow: unknown = null): { db: MockDb;
   return { db, mockPrepare, preparedStmt }
 }
 
-function createCore(dbOverride: { db: MockDb; mockPrepare: ReturnType<typeof vi.fn>; preparedStmt: MockPreparedStmt } | null = null): {
+function createCore(
+  dbOverride: {
+    db: MockDb
+    mockPrepare: ReturnType<typeof vi.fn>
+    preparedStmt: MockPreparedStmt
+  } | null = null
+): {
   core: CoreContext
   handlers: Record<string, (payload?: unknown) => Promise<unknown>>
   db: MockDb
@@ -38,14 +47,42 @@ function createCore(dbOverride: { db: MockDb; mockPrepare: ReturnType<typeof vi.
   const { db, mockPrepare, preparedStmt } = dbOverride ?? makeMockDb()
   const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
   const core = {
-    registry: { registerTool: vi.fn(), registerProvider: vi.fn(), registerOrchestrator: vi.fn(), registerTheme: vi.fn(), registerIconPack: vi.fn() },
-    ipc: { handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => { handlers[ch] = fn } },
+    registry: {
+      registerTool: vi.fn(),
+      registerProvider: vi.fn(),
+      registerOrchestrator: vi.fn(),
+      registerTheme: vi.fn(),
+      registerIconPack: vi.fn(),
+    },
+    ipc: {
+      handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
+        handlers[ch] = fn
+      },
+    },
     extensions: { invoke: vi.fn().mockResolvedValue(undefined) },
     logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn(), silly: vi.fn() },
     db: { open: vi.fn().mockReturnValue(db) },
     storage: { read: vi.fn().mockResolvedValue(null), write: vi.fn().mockResolvedValue(undefined) },
-    clipboard: { readText: vi.fn(), writeText: vi.fn(), readImage: vi.fn(), writeImage: vi.fn(), writeFiles: vi.fn() },
-    fs: { fileExists: vi.fn().mockResolvedValue(false), readDir: vi.fn(), readFile: vi.fn(), readFileBinary: vi.fn(), writeFile: vi.fn(), mkdir: vi.fn(), rename: vi.fn(), rm: vi.fn(), stat: vi.fn(), homedir: vi.fn().mockReturnValue('/home/user'), tmpdir: vi.fn().mockReturnValue('/tmp') },
+    clipboard: {
+      readText: vi.fn(),
+      writeText: vi.fn(),
+      readImage: vi.fn(),
+      writeImage: vi.fn(),
+      writeFiles: vi.fn(),
+    },
+    fs: {
+      fileExists: vi.fn().mockResolvedValue(false),
+      readDir: vi.fn(),
+      readFile: vi.fn(),
+      readFileBinary: vi.fn(),
+      writeFile: vi.fn(),
+      mkdir: vi.fn(),
+      rename: vi.fn(),
+      rm: vi.fn(),
+      stat: vi.fn(),
+      homedir: vi.fn().mockReturnValue('/home/user'),
+      tmpdir: vi.fn().mockReturnValue('/tmp'),
+    },
     shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
     media: { getNowPlaying: vi.fn() },
     config: { get: vi.fn() },
@@ -61,7 +98,10 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-async function freshBackend(): Promise<{ register: (core: CoreContext) => void; checkReminders: (core: CoreContext, getDb: () => unknown) => Promise<void> }> {
+async function freshBackend(): Promise<{
+  register: (core: CoreContext) => void
+  checkReminders: (core: CoreContext, getDb: () => unknown) => Promise<void>
+}> {
   const mod = await import('./backend.ts')
   return { register: mod.register, checkReminders: mod.checkReminders }
 }
@@ -94,12 +134,12 @@ describe('calendar backend', () => {
       const { register } = await freshBackend()
       register(core)
 
-      const result = await handlers['calendar:create']({
+      const result = (await handlers['calendar:create']({
         title: 'Team meeting',
         datetime: 1700010000000,
         notes: 'Room B',
         remindMin: 15,
-      }) as { title: string; datetime: number; notes: string; remindMin: number }
+      })) as { title: string; datetime: number; notes: string; remindMin: number }
 
       expect(preparedStmt.run).toHaveBeenCalled()
       expect(result).toMatchObject({
@@ -130,7 +170,9 @@ describe('calendar backend', () => {
       const { register } = await freshBackend()
       register(core)
 
-      const result = await handlers['calendar:create']({ title: 'Test', datetime: now }) as { id: string }
+      const result = (await handlers['calendar:create']({ title: 'Test', datetime: now })) as {
+        id: string
+      }
       expect(typeof result.id).toBe('string')
       expect(result.id.length).toBeGreaterThan(0)
     })
@@ -154,7 +196,14 @@ describe('calendar backend', () => {
       const { register } = await freshBackend()
       register(core)
 
-      const result = await handlers['calendar:list']({}) as Array<{ id: string; title: string; datetime: number; notes: string; remindMin: number; createdAt: number }>
+      const result = (await handlers['calendar:list']({})) as Array<{
+        id: string
+        title: string
+        datetime: number
+        notes: string
+        remindMin: number
+        createdAt: number
+      }>
       expect(preparedStmt.all).toHaveBeenCalled()
       expect(result).toHaveLength(1)
       expect(result[0]).toEqual({

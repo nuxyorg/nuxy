@@ -68,11 +68,11 @@ export function createCoreProxy(
         return entries.map((e) => ({ name: e.name, isDir: e.isDirectory() }))
       },
       readFile: (p: string) => fsPromises.readFile(p, 'utf8'),
-      readFileBinary: (p: string) =>
-        fsPromises.readFile(p).then((buf) => new Uint8Array(buf)),
+      readFileBinary: (p: string) => fsPromises.readFile(p).then((buf) => new Uint8Array(buf)),
       writeFile: (p: string, data: string | Uint8Array) =>
         fsPromises.writeFile(p, data instanceof Uint8Array ? Buffer.from(data) : data),
-      mkdir: (p: string, opts?: { recursive?: boolean }) => fsPromises.mkdir(p, opts).then(() => {}),
+      mkdir: (p: string, opts?: { recursive?: boolean }) =>
+        fsPromises.mkdir(p, opts).then(() => {}),
       rename: (src: string, dest: string) => fsPromises.rename(src, dest),
       rm: (p: string) => fsPromises.unlink(p),
       stat: async (p: string) => {
@@ -89,7 +89,11 @@ export function createCoreProxy(
       open: (pathOrUrl: string) =>
         new Promise<void>((resolve, reject) => {
           const cmd =
-            process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'explorer' : 'xdg-open'
+            process.platform === 'darwin'
+              ? 'open'
+              : process.platform === 'win32'
+                ? 'explorer'
+                : 'xdg-open'
           execFile(cmd, [pathOrUrl], (err) => (err ? reject(err) : resolve()))
         }),
       exec: (cmd: string, args: string[], opts?: { maxBuffer?: number }) =>
@@ -98,7 +102,10 @@ export function createCoreProxy(
             if (err && (err as NodeJS.ErrnoException).code === 'ENOENT') {
               reject(err)
             } else {
-              resolve({ stdout: stdout ?? '', code: (err as NodeJS.ErrnoException & { code?: number })?.code ?? (err ? 1 : 0) })
+              resolve({
+                stdout: stdout ?? '',
+                code: (err as NodeJS.ErrnoException & { code?: number })?.code ?? (err ? 1 : 0),
+              })
             }
           })
         }),

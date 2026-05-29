@@ -196,8 +196,11 @@ interface TimeCardProps {
 function TimeCard({ meta }: TimeCardProps) {
   if (!meta) return null
 
-  const leftText = meta.left ? meta.left.text : (meta.sourceText || meta.sourceTime)
-  const leftBadge = meta.left ? meta.left.badge : (meta.sourceTime + (meta.sourceLabel && meta.sourceLabel !== 'Local' ? ` · ${meta.sourceLabel}` : ''))
+  const leftText = meta.left ? meta.left.text : meta.sourceText || meta.sourceTime
+  const leftBadge = meta.left
+    ? meta.left.badge
+    : meta.sourceTime +
+      (meta.sourceLabel && meta.sourceLabel !== 'Local' ? ` · ${meta.sourceLabel}` : '')
   const rightText = meta.right ? meta.right.text : meta.destTime
   const rightBadge = meta.right ? meta.right.badge : `${meta.destLabel}, ${meta.destTzLabel}`
 
@@ -210,11 +213,7 @@ function TimeCard({ meta }: TimeCardProps) {
       'div',
       { className: 'tc-panel tc-panel--left' },
       React.createElement('div', { className: 'tc-panel__time' }, leftText),
-      React.createElement(
-        'div',
-        { className: 'tc-panel__badge' },
-        leftBadge
-      )
+      React.createElement('div', { className: 'tc-panel__badge' }, leftBadge)
     ),
 
     // Arrow
@@ -224,16 +223,8 @@ function TimeCard({ meta }: TimeCardProps) {
     React.createElement(
       'div',
       { className: 'tc-panel' },
-      React.createElement(
-        'div',
-        { className: 'tc-panel__time tc-panel__time--large' },
-        rightText
-      ),
-      React.createElement(
-        'div',
-        { className: 'tc-panel__badge' },
-        rightBadge
-      )
+      React.createElement('div', { className: 'tc-panel__time tc-panel__time--large' }, rightText),
+      React.createElement('div', { className: 'tc-panel__badge' }, rightBadge)
     )
   )
 }
@@ -350,9 +341,13 @@ export default function TimeCalculatorView({ query }: Props) {
       : React.createElement(
           'div',
           { className: 'tc-empty' },
-          React.createElement('div', { className: 'tc-empty__icon' },
+          React.createElement(
+            'div',
+            { className: 'tc-empty__icon' },
             (window.UI || {}).IconClock
-              ? React.createElement((window.UI || {}).IconClock!, { style: { width: '32px', height: '32px' } })
+              ? React.createElement((window.UI || {}).IconClock!, {
+                  style: { width: '32px', height: '32px' },
+                })
               : null
           ),
           React.createElement(

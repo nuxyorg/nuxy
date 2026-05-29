@@ -36,7 +36,9 @@ export function SelectBox({
   const [searchQuery, setSearchQuery] = useState('')
   const [internalFocused, setInternalFocused] = useState(0)
   const onCloseRef = useRef(onClose)
-  useEffect(() => { onCloseRef.current = onClose }, [onClose])
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     if (!open) return
@@ -52,7 +54,10 @@ export function SelectBox({
 
   useEffect(() => {
     if (open) {
-      const idx = Math.max(0, options.findIndex((o) => o.value === value))
+      const idx = Math.max(
+        0,
+        options.findIndex((o) => o.value === value)
+      )
       setInternalFocused(idx)
       setSearchQuery('')
     }
@@ -82,13 +87,14 @@ export function SelectBox({
     }
   }, [open])
 
-  const filteredOptions = searchable && searchQuery.trim()
-    ? options.filter(
-        (o) =>
-          o.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          o.value.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : options
+  const filteredOptions =
+    searchable && searchQuery.trim()
+      ? options.filter(
+          (o) =>
+            o.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            o.value.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : options
 
   const activeFocusedIndex = searchable ? internalFocused : focusedIndex
   const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder
@@ -98,7 +104,10 @@ export function SelectBox({
     if (open) {
       onClose()
     } else {
-      const idx = Math.max(0, options.findIndex((o) => o.value === value))
+      const idx = Math.max(
+        0,
+        options.findIndex((o) => o.value === value)
+      )
       onOpen?.(idx)
     }
   }
@@ -134,67 +143,69 @@ export function SelectBox({
         onClick={handleTriggerClick}
       >
         <span className="nuxy-select-box__value">{currentLabel}</span>
-        <span className={`nuxy-select-box__chevron${open ? ' nuxy-select-box__chevron--open' : ''}`}>
+        <span
+          className={`nuxy-select-box__chevron${open ? ' nuxy-select-box__chevron--open' : ''}`}
+        >
           ▾
         </span>
       </button>
 
-      {open && options.length > 0 && createPortal(
-        <div
-          className="nuxy-select-box__dropdown"
-          style={{ top: dropdownPos.top, left: dropdownPos.left, transform: 'translateX(-100%)' }}
-          role="listbox"
-        >
-          {searchable && (
-            <div className="nuxy-select-box__search-wrapper">
-              <input
-                ref={searchRef}
-                className="nuxy-select-box__search"
-                placeholder="Search…"
-                value={searchQuery}
-                tabIndex={-1}
-                onMouseDown={(e) => e.stopPropagation()}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
-              />
-            </div>
-          )}
-          <div className="nuxy-select-box__options">
-            {filteredOptions.length === 0 ? (
-              <div className="nuxy-select-box__no-results">No results</div>
-            ) : (
-              filteredOptions.map((option, i) => {
-                const isFocused = i === activeFocusedIndex
-                const isSelected = option.value === value
-                return (
-                  <div
-                    key={option.value}
-                    role="option"
-                    aria-selected={isSelected}
-                    className={[
-                      'nuxy-select-box__option',
-                      isFocused ? 'nuxy-select-box__option--focused' : '',
-                      isSelected ? 'nuxy-select-box__option--selected' : '',
-                    ]
-                      .filter(Boolean)
-                      .join(' ')}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onSelect(option.value)
-                    }}
-                  >
-                    <span className="nuxy-select-box__option-label">{option.label}</span>
-                    {isSelected && (
-                      <span className="nuxy-select-box__option-check">✓</span>
-                    )}
-                  </div>
-                )
-              })
+      {open &&
+        options.length > 0 &&
+        createPortal(
+          <div
+            className="nuxy-select-box__dropdown"
+            style={{ top: dropdownPos.top, left: dropdownPos.left, transform: 'translateX(-100%)' }}
+            role="listbox"
+          >
+            {searchable && (
+              <div className="nuxy-select-box__search-wrapper">
+                <input
+                  ref={searchRef}
+                  className="nuxy-select-box__search"
+                  placeholder="Search…"
+                  value={searchQuery}
+                  tabIndex={-1}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearchKeyDown}
+                />
+              </div>
             )}
-          </div>
-        </div>,
-        document.body
-      )}
+            <div className="nuxy-select-box__options">
+              {filteredOptions.length === 0 ? (
+                <div className="nuxy-select-box__no-results">No results</div>
+              ) : (
+                filteredOptions.map((option, i) => {
+                  const isFocused = i === activeFocusedIndex
+                  const isSelected = option.value === value
+                  return (
+                    <div
+                      key={option.value}
+                      role="option"
+                      aria-selected={isSelected}
+                      className={[
+                        'nuxy-select-box__option',
+                        isFocused ? 'nuxy-select-box__option--focused' : '',
+                        isSelected ? 'nuxy-select-box__option--selected' : '',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onSelect(option.value)
+                      }}
+                    >
+                      <span className="nuxy-select-box__option-label">{option.label}</span>
+                      {isSelected && <span className="nuxy-select-box__option-check">✓</span>}
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   )
 }

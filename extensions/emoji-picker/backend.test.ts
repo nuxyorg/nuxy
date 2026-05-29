@@ -8,7 +8,13 @@ type Handlers = Record<string, (...args: unknown[]) => Promise<unknown>>
 function createCore(storedFavorites: unknown = null): { core: CoreContext; handlers: Handlers } {
   const handlers: Handlers = {}
   const core = {
-    registry: { registerTool: vi.fn(), registerProvider: vi.fn(), registerOrchestrator: vi.fn(), registerTheme: vi.fn(), registerIconPack: vi.fn() },
+    registry: {
+      registerTool: vi.fn(),
+      registerProvider: vi.fn(),
+      registerOrchestrator: vi.fn(),
+      registerTheme: vi.fn(),
+      registerIconPack: vi.fn(),
+    },
     ipc: {
       handle: (ch: string, fn: (...args: unknown[]) => Promise<unknown>) => {
         handlers[ch] = fn
@@ -30,7 +36,19 @@ function createCore(storedFavorites: unknown = null): { core: CoreContext; handl
       exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }),
       spawn: vi.fn(),
     },
-    fs: { fileExists: vi.fn(), readDir: vi.fn(), readFile: vi.fn(), readFileBinary: vi.fn(), writeFile: vi.fn(), mkdir: vi.fn(), rename: vi.fn(), rm: vi.fn(), stat: vi.fn(), homedir: vi.fn().mockReturnValue('/home/user'), tmpdir: vi.fn().mockReturnValue('/tmp') },
+    fs: {
+      fileExists: vi.fn(),
+      readDir: vi.fn(),
+      readFile: vi.fn(),
+      readFileBinary: vi.fn(),
+      writeFile: vi.fn(),
+      mkdir: vi.fn(),
+      rename: vi.fn(),
+      rm: vi.fn(),
+      stat: vi.fn(),
+      homedir: vi.fn().mockReturnValue('/home/user'),
+      tmpdir: vi.fn().mockReturnValue('/tmp'),
+    },
     db: { open: vi.fn() },
     media: { getNowPlaying: vi.fn() },
     extensions: { invoke: vi.fn() },
@@ -55,16 +73,44 @@ describe('emoji-picker backend', () => {
     it('returns empty array initially', async () => {
       const { handlers } = createCore()
       register({
-        registry: { registerTool: vi.fn(), registerProvider: vi.fn(), registerOrchestrator: vi.fn(), registerTheme: vi.fn(), registerIconPack: vi.fn() },
+        registry: {
+          registerTool: vi.fn(),
+          registerProvider: vi.fn(),
+          registerOrchestrator: vi.fn(),
+          registerTheme: vi.fn(),
+          registerIconPack: vi.fn(),
+        },
         ipc: {
           handle: (ch: string, fn: (...args: unknown[]) => Promise<unknown>) => {
             handlers[ch] = fn
           },
         },
         storage: { read: vi.fn().mockResolvedValue(null), write: vi.fn() },
-        clipboard: { readText: vi.fn(), writeText: vi.fn(), readImage: vi.fn(), writeImage: vi.fn(), writeFiles: vi.fn() },
-        shell: { open: vi.fn(), exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }), spawn: vi.fn() },
-        fs: { fileExists: vi.fn(), readDir: vi.fn(), readFile: vi.fn(), readFileBinary: vi.fn(), writeFile: vi.fn(), mkdir: vi.fn(), rename: vi.fn(), rm: vi.fn(), stat: vi.fn(), homedir: vi.fn().mockReturnValue('/home/user'), tmpdir: vi.fn().mockReturnValue('/tmp') },
+        clipboard: {
+          readText: vi.fn(),
+          writeText: vi.fn(),
+          readImage: vi.fn(),
+          writeImage: vi.fn(),
+          writeFiles: vi.fn(),
+        },
+        shell: {
+          open: vi.fn(),
+          exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }),
+          spawn: vi.fn(),
+        },
+        fs: {
+          fileExists: vi.fn(),
+          readDir: vi.fn(),
+          readFile: vi.fn(),
+          readFileBinary: vi.fn(),
+          writeFile: vi.fn(),
+          mkdir: vi.fn(),
+          rename: vi.fn(),
+          rm: vi.fn(),
+          stat: vi.fn(),
+          homedir: vi.fn().mockReturnValue('/home/user'),
+          tmpdir: vi.fn().mockReturnValue('/tmp'),
+        },
         db: { open: vi.fn() },
         media: { getNowPlaying: vi.fn() },
         extensions: { invoke: vi.fn() },
@@ -238,7 +284,9 @@ describe('emoji-picker backend', () => {
 
     it('falls back to ctrl+v if Shift+Insert fails', async () => {
       const { core, handlers } = createCore()
-      ;(core.shell.exec as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('xdotool failed'))
+      ;(core.shell.exec as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
+        new Error('xdotool failed')
+      )
       register(core)
       const result = await handlers['paste']()
 

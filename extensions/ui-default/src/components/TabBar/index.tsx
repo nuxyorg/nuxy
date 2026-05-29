@@ -15,7 +15,14 @@ export interface TabBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 
   orientation?: 'horizontal' | 'vertical'
 }
 
-export function TabBar({ tabs, active, onChange, orientation = 'horizontal', className, ...rest }: TabBarProps) {
+export function TabBar({
+  tabs,
+  active,
+  onChange,
+  orientation = 'horizontal',
+  className,
+  ...rest
+}: TabBarProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -27,7 +34,11 @@ export function TabBar({ tabs, active, onChange, orientation = 'horizontal', cla
   }, [active])
 
   return (
-    <div ref={containerRef} className={`nuxy-tab-bar nuxy-tab-bar--${orientation} ${className ?? ''}`} {...rest}>
+    <div
+      ref={containerRef}
+      className={`nuxy-tab-bar nuxy-tab-bar--${orientation} ${className ?? ''}`}
+      {...rest}
+    >
       {tabs.map((tab) => (
         <button
           key={tab.id}

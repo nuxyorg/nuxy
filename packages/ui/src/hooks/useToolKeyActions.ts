@@ -1,7 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-
-
 export interface KeyAction {
   key: string
   modifiers?: ('ctrl' | 'shift' | 'alt' | 'meta')[]
@@ -18,6 +16,7 @@ export interface KeyAction {
 }
 
 export function useToolKeyActions(...args: any[]): any {
-  return (window.UI as any)?.useToolKeyActions ? (window.UI as any).useToolKeyActions(...args) : ({} as any);
+  return (window.UI as any)?.useToolKeyActions
+    ? (window.UI as any).useToolKeyActions(...args)
+    : ({} as any)
 }
-

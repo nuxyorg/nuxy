@@ -6,7 +6,7 @@
 
 .nuxy-tabs__list {
   display: flex;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   gap: var(--space-4);
   padding: 0;
   margin: 0;
@@ -72,19 +72,22 @@
   height: 32px;
   padding: 0 var(--space-2);
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   background: transparent;
   color: var(--syntax-variable);
   font-size: var(--font-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
   outline: none;
 }
 
 .nuxy-pagination__btn:hover:not(:disabled) {
-  background: rgba(255,255,255,0.05);
-  border-color: rgba(255,255,255,0.15);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .nuxy-pagination__btn--active {
@@ -140,7 +143,10 @@
   font-weight: 600;
   color: var(--syntax-comment);
   z-index: 1;
-  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .nuxy-step--active .nuxy-step__indicator {

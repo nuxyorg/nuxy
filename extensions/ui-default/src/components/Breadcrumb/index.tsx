@@ -32,11 +32,7 @@ export function Breadcrumb({ items, separator = '/', className }: BreadcrumbProp
                   {item.label}
                 </span>
               ) : item.href ? (
-                <a
-                  href={item.href}
-                  className="nuxy-breadcrumb__link"
-                  onClick={item.onClick}
-                >
+                <a href={item.href} className="nuxy-breadcrumb__link" onClick={item.onClick}>
                   {item.label}
                 </a>
               ) : (

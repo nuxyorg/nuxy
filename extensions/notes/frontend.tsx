@@ -1,7 +1,13 @@
 const React = window.React
-const { useState, useEffect, useRef } = React
+const { useState, useEffect, useRef, useMemo } = React
 
 import type { Note } from './types.ts'
+
+const EXT_ID = 'com.nuxy.notes'
+
+const _useListNavigation = (window.UI || {}).useListNavigation ||
+  (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
+const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
 interface Props {
   query: string
@@ -14,12 +20,25 @@ interface IpcResponse<T = unknown> {
 }
 
 export default function NotesApp({ query }: Props) {
-  const { IconMic, IconStop } = window.UI || {}
+  const {
+    TwoPanel,
+    List,
+    ListItem,
+    ListItemBody,
+    ListItemText,
+    ListItemMeta,
+    EmptyState,
+    Button,
+    Input,
+    SectionHeader,
+    IconMic,
+    IconStop,
+  } = window.UI || {}
+
   const [notes, setNotes] = useState<Note[]>([])
   const [selected, setSelected] = useState<Note | null>(null)
   const [title, setTitle] = useState<string>('')
   const [body, setBody] = useState<string>('')
-  const [search, setSearch] = useState<string>('')
   const [recording, setRecording] = useState<boolean>(false)
   const [transcribing, setTranscribing] = useState<boolean>(false)
   const mediaRef = useRef<MediaRecorder | null>(null)
@@ -27,7 +46,7 @@ export default function NotesApp({ query }: Props) {
 
   const invoke = <T = unknown>(channel: string, payload?: unknown): Promise<T> =>
     window.core.ipc
-      .invoke('com.nuxy.notes', channel, payload)
+      .invoke(EXT_ID, channel, payload)
       .then((res) => {
         const r = res as IpcResponse<T>
         if (!r?.success) throw new Error(r?.error || 'IPC call failed')
@@ -38,13 +57,13 @@ export default function NotesApp({ query }: Props) {
     invoke<Note[]>('notes:list', {}).then(setNotes).catch(() => {})
   }, [])
 
-  const filteredNotes = search.trim()
-    ? notes.filter(
-        (n) =>
-          n.title.toLowerCase().includes(search.toLowerCase()) ||
-          n.body.toLowerCase().includes(search.toLowerCase())
-      )
-    : notes
+  const filteredNotes = useMemo(() => {
+    if (!query.trim()) return notes
+    const q = query.toLowerCase()
+    return notes.filter(
+      (n) => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)
+    )
+  }, [notes, query])
 
   function selectNote(note: Note): void {
     setSelected(note)
@@ -62,23 +81,22 @@ export default function NotesApp({ query }: Props) {
   async function handleSave(): Promise<void> {
     if (!selected) return
     const updated = await invoke<Note>('notes:update', { id: selected.id, title, body })
+    setSelected(updated)
     const list = await invoke<Note[]>('notes:list', {})
     setNotes(list)
-    setSelected(updated)
   }
 
   async function handleDelete(): Promise<void> {
     if (!selected) return
     await invoke('notes:delete', { id: selected.id })
-    const list = await invoke<Note[]>('notes:list', {})
-    setNotes(list)
     setSelected(null)
     setTitle('')
     setBody('')
+    const list = await invoke<Note[]>('notes:list', {})
+    setNotes(list)
   }
 
   async function handleRecord(): Promise<void> {
-    if (recording) return
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       const recorder = new MediaRecorder(stream)
@@ -115,170 +133,116 @@ export default function NotesApp({ query }: Props) {
     }
   }
 
-  const panelStyle: React.CSSProperties = { display: 'flex', height: '100%', fontFamily: 'inherit' }
-  const leftStyle: React.CSSProperties = {
-    width: '33%',
-    borderRight: '1px solid var(--border-color, #333)',
-    display: 'flex',
-    flexDirection: 'column',
-    overflow: 'hidden',
-  }
-  const rightStyle: React.CSSProperties = { flex: 1, display: 'flex', flexDirection: 'column', padding: '8px' }
-  const listHeaderStyle: React.CSSProperties = { display: 'flex', alignItems: 'center', padding: '6px 8px', gap: '6px' }
-  const searchStyle: React.CSSProperties = {
-    flex: 1,
-    padding: '4px 8px',
-    borderRadius: '4px',
-    border: '1px solid var(--border-color, #333)',
-    background: 'var(--input-bg, #1a1a1a)',
-    color: 'var(--text-color, #fff)',
-    fontSize: '13px',
-  }
-  const newBtnStyle: React.CSSProperties = {
-    padding: '4px 10px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    background: 'var(--accent-color, #4a9eff)',
-    color: '#fff',
-    border: 'none',
-    fontSize: '16px',
-  }
-  const itemStyle = (isSelected: boolean): React.CSSProperties => ({
-    padding: '8px 10px',
-    cursor: 'pointer',
-    borderBottom: '1px solid var(--border-color, #222)',
-    background: isSelected ? 'var(--selected-bg, #2a2a3a)' : 'transparent',
-  })
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '6px 8px',
-    marginBottom: '6px',
-    borderRadius: '4px',
-    border: '1px solid var(--border-color, #333)',
-    background: 'var(--input-bg, #1a1a1a)',
-    color: 'var(--text-color, #fff)',
-    fontSize: '15px',
-    fontWeight: 'bold',
-    boxSizing: 'border-box',
-  }
-  const textareaStyle: React.CSSProperties = {
-    flex: 1,
-    width: '100%',
-    padding: '6px 8px',
-    borderRadius: '4px',
-    border: '1px solid var(--border-color, #333)',
-    background: 'var(--input-bg, #1a1a1a)',
-    color: 'var(--text-color, #fff)',
-    fontSize: '13px',
-    resize: 'none',
-    boxSizing: 'border-box',
-    fontFamily: 'inherit',
-  }
-  const toolbarStyle: React.CSSProperties = { display: 'flex', gap: '8px', marginTop: '6px', alignItems: 'center' }
-  const btnStyle = (variant?: string): React.CSSProperties => ({
-    padding: '5px 14px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    border: 'none',
-    background:
-      variant === 'primary' ? 'var(--accent-color, #4a9eff)' : 'var(--btn-bg, #333)',
-    color: '#fff',
-    fontSize: '13px',
+  const { selectedIndex } = _useListNavigation(filteredNotes, {
+    onEnter: (note: Note) => selectNote(note),
+    enterLabel: 'Open',
+    enterHint: 'Enter',
   })
 
-  return (
-    <div style={panelStyle}>
-      <div style={leftStyle}>
-        <div style={listHeaderStyle}>
-          <input
-            style={searchStyle}
-            placeholder="Search…"
-            value={search}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-          />
-          <button style={newBtnStyle} onClick={handleNew} title="New note">
-            +
-          </button>
-        </div>
-        <div style={{ flex: 1, overflowY: 'auto' }}>
-          {filteredNotes.map((note) => (
-            <div
+  _useToolKeyActions([
+    {
+      key: 'n',
+      label: 'New note',
+      hint: 'N',
+      handler: () => { void handleNew() },
+    },
+    {
+      key: 's',
+      label: 'Save',
+      hint: 'S',
+      activeOn: () => selected !== null,
+      handler: () => { void handleSave() },
+    },
+    {
+      key: 'Delete',
+      label: 'Delete',
+      hint: 'Del',
+      activeOn: () => selected !== null,
+      handler: () => { void handleDelete() },
+    },
+  ])
+
+  const leftPanel = (
+    <>
+      {SectionHeader && (
+        <SectionHeader
+          title="Notes"
+          action={Button ? <Button onClick={() => { void handleNew() }}>+</Button> : undefined}
+        />
+      )}
+      <List>
+        {filteredNotes.length === 0 ? (
+          <EmptyState message={query ? 'No matching notes.' : 'No notes yet.'} hint="Press N to create one." />
+        ) : (
+          filteredNotes.map((note, idx) => (
+            <ListItem
               key={note.id}
-              style={itemStyle(selected?.id === note.id)}
+              active={idx === selectedIndex}
               onClick={() => selectNote(note)}
             >
-              <div
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {note.title}
-              </div>
-              <div
-                style={{
-                  fontSize: '11px',
-                  opacity: 0.6,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {note.body.slice(0, 60)}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div style={rightStyle}>
-        {selected ? (
-          <>
-            <input
-              style={inputStyle}
-              value={title}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-              placeholder="Title"
-            />
-            <textarea
-              style={textareaStyle}
-              value={body}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
-              placeholder="Start writing…"
-            />
-            <div style={toolbarStyle}>
-              <button style={btnStyle('primary')} onClick={handleSave}>
-                Save
-              </button>
-              <button style={btnStyle()} onClick={handleDelete}>
-                Delete
-              </button>
-              <div style={{ flex: 1 }} />
-              <button
-                style={{
-                  ...btnStyle(),
-                  background: recording ? 'var(--color-danger)' : transcribing ? 'var(--color-warning)' : 'var(--btn-bg, var(--surface-overlay))',
-                }}
-                onClick={recording ? handleStopRecord : handleRecord}
-                disabled={transcribing}
-                title={recording ? 'Stop recording' : 'Record voice'}
-              >
-                {transcribing
-                  ? 'Transcribing…'
-                  : recording
-                    ? (IconStop ? <IconStop style={{ width: '12px', height: '12px' }} /> : 'Stop')
-                    : (IconMic ? <IconMic style={{ width: '12px', height: '12px' }} /> : 'Rec')}
-              </button>
-            </div>
-          </>
-        ) : (
-          <div style={{ opacity: 0.4, margin: 'auto', fontSize: '14px' }}>
-            Select a note or create a new one
-          </div>
+              <ListItemBody>
+                <ListItemText>{note.title}</ListItemText>
+                <ListItemMeta>{note.body.slice(0, 60)}</ListItemMeta>
+              </ListItemBody>
+            </ListItem>
+          ))
+        )}
+      </List>
+    </>
+  )
+
+  const rightPanel = selected ? (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 'var(--space-2)', gap: 'var(--space-2)' }}>
+      {Input && (
+        <Input
+          value={title}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+          placeholder="Title"
+        />
+      )}
+      <textarea
+        value={body}
+        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
+        placeholder="Start writing…"
+        style={{
+          flex: 1,
+          width: '100%',
+          resize: 'none',
+          padding: 'var(--space-2)',
+          background: 'var(--surface-overlay)',
+          color: 'var(--text-primary)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-md)',
+          fontFamily: 'inherit',
+          fontSize: 'inherit',
+          boxSizing: 'border-box',
+        }}
+      />
+      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
+        {Button && <Button onClick={() => { void handleSave() }}>Save</Button>}
+        {Button && <Button onClick={() => { void handleDelete() }}>Delete</Button>}
+        <div style={{ flex: 1 }} />
+        {Button && (
+          <Button
+            onClick={recording ? handleStopRecord : () => { void handleRecord() }}
+            disabled={transcribing}
+          >
+            {transcribing
+              ? 'Transcribing…'
+              : recording
+                ? (IconStop ? <IconStop style={{ width: '12px', height: '12px' }} /> : 'Stop')
+                : (IconMic ? <IconMic style={{ width: '12px', height: '12px' }} /> : 'Rec')}
+          </Button>
         )}
       </div>
     </div>
+  ) : (
+    <EmptyState message="Select a note or create a new one." hint="Press N to create." />
   )
+
+  if (TwoPanel) {
+    return <TwoPanel left={leftPanel} right={rightPanel} />
+  }
+
+  return leftPanel
 }

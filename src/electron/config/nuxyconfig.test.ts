@@ -18,7 +18,7 @@ function setupConfig(windowPosition?: string): void {
   vi.spyOn(fs, 'existsSync').mockReturnValue(true)
   vi.spyOn(fs, 'mkdirSync').mockImplementation(() => undefined as any)
   vi.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify(settings))
-  vi.spyOn(fs, 'watch').mockImplementation(() => ({ close: vi.fn() } as any))
+  vi.spyOn(fs, 'watch').mockImplementation(() => ({ close: vi.fn() }) as any)
   reloadConfig()
 }
 
@@ -177,7 +177,7 @@ describe('config validation', () => {
     vi.spyOn(fs, 'existsSync').mockReturnValue(true)
     vi.spyOn(fs, 'mkdirSync').mockImplementation(() => undefined as any)
     vi.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify(settings))
-    vi.spyOn(fs, 'watch').mockImplementation(() => ({ close: vi.fn() } as any))
+    vi.spyOn(fs, 'watch').mockImplementation(() => ({ close: vi.fn() }) as any)
     reloadConfig()
   }
 
@@ -258,7 +258,9 @@ describe('config validation', () => {
     setupWithSettings({ escAction: 'hide', windowWidth: 800 })
     expect(getConfig().escAction).toBe('hide')
 
-    vi.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify({ escAction: 'none', windowWidth: 900 }))
+    vi.spyOn(fs, 'readFileSync').mockReturnValue(
+      JSON.stringify({ escAction: 'none', windowWidth: 900 })
+    )
     reloadConfig()
 
     expect(getConfig().escAction).toBe('none')

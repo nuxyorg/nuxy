@@ -9,7 +9,9 @@
   color: var(--syntax-comment);
   font-size: var(--font-sm);
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
   white-space: nowrap;
 }
 

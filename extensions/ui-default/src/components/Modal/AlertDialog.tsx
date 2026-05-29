@@ -27,11 +27,7 @@ export function AlertDialog({
 }: AlertDialogProps) {
   const footer = (
     <>
-      <button
-        type="button"
-        className="nuxy-button nuxy-button--default"
-        onClick={onClose}
-      >
+      <button type="button" className="nuxy-button nuxy-button--default" onClick={onClose}>
         {cancelLabel}
       </button>
       <button

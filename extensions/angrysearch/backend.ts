@@ -130,20 +130,22 @@ export function register(core: CoreContext): void {
     }
   })
 
-  core.ipc.handle('openFile', async (filePath: string): Promise<boolean> => {
-    await core.shell.open(filePath)
+  core.ipc.handle('openFile', async (payload: unknown): Promise<boolean> => {
+    await core.shell.open(payload as string)
     return true
   })
 
-  core.ipc.handle('openLocation', async (filePath: string): Promise<boolean> => {
+  core.ipc.handle('openLocation', async (payload: unknown): Promise<boolean> => {
+    const filePath = payload as string
     const dir = filePath.replace(/\/[^/]*$/, '') || '/'
     await core.shell.open(dir)
     return true
   })
 
-  core.ipc.handle('search', async (payload: SearchPayload): Promise<SearchResult> => {
-    const text = payload?.query ?? ''
-    const isRegex = payload?.regex === true
+  core.ipc.handle('search', async (payload: unknown): Promise<SearchResult> => {
+    const p = payload as SearchPayload | null | undefined
+    const text = p?.query ?? ''
+    const isRegex = p?.regex === true
     const query = text.trim()
 
     if (query.length < 3) {

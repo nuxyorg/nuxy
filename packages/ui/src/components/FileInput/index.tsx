@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface FileInputProps {
   onChange?: (files: File[]) => void
   onRemove?: (index: number) => void
@@ -16,7 +14,6 @@ export interface FileInputProps {
 }
 
 export function FileInput(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.FileInput || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.FileInput || (() => null)
+  return <Impl {...props} />
 }
-

@@ -29,11 +29,25 @@ function createCore({ storage = {} }: { storage?: Record<string, unknown> } = {}
         storageData[key] = value
       }),
     },
-    clipboard: { readText: vi.fn(), writeText: vi.fn(), readImage: vi.fn(), writeImage: vi.fn(), writeFiles: vi.fn() },
+    clipboard: {
+      readText: vi.fn(),
+      writeText: vi.fn(),
+      readImage: vi.fn(),
+      writeImage: vi.fn(),
+      writeFiles: vi.fn(),
+    },
     fs: {
-      fileExists: vi.fn(), readDir: vi.fn(), readFile: vi.fn(), readFileBinary: vi.fn(),
-      writeFile: vi.fn(), mkdir: vi.fn(), rename: vi.fn(), rm: vi.fn(), stat: vi.fn(),
-      homedir: vi.fn().mockReturnValue('/home/user'), tmpdir: vi.fn().mockReturnValue('/tmp'),
+      fileExists: vi.fn(),
+      readDir: vi.fn(),
+      readFile: vi.fn(),
+      readFileBinary: vi.fn(),
+      writeFile: vi.fn(),
+      mkdir: vi.fn(),
+      rename: vi.fn(),
+      rm: vi.fn(),
+      stat: vi.fn(),
+      homedir: vi.fn().mockReturnValue('/home/user'),
+      tmpdir: vi.fn().mockReturnValue('/tmp'),
     },
     db: { open: vi.fn() },
     shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
@@ -46,7 +60,9 @@ function createCore({ storage = {} }: { storage?: Record<string, unknown> } = {}
   return { core, handlers, storageData }
 }
 
-function makeFetchOk(body: unknown): Promise<{ ok: boolean; json: () => Promise<unknown>; text: () => Promise<string> }> {
+function makeFetchOk(
+  body: unknown
+): Promise<{ ok: boolean; json: () => Promise<unknown>; text: () => Promise<string> }> {
   return Promise.resolve({
     ok: true,
     json: () => Promise.resolve(body),
@@ -54,7 +70,15 @@ function makeFetchOk(body: unknown): Promise<{ ok: boolean; json: () => Promise<
   })
 }
 
-function makeFetchError(status: number, text: string): Promise<{ ok: boolean; status: number; json: () => Promise<unknown>; text: () => Promise<string> }> {
+function makeFetchError(
+  status: number,
+  text: string
+): Promise<{
+  ok: boolean
+  status: number
+  json: () => Promise<unknown>
+  text: () => Promise<string>
+}> {
   return Promise.resolve({
     ok: false,
     status,
@@ -77,7 +101,9 @@ describe('ollama backend', () => {
   describe('chat handler', () => {
     beforeEach(() => {
       vi.spyOn(global, 'fetch').mockReturnValue(
-        makeFetchOk({ message: { role: 'assistant', content: 'Hello!' } }) as ReturnType<typeof fetch>
+        makeFetchOk({ message: { role: 'assistant', content: 'Hello!' } }) as ReturnType<
+          typeof fetch
+        >
       )
     })
 
@@ -93,7 +119,9 @@ describe('ollama backend', () => {
           body: expect.stringContaining('"stream":false'),
         })
       )
-      const body = JSON.parse((global.fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body as string) as { messages: unknown[]; stream: boolean; model: unknown }
+      const body = JSON.parse(
+        (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body as string
+      ) as { messages: unknown[]; stream: boolean; model: unknown }
       expect(body.messages).toEqual(messages)
       expect(body.stream).toBe(false)
       expect(typeof body.model).toBe('string')
@@ -102,18 +130,24 @@ describe('ollama backend', () => {
     it('returns { content } from the response message', async () => {
       const { core, handlers } = createCore()
       await register(core)
-      const result = await (handlers['chat'] as (p: unknown) => Promise<unknown>)({ messages: [{ role: 'user', content: 'Hi' }] })
+      const result = await (handlers['chat'] as (p: unknown) => Promise<unknown>)({
+        messages: [{ role: 'user', content: 'Hi' }],
+      })
       expect(result).toEqual({ content: 'Hello!' })
     })
 
     it('throws a descriptive error when fetch returns non-ok status', async () => {
       vi.restoreAllMocks()
-      vi.spyOn(global, 'fetch').mockReturnValue(makeFetchError(503, 'Service Unavailable') as ReturnType<typeof fetch>)
+      vi.spyOn(global, 'fetch').mockReturnValue(
+        makeFetchError(503, 'Service Unavailable') as ReturnType<typeof fetch>
+      )
       const { core, handlers } = createCore()
       await register(core)
-      await expect((handlers['chat'] as (p: unknown) => Promise<unknown>)({ messages: [{ role: 'user', content: 'Hi' }] })).rejects.toThrow(
-        /503/
-      )
+      await expect(
+        (handlers['chat'] as (p: unknown) => Promise<unknown>)({
+          messages: [{ role: 'user', content: 'Hi' }],
+        })
+      ).rejects.toThrow(/503/)
     })
 
     it('uses configured host, not a hardcoded URL', async () => {
@@ -125,7 +159,9 @@ describe('ollama backend', () => {
         storage: { 'config.json': { host: 'http://my-custom-host:12345', model: 'llama3' } },
       })
       await register(core)
-      await (handlers['chat'] as (p: unknown) => Promise<unknown>)({ messages: [{ role: 'user', content: 'test' }] })
+      await (handlers['chat'] as (p: unknown) => Promise<unknown>)({
+        messages: [{ role: 'user', content: 'test' }],
+      })
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining('http://my-custom-host:12345'),
         expect.any(Object)
@@ -136,7 +172,9 @@ describe('ollama backend', () => {
   describe('models handler', () => {
     it('returns an array of model name strings', async () => {
       vi.spyOn(global, 'fetch').mockReturnValue(
-        makeFetchOk({ models: [{ name: 'llama3' }, { name: 'mistral' }] }) as ReturnType<typeof fetch>
+        makeFetchOk({ models: [{ name: 'llama3' }, { name: 'mistral' }] }) as ReturnType<
+          typeof fetch
+        >
       )
       const { core, handlers } = createCore()
       await register(core)
@@ -177,7 +215,10 @@ describe('ollama backend', () => {
     it('writes config to storage', async () => {
       const { core, handlers } = createCore()
       await register(core)
-      await (handlers['configure'] as (p: unknown) => Promise<void>)({ model: 'mistral', host: 'http://example.com:11434' })
+      await (handlers['configure'] as (p: unknown) => Promise<void>)({
+        model: 'mistral',
+        host: 'http://example.com:11434',
+      })
       expect(core.storage.write).toHaveBeenCalledWith(
         'config.json',
         expect.objectContaining({ model: 'mistral', host: 'http://example.com:11434' })
@@ -188,12 +229,18 @@ describe('ollama backend', () => {
   describe('query handler', () => {
     it('calls chat with a single user message built from prompt', async () => {
       vi.spyOn(global, 'fetch').mockReturnValue(
-        makeFetchOk({ message: { role: 'assistant', content: 'response' } }) as ReturnType<typeof fetch>
+        makeFetchOk({ message: { role: 'assistant', content: 'response' } }) as ReturnType<
+          typeof fetch
+        >
       )
       const { core, handlers } = createCore()
       await register(core)
-      const result = await (handlers['query'] as (p: unknown) => Promise<unknown>)({ prompt: 'tell me a joke' })
-      const body = JSON.parse((global.fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body as string) as { messages: unknown[] }
+      const result = await (handlers['query'] as (p: unknown) => Promise<unknown>)({
+        prompt: 'tell me a joke',
+      })
+      const body = JSON.parse(
+        (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body as string
+      ) as { messages: unknown[] }
       expect(body.messages).toEqual([{ role: 'user', content: 'tell me a joke' }])
       expect(result).toEqual({ content: 'response' })
     })
@@ -202,13 +249,18 @@ describe('ollama backend', () => {
   describe('orchestrator function', () => {
     it('calls chat with the raw text as a user message', async () => {
       vi.spyOn(global, 'fetch').mockReturnValue(
-        makeFetchOk({ message: { role: 'assistant', content: 'response' } }) as ReturnType<typeof fetch>
+        makeFetchOk({ message: { role: 'assistant', content: 'response' } }) as ReturnType<
+          typeof fetch
+        >
       )
       const { core } = createCore()
       await register(core)
-      const orchestratorFn = (core.registry.registerOrchestrator as ReturnType<typeof vi.fn>).mock.calls[0][0] as (text: string) => Promise<unknown>
+      const orchestratorFn = (core.registry.registerOrchestrator as ReturnType<typeof vi.fn>).mock
+        .calls[0][0] as (text: string) => Promise<unknown>
       const result = await orchestratorFn('what is the capital of France?')
-      const body = JSON.parse((global.fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body as string) as { messages: unknown[] }
+      const body = JSON.parse(
+        (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body as string
+      ) as { messages: unknown[] }
       expect(body.messages).toEqual([{ role: 'user', content: 'what is the capital of France?' }])
       expect(result).toEqual({ content: 'response' })
     })

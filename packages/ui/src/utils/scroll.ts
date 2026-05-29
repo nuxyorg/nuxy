@@ -71,7 +71,10 @@ export function smoothScrollIntoViewIfNeeded(el: HTMLElement) {
     targetScrollTop -= parentRect.top - futureElTop
   }
 
-  targetScrollTop = Math.max(0, Math.min(targetScrollTop, parent.scrollHeight - parent.clientHeight))
+  targetScrollTop = Math.max(
+    0,
+    Math.min(targetScrollTop, parent.scrollHeight - parent.clientHeight)
+  )
 
   if (targetScrollTop !== parent.scrollTop || scrollAnimationId !== null) {
     smoothScrollTo(parent, targetScrollTop)

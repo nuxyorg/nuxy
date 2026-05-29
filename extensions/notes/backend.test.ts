@@ -34,8 +34,18 @@ function createCore(dbArg: MockDb | null = null): {
   const { db, mockPrepare, preparedStmt } = dbArg ?? makeMockDb()
   const handlers: Record<string, (payload: unknown) => unknown> = {}
   const core = {
-    registry: { registerTool: vi.fn(), registerProvider: vi.fn(), registerOrchestrator: vi.fn(), registerTheme: vi.fn(), registerIconPack: vi.fn() },
-    ipc: { handle: (ch: string, fn: (payload: unknown) => unknown) => { handlers[ch] = fn } },
+    registry: {
+      registerTool: vi.fn(),
+      registerProvider: vi.fn(),
+      registerOrchestrator: vi.fn(),
+      registerTheme: vi.fn(),
+      registerIconPack: vi.fn(),
+    },
+    ipc: {
+      handle: (ch: string, fn: (payload: unknown) => unknown) => {
+        handlers[ch] = fn
+      },
+    },
     storage: {
       read: vi.fn().mockResolvedValue(null),
       write: vi.fn().mockResolvedValue(undefined),
@@ -55,7 +65,13 @@ function createCore(dbArg: MockDb | null = null): {
       rm: vi.fn().mockResolvedValue(undefined),
       stat: vi.fn(),
     },
-    clipboard: { readText: vi.fn(), writeText: vi.fn(), readImage: vi.fn(), writeImage: vi.fn(), writeFiles: vi.fn() },
+    clipboard: {
+      readText: vi.fn(),
+      writeText: vi.fn(),
+      readImage: vi.fn(),
+      writeImage: vi.fn(),
+      writeFiles: vi.fn(),
+    },
     shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
     media: { getNowPlaying: vi.fn() },
     extensions: { invoke: vi.fn() },
@@ -92,7 +108,17 @@ describe('notes backend', () => {
       const { core, handlers } = createCore()
       await register(core)
 
-      const note = await (handlers['notes:create'] as (p: unknown) => Promise<{ id: string; title: string; body: string; createdAt: number; updatedAt: number }>)({ title: 'My Note', body: 'Hello world' })
+      const note = await (
+        handlers['notes:create'] as (
+          p: unknown
+        ) => Promise<{
+          id: string
+          title: string
+          body: string
+          createdAt: number
+          updatedAt: number
+        }>
+      )({ title: 'My Note', body: 'Hello world' })
 
       expect(typeof note.id).toBe('string')
       expect(note.id.length).toBeGreaterThan(0)
@@ -100,7 +126,7 @@ describe('notes backend', () => {
       expect(note.body).toBe('Hello world')
       expect(typeof note.createdAt).toBe('number')
       expect(typeof note.updatedAt).toBe('number')
-      expect((core.fs.writeFile as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith(
+      expect(core.fs.writeFile as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
         expect.stringContaining(`${note.id}.json`),
         expect.any(String)
       )
@@ -111,10 +137,15 @@ describe('notes backend', () => {
       const { core, handlers, db, preparedStmt } = createCore()
       await register(core)
 
-      await (handlers['notes:create'] as (p: unknown) => Promise<unknown>)({ title: 'Test', body: 'Body text' })
+      await (handlers['notes:create'] as (p: unknown) => Promise<unknown>)({
+        title: 'Test',
+        body: 'Body text',
+      })
 
-      expect((db.prepare as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith(expect.stringContaining('INSERT'))
-      expect((preparedStmt.run as ReturnType<typeof vi.fn>)).toHaveBeenCalled()
+      expect(db.prepare as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+        expect.stringContaining('INSERT')
+      )
+      expect(preparedStmt.run as ReturnType<typeof vi.fn>).toHaveBeenCalled()
     })
   })
 
@@ -144,23 +175,33 @@ describe('notes backend', () => {
 
   describe('notes:update', () => {
     it('updates existing file and FTS entry', async () => {
-      const existing = { id: 'note-1', title: 'Old', body: 'Old body', createdAt: 100, updatedAt: 100 }
+      const existing = {
+        id: 'note-1',
+        title: 'Old',
+        body: 'Old body',
+        createdAt: 100,
+        updatedAt: 100,
+      }
 
       const register = await freshBackend()
       const { core, handlers, preparedStmt } = createCore()
       ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(JSON.stringify(existing))
       await register(core)
 
-      const updated = await (handlers['notes:update'] as (p: unknown) => Promise<{ title: string; body: string; updatedAt: number }>)({ id: 'note-1', title: 'New Title' })
+      const updated = await (
+        handlers['notes:update'] as (
+          p: unknown
+        ) => Promise<{ title: string; body: string; updatedAt: number }>
+      )({ id: 'note-1', title: 'New Title' })
 
       expect(updated.title).toBe('New Title')
       expect(updated.body).toBe('Old body')
       expect(updated.updatedAt).toBeGreaterThanOrEqual(existing.updatedAt)
-      expect((core.fs.writeFile as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith(
+      expect(core.fs.writeFile as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
         expect.stringContaining('note-1.json'),
         expect.any(String)
       )
-      expect((preparedStmt.run as ReturnType<typeof vi.fn>)).toHaveBeenCalled()
+      expect(preparedStmt.run as ReturnType<typeof vi.fn>).toHaveBeenCalled()
     })
   })
 
@@ -172,8 +213,10 @@ describe('notes backend', () => {
 
       await (handlers['notes:delete'] as (p: unknown) => Promise<void>)({ id: 'note-xyz' })
 
-      expect((core.fs.rm as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith(expect.stringContaining('note-xyz.json'))
-      expect((preparedStmt.run as ReturnType<typeof vi.fn>)).toHaveBeenCalled()
+      expect(core.fs.rm as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+        expect.stringContaining('note-xyz.json')
+      )
+      expect(preparedStmt.run as ReturnType<typeof vi.fn>).toHaveBeenCalled()
     })
   })
 
@@ -185,11 +228,19 @@ describe('notes backend', () => {
       const register = await freshBackend()
       const { core, handlers } = createCore(dbMock)
       ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(
-        JSON.stringify({ id: 'note-abc', title: 'Test Note', body: 'content', createdAt: 1, updatedAt: 1 })
+        JSON.stringify({
+          id: 'note-abc',
+          title: 'Test Note',
+          body: 'content',
+          createdAt: 1,
+          updatedAt: 1,
+        })
       )
       await register(core)
 
-      const results = await (handlers['notes:search'] as (p: unknown) => Promise<unknown[]>)({ query: 'test' })
+      const results = await (handlers['notes:search'] as (p: unknown) => Promise<unknown[]>)({
+        query: 'test',
+      })
 
       expect(results).toBeInstanceOf(Array)
       expect(results.length).toBeGreaterThan(0)
@@ -200,7 +251,9 @@ describe('notes backend', () => {
       const { core, handlers } = createCore()
       await register(core)
 
-      const results = await (handlers['notes:search'] as (p: unknown) => Promise<unknown[]>)({ query: '' })
+      const results = await (handlers['notes:search'] as (p: unknown) => Promise<unknown[]>)({
+        query: '',
+      })
       expect(results).toEqual([])
     })
   })
@@ -213,22 +266,32 @@ describe('notes backend', () => {
       await register(core)
 
       await expect(
-        (handlers['notes:transcribe'] as (p: unknown) => Promise<unknown>)({ audioBuffer: [1, 2, 3] })
+        (handlers['notes:transcribe'] as (p: unknown) => Promise<unknown>)({
+          audioBuffer: [1, 2, 3],
+        })
       ).rejects.toThrow('OpenAI API key not configured')
     })
 
     it('POSTs to OpenAI API with correct body and returns transcript', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ text: 'hello world' }),
-      }))
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve({ text: 'hello world' }),
+        })
+      )
 
       const register = await freshBackend()
       const { core, handlers } = createCore()
-      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue({ openaiApiKey: 'sk-test-key', language: 'en' })
+      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue({
+        openaiApiKey: 'sk-test-key',
+        language: 'en',
+      })
       await register(core)
 
-      const result = await (handlers['notes:transcribe'] as (p: unknown) => Promise<unknown>)({ audioBuffer: [1, 2, 3] })
+      const result = await (handlers['notes:transcribe'] as (p: unknown) => Promise<unknown>)({
+        audioBuffer: [1, 2, 3],
+      })
 
       expect(result).toEqual({ transcript: 'hello world' })
       expect(fetch).toHaveBeenCalledWith(
@@ -242,14 +305,21 @@ describe('notes backend', () => {
 
       const register = await freshBackend()
       const { core, handlers } = createCore()
-      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue({ openaiApiKey: 'sk-test-key', language: 'en' })
+      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue({
+        openaiApiKey: 'sk-test-key',
+        language: 'en',
+      })
       await register(core)
 
       await expect(
-        (handlers['notes:transcribe'] as (p: unknown) => Promise<unknown>)({ audioBuffer: [1, 2, 3] })
+        (handlers['notes:transcribe'] as (p: unknown) => Promise<unknown>)({
+          audioBuffer: [1, 2, 3],
+        })
       ).rejects.toThrow()
 
-      expect((core.fs.rm as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith(expect.stringContaining('nuxy-voice-'))
+      expect(core.fs.rm as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+        expect.stringContaining('nuxy-voice-')
+      )
     })
   })
 
@@ -259,9 +329,12 @@ describe('notes backend', () => {
       const { core, handlers } = createCore()
       await register(core)
 
-      await (handlers['notes:configure'] as (p: unknown) => Promise<void>)({ openaiApiKey: 'sk-abc', language: 'fr' })
+      await (handlers['notes:configure'] as (p: unknown) => Promise<void>)({
+        openaiApiKey: 'sk-abc',
+        language: 'fr',
+      })
 
-      expect((core.storage.write as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith(
+      expect(core.storage.write as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
         'config.json',
         expect.objectContaining({ openaiApiKey: 'sk-abc', language: 'fr' })
       )

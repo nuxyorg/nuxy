@@ -13,7 +13,15 @@ export interface TextProps extends React.HTMLAttributes<HTMLElement> {
   mono?: boolean
 }
 
-export function Text({ as: Tag = 'p', size = 'md', variant = 'default', bold, mono, className, ...props }: TextProps) {
+export function Text({
+  as: Tag = 'p',
+  size = 'md',
+  variant = 'default',
+  bold,
+  mono,
+  className,
+  ...props
+}: TextProps) {
   const classes = [
     'nuxy-text',
     `nuxy-text--${size}`,
@@ -21,7 +29,9 @@ export function Text({ as: Tag = 'p', size = 'md', variant = 'default', bold, mo
     bold ? 'nuxy-text--bold' : '',
     mono ? 'nuxy-text--mono' : '',
     className || '',
-  ].filter(Boolean).join(' ')
+  ]
+    .filter(Boolean)
+    .join(' ')
   // @ts-ignore dynamic tag
   return <Tag className={classes} {...props} />
 }

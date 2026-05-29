@@ -6,7 +6,14 @@ export interface ItemLeadingProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'md' | 'lg'
 }
 
-export function ItemLeading({ color, size = 'md', className, style, children, ...rest }: ItemLeadingProps) {
+export function ItemLeading({
+  color,
+  size = 'md',
+  className,
+  style,
+  children,
+  ...rest
+}: ItemLeadingProps) {
   return (
     <div
       className={`nuxy-item-leading nuxy-item-leading--${size} ${className ?? ''}`}

@@ -4,9 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "settings",
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
   "capabilities": {
     "callable": false,
     "caller": false

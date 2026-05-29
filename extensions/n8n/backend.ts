@@ -87,9 +87,9 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.ipc.handle('n8n:executions', async (payload: unknown): Promise<N8nExecution[]> => {
     const { workflowId, limit = 20 } = payload as N8nExecutionsPayload
-    const data = (await apiFetch(
-      `/api/v1/executions?workflowId=${workflowId}&limit=${limit}`
-    )) as { data: N8nExecution[] }
+    const data = (await apiFetch(`/api/v1/executions?workflowId=${workflowId}&limit=${limit}`)) as {
+      data: N8nExecution[]
+    }
     return data.data.map(({ id, workflowId: wId, status, startedAt }) => ({
       id,
       workflowId: wId,

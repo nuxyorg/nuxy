@@ -5,7 +5,11 @@ import { register } from './backend.ts'
 function createCore(storageData: unknown = null) {
   const handlers: Record<string, (payload: unknown) => Promise<unknown>> = {}
   const core = {
-    ipc: { handle: (ch: string, fn: (payload: unknown) => Promise<unknown>) => { handlers[ch] = fn } },
+    ipc: {
+      handle: (ch: string, fn: (payload: unknown) => Promise<unknown>) => {
+        handlers[ch] = fn
+      },
+    },
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
       write: vi.fn().mockResolvedValue(undefined),
@@ -67,7 +71,7 @@ describe('shell backend', () => {
       const { core, handlers } = createCore()
       register(core)
       await handlers.recordToolUsed('com.nuxy.calc')
-      const result = await handlers.recordToolUsed('com.nuxy.settings') as string[]
+      const result = (await handlers.recordToolUsed('com.nuxy.settings')) as string[]
       expect(result[0]).toBe('com.nuxy.settings')
       expect(result[1]).toBe('com.nuxy.calc')
     })
@@ -77,7 +81,7 @@ describe('shell backend', () => {
       register(core)
       await handlers.recordToolUsed('com.nuxy.calc')
       await handlers.recordToolUsed('com.nuxy.settings')
-      const result = await handlers.recordToolUsed('com.nuxy.calc') as string[]
+      const result = (await handlers.recordToolUsed('com.nuxy.calc')) as string[]
       expect(result[0]).toBe('com.nuxy.calc')
       expect(result.filter((id) => id === 'com.nuxy.calc')).toHaveLength(1)
     })
@@ -88,22 +92,25 @@ describe('shell backend', () => {
       for (let i = 0; i < 15; i++) {
         await handlers.recordToolUsed(`tool-${i}`)
       }
-      const result = await handlers.getRecentTools(undefined) as string[]
+      const result = (await handlers.getRecentTools(undefined)) as string[]
       expect(result).toHaveLength(10)
     })
 
     // Merged from the two separate "ignores non-string" tests
-    it.each([null, undefined, 42, {}, [], true])('ignores non-string tool id: %s', async (badId) => {
-      const { core, handlers } = createCore()
-      register(core)
-      const result = await handlers.recordToolUsed(badId)
-      expect(result).toEqual([])
-    })
+    it.each([null, undefined, 42, {}, [], true])(
+      'ignores non-string tool id: %s',
+      async (badId) => {
+        const { core, handlers } = createCore()
+        register(core)
+        const result = await handlers.recordToolUsed(badId)
+        expect(result).toEqual([])
+      }
+    )
 
     it('accepts an empty string (it is a string)', async () => {
       const { core, handlers } = createCore()
       register(core)
-      const result = await handlers.recordToolUsed('') as string[]
+      const result = (await handlers.recordToolUsed('')) as string[]
       expect(result).toContain('')
       expect(result).toHaveLength(1)
     })
@@ -120,9 +127,14 @@ describe('shell backend', () => {
       const { core, handlers } = createCore()
       register(core)
       await handlers.recordToolUsed('com.nuxy.calc')
-      expect((core.storage.write as ReturnType<typeof vi.fn>).mock.calls.some(
-        ([file, data]: [string, unknown]) => file === 'tool-history.json' && Array.isArray(data) && (data as string[]).includes('com.nuxy.calc')
-      )).toBe(true)
+      expect(
+        (core.storage.write as ReturnType<typeof vi.fn>).mock.calls.some(
+          ([file, data]: [string, unknown]) =>
+            file === 'tool-history.json' &&
+            Array.isArray(data) &&
+            (data as string[]).includes('com.nuxy.calc')
+        )
+      ).toBe(true)
     })
   })
 
@@ -139,7 +151,7 @@ describe('shell backend', () => {
       // Use a new tool
       await handlers.recordToolUsed('com.nuxy.calc')
 
-      const result = await handlers.getRecentTools(undefined) as string[]
+      const result = (await handlers.getRecentTools(undefined)) as string[]
       expect(result[0]).toBe('com.nuxy.calc')
       expect(result[1]).toBe('com.nuxy.settings')
       // shell is still there, pushed back
@@ -155,7 +167,7 @@ describe('shell backend', () => {
       await flush()
 
       // Record a tool that was already in stored history
-      const result = await handlers.recordToolUsed('com.nuxy.shell') as string[]
+      const result = (await handlers.recordToolUsed('com.nuxy.shell')) as string[]
       expect(result[0]).toBe('com.nuxy.shell')
       expect(result.filter((id) => id === 'com.nuxy.shell')).toHaveLength(1)
       expect(result).toContain('com.nuxy.settings')
@@ -168,7 +180,7 @@ describe('shell backend', () => {
       register(core)
 
       // Should not throw, and the in-memory list should still reflect the update
-      const result = await handlers.recordToolUsed('com.nuxy.calc') as string[]
+      const result = (await handlers.recordToolUsed('com.nuxy.calc')) as string[]
       expect(result).toContain('com.nuxy.calc')
       expect(result[0]).toBe('com.nuxy.calc')
     })

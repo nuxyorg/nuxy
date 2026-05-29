@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title?: React.ReactNode
   message?: React.ReactNode
@@ -11,12 +9,12 @@ export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElemen
 }
 
 export function EmptyState(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.EmptyState;
+  const Impl = (window.UI as any)?.EmptyState
   if (Impl) {
-    return <Impl {...props} />;
+    return <Impl {...props} />
   }
 
-  const { title, message, hint, error, page, children, style, ...rest } = props;
+  const { title, message, hint, error, page, children, style, ...rest } = props
   const containerStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
@@ -30,16 +28,37 @@ export function EmptyState(props: any): React.ReactElement {
     backgroundColor: page ? '#09090b' : 'transparent',
     boxSizing: 'border-box',
     ...style,
-  };
+  }
 
   return (
     <div style={containerStyle} {...rest}>
-      {title && <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#f4f4f5', margin: '0 0 8px 0' }}>{title}</h2>}
-      {message && <p style={{ fontSize: '14px', margin: '0 0 8px 0', color: '#a1a1aa' }}>{message}</p>}
+      {title && (
+        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#f4f4f5', margin: '0 0 8px 0' }}>
+          {title}
+        </h2>
+      )}
+      {message && (
+        <p style={{ fontSize: '14px', margin: '0 0 8px 0', color: '#a1a1aa' }}>{message}</p>
+      )}
       {hint && <p style={{ fontSize: '12px', margin: '0 0 8px 0', color: '#71717a' }}>{hint}</p>}
-      {error && <pre style={{ fontSize: '12px', padding: '12px', background: '#27272a', borderRadius: '6px', color: '#ef4444', margin: '8px 0 0 0', overflowX: 'auto', maxWidth: '100%', textAlign: 'left' }}>{String(error)}</pre>}
+      {error && (
+        <pre
+          style={{
+            fontSize: '12px',
+            padding: '12px',
+            background: '#27272a',
+            borderRadius: '6px',
+            color: '#ef4444',
+            margin: '8px 0 0 0',
+            overflowX: 'auto',
+            maxWidth: '100%',
+            textAlign: 'left',
+          }}
+        >
+          {String(error)}
+        </pre>
+      )}
       {children}
     </div>
-  );
+  )
 }
-

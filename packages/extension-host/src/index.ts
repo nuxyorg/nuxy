@@ -71,9 +71,14 @@ function callHost(channel: string, payload?: unknown): Promise<unknown> {
   })
 }
 
-const { core, getSyncPayload } = createCoreProxy(callHost, logger, (channel, handler) => {
-  channelHandlers.set(channel, handler)
-}, extId)
+const { core, getSyncPayload } = createCoreProxy(
+  callHost,
+  logger,
+  (channel, handler) => {
+    channelHandlers.set(channel, handler)
+  },
+  extId
+)
 
 void (async () => {
   try {

@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface CheckboxProps {
   checked?: boolean
   defaultChecked?: boolean
@@ -13,7 +11,6 @@ export interface CheckboxProps {
 }
 
 export function Checkbox(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Checkbox || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Checkbox || (() => null)
+  return <Impl {...props} />
 }
-

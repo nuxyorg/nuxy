@@ -59,7 +59,11 @@ export interface CoreContext {
   }
   shell: {
     open: (pathOrUrl: string) => Promise<void>
-    exec: (cmd: string, args: string[], opts?: { maxBuffer?: number }) => Promise<{ stdout: string; code: number }>
+    exec: (
+      cmd: string,
+      args: string[],
+      opts?: { maxBuffer?: number }
+    ) => Promise<{ stdout: string; code: number }>
     spawn: (cmd: string, args: string[]) => SpawnHandle
   }
   media: {

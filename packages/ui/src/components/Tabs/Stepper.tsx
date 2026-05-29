@@ -1,13 +1,9 @@
 import React from 'react'
 
-
-
 export interface StepItem {
   title: string
   description?: string
 }
-
-
 
 export interface StepperProps {
   steps: StepItem[]
@@ -16,7 +12,6 @@ export interface StepperProps {
 }
 
 export function Stepper(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Stepper || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Stepper || (() => null)
+  return <Impl {...props} />
 }
-

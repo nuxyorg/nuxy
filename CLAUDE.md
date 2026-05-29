@@ -38,6 +38,7 @@ Logging verbosity: `LOG_LEVEL=silly pnpm dev` (levels: `silly` | `info` | `warn`
 4. Do not consider a feature done until the full suite passes
 
 Tests live next to the code they test:
+
 - Extension logic → `extensions/<name>/*.test.js`
 - Electron main process → `src/electron/**/*.test.ts`
 
@@ -46,8 +47,9 @@ For extension backends, mock `CoreContext` inline (see existing `*.test.js` file
 For Electron main-process modules, mock `electron` and any modules that do file I/O. Use `vi.hoisted()` when a value must be available inside a `vi.mock` factory (e.g., a tmp directory path).
 
 **Playwright e2e tests** live in `src/e2e/`. Two kinds:
-- *Unit-style* (no Electron app): import TypeScript modules directly, use `@playwright/test`. Avoid importing modules that transitively import `@nuxy/core` value exports (only type imports work without Vite alias resolution).
-- *Full UI* (Electron app launch): use the worker-scoped `electronApp`/`appPage` fixtures from `fixtures.ts`.
+
+- _Unit-style_ (no Electron app): import TypeScript modules directly, use `@playwright/test`. Avoid importing modules that transitively import `@nuxy/core` value exports (only type imports work without Vite alias resolution).
+- _Full UI_ (Electron app launch): use the worker-scoped `electronApp`/`appPage` fixtures from `fixtures.ts`.
 
 ## Architecture
 

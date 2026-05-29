@@ -24,9 +24,7 @@ export default function GradientView() {
     const canvas = document.getElementById(CANVAS_ID)
     if (!canvas) return
 
-    Object.entries(COLORS).forEach(([k, v]) =>
-      (canvas as HTMLElement).style.setProperty(k, v)
-    )
+    Object.entries(COLORS).forEach(([k, v]) => (canvas as HTMLElement).style.setProperty(k, v))
 
     const dynamicImport = new Function('url', 'return import(url)') as (
       url: string

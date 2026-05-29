@@ -5,7 +5,7 @@
   "type": "orchestrator",
   "icon": "ai",
   "orchestratorType": "chatbot",
-  "permissions": [],
+  "permissions": ["storage", "network"],
   "capabilities": {
     "callable": true,
     "caller": false

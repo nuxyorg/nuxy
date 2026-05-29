@@ -25,7 +25,13 @@ interface MockCore {
   }
 }
 
-function createCore({ callableTools = [], fetchImpl = null }: { callableTools?: unknown[]; fetchImpl?: (() => Promise<unknown>) | null } = {}): { core: MockCore; handlers: MockHandlers } {
+function createCore({
+  callableTools = [],
+  fetchImpl = null,
+}: { callableTools?: unknown[]; fetchImpl?: (() => Promise<unknown>) | null } = {}): {
+  core: MockCore
+  handlers: MockHandlers
+} {
   const handlers: MockHandlers = {}
 
   const defaultFetchImpl = (): Promise<unknown> =>
@@ -38,7 +44,9 @@ function createCore({ callableTools = [], fetchImpl = null }: { callableTools?: 
       text: () => Promise.resolve(''),
     })
 
-  vi.spyOn(global, 'fetch').mockImplementation(fetchImpl ?? defaultFetchImpl as typeof global.fetch)
+  vi.spyOn(global, 'fetch').mockImplementation(
+    fetchImpl ?? (defaultFetchImpl as typeof global.fetch)
+  )
 
   const core: MockCore = {
     registry: {
@@ -202,11 +210,9 @@ describe('ai-orchestrator backend', () => {
       })
       register(core as unknown as CoreContext)
       await handlers.route({ text: '2+2' })
-      expect(core.extensions.invoke).toHaveBeenCalledWith(
-        'com.nuxy.calculator',
-        'eval',
-        { text: '2+2' }
-      )
+      expect(core.extensions.invoke).toHaveBeenCalledWith('com.nuxy.calculator', 'eval', {
+        text: '2+2',
+      })
     })
 
     it('invokes time-calculator on the "convert" channel per TOOL_CHANNEL_MAP', async () => {
@@ -247,11 +253,10 @@ describe('ai-orchestrator backend', () => {
       })
       register(core as unknown as CoreContext)
       await handlers.route({ text: '3pm in london' })
-      expect(core.extensions.invoke).toHaveBeenCalledWith(
-        'com.nuxy.time-calculator',
-        'convert',
-        { time: '3pm', to: 'london' }
-      )
+      expect(core.extensions.invoke).toHaveBeenCalledWith('com.nuxy.time-calculator', 'convert', {
+        time: '3pm',
+        to: 'london',
+      })
     })
 
     it('calls setLastResult on the extension after a successful tool invocation', async () => {
@@ -276,15 +281,12 @@ describe('ai-orchestrator backend', () => {
           }
           return Promise.resolve({
             ok: true,
-            json: () =>
-              Promise.resolve({ message: { role: 'assistant', content: 'Result: 4' } }),
+            json: () => Promise.resolve({ message: { role: 'assistant', content: 'Result: 4' } }),
             text: () => Promise.resolve(''),
           })
         },
       })
-      core.extensions.invoke
-        .mockResolvedValueOnce(toolResult)
-        .mockResolvedValueOnce(undefined)
+      core.extensions.invoke.mockResolvedValueOnce(toolResult).mockResolvedValueOnce(undefined)
       register(core as unknown as CoreContext)
       await handlers.route({ text: '2+2' })
       expect(core.extensions.invoke).toHaveBeenCalledWith(
@@ -324,9 +326,9 @@ describe('ai-orchestrator backend', () => {
       core.extensions.invoke.mockResolvedValue({ error: 'bad expression' })
       register(core as unknown as CoreContext)
       await handlers.route({ text: 'bad' })
-      const setLastResultCalls = (core.extensions.invoke.mock.calls as [string, string, unknown][]).filter(
-        ([, channel]) => channel === 'setLastResult'
-      )
+      const setLastResultCalls = (
+        core.extensions.invoke.mock.calls as [string, string, unknown][]
+      ).filter(([, channel]) => channel === 'setLastResult')
       expect(setLastResultCalls).toHaveLength(0)
     })
 
@@ -363,7 +365,11 @@ describe('ai-orchestrator backend', () => {
             ok: true,
             json: () =>
               Promise.resolve({
-                message: { role: 'assistant', content: 'functiongemma answer', tool_calls: undefined },
+                message: {
+                  role: 'assistant',
+                  content: 'functiongemma answer',
+                  tool_calls: undefined,
+                },
               }),
             text: () => Promise.resolve(''),
           }),
@@ -524,7 +530,9 @@ describe('ai-orchestrator backend', () => {
     it('orchestrator function calls handleRoute with the raw text', async () => {
       const { core } = createCore()
       register(core as unknown as CoreContext)
-      const orchestratorFn = core.registry.registerOrchestrator.mock.calls[0][0] as (text: string) => Promise<void>
+      const orchestratorFn = core.registry.registerOrchestrator.mock.calls[0][0] as (
+        text: string
+      ) => Promise<void>
       await expect(orchestratorFn('test query')).resolves.not.toThrow()
     })
 
@@ -558,7 +566,9 @@ describe('ai-orchestrator backend', () => {
           }),
       })
       register(core as unknown as CoreContext)
-      const orchestratorFn = core.registry.registerOrchestrator.mock.calls[0][0] as (text: string) => Promise<void>
+      const orchestratorFn = core.registry.registerOrchestrator.mock.calls[0][0] as (
+        text: string
+      ) => Promise<void>
       await orchestratorFn('orchestrator test query')
       expect(core.ipc.broadcast).toHaveBeenCalledWith(
         'orchestrator-result',

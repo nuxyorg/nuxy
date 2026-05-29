@@ -1,13 +1,9 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 
-
-
 export interface SelectOption {
   value: string
   label: string
 }
-
-
 
 export interface SelectBoxProps {
   options: SelectOption[]
@@ -22,7 +18,6 @@ export interface SelectBoxProps {
 }
 
 export function SelectBox(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.SelectBox || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.SelectBox || (() => null)
+  return <Impl {...props} />
 }
-

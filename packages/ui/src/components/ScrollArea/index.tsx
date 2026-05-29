@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
   axis?: 'both' | 'y' | 'x'
   maxHeight?: number | string
@@ -9,7 +7,6 @@ export interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function ScrollArea(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ScrollArea || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.ScrollArea || (() => null)
+  return <Impl {...props} />
 }
-

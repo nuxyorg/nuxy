@@ -14,7 +14,9 @@
   border: 1.5px dashed var(--syntax-comment);
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
   text-align: center;
   position: relative;
 }
@@ -22,12 +24,12 @@
 .nuxy-file-input__zone:hover,
 .nuxy-file-input__zone--dragover {
   border-color: var(--syntax-operator);
-  background: rgba(42,192,255,0.04);
+  background: rgba(42, 192, 255, 0.04);
 }
 
 .nuxy-file-input__zone--has-files {
   border-style: solid;
-  border-color: rgba(255,255,255,0.1);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .nuxy-file-input__native {
@@ -65,7 +67,7 @@
   justify-content: space-between;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
-  background: rgba(255,255,255,0.04);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: var(--radius-md);
   font-size: var(--font-sm);
   color: var(--syntax-variable);

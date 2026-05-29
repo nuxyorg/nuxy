@@ -11,7 +11,15 @@ export interface SwitchProps {
   className?: string
 }
 
-export function Switch({ checked, defaultChecked, onChange, disabled, label, id, className }: SwitchProps) {
+export function Switch({
+  checked,
+  defaultChecked,
+  onChange,
+  disabled,
+  label,
+  id,
+  className,
+}: SwitchProps) {
   const [internalChecked, setInternalChecked] = React.useState(defaultChecked ?? false)
   const isControlled = checked !== undefined
   const isChecked = isControlled ? checked : internalChecked

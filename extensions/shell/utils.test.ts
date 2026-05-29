@@ -90,7 +90,7 @@ describe('parseCoordinate', () => {
     })
 
     it('parses 2/3 fraction', () => {
-      expect(parseCoordinate('2/3', display, win)).toBe(Math.round(1000 * 2 / 3 - 100))
+      expect(parseCoordinate('2/3', display, win)).toBe(Math.round((1000 * 2) / 3 - 100))
     })
 
     it('falls through to ratio branch when denominator is zero', () => {
@@ -128,13 +128,29 @@ describe('parseCoordinate', () => {
 
     it('returns an integer (never NaN) for a wide range of inputs', () => {
       const cases = [
-        'center', 'CENTER', 'Center',
-        '50%', '0%', '100%', '25%',
-        '1/3', '2/3', '1/2', '1/0',
-        '0.5', '300px', '600', '0px', '123.7px',
-        '0', '1',
-        undefined, null, '',
-        'garbage', 'abcpx',
+        'center',
+        'CENTER',
+        'Center',
+        '50%',
+        '0%',
+        '100%',
+        '25%',
+        '1/3',
+        '2/3',
+        '1/2',
+        '1/0',
+        '0.5',
+        '300px',
+        '600',
+        '0px',
+        '123.7px',
+        '0',
+        '1',
+        undefined,
+        null,
+        '',
+        'garbage',
+        'abcpx',
       ]
       for (const val of cases) {
         const result = parseCoordinate(val, display, win)
@@ -187,7 +203,7 @@ describe('ensureShellStyles', () => {
   it('does not append a second element when called again', () => {
     // Second call: getElementById returns the already-inserted element
     getElementByIdImpl
-      .mockReturnValueOnce(null)  // first call: not found → insert
+      .mockReturnValueOnce(null) // first call: not found → insert
       .mockReturnValueOnce({ id: SHELL_CSS_ID }) // second call: found → skip
 
     ensureShellStyles()

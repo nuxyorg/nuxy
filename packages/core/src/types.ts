@@ -1,6 +1,12 @@
 export type ExtensionType = 'tool' | 'provider' | 'orchestrator' | 'theme' | 'iconpack' | 'uikit'
 
-export type ExtensionPermission = 'storage' | 'clipboard' | 'network' | 'notifications' | 'media' | 'shell'
+export type ExtensionPermission =
+  | 'storage'
+  | 'clipboard'
+  | 'network'
+  | 'notifications'
+  | 'media'
+  | 'shell'
 
 export interface ExtensionManifest {
   id: string

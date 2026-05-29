@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface PaginationProps {
   total: number // total items
   current: number // 1-indexed current page
@@ -12,7 +10,6 @@ export interface PaginationProps {
 }
 
 export function Pagination(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Pagination || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Pagination || (() => null)
+  return <Impl {...props} />
 }
-

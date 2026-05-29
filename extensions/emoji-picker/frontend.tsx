@@ -269,7 +269,9 @@ export default function EmojiPicker({ query, extensionId }: Props) {
         } else {
           let prevCat: EmojiCategory | null = null
           let prevSectionStart = 0
-          const currentCatIdx = allCategories.findIndex((c: EmojiCategory) => c.id === currentCat!.id)
+          const currentCatIdx = allCategories.findIndex(
+            (c: EmojiCategory) => c.id === currentCat!.id
+          )
           for (let i = currentCatIdx - 1; i >= 0; i--) {
             const cat = allCategories[i]
             if (cat.emojis.length > 0) {
@@ -296,7 +298,9 @@ export default function EmojiPicker({ query, extensionId }: Props) {
         } else {
           let nextCat: EmojiCategory | null = null
           let nextSectionStart = sectionStart + catLen
-          const currentCatIdx = allCategories.findIndex((c: EmojiCategory) => c.id === currentCat!.id)
+          const currentCatIdx = allCategories.findIndex(
+            (c: EmojiCategory) => c.id === currentCat!.id
+          )
           for (let i = currentCatIdx + 1; i < allCategories.length; i++) {
             const cat = allCategories[i]
             if (cat.emojis.length > 0) {
@@ -517,7 +521,9 @@ export default function EmojiPicker({ query, extensionId }: Props) {
                       </div>
                     )}
                     <Grid cols={COLS} gap={2}>
-                      {cat.emojis.map((em: EmojiEntry, i: number) => renderEmoji(em, sectionStart + i))}
+                      {cat.emojis.map((em: EmojiEntry, i: number) =>
+                        renderEmoji(em, sectionStart + i)
+                      )}
                     </Grid>
                   </div>
                 )

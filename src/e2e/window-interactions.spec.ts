@@ -133,12 +133,17 @@ test.describe('window resize via IPC', () => {
     })
 
     // Poll until the window is hidden in the main process
-    await expect.poll(async () => {
-      return await electronApp.evaluate(({ BrowserWindow }) => {
-        const win = BrowserWindow.getAllWindows()[0]
-        return win ? win.isVisible() : null
-      })
-    }, { timeout: 200 }).toBe(false)
+    await expect
+      .poll(
+        async () => {
+          return await electronApp.evaluate(({ BrowserWindow }) => {
+            const win = BrowserWindow.getAllWindows()[0]
+            return win ? win.isVisible() : null
+          })
+        },
+        { timeout: 200 }
+      )
+      .toBe(false)
 
     // Restore window so subsequent tests can interact with the renderer
     await electronApp.evaluate(({ BrowserWindow }) => {
@@ -147,12 +152,17 @@ test.describe('window resize via IPC', () => {
     })
 
     // Poll until the window is visible in the main process
-    await expect.poll(async () => {
-      return await electronApp.evaluate(({ BrowserWindow }) => {
-        const win = BrowserWindow.getAllWindows()[0]
-        return win ? win.isVisible() : null
-      })
-    }, { timeout: 200 }).toBe(true)
+    await expect
+      .poll(
+        async () => {
+          return await electronApp.evaluate(({ BrowserWindow }) => {
+            const win = BrowserWindow.getAllWindows()[0]
+            return win ? win.isVisible() : null
+          })
+        },
+        { timeout: 200 }
+      )
+      .toBe(true)
   })
 
   test('window content size covers the display work area', async ({ electronApp }) => {

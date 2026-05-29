@@ -19,7 +19,10 @@ function rowToEvent(row: CalendarEventRow): CalendarEvent {
   }
 }
 
-export function checkReminders(core: CoreContext, getDb: () => ReturnType<CoreContext['db']['open']> | null): Promise<void> {
+export function checkReminders(
+  core: CoreContext,
+  getDb: () => ReturnType<CoreContext['db']['open']> | null
+): Promise<void> {
   const db = getDb()
   if (!db) return Promise.resolve()
 
@@ -103,16 +106,26 @@ export function register(core: CoreContext): void {
     const setClauses: string[] = []
     const values: unknown[] = []
 
-    if (title !== undefined) { setClauses.push('title = ?'); values.push(title) }
-    if (datetime !== undefined) { setClauses.push('datetime = ?'); values.push(datetime) }
-    if (notes !== undefined) { setClauses.push('notes = ?'); values.push(notes) }
-    if (remindMin !== undefined) { setClauses.push('remind_min = ?'); values.push(remindMin) }
+    if (title !== undefined) {
+      setClauses.push('title = ?')
+      values.push(title)
+    }
+    if (datetime !== undefined) {
+      setClauses.push('datetime = ?')
+      values.push(datetime)
+    }
+    if (notes !== undefined) {
+      setClauses.push('notes = ?')
+      values.push(notes)
+    }
+    if (remindMin !== undefined) {
+      setClauses.push('remind_min = ?')
+      values.push(remindMin)
+    }
 
     if (setClauses.length > 0) {
       values.push(id)
-      const updateStmt = db.prepare(
-        `UPDATE events SET ${setClauses.join(', ')} WHERE id = ?`
-      )
+      const updateStmt = db.prepare(`UPDATE events SET ${setClauses.join(', ')} WHERE id = ?`)
       updateStmt.run(...values)
     }
 

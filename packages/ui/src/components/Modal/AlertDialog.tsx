@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface AlertDialogProps {
   isOpen: boolean
   onClose: () => void
@@ -15,7 +13,6 @@ export interface AlertDialogProps {
 }
 
 export function AlertDialog(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.AlertDialog || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.AlertDialog || (() => null)
+  return <Impl {...props} />
 }
-

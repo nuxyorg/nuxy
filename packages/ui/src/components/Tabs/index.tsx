@@ -1,15 +1,11 @@
 import React from 'react'
 
-
-
 export interface TabItem {
   id: string
   label: React.ReactNode
   content: React.ReactNode
   disabled?: boolean
 }
-
-
 
 export interface TabsProps {
   items: TabItem[]
@@ -20,7 +16,6 @@ export interface TabsProps {
 }
 
 export function Tabs(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Tabs || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Tabs || (() => null)
+  return <Impl {...props} />
 }
-

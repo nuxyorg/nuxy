@@ -47,12 +47,7 @@ export interface DropdownMenuProps {
   className?: string
 }
 
-export function DropdownMenu({
-  trigger,
-  children,
-  align = 'right',
-  className,
-}: DropdownMenuProps) {
+export function DropdownMenu({ trigger, children, align = 'right', className }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = React.useState(false)
   const wrapperRef = React.useRef<HTMLDivElement>(null)
 
@@ -85,7 +80,9 @@ export function DropdownMenu({
           'nuxy-dropdown-menu',
           align === 'left' ? 'nuxy-dropdown-menu--left' : '',
           isOpen ? 'nuxy-dropdown-menu--open' : '',
-        ].filter(Boolean).join(' ')}
+        ]
+          .filter(Boolean)
+          .join(' ')}
       >
         {children}
       </div>

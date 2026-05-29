@@ -14,9 +14,7 @@
     "jsxFragmentFactory": "React.Fragment",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": [
-      "../src/node_modules/@types"
-    ],
+    "typeRoots": ["../src/node_modules/@types"],
     "paths": {
       "@nuxy/extension-sdk": ["../packages/extension-sdk/src/index.ts"],
       "@nuxy/core": ["../packages/core/src/index.ts"],
@@ -27,14 +25,6 @@
       "vitest/*": ["../src/node_modules/vitest/dist/*"]
     }
   },
-  "include": [
-    "./**/*.ts",
-    "./**/*.tsx",
-    "./global.d.ts"
-  ],
-  "exclude": [
-    "../node_modules",
-    "../src",
-    "../packages"
-  ]
+  "include": ["./**/*.ts", "./**/*.tsx", "./global.d.ts"],
+  "exclude": ["../node_modules", "../src", "../packages"]
 }

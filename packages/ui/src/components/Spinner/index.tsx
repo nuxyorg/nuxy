@@ -1,7 +1,5 @@
 import React from 'react'
 
-
-
 export interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg' | number
   className?: string
@@ -9,7 +7,6 @@ export interface SpinnerProps {
 }
 
 export function Spinner(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Spinner || (() => null);
-  return <Impl {...props} />;
+  const Impl = (window.UI as any)?.Spinner || (() => null)
+  return <Impl {...props} />
 }
-

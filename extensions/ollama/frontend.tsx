@@ -16,11 +16,26 @@ interface IpcResponse<T = unknown> {
 }
 
 export default function OllamaApp({ query: _query }: Props) {
+  const {
+    List,
+    ListItem,
+    ListItemBody,
+    ListItemText,
+    ListItemMeta,
+    EmptyState,
+    Button,
+    SelectBox,
+    Alert,
+  } = window.UI || {}
+
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [models, setModels] = useState<string[]>([])
   const [selectedModel, setSelectedModel] = useState<string>('')
+  const [error, setError] = useState<string | null>(null)
+  const [modelOpen, setModelOpen] = useState<boolean>(false)
+  const [modelFocusedIndex, setModelFocusedIndex] = useState<number>(0)
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
   const ipc = <T = unknown>(channel: string, payload?: unknown): Promise<T> =>
@@ -53,6 +68,7 @@ export default function OllamaApp({ query: _query }: Props) {
     setMessages(next)
     setInput('')
     setLoading(true)
+    setError(null)
 
     try {
       if (selectedModel) {
@@ -62,98 +78,89 @@ export default function OllamaApp({ query: _query }: Props) {
       const reply = res?.content ?? ''
       setMessages((prev: ChatMessage[]) => [...prev, { role: 'assistant', content: reply }])
     } catch (err) {
-      const error = err as Error
-      setMessages((prev: ChatMessage[]) => [
-        ...prev,
-        { role: 'assistant', content: `Error: ${error?.message ?? String(err)}` },
-      ])
+      const e = err as Error
+      setError(e?.message ?? String(err))
     } finally {
       setLoading(false)
     }
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>): void {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSend()
-    }
-  }
+  const modelOptions = models.map((m) => ({ value: m, label: m }))
+  const selectedModelIndex = models.indexOf(selectedModel)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 12, gap: 8 }}>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-        <select
-          value={selectedModel}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedModel(e.target.value)}
-          style={{ flex: 1, padding: '4px 8px', borderRadius: 6 }}
-        >
-          {models.length === 0 ? (
-            <option value="">No models found</option>
-          ) : (
-            models.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))
-          )}
-        </select>
-      </div>
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 6,
-          padding: '4px 0',
-        }}
-      >
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            style={{
-              alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              background:
-                msg.role === 'user'
-                  ? 'var(--color-accent, #3b82f6)'
-                  : 'var(--color-surface-2, rgba(255,255,255,0.08))',
-              color: msg.role === 'user' ? '#fff' : 'inherit',
-              borderRadius: 10,
-              padding: '6px 10px',
-              maxWidth: '80%',
-              fontSize: 13,
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
-            }}
-          >
-            {msg.content}
-          </div>
-        ))}
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: 'var(--space-2)', padding: 'var(--space-2)' }}>
+      {models.length > 0 && SelectBox && (
+        <SelectBox
+          options={modelOptions}
+          open={modelOpen}
+          focusedIndex={modelFocusedIndex >= 0 ? modelFocusedIndex : 0}
+          onSelect={(opt: { value: string }) => {
+            setSelectedModel(opt.value)
+            setModelOpen(false)
+          }}
+          onClose={() => setModelOpen(false)}
+          onOpen={() => {
+            setModelOpen(true)
+            setModelFocusedIndex(selectedModelIndex >= 0 ? selectedModelIndex : 0)
+          }}
+        />
+      )}
+      {error && Alert && <Alert variant="danger">{error}</Alert>}
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+        {messages.length === 0 && !loading && (
+          <EmptyState message="Ask Ollama anything." hint="Type your message below." />
+        )}
+        {List && (
+          <List>
+            {messages.map((msg, i) => (
+              <ListItem key={i} style={{ alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+                <ListItemBody>
+                  <ListItemText>{msg.content}</ListItemText>
+                  <ListItemMeta>{msg.role === 'user' ? 'You' : 'Ollama'}</ListItemMeta>
+                </ListItemBody>
+              </ListItem>
+            ))}
+          </List>
+        )}
         {loading && (
-          <div
-            style={{ alignSelf: 'flex-start', opacity: 0.5, fontSize: 12, padding: '4px 10px' }}
-          >
-            ...
-          </div>
+          <ListItem>
+            <ListItemBody>
+              <ListItemText style={{ opacity: 0.5 }}>…</ListItemText>
+            </ListItemBody>
+          </ListItem>
         )}
         <div ref={bottomRef} />
       </div>
-      <div style={{ display: 'flex', gap: 8 }}>
+      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
         <textarea
           value={input}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask Ollama…"
+          onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              void handleSend()
+            }
+          }}
+          placeholder="Ask Ollama… (Enter to send, Shift+Enter for newline)"
           rows={2}
-          style={{ flex: 1, resize: 'none', padding: '6px 10px', borderRadius: 8, fontSize: 13 }}
+          style={{
+            flex: 1,
+            resize: 'none',
+            padding: 'var(--space-2)',
+            background: 'var(--surface-overlay)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: 'var(--radius-md)',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+          }}
         />
-        <button
-          onClick={handleSend}
-          disabled={loading || !input.trim()}
-          style={{ padding: '0 14px', borderRadius: 8, cursor: 'pointer' }}
-        >
-          Send
-        </button>
+        {Button && (
+          <Button onClick={() => { void handleSend() }} disabled={loading || !input.trim()}>
+            Send
+          </Button>
+        )}
       </div>
     </div>
   )

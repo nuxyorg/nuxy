@@ -60,22 +60,25 @@ extensions/
 ```
 
 ### Permitted types
+
 `tool` | `provider` | `orchestrator` | `theme` | `iconpack` | `uikit`
 
 ### Permissions
+
 Only declare what you actually use. Available values:
 
-| Permission      | Grants access to              |
-|-----------------|-------------------------------|
-| `storage`       | `core.storage.*`              |
-| `clipboard`     | `core.clipboard.*`            |
-| `network`       | outbound HTTP/fetch           |
-| `notifications` | system notifications          |
-| `media`         | `core.media.*`                |
+| Permission      | Grants access to     |
+| --------------- | -------------------- |
+| `storage`       | `core.storage.*`     |
+| `clipboard`     | `core.clipboard.*`   |
+| `network`       | outbound HTTP/fetch  |
+| `notifications` | system notifications |
+| `media`         | `core.media.*`       |
 
 Using a `core.*` API without declaring the matching permission is a bug. The kernel will reject it at runtime with `PERMISSION_DENIED`.
 
 ### Capabilities
+
 - `callable: true` — other extensions may invoke this one via `core.extensions.invoke`
 - `caller: true` — this extension calls other extensions. Only set when necessary.
 
@@ -126,6 +129,7 @@ window.UI = {
 ```
 
 **Rules for `uikit` extensions:**
+
 - No `backend.js` — uikit extensions have no backend worker.
 - No `default export` — the file is a side-effect module.
 - Must not assume any specific load order relative to other uikit extensions unless `priority` is set.
@@ -315,21 +319,16 @@ function MyButton({ children, onClick }) {
 // CORRECT — use UI kit
 const { Button } = window.UI || {}
 // ...
-{Button && <Button>...</Button>}
+{
+  Button && <Button>...</Button>
+}
 ```
 
 Destructure all components at the top of the component function or at the module level:
 
 ```jsx
 export default function MyView({ query }) {
-  const {
-    List,
-    ListItem,
-    ListItemBody,
-    ListItemText,
-    ListItemMeta,
-    EmptyState,
-  } = window.UI || {}
+  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState } = window.UI || {}
   // ...
 }
 ```
@@ -390,19 +389,25 @@ Do not use emoji characters as icons or visual affordances. Use icon components 
 
 ```jsx
 // WRONG
-<span>📁 {item.title}</span>
+;<span>📁 {item.title}</span>
 
 // CORRECT
 const { IconFile } = window.UI || {}
 // ...
-{IconFile && <IconFile />} {item.title}
+{
+  IconFile && <IconFile />
+}
+{
+  item.title
+}
 ```
 
 ### 4.7 Keyboard actions via `useToolKeyActions` / `useListNavigation`
 
 ```jsx
 const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
-const _useListNavigation = (window.UI || {}).useListNavigation ||
+const _useListNavigation =
+  (window.UI || {}).useListNavigation ||
   (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
 
 // Simple list navigation
@@ -416,17 +421,46 @@ const { selectedIndex, setSelectedIndex } = _useListNavigation(items, {
       modifiers: ['shift'],
       label: 'Open folder',
       hint: ['⇧', 'Enter'],
-      handler: () => { /* ... */ },
+      handler: () => {
+        /* ... */
+      },
     },
   ],
 })
 
 // Custom key bindings (for non-list views)
 _useToolKeyActions([
-  { key: 'ArrowUp',   label: 'Previous', hint: '↑↓', handler: () => { /* ... */ } },
-  { key: 'ArrowDown', label: 'Next',                  handler: () => { /* ... */ } },
-  { key: 'Enter',     label: 'Select',   hint: '↵',   handler: () => { /* ... */ } },
-  { key: 'Escape',    label: 'Back',     hint: 'Esc', handler: () => { /* ... */ } },
+  {
+    key: 'ArrowUp',
+    label: 'Previous',
+    hint: '↑↓',
+    handler: () => {
+      /* ... */
+    },
+  },
+  {
+    key: 'ArrowDown',
+    label: 'Next',
+    handler: () => {
+      /* ... */
+    },
+  },
+  {
+    key: 'Enter',
+    label: 'Select',
+    hint: '↵',
+    handler: () => {
+      /* ... */
+    },
+  },
+  {
+    key: 'Escape',
+    label: 'Back',
+    hint: 'Esc',
+    handler: () => {
+      /* ... */
+    },
+  },
 ])
 ```
 
@@ -445,14 +479,14 @@ _useToolKeyActions([
   },
   {
     key: 'ArrowDown',
-    label: '',          // empty: paired with ArrowUp hint above, no separate hint needed
+    label: '', // empty: paired with ArrowUp hint above, no separate hint needed
     handler: () => setSelectedIndex((i) => Math.min(i + 1, items.length - 1)),
   },
   {
     key: 'Enter',
     label: 'Copy',
     hint: '↵',
-    activeOn: () => selectedIndex >= 0,   // hidden + inactive when nothing selected
+    activeOn: () => selectedIndex >= 0, // hidden + inactive when nothing selected
     handler: () => handleCopy(filteredItems[selectedIndex]),
   },
   {
@@ -466,13 +500,14 @@ _useToolKeyActions([
     key: 's',
     label: 'Search',
     hint: 'S',
-    activeOn: () => selectedIndex >= 0,   // only meaningful when an item is focused
+    activeOn: () => selectedIndex >= 0, // only meaningful when an item is focused
     handler: () => setSelectedIndex(-1),
   },
 ])
 ```
 
 **Rules for `activeOn`:**
+
 - Must be a `() => boolean` closure — it reads your component's current state directly.
 - When `activeOn()` returns `false`, the handler is **not** called even if the key is pressed.
 - The shortcut-bar **hint is also hidden** when `activeOn()` returns `false`.
@@ -483,15 +518,20 @@ _useToolKeyActions([
 ```jsx
 React.useEffect(() => {
   window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
-}, [selectedIndex])  // or whichever state drives your activeOn predicates
+}, [selectedIndex]) // or whichever state drives your activeOn predicates
 ```
 
 ### 4.8 IPC calls from frontend
 
 ```jsx
 // Invoke your own backend
-window.core.ipc.invoke(EXT_ID, 'channelName', payload)
-  .then(res => { if (res?.success) { /* ... */ } })
+window.core.ipc
+  .invoke(EXT_ID, 'channelName', payload)
+  .then((res) => {
+    if (res?.success) {
+      /* ... */
+    }
+  })
   .catch(console.error)
 
 // Kernel built-ins
@@ -509,28 +549,28 @@ Frontends may only call their own backend (`EXT_ID`) or `kernel`. They must not 
 
 Use layout primitives from the UI kit:
 
-| Layout need           | Component          |
-|-----------------------|--------------------|
-| Two-column split      | `TwoPanel`         |
-| Vertical tabs sidebar | `TabBar` (vertical)|
-| Scrollable item list  | `List`             |
-| Empty / zero state    | `EmptyState`       |
-| Alert / banner        | `Alert`            |
-| Dropdown picker       | `SelectBox`        |
-| Grid                  | `Grid` / `GridItem`|
-| Section divider       | `SectionHeader`    |
+| Layout need           | Component           |
+| --------------------- | ------------------- |
+| Two-column split      | `TwoPanel`          |
+| Vertical tabs sidebar | `TabBar` (vertical) |
+| Scrollable item list  | `List`              |
+| Empty / zero state    | `EmptyState`        |
+| Alert / banner        | `Alert`             |
+| Dropdown picker       | `SelectBox`         |
+| Grid                  | `Grid` / `GridItem` |
+| Section divider       | `SectionHeader`     |
 
 ### 4.11 Window / shell events
 
 Communicate with the shell via `window.dispatchEvent(new CustomEvent(...))` for approved channels only:
 
-| Channel                        | Purpose                                      |
-|-------------------------------|----------------------------------------------|
-| `nuxy-shell-footer-hints`      | Set footer shortcut hints (`detail: ReactNode \| null`) |
-| `nuxy-shell-omni-bar-control`  | Show or hide the omnibar (`detail: { action: 'show' \| 'hide' }`) |
-| `nuxy-register-actions`        | Register command palette actions (`detail: Action[]`) |
-| `nuxy-settings-updated`        | Notify that settings changed (`detail: settingsObj`) |
-| `nuxy-key-hints-changed`       | Ask the shell to re-evaluate which key-action hints are active (no detail needed). Dispatch this whenever the state that drives your `activeOn` predicates changes. |
+| Channel                       | Purpose                                                                                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `nuxy-shell-footer-hints`     | Set footer shortcut hints (`detail: ReactNode \| null`)                                                                                                             |
+| `nuxy-shell-omni-bar-control` | Show or hide the omnibar (`detail: { action: 'show' \| 'hide' }`)                                                                                                   |
+| `nuxy-register-actions`       | Register command palette actions (`detail: Action[]`)                                                                                                               |
+| `nuxy-settings-updated`       | Notify that settings changed (`detail: settingsObj`)                                                                                                                |
+| `nuxy-key-hints-changed`      | Ask the shell to re-evaluate which key-action hints are active (no detail needed). Dispatch this whenever the state that drives your `activeOn` predicates changes. |
 
 Do not dispatch or listen for arbitrary custom events not listed here.
 
@@ -542,14 +582,14 @@ All extensions must be written in TypeScript. JavaScript (`.js`) extension files
 
 ### 5.1 File naming
 
-| File | Extension |
-|------|-----------|
-| Backend logic | `backend.ts` |
-| Backend tests | `backend.test.ts` |
-| Frontend component | `frontend.tsx` |
-| Extension-specific types | `types.ts` |
-| Non-JSX helper modules | `helper-name.ts` |
-| JSX helper components | `component-name.tsx` |
+| File                     | Extension            |
+| ------------------------ | -------------------- |
+| Backend logic            | `backend.ts`         |
+| Backend tests            | `backend.test.ts`    |
+| Frontend component       | `frontend.tsx`       |
+| Extension-specific types | `types.ts`           |
+| Non-JSX helper modules   | `helper-name.ts`     |
+| JSX helper components    | `component-name.tsx` |
 
 ### 5.2 Types file — extension-local interfaces
 
@@ -620,14 +660,19 @@ export default function MyView({ query }: Props) {
 
   // IPC helper — cast result explicitly
   const invoke = async <T,>(channel: string, payload?: unknown): Promise<T> => {
-    const res = await window.core.ipc.invoke('com.nuxy.my-extension', channel, payload) as
-      { success: boolean; data?: T; error?: string }
+    const res = (await window.core.ipc.invoke('com.nuxy.my-extension', channel, payload)) as {
+      success: boolean
+      data?: T
+      error?: string
+    }
     if (!res?.success) throw new Error(res?.error || 'IPC failed')
     return res.data as T
   }
 
   useEffect(() => {
-    invoke<MyItem[]>('getItems').then(setItems).catch(() => {})
+    invoke<MyItem[]>('getItems')
+      .then(setItems)
+      .catch(() => {})
   }, [])
 
   // ...
@@ -642,7 +687,9 @@ Components in `extensions/ui-default/src/components/` that need to forward a DOM
 // CORRECT
 export const MyComponent = React.forwardRef<HTMLDivElement, MyComponentProps>(
   ({ label, className, ...rest }, ref) => (
-    <div ref={ref} className={`nuxy-my-component ${className ?? ''}`} {...rest}>{label}</div>
+    <div ref={ref} className={`nuxy-my-component ${className ?? ''}`} {...rest}>
+      {label}
+    </div>
   )
 )
 MyComponent.displayName = 'MyComponent'
@@ -659,6 +706,7 @@ If a component does not need ref forwarding, keep it as a plain function compone
 ### 5.6 TypeScript config
 
 Extensions are covered by `extensions/tsconfig.json`. The config:
+
 - Uses `"jsx": "react"` with `jsxFactory: "React.createElement"` (classic JSX — requires `window.React` to be in scope)
 - Resolves `@nuxy/extension-sdk`, `@nuxy/core`, `@nuxy/ui` from the workspace packages
 - Does **not** emit files — transpilation is done at runtime by the protocol server
@@ -667,6 +715,7 @@ Extensions are covered by `extensions/tsconfig.json`. The config:
 ### 5.6 Global window types
 
 `extensions/global.d.ts` declares the runtime globals available to all frontends:
+
 - `window.React` — full React namespace
 - `window.UI` — all exports from `@nuxy/ui`
 - `window.core.ipc`, `window.core.window`, `window.core.icons`, `window.core.themes`
@@ -707,17 +756,17 @@ core.registry.registerTool/registerProvider/registerOrchestrator/registerTheme/r
 
 These APIs are required by the rules above but do not yet exist. Before writing an extension that needs them, add the type to `packages/core/src/index.ts`, the host channel to `packages/core/src/host-channels.ts`, the proxy method to `packages/extension-host/src/core-proxy.ts`, and the main-process handler to `src/electron/ipc/register.ts`.
 
-| API | Purpose |
-|-----|---------|
-| `core.fs.readDir(path)` | List directory entries |
-| `core.fs.readFile(path, encoding?)` | Read file contents |
-| `core.fs.writeFile(path, data)` | Write file contents |
-| `core.fs.mkdir(path, opts?)` | Create directory |
-| `core.fs.rename(src, dest)` | Move/rename |
-| `core.fs.rm(path)` | Delete file |
-| `core.fs.stat(path)` | File metadata (type, size, mtime) |
-| `core.db.open(name)` | Open/create a sandboxed SQLite database |
-| `core.shell.open(pathOrUrl)` | Open with system default handler |
+| API                                 | Purpose                                           |
+| ----------------------------------- | ------------------------------------------------- |
+| `core.fs.readDir(path)`             | List directory entries                            |
+| `core.fs.readFile(path, encoding?)` | Read file contents                                |
+| `core.fs.writeFile(path, data)`     | Write file contents                               |
+| `core.fs.mkdir(path, opts?)`        | Create directory                                  |
+| `core.fs.rename(src, dest)`         | Move/rename                                       |
+| `core.fs.rm(path)`                  | Delete file                                       |
+| `core.fs.stat(path)`                | File metadata (type, size, mtime)                 |
+| `core.db.open(name)`                | Open/create a sandboxed SQLite database           |
+| `core.shell.open(pathOrUrl)`        | Open with system default handler                  |
 | `core.shell.exec(cmd, args, opts?)` | Run allowed command (requires `shell` permission) |
 
 ---
@@ -744,11 +793,23 @@ function makeCore(overrides: Partial<CoreContext> = {}): CoreContext {
     },
     ipc: { handle: vi.fn() },
     storage: { read: vi.fn().mockResolvedValue(null), write: vi.fn().mockResolvedValue(undefined) },
-    clipboard: { readText: vi.fn(), writeText: vi.fn(), readImage: vi.fn(), writeImage: vi.fn(), writeFiles: vi.fn() },
+    clipboard: {
+      readText: vi.fn(),
+      writeText: vi.fn(),
+      readImage: vi.fn(),
+      writeImage: vi.fn(),
+      writeFiles: vi.fn(),
+    },
     fs: {
       fileExists: vi.fn().mockResolvedValue(false),
-      readDir: vi.fn(), readFile: vi.fn(), readFileBinary: vi.fn(),
-      writeFile: vi.fn(), mkdir: vi.fn(), rename: vi.fn(), rm: vi.fn(), stat: vi.fn(),
+      readDir: vi.fn(),
+      readFile: vi.fn(),
+      readFileBinary: vi.fn(),
+      writeFile: vi.fn(),
+      mkdir: vi.fn(),
+      rename: vi.fn(),
+      rm: vi.fn(),
+      stat: vi.fn(),
       homedir: vi.fn().mockReturnValue('/home/user'),
       tmpdir: vi.fn().mockReturnValue('/tmp'),
     },
@@ -866,7 +927,13 @@ Use CSS custom properties: `var(--color-danger)`, `var(--surface-overlay)`, `var
 ```jsx
 // BANNED
 function MyCustomList({ items }) {
-  return <ul>{items.map(i => <li key={i.id}>{i.title}</li>)}</ul>
+  return (
+    <ul>
+      {items.map((i) => (
+        <li key={i.id}>{i.title}</li>
+      ))}
+    </ul>
+  )
 }
 ```
 
@@ -884,7 +951,7 @@ Add the component to `packages/ui` or use an existing one.
 
 ```jsx
 // BANNED
-<input value={query} onChange={e => setQuery(e.target.value)} />
+<input value={query} onChange={(e) => setQuery(e.target.value)} />
 ```
 
 ### F. Direct extension-to-extension calls
@@ -956,7 +1023,7 @@ Use `const React = window.React` at the top of every `.tsx` file.
 ```ts
 // BANNED — payload is unknown, must be cast before use
 core.ipc.handle('doThing', async (payload) => {
-  return payload.id  // implicit any
+  return payload.id // implicit any
 })
 
 // CORRECT
@@ -983,11 +1050,13 @@ Put data-model types in `types.ts` inside the extension folder.
 Before submitting or merging an extension, verify every item:
 
 **Manifest**
+
 - [ ] `id` follows `com.nuxy.<name>` convention
 - [ ] All used `core.*` APIs have a matching entry in `permissions`
 - [ ] `capabilities.caller` is only `true` if the extension calls other extensions
 
 **TypeScript**
+
 - [ ] All source files use `.ts` or `.tsx` — no `.js` extension files
 - [ ] `backend.ts` imports `CoreContext` from `@nuxy/extension-sdk`
 - [ ] `register` function is typed: `export function register(core: CoreContext): void`
@@ -998,6 +1067,7 @@ Before submitting or merging an extension, verify every item:
 - [ ] All `useState` calls have explicit type parameters where non-trivial
 
 **Backend**
+
 - [ ] No `import` of `fs`, `os`, `path`, `child_process`, `node:*`, or any Node built-in
 - [ ] File system access goes through `core.fs.*`
 - [ ] Persistent data uses `core.storage.*` or `core.db.*`
@@ -1007,6 +1077,7 @@ Before submitting or merging an extension, verify every item:
 - [ ] `backend.test.ts` exists and covers all IPC handlers
 
 **Frontend**
+
 - [ ] File is `.tsx` with JSX syntax
 - [ ] `window.React` and `window.UI` used exclusively — no bundled React or UI libs
 - [ ] All components come from `window.UI || {}`

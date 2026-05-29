@@ -3,7 +3,12 @@ import type { CoreContext } from '@nuxy/extension-sdk'
 
 type ExecFn = (cmd: string, args: string[]) => Promise<{ stdout: string; code: number }>
 
-function makeExec({ rbw = false, bw = false, email = 'user@example.com', unlocked = true } = {}): ReturnType<typeof vi.fn> {
+function makeExec({
+  rbw = false,
+  bw = false,
+  email = 'user@example.com',
+  unlocked = true,
+} = {}): ReturnType<typeof vi.fn> {
   return vi.fn(async (cmd: string, args: string[]) => {
     if (cmd === 'which') {
       const bin = args[0]
@@ -36,14 +41,37 @@ function makeExec({ rbw = false, bw = false, email = 'user@example.com', unlocke
   })
 }
 
-function createCore(exec: ReturnType<typeof vi.fn> | null = null): { core: Partial<CoreContext>; handlers: Record<string, (payload?: unknown) => Promise<unknown>> } {
+function createCore(exec: ReturnType<typeof vi.fn> | null = null): {
+  core: Partial<CoreContext>
+  handlers: Record<string, (payload?: unknown) => Promise<unknown>>
+} {
   const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
   const core: Partial<CoreContext> = {
-    registry: { registerTool: vi.fn(), registerProvider: vi.fn(), registerOrchestrator: vi.fn(), registerTheme: vi.fn(), registerIconPack: vi.fn() },
-    ipc: { handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => { handlers[ch] = fn } } as unknown as CoreContext['ipc'],
-    clipboard: { writeText: vi.fn().mockResolvedValue(undefined), readText: vi.fn(), readImage: vi.fn(), writeImage: vi.fn(), writeFiles: vi.fn() },
+    registry: {
+      registerTool: vi.fn(),
+      registerProvider: vi.fn(),
+      registerOrchestrator: vi.fn(),
+      registerTheme: vi.fn(),
+      registerIconPack: vi.fn(),
+    },
+    ipc: {
+      handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
+        handlers[ch] = fn
+      },
+    } as unknown as CoreContext['ipc'],
+    clipboard: {
+      writeText: vi.fn().mockResolvedValue(undefined),
+      readText: vi.fn(),
+      readImage: vi.fn(),
+      writeImage: vi.fn(),
+      writeFiles: vi.fn(),
+    },
     logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
-    shell: { exec: (exec ?? vi.fn().mockResolvedValue({ stdout: '', code: 0 })) as ExecFn, open: vi.fn(), spawn: vi.fn() },
+    shell: {
+      exec: (exec ?? vi.fn().mockResolvedValue({ stdout: '', code: 0 })) as ExecFn,
+      open: vi.fn(),
+      spawn: vi.fn(),
+    },
   }
   return { core, handlers }
 }
@@ -69,7 +97,9 @@ describe('bitwarden backend', () => {
     const register = await freshBackend()
     const { core } = createCore(exec)
     await register(core as CoreContext)
-    expect((core.registry as { registerTool: ReturnType<typeof vi.fn> }).registerTool).toHaveBeenCalledWith({ name: 'bitwarden' })
+    expect(
+      (core.registry as { registerTool: ReturnType<typeof vi.fn> }).registerTool
+    ).toHaveBeenCalledWith({ name: 'bitwarden' })
   })
 
   // ─── bw:status — no backend ────────────────────────────────────────────────
@@ -91,12 +121,25 @@ describe('bitwarden backend', () => {
     const { core, handlers } = createCore(exec)
     await register(core as CoreContext)
 
-    exec.mockResolvedValueOnce({ stdout: 'abc-123\tGitHub\tuser@example.com\ndef-456\tGoogle\tme@gmail.com\n', code: 0 })
+    exec.mockResolvedValueOnce({
+      stdout: 'abc-123\tGitHub\tuser@example.com\ndef-456\tGoogle\tme@gmail.com\n',
+      code: 0,
+    })
 
-    const results = await handlers['bw:search']({ query: '' }) as unknown[]
+    const results = (await handlers['bw:search']({ query: '' })) as unknown[]
     expect(results).toHaveLength(2)
-    expect(results[0]).toEqual({ id: 'abc-123', name: 'GitHub', username: 'user@example.com', backend: 'rbw' })
-    expect(results[1]).toEqual({ id: 'def-456', name: 'Google', username: 'me@gmail.com', backend: 'rbw' })
+    expect(results[0]).toEqual({
+      id: 'abc-123',
+      name: 'GitHub',
+      username: 'user@example.com',
+      backend: 'rbw',
+    })
+    expect(results[1]).toEqual({
+      id: 'def-456',
+      name: 'Google',
+      username: 'me@gmail.com',
+      backend: 'rbw',
+    })
   })
 
   it('bw:search filters results by query — case-insensitive name match', async () => {
@@ -105,9 +148,12 @@ describe('bitwarden backend', () => {
     const { core, handlers } = createCore(exec)
     await register(core as CoreContext)
 
-    exec.mockResolvedValueOnce({ stdout: 'abc-123\tGitHub\tuser@example.com\ndef-456\tGoogle\tme@gmail.com\n', code: 0 })
+    exec.mockResolvedValueOnce({
+      stdout: 'abc-123\tGitHub\tuser@example.com\ndef-456\tGoogle\tme@gmail.com\n',
+      code: 0,
+    })
 
-    const results = await handlers['bw:search']({ query: 'github' }) as { name: string }[]
+    const results = (await handlers['bw:search']({ query: 'github' })) as { name: string }[]
     expect(results).toHaveLength(1)
     expect(results[0].name).toBe('GitHub')
   })
@@ -118,9 +164,12 @@ describe('bitwarden backend', () => {
     const { core, handlers } = createCore(exec)
     await register(core as CoreContext)
 
-    exec.mockResolvedValueOnce({ stdout: 'abc-123\tGitHub\tuser@example.com\ndef-456\tGoogle\tme@gmail.com\n', code: 0 })
+    exec.mockResolvedValueOnce({
+      stdout: 'abc-123\tGitHub\tuser@example.com\ndef-456\tGoogle\tme@gmail.com\n',
+      code: 0,
+    })
 
-    const results = await handlers['bw:search']({ query: 'GMAIL' }) as { username: string }[]
+    const results = (await handlers['bw:search']({ query: 'GMAIL' })) as { username: string }[]
     expect(results).toHaveLength(1)
     expect(results[0].username).toBe('me@gmail.com')
   })
@@ -166,7 +215,9 @@ describe('bitwarden backend', () => {
     exec.mockResolvedValueOnce({ stdout: 'mypassword\n', code: 0 })
 
     await handlers['bw:copyPassword']({ id: 'abc-123', name: 'GitHub' })
-    expect((core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText).toHaveBeenCalledWith('mypassword')
+    expect(
+      (core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText
+    ).toHaveBeenCalledWith('mypassword')
   })
 
   it('bw:copyPassword schedules clipboard clear after 30s', async () => {
@@ -179,14 +230,20 @@ describe('bitwarden backend', () => {
     exec.mockResolvedValueOnce({ stdout: 'mypassword\n', code: 0 })
 
     await handlers['bw:copyPassword']({ id: 'abc-123', name: 'GitHub' })
-    expect((core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText).toHaveBeenCalledTimes(1)
+    expect(
+      (core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText
+    ).toHaveBeenCalledTimes(1)
 
     vi.advanceTimersByTime(29_999)
-    expect((core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText).toHaveBeenCalledTimes(1)
+    expect(
+      (core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText
+    ).toHaveBeenCalledTimes(1)
 
     vi.advanceTimersByTime(1)
     await Promise.resolve()
-    expect((core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText).toHaveBeenCalledTimes(2)
+    expect(
+      (core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText
+    ).toHaveBeenCalledTimes(2)
 
     vi.useRealTimers()
   })
@@ -204,7 +261,9 @@ describe('bitwarden backend', () => {
     vi.advanceTimersByTime(30_000)
     await Promise.resolve()
 
-    expect((core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText).toHaveBeenLastCalledWith('')
+    expect(
+      (core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText
+    ).toHaveBeenLastCalledWith('')
 
     vi.useRealTimers()
   })
@@ -218,7 +277,9 @@ describe('bitwarden backend', () => {
     await register(core as CoreContext)
 
     await handlers['bw:copyTotp']({ code: '123456' })
-    expect((core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText).toHaveBeenCalledWith('123456')
+    expect(
+      (core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText
+    ).toHaveBeenCalledWith('123456')
   })
 
   it('bw:copyTotp schedules clipboard clear after 30s', async () => {
@@ -229,11 +290,15 @@ describe('bitwarden backend', () => {
     await register(core as CoreContext)
 
     await handlers['bw:copyTotp']({ code: '654321' })
-    expect((core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText).toHaveBeenCalledTimes(1)
+    expect(
+      (core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText
+    ).toHaveBeenCalledTimes(1)
 
     vi.advanceTimersByTime(30_000)
     await Promise.resolve()
-    expect((core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText).toHaveBeenLastCalledWith('')
+    expect(
+      (core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText
+    ).toHaveBeenLastCalledWith('')
 
     vi.useRealTimers()
   })
@@ -253,7 +318,7 @@ describe('bitwarden backend', () => {
       email: 'user@example.com',
       locked: false,
       backend: 'rbw',
-      os: 'arch'
+      os: 'arch',
     })
   })
 
@@ -270,7 +335,7 @@ describe('bitwarden backend', () => {
       email: 'user@example.com',
       locked: true,
       backend: 'rbw',
-      os: 'arch'
+      os: 'arch',
     })
   })
 
@@ -287,7 +352,7 @@ describe('bitwarden backend', () => {
       email: null,
       locked: true,
       backend: 'rbw',
-      os: 'arch'
+      os: 'arch',
     })
   })
 

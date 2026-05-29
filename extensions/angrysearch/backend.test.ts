@@ -33,12 +33,20 @@ function makeMockDb(allRows: unknown[] = []): MockDbResult {
   return { db, mockPrepare, preparedStmt }
 }
 
-function createCore(dbArg: MockDbResult | null = null): { core: unknown; handlers: Record<string, (payload?: unknown) => Promise<unknown>>; db: MockDb } {
+function createCore(dbArg: MockDbResult | null = null): {
+  core: unknown
+  handlers: Record<string, (payload?: unknown) => Promise<unknown>>
+  db: MockDb
+} {
   const { db } = dbArg ?? makeMockDb()
   const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
   const core = {
     registry: { registerTool: vi.fn() },
-    ipc: { handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => { handlers[ch] = fn } },
+    ipc: {
+      handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
+        handlers[ch] = fn
+      },
+    },
     logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn() },
     db: { open: vi.fn().mockReturnValue(db) },
     fs: {
@@ -75,7 +83,9 @@ describe('angrysearch backend', () => {
     const register = await freshBackend()
     const { core } = createCore()
     register(core)
-    expect((core as { registry: { registerTool: ReturnType<typeof vi.fn> } }).registry.registerTool).toHaveBeenCalledWith({ name: 'angrysearch' })
+    expect(
+      (core as { registry: { registerTool: ReturnType<typeof vi.fn> } }).registry.registerTool
+    ).toHaveBeenCalledWith({ name: 'angrysearch' })
   })
 
   it('registers exactly five IPC handlers', async () => {
@@ -92,7 +102,9 @@ describe('angrysearch backend', () => {
       const register = await freshBackend()
       const { core, handlers } = createCore()
       // Prevent background db open from succeeding immediately
-      ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockImplementation(() => { throw new Error('no db') })
+      ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockImplementation(() => {
+        throw new Error('no db')
+      })
       register(core)
       // Wait for async updateDatabase to settle
       for (let i = 0; i < 20; i++) await Promise.resolve()
@@ -114,7 +126,9 @@ describe('angrysearch backend', () => {
     it('does not throw even when core.db.open fails', async () => {
       const register = await freshBackend()
       const { core, handlers } = createCore()
-      ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockImplementation(() => { throw new Error('disk full') })
+      ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockImplementation(() => {
+        throw new Error('disk full')
+      })
       register(core)
       await expect(handlers.updateDatabase()).resolves.toBe(true)
     })
@@ -142,7 +156,7 @@ describe('angrysearch backend', () => {
       await handlers.updateDatabase()
       for (let i = 0; i < 20; i++) await Promise.resolve()
 
-      const { lastUpdate } = await handlers.getStatus() as { lastUpdate: string | null }
+      const { lastUpdate } = (await handlers.getStatus()) as { lastUpdate: string | null }
       expect(typeof lastUpdate).toBe('string')
       expect(() => new Date(lastUpdate!)).not.toThrow()
     })
@@ -154,21 +168,27 @@ describe('angrysearch backend', () => {
         const register = await freshBackend()
         const { core, handlers } = createCore()
         register(core)
-        expect(((await handlers.search({ query: '' })) as { items: unknown[] }).items).toHaveLength(0)
+        expect(((await handlers.search({ query: '' })) as { items: unknown[] }).items).toHaveLength(
+          0
+        )
       })
 
       it('returns empty items for a 1-character query', async () => {
         const register = await freshBackend()
         const { core, handlers } = createCore()
         register(core)
-        expect(((await handlers.search({ query: 'a' })) as { items: unknown[] }).items).toHaveLength(0)
+        expect(
+          ((await handlers.search({ query: 'a' })) as { items: unknown[] }).items
+        ).toHaveLength(0)
       })
 
       it('returns empty items for a 2-character query', async () => {
         const register = await freshBackend()
         const { core, handlers } = createCore()
         register(core)
-        expect(((await handlers.search({ query: 'ab' })) as { items: unknown[] }).items).toHaveLength(0)
+        expect(
+          ((await handlers.search({ query: 'ab' })) as { items: unknown[] }).items
+        ).toHaveLength(0)
       })
 
       it('does NOT short-circuit for a 3-character query', async () => {
@@ -195,7 +215,9 @@ describe('angrysearch backend', () => {
         const register = await freshBackend()
         const { core, handlers } = createCore()
         register(core)
-        expect(((await handlers.search({ query: '   ' })) as { items: unknown[] }).items).toHaveLength(0)
+        expect(
+          ((await handlers.search({ query: '   ' })) as { items: unknown[] }).items
+        ).toHaveLength(0)
       })
     })
 
@@ -255,9 +277,9 @@ describe('angrysearch backend', () => {
         ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockReturnValue(db)
         register(core)
         for (let i = 0; i < 20; i++) await Promise.resolve()
-        await expect(
-          handlers.search({ query: '[unclosed', regex: true })
-        ).resolves.toHaveProperty('items')
+        await expect(handlers.search({ query: '[unclosed', regex: true })).resolves.toHaveProperty(
+          'items'
+        )
       })
     })
 
@@ -269,7 +291,7 @@ describe('angrysearch backend', () => {
         ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockReturnValue(db)
         register(core)
         for (let i = 0; i < 20; i++) await Promise.resolve()
-        const { items } = await handlers.search({ query: 'file' }) as { items: unknown[] }
+        const { items } = (await handlers.search({ query: 'file' })) as { items: unknown[] }
         expect(items).toHaveLength(1)
         expect(items[0]).toEqual({
           id: 'angry-/home/user/file.txt',
@@ -287,7 +309,7 @@ describe('angrysearch backend', () => {
         ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockReturnValue(db)
         register(core)
         for (let i = 0; i < 20; i++) await Promise.resolve()
-        const { items } = await handlers.search({ query: 'doc' }) as { items: unknown[] }
+        const { items } = (await handlers.search({ query: 'doc' })) as { items: unknown[] }
         expect(items[0]).toEqual({
           id: 'angry-/home/user/docs',
           title: 'docs',
@@ -309,7 +331,9 @@ describe('angrysearch backend', () => {
         ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockReturnValue(db)
         register(core)
         for (let i = 0; i < 20; i++) await Promise.resolve()
-        const { items } = await handlers.search({ query: 'home' }) as { items: { title: string; isDir: boolean }[] }
+        const { items } = (await handlers.search({ query: 'home' })) as {
+          items: { title: string; isDir: boolean }[]
+        }
         expect(items).toHaveLength(3)
         expect(items[0].title).toBe('a.txt')
         expect(items[2].isDir).toBe(true)
@@ -322,7 +346,9 @@ describe('angrysearch backend', () => {
         ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockReturnValue(db)
         register(core)
         for (let i = 0; i < 20; i++) await Promise.resolve()
-        const { items } = await handlers.search({ query: 'deep' }) as { items: { title: string }[] }
+        const { items } = (await handlers.search({ query: 'deep' })) as {
+          items: { title: string }[]
+        }
         expect(items[0].title).toBe('deep-file.json')
       })
 
@@ -333,7 +359,9 @@ describe('angrysearch backend', () => {
         ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockReturnValue(db)
         register(core)
         for (let i = 0; i < 20; i++) await Promise.resolve()
-        const { items } = await handlers.search({ query: 'fil' }) as { items: { isDir: boolean }[] }
+        const { items } = (await handlers.search({ query: 'fil' })) as {
+          items: { isDir: boolean }[]
+        }
         expect(items[0].isDir).toBe(false)
       })
     })
@@ -343,7 +371,9 @@ describe('angrysearch backend', () => {
         const register = await freshBackend()
         const { core, handlers } = createCore()
         // make db.open throw so activeDb stays null
-        ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockImplementation(() => { throw new Error('no db') })
+        ;(core as { db: { open: ReturnType<typeof vi.fn> } }).db.open.mockImplementation(() => {
+          throw new Error('no db')
+        })
         register(core)
         for (let i = 0; i < 20; i++) await Promise.resolve()
         const result = await handlers.search({ query: 'foo' })
@@ -358,7 +388,9 @@ describe('angrysearch backend', () => {
       const { core, handlers } = createCore()
       register(core)
       await handlers.openFile('/home/user/file.txt')
-      expect((core as { shell: { open: ReturnType<typeof vi.fn> } }).shell.open).toHaveBeenCalledWith('/home/user/file.txt')
+      expect(
+        (core as { shell: { open: ReturnType<typeof vi.fn> } }).shell.open
+      ).toHaveBeenCalledWith('/home/user/file.txt')
     })
 
     it('returns true when shell.open succeeds', async () => {
@@ -376,7 +408,9 @@ describe('angrysearch backend', () => {
       const { core, handlers } = createCore()
       register(core)
       await handlers.openLocation('/home/user/docs/report.pdf')
-      expect((core as { shell: { open: ReturnType<typeof vi.fn> } }).shell.open).toHaveBeenCalledWith('/home/user/docs')
+      expect(
+        (core as { shell: { open: ReturnType<typeof vi.fn> } }).shell.open
+      ).toHaveBeenCalledWith('/home/user/docs')
     })
 
     it('returns true when shell.open succeeds', async () => {

@@ -149,7 +149,12 @@ function getListLabel(item: ClipboardItemData, type: ItemType, isCopied: boolean
   return txt
 }
 
-function getListMeta(item: ClipboardItemData, type: ItemType, isCurrent: boolean, timeAgo: (dateString: string) => string): string {
+function getListMeta(
+  item: ClipboardItemData,
+  type: ItemType,
+  isCurrent: boolean,
+  timeAgo: (dateString: string) => string
+): string {
   if (isCurrent) return 'current'
   const txt = item.text?.trim() || ''
   if (type === 'file') {

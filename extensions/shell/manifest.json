@@ -5,9 +5,11 @@
   "type": "tool",
   "icon": "shell",
   "bootstrap": true,
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
   "entry": {
     "backend": "backend.ts",
     "frontend": "frontend.tsx"

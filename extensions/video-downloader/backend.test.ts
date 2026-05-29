@@ -15,8 +15,12 @@ function makeSpawnHandle(): SpawnHandle {
   let dataHandler: ((chunk: string) => void) | null = null
   let closeHandler: ((code: number | null) => void) | null = null
   return {
-    onData: vi.fn((fn: (chunk: string) => void) => { dataHandler = fn }),
-    onClose: vi.fn((fn: (code: number | null) => void) => { closeHandler = fn }),
+    onData: vi.fn((fn: (chunk: string) => void) => {
+      dataHandler = fn
+    }),
+    onClose: vi.fn((fn: (code: number | null) => void) => {
+      closeHandler = fn
+    }),
     kill: vi.fn(),
     _emit: {
       data: (chunk) => dataHandler?.(chunk),
@@ -30,11 +34,17 @@ function createCore() {
   const storage: Record<string, unknown> = {}
   const core = {
     registry: { registerTool: vi.fn() },
-    ipc: { handle: (ch: string, fn: (payload: unknown) => Promise<unknown>) => { handlers[ch] = fn } },
+    ipc: {
+      handle: (ch: string, fn: (payload: unknown) => Promise<unknown>) => {
+        handlers[ch] = fn
+      },
+    },
     logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
     storage: {
       read: vi.fn(async (key: string) => storage[key] ?? null),
-      write: vi.fn(async (key: string, val: unknown) => { storage[key] = val }),
+      write: vi.fn(async (key: string, val: unknown) => {
+        storage[key] = val
+      }),
     },
     fs: {
       homedir: vi.fn().mockReturnValue('/home/user'),
@@ -65,7 +75,9 @@ describe('video-downloader backend', () => {
     const register = await freshBackend()
     const { core } = createCore()
     await register(core)
-    expect((core.registry.registerTool as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith({ name: 'video-downloader' })
+    expect(core.registry.registerTool as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({
+      name: 'video-downloader',
+    })
   })
 
   // ─── ytdlp:status ────────────────────────────────────────────────────────────
@@ -74,7 +86,10 @@ describe('video-downloader backend', () => {
     it('returns { installed: true } when yt-dlp binary is found', async () => {
       const register = await freshBackend()
       const { core, handlers } = createCore()
-      ;(core.shell.exec as ReturnType<typeof vi.fn>).mockResolvedValue({ stdout: '/usr/bin/yt-dlp', code: 0 })
+      ;(core.shell.exec as ReturnType<typeof vi.fn>).mockResolvedValue({
+        stdout: '/usr/bin/yt-dlp',
+        code: 0,
+      })
       await register(core)
       const result = await handlers['ytdlp:status'](undefined)
       expect(result).toEqual({ installed: true })
@@ -97,8 +112,10 @@ describe('video-downloader backend', () => {
       const register = await freshBackend()
       const { core, handlers } = createCore()
       await register(core)
-
-      ;(core.shell.exec as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ stdout: JSON.stringify({ formats: [] }), code: 0 })
+      ;(core.shell.exec as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        stdout: JSON.stringify({ formats: [] }),
+        code: 0,
+      })
 
       await handlers['ytdlp:getFormats']({ url: 'https://youtube.com/watch?v=test' })
       expect(core.shell.exec).toHaveBeenCalledWith(
@@ -114,10 +131,25 @@ describe('video-downloader backend', () => {
       await register(core)
 
       const fakeFormats = [
-        { format_id: '137', ext: 'mp4', resolution: '1920x1080', filesize: 102400, format_note: 'HD' },
-        { format_id: '140', ext: 'm4a', resolution: null, filesize: null, format_note: 'audio only' },
+        {
+          format_id: '137',
+          ext: 'mp4',
+          resolution: '1920x1080',
+          filesize: 102400,
+          format_note: 'HD',
+        },
+        {
+          format_id: '140',
+          ext: 'm4a',
+          resolution: null,
+          filesize: null,
+          format_note: 'audio only',
+        },
       ]
-      ;(core.shell.exec as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ stdout: JSON.stringify({ formats: fakeFormats }), code: 0 })
+      ;(core.shell.exec as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        stdout: JSON.stringify({ formats: fakeFormats }),
+        code: 0,
+      })
 
       const result = await handlers['ytdlp:getFormats']({ url: 'https://example.com/video' })
       expect(result).toHaveLength(2)
@@ -145,8 +177,9 @@ describe('video-downloader backend', () => {
       const enoentErr = Object.assign(new Error('spawn yt-dlp ENOENT'), { code: 'ENOENT' })
       ;(core.shell.exec as ReturnType<typeof vi.fn>).mockRejectedValueOnce(enoentErr)
 
-      await expect(handlers['ytdlp:getFormats']({ url: 'https://example.com/video' }))
-        .rejects.toThrow('yt-dlp is not installed. Install it with: pip install yt-dlp')
+      await expect(
+        handlers['ytdlp:getFormats']({ url: 'https://example.com/video' })
+      ).rejects.toThrow('yt-dlp is not installed. Install it with: pip install yt-dlp')
     })
   })
 
@@ -175,10 +208,10 @@ describe('video-downloader backend', () => {
       const { core, handlers } = createCore()
       await register(core)
 
-      const result = await handlers['ytdlp:download']({
+      const result = (await handlers['ytdlp:download']({
         url: 'https://example.com/video',
         formatId: '137',
-      }) as { jobId: string }
+      })) as { jobId: string }
 
       expect(typeof result.jobId).toBe('string')
       expect(result.jobId.length).toBeGreaterThan(0)
@@ -192,14 +225,17 @@ describe('video-downloader backend', () => {
       const handle = makeSpawnHandle()
       ;(core.shell.spawn as ReturnType<typeof vi.fn>).mockReturnValueOnce(handle)
 
-      const { jobId } = await handlers['ytdlp:download']({
+      const { jobId } = (await handlers['ytdlp:download']({
         url: 'https://example.com/video',
         formatId: '137',
-      }) as { jobId: string }
+      })) as { jobId: string }
 
       handle._emit.data('[download]  45.2% of 128.34MiB\n')
 
-      const jobs = await handlers['ytdlp:queue'](undefined) as Array<{ jobId: string; progress: number }>
+      const jobs = (await handlers['ytdlp:queue'](undefined)) as Array<{
+        jobId: string
+        progress: number
+      }>
       const job = jobs.find((j) => j.jobId === jobId)
       expect(job!.progress).toBeCloseTo(45.2)
     })
@@ -212,14 +248,17 @@ describe('video-downloader backend', () => {
       const handle = makeSpawnHandle()
       ;(core.shell.spawn as ReturnType<typeof vi.fn>).mockReturnValueOnce(handle)
 
-      const { jobId } = await handlers['ytdlp:download']({
+      const { jobId } = (await handlers['ytdlp:download']({
         url: 'https://example.com/video',
         formatId: '137',
-      }) as { jobId: string }
+      })) as { jobId: string }
 
       handle._emit.close(0)
 
-      const jobs = await handlers['ytdlp:queue'](undefined) as Array<{ jobId: string; status: string }>
+      const jobs = (await handlers['ytdlp:queue'](undefined)) as Array<{
+        jobId: string
+        status: string
+      }>
       const job = jobs.find((j) => j.jobId === jobId)
       expect(job!.status).toBe('done')
     })
@@ -232,14 +271,17 @@ describe('video-downloader backend', () => {
       const handle = makeSpawnHandle()
       ;(core.shell.spawn as ReturnType<typeof vi.fn>).mockReturnValueOnce(handle)
 
-      const { jobId } = await handlers['ytdlp:download']({
+      const { jobId } = (await handlers['ytdlp:download']({
         url: 'https://example.com/video',
         formatId: '137',
-      }) as { jobId: string }
+      })) as { jobId: string }
 
       handle._emit.close(1)
 
-      const jobs = await handlers['ytdlp:queue'](undefined) as Array<{ jobId: string; status: string }>
+      const jobs = (await handlers['ytdlp:queue'](undefined)) as Array<{
+        jobId: string
+        status: string
+      }>
       const job = jobs.find((j) => j.jobId === jobId)
       expect(job!.status).toBe('error')
     })
@@ -255,7 +297,7 @@ describe('video-downloader backend', () => {
 
       await handlers['ytdlp:download']({ url: 'https://example.com/video', formatId: '137' })
 
-      const jobs = await handlers['ytdlp:queue'](undefined) as unknown[]
+      const jobs = (await handlers['ytdlp:queue'](undefined)) as unknown[]
       expect(Array.isArray(jobs)).toBe(true)
       expect(jobs).toHaveLength(1)
 
@@ -280,16 +322,16 @@ describe('video-downloader backend', () => {
       const handle = makeSpawnHandle()
       ;(core.shell.spawn as ReturnType<typeof vi.fn>).mockReturnValueOnce(handle)
 
-      const { jobId } = await handlers['ytdlp:download']({
+      const { jobId } = (await handlers['ytdlp:download']({
         url: 'https://example.com/video',
         formatId: '137',
-      }) as { jobId: string }
+      })) as { jobId: string }
 
       await handlers['ytdlp:cancel']({ jobId })
 
       expect(handle.kill).toHaveBeenCalledWith('SIGTERM')
 
-      const jobs = await handlers['ytdlp:queue'](undefined) as Array<{ jobId: string }>
+      const jobs = (await handlers['ytdlp:queue'](undefined)) as Array<{ jobId: string }>
       expect(jobs.find((j) => j.jobId === jobId)).toBeUndefined()
     })
   })
@@ -304,7 +346,9 @@ describe('video-downloader backend', () => {
 
       await handlers['ytdlp:configure']({ outputDir: '/home/user/Videos' })
 
-      expect(core.storage.write).toHaveBeenCalledWith('config.json', { outputDir: '/home/user/Videos' })
+      expect(core.storage.write).toHaveBeenCalledWith('config.json', {
+        outputDir: '/home/user/Videos',
+      })
     })
   })
 
@@ -319,14 +363,17 @@ describe('video-downloader backend', () => {
       const handle = makeSpawnHandle()
       ;(core.shell.spawn as ReturnType<typeof vi.fn>).mockReturnValueOnce(handle)
 
-      const { jobId } = await handlers['ytdlp:download']({
+      const { jobId } = (await handlers['ytdlp:download']({
         url: 'https://example.com/video',
         formatId: '140',
-      }) as { jobId: string }
+      })) as { jobId: string }
 
       handle._emit.data('[download]  45.2% of 128.34MiB at 1.23MiB/s ETA 00:42\n')
 
-      const jobs = await handlers['ytdlp:queue'](undefined) as Array<{ jobId: string; progress: number }>
+      const jobs = (await handlers['ytdlp:queue'](undefined)) as Array<{
+        jobId: string
+        progress: number
+      }>
       const job = jobs.find((j) => j.jobId === jobId)
       expect(job!.progress).toBeCloseTo(45.2)
     })

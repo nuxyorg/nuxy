@@ -40,9 +40,9 @@ const filesToProcess = getAllFiles(projectRoot)
 console.log(`Found ${filesToProcess.length} spec files. Checking for resetShell function...`)
 for (const file of filesToProcess) {
   let content = fs.readFileSync(file, 'utf8')
-  
+
   const resetShellRegex = /async function resetShell\([^{]*\{[\s\S]*?\n\}/
-  
+
   if (resetShellRegex.test(content)) {
     console.log(`- Updating resetShell in ${path.relative(projectRoot, file)}`)
     content = content.replace(resetShellRegex, robustResetShellCode)

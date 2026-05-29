@@ -30,12 +30,17 @@ export function Stack({
     justify ? `nuxy-stack--justify-${justify}` : '',
     wrap ? 'nuxy-stack--wrap' : '',
     className || '',
-  ].filter(Boolean).join(' ')
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
     <div
       className={classes}
-      style={{ gap: gap !== undefined ? (typeof gap === 'number' ? `${gap}px` : gap) : undefined, ...style }}
+      style={{
+        gap: gap !== undefined ? (typeof gap === 'number' ? `${gap}px` : gap) : undefined,
+        ...style,
+      }}
       {...props}
     >
       {children}

@@ -109,7 +109,12 @@ test.describe('settings tool', () => {
     { name: 'blurAction', label: 'Focus-Out Action', index: 5, getExpectedCount: async () => 4 },
     { name: 'windowWidth', label: 'Window Width', index: 6, getExpectedCount: async () => 6 },
     { name: 'windowMaxHeight', label: 'Max Height', index: 7, getExpectedCount: async () => 5 },
-    { name: 'windowPosition', label: 'Launch Position', index: 8, getExpectedCount: async () => 10 },
+    {
+      name: 'windowPosition',
+      label: 'Launch Position',
+      index: 8,
+      getExpectedCount: async () => 10,
+    },
     { name: 'opacity', label: 'Opacity', index: 9, getExpectedCount: async () => 4 },
     { name: 'alwaysOnTop', label: 'Always on Top', index: 10, getExpectedCount: async () => 2 },
     { name: 'showInTaskbar', label: 'Show in Taskbar', index: 11, getExpectedCount: async () => 2 },
@@ -260,7 +265,9 @@ test.describe('settings tool', () => {
     )
   })
 
-  test('font dropdown search shows "No results" when no matching fonts found', async ({ appPage }) => {
+  test('font dropdown search shows "No results" when no matching fonts found', async ({
+    appPage,
+  }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
 
@@ -378,7 +385,9 @@ test.describe('settings tool', () => {
     await expect(searchInput).toBeFocused()
   })
 
-  test('keyboard navigation respects boundaries and does not wrap around or crash', async ({ appPage }) => {
+  test('keyboard navigation respects boundaries and does not wrap around or crash', async ({
+    appPage,
+  }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
 
@@ -438,7 +447,9 @@ test.describe('settings tool', () => {
     )
   })
 
-  test('keyboard navigation still works after clicking a dropdown with the mouse', async ({ appPage }) => {
+  test('keyboard navigation still works after clicking a dropdown with the mouse', async ({
+    appPage,
+  }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
 
@@ -548,17 +559,7 @@ test.describe('settings tool', () => {
       expect(rowBox.y).toBeGreaterThanOrEqual(containerBox.y - 1)
     }
   })
-
-
-
 })
-
-
-
-
-
-
-
 
 test.describe('settings IPC channels', () => {
   test('getSettings channel returns full settings object', async ({ appPage }) => {

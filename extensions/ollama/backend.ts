@@ -20,11 +20,11 @@ export async function register(core: CoreContext): Promise<void> {
   const saved = await core.storage.read<OllamaConfig>('config.json')
   if (saved) config = { ...config, ...saved }
 
-  async function chat({ messages }: ChatPayload): Promise<ChatResult> {
+  async function chat(payload: ChatPayload): Promise<ChatResult> {
     const response = await fetch(`${config.host}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: config.model, messages, stream: false }),
+      body: JSON.stringify({ model: config.model, messages: payload.messages, stream: false }),
     })
 
     if (!response.ok) {
@@ -40,9 +40,12 @@ export async function register(core: CoreContext): Promise<void> {
     return chat({ messages: [{ role: 'user', content: rawText as string }] })
   })
 
-  core.ipc.handle('chat', chat)
+  core.ipc.handle('chat', async (payload: unknown): Promise<ChatResult> => {
+    return chat(payload as ChatPayload)
+  })
 
-  core.ipc.handle('query', async ({ model, prompt }: QueryPayload): Promise<ChatResult> => {
+  core.ipc.handle('query', async (payload: unknown): Promise<ChatResult> => {
+    const { model, prompt } = payload as QueryPayload
     if (model) config = { ...config, model }
     return chat({ messages: [{ role: 'user', content: prompt }] })
   })
@@ -67,7 +70,8 @@ export async function register(core: CoreContext): Promise<void> {
     }
   })
 
-  core.ipc.handle('configure', async ({ model, host }: ConfigurePayload = {}): Promise<void> => {
+  core.ipc.handle('configure', async (payload: unknown): Promise<void> => {
+    const { model, host } = (payload as ConfigurePayload) ?? {}
     if (model !== undefined) config.model = model
     if (host !== undefined) config.host = host
     await core.storage.write('config.json', { model: config.model, host: config.host })
