@@ -1,0 +1,41 @@
+.nuxy-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--font-sm);
+}
+
+.nuxy-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nuxy-breadcrumb__link {
+  color: var(--syntax-comment);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+}
+
+.nuxy-breadcrumb__link:hover {
+  color: var(--syntax-variable);
+}
+
+.nuxy-breadcrumb__current {
+  color: var(--syntax-variable);
+  padding: 2px 4px;
+  font-weight: 500;
+}
+
+.nuxy-breadcrumb__sep {
+  color: var(--syntax-comment);
+  padding: 0 var(--space-1);
+  user-select: none;
+  opacity: 0.5;
+}

@@ -1,0 +1,58 @@
+.nuxy-number-input {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--syntax-comment);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: transparent;
+  transition: border-color 0.15s ease;
+}
+
+.nuxy-number-input:focus-within {
+  border-color: var(--syntax-operator);
+}
+
+.nuxy-number-input__btn {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  color: var(--syntax-variable);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-lg);
+  opacity: 0.6;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.nuxy-number-input__btn:hover:not(:disabled) {
+  opacity: 1;
+  background: rgba(255,255,255,0.05);
+}
+
+.nuxy-number-input__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nuxy-number-input__field {
+  width: 60px;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: var(--syntax-variable);
+  font-size: var(--font-md);
+  font-family: inherit;
+  outline: none;
+  padding: var(--space-1) 0;
+  -moz-appearance: textfield;
+}
+
+.nuxy-number-input__field::-webkit-outer-spin-button,
+.nuxy-number-input__field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}

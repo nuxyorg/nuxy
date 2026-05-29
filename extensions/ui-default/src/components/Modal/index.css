@@ -1,0 +1,99 @@
+.nuxy-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  animation: nuxy-fade-in 0.2s ease;
+}
+
+@keyframes nuxy-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.nuxy-modal {
+  background: var(--bg-base);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5), 0 10px 10px -5px rgba(0,0,0,0.4);
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: nuxy-scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+@keyframes nuxy-scale-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.nuxy-modal--lg { max-width: 800px; }
+.nuxy-modal--sm { max-width: 380px; }
+
+.nuxy-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.nuxy-modal__title {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--syntax-variable);
+  margin: 0;
+}
+
+.nuxy-modal__close {
+  background: transparent;
+  border: none;
+  color: var(--syntax-comment);
+  cursor: pointer;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  display: flex;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.nuxy-modal__close:hover {
+  color: var(--syntax-variable);
+  background: rgba(255,255,255,0.05);
+}
+
+.nuxy-modal__body {
+  padding: var(--space-5);
+  font-size: var(--font-md);
+  line-height: 1.5;
+  color: var(--syntax-variable);
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.nuxy-modal__footer {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  background: rgba(255,255,255,0.01);
+}
+
+/* AlertDialog variants */
+.nuxy-alert-dialog {
+  border-top: 3px solid var(--syntax-invalid);
+}
+.nuxy-alert-dialog--warning {
+  border-top-color: var(--syntax-constant);
+}
+.nuxy-alert-dialog--info {
+  border-top-color: var(--syntax-operator);
+}

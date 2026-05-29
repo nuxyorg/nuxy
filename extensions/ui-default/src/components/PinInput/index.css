@@ -1,0 +1,39 @@
+.nuxy-pin-input {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.nuxy-pin-input__cell {
+  width: 44px;
+  height: 48px;
+  text-align: center;
+  font-size: var(--font-xl);
+  font-weight: 600;
+  font-family: monospace;
+  background: transparent;
+  border: 1.5px solid var(--syntax-comment);
+  border-radius: var(--radius-md);
+  color: var(--syntax-variable);
+  outline: none;
+  transition: border-color 0.15s ease;
+  caret-color: var(--syntax-operator);
+}
+
+.nuxy-pin-input__cell:focus {
+  border-color: var(--syntax-operator);
+}
+
+.nuxy-pin-input__cell--filled {
+  border-color: rgba(255,255,255,0.2);
+}
+
+.nuxy-pin-input__cell--error {
+  border-color: var(--syntax-invalid);
+}
+
+.nuxy-pin-input__sep {
+  color: var(--syntax-comment);
+  font-size: var(--font-lg);
+  padding: 0 var(--space-1);
+}

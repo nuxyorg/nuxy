@@ -9,7 +9,8 @@
     "build": "pnpm -C src build",
     "package": "pnpm -C src dist",
     "test": "pnpm -C src test",
-    "test:e2e": "echo \"please run tests for each extension\" && exit 1",
+    "test:e2e": "pnpm -C src test:e2e",
+    "test:e2e:extensions": "pnpm -C src test:e2e:all",
     "test:e2e:core": "pnpm -C src test:e2e:core",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

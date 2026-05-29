@@ -36,8 +36,13 @@ async function openCommandPalette(page: Page) {
   await page.keyboard.press('Control+k')
   const input = page.locator('.nuxy-command-palette__input')
   await input.waitFor({ state: 'visible', timeout: 400 })
-  await page.waitForTimeout(5)
-  await input.focus()
+  // Click to ensure focus lands on the palette input (not the shell input),
+  // then wait for activeElement to confirm — prevents race with keyboard.type()
+  await input.click()
+  await page.waitForFunction(
+    () => document.activeElement?.classList.contains('nuxy-command-palette__input'),
+    { timeout: 400 }
+  )
 }
 
 // ---------------------------------------------------------------------------

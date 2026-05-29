@@ -183,7 +183,7 @@ export default function SettingsView({ query: _query }: Props) {
   const [iconPacks, setIconPacks] = useState<SelectOption[]>([])
   const [systemFonts, setSystemFonts] = useState<string[]>([])
   const [settings, setSettings] = useState<NuxySettings>(DEFAULT_SETTINGS)
-  const [selectedRow, setSelectedRow] = useState<number>(0)
+  const [selectedRow, setSelectedRow] = useState<number>(-1)
   const [activeSelect, setActiveSelect] = useState<string | null>(null)
   const [selectFocused, setSelectFocused] = useState<number>(0)
 
@@ -230,7 +230,7 @@ export default function SettingsView({ query: _query }: Props) {
         if (activeSelect !== null) {
           setSelectFocused((i: number) => Math.max(i - 1, 0))
         } else {
-          setSelectedRow((i: number) => Math.max(i - 1, 0))
+          setSelectedRow((i: number) => Math.max(i - 1, -1))
         }
       },
     },
@@ -285,7 +285,7 @@ export default function SettingsView({ query: _query }: Props) {
     ? _useTwoPanelNav({
         sections: navSections,
         selectOpen: activeSelect !== null,
-        initialFocusArea: 'left',
+        initialFocusArea: 'right',
         onSectionChange: (id: string) => {
           const el = sectionRefs.current[id]
           if (el && rightPanelRef.current) {
@@ -396,9 +396,9 @@ export default function SettingsView({ query: _query }: Props) {
       orientation="vertical"
       style={{ borderRight: 'none', height: '100%' }}
       onChange={(id: string) => {
-        // Jump to the first row of that section
+        // Place cursor just before the section start so the first ArrowDown selects the first row
         const startIdx = nav?.sectionStartIndex[id] ?? 0
-        setSelectedRow(startIdx)
+        setSelectedRow(startIdx - 1)
         nav?.goToSection(id)
         setActiveSelect(null)
       }}
@@ -455,6 +455,7 @@ export default function SettingsView({ query: _query }: Props) {
                                 onOpen={(idx: number) => {
                                   setSelectedRow(globalIdx)
                                   nav?.onItemSelected(globalIdx)
+                                  nav?.setFocusArea('right')
                                   setSelectFocused(idx)
                                   setActiveSelect(row.key)
                                 }}

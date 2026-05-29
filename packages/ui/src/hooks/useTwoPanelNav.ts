@@ -1,10 +1,5 @@
 import { useState, useMemo, useRef, useCallback } from 'react'
-import { useToolKeyActions, KeyAction } from './useToolKeyActions'
-
-// Keys whose handlers are merged (left-panel vs right-panel) rather than
-// appended as duplicates. ArrowLeft/Right are included so callers can
-// override the default panel-switch with per-cell grid navigation.
-const BUILTIN_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter'])
+import { KeyAction } from './useToolKeyActions'
 
 export interface TwoPanelNavSection {
   id: string
@@ -14,7 +9,11 @@ export interface TwoPanelNavSection {
   itemCount: number
 }
 
+
+
 export type TwoPanelFocusArea = 'left' | 'right'
+
+
 
 export interface UseTwoPanelNavOptions {
   sections: TwoPanelNavSection[]
@@ -39,6 +38,8 @@ export interface UseTwoPanelNavOptions {
    */
   rightPanelActions?: KeyAction[]
 }
+
+
 
 export interface UseTwoPanelNavResult {
   /** Which panel currently has keyboard focus */
@@ -70,166 +71,7 @@ export interface UseTwoPanelNavResult {
   setActiveSection: (id: string) => void
 }
 
-export function useTwoPanelNav({
-  sections,
-  selectOpen = false,
-  initialFocusArea = 'right',
-  onSectionChange,
-  onFocusRight,
-  rightPanelActions = [],
-}: UseTwoPanelNavOptions): UseTwoPanelNavResult {
-  const [focusArea, setFocusArea] = useState<TwoPanelFocusArea>(initialFocusArea)
-  const [activeSectionId, setActiveSectionId] = useState<string>(sections[0]?.id ?? '')
-
-  // Keep a stable ref so key handlers always see latest state + right-panel actions
-  const stateRef = useRef({ focusArea, activeSectionId, sections, selectOpen, onSectionChange, onFocusRight, rightPanelActions })
-  stateRef.current = { focusArea, activeSectionId, sections, selectOpen, onSectionChange, onFocusRight, rightPanelActions }
-
-  // Precompute section start indices from itemCount
-  const sectionStartIndex = useMemo(() => {
-    const map: Record<string, number> = {}
-    let offset = 0
-    for (const s of sections) {
-      map[s.id] = offset
-      offset += s.itemCount
-    }
-    return map
-  }, [sections])
-
-  const getSectionIdForIndex = useCallback(
-    (index: number): string => {
-      let activeSec = sections[0]?.id ?? ''
-      let offset = 0
-      for (const s of sections) {
-        if (index < offset + s.itemCount) {
-          activeSec = s.id
-          break
-        }
-        offset += s.itemCount
-      }
-      return activeSec
-    },
-    [sections]
-  )
-
-  const onItemSelected = useCallback(
-    (index: number) => {
-      setActiveSectionId(getSectionIdForIndex(index))
-    },
-    [getSectionIdForIndex]
-  )
-
-  const goToSection = useCallback((id: string) => {
-    setActiveSectionId(id)
-    setFocusArea('right')
-    stateRef.current.onSectionChange?.(id)
-  }, [])
-
-  // Left panel: navigate sections with Up/Down
-  const moveSectionUp = useCallback(() => {
-    const { sections, activeSectionId, onSectionChange } = stateRef.current
-    const idx = sections.findIndex((s) => s.id === activeSectionId)
-    const prev = sections[Math.max(0, idx - 1)]
-    if (prev && prev.id !== activeSectionId) {
-      setActiveSectionId(prev.id)
-      onSectionChange?.(prev.id)
-    }
-  }, [])
-
-  const moveSectionDown = useCallback(() => {
-    const { sections, activeSectionId, onSectionChange } = stateRef.current
-    const idx = sections.findIndex((s) => s.id === activeSectionId)
-    const next = sections[Math.min(sections.length - 1, idx + 1)]
-    if (next && next.id !== activeSectionId) {
-      setActiveSectionId(next.id)
-      onSectionChange?.(next.id)
-    }
-  }, [])
-
-  // Dispatch a right-panel action by key — always reads the freshest handler via ref
-  const callRightAction = useCallback((key: string) => {
-    const action = stateRef.current.rightPanelActions.find((a) => a.key === key && !a.modifiers?.length)
-    action?.handler()
-  }, [])
-
-  useToolKeyActions([
-    {
-      key: 'ArrowLeft',
-      label: 'Focus tabs',
-      handler: () => {
-        const { focusArea, selectOpen, rightPanelActions } = stateRef.current
-        if (focusArea !== 'right' || selectOpen) return
-        const rightAction = rightPanelActions.find((a) => a.key === 'ArrowLeft' && !a.modifiers?.length)
-        if (rightAction) rightAction.handler()
-        else setFocusArea('left')
-      },
-    },
-    {
-      key: 'ArrowRight',
-      label: 'Focus content',
-      handler: () => {
-        const { focusArea, activeSectionId, onFocusRight } = stateRef.current
-        if (focusArea === 'left') {
-          setFocusArea('right')
-          onFocusRight?.(activeSectionId)
-        } else {
-          callRightAction('ArrowRight')
-        }
-      },
-    },
-    {
-      key: 'ArrowUp',
-      label: 'Previous',
-      hint: '↑↓',
-      handler: () => {
-        const { focusArea } = stateRef.current
-        if (focusArea === 'left') moveSectionUp()
-        else callRightAction('ArrowUp')
-      },
-    },
-    {
-      key: 'ArrowDown',
-      label: 'Next',
-      handler: () => {
-        const { focusArea } = stateRef.current
-        if (focusArea === 'left') moveSectionDown()
-        else callRightAction('ArrowDown')
-      },
-    },
-    {
-      key: 'Enter',
-      label: 'Select / confirm',
-      hint: '↵',
-      handler: () => {
-        const { focusArea, activeSectionId, onFocusRight } = stateRef.current
-        if (focusArea === 'left') {
-          setFocusArea('right')
-          onFocusRight?.(activeSectionId)
-        } else {
-          callRightAction('Enter')
-        }
-      },
-    },
-    // Non-overlapping right-panel actions are gated on focusArea === 'right'
-    // so they never fire when the user is navigating the left tab bar.
-    ...rightPanelActions
-      .filter((a) => !BUILTIN_KEYS.has(a.key))
-      .map((a) => ({
-        ...a,
-        handler: () => {
-          if (stateRef.current.focusArea === 'right') a.handler()
-        },
-      })),
-  ])
-
-  return {
-    focusArea,
-    setFocusArea,
-    activeSectionId,
-    goToSection,
-    sectionStartIndex,
-    getSectionIdForIndex,
-    onItemSelected,
-    setActiveSection: setActiveSectionId,
-  }
+export function useTwoPanelNav(...args: any[]): any {
+  return (window.UI as any)?.useTwoPanelNav ? (window.UI as any).useTwoPanelNav(...args) : ({} as any);
 }
+

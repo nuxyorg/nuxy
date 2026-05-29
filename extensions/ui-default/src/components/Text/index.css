@@ -1,0 +1,46 @@
+.nuxy-text { margin: 0; }
+.nuxy-text--xs { font-size: var(--font-xs); }
+.nuxy-text--sm { font-size: var(--font-sm); }
+.nuxy-text--md { font-size: var(--font-md); }
+.nuxy-text--lg { font-size: var(--font-lg); }
+.nuxy-text--xl { font-size: var(--font-xl); }
+.nuxy-text--muted { color: var(--syntax-comment); }
+.nuxy-text--accent { color: var(--syntax-operator); }
+.nuxy-text--danger { color: var(--syntax-invalid); }
+.nuxy-text--success { color: var(--syntax-green); }
+.nuxy-text--bold { font-weight: 600; }
+.nuxy-text--mono { font-family: monospace; }
+
+.nuxy-heading {
+  margin: 0;
+  font-weight: 600;
+  color: var(--syntax-variable);
+  line-height: 1.3;
+}
+.nuxy-heading--1 { font-size: 28px; }
+.nuxy-heading--2 { font-size: 22px; }
+.nuxy-heading--3 { font-size: var(--font-xl); }
+.nuxy-heading--4 { font-size: var(--font-lg); }
+.nuxy-heading--5 { font-size: var(--font-md); }
+.nuxy-heading--6 { font-size: var(--font-sm); }
+
+.nuxy-link {
+  color: var(--syntax-operator);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: text-decoration-color 0.15s ease, opacity 0.15s ease;
+}
+.nuxy-link:hover {
+  text-decoration-color: var(--syntax-operator);
+}
+.nuxy-link--muted {
+  color: var(--syntax-comment);
+}
+.nuxy-link--muted:hover {
+  color: var(--syntax-variable);
+  text-decoration-color: var(--syntax-variable);
+}
+
+.nuxy-box {}

@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
+
+
 export interface KeyAction {
   key: string
   modifiers?: ('ctrl' | 'shift' | 'alt' | 'meta')[]
@@ -15,24 +17,7 @@ export interface KeyAction {
   handler: () => void
 }
 
-export function useToolKeyActions(actions: KeyAction[]): void {
-  // actionsRef holds latest closures so shell doesn't need to re-render
-  const actionsRef = useRef(actions)
-
-  // Keep ref current every render (no deps = runs every render)
-  useLayoutEffect(() => {
-    actionsRef.current = actions
-  })
-
-  useEffect(() => {
-    const getter = () => actionsRef.current
-    window.dispatchEvent(
-      new CustomEvent('nuxy-register-key-actions', {
-        detail: { getActions: getter },
-      })
-    )
-    return () => {
-      window.dispatchEvent(new CustomEvent('nuxy-register-key-actions', { detail: null }))
-    }
-  }, []) // only on mount/unmount — handlers stay fresh via actionsRef
+export function useToolKeyActions(...args: any[]): any {
+  return (window.UI as any)?.useToolKeyActions ? (window.UI as any).useToolKeyActions(...args) : ({} as any);
 }
+

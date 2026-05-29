@@ -1,0 +1,53 @@
+.nuxy-search-input {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 1px solid var(--syntax-comment);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease;
+}
+
+.nuxy-search-input:focus-within {
+  border-color: var(--syntax-operator);
+}
+
+.nuxy-search-input__icon {
+  color: var(--syntax-comment);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.nuxy-search-input__field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--syntax-variable);
+  font-size: var(--font-md);
+  font-family: inherit;
+  outline: none;
+  min-width: 0;
+}
+
+.nuxy-search-input__field::placeholder {
+  color: var(--syntax-comment);
+}
+
+.nuxy-search-input__clear {
+  background: transparent;
+  border: none;
+  color: var(--syntax-comment);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.nuxy-search-input__clear:hover {
+  opacity: 1;
+}

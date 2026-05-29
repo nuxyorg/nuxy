@@ -1,0 +1,29 @@
+.nuxy-label {
+  display: block;
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--syntax-variable);
+  margin-bottom: var(--space-1);
+  user-select: none;
+}
+
+.nuxy-label--required::after {
+  content: ' *';
+  color: var(--syntax-invalid);
+}
+
+.nuxy-helper-text {
+  display: block;
+  font-size: var(--font-sm);
+  color: var(--syntax-comment);
+  margin-top: var(--space-1);
+  line-height: 1.4;
+}
+
+.nuxy-helper-text--error {
+  color: var(--syntax-invalid);
+}
+
+.nuxy-helper-text--success {
+  color: var(--syntax-green);
+}

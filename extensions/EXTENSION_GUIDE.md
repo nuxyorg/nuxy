@@ -790,6 +790,25 @@ test('opens and shows results', async ({ appPage }) => {
 })
 ```
 
+### Running tests
+
+**Backend unit tests** — run from the repo root:
+
+```bash
+pnpm test                          # all unit tests across the monorepo
+pnpm -C src test -- extensions/calculator/backend.test.ts  # single file
+```
+
+**E2E tests** — require the app to be built (`pnpm build`) first:
+
+```bash
+pnpm test:e2e calculator           # e2e tests for one extension
+pnpm test:e2e:all                  # all extensions with an e2e.spec.ts
+pnpm test:e2e:core                 # core app e2e tests (src/e2e/)
+```
+
+`pnpm test:e2e <folder>` resolves to `extensions/<folder>/e2e.spec.ts`. The argument must match the extension's folder name exactly.
+
 ---
 
 ## 8. Anti-Patterns

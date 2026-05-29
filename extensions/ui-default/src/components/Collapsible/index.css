@@ -1,0 +1,53 @@
+.nuxy-collapsible {}
+
+.nuxy-collapsible__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--syntax-variable);
+  font-size: var(--font-md);
+  font-family: inherit;
+  cursor: pointer;
+  padding: var(--space-3) 0;
+  text-align: left;
+  gap: var(--space-3);
+}
+
+.nuxy-collapsible__trigger:hover {
+  color: var(--syntax-operator);
+}
+
+.nuxy-collapsible__chevron {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: transform 0.2s ease;
+}
+
+.nuxy-collapsible--open .nuxy-collapsible__chevron {
+  transform: rotate(180deg);
+}
+
+.nuxy-collapsible__content {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.2s ease;
+}
+
+.nuxy-collapsible--open .nuxy-collapsible__content {
+  max-height: 9999px;
+}
+
+/* Accordion */
+.nuxy-accordion {
+  display: flex;
+  flex-direction: column;
+}
+
+.nuxy-accordion .nuxy-collapsible + .nuxy-collapsible {
+  border-top: 1px solid rgba(255,255,255,0.06);
+}

@@ -1,0 +1,30 @@
+.nuxy-textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: 1px solid var(--syntax-comment);
+  border-radius: var(--radius-md);
+  color: var(--syntax-variable);
+  font-size: var(--font-md);
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 72px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+  outline: none;
+}
+
+.nuxy-textarea:focus {
+  border-color: var(--syntax-operator);
+}
+
+.nuxy-textarea:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  resize: none;
+}
+
+.nuxy-textarea::placeholder {
+  color: var(--syntax-comment);
+}

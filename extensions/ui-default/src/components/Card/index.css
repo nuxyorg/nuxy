@@ -1,0 +1,38 @@
+.nuxy-card {
+  background-color: var(--bg-base);
+  border: 1px solid var(--syntax-comment);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition:
+    background-color 300ms,
+    border-color 300ms,
+    box-shadow 300ms;
+}
+
+.nuxy-card--interactive {
+  cursor: pointer;
+}
+
+.nuxy-card--interactive:hover {
+  border-color: var(--syntax-operator);
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.nuxy-card__header {
+  padding: var(--space-5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nuxy-card__body {
+  padding: var(--space-5);
+  flex: 1;
+}
+
+.nuxy-card__footer {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.01);
+}

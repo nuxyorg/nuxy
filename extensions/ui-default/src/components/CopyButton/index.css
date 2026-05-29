@@ -1,0 +1,24 @@
+.nuxy-copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  background: transparent;
+  border: 1px solid var(--syntax-comment);
+  border-radius: var(--radius-md);
+  color: var(--syntax-comment);
+  font-size: var(--font-sm);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.nuxy-copy-button:hover {
+  border-color: var(--syntax-operator);
+  color: var(--syntax-operator);
+}
+
+.nuxy-copy-button--copied {
+  border-color: var(--syntax-green);
+  color: var(--syntax-green);
+}

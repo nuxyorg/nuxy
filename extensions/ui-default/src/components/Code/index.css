@@ -1,0 +1,53 @@
+.nuxy-code {
+  display: inline;
+  font-family: monospace;
+  font-size: 0.875em;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--syntax-function);
+  word-break: break-word;
+}
+
+.nuxy-code-block {
+  display: block;
+  position: relative;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.nuxy-code-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+}
+
+.nuxy-code-block__lang {
+  font-size: var(--font-xs);
+  color: var(--syntax-comment);
+  font-family: monospace;
+  text-transform: lowercase;
+}
+
+.nuxy-code-block__copy {
+  flex-shrink: 0;
+}
+
+.nuxy-code-block__pre {
+  margin: 0;
+  padding: var(--space-4);
+  overflow-x: auto;
+  font-family: monospace;
+  font-size: var(--font-sm);
+  line-height: 1.6;
+  color: var(--syntax-variable);
+  white-space: pre;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}

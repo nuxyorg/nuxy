@@ -1,0 +1,118 @@
+.nuxy-table-container {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg);
+  background: transparent;
+}
+
+.nuxy-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: var(--font-sm);
+  color: var(--syntax-variable);
+}
+
+.nuxy-table__th {
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  color: var(--syntax-comment);
+  border-bottom: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.01);
+  font-size: var(--font-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nuxy-table__tr {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.1s ease;
+}
+
+.nuxy-table__tr:last-child {
+  border-bottom: none;
+}
+
+.nuxy-table__tr--interactive {
+  cursor: pointer;
+}
+
+.nuxy-table__tr--interactive:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.nuxy-table__td {
+  padding: var(--space-3) var(--space-4);
+  vertical-align: middle;
+}
+
+/* DataList */
+.nuxy-data-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.nuxy-data-list__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+@media (min-width: 480px) {
+  .nuxy-data-list__item {
+    flex-direction: row;
+    align-items: baseline;
+  }
+  .nuxy-data-list__label {
+    width: 140px;
+    flex-shrink: 0;
+  }
+}
+
+.nuxy-data-list__label {
+  font-size: var(--font-sm);
+  font-weight: 500;
+  color: var(--syntax-comment);
+}
+
+.nuxy-data-list__value {
+  font-size: var(--font-sm);
+  color: var(--syntax-variable);
+}
+
+/* Stat / Metric */
+.nuxy-stat {
+  padding: var(--space-4);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.02);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.nuxy-stat__label {
+  font-size: var(--font-xs);
+  color: var(--syntax-comment);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nuxy-stat__value {
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--syntax-variable);
+  font-variant-numeric: tabular-nums;
+}
+
+.nuxy-stat__help {
+  font-size: var(--font-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.nuxy-stat__help--up { color: var(--syntax-green); }
+.nuxy-stat__help--down { color: var(--syntax-invalid); }

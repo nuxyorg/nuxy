@@ -1,0 +1,151 @@
+.nuxy-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 100%;
+}
+
+.nuxy-progress__header {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-xs);
+  color: var(--syntax-comment);
+}
+
+.nuxy-progress__track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.nuxy-progress__track--sm { height: 3px; }
+.nuxy-progress__track--md { height: 6px; }
+.nuxy-progress__track--lg { height: 10px; }
+
+.nuxy-progress__fill {
+  height: 100%;
+  border-radius: var(--radius-xl);
+  background: var(--syntax-operator);
+  transition: width 0.3s ease;
+}
+
+.nuxy-progress__fill--indeterminate {
+  width: 40% !important;
+  animation: nuxy-progress-indeterminate 1.4s ease infinite;
+}
+
+@keyframes nuxy-progress-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+/* Spinner */
+.nuxy-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nuxy-spinner__svg {
+  animation: nuxy-spin 0.75s linear infinite;
+}
+
+@keyframes nuxy-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.nuxy-spinner__circle {
+  stroke: var(--syntax-operator);
+  stroke-linecap: round;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 15;
+}
+
+/* Skeleton */
+.nuxy-skeleton {
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.06);
+  overflow: hidden;
+  position: relative;
+}
+
+.nuxy-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.06) 50%,
+    transparent 100%
+  );
+  animation: nuxy-shimmer 1.5s ease infinite;
+}
+
+@keyframes nuxy-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.nuxy-skeleton--text {
+  height: var(--font-md);
+  border-radius: var(--radius-sm);
+}
+
+.nuxy-skeleton--circle {
+  border-radius: 50%;
+}
+
+/* Callout */
+.nuxy-callout {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4);
+  border-radius: var(--radius-lg);
+  border-left: 3px solid transparent;
+  background: rgba(255,255,255,0.03);
+  font-size: var(--font-md);
+  line-height: 1.5;
+}
+
+.nuxy-callout--info {
+  border-left-color: var(--syntax-operator);
+  background: rgba(42,192,255,0.05);
+}
+
+.nuxy-callout--warning {
+  border-left-color: var(--syntax-constant);
+  background: rgba(255,170,1,0.05);
+}
+
+.nuxy-callout--error {
+  border-left-color: var(--syntax-invalid);
+  background: rgba(255,29,100,0.05);
+}
+
+.nuxy-callout--success {
+  border-left-color: var(--syntax-green);
+  background: rgba(204,255,45,0.04);
+}
+
+.nuxy-callout__icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.nuxy-callout__body {}
+
+.nuxy-callout__title {
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+  color: var(--syntax-variable);
+}
+
+.nuxy-callout__message {
+  color: var(--syntax-comment);
+}

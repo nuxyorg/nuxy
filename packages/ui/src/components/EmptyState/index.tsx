@@ -1,5 +1,6 @@
 import React from 'react'
-import './index.css'
+
+
 
 export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
   title?: React.ReactNode
@@ -9,27 +10,36 @@ export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElemen
   page?: boolean
 }
 
-export function EmptyState({
-  title,
-  message,
-  hint,
-  error,
-  page,
-  className,
-  children,
-  ...props
-}: EmptyStateProps) {
-  const rootClass = ['nuxy-empty-state', page ? 'nuxy-empty-state--page' : '', className || '']
-    .filter(Boolean)
-    .join(' ')
+export function EmptyState(props: any): React.ReactElement {
+  const Impl = (window.UI as any)?.EmptyState;
+  if (Impl) {
+    return <Impl {...props} />;
+  }
+
+  const { title, message, hint, error, page, children, style, ...rest } = props;
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '24px',
+    textAlign: 'center',
+    fontFamily: 'system-ui, -apple-system, sans-serif',
+    color: '#a1a1aa',
+    minHeight: page ? '100vh' : 'auto',
+    backgroundColor: page ? '#09090b' : 'transparent',
+    boxSizing: 'border-box',
+    ...style,
+  };
 
   return (
-    <div className={rootClass} {...props}>
-      {title && <h2 className="nuxy-empty-state__title">{title}</h2>}
-      {message && <p className="nuxy-empty-state__message">{message}</p>}
-      {hint && <p className="nuxy-empty-state__hint">{hint}</p>}
-      {error && <p className="nuxy-empty-state__error">{error}</p>}
+    <div style={containerStyle} {...rest}>
+      {title && <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#f4f4f5', margin: '0 0 8px 0' }}>{title}</h2>}
+      {message && <p style={{ fontSize: '14px', margin: '0 0 8px 0', color: '#a1a1aa' }}>{message}</p>}
+      {hint && <p style={{ fontSize: '12px', margin: '0 0 8px 0', color: '#71717a' }}>{hint}</p>}
+      {error && <pre style={{ fontSize: '12px', padding: '12px', background: '#27272a', borderRadius: '6px', color: '#ef4444', margin: '8px 0 0 0', overflowX: 'auto', maxWidth: '100%', textAlign: 'left' }}>{String(error)}</pre>}
       {children}
     </div>
-  )
+  );
 }
+

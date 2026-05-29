@@ -1,0 +1,25 @@
+.nuxy-stack {
+  display: flex;
+}
+
+.nuxy-stack--vertical {
+  flex-direction: column;
+}
+
+.nuxy-stack--horizontal {
+  flex-direction: row;
+}
+
+.nuxy-stack--wrap {
+  flex-wrap: wrap;
+}
+
+.nuxy-stack--align-start { align-items: flex-start; }
+.nuxy-stack--align-center { align-items: center; }
+.nuxy-stack--align-end { align-items: flex-end; }
+.nuxy-stack--align-stretch { align-items: stretch; }
+
+.nuxy-stack--justify-start { justify-content: flex-start; }
+.nuxy-stack--justify-center { justify-content: center; }
+.nuxy-stack--justify-end { justify-content: flex-end; }
+.nuxy-stack--justify-between { justify-content: space-between; }

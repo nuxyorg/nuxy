@@ -109,10 +109,11 @@ test.describe('settings tool', () => {
     { name: 'blurAction', label: 'Focus-Out Action', index: 5, getExpectedCount: async () => 4 },
     { name: 'windowWidth', label: 'Window Width', index: 6, getExpectedCount: async () => 6 },
     { name: 'windowMaxHeight', label: 'Max Height', index: 7, getExpectedCount: async () => 5 },
-    { name: 'opacity', label: 'Opacity', index: 8, getExpectedCount: async () => 4 },
-    { name: 'alwaysOnTop', label: 'Always on Top', index: 9, getExpectedCount: async () => 2 },
-    { name: 'showInTaskbar', label: 'Show in Taskbar', index: 10, getExpectedCount: async () => 2 },
-    { name: 'showOnStartup', label: 'Show on Startup', index: 11, getExpectedCount: async () => 2 },
+    { name: 'windowPosition', label: 'Launch Position', index: 8, getExpectedCount: async () => 10 },
+    { name: 'opacity', label: 'Opacity', index: 9, getExpectedCount: async () => 4 },
+    { name: 'alwaysOnTop', label: 'Always on Top', index: 10, getExpectedCount: async () => 2 },
+    { name: 'showInTaskbar', label: 'Show in Taskbar', index: 11, getExpectedCount: async () => 2 },
+    { name: 'showOnStartup', label: 'Show on Startup', index: 12, getExpectedCount: async () => 2 },
   ]
 
   for (const row of settingRows) {
@@ -129,7 +130,7 @@ test.describe('settings tool', () => {
         await appPage.locator('.nuxy-tab', { hasText: 'General' }).click()
       }
 
-      // Move selection to row
+      // Move selection to row (tab click places cursor at sectionStart-1, so i+1 presses reach row i)
       const targetIndex = row.index >= 4 ? row.index - 4 : row.index
       for (let i = 0; i <= targetIndex; i++) {
         await appPage.keyboard.press('ArrowDown')
@@ -392,7 +393,7 @@ test.describe('settings tool', () => {
     const activeItemAtTop = appPage.locator('.nuxy-list-item--active')
     await expect(activeItemAtTop).toHaveCount(0)
 
-    // Press ArrowDown 20 times to exceed total rows in Window section (8 rows, indexes 0 to 7)
+    // Press ArrowDown 20 times to exceed total rows in Window section (9 rows, indexes 0 to 8)
     for (let i = 0; i < 20; i++) {
       await appPage.keyboard.press('ArrowDown')
     }

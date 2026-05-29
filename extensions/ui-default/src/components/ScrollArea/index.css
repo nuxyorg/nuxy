@@ -1,0 +1,19 @@
+.nuxy-scroll-area {
+  overflow: auto;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+.nuxy-scroll-area--y { overflow-x: hidden; overflow-y: auto; }
+.nuxy-scroll-area--x { overflow-y: hidden; overflow-x: auto; }
+
+.nuxy-scroll-area::-webkit-scrollbar { width: 6px; height: 6px; }
+.nuxy-scroll-area::-webkit-scrollbar-track { background: transparent; }
+.nuxy-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--radius-xl);
+}
+.nuxy-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}

@@ -1,0 +1,64 @@
+.nuxy-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.nuxy-radio-group--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.nuxy-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--font-md);
+  color: var(--syntax-variable);
+}
+
+.nuxy-radio--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nuxy-radio__circle {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--syntax-comment);
+  border-radius: 50%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+
+.nuxy-radio--checked .nuxy-radio__circle {
+  border-color: var(--syntax-operator);
+}
+
+.nuxy-radio__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--syntax-operator);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.nuxy-radio--checked .nuxy-radio__dot {
+  opacity: 1;
+}
+
+.nuxy-radio__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}

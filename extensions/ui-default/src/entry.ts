@@ -2,12 +2,12 @@
  * com.nuxy.ui-default — Default UIKit Extension
  *
  * This file is the entry point for the Vite build that produces frontend.js.
- * It imports all @nuxy/ui components and merges them into window.UI, preserving
- * any components already registered by higher-priority uikit extensions.
+ * It imports all components from local ./index.tsx and merges them into window.UI,
+ * preserving any components already registered by higher-priority uikit extensions.
  *
  * CSS is inlined by vite-plugin-css-injected-by-js — no separate stylesheet needed.
  */
-import * as UI from '@nuxy/ui'
+import * as UI from './index'
 
 declare global {
   interface Window {

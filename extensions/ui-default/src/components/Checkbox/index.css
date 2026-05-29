@@ -1,0 +1,53 @@
+.nuxy-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--font-md);
+  color: var(--syntax-variable);
+}
+
+.nuxy-checkbox--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.nuxy-checkbox__box {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--syntax-comment);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.nuxy-checkbox--checked .nuxy-checkbox__box {
+  border-color: var(--syntax-operator);
+  background: var(--syntax-operator);
+}
+
+.nuxy-checkbox__checkmark {
+  display: none;
+  width: 9px;
+  height: 9px;
+  stroke: #000;
+  stroke-width: 2.5;
+  fill: none;
+}
+
+.nuxy-checkbox--checked .nuxy-checkbox__checkmark {
+  display: block;
+}
+
+.nuxy-checkbox__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}

@@ -1,16 +1,16 @@
 import React from 'react'
-import './index.css'
+
+
 
 export type ShortcutHintProps = React.HTMLAttributes<HTMLDivElement>
 
-export function ShortcutHint({ children, className, ...props }: ShortcutHintProps) {
-  return (
-    <div className={`nuxy-shortcut-hint ${className || ''}`} {...props}>
-      {children}
-    </div>
-  )
+export function ShortcutHint(props: any): React.ReactElement {
+  const Impl = (window.UI as any)?.ShortcutHint || (() => null);
+  return <Impl {...props} />;
 }
 
-export function ShortcutSep() {
-  return <span className="nuxy-shortcut-sep">/</span>
+export function ShortcutSep(props: any): React.ReactElement {
+  const Impl = (window.UI as any)?.ShortcutSep || (() => null);
+  return <Impl {...props} />;
 }
+
