@@ -32,7 +32,7 @@ function createTestDataDir(baseDir: string): string {
   return baseDir
 }
 
-async function launchApp(userDataDir: string): Promise<ElectronApplication> {
+async function launchApp(userDataDir: string, headless: boolean): Promise<ElectronApplication> {
   // Use a unique user-data-dir so Electron's requestSingleInstanceLock
   // doesn't conflict with any running nuxy instance on the developer's machine.
   // NUXY_DATA_DIR isolates settings (escAction, blurAction) without touching extensions.
@@ -51,7 +51,13 @@ async function launchApp(userDataDir: string): Promise<ElectronApplication> {
 
   return electron.launch({
     executablePath: ELECTRON_BIN,
-    args: ['--no-sandbox', `--user-data-dir=${userDataDir}`, APP_DIR],
+    args: [
+      '--no-sandbox',
+      `--user-data-dir=${userDataDir}`,
+      '--disable-renderer-backgrounding',
+      '--disable-background-timer-throttling',
+      APP_DIR,
+    ],
     env: {
       ...cleanEnv,
       DISPLAY: process.env.DISPLAY ?? ':0',
@@ -88,11 +94,11 @@ type ElectronTestFixtures = {
 export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
   // scope: 'worker' — one Electron instance shared across all tests in the worker
   electronApp: [
-    async ({}, use) => {
+    async ({ headless }, use) => {
       const userDataDir = mkdtempSync(resolve(tmpdir(), 'nuxy-test-'))
       let app: ElectronApplication | undefined
       try {
-        app = await launchApp(userDataDir)
+        app = await launchApp(userDataDir, headless)
         await use(app)
       } finally {
         await app?.close().catch(() => {})

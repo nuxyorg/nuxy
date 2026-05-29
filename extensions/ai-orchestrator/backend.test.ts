@@ -1,39 +1,18 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import { register } from './backend.ts'
 
 interface MockHandlers {
   [channel: string]: (payload?: unknown) => Promise<unknown>
 }
 
-interface MockCore {
-  registry: {
-    registerOrchestrator: ReturnType<typeof vi.fn>
-    getCallableTools: ReturnType<typeof vi.fn>
-  }
-  ipc: {
-    handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => void
-    broadcast: ReturnType<typeof vi.fn>
-  }
-  extensions: {
-    invoke: ReturnType<typeof vi.fn>
-  }
-  logger: {
-    info: ReturnType<typeof vi.fn>
-    error: ReturnType<typeof vi.fn>
-    warn: ReturnType<typeof vi.fn>
-  }
-}
-
 function createCore({
   callableTools = [],
   fetchImpl = null,
 }: { callableTools?: unknown[]; fetchImpl?: (() => Promise<unknown>) | null } = {}): {
-  core: MockCore
+  core: CoreContext
   handlers: MockHandlers
 } {
-  const handlers: MockHandlers = {}
-
   const defaultFetchImpl = (): Promise<unknown> =>
     Promise.resolve({
       ok: true,
@@ -48,22 +27,14 @@ function createCore({
     fetchImpl ?? (defaultFetchImpl as typeof global.fetch)
   )
 
-  const core: MockCore = {
+  const { core, handlers } = createMockCore(vi, {
     registry: {
-      registerOrchestrator: vi.fn(),
       getCallableTools: vi.fn().mockReturnValue(callableTools),
-    },
-    ipc: {
-      handle: (ch, fn) => {
-        handlers[ch] = fn
-      },
-      broadcast: vi.fn(),
     },
     extensions: {
       invoke: vi.fn().mockResolvedValue({ ok: true }),
     },
-    logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn() },
-  }
+  })
 
   return { core, handlers }
 }

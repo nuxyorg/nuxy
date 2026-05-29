@@ -1,61 +1,22 @@
 import { describe, it, expect, vi } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 
 import { register } from './backend.ts'
 
 type Handlers = Record<string, (...args: unknown[]) => Promise<unknown>>
 
 function createCore(storedFavorites: unknown = null): { core: CoreContext; handlers: Handlers } {
-  const handlers: Handlers = {}
-  const core = {
-    registry: {
-      registerTool: vi.fn(),
-      registerProvider: vi.fn(),
-      registerOrchestrator: vi.fn(),
-      registerTheme: vi.fn(),
-      registerIconPack: vi.fn(),
-    },
-    ipc: {
-      handle: (ch: string, fn: (...args: unknown[]) => Promise<unknown>) => {
-        handlers[ch] = fn
-      },
-    },
+  return createMockCore(vi, {
     storage: {
       read: vi.fn().mockResolvedValue(storedFavorites),
-      write: vi.fn().mockResolvedValue(undefined),
     },
     clipboard: {
-      readText: vi.fn(),
       writeText: vi.fn().mockResolvedValue(undefined),
-      readImage: vi.fn(),
-      writeImage: vi.fn(),
-      writeFiles: vi.fn(),
     },
     shell: {
-      open: vi.fn(),
       exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }),
-      spawn: vi.fn(),
     },
-    fs: {
-      fileExists: vi.fn(),
-      readDir: vi.fn(),
-      readFile: vi.fn(),
-      readFileBinary: vi.fn(),
-      writeFile: vi.fn(),
-      mkdir: vi.fn(),
-      rename: vi.fn(),
-      rm: vi.fn(),
-      stat: vi.fn(),
-      homedir: vi.fn().mockReturnValue('/home/user'),
-      tmpdir: vi.fn().mockReturnValue('/tmp'),
-    },
-    db: { open: vi.fn() },
-    media: { getNowPlaying: vi.fn() },
-    extensions: { invoke: vi.fn() },
-    logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
-    config: { get: vi.fn() },
-  } as unknown as CoreContext
-  return { core, handlers }
+  }) as any
 }
 
 async function flush(): Promise<void> {
@@ -71,52 +32,12 @@ describe('emoji-picker backend', () => {
 
   describe('getFavorites', () => {
     it('returns empty array initially', async () => {
-      const { handlers } = createCore()
-      register({
-        registry: {
-          registerTool: vi.fn(),
-          registerProvider: vi.fn(),
-          registerOrchestrator: vi.fn(),
-          registerTheme: vi.fn(),
-          registerIconPack: vi.fn(),
-        },
-        ipc: {
-          handle: (ch: string, fn: (...args: unknown[]) => Promise<unknown>) => {
-            handlers[ch] = fn
-          },
-        },
-        storage: { read: vi.fn().mockResolvedValue(null), write: vi.fn() },
-        clipboard: {
-          readText: vi.fn(),
-          writeText: vi.fn(),
-          readImage: vi.fn(),
-          writeImage: vi.fn(),
-          writeFiles: vi.fn(),
-        },
+      const { core, handlers } = createMockCore(vi, {
         shell: {
-          open: vi.fn(),
           exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }),
-          spawn: vi.fn(),
         },
-        fs: {
-          fileExists: vi.fn(),
-          readDir: vi.fn(),
-          readFile: vi.fn(),
-          readFileBinary: vi.fn(),
-          writeFile: vi.fn(),
-          mkdir: vi.fn(),
-          rename: vi.fn(),
-          rm: vi.fn(),
-          stat: vi.fn(),
-          homedir: vi.fn().mockReturnValue('/home/user'),
-          tmpdir: vi.fn().mockReturnValue('/tmp'),
-        },
-        db: { open: vi.fn() },
-        media: { getNowPlaying: vi.fn() },
-        extensions: { invoke: vi.fn() },
-        logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
-        config: { get: vi.fn() },
-      } as unknown as CoreContext)
+      })
+      register(core)
       expect(await handlers['getFavorites']()).toEqual([])
     })
 

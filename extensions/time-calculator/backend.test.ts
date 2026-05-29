@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import { register } from './backend.ts'
 
 // Freeze time at UTC noon so timezone conversions are deterministic.
@@ -21,17 +21,7 @@ afterAll(() => {
  * closure-scoped — every register() call gets its own isolated state.
  */
 function createCore() {
-  const handlers: Record<string, (payload: unknown) => Promise<unknown>> = {}
-  const core = {
-    registry: { registerProvider: vi.fn() },
-    ipc: {
-      handle: (ch: string, fn: (payload: unknown) => Promise<unknown>) => {
-        handlers[ch] = fn
-      },
-    },
-    logger: { info: vi.fn(), error: vi.fn() },
-  } as unknown as CoreContext
-  return { core, handlers }
+  return createMockCore(vi)
 }
 
 describe('time-calculator backend', () => {

@@ -26,6 +26,7 @@
   "devDependencies": {
     "@nuxy/core": "workspace:*",
     "@nuxy/extension-host": "workspace:*",
+    "@nuxy/extension-sdk": "workspace:*",
     "@nuxy/ui": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

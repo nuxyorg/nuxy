@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import type { DbHandle, PreparedStatement } from '@nuxy/core'
 
 interface MockDb {
@@ -32,51 +32,16 @@ function createCore(dbArg: MockDb | null = null): {
   preparedStmt: PreparedStatement
 } {
   const { db, mockPrepare, preparedStmt } = dbArg ?? makeMockDb()
-  const handlers: Record<string, (payload: unknown) => unknown> = {}
-  const core = {
-    registry: {
-      registerTool: vi.fn(),
-      registerProvider: vi.fn(),
-      registerOrchestrator: vi.fn(),
-      registerTheme: vi.fn(),
-      registerIconPack: vi.fn(),
-    },
-    ipc: {
-      handle: (ch: string, fn: (payload: unknown) => unknown) => {
-        handlers[ch] = fn
-      },
-    },
-    storage: {
-      read: vi.fn().mockResolvedValue(null),
-      write: vi.fn().mockResolvedValue(undefined),
-    },
-    logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
+  const { core, handlers } = createMockCore(vi, {
     db: { open: vi.fn().mockReturnValue(db) },
     fs: {
-      fileExists: vi.fn().mockResolvedValue(false),
-      homedir: vi.fn().mockReturnValue('/home/user'),
-      tmpdir: vi.fn().mockReturnValue('/tmp'),
       mkdir: vi.fn().mockResolvedValue(undefined),
       readDir: vi.fn().mockResolvedValue([]),
       readFile: vi.fn().mockResolvedValue('{}'),
-      readFileBinary: vi.fn(),
       writeFile: vi.fn().mockResolvedValue(undefined),
-      rename: vi.fn(),
       rm: vi.fn().mockResolvedValue(undefined),
-      stat: vi.fn(),
     },
-    clipboard: {
-      readText: vi.fn(),
-      writeText: vi.fn(),
-      readImage: vi.fn(),
-      writeImage: vi.fn(),
-      writeFiles: vi.fn(),
-    },
-    shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
-    media: { getNowPlaying: vi.fn() },
-    extensions: { invoke: vi.fn() },
-    config: { get: vi.fn() },
-  } as unknown as CoreContext
+  })
   return { core, handlers, db, mockPrepare, preparedStmt }
 }
 

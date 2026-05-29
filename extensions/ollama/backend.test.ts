@@ -1,61 +1,22 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { register } from './backend.ts'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 
 function createCore({ storage = {} }: { storage?: Record<string, unknown> } = {}): {
   core: CoreContext
   handlers: Record<string, (payload: unknown) => unknown>
   storageData: Record<string, unknown>
 } {
-  const handlers: Record<string, (payload: unknown) => unknown> = {}
   const storageData = { ...storage }
 
-  const core = {
-    registry: {
-      registerTool: vi.fn(),
-      registerProvider: vi.fn(),
-      registerOrchestrator: vi.fn(),
-      registerTheme: vi.fn(),
-      registerIconPack: vi.fn(),
-    },
-    ipc: {
-      handle: (ch: string, fn: (payload: unknown) => unknown) => {
-        handlers[ch] = fn
-      },
-    },
+  const { core, handlers } = createMockCore(vi, {
     storage: {
       read: vi.fn(async (key: string) => storageData[key] ?? null),
       write: vi.fn(async (key: string, value: unknown) => {
         storageData[key] = value
       }),
     },
-    clipboard: {
-      readText: vi.fn(),
-      writeText: vi.fn(),
-      readImage: vi.fn(),
-      writeImage: vi.fn(),
-      writeFiles: vi.fn(),
-    },
-    fs: {
-      fileExists: vi.fn(),
-      readDir: vi.fn(),
-      readFile: vi.fn(),
-      readFileBinary: vi.fn(),
-      writeFile: vi.fn(),
-      mkdir: vi.fn(),
-      rename: vi.fn(),
-      rm: vi.fn(),
-      stat: vi.fn(),
-      homedir: vi.fn().mockReturnValue('/home/user'),
-      tmpdir: vi.fn().mockReturnValue('/tmp'),
-    },
-    db: { open: vi.fn() },
-    shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
-    media: { getNowPlaying: vi.fn() },
-    extensions: { invoke: vi.fn() },
-    logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
-    config: { get: vi.fn() },
-  } as unknown as CoreContext
+  })
 
   return { core, handlers, storageData }
 }

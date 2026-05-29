@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import { register } from './backend.ts'
 import type { ClipboardItem } from './types.ts'
 
@@ -22,52 +22,18 @@ function createCore({
   core: CoreContext
   handlers: Record<string, (payload?: unknown) => Promise<unknown>>
 } {
-  const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
-  const core = {
-    registry: {
-      registerTool: vi.fn(),
-      registerProvider: vi.fn(),
-      registerOrchestrator: vi.fn(),
-      registerTheme: vi.fn(),
-      registerIconPack: vi.fn(),
-    },
-    ipc: {
-      handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
-        handlers[ch] = fn
-      },
-    },
+  return createMockCore(vi, {
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
-      write: vi.fn().mockResolvedValue(undefined),
     },
     clipboard: {
       readText: vi.fn().mockResolvedValue(clipText),
       readImage: vi.fn().mockResolvedValue(clipImage),
-      writeText: vi.fn().mockResolvedValue(undefined),
-      writeImage: vi.fn().mockResolvedValue(undefined),
-      writeFiles: vi.fn().mockResolvedValue(undefined),
     },
     fs: {
       fileExists: vi.fn().mockResolvedValue(true),
-      readDir: vi.fn(),
-      readFile: vi.fn(),
-      readFileBinary: vi.fn(),
-      writeFile: vi.fn(),
-      mkdir: vi.fn(),
-      rename: vi.fn(),
-      rm: vi.fn(),
-      stat: vi.fn(),
-      homedir: vi.fn().mockReturnValue('/home/user'),
-      tmpdir: vi.fn().mockReturnValue('/tmp'),
     },
-    db: { open: vi.fn() },
-    shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
-    media: { getNowPlaying: vi.fn() },
-    extensions: { invoke: vi.fn() },
-    logger: { info: vi.fn(), error: vi.fn(), silly: vi.fn(), warn: vi.fn() },
-    config: { get: vi.fn() },
-  } as CoreContext
-  return { core, handlers }
+  })
 }
 
 // Drain the async init() chain without advancing fake timers
@@ -88,51 +54,8 @@ describe('clipboard backend', () => {
 
   describe('getHistory', () => {
     it('returns empty array before init resolves', async () => {
-      const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
-      register({
-        registry: {
-          registerTool: vi.fn(),
-          registerProvider: vi.fn(),
-          registerOrchestrator: vi.fn(),
-          registerTheme: vi.fn(),
-          registerIconPack: vi.fn(),
-        },
-        ipc: {
-          handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
-            handlers[ch] = fn
-          },
-        },
-        storage: {
-          read: vi.fn().mockResolvedValue(null),
-          write: vi.fn().mockResolvedValue(undefined),
-        },
-        clipboard: {
-          readText: vi.fn().mockResolvedValue(''),
-          readImage: vi.fn().mockResolvedValue(null),
-          writeText: vi.fn(),
-          writeImage: vi.fn(),
-          writeFiles: vi.fn(),
-        },
-        fs: {
-          fileExists: vi.fn(),
-          readDir: vi.fn(),
-          readFile: vi.fn(),
-          readFileBinary: vi.fn(),
-          writeFile: vi.fn(),
-          mkdir: vi.fn(),
-          rename: vi.fn(),
-          rm: vi.fn(),
-          stat: vi.fn(),
-          homedir: vi.fn().mockReturnValue('/home/user'),
-          tmpdir: vi.fn().mockReturnValue('/tmp'),
-        },
-        db: { open: vi.fn() },
-        shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
-        media: { getNowPlaying: vi.fn() },
-        extensions: { invoke: vi.fn() },
-        logger: { info: vi.fn(), error: vi.fn(), silly: vi.fn(), warn: vi.fn() },
-        config: { get: vi.fn() },
-      } as CoreContext)
+      const { core, handlers } = createMockCore(vi)
+      register(core)
       expect(await handlers.getHistory()).toEqual([])
     })
 

@@ -417,6 +417,9 @@ importers:
       '@nuxy/extension-host':
         specifier: workspace:*
         version: link:../packages/extension-host
+      '@nuxy/extension-sdk':
+        specifier: workspace:*
+        version: link:../packages/extension-sdk
       '@nuxy/ui':
         specifier: workspace:*
         version: link:../packages/ui

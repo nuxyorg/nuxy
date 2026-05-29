@@ -36,6 +36,7 @@ export function createMainWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
+      backgroundThrottling: false,
       preload: path.join(app.getAppPath(), 'dist-electron', 'preload.mjs'),
     },
   })

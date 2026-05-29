@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 
 interface MockPreparedStmt {
   run: ReturnType<typeof vi.fn>
@@ -34,34 +35,23 @@ function makeMockDb(allRows: unknown[] = []): MockDbResult {
 }
 
 function createCore(dbArg: MockDbResult | null = null): {
-  core: unknown
+  core: CoreContext
   handlers: Record<string, (payload?: unknown) => Promise<unknown>>
   db: MockDb
 } {
   const { db } = dbArg ?? makeMockDb()
-  const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
-  const core = {
-    registry: { registerTool: vi.fn() },
-    ipc: {
-      handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
-        handlers[ch] = fn
-      },
-    },
-    logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn() },
+  const { core, handlers } = createMockCore(vi, {
     db: { open: vi.fn().mockReturnValue(db) },
     fs: {
       readDir: vi.fn().mockResolvedValue([]),
       mkdir: vi.fn().mockResolvedValue(undefined),
-      homedir: vi.fn().mockReturnValue('/home/user'),
-      tmpdir: vi.fn().mockReturnValue('/tmp'),
       fileExists: vi.fn().mockResolvedValue(false),
     },
     shell: {
       open: vi.fn().mockResolvedValue(undefined),
       exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }),
-      spawn: vi.fn(),
     },
-  }
+  })
   return { core, handlers, db }
 }
 

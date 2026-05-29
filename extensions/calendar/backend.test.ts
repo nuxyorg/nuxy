@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 
 interface MockPreparedStmt {
   run: ReturnType<typeof vi.fn>
@@ -45,48 +45,9 @@ function createCore(
   preparedStmt: MockPreparedStmt
 } {
   const { db, mockPrepare, preparedStmt } = dbOverride ?? makeMockDb()
-  const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
-  const core = {
-    registry: {
-      registerTool: vi.fn(),
-      registerProvider: vi.fn(),
-      registerOrchestrator: vi.fn(),
-      registerTheme: vi.fn(),
-      registerIconPack: vi.fn(),
-    },
-    ipc: {
-      handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
-        handlers[ch] = fn
-      },
-    },
-    extensions: { invoke: vi.fn().mockResolvedValue(undefined) },
-    logger: { info: vi.fn(), error: vi.fn(), warn: vi.fn(), silly: vi.fn() },
+  const { core, handlers } = createMockCore(vi, {
     db: { open: vi.fn().mockReturnValue(db) },
-    storage: { read: vi.fn().mockResolvedValue(null), write: vi.fn().mockResolvedValue(undefined) },
-    clipboard: {
-      readText: vi.fn(),
-      writeText: vi.fn(),
-      readImage: vi.fn(),
-      writeImage: vi.fn(),
-      writeFiles: vi.fn(),
-    },
-    fs: {
-      fileExists: vi.fn().mockResolvedValue(false),
-      readDir: vi.fn(),
-      readFile: vi.fn(),
-      readFileBinary: vi.fn(),
-      writeFile: vi.fn(),
-      mkdir: vi.fn(),
-      rename: vi.fn(),
-      rm: vi.fn(),
-      stat: vi.fn(),
-      homedir: vi.fn().mockReturnValue('/home/user'),
-      tmpdir: vi.fn().mockReturnValue('/tmp'),
-    },
-    shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
-    media: { getNowPlaying: vi.fn() },
-    config: { get: vi.fn() },
-  } as CoreContext
+  })
   return { core, handlers, db, mockPrepare, preparedStmt }
 }
 

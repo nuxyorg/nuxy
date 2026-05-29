@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { register } from './backend.ts'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import type { NuxySettings } from './types.ts'
 
 const DEFAULT_SETTINGS: NuxySettings = {
@@ -23,53 +23,11 @@ function createCore(storageData: Partial<NuxySettings> | null | undefined = null
   core: CoreContext
   handlers: Record<string, (payload: unknown) => unknown>
 } {
-  const handlers: Record<string, (payload: unknown) => unknown> = {}
-  const core = {
-    ipc: {
-      handle: (ch: string, fn: (payload: unknown) => unknown) => {
-        handlers[ch] = fn
-      },
-    },
+  return createMockCore(vi, {
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
-      write: vi.fn().mockResolvedValue(undefined),
     },
-    // settings backend intentionally does not call core.registry
-    registry: {
-      registerTool: vi.fn(),
-      registerProvider: vi.fn(),
-      registerOrchestrator: vi.fn(),
-      registerTheme: vi.fn(),
-      registerIconPack: vi.fn(),
-    },
-    clipboard: {
-      readText: vi.fn(),
-      writeText: vi.fn(),
-      readImage: vi.fn(),
-      writeImage: vi.fn(),
-      writeFiles: vi.fn(),
-    },
-    fs: {
-      fileExists: vi.fn(),
-      readDir: vi.fn(),
-      readFile: vi.fn(),
-      readFileBinary: vi.fn(),
-      writeFile: vi.fn(),
-      mkdir: vi.fn(),
-      rename: vi.fn(),
-      rm: vi.fn(),
-      stat: vi.fn(),
-      homedir: vi.fn().mockReturnValue('/home/user'),
-      tmpdir: vi.fn().mockReturnValue('/tmp'),
-    },
-    db: { open: vi.fn() },
-    shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
-    media: { getNowPlaying: vi.fn() },
-    extensions: { invoke: vi.fn() },
-    logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
-    config: { get: vi.fn() },
-  } as unknown as CoreContext
-  return { core, handlers }
+  }) as any
 }
 
 describe('settings backend', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 
 type ExecFn = (cmd: string, args: string[]) => Promise<{ stdout: string; code: number }>
 
@@ -42,37 +42,17 @@ function makeExec({
 }
 
 function createCore(exec: ReturnType<typeof vi.fn> | null = null): {
-  core: Partial<CoreContext>
+  core: CoreContext
   handlers: Record<string, (payload?: unknown) => Promise<unknown>>
 } {
-  const handlers: Record<string, (payload?: unknown) => Promise<unknown>> = {}
-  const core: Partial<CoreContext> = {
-    registry: {
-      registerTool: vi.fn(),
-      registerProvider: vi.fn(),
-      registerOrchestrator: vi.fn(),
-      registerTheme: vi.fn(),
-      registerIconPack: vi.fn(),
-    },
-    ipc: {
-      handle: (ch: string, fn: (payload?: unknown) => Promise<unknown>) => {
-        handlers[ch] = fn
-      },
-    } as unknown as CoreContext['ipc'],
+  const { core, handlers } = createMockCore(vi, {
     clipboard: {
       writeText: vi.fn().mockResolvedValue(undefined),
-      readText: vi.fn(),
-      readImage: vi.fn(),
-      writeImage: vi.fn(),
-      writeFiles: vi.fn(),
     },
-    logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
     shell: {
       exec: (exec ?? vi.fn().mockResolvedValue({ stdout: '', code: 0 })) as ExecFn,
-      open: vi.fn(),
-      spawn: vi.fn(),
     },
-  }
+  })
   return { core, handlers }
 }
 

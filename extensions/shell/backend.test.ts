@@ -1,21 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import { register } from './backend.ts'
 
 function createCore(storageData: unknown = null) {
-  const handlers: Record<string, (payload: unknown) => Promise<unknown>> = {}
-  const core = {
-    ipc: {
-      handle: (ch: string, fn: (payload: unknown) => Promise<unknown>) => {
-        handlers[ch] = fn
-      },
-    },
+  const { core, handlers } = createMockCore(vi, {
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
-      write: vi.fn().mockResolvedValue(undefined),
     },
-    logger: { info: vi.fn(), error: vi.fn() },
-  } as unknown as CoreContext
+  })
   return { core, handlers }
 }
 

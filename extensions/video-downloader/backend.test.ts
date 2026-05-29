@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 
 interface SpawnHandle {
   onData: ReturnType<typeof vi.fn>
@@ -30,30 +30,19 @@ function makeSpawnHandle(): SpawnHandle {
 }
 
 function createCore() {
-  const handlers: Record<string, (payload: unknown) => Promise<unknown>> = {}
   const storage: Record<string, unknown> = {}
-  const core = {
-    registry: { registerTool: vi.fn() },
-    ipc: {
-      handle: (ch: string, fn: (payload: unknown) => Promise<unknown>) => {
-        handlers[ch] = fn
-      },
-    },
-    logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn() },
+  const { core, handlers } = createMockCore(vi, {
     storage: {
       read: vi.fn(async (key: string) => storage[key] ?? null),
       write: vi.fn(async (key: string, val: unknown) => {
         storage[key] = val
       }),
     },
-    fs: {
-      homedir: vi.fn().mockReturnValue('/home/user'),
-    },
     shell: {
       exec: vi.fn().mockResolvedValue({ stdout: '/usr/bin/yt-dlp', code: 0 }),
       spawn: vi.fn().mockReturnValue(makeSpawnHandle()),
     },
-  } as unknown as CoreContext
+  })
   return { core, handlers, storage }
 }
 

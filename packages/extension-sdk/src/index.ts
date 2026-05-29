@@ -33,3 +33,6 @@ export interface ExtensionModule {
 export function defineExtension(module: ExtensionModule): ExtensionModule {
   return module
 }
+
+export { createMockCore } from './testing.js'
+
