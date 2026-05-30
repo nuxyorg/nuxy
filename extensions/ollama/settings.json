@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "host",
+      "label": "Ollama Host",
+      "type": "text",
+      "default": "http://localhost:11434",
+      "placeholder": "http://localhost:11434",
+      "description": "URL where the Ollama server is running"
+    },
+    {
+      "key": "model",
+      "label": "Default Model",
+      "type": "text",
+      "default": "llama3",
+      "placeholder": "llama3",
+      "description": "Model name to use for chat (e.g. llama3, mistral)"
+    }
+  ]
+}

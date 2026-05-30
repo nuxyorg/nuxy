@@ -365,4 +365,104 @@ describe('bitwarden backend', () => {
     const result = await handlers['bw:sync']()
     expect(result).toEqual({ ok: true })
   })
+
+  // ─── Error paths ─────────────────────────────────────────────────────────────
+
+  it('bw:search propagates when exec rejects (rbw backend)', async () => {
+    const exec = makeExec({ rbw: true })
+    const register = await freshBackend()
+    const { core, handlers } = createCore(exec)
+    await register(core as CoreContext)
+
+    exec.mockRejectedValueOnce(new Error('rbw process crashed'))
+
+    await expect(handlers['bw:search']({ query: '' })).rejects.toThrow('rbw process crashed')
+  })
+
+  it('bw:unlock propagates when exec rejects (e.g. user dismissed pinentry)', async () => {
+    const exec = makeExec({ rbw: true, email: 'user@example.com', unlocked: false })
+    const register = await freshBackend()
+    const { core, handlers } = createCore(exec)
+    await register(core as CoreContext)
+
+    exec.mockRejectedValueOnce(new Error('pinentry dismissed'))
+
+    await expect(handlers['bw:unlock']()).rejects.toThrow('pinentry dismissed')
+  })
+
+  it('bw:sync propagates when exec rejects', async () => {
+    const exec = makeExec({ rbw: true, email: 'user@example.com', unlocked: true })
+    const register = await freshBackend()
+    const { core, handlers } = createCore(exec)
+    await register(core as CoreContext)
+
+    exec.mockRejectedValueOnce(new Error('network unreachable'))
+
+    await expect(handlers['bw:sync']()).rejects.toThrow('network unreachable')
+  })
+
+  it('bw:copyPassword propagates when clipboard write fails', async () => {
+    const exec = makeExec({ rbw: true })
+    const register = await freshBackend()
+    const { core, handlers } = createCore(exec)
+    await register(core as CoreContext)
+
+    exec.mockResolvedValueOnce({ stdout: 'mypassword\n', code: 0 })
+    ;(core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText.mockRejectedValueOnce(
+      new Error('clipboard unavailable')
+    )
+
+    await expect(
+      handlers['bw:copyPassword']({ id: 'abc-123', name: 'GitHub' })
+    ).rejects.toThrow('clipboard unavailable')
+  })
+
+  it('bw:copyUsername propagates when clipboard write fails', async () => {
+    const exec = makeExec({ rbw: true })
+    const register = await freshBackend()
+    const { core, handlers } = createCore(exec)
+    await register(core as CoreContext)
+
+    ;(core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText.mockRejectedValueOnce(
+      new Error('clipboard unavailable')
+    )
+
+    await expect(
+      handlers['bw:copyUsername']({ id: 'abc-123', name: 'GitHub', username: 'user@example.com' })
+    ).rejects.toThrow('clipboard unavailable')
+  })
+
+  it('bw:status returns a valid status object when uname fails (falls back to linux os)', async () => {
+    // detectOS catches all errors and returns 'linux'; getRbwConfig has its own try/catch.
+    // So bw:status should return a fully formed status object regardless.
+    const exec = vi.fn(async (cmd: string, args: string[]) => {
+      if (cmd === 'which') {
+        if (args[0] === 'rbw') return { stdout: '/usr/bin/rbw', code: 0 }
+        throw new Error('not found')
+      }
+      if (cmd === 'uname') throw new Error('uname failed')
+      if (cmd === 'rbw') {
+        const sub = args[0]
+        if (sub === 'config' && args[1] === 'show') {
+          return { stdout: 'email: user@example.com\n', code: 0 }
+        }
+        if (sub === 'unlocked') return { stdout: '', code: 0 }
+      }
+      return { stdout: '', code: 0 }
+    })
+    const register = await freshBackend()
+    const { core, handlers } = createCore(exec)
+    await register(core as CoreContext)
+
+    const status = (await handlers['bw:status']()) as {
+      installed: boolean
+      backend: string
+      os: string
+    }
+    expect(status.installed).toBe(true)
+    expect(status.backend).toBe('rbw')
+    // uname failure → detectOS falls through the cat path; cat is not mocked so it
+    // also fails, causing detectOS to return 'linux'
+    expect(status.os).toBe('linux')
+  })
 })

@@ -7,7 +7,7 @@
   "permissions": ["storage"],
   "capabilities": {
     "callable": true,
-    "caller": false
+    "caller": true
   },
   "entry": {
     "backend": "backend.ts",

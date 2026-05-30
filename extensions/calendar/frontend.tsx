@@ -72,13 +72,10 @@ function daysWithEvents(events: CalendarEvent[], year: number, month: number): S
 }
 
 // ── Create form constants ─────────────────────────────────────────────────────
-// field 0 = title (text input), 1 = time (select), 2 = reminder (select)
-const CREATE_FORM_FIELDS = ['title', 'time', 'reminder'] as const
-type CreateFormField = (typeof CREATE_FORM_FIELDS)[number]
-
-function isSelectField(f: CreateFormField): boolean {
-  return f === 'time' || f === 'reminder'
-}
+// Title comes from the omnibar query prop. Only select fields are keyboard-navigable.
+// field 0 = time (select), 1 = reminder (select)
+const CREATE_SELECT_FIELDS = ['time', 'reminder'] as const
+type CreateSelectField = (typeof CREATE_SELECT_FIELDS)[number]
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const MONTH_NAMES = [
@@ -152,7 +149,6 @@ export default function CalendarApp({ query }: Props) {
     EmptyState,
     SelectBox,
     IconBell,
-    Input,
   } = window.UI || {}
 
   const todayObj = new Date()
@@ -175,15 +171,12 @@ export default function CalendarApp({ query }: Props) {
   const [listIdx, setListIdx] = useState(-1)
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null)
 
-  // Create form state
-  const [titleValue, setTitleValue] = useState('')
+  // Create form state — title comes from the omnibar query prop
   const [timeValue, setTimeValue] = useState('10')
   const [reminderValue, setReminderValue] = useState('0')
   const [formFieldIdx, setFormFieldIdx] = useState(0)
   const [activeSelect, setActiveSelect] = useState<string | null>(null)
   const [selectFocused, setSelectFocused] = useState(0)
-
-  const titleInputRef = useRef<HTMLInputElement | null>(null)
 
   // ── Derived ──────────────────────────────────────────────────────────────────
   const dayEvents = useMemo(
@@ -214,7 +207,6 @@ export default function CalendarApp({ query }: Props) {
     filteredSearch,
     listIdx,
     editingEvent,
-    titleValue,
     timeValue,
     reminderValue,
     formFieldIdx,
@@ -233,7 +225,6 @@ export default function CalendarApp({ query }: Props) {
     filteredSearch,
     listIdx,
     editingEvent,
-    titleValue,
     timeValue,
     reminderValue,
     formFieldIdx,
@@ -274,17 +265,6 @@ export default function CalendarApp({ query }: Props) {
     }
   }, [mode])
 
-  // Focus/blur title input based on formFieldIdx in create view
-  useEffect(() => {
-    if (calView === 'create') {
-      if (formFieldIdx === 0 && activeSelect === null) {
-        setTimeout(() => titleInputRef.current?.focus(), 0)
-      } else {
-        titleInputRef.current?.blur()
-      }
-    }
-  }, [calView, formFieldIdx, activeSelect])
-
   useEffect(() => {
     if (document.getElementById('cal-slide-anim')) return
     const s = document.createElement('style')
@@ -294,6 +274,28 @@ export default function CalendarApp({ query }: Props) {
       '@keyframes calFromBottom{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}',
     ].join('')
     document.head.appendChild(s)
+  }, [])
+
+  useEffect(() => {
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(EXT_ID, 'getLastResult')
+      .then((res: unknown) => {
+        const r = res as { success: boolean; data?: { title?: string; datetime?: number } } | null
+        if (r?.success && r.data?.datetime) {
+          const d = new Date(r.data.datetime)
+          setCalYear(d.getFullYear())
+          setCalMonth(d.getMonth())
+          setSelectedDay(d.getDate())
+          setTimeValue(String(d.getHours()))
+          setMode('calendar')
+          setCalView('create')
+          setFormFieldIdx(0)
+          setActiveSelect(null)
+          showOmniBar()
+        }
+      })
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -332,12 +334,12 @@ export default function CalendarApp({ query }: Props) {
   }
 
   function enterCreate(): void {
-    setTitleValue('')
     setTimeValue('10')
     setReminderValue('0')
     setFormFieldIdx(0)
     setActiveSelect(null)
     setCalView('create')
+    showOmniBar()
   }
 
   function enterDetail(evt: CalendarEvent): void {
@@ -360,6 +362,7 @@ export default function CalendarApp({ query }: Props) {
     setListIdx(-1)
     setEditingEvent(null)
     setActiveSelect(null)
+    hideOmniBar()
   }
 
   function getSelectOptions(field: string): SelectOption[] {
@@ -558,13 +561,13 @@ export default function CalendarApp({ query }: Props) {
           const opts = getSelectOptions(activeSelect)
           setSelectFocused((i) => Math.min(opts.length - 1, i + 1))
         } else {
-          const fields = calView === 'detail' ? ['reminder'] : CREATE_FORM_FIELDS
+          const fields = calView === 'detail' ? ['reminder'] : CREATE_SELECT_FIELDS
           setFormFieldIdx((i) => Math.min(fields.length - 1, i + 1))
         }
       },
     },
 
-    // create/detail: Enter — open select, advance from title, or confirm selection
+    // create/detail: Enter — open select or confirm selection
     {
       key: 'Enter',
       label: activeSelect !== null ? 'Confirm' : 'Select',
@@ -581,28 +584,23 @@ export default function CalendarApp({ query }: Props) {
           const opt = opts[s.selectFocused]
           if (opt) setSelectValue(s.activeSelect, opt.value)
           setActiveSelect(null)
-          const fields = s.calView === 'detail' ? ['reminder'] : CREATE_FORM_FIELDS
-          const fi = fields.indexOf(s.activeSelect as (typeof CREATE_FORM_FIELDS)[number])
+          const fields = s.calView === 'detail' ? ['reminder'] : CREATE_SELECT_FIELDS
+          const fi = fields.indexOf(s.activeSelect as CreateSelectField)
           if (fi >= 0 && fi < fields.length - 1) setFormFieldIdx(fi + 1)
         } else {
-          const fields = s.calView === 'detail' ? ['reminder'] : CREATE_FORM_FIELDS
-          const field = fields[s.formFieldIdx] as CreateFormField | undefined
+          const fields = s.calView === 'detail' ? ['reminder'] : CREATE_SELECT_FIELDS
+          const field = fields[s.formFieldIdx] as CreateSelectField | undefined
           if (!field) return
-          if (field === 'title') {
-            // Enter on title field advances to next field
-            setFormFieldIdx((i) => Math.min(fields.length - 1, i + 1))
-          } else {
-            // Open select for this field
-            const opts = getSelectOptions(field)
-            const cur = getSelectValue(field)
-            setSelectFocused(
-              Math.max(
-                0,
-                opts.findIndex((o) => o.value === cur)
-              )
+          // Open select for this field
+          const opts = getSelectOptions(field)
+          const cur = getSelectValue(field)
+          setSelectFocused(
+            Math.max(
+              0,
+              opts.findIndex((o) => o.value === cur)
             )
-            setActiveSelect(field)
-          }
+          )
+          setActiveSelect(field)
         }
       },
     },
@@ -623,7 +621,7 @@ export default function CalendarApp({ query }: Props) {
       handler: () => {
         const s = stateRef.current
         if (s.calView === 'create') {
-          const title = s.titleValue.trim()
+          const title = s.query.trim()
           if (!title) return
           const base = new Date(s.calYear, s.calMonth, s.selectedDay)
           base.setHours(parseInt(s.timeValue, 10), 0, 0, 0)
@@ -793,7 +791,7 @@ export default function CalendarApp({ query }: Props) {
                       : isToday
                         ? 'var(--accent-subtle, rgba(99, 102, 241, 0.15))'
                         : 'transparent',
-                    color: isSelected ? '#fff' : 'inherit',
+                    color: isSelected ? 'var(--accent-fg, #fff)' : 'inherit',
                     outline: isToday && !isSelected ? '1.5px solid var(--accent, #6366f1)' : 'none',
                     outlineOffset: '-1px',
                     opacity: !isCurrent ? 0.25 : mode === 'omnibox' ? 0.75 : 1,
@@ -809,7 +807,7 @@ export default function CalendarApp({ query }: Props) {
                         height: '3px',
                         borderRadius: '50%',
                         background: isSelected
-                          ? 'rgba(255, 255, 255, 0.7)'
+                          ? 'var(--accent-fg-muted, rgba(255,255,255,0.7))'
                           : 'var(--accent, #6366f1)',
                       }}
                     />
@@ -907,7 +905,7 @@ export default function CalendarApp({ query }: Props) {
           : List && (
               <List>
                 {dayEvents.map((evt, idx) => (
-                  <ListItem key={evt.id} active={idx === listIdx} onClick={() => enterDetail(evt)}>
+                  <ListItem key={evt.id} active={idx === listIdx}>
                     <ListItemBody>
                       <ListItemText>{evt.title}</ListItemText>
                       <ListItemMeta>
@@ -960,33 +958,20 @@ export default function CalendarApp({ query }: Props) {
 
         {List && (
           <List>
-            {/* Title field — inline text input */}
-            <ListItem active={formFieldIdx === 0 && activeSelect === null}>
+            {/* Title field — displays the current omnibar query as the event title */}
+            <ListItem active={false}>
               <ListItemBody>
                 <ListItemText>Title</ListItemText>
+                <ListItemMeta>
+                  {query.trim() || (
+                    <span style={{ opacity: 0.4 }}>Type in search bar…</span>
+                  )}
+                </ListItemMeta>
               </ListItemBody>
-              {Input && (
-                <div style={{ flex: 1, padding: '0 var(--space-3) 0 var(--space-2)' }}>
-                  <Input
-                    ref={titleInputRef}
-                    value={titleValue}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setTitleValue(e.target.value)
-                    }
-                    onFocus={() => {
-                      setFormFieldIdx(0)
-                      setActiveSelect(null)
-                    }}
-                    placeholder="Event title"
-                    style={{ width: '100%' }}
-                  />
-                </div>
-              )}
             </ListItem>
 
-            {/* Time and Reminder — SelectBox */}
-            {(['time', 'reminder'] as const).map((field, i) => {
-              const idx = i + 1 // field index (0 = title)
+            {/* Time and Reminder — SelectBox (idx maps to CREATE_SELECT_FIELDS indices) */}
+            {(CREATE_SELECT_FIELDS).map((field, idx) => {
               const opts = getSelectOptions(field)
               const currentVal = fieldCurrentValues[field]
               const isFieldFocused = idx === formFieldIdx && activeSelect === null
@@ -1021,7 +1006,7 @@ export default function CalendarApp({ query }: Props) {
                         onSelect={(val: string) => {
                           setSelectValue(field, val)
                           setActiveSelect(null)
-                          if (idx < CREATE_FORM_FIELDS.length - 1) setFormFieldIdx(idx + 1)
+                          if (idx < CREATE_SELECT_FIELDS.length - 1) setFormFieldIdx(idx + 1)
                         }}
                         onClose={() => setActiveSelect(null)}
                         onOpen={(startIdx: number) => {

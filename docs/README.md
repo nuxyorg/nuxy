@@ -18,6 +18,16 @@ Nuxy is an Electron desktop launcher (spotlight/command-palette style). The core
 
 ---
 
+## Türkçe Proje Analizi (Turkish Project Documentation)
+
+Projenin yapısını, tüm eklentilerini ve gelecek vizyonunu açıklayan kapsamlı Türkçe dokümantasyon serisi:
+
+- [01. Genel Bakış ve Çekirdek Mimarisi](./project-analysis/01-general-overview.md) — Nuxy'nin çekirdek felsefesi ve sistem mimarisi.
+- [02. Eklentilerin Detaylı Analizi](./project-analysis/02-extensions-review.md) — 19 eklentinin ne işe yaradığı, artıları, eksileri ve gelişim noktaları.
+- [03. Gelecekteki Evrimi ve Yol Haritası](./project-analysis/03-future-evolution.md) — Projenin gelecekte nereye evrilebileceği ve eklenti ekosistemi.
+
+---
+
 ## Repository layout
 
 ```

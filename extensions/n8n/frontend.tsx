@@ -29,7 +29,6 @@ export default function N8nApp({ query }: Props) {
     ListItemText,
     ListItemMeta,
     ListItemActions,
-    Button,
     Input,
     EmptyState,
     Alert,
@@ -115,11 +114,14 @@ export default function N8nApp({ query }: Props) {
     enterHint: 'Enter',
     extraActions: [
       {
-        key: 'r',
-        label: 'Refresh',
-        hint: 'R',
+        key: 'Enter',
+        modifiers: ['shift'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
+        label: 'Run webhook',
+        hint: '⇧↵',
+        activeOn: () => selectedIndex >= 0,
         handler: () => {
-          void handleRefresh()
+          const wf = filteredWorkflows[selectedIndex]
+          if (wf) void handleRunWebhook(wf)
         },
       },
     ],
@@ -127,17 +129,49 @@ export default function N8nApp({ query }: Props) {
 
   _useToolKeyActions([
     {
-      key: 'c',
+      key: ',',
+      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
       label: 'Configure',
-      hint: 'C',
+      hint: '⌃,',
       handler: () => setShowConfig((v) => !v),
     },
+    {
+      key: 'r',
+      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
+      label: 'Refresh',
+      hint: '⌃R',
+      activeOn: () => !showConfig && configured,
+      handler: () => {
+        void handleRefresh()
+      },
+    },
+    {
+      key: 'Enter',
+      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
+      label: 'Save',
+      hint: '⌃↵',
+      activeOn: () => showConfig || !configured,
+      handler: () => {
+        void handleSaveConfig()
+      },
+    },
+    {
+      key: 'Escape',
+      label: 'Cancel',
+      activeOn: () => showConfig,
+      handler: () => setShowConfig(false),
+    },
   ])
+
+  // Re-evaluate key-action hints when selection state changes
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
+  }, [selectedIndex])
 
   if (showConfig || !configured) {
     return (
       <>
-        {SectionHeader && <SectionHeader title="Configure n8n" />}
+        {SectionHeader && <SectionHeader label="Configure n8n" />}
         {Card && (
           <Card>
             {Input && (
@@ -157,16 +191,6 @@ export default function N8nApp({ query }: Props) {
                 placeholder="n8n_api_…"
               />
             )}
-            {Button && (
-              <Button
-                onClick={() => {
-                  void handleSaveConfig()
-                }}
-              >
-                Save
-              </Button>
-            )}
-            {showConfig && Button && <Button onClick={() => setShowConfig(false)}>Cancel</Button>}
           </Card>
         )}
       </>
@@ -176,26 +200,12 @@ export default function N8nApp({ query }: Props) {
   return (
     <>
       {status && !status.ok && Alert && <Alert variant="danger">n8n unreachable</Alert>}
-      {SectionHeader && (
-        <SectionHeader
-          title="Workflows"
-          action={
-            Button ? (
-              <Button
-                onClick={() => {
-                  void handleRefresh()
-                }}
-                disabled={loading}
-              >
-                {loading ? '…' : 'Refresh'}
-              </Button>
-            ) : undefined
-          }
-        />
-      )}
+      {SectionHeader && <SectionHeader label="Workflows" />}
       <List>
         {filteredWorkflows.length === 0 ? (
-          <EmptyState message={query ? 'No matching workflows.' : 'No workflows found.'} />
+          EmptyState ? (
+            <EmptyState message={query ? 'No matching workflows.' : 'No workflows found.'} />
+          ) : null
         ) : (
           filteredWorkflows.map((wf, idx) => (
             <ListItem
@@ -215,15 +225,6 @@ export default function N8nApp({ query }: Props) {
                     {wf.active ? 'active' : 'inactive'}
                   </Badge>
                 )}
-                {Button && (
-                  <Button
-                    onClick={() => {
-                      void handleRunWebhook(wf)
-                    }}
-                  >
-                    Run
-                  </Button>
-                )}
               </ListItemActions>
             </ListItem>
           ))
@@ -231,10 +232,10 @@ export default function N8nApp({ query }: Props) {
       </List>
       {selected && (
         <>
-          {SectionHeader && <SectionHeader title={`Executions: ${selected.name}`} />}
+          {SectionHeader && <SectionHeader label={`Executions: ${selected.name}`} />}
           <List>
             {executions.length === 0 ? (
-              <EmptyState message="No executions found." />
+              EmptyState ? <EmptyState message="No executions found." /> : null
             ) : (
               executions.map((ex) => (
                 <ListItem key={ex.id}>

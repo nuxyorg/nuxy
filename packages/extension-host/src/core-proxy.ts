@@ -53,43 +53,93 @@ export function createCoreProxy(
     }
   }
 
+  function checkPermission(permission: string, apiName: string) {
+    if (!permissions.includes(permission)) {
+      throw new Error(`Permission Denied: Extension "${extId}" lacks "${permission}" permission required for "${apiName}"`)
+    }
+  }
+
   const core: CoreContext = {
     clipboard: {
-      readText: () => callHost(HostChannel.CLIPBOARD_READ) as Promise<string>,
-      writeText: (text: string) => callHost(HostChannel.CLIPBOARD_WRITE, text) as Promise<void>,
-      readImage: () => callHost(HostChannel.CLIPBOARD_READ_IMAGE) as Promise<string | null>,
-      writeImage: (dataURL: string) =>
-        callHost(HostChannel.CLIPBOARD_WRITE_IMAGE, dataURL) as Promise<void>,
-      writeFiles: (paths: string[]) =>
-        callHost(HostChannel.CLIPBOARD_WRITE_FILES, paths) as Promise<void>,
+      readText: () => {
+        checkPermission('clipboard', 'core.clipboard.readText')
+        return callHost(HostChannel.CLIPBOARD_READ) as Promise<string>
+      },
+      writeText: (text: string) => {
+        checkPermission('clipboard', 'core.clipboard.writeText')
+        return callHost(HostChannel.CLIPBOARD_WRITE, text) as Promise<void>
+      },
+      readImage: () => {
+        checkPermission('clipboard', 'core.clipboard.readImage')
+        return callHost(HostChannel.CLIPBOARD_READ_IMAGE) as Promise<string | null>
+      },
+      writeImage: (dataURL: string) => {
+        checkPermission('clipboard', 'core.clipboard.writeImage')
+        return callHost(HostChannel.CLIPBOARD_WRITE_IMAGE, dataURL) as Promise<void>
+      },
+      writeFiles: (paths: string[]) => {
+        checkPermission('clipboard', 'core.clipboard.writeFiles')
+        return callHost(HostChannel.CLIPBOARD_WRITE_FILES, paths) as Promise<void>
+      },
     },
     fs: {
-      fileExists: (p: string) => callHost(HostChannel.FS_FILE_EXISTS, p) as Promise<boolean>,
+      fileExists: (p: string) => {
+        checkPermission('fs', 'core.fs.fileExists')
+        return callHost(HostChannel.FS_FILE_EXISTS, p) as Promise<boolean>
+      },
       readDir: async (p: string) => {
+        checkPermission('fs', 'core.fs.readDir')
         const entries = await fsPromises.readdir(p, { withFileTypes: true })
         return entries.map((e) => ({ name: e.name, isDir: e.isDirectory() }))
       },
-      readFile: (p: string) => fsPromises.readFile(p, 'utf8'),
-      readFileBinary: (p: string) => fsPromises.readFile(p).then((buf) => new Uint8Array(buf)),
-      writeFile: (p: string, data: string | Uint8Array) =>
-        fsPromises.writeFile(p, data instanceof Uint8Array ? Buffer.from(data) : data),
-      mkdir: (p: string, opts?: { recursive?: boolean }) =>
-        fsPromises.mkdir(p, opts).then(() => {}),
-      rename: (src: string, dest: string) => fsPromises.rename(src, dest),
-      rm: (p: string) => fsPromises.unlink(p),
+      readFile: (p: string) => {
+        checkPermission('fs', 'core.fs.readFile')
+        return fsPromises.readFile(p, 'utf8')
+      },
+      readFileBinary: (p: string) => {
+        checkPermission('fs', 'core.fs.readFileBinary')
+        return fsPromises.readFile(p).then((buf) => new Uint8Array(buf))
+      },
+      writeFile: (p: string, data: string | Uint8Array) => {
+        checkPermission('fs', 'core.fs.writeFile')
+        return fsPromises.writeFile(p, data instanceof Uint8Array ? Buffer.from(data) : data)
+      },
+      mkdir: (p: string, opts?: { recursive?: boolean }) => {
+        checkPermission('fs', 'core.fs.mkdir')
+        return fsPromises.mkdir(p, opts).then(() => {})
+      },
+      rename: (src: string, dest: string) => {
+        checkPermission('fs', 'core.fs.rename')
+        return fsPromises.rename(src, dest)
+      },
+      rm: (p: string) => {
+        checkPermission('fs', 'core.fs.rm')
+        return fsPromises.unlink(p)
+      },
       stat: async (p: string) => {
+        checkPermission('fs', 'core.fs.stat')
         const s = await fsPromises.stat(p)
         return { isDir: s.isDirectory(), size: s.size, mtimeMs: s.mtimeMs }
       },
-      homedir: () => os.homedir(),
-      tmpdir: () => os.tmpdir(),
+      homedir: () => {
+        checkPermission('fs', 'core.fs.homedir')
+        return os.homedir()
+      },
+      tmpdir: () => {
+        checkPermission('fs', 'core.fs.tmpdir')
+        return os.tmpdir()
+      },
     },
     db: {
-      open: openDb,
+      open: (name: string) => {
+        checkPermission('db', 'core.db.open')
+        return openDb(name)
+      },
     },
     shell: {
-      open: (pathOrUrl: string) =>
-        new Promise<void>((resolve, reject) => {
+      open: (pathOrUrl: string) => {
+        checkPermission('shell', 'core.shell.open')
+        return new Promise<void>((resolve, reject) => {
           const cmd =
             process.platform === 'darwin'
               ? 'open'
@@ -97,9 +147,11 @@ export function createCoreProxy(
                 ? 'explorer'
                 : 'xdg-open'
           execFile(cmd, [pathOrUrl], (err) => (err ? reject(err) : resolve()))
-        }),
-      exec: (cmd: string, args: string[], opts?: { maxBuffer?: number }) =>
-        new Promise<{ stdout: string; code: number }>((resolve, reject) => {
+        })
+      },
+      exec: (cmd: string, args: string[], opts?: { maxBuffer?: number }) => {
+        checkPermission('shell', 'core.shell.exec')
+        return new Promise<{ stdout: string; code: number }>((resolve, reject) => {
           execFile(cmd, args, { maxBuffer: opts?.maxBuffer ?? 1024 * 1024 }, (err, stdout) => {
             if (err && (err as NodeJS.ErrnoException).code === 'ENOENT') {
               reject(err)
@@ -110,17 +162,28 @@ export function createCoreProxy(
               })
             }
           })
-        }),
-      spawn: shellSpawn,
+        })
+      },
+      spawn: (cmd: string, args: string[]) => {
+        checkPermission('shell', 'core.shell.spawn')
+        return shellSpawn(cmd, args)
+      },
     },
     media: {
-      getNowPlaying: () =>
-        callHost(HostChannel.MEDIA_GET_NOW_PLAYING) as Promise<NowPlaying | null>,
+      getNowPlaying: () => {
+        checkPermission('media', 'core.media.getNowPlaying')
+        return callHost(HostChannel.MEDIA_GET_NOW_PLAYING) as Promise<NowPlaying | null>
+      },
     },
     storage: {
-      read: <T>(file: string) => callHost(HostChannel.STORAGE_READ, file) as Promise<T | null>,
-      write: <T>(file: string, data: T) =>
-        callHost(HostChannel.STORAGE_WRITE, { file, data }) as Promise<void>,
+      read: <T>(file: string) => {
+        checkPermission('storage', 'core.storage.read')
+        return callHost(HostChannel.STORAGE_READ, file) as Promise<T | null>
+      },
+      write: <T>(file: string, data: T) => {
+        checkPermission('storage', 'core.storage.write')
+        return callHost(HostChannel.STORAGE_WRITE, { file, data }) as Promise<void>
+      },
     },
     ipc: {
       handle: (channel, handler) => {
@@ -223,8 +286,8 @@ export function createCoreProxy(
           const dir = path.join(os.homedir(), '.nuxy', 'data', targetExtId)
           fs.mkdirSync(dir, { recursive: true })
           await fsPromises.writeFile(
-            path.join(dir, 'ext-settings.json'),
-            JSON.stringify(values, null, 2)
+              path.join(dir, 'ext-settings.json'),
+              JSON.stringify(values, null, 2)
           )
         },
         writeExtension: async (targetExtId: string, key: string, value: unknown): Promise<void> => {

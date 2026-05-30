@@ -1,15 +1,11 @@
+const React = window.React
+
+import type { ClipboardItem as ClipboardItemData } from './types.ts'
+
 const EXT_ID = 'com.nuxy.clipboard'
 
 interface Props {
   query: string
-}
-
-interface ClipboardItemData {
-  id: string
-  text: string
-  image: string | null
-  copiedAt: string
-  pinned: boolean
 }
 
 type ItemType = 'image' | 'color' | 'url' | 'file' | 'text'
@@ -180,6 +176,7 @@ export default function ClipboardView({ query }: Props) {
     TwoPanel,
     Alert,
     IconPin,
+    PropertiesPanel,
   } = window.UI || {}
 
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
@@ -211,7 +208,7 @@ export default function ClipboardView({ query }: Props) {
           })
         }
       })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   React.useEffect(() => {
@@ -286,7 +283,7 @@ export default function ClipboardView({ query }: Props) {
         setTimeout(() => setCopiedId(null), 1800)
         setTimeout(() => window.core?.window?.hide?.(), 150)
       })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const handleCopyFile = (id: string, eStop?: { stopPropagation: () => void }): void => {
@@ -302,7 +299,7 @@ export default function ClipboardView({ query }: Props) {
         setTimeout(() => setCopiedId(null), 1800)
         setTimeout(() => window.core?.window?.hide?.(), 150)
       })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const handlePin = (id: string, eStop?: { stopPropagation: () => void }): void => {
@@ -314,7 +311,7 @@ export default function ClipboardView({ query }: Props) {
         const r = res as { success: boolean; data?: ClipboardItemData[] } | null
         if (r?.success) setItems(r.data || [])
       })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const handleUnpin = (id: string, eStop?: { stopPropagation: () => void }): void => {
@@ -326,7 +323,7 @@ export default function ClipboardView({ query }: Props) {
         const r = res as { success: boolean; data?: ClipboardItemData[] } | null
         if (r?.success) setItems(r.data || [])
       })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const handleDelete = (id: string, eStop?: { stopPropagation: () => void }): void => {
@@ -348,7 +345,7 @@ export default function ClipboardView({ query }: Props) {
           return newLen === 0 ? -1 : Math.min(prev, newLen - 1)
         })
       })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   _useToolKeyActions([
@@ -458,7 +455,6 @@ export default function ClipboardView({ query }: Props) {
             <ListItem
               key={item.id}
               active={isActive}
-              onClick={() => (type === 'file' ? handleCopyFile(item.id) : handleCopy(item.id))}
             >
               <ClipboardItemLeading item={item} type={type} />
               <ListItemBody>
@@ -579,66 +575,107 @@ export default function ClipboardView({ query }: Props) {
           </div>
 
           {/* properties */}
-          <div
-            style={{
-              flex: '0 0 auto',
-              padding: 'var(--space-3) var(--space-4)',
-              background: 'var(--color-surface, rgba(255, 255, 255, 0.05))',
-              borderRadius: 'var(--radius-lg)',
-              fontSize: 'var(--font-sm)',
-            }}
-          >
-            <div
-              style={{
-                fontWeight: 600,
-                marginBottom: 'var(--space-3)',
-                borderBottom: 'var(--space-px) solid var(--color-border, rgba(255, 255, 255, 0.1))',
-                paddingBottom: 'var(--space-2)',
-                opacity: 0.9,
-              }}
-            >
-              Properties
+          {PropertiesPanel ? (
+            <div style={{ flex: '0 0 auto' }}>
+              <PropertiesPanel
+                title="Properties"
+                rows={[
+                  {
+                    label: 'Type',
+                    value: (
+                      <span style={{ textTransform: 'capitalize' }}>
+                        {type === 'image-file' ? 'Image File' : type}
+                      </span>
+                    ),
+                  },
+                  ...(type === 'file'
+                    ? [
+                        { label: 'Name', value: getFilename(txt) },
+                        {
+                          label: 'Path',
+                          value: (
+                            <span style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</span>
+                          ),
+                        },
+                      ]
+                    : []),
+                  ...(type === 'image' && imageDimensions
+                    ? [{ label: 'Dimensions', value: imageDimensions }]
+                    : []),
+                  ...(type === 'color'
+                    ? [
+                        {
+                          label: 'Value',
+                          value: <span style={{ fontFamily: 'monospace' }}>{txt}</span>,
+                        },
+                      ]
+                    : []),
+                  { label: 'Copied', value: new Date(selectedItem.copiedAt).toLocaleString() },
+                ]}
+              />
             </div>
+          ) : (
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: '90px 1fr',
-                gap: 'var(--space-2) var(--space-4)',
-                opacity: 0.85,
+                flex: '0 0 auto',
+                padding: 'var(--space-3) var(--space-4)',
+                background: 'var(--color-surface, rgba(255, 255, 255, 0.05))',
+                borderRadius: 'var(--radius-lg)',
+                fontSize: 'var(--font-sm)',
               }}
             >
-              <div style={{ opacity: 0.5 }}>Type</div>
-              <div style={{ textTransform: 'capitalize' }}>
-                {type === 'image-file' ? 'Image File' : type}
+              <div
+                style={{
+                  fontWeight: 600,
+                  marginBottom: 'var(--space-3)',
+                  borderBottom: 'var(--space-px) solid var(--color-border, rgba(255, 255, 255, 0.1))',
+                  paddingBottom: 'var(--space-2)',
+                  opacity: 0.9,
+                }}
+              >
+                Properties
               </div>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '90px 1fr',
+                  gap: 'var(--space-2) var(--space-4)',
+                  opacity: 0.85,
+                }}
+              >
+                <div style={{ opacity: 0.5 }}>Type</div>
+                <div style={{ textTransform: 'capitalize' }}>
+                  {type === 'image-file' ? 'Image File' : type}
+                </div>
 
-              {type === 'file' && (
-                <>
-                  <div style={{ opacity: 0.5 }}>Name</div>
-                  <div>{getFilename(txt)}</div>
-                  <div style={{ opacity: 0.5 }}>Path</div>
-                  <div style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</div>
-                </>
-              )}
+                {type === 'file' && (
+                  <>
+                    <div style={{ opacity: 0.5 }}>Name</div>
+                    <div>{getFilename(txt)}</div>
+                    <div style={{ opacity: 0.5 }}>Path</div>
+                    <div style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</div>
+                  </>
+                )}
 
-              {type === 'image' && imageDimensions && (
-                <>
-                  <div style={{ opacity: 0.5 }}>Dimensions</div>
-                  <div>{imageDimensions}</div>
-                </>
-              )}
+                {type === 'image' && imageDimensions && (
+                  <>
+                    <div style={{ opacity: 0.5 }}>Dimensions</div>
+                    <div>{imageDimensions}</div>
+                  </>
+                )}
 
-              {type === 'color' && (
-                <>
-                  <div style={{ opacity: 0.5 }}>Value</div>
-                  <div style={{ fontFamily: 'monospace' }}>{txt}</div>
-                </>
-              )}
+                {type === 'color' && (
+                  <>
+                    <div style={{ opacity: 0.5 }}>Value</div>
+                    <div style={{ fontFamily: 'monospace' }}>{txt}</div>
+                  </>
+                )}
 
-              <div style={{ opacity: 0.5 }}>Copied</div>
-              <div>{new Date(selectedItem.copiedAt).toLocaleString()}</div>
+                <div style={{ opacity: 0.5 }}>Copied</div>
+                <div>{new Date(selectedItem.copiedAt).toLocaleString()}</div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )
     })()
@@ -646,11 +683,11 @@ export default function ClipboardView({ query }: Props) {
     <div
       style={{
         display: 'flex',
-        height: 'calc(100% - 16px)',
+        height: 'calc(100% - var(--space-4))',
         justifyContent: 'center',
         alignItems: 'center',
         opacity: 0.4,
-        fontSize: '13px',
+        fontSize: 'var(--font-sm)',
       }}
     >
       Select an item to preview

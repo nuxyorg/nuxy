@@ -75,7 +75,7 @@ describe('ai-orchestrator backend', () => {
       const { core, handlers } = createCore()
       register(core as unknown as CoreContext)
       const res = await handlers.route({ text: 'hello' })
-      expect(res).toEqual({ ok: true })
+      expect(res).toEqual({ ok: true, data: null })
     })
 
     it('handles undefined payload', async () => {
@@ -93,6 +93,61 @@ describe('ai-orchestrator backend', () => {
         expect.stringContaining('/api/chat'),
         expect.objectContaining({ method: 'POST' })
       )
+    })
+
+    it('sends developer role and correct content in first message', async () => {
+      const { core, handlers } = createCore()
+      register(core as unknown as CoreContext)
+      await handlers.route({ text: 'hello' })
+      expect(global.fetch).toHaveBeenCalled()
+      const fetchCalls = (global.fetch as ReturnType<typeof vi.fn>).mock.calls
+      const body = JSON.parse(fetchCalls[0][1].body)
+      expect(body.messages[0]).toEqual({
+        role: 'developer',
+        content: expect.stringContaining(
+          'You are a model that can do function calling with the following functions'
+        ),
+      })
+    })
+
+    it('sends structured tool response in the second Ollama call', async () => {
+      let callCount = 0
+      const { core, handlers } = createCore({
+        fetchImpl: () => {
+          callCount++
+          if (callCount === 1) {
+            return Promise.resolve({
+              ok: true,
+              json: () =>
+                Promise.resolve({
+                  message: {
+                    role: 'assistant',
+                    content: '',
+                    tool_calls: [{ function: { name: 'calculator', arguments: { text: '2+2' } } }],
+                  },
+                }),
+              text: () => Promise.resolve(''),
+            })
+          }
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve({ message: { role: 'assistant', content: 'Result: 4' } }),
+            text: () => Promise.resolve(''),
+          })
+        },
+      })
+      core.extensions.invoke.mockResolvedValue({ result: 4 })
+      register(core as unknown as CoreContext)
+      await handlers.route({ text: '2+2' })
+      expect(global.fetch).toHaveBeenCalledTimes(2)
+      const fetchCalls = (global.fetch as ReturnType<typeof vi.fn>).mock.calls
+      const secondCallBody = JSON.parse(fetchCalls[1][1].body)
+      const toolMsg = secondCallBody.messages.find((m: any) => m.role === 'tool')
+      expect(toolMsg).toBeDefined()
+      expect(toolMsg.content).toEqual({
+        name: 'calculator',
+        response: { result: 4 },
+      })
     })
 
     it('broadcasts a direct answer when no tool is called', async () => {
@@ -230,6 +285,60 @@ describe('ai-orchestrator backend', () => {
       })
     })
 
+    it('invokes calendar on the "prepare" channel per TOOL_CHANNEL_MAP and returns toolCalled/initialQuery', async () => {
+      let callCount = 0
+      const { core, handlers } = createCore({
+        fetchImpl: () => {
+          callCount++
+          if (callCount === 1) {
+            return Promise.resolve({
+              ok: true,
+              json: () =>
+                Promise.resolve({
+                  message: {
+                    role: 'assistant',
+                    content: '',
+                    tool_calls: [
+                      {
+                        function: {
+                          name: 'calendar',
+                          arguments: {
+                            title: 'recebin doğumgününü kutlayacağım',
+                            date: '2026-12-21',
+                          },
+                        },
+                      },
+                    ],
+                  },
+                }),
+              text: () => Promise.resolve(''),
+            })
+          }
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                message: { role: 'assistant', content: 'Reminder set.' },
+              }),
+            text: () => Promise.resolve(''),
+          })
+        },
+      })
+      register(core as unknown as CoreContext)
+      const res = await handlers.route({ text: '21 aralıkta recebin doğumgününü kutlayacağım' })
+      expect(core.extensions.invoke).toHaveBeenCalledWith('com.nuxy.calendar', 'prepare', {
+        title: 'recebin doğumgününü kutlayacağım',
+        date: '2026-12-21',
+      })
+      expect(res).toEqual({
+        ok: true,
+        data: {
+          toolCalled: 'com.nuxy.calendar',
+          initialQuery: 'recebin doğumgününü kutlayacağım',
+        },
+      })
+    })
+
     it('calls setLastResult on the extension after a successful tool invocation', async () => {
       let callCount = 0
       const toolResult = { result: 4, display: '4' }
@@ -303,33 +412,7 @@ describe('ai-orchestrator backend', () => {
       expect(setLastResultCalls).toHaveLength(0)
     })
 
-    it('delegates to Ollama when functiongemma returns no tool_call and Ollama is available', async () => {
-      const { core, handlers } = createCore({
-        fetchImpl: () =>
-          Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                message: { role: 'assistant', content: 'fallback text', tool_calls: undefined },
-              }),
-            text: () => Promise.resolve(''),
-          }),
-      })
-      core.extensions.invoke.mockResolvedValue({ content: 'Ollama says hello' })
-      register(core as unknown as CoreContext)
-      await handlers.route({ text: 'tell me a joke' })
-      expect(core.extensions.invoke).toHaveBeenCalledWith(
-        'com.nuxy.ollama',
-        'chat',
-        expect.objectContaining({ messages: expect.any(Array) })
-      )
-      expect(core.ipc.broadcast).toHaveBeenCalledWith(
-        'orchestrator-result',
-        expect.objectContaining({ type: 'direct', answer: 'Ollama says hello' })
-      )
-    })
-
-    it('falls back to functiongemma answer when Ollama invoke throws', async () => {
+    it('broadcasts direct answer from functiongemma when no tool is called', async () => {
       const { core, handlers } = createCore({
         fetchImpl: () =>
           Promise.resolve({
@@ -345,9 +428,13 @@ describe('ai-orchestrator backend', () => {
             text: () => Promise.resolve(''),
           }),
       })
-      core.extensions.invoke.mockRejectedValue(new Error('Ollama not running'))
       register(core as unknown as CoreContext)
       await handlers.route({ text: 'tell me a joke' })
+      expect(core.extensions.invoke).not.toHaveBeenCalledWith(
+        'com.nuxy.ollama',
+        'chat',
+        expect.anything()
+      )
       expect(core.ipc.broadcast).toHaveBeenCalledWith(
         'orchestrator-result',
         expect.objectContaining({ type: 'direct', answer: 'functiongemma answer' })

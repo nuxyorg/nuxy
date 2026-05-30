@@ -8,13 +8,14 @@
 
 1. [File Structure](#1-file-structure)
 2. [Manifest Rules](#2-manifest-rules)
-3. [Backend Rules](#3-backend-rules)
-4. [Frontend Rules](#4-frontend-rules)
-5. [TypeScript Rules](#5-typescript-rules)
-6. [Core API Reference](#6-core-api-reference)
-7. [Testing Requirements](#7-testing-requirements)
-8. [Anti-Patterns](#8-anti-patterns)
-9. [Checklist](#9-checklist)
+3. [Extension Settings](#3-extension-settings)
+4. [Backend Rules](#4-backend-rules)
+5. [Frontend Rules](#5-frontend-rules)
+6. [TypeScript Rules](#6-typescript-rules)
+7. [Core API Reference](#7-core-api-reference)
+8. [Testing Requirements](#8-testing-requirements)
+9. [Anti-Patterns](#9-anti-patterns)
+10. [Checklist](#10-checklist)
 
 ---
 
@@ -139,9 +140,119 @@ window.UI = {
 
 ---
 
-## 3. Backend Rules
+## 3. Extension Settings
 
-### 3.1 No direct Node.js imports
+Extensions declare user-configurable settings via a `settings.json` schema file. The `com.nuxy.settings` extension automatically discovers this schema and renders a settings UI — **you must never build a custom settings panel inside the extension frontend**.
+
+### 3.1 `settings.json` format
+
+```json
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "host",
+      "label": "Server URL",
+      "type": "text",
+      "default": "http://localhost:11434",
+      "placeholder": "http://localhost:11434",
+      "description": "Optional description shown below the field"
+    },
+    {
+      "key": "format",
+      "label": "Output Format",
+      "type": "select",
+      "default": "mp4",
+      "options": [
+        { "value": "mp4", "label": "MP4" },
+        { "value": "webm", "label": "WebM" }
+      ]
+    },
+    {
+      "key": "audioOnly",
+      "label": "Audio Only",
+      "type": "toggle",
+      "default": false
+    },
+    {
+      "key": "outputDir",
+      "label": "Download Location",
+      "type": "location",
+      "default": "~/Downloads",
+      "placeholder": "~/Downloads"
+    }
+  ]
+}
+```
+
+**Available field types:**
+
+| Type       | Description                                    |
+| ---------- | ---------------------------------------------- |
+| `text`     | Free-text string input                         |
+| `select`   | Dropdown from a static `options` list          |
+| `toggle`   | Boolean on/off switch                          |
+| `location` | Folder picker (resolves `~` to home directory) |
+| `color`    | Color picker                                   |
+| `list`     | Multi-value string list                        |
+
+### 3.2 Declaring settings in the manifest
+
+Add `entry.settings` pointing to the schema file:
+
+```json
+{
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx",
+    "settings": "settings.json"
+  }
+}
+```
+
+No additional permission is required for an extension to read and write its own settings.
+
+### 3.3 Reading and writing settings in the backend
+
+Use `core.settings.read` / `core.settings.write` — these read from and write to the extension's own `ext-settings.json` file. The settings extension writes to the same file when the user saves changes in the settings UI.
+
+```ts
+export async function register(core: CoreContext): Promise<void> {
+  // Read saved settings (returns null if the user has never set a value)
+  const host = (await core.settings.read<string>('host')) ?? 'http://localhost:11434'
+  const audioOnly = (await core.settings.read<boolean>('audioOnly')) ?? false
+
+  // Write a setting (e.g. when saving a runtime preference)
+  await core.settings.write('model', selectedModel)
+}
+```
+
+**Do NOT** use `core.storage.write('config.json', ...)` for user-facing settings — use `core.settings` so that the settings extension and the backend share the same source of truth.
+
+### 3.4 Cross-extension settings access
+
+Reading or writing another extension's settings requires explicit permissions:
+
+```json
+"permissions": ["settings.read", "settings.write"]
+```
+
+```ts
+// Read a single key from another extension's settings
+const value = await core.settings.readExtension?.('com.nuxy.other', 'key')
+
+// Read all settings from another extension at once
+const all = await core.settings.readAllExtension?.('com.nuxy.other')
+
+// Overwrite all settings for another extension
+await core.settings.writeAllExtension?.('com.nuxy.other', { key: value })
+```
+
+---
+
+## 4. Backend Rules
+
+### 4.1 No direct Node.js imports
 
 **NEVER import Node built-ins directly.**
 
@@ -156,7 +267,7 @@ import { DatabaseSync } from 'node:sqlite'
 
 Use `core.*` APIs instead. If the required API does not exist in `CoreContext`, it must be added to `packages/core` first (see [Core TODO](#core-todos)).
 
-### 3.2 File system via `core.fs`
+### 4.2 File system via `core.fs`
 
 ```js
 // Check if a file exists
@@ -184,7 +295,7 @@ await core.fs.rm('/some/path')
 const stat = await core.fs.stat('/some/path')
 ```
 
-### 3.3 Storage (sandboxed JSON) via `core.storage`
+### 4.3 Storage (sandboxed JSON) via `core.storage`
 
 For structured data that belongs to the extension's own data directory, use the sandboxed storage API. Data is automatically namespaced by extension id.
 
@@ -198,7 +309,7 @@ await core.storage.write('history.json', data)
 
 Do not store data by manually constructing paths under `~/.nuxy/data/` — that bypasses sandboxing.
 
-### 3.4 Database via `core.db` [CORE TODO]
+### 4.4 Database via `core.db` [CORE TODO]
 
 When an extension requires a relational or FTS database:
 
@@ -222,7 +333,7 @@ db.close()
 
 The database file is stored under the extension's data directory — extensions never touch the path directly.
 
-### 3.5 Opening files / URLs via `core.shell` [CORE TODO]
+### 4.5 Opening files / URLs via `core.shell` [CORE TODO]
 
 ```js
 // [CORE TODO] Open a file or URL with the system default handler (xdg-open / open / start)
@@ -235,7 +346,7 @@ const result = await core.shell.exec('ffmpeg', ['-i', input, output])
 
 Never call `execFile`, `exec`, `spawn`, or `child_process` directly.
 
-### 3.6 Logging
+### 4.6 Logging
 
 ```js
 core.logger.info('Loaded successfully')
@@ -246,7 +357,7 @@ core.logger.silly('Verbose trace data')
 
 Never use `console.log` / `console.error` in extensions.
 
-### 3.7 Cross-extension calls
+### 4.7 Cross-extension calls
 
 Extensions must not call each other directly. Use `core.extensions.invoke`:
 
@@ -260,7 +371,7 @@ const result = await core.extensions.invoke('com.nuxy.other-ext', 'someChannel',
 
 `caller: true` must be set in manifest when making cross-extension calls.
 
-### 3.8 Backend entry point
+### 4.8 Backend entry point
 
 ```ts
 import type { CoreContext } from '@nuxy/extension-sdk'
@@ -281,9 +392,9 @@ All IPC handlers must return a value (or `undefined`). The kernel wraps them in 
 
 ---
 
-## 4. Frontend Rules
+## 5. Frontend Rules
 
-### 4.1 TSX format
+### 5.1 TSX format
 
 Frontend files are `.tsx` files containing JSX. They are loaded at runtime via `nuxy-ext://` — no build step, no bundler. All external dependencies come from `window.React` and `window.UI`.
 
@@ -306,7 +417,7 @@ export default function MyView({ query }: Props) {
 
 **Do NOT** add `import React from 'react'` — it is not available as an ES module in this context. JSX compiles to `React.createElement(...)` using the `window.React` reference.
 
-### 4.2 UI Kit only — no custom components
+### 5.2 UI Kit only — no custom components
 
 All UI must be built exclusively with `@nuxy/ui` components accessed via `window.UI`. If a component you need does not exist, **add it to `packages/ui`** before using it. Do not implement it inline in the extension.
 
@@ -333,7 +444,7 @@ export default function MyView({ query }) {
 }
 ```
 
-### 4.3 Keyboard-only interaction — no mouse-only buttons
+### 5.3 Keyboard-only interaction — no mouse-only buttons
 
 All actions must be accessible via keyboard. Clickable elements are only permitted as a secondary affordance when a keyboard binding already covers the same action.
 
@@ -353,7 +464,7 @@ const { selectedIndex } = _useListNavigation(items, {
 <ListItem active={idx === selectedIndex}>
 ```
 
-### 4.4 Input via Omnibar
+### 5.4 Input via Omnibar
 
 Extensions must not render their own `<input>` or `<textarea>`. All text input comes through the shell's omnibar and is passed to the frontend as the `query` prop.
 
@@ -369,7 +480,7 @@ export default function MyView({ query }) {
 return <input value={localQuery} onChange={...} />
 ```
 
-### 4.5 No inline styles — use theme tokens
+### 5.5 No inline styles — use theme tokens
 
 Never use hardcoded colors, spacing values, or magic numbers in `style` props or CSS strings. Use CSS custom properties from the active theme.
 
@@ -383,7 +494,7 @@ Never use hardcoded colors, spacing values, or magic numbers in `style` props or
 
 For layout primitives (flex, grid, height) that do not need theming, inline styles are acceptable only when no UI kit component fits and the value is purely structural (not a color/border/shadow).
 
-### 4.6 No emojis in UI
+### 5.6 No emojis in UI
 
 Do not use emoji characters as icons or visual affordances. Use icon components from `window.UI` (`IconFile`, `IconCode`, etc.) or request a new icon in `packages/ui/src/components/Icon.tsx`.
 
@@ -402,7 +513,7 @@ const { IconFile } = window.UI || {}
 }
 ```
 
-### 4.7 Keyboard actions via `useToolKeyActions` / `useListNavigation`
+### 5.7 Keyboard actions via `useToolKeyActions` / `useListNavigation`
 
 ```jsx
 const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
@@ -521,7 +632,7 @@ React.useEffect(() => {
 }, [selectedIndex]) // or whichever state drives your activeOn predicates
 ```
 
-### 4.8 IPC calls from frontend
+### 5.8 IPC calls from frontend
 
 ```jsx
 // Invoke your own backend
@@ -541,11 +652,11 @@ window.core.icons?.listPacks()
 window.core.window?.hide()
 ```
 
-### 4.9 No cross-extension IPC from frontend
+### 5.9 No cross-extension IPC from frontend
 
 Frontends may only call their own backend (`EXT_ID`) or `kernel`. They must not call another extension's IPC channels directly. If data from another extension is needed, the backend should proxy it.
 
-### 4.10 Layout components
+### 5.10 Layout components
 
 Use layout primitives from the UI kit:
 
@@ -560,7 +671,7 @@ Use layout primitives from the UI kit:
 | Grid                  | `Grid` / `GridItem` |
 | Section divider       | `SectionHeader`     |
 
-### 4.11 Window / shell events
+### 5.11 Window / shell events
 
 Communicate with the shell via `window.dispatchEvent(new CustomEvent(...))` for approved channels only:
 
@@ -576,11 +687,11 @@ Do not dispatch or listen for arbitrary custom events not listed here.
 
 ---
 
-## 5. TypeScript Rules
+## 6. TypeScript Rules
 
 All extensions must be written in TypeScript. JavaScript (`.js`) extension files are no longer accepted.
 
-### 5.1 File naming
+### 6.1 File naming
 
 | File                     | Extension            |
 | ------------------------ | -------------------- |
@@ -591,7 +702,7 @@ All extensions must be written in TypeScript. JavaScript (`.js`) extension files
 | Non-JSX helper modules   | `helper-name.ts`     |
 | JSX helper components    | `component-name.tsx` |
 
-### 5.2 Types file — extension-local interfaces
+### 6.2 Types file — extension-local interfaces
 
 Every extension with non-trivial data must have a `types.ts` defining its interfaces. **Never put extension-specific types in shared packages.**
 
@@ -614,7 +725,7 @@ export interface UpdatePayload {
 }
 ```
 
-### 5.3 Backend typing
+### 6.3 Backend typing
 
 ```ts
 import type { CoreContext } from '@nuxy/extension-sdk'
@@ -642,7 +753,7 @@ export function register(core: CoreContext): void {
 - IPC handler payloads arrive as `unknown` — cast with `as MyPayloadType` after validation.
 - Use generic storage reads: `core.storage.read<MyItem[]>('data.json')`.
 
-### 5.4 Frontend typing
+### 6.4 Frontend typing
 
 ```tsx
 const React = window.React
@@ -679,7 +790,7 @@ export default function MyView({ query }: Props) {
 }
 ```
 
-### 5.5 `ui-default` component authoring — `forwardRef` pattern
+### 6.5 `ui-default` component authoring — `forwardRef` pattern
 
 Components in `extensions/ui-default/src/components/` that need to forward a DOM `ref` must use `React.forwardRef`. Write proper types — **no `any`**:
 
@@ -703,7 +814,7 @@ If a component does not need ref forwarding, keep it as a plain function compone
 
 ---
 
-### 5.6 TypeScript config
+### 6.6 TypeScript config
 
 Extensions are covered by `extensions/tsconfig.json`. The config:
 
@@ -712,7 +823,7 @@ Extensions are covered by `extensions/tsconfig.json`. The config:
 - Does **not** emit files — transpilation is done at runtime by the protocol server
 - Includes a path alias for `vitest` pointing to `src/node_modules/vitest`
 
-### 5.6 Global window types
+### 6.7 Global window types
 
 `extensions/global.d.ts` declares the runtime globals available to all frontends:
 
@@ -724,7 +835,7 @@ This file is picked up automatically by `extensions/tsconfig.json`.
 
 ---
 
-## 6. Core API Reference
+## 7. Core API Reference
 
 ### Currently available (`CoreContext`)
 
@@ -771,7 +882,7 @@ These APIs are required by the rules above but do not yet exist. Before writing 
 
 ---
 
-## 7. Testing Requirements
+## 8. Testing Requirements
 
 ### Backend tests (`backend.test.ts`)
 
@@ -894,7 +1005,7 @@ pnpm test:e2e:core                 # core app e2e tests (src/e2e/)
 
 ---
 
-## 8. Anti-Patterns
+## 9. Anti-Patterns
 
 The following patterns are banned. Reviewers and AI agents must flag these.
 
@@ -1043,9 +1154,50 @@ export interface ClipboardItem { ... }
 
 Put data-model types in `types.ts` inside the extension folder.
 
+### O. Hardcoded keyboard shortcut hints in UI layout
+
+```tsx
+// BANNED — shortcut hints should not be hardcoded in the component body
+return (
+  <div>
+    <span>Ctrl+Enter to send</span>
+  </div>
+)
+```
+
+Register all shortcuts via `useToolKeyActions` instead. This ensures all shortcut hints are unified and displayed in the shell's footer/shortcut bar.
+
+### P. Inline settings panel in extension frontend
+
+```tsx
+// BANNED — extensions must not implement their own settings UI
+const [showSettings, setShowSettings] = useState(false)
+
+if (showSettings) {
+  return (
+    <div>
+      <input value={hostInput} onChange={...} />      // also banned: own input
+      <button onClick={handleSave}>Save</button>       // also banned: mouse-only
+    </div>
+  )
+}
+```
+
+Use `settings.json` + `entry.settings` in the manifest instead. The settings extension renders the UI automatically. The extension backend reads values via `core.settings.read()`.
+
+### Q. Using `core.storage` for user-facing settings
+
+```ts
+// BANNED — user-visible config must go through core.settings
+await core.storage.write('config.json', { host, model })
+const cfg = await core.storage.read<Config>('config.json')
+```
+
+`core.storage` is for extension-internal data (e.g. history, cache). User-facing settings that appear in the settings extension must use `core.settings.read` / `core.settings.write`, which share the same `ext-settings.json` file the settings extension reads and writes.
+
 ---
 
-## 9. Checklist
+## 10. Checklist
 
 Before submitting or merging an extension, verify every item:
 
@@ -1054,6 +1206,14 @@ Before submitting or merging an extension, verify every item:
 - [ ] `id` follows `com.nuxy.<name>` convention
 - [ ] All used `core.*` APIs have a matching entry in `permissions`
 - [ ] `capabilities.caller` is only `true` if the extension calls other extensions
+
+**Settings**
+
+- [ ] User-configurable options are declared in `settings.json` and referenced via `entry.settings` in the manifest
+- [ ] Extension backend reads settings via `core.settings.read(key)` — not `core.storage.read('config.json')`
+- [ ] Extension backend writes settings via `core.settings.write(key, value)` — not `core.storage.write('config.json', ...)`
+- [ ] No custom settings panel rendered inside the extension frontend
+- [ ] `core.storage` is only used for extension-internal data (history, cache, temp state) — not for user-facing config
 
 **TypeScript**
 
@@ -1084,8 +1244,10 @@ Before submitting or merging an extension, verify every item:
 - [ ] No `<button>`, `<input>`, `<textarea>`, or custom components
 - [ ] All list navigation uses `useListNavigation`
 - [ ] All key bindings registered via `useToolKeyActions`
+- [ ] No hardcoded keyboard shortcut hints in UI layout (e.g. `⌃↑↓ to switch` inside components) — rely entirely on `useToolKeyActions` and the shell footer/shortcut bar
 - [ ] No hardcoded colors — only `var(--token-name)` CSS custom properties
 - [ ] No emojis — use icon components
 - [ ] Input received from `query` prop — no own input rendering
 - [ ] Cross-extension IPC proxied through own backend
 - [ ] Only approved `window.dispatchEvent` channels used
+- [ ] No inline settings panel — settings are declared in `settings.json` and rendered by the settings extension

@@ -42,14 +42,14 @@ export function ResultCard({ item, providerName, copiedId, onCopy }: ResultCardP
       </div>
       <span
         style={{
-          fontSize: 10,
+          fontSize: 'var(--font-xs, 10px)',
           fontWeight: 600,
           letterSpacing: '0.5px',
           padding: '2px 7px',
           borderRadius: 20,
-          background: 'rgba(120, 80, 255, 0.12)',
-          border: '1px solid rgba(120, 80, 255, 0.25)',
-          color: 'rgba(160, 130, 255, 0.9)',
+          background: 'var(--surface-accent-subtle)',
+          border: '1px solid var(--border-accent)',
+          color: 'var(--color-accent)',
         }}
       >
         {providerName}

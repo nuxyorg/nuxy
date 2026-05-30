@@ -6,7 +6,7 @@
  *
  * Mock URL: https://www.youtube.com/watch?v=wx1UiMbCv48
  */
-import { test, expect } from '../../src/e2e/fixtures.js'
+import { test, expect } from '../../src/e2e/fixtures.ts'
 
 const MOCK_URL = 'https://www.youtube.com/watch?v=wx1UiMbCv48'
 

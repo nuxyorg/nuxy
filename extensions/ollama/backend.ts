@@ -15,10 +15,12 @@ const DEFAULT_MODEL = 'llama3'
 const DEFAULT_HOST = 'http://localhost:11434'
 
 export async function register(core: CoreContext): Promise<void> {
-  let config: OllamaConfig = { model: DEFAULT_MODEL, host: DEFAULT_HOST }
+  const config: OllamaConfig = { model: DEFAULT_MODEL, host: DEFAULT_HOST }
 
-  const saved = await core.storage.read<OllamaConfig>('config.json')
-  if (saved) config = { ...config, ...saved }
+  const savedHost = await core.settings.read<string>('host')
+  const savedModel = await core.settings.read<string>('model')
+  if (savedHost) config.host = savedHost
+  if (savedModel) config.model = savedModel
 
   async function chat(payload: ChatPayload): Promise<ChatResult> {
     const response = await fetch(`${config.host}/api/chat`, {
@@ -36,9 +38,7 @@ export async function register(core: CoreContext): Promise<void> {
     return { content: data.message?.content ?? '' }
   }
 
-  core.registry.registerOrchestrator(async (rawText: unknown) => {
-    return chat({ messages: [{ role: 'user', content: rawText as string }] })
-  })
+  core.registry.registerTool({ name: 'ollama' })
 
   core.ipc.handle('chat', async (payload: unknown): Promise<ChatResult> => {
     return chat(payload as ChatPayload)
@@ -46,7 +46,7 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.ipc.handle('query', async (payload: unknown): Promise<ChatResult> => {
     const { model, prompt } = payload as QueryPayload
-    if (model) config = { ...config, model }
+    if (model) config.model = model
     return chat({ messages: [{ role: 'user', content: prompt }] })
   })
 
@@ -72,8 +72,31 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.ipc.handle('configure', async (payload: unknown): Promise<void> => {
     const { model, host } = (payload as ConfigurePayload) ?? {}
-    if (model !== undefined) config.model = model
-    if (host !== undefined) config.host = host
-    await core.storage.write('config.json', { model: config.model, host: config.host })
+    if (model !== undefined) {
+      config.model = model
+      await core.settings.write('model', model)
+    }
+    if (host !== undefined) {
+      config.host = host
+      await core.settings.write('host', host)
+    }
+  })
+
+  core.ipc.handle('getConfig', async (): Promise<OllamaConfig> => {
+    return { host: config.host, model: config.model }
+  })
+
+  core.ipc.handle('history:save', async (payload: unknown): Promise<void> => {
+    const { messages } = payload as { messages: ChatMessage[] }
+    await core.storage.write('history.json', messages)
+  })
+
+  core.ipc.handle('history:load', async (): Promise<ChatMessage[]> => {
+    const saved = await core.storage.read<ChatMessage[]>('history.json')
+    return saved ?? []
+  })
+
+  core.ipc.handle('history:clear', async (): Promise<void> => {
+    await core.storage.write('history.json', [])
   })
 }

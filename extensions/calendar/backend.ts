@@ -72,9 +72,57 @@ export function register(core: CoreContext): void {
 
   core.registry.registerTool({ name: 'calendar' })
 
+  // ─── In-memory last result (for orchestrator → frontend display) ──────────
+  let lastResult: unknown = null
+
+  core.ipc.handle('getLastResult', async (_payload: unknown) => {
+    const res = lastResult
+    lastResult = null // Clear on read so it doesn't open the create screen repeatedly
+    return res
+  })
+
+  core.ipc.handle('setLastResult', async (data: unknown) => {
+    lastResult = data
+    core.logger.info(`[Calendar] Last result updated: ${JSON.stringify(data)}`)
+    return { ok: true }
+  })
+
+  core.ipc.handle('calendar:prepare', async (payload: unknown) => {
+    const args = payload as { title: string; date: string; time?: string }
+    const title = args.title || ''
+    const dateStr = args.date
+    if (!dateStr) {
+      return { success: false, error: 'Missing date parameter' }
+    }
+
+    const parts = dateStr.split('-')
+    if (parts.length !== 3) {
+      return { success: false, error: `Invalid date format: ${dateStr}` }
+    }
+    const year = parseInt(parts[0], 10)
+    const month = parseInt(parts[1], 10) - 1
+    const day = parseInt(parts[2], 10)
+
+    const timeStr = args.time || '10:00'
+    const timeParts = timeStr.split(':')
+    const hours = timeParts.length >= 1 ? parseInt(timeParts[0], 10) : 10
+    const minutes = timeParts.length >= 2 ? parseInt(timeParts[1], 10) : 0
+
+    const parsedDate = new Date(year, month, day, hours, minutes, 0, 0)
+    const datetime = parsedDate.getTime()
+
+    return {
+      success: true,
+      data: {
+        title,
+        datetime,
+      },
+    }
+  })
+
   setInterval(() => checkReminders(core, () => db), 60_000)
 
-  core.ipc.handle('calendar:list', async (payload) => {
+  core.ipc.handle('calendar:list', async (payload: unknown) => {
     const { from, to } = (payload as CalendarListPayload) ?? {}
     let rows: CalendarEventRow[]
     if (from !== undefined && to !== undefined) {
@@ -89,7 +137,7 @@ export function register(core: CoreContext): void {
     return rows.map(rowToEvent)
   })
 
-  core.ipc.handle('calendar:create', async (payload) => {
+  core.ipc.handle('calendar:create', async (payload: unknown) => {
     const { title, datetime, notes = '', remindMin = 0 } = payload as CalendarCreatePayload
     const id = crypto.randomUUID()
     const createdAt = Date.now()
@@ -101,7 +149,7 @@ export function register(core: CoreContext): void {
     return rowToEvent(row)
   })
 
-  core.ipc.handle('calendar:update', async (payload) => {
+  core.ipc.handle('calendar:update', async (payload: unknown) => {
     const { id, title, datetime, notes, remindMin } = payload as CalendarUpdatePayload
     const setClauses: string[] = []
     const values: unknown[] = []
@@ -133,7 +181,7 @@ export function register(core: CoreContext): void {
     return rowToEvent(row)
   })
 
-  core.ipc.handle('calendar:delete', async (payload) => {
+  core.ipc.handle('calendar:delete', async (payload: unknown) => {
     const { id } = payload as CalendarDeletePayload
     const stmt = db.prepare('DELETE FROM events WHERE id = ?')
     stmt.run(id)

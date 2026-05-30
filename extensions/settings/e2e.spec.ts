@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '../../src/e2e/fixtures.js'
+import { test, expect, type Page } from '../../src/e2e/fixtures.ts'
 
 async function resetShell(page: any) {
   await page.evaluate(() => {

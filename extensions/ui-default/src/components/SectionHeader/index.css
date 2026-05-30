@@ -1,8 +1,14 @@
 .nuxy-section-header {
   padding: 8px 12px 4px;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 8px;
+}
+
+.nuxy-section-header__action {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
 }
 
 .nuxy-list + .nuxy-section-header {

@@ -51,3 +51,10 @@
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) transparent;
 }
+
+/* Syntax highlight token colors */
+.nuxy-hl-keyword  { color: var(--syntax-keyword,  #c792ea); }
+.nuxy-hl-string   { color: var(--syntax-string,   #c3e88d); }
+.nuxy-hl-comment  { color: var(--syntax-comment,  #546e7a); font-style: italic; }
+.nuxy-hl-number   { color: var(--syntax-number,   #f78c6c); }
+.nuxy-hl-operator { color: var(--syntax-operator, #89ddff); }

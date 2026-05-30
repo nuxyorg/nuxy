@@ -2,12 +2,17 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { register } from './backend.ts'
 import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 
-function createCore({ storage = {} }: { storage?: Record<string, unknown> } = {}): {
+function createCore({
+  storage = {},
+  settings = {},
+}: { storage?: Record<string, unknown>; settings?: Record<string, unknown> } = {}): {
   core: CoreContext
   handlers: Record<string, (payload: unknown) => unknown>
   storageData: Record<string, unknown>
+  settingsData: Record<string, unknown>
 } {
   const storageData = { ...storage }
+  const settingsData = { ...settings }
 
   const { core, handlers } = createMockCore(vi, {
     storage: {
@@ -16,9 +21,15 @@ function createCore({ storage = {} }: { storage?: Record<string, unknown> } = {}
         storageData[key] = value
       }),
     },
+    settings: {
+      read: vi.fn(async (key: string) => settingsData[key] ?? null),
+      write: vi.fn(async (key: string, value: unknown) => {
+        settingsData[key] = value
+      }),
+    },
   })
 
-  return { core, handlers, storageData }
+  return { core, handlers, storageData, settingsData }
 }
 
 function makeFetchOk(
@@ -53,10 +64,12 @@ afterEach(() => {
 })
 
 describe('ollama backend', () => {
-  it('registers an orchestrator function', async () => {
+  it('registers as a tool', async () => {
     const { core } = createCore()
     await register(core)
-    expect(core.registry.registerOrchestrator).toHaveBeenCalledWith(expect.any(Function))
+    expect(core.registry.registerTool).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'ollama' })
+    )
   })
 
   describe('chat handler', () => {
@@ -117,7 +130,7 @@ describe('ollama backend', () => {
         makeFetchOk({ message: { role: 'assistant', content: 'ok' } }) as ReturnType<typeof fetch>
       )
       const { core, handlers } = createCore({
-        storage: { 'config.json': { host: 'http://my-custom-host:12345', model: 'llama3' } },
+        settings: { host: 'http://my-custom-host:12345', model: 'llama3' },
       })
       await register(core)
       await (handlers['chat'] as (p: unknown) => Promise<unknown>)({
@@ -173,17 +186,33 @@ describe('ollama backend', () => {
   })
 
   describe('configure handler', () => {
-    it('writes config to storage', async () => {
+    it('writes model and host to settings', async () => {
       const { core, handlers } = createCore()
       await register(core)
       await (handlers['configure'] as (p: unknown) => Promise<void>)({
         model: 'mistral',
         host: 'http://example.com:11434',
       })
-      expect(core.storage.write).toHaveBeenCalledWith(
-        'config.json',
-        expect.objectContaining({ model: 'mistral', host: 'http://example.com:11434' })
-      )
+      expect(core.settings.write).toHaveBeenCalledWith('model', 'mistral')
+      expect(core.settings.write).toHaveBeenCalledWith('host', 'http://example.com:11434')
+    })
+  })
+
+  describe('getConfig handler', () => {
+    it('returns host and model loaded from saved settings', async () => {
+      const { core, handlers } = createCore({
+        settings: { host: 'http://remote:11434', model: 'mistral' },
+      })
+      await register(core)
+      const result = await (handlers['getConfig'] as () => Promise<unknown>)()
+      expect(result).toEqual({ host: 'http://remote:11434', model: 'mistral' })
+    })
+
+    it('returns defaults when no settings exist', async () => {
+      const { core, handlers } = createCore()
+      await register(core)
+      const result = await (handlers['getConfig'] as () => Promise<unknown>)()
+      expect(result).toEqual({ host: 'http://localhost:11434', model: 'llama3' })
     })
   })
 
@@ -207,23 +236,63 @@ describe('ollama backend', () => {
     })
   })
 
-  describe('orchestrator function', () => {
-    it('calls chat with the raw text as a user message', async () => {
+  describe('query handler', () => {
+    it('calls chat with the prompt as a user message', async () => {
       vi.spyOn(global, 'fetch').mockReturnValue(
         makeFetchOk({ message: { role: 'assistant', content: 'response' } }) as ReturnType<
           typeof fetch
         >
       )
-      const { core } = createCore()
+      const { core, handlers } = createCore()
       await register(core)
-      const orchestratorFn = (core.registry.registerOrchestrator as ReturnType<typeof vi.fn>).mock
-        .calls[0][0] as (text: string) => Promise<unknown>
-      const result = await orchestratorFn('what is the capital of France?')
+      const result = await (handlers['query'] as (p: unknown) => Promise<unknown>)({
+        prompt: 'what is the capital of France?',
+      })
       const body = JSON.parse(
         (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0][1].body as string
       ) as { messages: unknown[] }
       expect(body.messages).toEqual([{ role: 'user', content: 'what is the capital of France?' }])
       expect(result).toEqual({ content: 'response' })
+    })
+  })
+
+  describe('history:save handler', () => {
+    it('writes messages to history.json', async () => {
+      const { core, handlers } = createCore()
+      await register(core)
+      const messages = [
+        { role: 'user', content: 'hello' },
+        { role: 'assistant', content: 'hi there' },
+      ]
+      await (handlers['history:save'] as (p: unknown) => Promise<void>)({ messages })
+      expect(core.storage.write).toHaveBeenCalledWith('history.json', messages)
+    })
+  })
+
+  describe('history:load handler', () => {
+    it('returns saved messages from storage', async () => {
+      const messages = [{ role: 'user', content: 'test' }]
+      const { core, handlers } = createCore({ storage: { 'history.json': messages } })
+      await register(core)
+      const result = await (handlers['history:load'] as () => Promise<unknown>)()
+      expect(result).toEqual(messages)
+    })
+
+    it('returns empty array when no history exists', async () => {
+      const { core, handlers } = createCore()
+      await register(core)
+      const result = await (handlers['history:load'] as () => Promise<unknown>)()
+      expect(result).toEqual([])
+    })
+  })
+
+  describe('history:clear handler', () => {
+    it('writes empty array to history.json', async () => {
+      const messages = [{ role: 'user', content: 'old message' }]
+      const { core, handlers } = createCore({ storage: { 'history.json': messages } })
+      await register(core)
+      await (handlers['history:clear'] as () => Promise<void>)()
+      expect(core.storage.write).toHaveBeenCalledWith('history.json', [])
     })
   })
 })

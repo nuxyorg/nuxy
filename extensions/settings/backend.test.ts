@@ -27,7 +27,7 @@ function createCore(storageData: Partial<NuxySettings> | null | undefined = null
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
     },
-  }) as any
+  })
 }
 
 describe('settings backend', () => {
@@ -282,6 +282,63 @@ describe('settings backend', () => {
     })
   })
 
+  // ─── Error paths ─────────────────────────────────────────────────────────────
+
+  describe('error paths', () => {
+    it('getSettings propagates storage read failure', async () => {
+      const { core, handlers } = createMockCore(vi, {
+        storage: {
+          read: vi.fn().mockRejectedValue(new Error('disk read error')),
+        },
+      })
+      register(core)
+      await expect(
+        (handlers['getSettings'] as (p: unknown) => Promise<NuxySettings>)({})
+      ).rejects.toThrow('disk read error')
+    })
+
+    it('saveSettings propagates storage write failure', async () => {
+      const { core, handlers } = createMockCore(vi, {
+        storage: {
+          read: vi.fn().mockResolvedValue(null),
+          write: vi.fn().mockRejectedValue(new Error('disk write error')),
+        },
+      })
+      register(core)
+      await expect(
+        (handlers['saveSettings'] as (p: unknown) => Promise<NuxySettings>)({ theme: 'light' })
+      ).rejects.toThrow('disk write error')
+    })
+
+    it('getExtensionSettingValues propagates when readAllExtension rejects', async () => {
+      const { core, handlers } = createMockCore(vi, {
+        settings: {
+          readAllExtension: vi.fn().mockRejectedValue(new Error('settings read error')),
+        },
+      })
+      register(core)
+      await expect(
+        (
+          handlers['getExtensionSettingValues'] as (p: unknown) => Promise<Record<string, unknown>>
+        )('com.nuxy.test')
+      ).rejects.toThrow('settings read error')
+    })
+
+    it('saveExtensionSettingValues propagates when writeAllExtension rejects', async () => {
+      const { core, handlers } = createMockCore(vi, {
+        settings: {
+          writeAllExtension: vi.fn().mockRejectedValue(new Error('settings write error')),
+        },
+      })
+      register(core)
+      await expect(
+        (
+          handlers['saveExtensionSettingValues'] as (p: unknown) => Promise<Record<string, unknown>>
+        )({ extId: 'com.nuxy.test', values: { foo: 'bar' } })
+      ).rejects.toThrow('settings write error')
+    })
+  })
+
   describe('extension settings channels', () => {
     it('registers getExtensionSettingValues handler', () => {
       const { core, handlers } = createCore()
@@ -318,7 +375,7 @@ describe('settings backend', () => {
               stored = values
             }),
         },
-      }) as any
+      })
 
       register(core)
 

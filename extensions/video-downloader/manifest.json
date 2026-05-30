@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "video",
-  "permissions": ["storage", "shell"],
+  "permissions": ["storage", "shell", "fs"],
   "capabilities": {
     "callable": false,
     "caller": false

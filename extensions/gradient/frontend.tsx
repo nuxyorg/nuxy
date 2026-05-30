@@ -8,6 +8,9 @@ interface GradientInstance {
   height: number
   initGradient: (selector: string) => GradientInstance
   pause?: () => void
+  play?: () => void
+  resize?: () => void
+  disconnect?: () => void
 }
 
 const COLORS: Record<string, string> = {
@@ -18,9 +21,10 @@ const COLORS: Record<string, string> = {
 }
 
 export default function GradientView() {
-  const gradientRef = useRef<GradientInstance | null>(null)
-
   useEffect(() => {
+    // When the gradient tool is opened, turn on the border glow
+    window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: true }))
+
     const canvas = document.getElementById(CANVAS_ID)
     if (!canvas) return
 
@@ -30,18 +34,20 @@ export default function GradientView() {
       url: string
     ) => Promise<{ Gradient: new () => GradientInstance }>
 
+    let toolGInstance: any = null
     dynamicImport(`nuxy-ext://${EXT_ID}/gradient.ts`)
       .then(({ Gradient }) => {
         const g = new Gradient()
         g.height = window.innerHeight
         g.initGradient(`#${CANVAS_ID}`)
-        gradientRef.current = g
+        toolGInstance = g
       })
-      .catch(console.error)
+      .catch(() => {})
 
     return () => {
-      gradientRef.current?.pause?.()
-      gradientRef.current = null
+      // Turn off the border glow when the gradient tool is closed
+      window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: false }))
+      toolGInstance?.pause?.()
     }
   }, [])
 
@@ -57,4 +63,88 @@ export default function GradientView() {
       zIndex: 9999,
     },
   })
+}
+
+// Self-attacher logic loaded on startup
+if (typeof window !== 'undefined') {
+  let gInstance: any = null
+  let observer: ResizeObserver | null = null
+
+  const initShellGradient = (container: HTMLElement) => {
+    // Avoid double setup
+    if (document.getElementById('nuxy-shell-gradient-canvas')) return
+
+    const canvas = document.createElement('canvas')
+    canvas.id = 'nuxy-shell-gradient-canvas'
+    canvas.className = 'nuxy-shell-gradient-canvas'
+    container.prepend(canvas)
+
+    const dynamicImport = new Function('url', 'return import(url)')
+    dynamicImport('nuxy-ext://com.nuxy.gradient/gradient.ts')
+      .then(({ Gradient }: any) => {
+        const g = new Gradient()
+        g.initGradient('#nuxy-shell-gradient-canvas')
+        gInstance = g
+
+        // Initially paused until toggle is activated
+        g.pause?.()
+
+        // Set up ResizeObserver
+        observer = new ResizeObserver(() => {
+          if (g.mesh && g.mesh.geometry) {
+            g.resize?.()
+          }
+        })
+        observer.observe(container)
+      })
+      .catch((err: any) => {
+        console.warn('Failed to load gradient shader inside shell:', err)
+      })
+  }
+
+  let pauseTimeout: any = null
+
+  // Handle toggles from other extensions
+  const handleToggle = (e: Event) => {
+    const active = (e as CustomEvent).detail
+    const container = document.querySelector('.nuxy-shell-container')
+    if (container) {
+      if (active) {
+        if (pauseTimeout) {
+          clearTimeout(pauseTimeout)
+          pauseTimeout = null
+        }
+        container.classList.add('nuxy-shell-container--gradient-active')
+        gInstance?.play?.()
+        requestAnimationFrame(() => {
+          if (gInstance && gInstance.mesh && gInstance.mesh.geometry) {
+            gInstance.resize?.()
+          }
+        })
+      } else {
+        container.classList.remove('nuxy-shell-container--gradient-active')
+        if (pauseTimeout) clearTimeout(pauseTimeout)
+        pauseTimeout = setTimeout(() => {
+          gInstance?.pause?.()
+          pauseTimeout = null
+        }, 500)
+      }
+    }
+  }
+
+  window.addEventListener('nuxy-gradient-toggle', handleToggle)
+
+  // Listen to shell mount event
+  window.addEventListener('nuxy-shell-mounted', (e: Event) => {
+    const container = (e as CustomEvent).detail?.container
+    if (container) {
+      initShellGradient(container)
+    }
+  })
+
+  // Check if shell container is already in DOM (fallback)
+  const existing = document.querySelector('.nuxy-shell-container') as HTMLElement | null
+  if (existing) {
+    initShellGradient(existing)
+  }
 }

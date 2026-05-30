@@ -62,7 +62,7 @@ test.describe('shell gradient border and glow', () => {
     await expect(containerDefault).not.toHaveClass(/nuxy-shell-container--gradient-active/)
 
     const shellCanvasDefault = appPage.locator('#nuxy-shell-gradient-canvas')
-    await expect(shellCanvasDefault).not.toBeVisible()
+    await expect(shellCanvasDefault).not.toBeVisible({ timeout: 1000 })
 
     // 2. Open gradient tool
     await openGradient(appPage)
@@ -77,7 +77,7 @@ test.describe('shell gradient border and glow', () => {
     await resetShell(appPage)
 
     await expect(containerDefault).not.toHaveClass(/nuxy-shell-container--gradient-active/)
-    await expect(shellCanvasDefault).not.toBeVisible()
+    await expect(shellCanvasDefault).not.toBeVisible({ timeout: 1000 })
   })
 })
 
@@ -171,7 +171,7 @@ test.describe('ollama thinking gradient activation', () => {
     const container = appPage.locator('.nuxy-shell-container')
     await expect(container).not.toHaveClass(/nuxy-shell-container--gradient-active/)
     const shellCanvas = appPage.locator('#nuxy-shell-gradient-canvas')
-    await expect(shellCanvas).not.toBeVisible()
+    await expect(shellCanvas).not.toBeVisible({ timeout: 1000 })
 
     // 2. Type a message and hit Enter
     const input = appPage.locator('.nuxy-shell-omni-bar__input')
@@ -189,6 +189,6 @@ test.describe('ollama thinking gradient activation', () => {
 
     // Expect the gradient class to be removed and canvas to be hidden again
     await expect(container).not.toHaveClass(/nuxy-shell-container--gradient-active/)
-    await expect(shellCanvas).not.toBeVisible()
+    await expect(shellCanvas).not.toBeVisible({ timeout: 1000 })
   })
 })

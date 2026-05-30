@@ -103,11 +103,45 @@ const BUILTIN_TOOL_SCHEMAS: Record<string, JsonSchema> = {
     },
     required: ['text'],
   },
+  'com.nuxy.calendar': {
+    type: 'object',
+    properties: {
+      title: {
+        type: 'string',
+        description:
+          'The title or description of the calendar event/reminder to create, e.g. "recebin doğumgününü kutlayacağım".',
+      },
+      date: {
+        type: 'string',
+        description:
+          'The date of the event in YYYY-MM-DD format (e.g. "2026-12-21"). If only day and month are specified, use the current year or next occurrences. Always try to format as YYYY-MM-DD.',
+      },
+      time: {
+        type: 'string',
+        description:
+          'Optional time for the event in HH:MM format (24-hour, e.g. "10:00"). Defaults to "10:00" if not specified.',
+      },
+    },
+    required: ['title', 'date'],
+  },
+  'com.nuxy.ollama': {
+    type: 'object',
+    properties: {
+      prompt: {
+        type: 'string',
+        description:
+          "The user's question or message to send to the Ollama conversational AI model for a general-purpose response.",
+      },
+    },
+    required: ['prompt'],
+  },
 }
 
 const TOOL_CHANNEL_MAP: Record<string, string> = {
   'com.nuxy.time-calculator': 'convert',
   'com.nuxy.calculator': 'eval',
+  'com.nuxy.calendar': 'prepare',
+  'com.nuxy.ollama': 'query',
 }
 
 // ─── Main register ────────────────────────────────────────────────────────────
@@ -121,14 +155,17 @@ export function register(core: CoreContext): void {
   core.ipc.handle('route', async (payload: unknown) => {
     const text = (payload as RoutePayload)?.text ?? ''
     if (!text.trim()) return { error: 'Empty query' }
-    await handleRoute(core, text)
-    return { ok: true }
+    const res = await handleRoute(core, text)
+    return { ok: true, data: res }
   })
 }
 
 // ─── Orchestration logic ──────────────────────────────────────────────────────
 
-async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
+async function handleRoute(
+  core: CoreContext,
+  rawText: string
+): Promise<{ toolCalled?: string; initialQuery?: string } | null> {
   try {
     let callableTools: CallableExtension[] = []
     try {
@@ -172,21 +209,51 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
           __extId: 'com.nuxy.calculator',
         },
       })
+      toolDefs.push({
+        type: 'function',
+        function: {
+          name: 'calendar',
+          description: 'Set a reminder or schedule/do something on a specific date.',
+          parameters: BUILTIN_TOOL_SCHEMAS['com.nuxy.calendar'],
+          __extId: 'com.nuxy.calendar',
+        },
+      })
+      toolDefs.push({
+        type: 'function',
+        function: {
+          name: 'ollama',
+          description:
+            'Answer general questions, open-ended conversation, creative tasks, coding help, and anything else that does not fit a more specific tool.',
+          parameters: BUILTIN_TOOL_SCHEMAS['com.nuxy.ollama'],
+          __extId: 'com.nuxy.ollama',
+        },
+      })
     }
 
+    const currentYear = new Date().getFullYear()
     const messages: OllamaMessage[] = [
       {
-        role: 'system',
+        role: 'developer',
         content:
-          'You are a helpful assistant integrated into Nuxy, a desktop launcher. ' +
-          'When the user asks to convert a time between cities/timezones, call the time_calculator tool. ' +
+          'You are a model that can do function calling with the following functions\n' +
+          'You are a helpful assistant integrated into Nuxy, a desktop launcher.\n' +
+          'When the user asks to convert a time between cities/timezones, call the time_calculator tool.\n' +
           'Rules for time_calculator:\n' +
           '- Set `time` to the exact time mentioned (e.g. "12pm", "14:00", "3:30am").\n' +
           '- Set `from` only if a source city/timezone is explicitly named; omit it otherwise.\n' +
           '- Set `to` ONLY if a destination city/timezone is explicitly named (e.g. "in london", "to tokyo"). ' +
           'If no destination is named, do NOT call the tool — just answer directly.\n' +
-          '- Never invent city names. Use the exact city name the user said.\n' +
-          'If no tool fits, answer directly and concisely.',
+          '- Never invent city names. Use the exact city name the user said.\n\n' +
+          'When the user asks to set a reminder, schedule something, or do an activity on a specific date, call the calendar tool.\n' +
+          'Rules for calendar:\n' +
+          '- Set `title` to the exact description/action the user wants to schedule/remind (e.g. "recebin doğumgününü kutlayacağım").\n' +
+          `- Set \`date\` in YYYY-MM-DD format. The current year is ${currentYear}. For example, "21 aralık" should resolve to "${currentYear}-12-21".\n` +
+          '- Set `time` if a specific time is mentioned, otherwise default to "10:00".\n\n' +
+          'For general questions, open-ended conversation, creative tasks, or anything that does not fit the above tools, call the ollama tool.\n' +
+          'Rules for ollama:\n' +
+          "- Set `prompt` to the user's full original message verbatim.\n" +
+          '- Use this for: questions, explanations, writing, coding help, brainstorming, etc.\n\n' +
+          'Always call a tool — never answer directly without a tool call.',
       },
       { role: 'user', content: rawText },
     ]
@@ -202,6 +269,11 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
     if (assistantMsg.tool_calls && assistantMsg.tool_calls.length > 0) {
       messages.push(assistantMsg)
 
+      let lastExtId: string | undefined
+      let initialQuery: string | undefined
+
+      const toolResponses: { name: string; response: unknown }[] = []
+
       for (const toolCall of assistantMsg.tool_calls) {
         const fnName = toolCall.function?.name
         const args = toolCall.function?.arguments ?? {}
@@ -214,6 +286,10 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
         let toolResult: unknown = null
 
         if (extId) {
+          lastExtId = extId
+          if (extId === 'com.nuxy.calendar' && typeof args.title === 'string') {
+            initialQuery = args.title
+          }
           try {
             const channel = TOOL_CHANNEL_MAP[extId] || 'eval'
             core.logger.info(
@@ -239,14 +315,31 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
           toolResult = { error: `Unknown tool: ${fnName}` }
         }
 
-        messages.push({
-          role: 'tool',
-          content: JSON.stringify(toolResult),
-        })
+        if (fnName) {
+          toolResponses.push({
+            name: fnName,
+            response: toolResult,
+          })
+        }
+      }
+
+      if (toolResponses.length > 0) {
+        if (toolResponses.length === 1) {
+          messages.push({
+            role: 'tool',
+            content: toolResponses[0],
+          })
+        } else {
+          messages.push({
+            role: 'tool',
+            content: toolResponses,
+          })
+        }
       }
 
       const finalResponse = await ollamaChat(messages, [])
-      const finalContent = finalResponse.message?.content ?? ''
+      const finalContent =
+        typeof finalResponse.message?.content === 'string' ? finalResponse.message.content : ''
 
       core.logger.info(`[AI Orchestrator] Final response: ${finalContent}`)
 
@@ -256,22 +349,17 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
         answer: finalContent,
         toolCalls: assistantMsg.tool_calls,
       })
+
+      return { toolCalled: lastExtId, initialQuery }
     } else {
-      let answer = assistantMsg.content ?? ''
-      try {
-        const ollamaResult = (await core.extensions.invoke('com.nuxy.ollama', 'chat', {
-          messages,
-        })) as { content?: string } | null
-        answer = ollamaResult?.content ?? answer
-      } catch (_) {
-        // Ollama not available — use functiongemma's direct answer
-      }
-      core.logger.info(`[AI Orchestrator] Answer: ${answer}`)
+      const answer = typeof assistantMsg.content === 'string' ? assistantMsg.content : ''
+      core.logger.info(`[AI Orchestrator] Direct answer (no tool called): ${answer}`)
       broadcastResult(core, {
         type: 'direct',
         query: rawText,
         answer,
       })
+      return null
     }
   } catch (err) {
     core.logger.error(`[AI Orchestrator] Error: ${err}`)
@@ -281,6 +369,7 @@ async function handleRoute(core: CoreContext, rawText: string): Promise<void> {
       query: rawText,
       error: String(err),
     })
+    return null
   }
 }
 

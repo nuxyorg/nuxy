@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "search",
-  "permissions": ["storage", "shell"],
+  "permissions": ["storage", "shell", "fs", "db"],
   "capabilities": {
     "callable": true,
     "caller": false

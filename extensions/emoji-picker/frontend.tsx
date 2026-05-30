@@ -95,7 +95,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
         )
         setEmojiMap(map)
       })
-      .catch(console.error)
+      .catch(() => {})
   }, [extensionId])
 
   React.useEffect(() => {
@@ -105,7 +105,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
         const r = res as { success: boolean; data?: string[] } | null
         if (r?.success) setFavorites(r.data || [])
       })
-      .catch(console.error)
+      .catch(() => {})
   }, [])
 
   const allCategories = React.useMemo<EmojiCategory[]>(() => {
@@ -177,7 +177,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
         const r = res as { success: boolean; data?: string[] } | null
         if (r?.success) setFavorites(r.data || [])
       })
-      .catch(console.error)
+      .catch(() => {})
   }, [])
 
   const copyEmoji = React.useCallback((emoji: string) => {
@@ -193,7 +193,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
           }, 50)
         }, 150)
       })
-      .catch(console.error)
+      .catch(() => {})
   }, [])
 
   // Grid left/right: switches to left panel when at left edge of any row
@@ -395,6 +395,11 @@ export default function EmojiPicker({ query, extensionId }: Props) {
     }
   }, [selectedIdx, focusArea])
 
+  // Re-evaluate key-action hints when selection state changes
+  React.useEffect(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
+  }, [selectedIdx, focusArea])
+
   // Update active tab while the user manually scrolls the right panel
   const handleScroll = React.useCallback(() => {
     if (isProgrammaticScrollRef.current) return
@@ -440,10 +445,10 @@ export default function EmojiPicker({ query, extensionId }: Props) {
           <IconStar
             style={{
               position: 'absolute',
-              top: 1,
-              right: 1,
-              width: '8px',
-              height: '8px',
+              top: 'var(--space-0)',
+              right: 'var(--space-0)',
+              width: 'var(--icon-xs)',
+              height: 'var(--icon-xs)',
               color: 'var(--syntax-constant)',
             }}
           />
@@ -462,11 +467,11 @@ export default function EmojiPicker({ query, extensionId }: Props) {
       {searchResults && (
         <div
           style={{
-            padding: '4px 12px 10px',
-            fontSize: 11,
+            padding: 'var(--space-1) var(--space-3) var(--space-2)',
+            fontSize: 'var(--font-xs)',
             opacity: 0.45,
             flexShrink: 0,
-            letterSpacing: 0.2,
+            letterSpacing: '0.01em',
           }}
         >
           {searchResults.length} emoji{searchResults.length !== 1 ? 's' : ''} found
@@ -481,9 +486,9 @@ export default function EmojiPicker({ query, extensionId }: Props) {
             justifyContent: 'center',
             height: '100%',
             opacity: 0.38,
-            fontSize: 13,
+            fontSize: 'var(--font-sm)',
             textAlign: 'center',
-            padding: '0 20px',
+            padding: '0 var(--space-5)',
           }}
         >
           {catId === 'favorites' && !searchResults
@@ -507,7 +512,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
                   <div
                     key={cat.id}
                     ref={(el: HTMLDivElement | null) => (sectionRefs.current[cat.id] = el)}
-                    style={{ marginBottom: 12 }}
+                    style={{ marginBottom: 'var(--space-3)' }}
                   >
                     {SectionHeader ? (
                       <SectionHeader label={cat.label} />
@@ -569,7 +574,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
               >
                 <ItemLeading>
                   {cat.id === 'favorites' && IconStar ? (
-                    <IconStar style={{ width: '14px', height: '14px' }} />
+                    <IconStar style={{ width: 'var(--icon-sm)', height: 'var(--icon-sm)' }} />
                   ) : (
                     cat.icon
                   )}

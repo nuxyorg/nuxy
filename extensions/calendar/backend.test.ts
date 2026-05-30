@@ -1,48 +1,35 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
-
-interface MockPreparedStmt {
-  run: ReturnType<typeof vi.fn>
-  get: ReturnType<typeof vi.fn>
-  all: ReturnType<typeof vi.fn>
-}
+import type { DbHandle, PreparedStatement } from '@nuxy/core'
 
 interface MockDb {
-  exec: ReturnType<typeof vi.fn>
-  prepare: ReturnType<typeof vi.fn>
-  close: ReturnType<typeof vi.fn>
+  db: DbHandle
+  mockPrepare: ReturnType<typeof vi.fn>
+  preparedStmt: PreparedStatement
 }
 
-function makeMockDb(
-  rows: unknown[] = [],
-  getRow: unknown = null
-): { db: MockDb; mockPrepare: ReturnType<typeof vi.fn>; preparedStmt: MockPreparedStmt } {
-  const preparedStmt: MockPreparedStmt = {
+function makeMockDb(rows: unknown[] = [], getRow: unknown = null): MockDb {
+  const preparedStmt = {
     run: vi.fn(),
     get: vi.fn().mockReturnValue(getRow),
     all: vi.fn().mockReturnValue(rows),
-  }
+  } as unknown as PreparedStatement
   const mockPrepare = vi.fn().mockReturnValue(preparedStmt)
-  const db: MockDb = {
+  const db = {
     exec: vi.fn(),
     prepare: mockPrepare,
     close: vi.fn(),
-  }
+    function: vi.fn(),
+  } as unknown as DbHandle
   return { db, mockPrepare, preparedStmt }
 }
 
-function createCore(
-  dbOverride: {
-    db: MockDb
-    mockPrepare: ReturnType<typeof vi.fn>
-    preparedStmt: MockPreparedStmt
-  } | null = null
-): {
+function createCore(dbOverride: MockDb | null = null): {
   core: CoreContext
   handlers: Record<string, (payload?: unknown) => Promise<unknown>>
-  db: MockDb
+  db: DbHandle
   mockPrepare: ReturnType<typeof vi.fn>
-  preparedStmt: MockPreparedStmt
+  preparedStmt: PreparedStatement
 } {
   const { db, mockPrepare, preparedStmt } = dbOverride ?? makeMockDb()
   const { core, handlers } = createMockCore(vi, {
@@ -88,9 +75,8 @@ describe('calendar backend', () => {
         remind_min: 15,
         created_at: now,
       }
-      const { db, preparedStmt } = makeMockDb([], eventRow)
-      const { core, handlers } = createCore({ db, mockPrepare: db.prepare, preparedStmt })
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([], eventRow)
+      const { core, handlers, preparedStmt } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -115,8 +101,8 @@ describe('calendar backend', () => {
       const now = 1700000000000
       vi.spyOn(Date, 'now').mockReturnValue(now)
 
-      const { db, preparedStmt } = makeMockDb()
-      preparedStmt.get.mockReturnValue({
+      const mockDb = makeMockDb()
+      ;(mockDb.preparedStmt.get as ReturnType<typeof vi.fn>).mockReturnValue({
         id: 'some-uuid',
         title: 'Test',
         datetime: now,
@@ -124,9 +110,7 @@ describe('calendar backend', () => {
         remind_min: 0,
         created_at: now,
       })
-
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const { core, handlers } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -150,9 +134,8 @@ describe('calendar backend', () => {
         remind_min: 0,
         created_at: now,
       }
-      const { db, preparedStmt } = makeMockDb([eventRow])
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([eventRow])
+      const { core, handlers, preparedStmt } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -181,16 +164,15 @@ describe('calendar backend', () => {
       const from = 1700000000000
       const to = 1700100000000
 
-      const { db, preparedStmt } = makeMockDb([])
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([])
+      const { core, handlers, preparedStmt } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
 
       await handlers['calendar:list']({ from, to })
 
-      const callArgs = preparedStmt.all.mock.calls[0] as unknown[]
+      const callArgs = (preparedStmt.all as ReturnType<typeof vi.fn>).mock.calls[0] as unknown[]
       expect(callArgs).toContain(from)
       expect(callArgs).toContain(to)
     })
@@ -209,9 +191,8 @@ describe('calendar backend', () => {
         remind_min: 0,
         created_at: now,
       }
-      const { db, mockPrepare, preparedStmt } = makeMockDb([], existing)
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([], existing)
+      const { core, handlers, mockPrepare } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -237,9 +218,8 @@ describe('calendar backend', () => {
         remind_min: 0,
         created_at: now,
       }
-      const { db, preparedStmt } = makeMockDb([], updated)
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([], updated)
+      const { core, handlers } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -251,9 +231,8 @@ describe('calendar backend', () => {
 
   describe('calendar:delete', () => {
     it('runs DELETE by id', async () => {
-      const { db, mockPrepare, preparedStmt } = makeMockDb()
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb()
+      const { core, handlers, mockPrepare, preparedStmt } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -284,9 +263,8 @@ describe('calendar backend', () => {
         created_at: now - 1000,
       }
 
-      const { db, preparedStmt } = makeMockDb([event])
-      const { core } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([event])
+      const { core, db } = createCore(mockDb)
 
       const { register, checkReminders } = await freshBackend()
       register(core)
@@ -313,9 +291,8 @@ describe('calendar backend', () => {
         created_at: now - 1000,
       }
 
-      const { db } = makeMockDb([event])
-      const { core } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([event])
+      const { core, db } = createCore(mockDb)
 
       const { register, checkReminders } = await freshBackend()
       register(core)
@@ -341,9 +318,8 @@ describe('calendar backend', () => {
         created_at: now - 100000,
       }
 
-      const { db } = makeMockDb([event])
-      const { core } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([event])
+      const { core, db } = createCore(mockDb)
 
       const { register, checkReminders } = await freshBackend()
       register(core)
@@ -368,15 +344,75 @@ describe('calendar backend', () => {
         created_at: now - 1000,
       }
 
-      const { db } = makeMockDb([event])
-      const { core } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([event])
+      const { core, db } = createCore(mockDb)
       core.extensions.invoke = vi.fn().mockRejectedValue(new Error('notification bridge offline'))
 
       const { register, checkReminders } = await freshBackend()
       register(core)
 
       await expect(checkReminders(core, () => db)).resolves.not.toThrow()
+    })
+  })
+
+  describe('getLastResult, setLastResult, and prepare', () => {
+    it('sets and gets the last result, clearing it after get', async () => {
+      const { core, handlers } = createCore()
+      const { register } = await freshBackend()
+      register(core)
+
+      // Initial getLastResult should be null
+      const initial = await handlers['getLastResult']({})
+      expect(initial).toBeNull()
+
+      // Set last result
+      const payload = { success: true, data: { title: 'party', datetime: 12345 } }
+      const setRes = await handlers['setLastResult'](payload)
+      expect(setRes).toEqual({ ok: true })
+
+      // Get last result
+      const getRes = await handlers['getLastResult']({})
+      expect(getRes).toEqual(payload)
+
+      // Subsequent getLastResult should be null (cleared)
+      const after = await handlers['getLastResult']({})
+      expect(after).toBeNull()
+    })
+
+    it('prepares date and time arguments correctly', async () => {
+      const { core, handlers } = createCore()
+      const { register } = await freshBackend()
+      register(core)
+
+      const res = await handlers['calendar:prepare']({
+        title: 'recebin doğumgününü kutlayacağım',
+        date: '2026-12-21',
+        time: '10:00',
+      })
+      expect(res).toEqual({
+        success: true,
+        data: {
+          title: 'recebin doğumgününü kutlayacağım',
+          datetime: new Date(2026, 11, 21, 10, 0, 0, 0).getTime(),
+        },
+      })
+    })
+
+    it('returns error when date parameter is missing or invalid', async () => {
+      const { core, handlers } = createCore()
+      const { register } = await freshBackend()
+      register(core)
+
+      const res1 = await handlers['calendar:prepare']({
+        title: 'party',
+      })
+      expect(res1).toHaveProperty('success', false)
+
+      const res2 = await handlers['calendar:prepare']({
+        title: 'party',
+        date: 'invalid-date',
+      })
+      expect(res2).toHaveProperty('success', false)
     })
   })
 })
@@ -397,9 +433,8 @@ describe('calendar backend — edge cases', () => {
         remind_min: 0,
         created_at: now,
       }
-      const { db, preparedStmt } = makeMockDb([], row)
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([], row)
+      const { core, handlers } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -425,9 +460,8 @@ describe('calendar backend — edge cases', () => {
         remind_min: 0,
         created_at: now,
       }
-      const { db, preparedStmt } = makeMockDb([], row)
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([], row)
+      const { core, handlers } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -446,9 +480,8 @@ describe('calendar backend — edge cases', () => {
       const from = 1700000000000
       const to = 1700100000000
 
-      const { db, preparedStmt } = makeMockDb([])
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([])
+      const { core, handlers, preparedStmt } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -457,7 +490,7 @@ describe('calendar backend — edge cases', () => {
 
       // SQL BETWEEN is inclusive — the prepared statement should receive
       // both from and to as-is (not modified)
-      const args = preparedStmt.all.mock.calls[0] as unknown[]
+      const args = (preparedStmt.all as ReturnType<typeof vi.fn>).mock.calls[0] as unknown[]
       expect(args[0]).toBe(from)
       expect(args[1]).toBe(to)
     })
@@ -471,9 +504,8 @@ describe('calendar backend — edge cases', () => {
         remind_min: 0,
         created_at: 0,
       }
-      const { db, preparedStmt } = makeMockDb([row])
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([row])
+      const { core, handlers, preparedStmt } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -496,9 +528,8 @@ describe('calendar backend — edge cases', () => {
         remind_min: 0,
         created_at: now,
       }
-      const { db, mockPrepare, preparedStmt } = makeMockDb([], row)
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([], row)
+      const { core, handlers, mockPrepare } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -522,9 +553,8 @@ describe('calendar backend — edge cases', () => {
         remind_min: 60,
         created_at: now,
       }
-      const { db, mockPrepare, preparedStmt } = makeMockDb([], updated)
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb([], updated)
+      const { core, handlers, mockPrepare } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -551,9 +581,8 @@ describe('calendar backend — edge cases', () => {
 
   describe('calendar:delete', () => {
     it('passes only the id to DELETE — no extra args', async () => {
-      const { db, preparedStmt } = makeMockDb()
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb()
+      const { core, handlers, preparedStmt } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)
@@ -565,9 +594,8 @@ describe('calendar backend — edge cases', () => {
     })
 
     it('does not throw when id does not exist (DELETE is idempotent)', async () => {
-      const { db } = makeMockDb()
-      const { core, handlers } = createCore()
-      core.db.open.mockReturnValue(db)
+      const mockDb = makeMockDb()
+      const { core, handlers } = createCore(mockDb)
 
       const { register } = await freshBackend()
       register(core)

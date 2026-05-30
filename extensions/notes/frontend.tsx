@@ -29,12 +29,9 @@ export default function NotesApp({ query }: Props) {
     ListItemText,
     ListItemMeta,
     EmptyState,
-    Button,
     Input,
     Textarea,
     SectionHeader,
-    IconMic,
-    IconStop,
   } = window.UI || {}
 
   const [notes, setNotes] = useState<Note[]>([])
@@ -141,19 +138,25 @@ export default function NotesApp({ query }: Props) {
     enterHint: 'Enter',
   })
 
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
+  }, [selected, recording])
+
   _useToolKeyActions([
     {
       key: 'n',
+      modifiers: ['ctrl'],
       label: 'New note',
-      hint: 'N',
+      hint: '⌃N',
       handler: () => {
         void handleNew()
       },
     },
     {
       key: 's',
+      modifiers: ['ctrl'],
       label: 'Save',
-      hint: 'S',
+      hint: '⌃S',
       activeOn: () => selected !== null,
       handler: () => {
         void handleSave()
@@ -168,35 +171,31 @@ export default function NotesApp({ query }: Props) {
         void handleDelete()
       },
     },
+    {
+      key: 'r',
+      modifiers: ['ctrl'],
+      label: recording ? 'Stop recording' : 'Record',
+      hint: '⌃R',
+      activeOn: () => selected !== null,
+      handler: () => {
+        if (recording) handleStopRecord()
+        else void handleRecord()
+      },
+    },
   ])
 
   const leftPanel = (
     <>
-      {SectionHeader && (
-        <SectionHeader
-          title="Notes"
-          action={
-            Button ? (
-              <Button
-                onClick={() => {
-                  void handleNew()
-                }}
-              >
-                +
-              </Button>
-            ) : undefined
-          }
-        />
-      )}
+      {SectionHeader && <SectionHeader label="Notes" />}
       <List>
         {filteredNotes.length === 0 ? (
           <EmptyState
             message={query ? 'No matching notes.' : 'No notes yet.'}
-            hint="Press N to create one."
+            hint="⌃N to create one."
           />
         ) : (
           filteredNotes.map((note, idx) => (
-            <ListItem key={note.id} active={idx === selectedIndex} onClick={() => selectNote(note)}>
+            <ListItem key={note.id} active={idx === selectedIndex}>
               <ListItemBody>
                 <ListItemText>{note.title}</ListItemText>
                 <ListItemMeta>{note.body.slice(0, 60)}</ListItemMeta>
@@ -229,63 +228,16 @@ export default function NotesApp({ query }: Props) {
         <Textarea
           value={body}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
-          placeholder="Start writing…"
+          placeholder={transcribing ? 'Transcribing…' : 'Start writing…'}
           style={{
             flex: 1,
             resize: 'none',
           }}
         />
       )}
-      <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-        {Button && (
-          <Button
-            onClick={() => {
-              void handleSave()
-            }}
-          >
-            Save
-          </Button>
-        )}
-        {Button && (
-          <Button
-            onClick={() => {
-              void handleDelete()
-            }}
-          >
-            Delete
-          </Button>
-        )}
-        <div style={{ flex: 1 }} />
-        {Button && (
-          <Button
-            onClick={
-              recording
-                ? handleStopRecord
-                : () => {
-                    void handleRecord()
-                  }
-            }
-            disabled={transcribing}
-          >
-            {transcribing ? (
-              'Transcribing…'
-            ) : recording ? (
-              IconStop ? (
-                <IconStop style={{ width: '12px', height: '12px' }} />
-              ) : (
-                'Stop'
-              )
-            ) : IconMic ? (
-              <IconMic style={{ width: '12px', height: '12px' }} />
-            ) : (
-              'Rec'
-            )}
-          </Button>
-        )}
-      </div>
     </div>
   ) : (
-    <EmptyState message="Select a note or create a new one." hint="Press N to create." />
+    <EmptyState message="Select a note or create a new one." hint="⌃N to create." />
   )
 
   if (TwoPanel) {

@@ -78,6 +78,8 @@ async function getAppPage(app: ElectronApplication): Promise<Page> {
 
   const page =
     app.windows().find((w) => !w.url().startsWith('devtools://')) ?? (await app.firstWindow())
+  page.on('console', (msg) => console.log(`[BROWSER-CONSOLE] ${msg.type()}: ${msg.text()}`))
+  page.on('pageerror', (err) => console.error(`[BROWSER-PAGEERROR] ${err.message}\nStack:\n${err.stack}`))
   await page.waitForSelector('input', { timeout: 3000 })
   return page
 }

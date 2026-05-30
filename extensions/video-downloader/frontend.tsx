@@ -3,15 +3,38 @@ const { useState, useEffect, useRef, useMemo } = React
 
 import type { VideoFormat, DownloadJobPublic, VideoMetadata, HistoryItem } from './types.ts'
 
+interface NavSection {
+  id: string
+  label: string
+  itemCount: number
+}
+
+interface CombinedListItem {
+  jobId: string
+  url: string
+  formatId: string
+  progress: number
+  status: 'running' | 'done' | 'error'
+  title: string
+  thumbnail: string | null
+  duration: number | null
+  uploader: string | null
+  resolution: string
+  outputPath: string | null
+  timestamp: number
+}
+
 const _useTwoPanelNav =
   (window.UI || {}).useTwoPanelNav ||
-  (({ sections }: { sections: any[] }) => ({
+  (({ sections }: { sections: NavSection[] }) => ({
     focusArea: 'right' as const,
-    setFocusArea: (_: any) => {},
+    setFocusArea: () => {},
     activeSectionId: sections[0]?.id ?? '',
-    goToSection: (_: string) => {},
+    goToSection: () => {},
     sectionStartIndex: {} as Record<string, number>,
-    onItemSelected: (_: number) => {},
+    getSectionIdForIndex: () => sections[0]?.id ?? '',
+    onItemSelected: () => {},
+    setActiveSection: () => {},
   }))
 
 const EXT_ID = 'com.nuxy.video-downloader'
@@ -125,7 +148,6 @@ export default function VideoDownloader({ query }: Props) {
     ListItemActions,
     EmptyState,
     Alert,
-    Button,
     Badge,
     Heading,
 
@@ -135,7 +157,7 @@ export default function VideoDownloader({ query }: Props) {
     ScrollArea,
     Card,
     CardBody,
-    Spinner,
+    LoadingState,
     toast,
     ShortcutSep,
     Text,
@@ -172,7 +194,7 @@ export default function VideoDownloader({ query }: Props) {
     history,
     downloadSelectedIndex,
     previousFormatTab,
-    combinedList: [] as any[],
+    combinedList: [] as CombinedListItem[],
   })
 
   const loadHistory = async () => {
@@ -251,7 +273,7 @@ export default function VideoDownloader({ query }: Props) {
   }, [metadata, activeTab])
 
   const combinedList = useMemo(() => {
-    const list: any[] = []
+    const list: CombinedListItem[] = []
     for (const job of jobs) {
       list.push({
         jobId: job.jobId,
@@ -307,7 +329,7 @@ export default function VideoDownloader({ query }: Props) {
     downloadSelectedIndex,
     previousFormatTab,
     combinedList,
-  } as any
+  }
 
   async function getFormats() {
     const { url } = stateRef.current
@@ -331,7 +353,7 @@ export default function VideoDownloader({ query }: Props) {
   async function startDownload(formatId: string) {
     const { url: downloadUrl, metadata, filteredFormats, activeTab } = stateRef.current
     if (!metadata) return
-    const format = filteredFormats.find((f: any) => f.formatId === formatId)
+    const format = filteredFormats.find((f: VideoFormat) => f.formatId === formatId)
     const resolution = format ? format.resolution : formatId
     try {
       const { jobId } = await ipc<{ jobId: string }>('ytdlp:download', {
@@ -459,7 +481,7 @@ export default function VideoDownloader({ query }: Props) {
       },
       {
         key: 'Enter',
-        modifiers: ['shift'] as any,
+        modifiers: ['shift'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
         label: 'Open Folder',
         hint: '⇧↵',
         activeOn: () => {
@@ -697,13 +719,6 @@ export default function VideoDownloader({ query }: Props) {
                   <ListItem
                     key={item.jobId}
                     active={isActive}
-                    onClick={() => {
-                      setDownloadSelectedIndex(idx)
-                      if (isDone && item.outputPath) {
-                        ipc('ytdlp:open', { path: item.outputPath }).catch(() => {})
-                      }
-                    }}
-                    style={{ cursor: 'pointer' }}
                   >
                     <ListItemBody style={{ gap: 'var(--space-3)', alignItems: 'center' }}>
                       {MediaPreview && (
@@ -713,7 +728,7 @@ export default function VideoDownloader({ query }: Props) {
                           uploader={item.uploader}
                           duration={item.duration}
                           size="sm"
-                          badge={Badge && <Badge variant={badgeVariant as any}>{badgeText}</Badge>}
+                          badge={Badge && <Badge variant={badgeVariant}>{badgeText}</Badge>}
                           progress={isRunning ? item.progress : null}
                           footerText={
                             isDone && item.outputPath ? `Saved to: ${item.outputPath}` : null
@@ -722,17 +737,6 @@ export default function VideoDownloader({ query }: Props) {
                       )}
                     </ListItemBody>
                     <ListItemActions style={{ gap: 'var(--space-2)' }}>
-                      {isRunning && Button && (
-                        <Button
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            void cancelJob(item.jobId)
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      )}
                       {isDone && (
                         <Stack direction="horizontal" gap="var(--space-2)">
                           <Text size="xs" variant="muted">
@@ -784,21 +788,10 @@ export default function VideoDownloader({ query }: Props) {
   }
 
   if (loading) {
-    return Stack && Spinner && Text ? (
-      <Stack
-        direction="vertical"
-        align="center"
-        justify="center"
-        style={{ flex: 1, minHeight: '200px' }}
-        gap="var(--space-3)"
-      >
-        <Spinner />
-        <Text variant="muted" size="sm">
-          Fetching video details and formats…
-        </Text>
-      </Stack>
+    return LoadingState ? (
+      <LoadingState message="Fetching video details and formats…" />
     ) : (
-      <div>Loading...</div>
+      <div style={{ padding: 'var(--space-4)', textAlign: 'center', opacity: 0.7 }}>Loading…</div>
     )
   }
 
@@ -859,12 +852,6 @@ export default function VideoDownloader({ query }: Props) {
               <ListItem
                 key={f.formatId + '-' + idx}
                 active={isActive}
-                onClick={() => {
-                  setSelectedIndex(idx)
-                  nav.setFocusArea('right')
-                  void startDownload(f.formatId)
-                }}
-                style={{ cursor: 'pointer' }}
               >
                 <ListItemBody>
                   <ListItemText>
@@ -875,7 +862,7 @@ export default function VideoDownloader({ query }: Props) {
                     >
                       {f.resolution}
                     </Text>
-                    {Badge && <Badge variant={badgeVariant as any}>{badgeText}</Badge>}
+                    {Badge && <Badge variant={badgeVariant}>{badgeText}</Badge>}
                     <Text
                       as="span"
                       variant="muted"

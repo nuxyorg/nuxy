@@ -129,10 +129,10 @@ export function useShellInit({
               if (tokens)
                 Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
             })
-            .catch(console.error)
+            .catch(() => {})
         }
       })
-      .catch(console.error)
+      .catch(() => {})
   }, [])
 }
 
@@ -184,8 +184,7 @@ export function useProviders({
             },
           }))
         })
-        .catch((e: unknown) => {
-          console.error(`Provider ${provider.id} failed:`, e)
+        .catch((_e: unknown) => {
           if (generation !== queryGeneration.current) return
           setProviderStates((prev) => ({
             ...prev,

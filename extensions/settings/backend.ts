@@ -33,9 +33,9 @@ export function register(core: CoreContext): void {
 
   core.ipc.handle(
     'getExtensionSettingValues',
-    async (extId: unknown): Promise<Record<string, unknown>> => {
+    async (payload: unknown): Promise<Record<string, unknown>> => {
       if (!core.settings.readAllExtension) return {}
-      return core.settings.readAllExtension(extId as string)
+      return core.settings.readAllExtension(payload as string)
     }
   )
 

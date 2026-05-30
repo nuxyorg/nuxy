@@ -107,12 +107,12 @@ export function register(core: CoreContext): void {
   }
 
   // IPC Handler: get history list
-  core.ipc.handle('getHistory', async () => {
+  core.ipc.handle('getHistory', async (_payload: unknown) => {
     return history
   })
 
   // IPC Handler: clear all items (preserves pinned)
-  core.ipc.handle('clearHistory', async () => {
+  core.ipc.handle('clearHistory', async (_payload: unknown) => {
     history = history.filter((i) => i.pinned)
     try {
       await core.storage.write('history.json', history)
@@ -123,8 +123,9 @@ export function register(core: CoreContext): void {
   })
 
   // IPC Handler: pin an item
-  core.ipc.handle('pinItem', async (id) => {
-    const item = history.find((i) => i.id === (id as string))
+  core.ipc.handle('pinItem', async (payload: unknown) => {
+    const id = payload as string
+    const item = history.find((i) => i.id === id)
     if (item) {
       item.pinned = true
       sortHistory()
@@ -138,8 +139,9 @@ export function register(core: CoreContext): void {
   })
 
   // IPC Handler: unpin an item
-  core.ipc.handle('unpinItem', async (id) => {
-    const item = history.find((i) => i.id === (id as string))
+  core.ipc.handle('unpinItem', async (payload: unknown) => {
+    const id = payload as string
+    const item = history.find((i) => i.id === id)
     if (item) {
       item.pinned = false
       sortHistory()
@@ -153,8 +155,9 @@ export function register(core: CoreContext): void {
   })
 
   // IPC Handler: delete specific item
-  core.ipc.handle('deleteItem', async (id) => {
-    history = history.filter((item) => item.id !== (id as string))
+  core.ipc.handle('deleteItem', async (payload: unknown) => {
+    const id = payload as string
+    history = history.filter((item) => item.id !== id)
     try {
       await core.storage.write('history.json', history)
     } catch (err) {
@@ -164,13 +167,14 @@ export function register(core: CoreContext): void {
   })
 
   // IPC Handler: check if a file path exists on disk
-  core.ipc.handle('checkFile', async (path) => {
-    return core.fs.fileExists(path as string)
+  core.ipc.handle('checkFile', async (payload: unknown) => {
+    return core.fs.fileExists(payload as string)
   })
 
   // IPC Handler: copy a file item to the system clipboard (as a file, not text)
-  core.ipc.handle('copyFile', async (id) => {
-    const found = history.find((item) => item.id === (id as string))
+  core.ipc.handle('copyFile', async (payload: unknown) => {
+    const id = payload as string
+    const found = history.find((item) => item.id === id)
     if (!found) return history
     const path = found.text?.trim()
     if (!path) return history
@@ -178,14 +182,15 @@ export function register(core: CoreContext): void {
     if (!exists) throw new Error(`File not found: ${path}`)
     await core.clipboard.writeFiles([path])
     found.copiedAt = new Date().toISOString()
-    history = [found, ...history.filter((item) => item.id !== (id as string))]
+    history = [found, ...history.filter((item) => item.id !== id)]
     await core.storage.write('history.json', history)
     return history
   })
 
   // IPC Handler: copy item to system clipboard and move it to top of history
-  core.ipc.handle('copyItem', async (id) => {
-    const found = history.find((item) => item.id === (id as string))
+  core.ipc.handle('copyItem', async (payload: unknown) => {
+    const id = payload as string
+    const found = history.find((item) => item.id === id)
     if (found) {
       try {
         if (found.image && core.clipboard.writeImage) {
@@ -201,11 +206,11 @@ export function register(core: CoreContext): void {
 
         // Re-sort: move this item to the top of its group (pinned stays in pinned section)
         found.copiedAt = new Date().toISOString()
-        history = [found, ...history.filter((item) => item.id !== (id as string))]
+        history = [found, ...history.filter((item) => item.id !== id)]
         sortHistory()
         await core.storage.write('history.json', history)
       } catch (err) {
-        core.logger.error(`Failed to copy item "${id as string}" to clipboard.`, err)
+        core.logger.error(`Failed to copy item "${id}" to clipboard.`, err)
       }
     }
     return history

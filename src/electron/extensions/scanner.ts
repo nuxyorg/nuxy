@@ -1,8 +1,10 @@
 /// <reference types="vite/client" />
 import fs from 'fs'
 import path from 'path'
+import module from 'module'
 import { EXTENSION_DIR } from '../config/paths.js'
 import { spawnExtension, activeWorkers } from '../spawn/spawn.js'
+import { getMainWindow } from '../window/manager.js'
 import { registerExtension, clearRegistry } from './registry.js'
 import { seedBundledExtensions } from './seed-bundled.js'
 import { registerExtensionTheme, clearExtensionThemes } from '../themes/extension-themes.js'
@@ -20,6 +22,118 @@ export { loadedExtensions } from './registry.js'
 
 const log = kernelLogger.child('Scanner')
 
+export const ALLOWED_PERMISSIONS = new Set([
+  'storage',
+  'clipboard',
+  'network',
+  'notifications',
+  'media',
+  'shell',
+  'db',
+  'fs',
+  'settings.read',
+  'settings.write',
+])
+
+const BUILTIN_LIST = new Set([
+  ...module.builtinModules,
+  ...module.builtinModules.map((m) => `node:${m}`),
+])
+
+export function detectNodeImports(code: string): string[] {
+  const cleanCode = code
+    .replace(/\/\*[\s\S]*?\*\//g, '') // remove multi-line comments
+    .replace(/\/\/.*$/gm, '')        // remove single-line comments
+
+  const found: string[] = []
+
+  // 1. Match ES imports:
+  // e.g. import fs from 'fs';
+  const esImportRegex = /\bimport\s+(?:[^'"]+\s+from\s+)?['"]([^'"]+)['"]/g
+  let match: RegExpExecArray | null
+  while ((match = esImportRegex.exec(cleanCode)) !== null) {
+    const importPath = match[1]
+    const baseModule = importPath.split('/')[0]
+    if (BUILTIN_LIST.has(importPath) || BUILTIN_LIST.has(baseModule)) {
+      found.push(importPath)
+    }
+  }
+
+  // 2. Match requires:
+  // e.g. require('fs');
+  const requireRegex = /\brequire\s*\(\s*['"]([^'"]+)['"]\s*\)/g
+  while ((match = requireRegex.exec(cleanCode)) !== null) {
+    const importPath = match[1]
+    const baseModule = importPath.split('/')[0]
+    if (BUILTIN_LIST.has(importPath) || BUILTIN_LIST.has(baseModule)) {
+      found.push(importPath)
+    }
+  }
+
+  // 3. Match dynamic imports:
+  // e.g. import('fs');
+  const dynamicImportRegex = /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g
+  while ((match = dynamicImportRegex.exec(cleanCode)) !== null) {
+    const importPath = match[1]
+    const baseModule = importPath.split('/')[0]
+    if (BUILTIN_LIST.has(importPath) || BUILTIN_LIST.has(baseModule)) {
+      found.push(importPath)
+    }
+  }
+
+  return [...new Set(found)]
+}
+
+export function scanDirectoryForNodeImports(dir: string): { file: string; imports: string[] }[] {
+  const violations: { file: string; imports: string[] }[] = []
+
+  function walk(currentDir: string) {
+    if (!fs.existsSync(currentDir)) return
+    const items = fs.readdirSync(currentDir)
+    for (const item of items) {
+      const itemPath = path.join(currentDir, item)
+      const stat = fs.statSync(itemPath)
+
+      if (stat.isDirectory()) {
+        if (
+          item === 'node_modules' ||
+          item === '.git' ||
+          item === 'scripts' ||
+          item === 'dist' ||
+          item === 'build'
+        ) {
+          continue
+        }
+        walk(itemPath)
+      } else if (stat.isFile()) {
+        if (item.startsWith('.') || item.includes('.config.')) {
+          continue
+        }
+        if (
+          /\.(ts|tsx|js|jsx|mjs|cjs)$/.test(item) &&
+          !item.endsWith('.test.ts') &&
+          !item.endsWith('.spec.ts') &&
+          !item.endsWith('.test.js') &&
+          !item.endsWith('.spec.js')
+        ) {
+          try {
+            const content = fs.readFileSync(itemPath, 'utf8')
+            const imports = detectNodeImports(content)
+            if (imports.length > 0) {
+              violations.push({ file: itemPath, imports })
+            }
+          } catch (err) {
+            log.error(`Failed to scan file for Node imports: ${itemPath}`, err)
+          }
+        }
+      }
+    }
+  }
+
+  walk(dir)
+  return violations
+}
+
 let watchDebounce: ReturnType<typeof setTimeout> | null = null
 let watcherStarted = false
 
@@ -29,6 +143,7 @@ export async function rescanExtensions(): Promise<void> {
   }
   activeWorkers.clear()
   await scanExtensions()
+  getMainWindow()?.webContents.reload()
 }
 
 function startExtensionWatcher(): void {
@@ -86,6 +201,25 @@ export async function scanExtensions(): Promise<void> {
     try {
       const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as ExtensionManifest
       log.silly(`Parsed manifest for "${folderName}"`, manifest)
+
+      // Validate permissions
+      if (manifest.permissions) {
+        if (!Array.isArray(manifest.permissions)) {
+          throw new Error('Manifest validation failed: "permissions" must be an array of strings')
+        }
+        for (const p of manifest.permissions) {
+          if (typeof p !== 'string' || !ALLOWED_PERMISSIONS.has(p)) {
+            throw new Error(`Manifest validation failed: Invalid permission "${p}"`)
+          }
+        }
+      }
+
+      // Security check: Scan for forbidden Node.js built-in imports
+      const violations = scanDirectoryForNodeImports(itemPath)
+      if (violations.length > 0) {
+        const details = violations.map(v => `${path.basename(v.file)}: imports ${v.imports.join(', ')}`).join('; ')
+        throw new Error(`Security Violation: Extension imports forbidden Node.js built-in module(s) (${details})`)
+      }
 
       const extId = manifest.id || folderName
       if (!manifest.id) {

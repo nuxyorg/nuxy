@@ -38,7 +38,11 @@ function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedEx
 
 function listUikitExtensions(): typeof loadedExtensions {
   return loadedExtensions
-    .filter((ext) => ext.manifest.type === 'uikit' && ext.manifest.entry?.frontend)
+    .filter(
+      (ext) =>
+        (ext.manifest.type === 'uikit' || ext.id === 'com.nuxy.gradient') &&
+        ext.manifest.entry?.frontend
+    )
     .sort((a, b) => (a.manifest.priority ?? 100) - (b.manifest.priority ?? 100))
 }
 

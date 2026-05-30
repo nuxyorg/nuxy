@@ -264,7 +264,7 @@ export function register(core: CoreContext): void {
   // ─── In-memory last result (for orchestrator → frontend display) ──────────
   let lastResult: ConvertResponse | null = null
 
-  core.ipc.handle('getLastResult', async () => {
+  core.ipc.handle('getLastResult', async (_payload: unknown) => {
     return lastResult
   })
 

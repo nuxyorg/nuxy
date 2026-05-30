@@ -196,3 +196,7 @@ export { AspectRatio } from './components/Text/AspectRatio'
 export type { AspectRatioProps } from './components/Text/AspectRatio'
 export { Portal } from './components/Text/Portal'
 export type { PortalProps } from './components/Text/Portal'
+
+// --- Markdown ---
+export { MarkdownText } from './components/MarkdownText'
+export type { MarkdownTextProps } from './components/MarkdownText'

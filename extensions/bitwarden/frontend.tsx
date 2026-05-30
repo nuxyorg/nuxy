@@ -2,11 +2,20 @@ const React = window.React
 const { useState, useEffect, useRef, useCallback } = React
 
 import type { BitwardenStatus, BitwardenItem } from './types.ts'
+import type { UseListNavigationOptions, UseListNavigationResult } from '@nuxy/ui'
 
 const EXT_ID = 'com.nuxy.bitwarden'
 
-const _useListNavigation =
-  (window.UI as { useListNavigation?: any } | undefined)?.useListNavigation ?? null
+type UseListNavigationFn = <T>(
+  items: T[],
+  options?: UseListNavigationOptions<T>
+) => UseListNavigationResult<T>
+
+const _useListNavigation: UseListNavigationFn =
+  (window.UI || {}).useListNavigation ||
+  (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
+
+const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
 const ipc = async (channel: string, payload?: unknown): Promise<unknown> => {
   const res = (await window.core.ipc.invoke(EXT_ID, channel, payload)) as {
@@ -31,8 +40,6 @@ export default function BitwardenView({ query }: Props) {
     ListItemBody,
     ListItemText,
     ListItemMeta,
-    ListItemActions,
-    Button,
     EmptyState,
     Card,
     Input,
@@ -40,6 +47,8 @@ export default function BitwardenView({ query }: Props) {
     Alert,
     IconLock,
     IconUser,
+    CodeBlock,
+    WizardSection,
   } = window.UI || {}
 
   const [status, setStatus] = useState<BitwardenStatus | null>(null)
@@ -47,37 +56,35 @@ export default function BitwardenView({ query }: Props) {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const { selectedIndex, setSelectedIndex } = _useListNavigation
-    ? _useListNavigation(results, {
-        onEnter: (item: BitwardenItem) => copyPassword(item),
-        enterLabel: 'Şifreyi Kopyala',
-        enterHint: 'Enter',
-        extraActions: [
-          {
-            key: 'Enter',
-            modifiers: ['shift'],
-            label: 'Kullanıcı Adını Kopyala',
-            hint: ['⇧', 'Enter'],
-            activeOn: () => selectedIndex >= 0,
-            handler: () => {
-              const item = results[selectedIndex]
-              if (item) copyUsername(item)
-            },
-          },
-          {
-            key: 'Enter',
-            modifiers: ['ctrl'],
-            label: 'TOTP Kopyala',
-            hint: ['Ctrl', 'Enter'],
-            activeOn: () => selectedIndex >= 0,
-            handler: () => {
-              const item = results[selectedIndex]
-              if (item) copyTotp(item)
-            },
-          },
-        ],
-      })
-    : { selectedIndex: -1, setSelectedIndex: () => {} }
+  const { selectedIndex, setSelectedIndex } = _useListNavigation(results, {
+    onEnter: (item: BitwardenItem) => copyPassword(item),
+    enterLabel: 'Şifreyi Kopyala',
+    enterHint: 'Enter',
+    extraActions: [
+      {
+        key: 'Enter',
+        modifiers: ['shift'],
+        label: 'Kullanıcı Adını Kopyala',
+        hint: ['⇧', 'Enter'],
+        activeOn: () => selectedIndex >= 0,
+        handler: () => {
+          const item = results[selectedIndex]
+          if (item) copyUsername(item)
+        },
+      },
+      {
+        key: 'Enter',
+        modifiers: ['ctrl'],
+        label: 'TOTP Kopyala',
+        hint: ['Ctrl', 'Enter'],
+        activeOn: () => selectedIndex >= 0,
+        handler: () => {
+          const item = results[selectedIndex]
+          if (item) copyTotp(item)
+        },
+      },
+    ],
+  })
 
   useEffect(() => {
     setSelectedIndex(-1)
@@ -157,20 +164,20 @@ export default function BitwardenView({ query }: Props) {
   const copyPassword = (item: BitwardenItem): void => {
     ipc('bw:copyPassword', item)
       .then(() => flash(`${item.id}-pw`))
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const copyUsername = (item: BitwardenItem): void => {
     ipc('bw:copyUsername', item)
       .then(() => flash(`${item.id}-un`))
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const copyTotp = (item: BitwardenItem): void => {
     ipc('bw:getTotp', item)
       .then((res) => ipc('bw:copyTotp', { code: (res as { code: string }).code }))
       .then(() => flash(`${item.id}-otp`))
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const handleSaveEmail = (): void => {
@@ -220,6 +227,92 @@ export default function BitwardenView({ query }: Props) {
       })
   }
 
+  const TABS = ['arch', 'debian', 'macos'] as const
+  const isInstallScreen = status !== null && (status.installed === false || status.backend === 'none')
+  const isConfigScreen = status !== null && !isInstallScreen && (status.configured === false || editingEmail)
+  const isLockScreen = status !== null && !isInstallScreen && !isConfigScreen && status.locked === true
+
+  _useToolKeyActions([
+    {
+      key: 'ArrowLeft',
+      label: 'Önceki Sekme',
+      hint: '←→',
+      activeOn: () => isInstallScreen,
+      handler: () => {
+        const idx = TABS.indexOf(activeTab as (typeof TABS)[number])
+        if (idx > 0) setActiveTab(TABS[idx - 1])
+      },
+    },
+    {
+      key: 'ArrowRight',
+      label: '',
+      activeOn: () => isInstallScreen,
+      handler: () => {
+        const idx = TABS.indexOf(activeTab as (typeof TABS)[number])
+        if (idx < TABS.length - 1) setActiveTab(TABS[idx + 1])
+      },
+    },
+    {
+      key: 'Enter',
+      label: 'Yeniden Denetle',
+      hint: '↵',
+      activeOn: () => isInstallScreen,
+      handler: refreshStatus,
+    },
+    {
+      key: 'Enter',
+      label: 'Kaydet',
+      hint: '↵',
+      activeOn: () => isConfigScreen && !isConfiguring,
+      handler: handleSaveEmail,
+    },
+    {
+      key: 'Escape',
+      label: 'İptal',
+      hint: 'Esc',
+      activeOn: () => isConfigScreen && editingEmail,
+      handler: () => setEditingEmail(false),
+    },
+    {
+      key: 'Enter',
+      label: 'Kilit Aç',
+      hint: '↵',
+      activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
+      handler: handleUnlock,
+    },
+    {
+      key: 's',
+      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
+      label: 'Kasa Eşitle',
+      hint: '⌃S',
+      activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
+      handler: handleSync,
+    },
+    {
+      key: 'r',
+      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
+      label: 'Durumu Yenile',
+      hint: '⌃R',
+      activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
+      handler: refreshStatus,
+    },
+    {
+      key: 'e',
+      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
+      label: 'E-postayı Düzenle',
+      hint: '⌃E',
+      activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
+      handler: () => {
+        setEmailInput(status.email || '')
+        setEditingEmail(true)
+      },
+    },
+  ])
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
+  }, [status, editingEmail, isConfiguring, isUnlocking, isSyncing, activeTab, isLockScreen])
+
   // 1. Status Loading
   if (status === null) {
     return (
@@ -243,55 +336,54 @@ export default function BitwardenView({ query }: Props) {
           gap: 'var(--space-5)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {IconLock && <IconLock style={{ width: '20px', height: '20px' }} />}
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
-            Bitwarden CLI Bulunamadı
-          </h2>
-        </div>
+        {WizardSection ? (
+          <WizardSection
+            icon={IconLock && <IconLock />}
+            title="Bitwarden CLI Bulunamadı"
+          />
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            {IconLock && <IconLock style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
+            <h2 style={{ margin: 0, fontSize: 'var(--font-lg)', fontWeight: 'var(--font-semibold)' }}>
+              Bitwarden CLI Bulunamadı
+            </h2>
+          </div>
+        )}
         <p style={{ opacity: 0.85, margin: 0 }}>
           Nuxy Bitwarden eklentisi, şifrelerinize güvenli bir şekilde erişmek için arka planda{' '}
           <code>rbw</code> (Rust tabanlı Bitwarden CLI istemcisi) aracını kullanır. Lütfen devam
           etmeden önce rbw'yi kurun.
         </p>
 
-        {/* OS Tab Header */}
+        {/* OS Tab Header — ←→ ile gezilebilir */}
         <div
           style={{
             display: 'flex',
             borderBottom: '1px solid var(--syntax-comment)',
-            gap: '12px',
-            paddingBottom: '8px',
-            marginTop: '8px',
+            gap: 'var(--space-3)',
+            paddingBottom: 'var(--space-2)',
+            marginTop: 'var(--space-2)',
           }}
         >
-          {Button && (
-            <Button
-              onClick={() => setActiveTab('arch')}
-              variant={activeTab === 'arch' ? 'primary' : 'ghost'}
+          {(['arch', 'debian', 'macos'] as const).map((tab) => (
+            <div
+              key={tab}
+              style={{
+                padding: 'var(--space-1) var(--space-2)',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: 'var(--font-sm)',
+                opacity: activeTab === tab ? 1 : 0.5,
+                fontWeight: activeTab === tab ? 'var(--font-semibold)' : undefined,
+                borderBottom: activeTab === tab ? '2px solid var(--color-accent)' : undefined,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--space-1)',
+              }}
             >
-              Arch Linux / CachyOS
-              {status.os === 'arch' && Badge && <Badge active>Sisteminiz</Badge>}
-            </Button>
-          )}
-          {Button && (
-            <Button
-              onClick={() => setActiveTab('debian')}
-              variant={activeTab === 'debian' ? 'primary' : 'ghost'}
-            >
-              Ubuntu / Debian
-              {status.os === 'debian' && Badge && <Badge active>Sisteminiz</Badge>}
-            </Button>
-          )}
-          {Button && (
-            <Button
-              onClick={() => setActiveTab('macos')}
-              variant={activeTab === 'macos' ? 'primary' : 'ghost'}
-            >
-              macOS
-              {status.os === 'macos' && Badge && <Badge active>Sisteminiz</Badge>}
-            </Button>
-          )}
+              {tab === 'arch' ? 'Arch Linux / CachyOS' : tab === 'debian' ? 'Ubuntu / Debian' : 'macOS'}
+              {status.os === tab && Badge && <Badge active>Sisteminiz</Badge>}
+            </div>
+          ))}
         </div>
 
         {/* Tab Contents */}
@@ -311,27 +403,9 @@ export default function BitwardenView({ query }: Props) {
                   Depolarda bulunan <code>rbw</code> ve şifre sorması için <code>pinentry</code>{' '}
                   paketlerini kurun:
                 </p>
-                <pre
-                  style={{
-                    background: 'var(--surface-code, #000)',
-                    padding: '12px',
-                    borderRadius: '6px',
-                    margin: 0,
-                    color: 'var(--syntax-green)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <code>sudo pacman -S rbw pinentry</code>
-                  <Button
-                    onClick={() =>
-                      ipc('bw:copyText', { text: 'sudo pacman -S rbw pinentry' }).catch(() => {})
-                    }
-                  >
-                    Kopyala
-                  </Button>
-                </pre>
+                {CodeBlock && (
+                  <CodeBlock code="sudo pacman -S rbw pinentry" language="sh" />
+                )}
               </>
             )}
 
@@ -341,27 +415,9 @@ export default function BitwardenView({ query }: Props) {
                 <p style={{ margin: 0, opacity: 0.8 }}>
                   <code>apt</code> kullanarak <code>rbw</code> paketini kurun:
                 </p>
-                <pre
-                  style={{
-                    background: 'var(--surface-code, #000)',
-                    padding: '12px',
-                    borderRadius: '6px',
-                    margin: 0,
-                    color: 'var(--syntax-green)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <code>sudo apt install rbw</code>
-                  <Button
-                    onClick={() =>
-                      ipc('bw:copyText', { text: 'sudo apt install rbw' }).catch(() => {})
-                    }
-                  >
-                    Kopyala
-                  </Button>
-                </pre>
+                {CodeBlock && (
+                  <CodeBlock code="sudo apt install rbw" language="sh" />
+                )}
               </>
             )}
 
@@ -371,32 +427,16 @@ export default function BitwardenView({ query }: Props) {
                 <p style={{ margin: 0, opacity: 0.8 }}>
                   <code>Homebrew</code> kullanarak <code>rbw</code> paketini kurun:
                 </p>
-                <pre
-                  style={{
-                    background: 'var(--surface-code, #000)',
-                    padding: '12px',
-                    borderRadius: '6px',
-                    margin: 0,
-                    color: 'var(--syntax-green)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <code>brew install rbw</code>
-                  <Button
-                    onClick={() => ipc('bw:copyText', { text: 'brew install rbw' }).catch(() => {})}
-                  >
-                    Kopyala
-                  </Button>
-                </pre>
+                {CodeBlock && (
+                  <CodeBlock code="brew install rbw" language="sh" />
+                )}
               </>
             )}
           </Card>
         )}
 
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginTop: '8px' }}>
-          <Button onClick={refreshStatus}>Kurulumu Tamamladım, Yeniden Denetle</Button>
+        <div style={{ opacity: 0.6, fontSize: 'var(--font-xs)', marginTop: 'var(--space-2)' }}>
+          Kurulumu tamamladıktan sonra ↵ tuşuna basın.
         </div>
       </div>
     )
@@ -415,12 +455,19 @@ export default function BitwardenView({ query }: Props) {
           gap: 'var(--space-5)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {IconUser && <IconUser style={{ width: '20px', height: '20px' }} />}
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
-            Bitwarden Hesabınızı Bağlayın
-          </h2>
-        </div>
+        {WizardSection ? (
+          <WizardSection
+            icon={IconUser && <IconUser />}
+            title="Bitwarden Hesabınızı Bağlayın"
+          />
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            {IconUser && <IconUser style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
+            <h2 style={{ margin: 0, fontSize: 'var(--font-lg)', fontWeight: 'var(--font-semibold)' }}>
+              Bitwarden Hesabınızı Bağlayın
+            </h2>
+          </div>
+        )}
         <p style={{ opacity: 0.85, margin: 0 }}>
           Bitwarden hesabınıza ait e-posta adresini girin. Bu adres yerel bilgisayarınızdaki{' '}
           <code>rbw</code> konfigürasyon dosyasına kaydedilecektir.
@@ -435,8 +482,8 @@ export default function BitwardenView({ query }: Props) {
               gap: 'var(--space-5)',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontWeight: '600' }}>Bitwarden E-posta Adresi:</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+              <label style={{ fontWeight: 'var(--font-semibold)' }}>Bitwarden E-posta Adresi:</label>
               {Input && (
                 <Input
                   type="email"
@@ -453,15 +500,8 @@ export default function BitwardenView({ query }: Props) {
 
             {errorMsg && Alert && <Alert variant="danger">{errorMsg}</Alert>}
 
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <Button onClick={handleSaveEmail} disabled={isConfiguring}>
-                {isConfiguring ? 'Kaydediliyor...' : 'Kaydet ve Devam Et'}
-              </Button>
-              {editingEmail && (
-                <Button onClick={() => setEditingEmail(false)} disabled={isConfiguring}>
-                  İptal Et
-                </Button>
-              )}
+            <div style={{ opacity: 0.6, fontSize: 'var(--font-xs)' }}>
+              {isConfiguring ? 'Kaydediliyor...' : '↵ Kaydet · Esc İptal'}
             </div>
           </Card>
         )}
@@ -483,12 +523,19 @@ export default function BitwardenView({ query }: Props) {
           overflowY: 'auto',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          {IconLock && <IconLock style={{ width: '20px', height: '20px' }} />}
-          <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600' }}>
-            Bitwarden Kasanız Kilitli
-          </h2>
-        </div>
+        {WizardSection ? (
+          <WizardSection
+            icon={IconLock && <IconLock />}
+            title="Bitwarden Kasanız Kilitli"
+          />
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+            {IconLock && <IconLock style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
+            <h2 style={{ margin: 0, fontSize: 'var(--font-lg)', fontWeight: 'var(--font-semibold)' }}>
+              Bitwarden Kasanız Kilitli
+            </h2>
+          </div>
+        )}
         <p style={{ opacity: 0.85, margin: 0 }}>
           Hesabınız: <strong style={{ color: 'var(--syntax-function)' }}>{status.email}</strong>
         </p>
@@ -517,50 +564,17 @@ export default function BitwardenView({ query }: Props) {
 
             {unlockError && Alert && <Alert variant="danger">{unlockError}</Alert>}
 
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <Button onClick={handleUnlock} disabled={isUnlocking || isSyncing}>
-                {isUnlocking ? 'Şifre Bekleniyor...' : 'Kilit Aç (Pinentry)'}
-              </Button>
-              <Button onClick={handleSync} disabled={isUnlocking || isSyncing}>
-                {isSyncing ? 'Eşitleniyor...' : 'Kasa Eşitle (Sync)'}
-              </Button>
-              <Button onClick={refreshStatus} disabled={isUnlocking || isSyncing}>
-                Durumu Yenile
-              </Button>
-              <Button
-                onClick={() => {
-                  setEmailInput(status.email || '')
-                  setEditingEmail(true)
-                }}
-                disabled={isUnlocking || isSyncing}
-              >
-                E-postayı Düzenle
-              </Button>
+            <div style={{ opacity: 0.6, fontSize: 'var(--font-xs)' }}>
+              {isUnlocking ? 'Şifre bekleniyor...' : isSyncing ? 'Eşitleniyor...' : '↵ Kilit Aç · ⌃S Eşitle · ⌃R Yenile'}
             </div>
           </Card>
         )}
 
-        <div style={{ marginTop: '8px' }}>
+        <div style={{ marginTop: 'var(--space-2)' }}>
           <p style={{ opacity: 0.7, margin: 0 }}>
             Alternatif olarak, terminaliniz üzerinden de kilidi açabilirsiniz:
           </p>
-          <pre
-            style={{
-              background: 'var(--surface-code, #000)',
-              padding: '12px',
-              borderRadius: '6px',
-              marginTop: '6px',
-              color: 'var(--syntax-green)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <code>rbw unlock</code>
-            <Button onClick={() => ipc('bw:copyText', { text: 'rbw unlock' }).catch(() => {})}>
-              Kopyala
-            </Button>
-          </pre>
+          {CodeBlock && <CodeBlock code="rbw unlock" language="sh" />}
         </div>
       </div>
     )
@@ -581,23 +595,11 @@ export default function BitwardenView({ query }: Props) {
                 <ListItem
                   key={item.id}
                   active={idx === selectedIndex}
-                  onClick={() => setSelectedIndex(idx)}
                 >
                   <ListItemBody>
                     <ListItemText>{item.name}</ListItemText>
                     <ListItemMeta>{item.username}</ListItemMeta>
                   </ListItemBody>
-                  <ListItemActions>
-                    <Button onClick={() => copyPassword(item)}>
-                      {copiedId === `${item.id}-pw` ? 'Kopyalandı!' : 'Şifreyi Kopyala'}
-                    </Button>
-                    <Button onClick={() => copyUsername(item)}>
-                      {copiedId === `${item.id}-un` ? 'Kopyalandı!' : 'Kullanıcı Adını Kopyala'}
-                    </Button>
-                    <Button onClick={() => copyTotp(item)}>
-                      {copiedId === `${item.id}-otp` ? 'Kopyalandı!' : 'TOTP Kopyala'}
-                    </Button>
-                  </ListItemActions>
                 </ListItem>
               ))
             )}

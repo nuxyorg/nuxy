@@ -168,13 +168,6 @@ const CARD_STYLES = `
     border: 1px solid var(--border-default, rgba(255, 255, 255, 0.1));
     font-size: var(--font-xs, 11px);
     color: var(--text-secondary, rgba(255, 255, 255, 0.5));
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .tc-example-chip:hover {
-    background: var(--surface-hover, rgba(255, 255, 255, 0.1));
-    color: var(--text-default, rgba(255, 255, 255, 0.75));
   }
 `
 
@@ -203,6 +196,24 @@ function TimeCard({ meta }: TimeCardProps) {
       (meta.sourceLabel && meta.sourceLabel !== 'Local' ? ` · ${meta.sourceLabel}` : '')
   const rightText = meta.right ? meta.right.text : meta.destTime
   const rightBadge = meta.right ? meta.right.badge : `${meta.destLabel}, ${meta.destTzLabel}`
+
+  const ConversionCard = (window.UI || {}).ConversionCard
+  if (ConversionCard) {
+    return React.createElement(ConversionCard, {
+      from: React.createElement(
+        React.Fragment,
+        null,
+        React.createElement('div', { className: 'tc-panel__time' }, leftText),
+        React.createElement('div', { className: 'tc-panel__badge' }, leftBadge)
+      ),
+      to: React.createElement(
+        React.Fragment,
+        null,
+        React.createElement('div', { className: 'tc-panel__time tc-panel__time--large' }, rightText),
+        React.createElement('div', { className: 'tc-panel__badge' }, rightBadge)
+      ),
+    })
+  }
 
   return React.createElement(
     'div',
@@ -371,21 +382,19 @@ export default function TimeCalculatorView({ query }: Props) {
         React.createElement(
           'div',
           { className: 'tc-examples' },
-          ...EXAMPLE_QUERIES.map((ex) =>
-            React.createElement(
-              'span',
-              {
-                key: ex,
-                className: 'tc-example-chip',
-                onClick: () => {
-                  window.dispatchEvent(
-                    new CustomEvent('nuxy-shell-set-query', { detail: { query: ex } })
-                  )
-                },
-              },
-              ex
-            )
-          )
+          ...EXAMPLE_QUERIES.map((ex) => {
+            const Chip = (window.UI || {}).Chip
+            return Chip
+              ? React.createElement(Chip, { key: ex }, ex)
+              : React.createElement(
+                  'span',
+                  {
+                    key: ex,
+                    className: 'tc-example-chip',
+                  },
+                  ex
+                )
+          })
         )
       )
   )

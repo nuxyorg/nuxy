@@ -24,21 +24,13 @@ const _useTwoPanelNav =
   (window.UI || {}).useTwoPanelNav ||
   (({ sections }: { sections: NavSection[] }) => ({
     focusArea: 'right' as const,
-    setFocusArea: (_: string) => {},
+    setFocusArea: () => {},
     activeSectionId: sections[0]?.id ?? '',
-    goToSection: (_: string) => {},
-    sectionStartIndex: sections.reduce(
-      (acc: Record<string, number>, s: NavSection, i: number) => {
-        acc[s.id] = sections
-          .slice(0, i)
-          .reduce((sum: number, prev: NavSection) => sum + prev.itemCount, 0)
-        return acc
-      },
-      {} as Record<string, number>
-    ),
-    getSectionIdForIndex: (_: number) => sections[0]?.id ?? '',
-    onItemSelected: (_: number) => {},
-    setActiveSection: (_: string) => {},
+    goToSection: () => {},
+    sectionStartIndex: {} as Record<string, number>,
+    getSectionIdForIndex: () => sections[0]?.id ?? '',
+    onItemSelected: () => {},
+    setActiveSection: () => {},
   }))
 
 interface Props {
@@ -197,14 +189,16 @@ export default function SettingsView({ query: _query }: Props) {
 
   const rightPanelRef = useRef<HTMLDivElement | null>(null)
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  const extSectionRef = useRef<HTMLDivElement | null>(null)
-  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
+const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
-  const extSections = useMemo<Array<{ id: string; label: string; resolvedRows: ExtSectionRow[] }>>(() => {
+  const extSections = useMemo<
+    Array<{ id: string; label: string; resolvedRows: ExtSectionRow[] }>
+  >(() => {
     return extSchemas.map((info: ExtSettingsInfo) => {
       const resolvedRows: ExtSectionRow[] = info.schema.fields.map((field: ExtFieldDef) => {
         const selectKey = `${info.extId}:${field.key}`
-        const selectOptions: SelectOption[] = field.type === 'toggle' ? BOOL_OPTIONS : (field.options || [])
+        const selectOptions: SelectOption[] =
+          field.type === 'toggle' ? BOOL_OPTIONS : field.options || []
         return {
           key: selectKey,
           label: field.label,
@@ -426,7 +420,7 @@ export default function SettingsView({ query: _query }: Props) {
         if (colors) Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
         if (tokens) Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
       })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const applySettings = (s: NuxySettings): void => {
@@ -447,9 +441,9 @@ export default function SettingsView({ query: _query }: Props) {
     window.core.ipc
       .invoke(EXT_ID, 'saveSettings', next)
       .then(() => {
-        window.core.ipc.invoke('kernel', 'applyWindowSettings', next).catch(console.error)
+        window.core.ipc.invoke('kernel', 'applyWindowSettings', next).catch(() => {})
       })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const updateExtSetting = (extId: string, key: string, value: unknown): void => {
@@ -459,7 +453,7 @@ export default function SettingsView({ query: _query }: Props) {
     if (!window.core?.ipc?.invoke) return
     window.core.ipc
       .invoke(EXT_ID, 'saveExtensionSettingValues', { extId, values: next })
-      .catch(console.error)
+      .catch(() => {})
   }
 
   useEffect(() => {
@@ -473,7 +467,7 @@ export default function SettingsView({ query: _query }: Props) {
           setThemes(r.data.map((name) => ({ value: name as string, label: name as string })))
         }
       })
-      .catch(console.error)
+      .catch(() => {})
 
     window.core.icons
       ?.listPacks()
@@ -483,7 +477,7 @@ export default function SettingsView({ query: _query }: Props) {
           setIconPacks(r.data.map((name) => ({ value: name as string, label: name as string })))
         }
       })
-      .catch(console.error)
+      .catch(() => {})
 
     window.core?.ipc
       ?.invoke('kernel', 'listSystemFonts', {})
@@ -493,7 +487,7 @@ export default function SettingsView({ query: _query }: Props) {
           setSystemFonts(r.data as string[])
         }
       })
-      .catch(console.error)
+      .catch(() => {})
 
     window.core.ipc
       .invoke(EXT_ID, 'getSettings', {})
@@ -504,7 +498,7 @@ export default function SettingsView({ query: _query }: Props) {
           applySettings(r.data)
         }
       })
-      .catch(console.error)
+      .catch(() => {})
 
     window.core.ipc
       .invoke('kernel', 'getExtensionSettingsSchemas', {})
@@ -524,11 +518,11 @@ export default function SettingsView({ query: _query }: Props) {
                   }))
                 }
               })
-              .catch(console.error)
+              .catch(() => {})
           })
         }
       })
-      .catch(console.error)
+      .catch(() => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

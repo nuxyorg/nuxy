@@ -1,6 +1,10 @@
 export interface OllamaMessage {
-  role: 'system' | 'user' | 'assistant' | 'tool'
-  content: string | null
+  role: 'developer' | 'system' | 'user' | 'assistant' | 'tool'
+  content:
+    | string
+    | { name: string; response: unknown }
+    | { name: string; response: unknown }[]
+    | null
   tool_calls?: OllamaToolCall[]
 }
 

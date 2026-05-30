@@ -42,7 +42,7 @@ export default function ShellView({ query: _queryProp }: Props) {
     ListItemText,
     ListItemActions,
     Toaster,
-  } = window.UI || (window as unknown as { ui: typeof window.UI }).ui || {}
+  } = window.UI || {}
 
   const [query, setQuery] = useState<string>('')
   const [savedQuery, setSavedQuery] = useState<string>('')
@@ -117,6 +117,16 @@ export default function ShellView({ query: _queryProp }: Props) {
     toolActionsRef,
   })
   const { recentToolIds, recordToolUsed } = useToolHistory(SHELL_EXT_ID)
+
+  useEffect(() => {
+    if (containerRef.current) {
+      window.dispatchEvent(
+        new CustomEvent('nuxy-shell-mounted', {
+          detail: { container: containerRef.current },
+        })
+      )
+    }
+  }, [])
 
   const handleCopy = (id: string) => {
     setCopiedId(id)
@@ -335,6 +345,8 @@ export default function ShellView({ query: _queryProp }: Props) {
       } else if (action === 'show') {
         setShowOmniBar(true)
         setTimeout(() => inputRef.current?.focus(), 50)
+      } else if (action === 'clear') {
+        setQuery('')
       }
     }
     window.addEventListener('nuxy-shell-omni-bar-control', handleOmniBarControl)
@@ -350,18 +362,18 @@ export default function ShellView({ query: _queryProp }: Props) {
     }
   }, [selectedIndex, savedQuery, listResults, activeTool])
 
-  const openTool = (toolId: string) => {
+  const openTool = (toolId: string, initialQuery: string = '') => {
     setActiveTool(toolId)
     setProviderStates({})
-    setQuery('')
-    setSavedQuery('')
+    setQuery(initialQuery)
+    setSavedQuery(initialQuery)
     recordToolUsed(toolId)
     const dynamicImport = new Function('url', 'return import(url)')
     dynamicImport(`nuxy-ext://${toolId}/frontend.js`)
       .then((module: { default: React.ComponentType<{ query: string; extensionId?: string }> }) =>
         setToolComponent(() => module.default)
       )
-      .catch(console.error)
+      .catch(() => {})
   }
 
   const handleItemClick = (item: ListItem) => {
@@ -371,9 +383,13 @@ export default function ShellView({ query: _queryProp }: Props) {
   const tryOrchestratorRoute = async () => {
     if (!savedQuery.trim() || orchestrators.length === 0) return
     try {
-      await window.core.ipc.invoke(orchestrators[0].id, 'route', { text: savedQuery })
-    } catch (e) {
-      console.error('Orchestrator route failed:', e)
+      const res = await window.core.ipc.invoke(orchestrators[0].id, 'route', { text: savedQuery })
+      const r = res as { ok: boolean; data?: { toolCalled?: string; initialQuery?: string } } | null
+      if (r?.ok && r.data?.toolCalled) {
+        openTool(r.data.toolCalled, r.data.initialQuery)
+      }
+    } catch {
+      // silently ignore orchestrator route failures
     }
   }
 
@@ -423,9 +439,9 @@ export default function ShellView({ query: _queryProp }: Props) {
     }
   }
 
-  const activeToolName = activeTool
-    ? tools.find((t) => t.id === activeTool)?.manifest.name || activeTool
-    : null
+  const activeTool_ = activeTool ? tools.find((t) => t.id === activeTool) : null
+  const activeToolName = activeTool_?.manifest.name ?? activeTool ?? null
+  const activeToolPlaceholder = activeTool_?.manifest.placeholder ?? null
 
   const itemClass = (index: number): string =>
     index === selectedIndex
@@ -570,9 +586,10 @@ export default function ShellView({ query: _queryProp }: Props) {
           opacity: settings?.opacity !== undefined ? settings.opacity : undefined,
           transition: isDraggingState
             ? 'none'
-            : 'left 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            : 'left 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
+
         {(['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as const).map((dir) => (
           <div
             key={dir}
@@ -619,7 +636,7 @@ export default function ShellView({ query: _queryProp }: Props) {
                       style={{ display: 'flex', alignItems: 'center' }}
                     />
                   ) : (
-                    '🔍'
+                    <span className="nuxy-shell-omni-bar__icon-placeholder" aria-hidden="true" />
                   )}
                 </span>
                 <span className="nuxy-shell-omni-bar__sep">›</span>
@@ -643,7 +660,11 @@ export default function ShellView({ query: _queryProp }: Props) {
                   className="nuxy-shell-omni-bar__input"
                   aria-label="Search"
                   placeholder={
-                    activeToolName ? `Search ${activeToolName}` : 'What do you have in mind?'
+                    activeToolPlaceholder
+                      ? activeToolPlaceholder
+                      : activeToolName
+                        ? `Search ${activeToolName}`
+                        : 'What do you have in mind?'
                   }
                 />
               </div>
@@ -781,7 +802,7 @@ export default function ShellView({ query: _queryProp }: Props) {
             )}
 
             {ToolComponent && activeTool && (
-              <React.Suspense fallback={<div className="nuxy-shell-tool-loading">Loading…</div>}>
+              <React.Suspense fallback={<div className="nuxy-loading-state" style={{ flex: 1, minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7, fontSize: 'var(--font-sm)' }}>Loading…</div>}>
                 <div className="nuxy-shell-tool-wrapper">
                   <ToolComponent query={query} extensionId={activeTool} />
                 </div>

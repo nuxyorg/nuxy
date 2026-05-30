@@ -20,8 +20,6 @@ export default function AngrysearchView({ query }: Props) {
     ListItemBody,
     ListItemText,
     ListItemMeta,
-    ListItemActions,
-    Button,
     EmptyState,
     ShortcutSep,
     IconFolder,
@@ -38,12 +36,12 @@ export default function AngrysearchView({ query }: Props) {
 
   const handleOpen = (item: AngrysearchItem): void => {
     if (!window.core?.ipc?.invoke || !item) return
-    window.core.ipc.invoke(EXT_ID, 'openFile', item.value).catch(console.error)
+    window.core.ipc.invoke(EXT_ID, 'openFile', item.value).catch(() => {})
   }
 
   const handleOpenLocation = (item: AngrysearchItem): void => {
     if (!window.core?.ipc?.invoke || !item) return
-    window.core.ipc.invoke(EXT_ID, 'openLocation', item.value).catch(console.error)
+    window.core.ipc.invoke(EXT_ID, 'openLocation', item.value).catch(() => {})
   }
 
   const { selectedIndex, setSelectedIndex } = _useListNavigation(items, {
@@ -82,7 +80,7 @@ export default function AngrysearchView({ query }: Props) {
         const r = res as { success?: boolean; data?: DbStatus } | null
         if (r?.success) setStatus(r.data ?? null)
       })
-      .catch(console.error)
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -103,7 +101,7 @@ export default function AngrysearchView({ query }: Props) {
             setSelectedIndex(newItems.length > 0 ? 0 : -1)
           }
         })
-        .catch(console.error)
+        .catch(() => {})
     }, 150)
 
     return () => clearTimeout(timer)
@@ -167,7 +165,7 @@ export default function AngrysearchView({ query }: Props) {
         items.map((item, idx) => {
           const isActive = idx === selectedIndex
           return (
-            <ListItem key={item.id} active={isActive} onClick={() => handleOpen(item)}>
+            <ListItem key={item.id} active={isActive}>
               <ListItemBody>
                 <ListItemText>
                   {item.isDir

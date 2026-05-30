@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "notes",
-  "permissions": ["storage", "network"],
+  "permissions": ["storage", "network", "fs", "db"],
   "capabilities": {
     "callable": true,
     "caller": false

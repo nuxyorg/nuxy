@@ -52,6 +52,8 @@ export interface ExtensionManifest {
    * Only relevant when type is 'uikit'. Defaults to 100.
    */
   priority?: number
+  /** Custom omnibar placeholder shown when this extension is active. */
+  placeholder?: string
   entry?: {
     backend?: string
     frontend?: string

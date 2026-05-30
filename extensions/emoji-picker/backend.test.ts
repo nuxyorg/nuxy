@@ -16,7 +16,7 @@ function createCore(storedFavorites: unknown = null): { core: CoreContext; handl
     shell: {
       exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }),
     },
-  }) as any
+  }) as { core: CoreContext; handlers: Handlers }
 }
 
 async function flush(): Promise<void> {
