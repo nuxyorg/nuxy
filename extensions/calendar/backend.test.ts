@@ -380,3 +380,199 @@ describe('calendar backend', () => {
     })
   })
 })
+
+// ── Edge cases ────────────────────────────────────────────────────────────────
+
+describe('calendar backend — edge cases', () => {
+  describe('calendar:create', () => {
+    it('defaults remindMin to 0 when omitted', async () => {
+      const now = 1700000000000
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+
+      const row = {
+        id: 'uuid-1',
+        title: 'No reminder',
+        datetime: now,
+        notes: '',
+        remind_min: 0,
+        created_at: now,
+      }
+      const { db, preparedStmt } = makeMockDb([], row)
+      const { core, handlers } = createCore()
+      core.db.open.mockReturnValue(db)
+
+      const { register } = await freshBackend()
+      register(core)
+
+      const result = (await handlers['calendar:create']({
+        title: 'No reminder',
+        datetime: now,
+        // remindMin intentionally omitted
+      })) as { remindMin: number }
+
+      expect(result.remindMin).toBe(0)
+    })
+
+    it('defaults notes to empty string when omitted', async () => {
+      const now = 1700000000000
+      vi.spyOn(Date, 'now').mockReturnValue(now)
+
+      const row = {
+        id: 'uuid-2',
+        title: 'No notes',
+        datetime: now,
+        notes: '',
+        remind_min: 0,
+        created_at: now,
+      }
+      const { db, preparedStmt } = makeMockDb([], row)
+      const { core, handlers } = createCore()
+      core.db.open.mockReturnValue(db)
+
+      const { register } = await freshBackend()
+      register(core)
+
+      const result = (await handlers['calendar:create']({
+        title: 'No notes',
+        datetime: now,
+      })) as { notes: string }
+
+      expect(typeof result.notes).toBe('string')
+    })
+  })
+
+  describe('calendar:list', () => {
+    it('uses BETWEEN (inclusive) — event AT exactly from is included', async () => {
+      const from = 1700000000000
+      const to = 1700100000000
+
+      const { db, preparedStmt } = makeMockDb([])
+      const { core, handlers } = createCore()
+      core.db.open.mockReturnValue(db)
+
+      const { register } = await freshBackend()
+      register(core)
+
+      await handlers['calendar:list']({ from, to })
+
+      // SQL BETWEEN is inclusive — the prepared statement should receive
+      // both from and to as-is (not modified)
+      const args = preparedStmt.all.mock.calls[0] as unknown[]
+      expect(args[0]).toBe(from)
+      expect(args[1]).toBe(to)
+    })
+
+    it('with no payload returns all events (no WHERE clause)', async () => {
+      const row = {
+        id: 'all',
+        title: 'Any event',
+        datetime: 0,
+        notes: '',
+        remind_min: 0,
+        created_at: 0,
+      }
+      const { db, preparedStmt } = makeMockDb([row])
+      const { core, handlers } = createCore()
+      core.db.open.mockReturnValue(db)
+
+      const { register } = await freshBackend()
+      register(core)
+
+      const result = (await handlers['calendar:list']({})) as unknown[]
+      // all() called with no args for the unbounded query
+      expect(preparedStmt.all).toHaveBeenCalledWith()
+      expect(result).toHaveLength(1)
+    })
+  })
+
+  describe('calendar:update', () => {
+    it('does nothing (no SET clauses) when called with only id', async () => {
+      const now = 1700000000000
+      const row = {
+        id: 'evt-x',
+        title: 'Unchanged',
+        datetime: now,
+        notes: '',
+        remind_min: 0,
+        created_at: now,
+      }
+      const { db, mockPrepare, preparedStmt } = makeMockDb([], row)
+      const { core, handlers } = createCore()
+      core.db.open.mockReturnValue(db)
+
+      const { register } = await freshBackend()
+      register(core)
+
+      // Should not throw, and should not issue an UPDATE
+      await handlers['calendar:update']({ id: 'evt-x' })
+
+      const updateCalled = mockPrepare.mock.calls.some(
+        ([sql]: [string]) => typeof sql === 'string' && sql.toUpperCase().includes('UPDATE')
+      )
+      expect(updateCalled).toBe(false)
+    })
+
+    it('can update all fields at once', async () => {
+      const now = 1700000000000
+      const updated = {
+        id: 'evt-full',
+        title: 'New title',
+        datetime: now + 1000,
+        notes: 'Updated notes',
+        remind_min: 60,
+        created_at: now,
+      }
+      const { db, mockPrepare, preparedStmt } = makeMockDb([], updated)
+      const { core, handlers } = createCore()
+      core.db.open.mockReturnValue(db)
+
+      const { register } = await freshBackend()
+      register(core)
+
+      await handlers['calendar:update']({
+        id: 'evt-full',
+        title: 'New title',
+        datetime: now + 1000,
+        notes: 'Updated notes',
+        remindMin: 60,
+      })
+
+      const updateCall = mockPrepare.mock.calls.find(
+        ([sql]: [string]) => typeof sql === 'string' && sql.toUpperCase().includes('UPDATE')
+      )
+      expect(updateCall).toBeDefined()
+      const sql = updateCall[0] as string
+      expect(sql).toMatch(/title/i)
+      expect(sql).toMatch(/datetime/i)
+      expect(sql).toMatch(/notes/i)
+      expect(sql).toMatch(/remind_min/i)
+    })
+  })
+
+  describe('calendar:delete', () => {
+    it('passes only the id to DELETE — no extra args', async () => {
+      const { db, preparedStmt } = makeMockDb()
+      const { core, handlers } = createCore()
+      core.db.open.mockReturnValue(db)
+
+      const { register } = await freshBackend()
+      register(core)
+
+      await handlers['calendar:delete']({ id: 'gone' })
+
+      expect(preparedStmt.run).toHaveBeenCalledTimes(1)
+      expect(preparedStmt.run).toHaveBeenCalledWith('gone')
+    })
+
+    it('does not throw when id does not exist (DELETE is idempotent)', async () => {
+      const { db } = makeMockDb()
+      const { core, handlers } = createCore()
+      core.db.open.mockReturnValue(db)
+
+      const { register } = await freshBackend()
+      register(core)
+
+      await expect(handlers['calendar:delete']({ id: 'nonexistent' })).resolves.not.toThrow()
+    })
+  })
+})

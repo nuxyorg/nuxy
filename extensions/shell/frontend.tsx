@@ -799,13 +799,18 @@ export default function ShellView({ query: _queryProp }: Props) {
                       keyActionHints.map((a, i) => (
                         <React.Fragment key={a.key + (a.modifiers || []).join('')}>
                           {(i > 0 || footerHints) && ShortcutSep && <ShortcutSep />}
-                          {Kbd &&
-                            (Array.isArray(a.hint) ? (
-                              a.hint.map((k, ki) => <Kbd key={ki}>{k}</Kbd>)
-                            ) : (
-                              <Kbd>{a.hint}</Kbd>
-                            ))}
-                          <span>{a.label}</span>
+                          <span
+                            className="nuxy-shortcut-action"
+                            onClick={() => a.handler()}
+                          >
+                            {Kbd &&
+                              (Array.isArray(a.hint) ? (
+                                a.hint.map((k, ki) => <Kbd key={ki}>{k}</Kbd>)
+                              ) : (
+                                <Kbd>{a.hint}</Kbd>
+                              ))}
+                            <span>{a.label}</span>
+                          </span>
                         </React.Fragment>
                       ))}
                   </>

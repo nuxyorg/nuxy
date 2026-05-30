@@ -1,5 +1,5 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
-import type { VideoFormat, DownloadJob, DownloadJobPublic, VideoDownloaderConfig, VideoMetadata } from './types.ts'
+import type { VideoFormat, DownloadJob, DownloadJobPublic, VideoDownloaderConfig, VideoMetadata, HistoryItem } from './types.ts'
 
 const PROGRESS_RE = /\[download\]\s+([\d.]+)%/
 
@@ -92,10 +92,17 @@ export async function register(core: CoreContext): Promise<void> {
   })
 
   core.ipc.handle('ytdlp:download', async (payload: unknown) => {
-    const { url, formatId, outputDir } = payload as {
+    const { url, formatId, outputDir, metadata, resolution } = payload as {
       url: string
       formatId: string
       outputDir?: string
+      metadata: {
+        title: string
+        thumbnail: string | null
+        duration: number | null
+        uploader: string | null
+      }
+      resolution: string
     }
     const jobId = crypto.randomUUID()
     const dir = outputDir ?? config.outputDir
@@ -110,18 +117,63 @@ export async function register(core: CoreContext): Promise<void> {
       url,
     ])
 
-    const job: DownloadJob = { jobId, url, formatId, progress: 0, status: 'running', handle }
+    const job: DownloadJob = {
+      jobId,
+      url,
+      formatId,
+      progress: 0,
+      status: 'running',
+      metadata,
+      resolution,
+      handle,
+    }
     jobs.set(jobId, job)
+
 
     handle.onData((chunk) => {
       const match = PROGRESS_RE.exec(chunk)
       if (match) {
         job.progress = parseFloat(match[1])
       }
+
+      // Try to parse destination path from chunk
+      const destMatch = /\[download\] Destination:\s+(.+)/.exec(chunk)
+      if (destMatch) {
+        job.outputPath = destMatch[1].trim()
+      }
+      const alreadyMatch = /\[download\]\s+(.+?)\s+has already been downloaded/.exec(chunk)
+      if (alreadyMatch) {
+        job.outputPath = alreadyMatch[1].trim()
+      }
+      const mergerMatch = /\[(?:Merger|ffmpeg)\] Merging formats into\s+"(.+?)"/.exec(chunk)
+      if (mergerMatch) {
+        job.outputPath = mergerMatch[1].trim()
+      }
     })
 
-    handle.onClose((code) => {
+    handle.onClose(async (code) => {
       job.status = code === 0 ? 'done' : 'error'
+      if (code === 0) {
+        try {
+          const history = (await core.storage.read<HistoryItem[]>('history.json')) || []
+          const newItem: HistoryItem = {
+            id: jobId,
+            url,
+            title: metadata?.title || 'Unknown Video',
+            thumbnail: metadata?.thumbnail || null,
+            duration: metadata?.duration || null,
+            uploader: metadata?.uploader || null,
+            formatId,
+            resolution: resolution || formatId,
+            outputPath: job.outputPath || null,
+            timestamp: Date.now(),
+          }
+          history.push(newItem)
+          await core.storage.write('history.json', history)
+        } catch (err) {
+          core.logger.error('Failed to save download history', err)
+        }
+      }
     })
 
     return { jobId }
@@ -129,16 +181,19 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.ipc.handle('ytdlp:queue', async () => {
     return Array.from(jobs.values()).map(
-      ({ jobId, url, formatId, progress, status, outputPath }): DownloadJobPublic => ({
+      ({ jobId, url, formatId, progress, status, outputPath, metadata, resolution }): DownloadJobPublic => ({
         jobId,
         url,
         formatId,
         progress,
         status,
         ...(outputPath !== undefined ? { outputPath } : {}),
+        metadata,
+        resolution,
       })
     )
   })
+
 
   core.ipc.handle('ytdlp:cancel', async (payload: unknown) => {
     const { jobId } = payload as { jobId: string }
@@ -154,4 +209,25 @@ export async function register(core: CoreContext): Promise<void> {
     config.outputDir = outputDir
     await core.storage.write('config.json', { outputDir })
   })
+
+  core.ipc.handle('ytdlp:history', async (): Promise<HistoryItem[]> => {
+    return (await core.storage.read<HistoryItem[]>('history.json')) || []
+  })
+
+  core.ipc.handle('ytdlp:open', async (payload: unknown) => {
+    const { path, isFolder } = payload as { path: string; isFolder?: boolean }
+    if (!path) throw new Error('Path is required')
+
+    let targetPath = path
+    if (isFolder) {
+      const lastSlash = path.lastIndexOf('/')
+      if (lastSlash !== -1) {
+        targetPath = path.substring(0, lastSlash)
+      }
+    }
+
+    await core.shell.open(targetPath)
+    return { success: true }
+  })
 }
+

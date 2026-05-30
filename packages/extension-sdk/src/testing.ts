@@ -67,6 +67,10 @@ export function createMockCore(
     config: {
       get: vi.fn(),
     },
+    settings: {
+      read: vi.fn().mockResolvedValue(null),
+      write: vi.fn().mockResolvedValue(undefined),
+    },
   } as any
 
   if (overrides) {

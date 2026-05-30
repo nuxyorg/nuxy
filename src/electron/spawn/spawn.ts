@@ -16,7 +16,12 @@ const log = kernelLogger.child('Spawn')
 /** dist-electron/worker/extension-host.js (built from @nuxy/extension-host) */
 const hostScript = path.join(import.meta.dirname, 'worker', 'extension-host.js')
 
-export function spawnExtension(extId: string, folderName: string, entryFile: string): Worker {
+export function spawnExtension(
+  extId: string,
+  folderName: string,
+  entryFile: string,
+  permissions: string[] = []
+): Worker {
   const absolutePath = path.join(EXTENSION_DIR, folderName, entryFile)
   log.info(`Spawning worker for extension "${extId}" (folder: ${folderName}) → ${absolutePath}`)
 
@@ -29,6 +34,7 @@ export function spawnExtension(extId: string, folderName: string, entryFile: str
       extId,
       absolutePath: pathToFileURL(absolutePath).href,
       logLevel,
+      permissions,
     },
   })
 

@@ -8,12 +8,12 @@ async function resetShell(page: any) {
     () => {
       const toolName = document.querySelector('.nuxy-shell-omni-bar__tool-name')
       const palette = document.querySelector('.nuxy-command-palette')
-      const input = document.querySelector('input') as HTMLInputElement | null
+      const input = document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null
       return toolName === null && palette === null && (input?.value ?? '') === ''
     },
     { timeout: 400 }
   )
-  await page.locator('input').focus()
+  await page.locator('.nuxy-shell-omni-bar__input').focus()
 }
 
 async function openTool(page: import('@playwright/test').Page, toolName: string) {
@@ -22,7 +22,7 @@ async function openTool(page: import('@playwright/test').Page, toolName: string)
   const option = page.locator('[role="option"]', { hasText: toolName })
   await option.first().click()
   await page.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 400 })
-  await page.locator('input').focus()
+  await page.locator('.nuxy-shell-omni-bar__input').focus()
 }
 
 async function openSettings(page: import('@playwright/test').Page) {
@@ -381,7 +381,7 @@ test.describe('settings tool', () => {
     await expect(settingsWrapper).not.toBeVisible()
 
     // Shell input should be visible again and focused
-    const searchInput = appPage.locator('input')
+    const searchInput = appPage.locator('.nuxy-shell-omni-bar__input')
     await expect(searchInput).toBeFocused()
   })
 
@@ -391,8 +391,11 @@ test.describe('settings tool', () => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
 
-    // Switch to "Window" tab so we can check boundary at "Show on Startup"
-    await appPage.locator('.nuxy-tab', { hasText: 'Window' }).click()
+    // Wait for vertical tabs to render
+    await appPage.waitForSelector('.nuxy-tab', { timeout: 2000 })
+
+    // Switch to "General" tab so we can check boundary at the top
+    await appPage.locator('.nuxy-tab', { hasText: 'General' }).click()
 
     // Press ArrowUp multiple times at the top boundary
     for (let i = 0; i < 5; i++) {
@@ -402,13 +405,16 @@ test.describe('settings tool', () => {
     const activeItemAtTop = appPage.locator('.nuxy-list-item--active')
     await expect(activeItemAtTop).toHaveCount(0)
 
-    // Press ArrowDown 20 times to exceed total rows in Window section (9 rows, indexes 0 to 8)
+    // Switch to "Video Downloader" tab to test the bottom boundary
+    await appPage.locator('.nuxy-tab', { hasText: 'Video Downloader' }).click()
+
+    // Press ArrowDown 20 times to exceed total rows in Video Downloader section
     for (let i = 0; i < 20; i++) {
       await appPage.keyboard.press('ArrowDown')
     }
-    // Verify selection stops at the last row ("Show on Startup")
+    // Verify selection stops at the last row ("Download Subtitles")
     const activeItemAtBottom = appPage.locator('.nuxy-list-item--active')
-    await expect(activeItemAtBottom).toContainText('Show on Startup')
+    await expect(activeItemAtBottom).toContainText('Download Subtitles')
   })
 
   test('updating settings via mouse clicks saves and persists value', async ({ appPage }) => {
@@ -612,5 +618,51 @@ test.describe('settings IPC channels', () => {
 
     const body = await appPage.evaluate(() => document.body.innerText)
     expect(body.toLowerCase()).toMatch(/theme|dark|light/)
+  })
+
+  test('keyboard interaction allows editing and saving location inputs and closing selectbox dropdowns with Enter', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+
+    // Wait for vertical tabs to render
+    await appPage.waitForSelector('.nuxy-tab', { timeout: 2000 })
+
+    // Click "Video Downloader" tab to navigate to the downloader extension settings
+    await appPage.locator('.nuxy-tab', { hasText: 'Video Downloader' }).click()
+
+    // Focus and click "Download Location" row
+    const downloadLocationRow = appPage.locator('.nuxy-list-item', { hasText: 'Download Location' })
+    await downloadLocationRow.click()
+
+    // Press Enter to edit
+    await appPage.keyboard.press('Enter')
+
+    // Verify the input is focused
+    const input = downloadLocationRow.locator('input')
+    await expect(input).toBeFocused()
+
+    // Type a new location and save on Enter
+    await input.fill('/tmp/nuxy-downloads')
+    await appPage.keyboard.press('Enter')
+
+    // Verify it blurs and is no longer focused
+    await expect(input).not.toBeFocused()
+
+    // Focus "Preferred Format" dropdown
+    const preferredFormatRow = appPage.locator('.nuxy-list-item', { hasText: 'Preferred Format' })
+    await preferredFormatRow.click()
+
+    // Press Enter to open dropdown
+    await appPage.keyboard.press('Enter')
+
+    // Verify dropdown popup is visible
+    const selectPopup = appPage.locator('.nuxy-select-box__dropdown')
+    await expect(selectPopup).toBeVisible()
+
+    // Press Enter to select option and close dropdown
+    await appPage.keyboard.press('Enter')
+
+    // Verify dropdown is closed
+    await expect(selectPopup).not.toBeVisible()
   })
 })

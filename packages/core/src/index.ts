@@ -95,6 +95,32 @@ export interface CoreContext {
   config: {
     get: () => Promise<unknown>
   }
+  settings: {
+    /** Read a value from this extension's own settings. No permission required. */
+    read: <T = unknown>(key: string) => Promise<T | null>
+    /** Write a value to this extension's own settings. No permission required. */
+    write: (key: string, value: unknown) => Promise<void>
+    /**
+     * Read a value from another extension's settings.
+     * Requires `settings.read` permission in the manifest.
+     */
+    readExtension?: <T = unknown>(targetExtId: string, key: string) => Promise<T | null>
+    /**
+     * Write a value to another extension's settings.
+     * Requires `settings.write` permission in the manifest.
+     */
+    writeExtension?: (targetExtId: string, key: string, value: unknown) => Promise<void>
+    /**
+     * Read all values from another extension's settings file.
+     * Requires `settings.read` permission in the manifest.
+     */
+    readAllExtension?: (targetExtId: string) => Promise<Record<string, unknown>>
+    /**
+     * Overwrite all values in another extension's settings file.
+     * Requires `settings.write` permission in the manifest.
+     */
+    writeAllExtension?: (targetExtId: string, values: Record<string, unknown>) => Promise<void>
+  }
 }
 
 export { createLogger, kernelLogger } from './logger.js'
@@ -108,6 +134,10 @@ export type {
   IpcResult,
   ThemeDefinition,
   IconPackDefinition,
+  ExtensionSettingType,
+  ExtensionSettingField,
+  ExtensionSettingsSchema,
+  ExtensionSettingsInfo,
 } from './types.js'
 export { HostChannel } from './host-channels.js'
 export type { HostChannelName } from './host-channels.js'

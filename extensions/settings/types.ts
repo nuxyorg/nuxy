@@ -58,5 +58,5 @@ export interface StateSnapshot {
   selectedRow: number
   activeSelect: string | null
   selectFocused: number
-  allRows: SectionRow[]
+  allRows: any[]
 }

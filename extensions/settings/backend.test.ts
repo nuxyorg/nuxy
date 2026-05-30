@@ -281,4 +281,56 @@ describe('settings backend', () => {
       expect(result.theme).toBe('dark')
     })
   })
+
+  describe('extension settings channels', () => {
+    it('registers getExtensionSettingValues handler', () => {
+      const { core, handlers } = createCore()
+      register(core)
+      expect(handlers['getExtensionSettingValues']).toBeDefined()
+    })
+
+    it('registers saveExtensionSettingValues handler', () => {
+      const { core, handlers } = createCore()
+      register(core)
+      expect(handlers['saveExtensionSettingValues']).toBeDefined()
+    })
+
+    it('getExtensionSettingValues returns empty object when file does not exist', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      const result = await (
+        handlers['getExtensionSettingValues'] as (p: unknown) => Promise<Record<string, unknown>>
+      )('com.nuxy.test')
+      expect(result).toStrictEqual({})
+    })
+
+    it('saveExtensionSettingValues writes values and getExtensionSettingValues reads them back', async () => {
+      let stored: Record<string, unknown> = {}
+
+      const { core, handlers } = createMockCore(vi, {
+        settings: {
+          read: vi.fn().mockResolvedValue(null),
+          write: vi.fn().mockResolvedValue(undefined),
+          readAllExtension: vi.fn().mockImplementation(async () => stored),
+          writeAllExtension: vi.fn().mockImplementation(async (_extId: string, values: Record<string, unknown>) => {
+            stored = values
+          }),
+        },
+      }) as any
+
+      register(core)
+
+      const values = { downloadPath: '~/Videos', format: 'mp4' }
+      await (
+        handlers['saveExtensionSettingValues'] as (p: unknown) => Promise<Record<string, unknown>>
+      )({ extId: 'com.nuxy.test', values })
+
+      expect(core.settings.writeAllExtension).toHaveBeenCalledWith('com.nuxy.test', values)
+
+      const read = await (
+        handlers['getExtensionSettingValues'] as (p: unknown) => Promise<Record<string, unknown>>
+      )('com.nuxy.test')
+      expect(read).toStrictEqual(values)
+    })
+  })
 })

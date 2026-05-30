@@ -8,6 +8,7 @@ interface WorkerData {
   extId: string
   absolutePath: string
   logLevel: string
+  permissions: string[]
 }
 
 function assertWorkerData(d: unknown): asserts d is WorkerData {
@@ -23,7 +24,7 @@ function assertWorkerData(d: unknown): asserts d is WorkerData {
 }
 
 assertWorkerData(workerData)
-const { extId, absolutePath, logLevel } = workerData
+const { extId, absolutePath, logLevel, permissions = [] } = workerData
 const logger = createWorkerLogger(extId, logLevel)
 
 const pendingHostCalls = new Map<
@@ -77,7 +78,8 @@ const { core, getSyncPayload } = createCoreProxy(
   (channel, handler) => {
     channelHandlers.set(channel, handler)
   },
-  extId
+  extId,
+  permissions
 )
 
 void (async () => {

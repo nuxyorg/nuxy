@@ -177,6 +177,12 @@ export function useTwoPanelNav({
       handler: () => {
         const { focusArea, selectOpen, rightPanelActions } = stateRef.current
         if (focusArea !== 'right' || selectOpen) return
+        const activeEl = document.activeElement
+        if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+          if (!activeEl.classList.contains('nuxy-shell-omni-bar__input')) {
+            return
+          }
+        }
         const rightAction = rightPanelActions.find(
           (a) => a.key === 'ArrowLeft' && !a.modifiers?.length
         )
@@ -193,6 +199,12 @@ export function useTwoPanelNav({
           setFocusArea('right')
           onFocusRight?.(activeSectionId)
         } else {
+          const activeEl = document.activeElement
+          if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+            if (!activeEl.classList.contains('nuxy-shell-omni-bar__input')) {
+              return
+            }
+          }
           callRightAction('ArrowRight')
         }
       },
@@ -204,7 +216,15 @@ export function useTwoPanelNav({
       handler: () => {
         const { focusArea } = stateRef.current
         if (focusArea === 'left') moveSectionUp()
-        else callRightAction('ArrowUp')
+        else {
+          const activeEl = document.activeElement
+          if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+            if (!activeEl.classList.contains('nuxy-shell-omni-bar__input')) {
+              return
+            }
+          }
+          callRightAction('ArrowUp')
+        }
       },
     },
     {
@@ -213,7 +233,15 @@ export function useTwoPanelNav({
       handler: () => {
         const { focusArea } = stateRef.current
         if (focusArea === 'left') moveSectionDown()
-        else callRightAction('ArrowDown')
+        else {
+          const activeEl = document.activeElement
+          if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+            if (!activeEl.classList.contains('nuxy-shell-omni-bar__input')) {
+              return
+            }
+          }
+          callRightAction('ArrowDown')
+        }
       },
     },
     {
@@ -226,6 +254,12 @@ export function useTwoPanelNav({
           setFocusArea('right')
           onFocusRight?.(activeSectionId)
         } else {
+          const activeEl = document.activeElement
+          if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+            if (!activeEl.classList.contains('nuxy-shell-omni-bar__input')) {
+              return
+            }
+          }
           callRightAction('Enter')
         }
       },
@@ -233,7 +267,7 @@ export function useTwoPanelNav({
     // Non-overlapping right-panel actions are gated on focusArea === 'right'
     // so they never fire when the user is navigating the left tab bar.
     ...rightPanelActions
-      .filter((a) => !BUILTIN_KEYS.has(a.key))
+      .filter((a) => !BUILTIN_KEYS.has(a.key) || a.modifiers?.length)
       .map((a) => ({
         ...a,
         handler: () => {

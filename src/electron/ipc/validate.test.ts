@@ -42,6 +42,12 @@ describe('validateExtInvokeArgs', () => {
     if (r.ok) expect(r.channel).toBe('listUikitExtensions')
   })
 
+  it('allows kernel getExtensionSettingsSchemas', () => {
+    const r = validateExtInvokeArgs('kernel', 'getExtensionSettingsSchemas', {})
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.channel).toBe('getExtensionSettingsSchemas')
+  })
+
   it('rejects unknown kernel channel', () => {
     const r = validateExtInvokeArgs('kernel', 'deleteEverything', {})
     expect(r.ok).toBe(false)

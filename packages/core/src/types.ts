@@ -7,6 +7,31 @@ export type ExtensionPermission =
   | 'notifications'
   | 'media'
   | 'shell'
+  | 'settings.read'
+  | 'settings.write'
+
+export type ExtensionSettingType = 'text' | 'select' | 'color' | 'location' | 'list' | 'toggle'
+
+export interface ExtensionSettingField {
+  key: string
+  label: string
+  type: ExtensionSettingType
+  default?: unknown
+  options?: Array<{ value: unknown; label: string }>
+  placeholder?: string
+  description?: string
+}
+
+export interface ExtensionSettingsSchema {
+  version?: number
+  fields: ExtensionSettingField[]
+}
+
+export interface ExtensionSettingsInfo {
+  extId: string
+  name: string
+  schema: ExtensionSettingsSchema
+}
 
 export interface ExtensionManifest {
   id: string
@@ -34,6 +59,8 @@ export interface ExtensionManifest {
     theme?: string
     /** Path to an IconPackDefinition JSON file within the extension folder. */
     icons?: string
+    /** Path to an ExtensionSettingsSchema JSON file within the extension folder. */
+    settings?: string
   }
 }
 
@@ -49,6 +76,7 @@ export interface LoadedExtension {
   folderName: string
   manifest: ExtensionManifest
   runtime?: ExtensionRuntimeMeta
+  settingsSchema?: ExtensionSettingsSchema
 }
 
 export interface IpcResult<T = unknown> {

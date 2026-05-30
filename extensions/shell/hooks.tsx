@@ -286,6 +286,20 @@ export function useKeyboard({
           return
         }
         if (activeTool) {
+          // Let the active tool handle Escape first (e.g. go back within a view hierarchy)
+          const actions = keyActionsGetterRef?.current?.()
+          if (actions && actions.length > 0) {
+            const matched = actions.find((a) => {
+              if (!matchesAction(a, e)) return false
+              if (typeof a.activeOn === 'function' && !a.activeOn()) return false
+              return true
+            })
+            if (matched) {
+              matched.handler()
+              e.preventDefault()
+              return
+            }
+          }
           setActiveTool(null)
           setToolComponent(null)
           setQuery('')
@@ -305,13 +319,20 @@ export function useKeyboard({
       if (activeTool) {
         // Check registered key actions. Skip modifier-free single-char actions when
         // an input/textarea has focus so the user can type freely.
-        const isTyping =
-          e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement
+        const target = e.target as HTMLElement
+        const isInput = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement
+        const isOmniBar = target?.classList?.contains('nuxy-shell-omni-bar__input')
         const actions = keyActionsGetterRef?.current?.()
         if (actions && actions.length > 0) {
           const matched = actions.find((a) => {
             if (!matchesAction(a, e)) return false
-            if (isTyping && !a.modifiers?.length && a.key.length === 1) return false
+            if (isInput) {
+              if (isOmniBar) {
+                if (!a.modifiers?.length && a.key.length === 1) return false
+              } else {
+                if (!a.modifiers?.length) return false
+              }
+            }
             if (typeof a.activeOn === 'function' && !a.activeOn()) return false
             return true
           })

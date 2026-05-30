@@ -13,6 +13,7 @@ import type {
   LoadedExtension,
   ThemeDefinition,
   IconPackDefinition,
+  ExtensionSettingsSchema,
 } from '@nuxy/core'
 
 export { loadedExtensions } from './registry.js'
@@ -130,10 +131,25 @@ export async function scanExtensions(): Promise<void> {
         }
       } else if (manifest.entry?.backend) {
         log.info(`Loading extension: ${extId} (backend: ${manifest.entry.backend})`)
-        spawnExtension(extId, folderName, manifest.entry.backend)
+        spawnExtension(extId, folderName, manifest.entry.backend, manifest.permissions ?? [])
         log.info(`Sandboxed worker started for: ${extId}`)
       } else if (manifest.type !== 'theme' && manifest.type !== 'iconpack') {
         log.warn(`Extension "${extId}" has no backend entry — skipping worker.`)
+      }
+
+      if (manifest.entry?.settings) {
+        const settingsPath = path.join(itemPath, manifest.entry.settings)
+        if (fs.existsSync(settingsPath)) {
+          try {
+            const schema = JSON.parse(
+              fs.readFileSync(settingsPath, 'utf8')
+            ) as ExtensionSettingsSchema
+            loaded.settingsSchema = schema
+            log.info(`Loaded settings schema for extension: ${extId}`)
+          } catch (e) {
+            log.error(`Failed to parse settings schema for "${extId}"`, e)
+          }
+        }
       }
 
       registerExtension(loaded)

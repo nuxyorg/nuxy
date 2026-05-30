@@ -30,4 +30,22 @@ export function register(core: CoreContext): void {
     await core.storage.write('settings.json', next)
     return next
   })
+
+  core.ipc.handle(
+    'getExtensionSettingValues',
+    async (extId: unknown): Promise<Record<string, unknown>> => {
+      if (!core.settings.readAllExtension) return {}
+      return core.settings.readAllExtension(extId as string)
+    }
+  )
+
+  core.ipc.handle(
+    'saveExtensionSettingValues',
+    async (payload: unknown): Promise<Record<string, unknown>> => {
+      const { extId, values } = payload as { extId: string; values: Record<string, unknown> }
+      if (!core.settings.writeAllExtension) return values
+      await core.settings.writeAllExtension(extId, values)
+      return values
+    }
+  )
 }

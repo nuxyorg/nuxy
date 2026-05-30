@@ -121,6 +121,17 @@ export function registerIpc() {
           return { success: true, data: listIconPacks() }
         }
 
+        if (ch === 'getExtensionSettingsSchemas') {
+          const schemas = loadedExtensions
+            .filter((ext) => ext.settingsSchema)
+            .map((ext) => ({
+              extId: ext.id,
+              name: ext.manifest.name,
+              schema: ext.settingsSchema!,
+            }))
+          return { success: true, data: schemas }
+        }
+
         if (ch === 'listSystemFonts') {
           try {
             const fonts = await new Promise<string[]>((resolve, reject) => {

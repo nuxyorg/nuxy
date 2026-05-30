@@ -15,9 +15,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "sh -c 'if [ -n \"$1\" ]; then playwright test \"extensions/$1/e2e.spec.ts\"; else playwright test extensions; fi' sh",
-    "test:e2e:all": "playwright test extensions",
-    "test:e2e:core": "playwright test src/e2e"
+    "test:e2e": "node e2e/run-cached.js",
+    "test:e2e:all": "node e2e/run-cached.js",
+    "test:e2e:core": "node e2e/run-cached.js core"
   },
   "dependencies": {
     "dbus-next": "^0.10.2",
