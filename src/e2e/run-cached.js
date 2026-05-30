@@ -1,28 +1,28 @@
-import fs from 'fs';
-import path from 'path';
-import crypto from 'crypto';
-import { spawn } from 'child_process';
-import { fileURLToPath } from 'url';
+import fs from 'fs'
+import path from 'path'
+import crypto from 'crypto'
+import { spawn } from 'child_process'
+import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Paths relative to this script
-const srcE2eDir = __dirname;
-const srcDir = path.resolve(srcE2eDir, '..');
-const rootDir = path.resolve(srcDir, '..');
-const packagesDir = path.resolve(rootDir, 'packages');
-const extensionsDir = path.resolve(rootDir, 'extensions');
+const srcE2eDir = __dirname
+const srcDir = path.resolve(srcE2eDir, '..')
+const rootDir = path.resolve(srcDir, '..')
+const packagesDir = path.resolve(rootDir, 'packages')
+const extensionsDir = path.resolve(rootDir, 'extensions')
 
-const cacheDir = path.resolve(srcE2eDir, '.cache');
-const cacheFile = path.resolve(cacheDir, 'e2e-cache.json');
-const tempReportFile = path.resolve(cacheDir, 'temp-report.json');
+const cacheDir = path.resolve(srcE2eDir, '.cache')
+const cacheFile = path.resolve(cacheDir, 'e2e-cache.json')
+const tempReportFile = path.resolve(cacheDir, 'temp-report.json')
 
 // Helper to recursively get files excluding ignored folders/files
 function getFiles(dir, allFiles = []) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
   for (const entry of entries) {
-    const res = path.resolve(dir, entry.name);
+    const res = path.resolve(dir, entry.name)
     if (entry.isDirectory()) {
       if (
         entry.name === 'node_modules' ||
@@ -38,83 +38,83 @@ function getFiles(dir, allFiles = []) {
         entry.name === '.pnpm-store' ||
         entry.name === '.turbo'
       ) {
-        continue;
+        continue
       }
-      getFiles(res, allFiles);
+      getFiles(res, allFiles)
     } else {
       if (
         entry.name.endsWith('.tsbuildinfo') ||
         entry.name.endsWith('.log') ||
         entry.name === '.DS_Store'
       ) {
-        continue;
+        continue
       }
-      allFiles.push(res);
+      allFiles.push(res)
     }
   }
-  return allFiles;
+  return allFiles
 }
 
 // Helper to compute combined hash for a list of files
 function computeHashForFiles(files) {
-  const hash = crypto.createHash('sha256');
+  const hash = crypto.createHash('sha256')
   for (const file of files) {
-    const relPath = path.relative(rootDir, file);
-    hash.update(relPath);
+    const relPath = path.relative(rootDir, file)
+    hash.update(relPath)
     try {
-      const content = fs.readFileSync(file);
-      hash.update(content);
+      const content = fs.readFileSync(file)
+      hash.update(content)
     } catch (e) {
       // Ignore read errors
     }
   }
-  return hash.digest('hex');
+  return hash.digest('hex')
 }
 
 // Helper to recursively gather test spec results from Playwright JSON report
 function getSpecResults(suite, results = {}) {
-  const file = suite.file;
+  const file = suite.file
   if (file) {
     if (!results[file]) {
-      results[file] = { passed: true, specsCount: 0 };
+      results[file] = { passed: true, specsCount: 0 }
     }
   }
   if (suite.specs) {
     for (const spec of suite.specs) {
-      const specFile = spec.file || file;
+      const specFile = spec.file || file
       if (specFile) {
         if (!results[specFile]) {
-          results[specFile] = { passed: true, specsCount: 0 };
+          results[specFile] = { passed: true, specsCount: 0 }
         }
-        results[specFile].specsCount++;
+        results[specFile].specsCount++
         if (!spec.ok) {
-          results[specFile].passed = false;
+          results[specFile].passed = false
         }
       }
     }
   }
   if (suite.suites) {
     for (const subSuite of suite.suites) {
-      getSpecResults(subSuite, results);
+      getSpecResults(subSuite, results)
     }
   }
-  return results;
+  return results
 }
 
 // Main logic
 async function run() {
-  console.log('Calculating files and hashes...');
+  console.log('Calculating files and hashes...')
 
   // 1. Gather all core files (src/ except specs, packages/, root configs)
-  const coreFiles = getFiles(srcDir).filter(f => {
+  const coreFiles = getFiles(srcDir).filter((f) => {
     // Exclude spec files under src/e2e/ so a spec change doesn't invalidate other specs
     if (f.startsWith(srcE2eDir) && f.endsWith('.spec.ts')) {
-      return false;
+      return false
     }
-    return true;
-  });
+    return true
+  })
 
-  const packagesFiles = fs.existsSync(packagesDir) ? getFiles(packagesDir) : [];
+  const packagesFiles = fs.existsSync(packagesDir) ? getFiles(packagesDir) : []
   const rootConfigFiles = [
     path.resolve(rootDir, 'package.json'),
     path.resolve(rootDir, 'pnpm-lock.yaml'),
@@ -123,28 +123,28 @@ async function run() {
     path.resolve(srcDir, 'package.json'),
     path.resolve(srcDir, 'playwright.config.ts'),
     path.resolve(srcDir, 'tsconfig.json'),
-  ].filter(f => fs.existsSync(f));
+  ].filter((f) => fs.existsSync(f))
 
-  const allCoreFiles = [...coreFiles, ...packagesFiles, ...rootConfigFiles].sort();
-  const currentCoreHash = computeHashForFiles(allCoreFiles);
+  const allCoreFiles = [...coreFiles, ...packagesFiles, ...rootConfigFiles].sort()
+  const currentCoreHash = computeHashForFiles(allCoreFiles)
 
   // 2. Gather all spec targets
-  const specFiles = [];
+  const specFiles = []
 
   // Extension specs
   if (fs.existsSync(extensionsDir)) {
-    const extDirs = fs.readdirSync(extensionsDir, { withFileTypes: true });
+    const extDirs = fs.readdirSync(extensionsDir, { withFileTypes: true })
     for (const dir of extDirs) {
       if (dir.isDirectory()) {
-        const specPath = path.resolve(extensionsDir, dir.name, 'e2e.spec.ts');
+        const specPath = path.resolve(extensionsDir, dir.name, 'e2e.spec.ts')
         if (fs.existsSync(specPath)) {
           specFiles.push({
             absolutePath: specPath,
             relativePath: path.relative(rootDir, specPath),
             type: 'extension',
             name: dir.name,
-            dirPath: path.resolve(extensionsDir, dir.name)
-          });
+            dirPath: path.resolve(extensionsDir, dir.name),
+          })
         }
       }
     }
@@ -152,7 +152,7 @@ async function run() {
 
   // Core specs under src/e2e
   if (fs.existsSync(srcE2eDir)) {
-    const files = getFiles(srcE2eDir);
+    const files = getFiles(srcE2eDir)
     for (const file of files) {
       if (file.endsWith('.spec.ts')) {
         specFiles.push({
@@ -160,182 +160,188 @@ async function run() {
           relativePath: path.relative(rootDir, file),
           type: 'core',
           name: path.basename(file, '.spec.ts'),
-          dirPath: null
-        });
+          dirPath: null,
+        })
       }
     }
   }
 
   // 3. Parse CLI args: separating filters from playwright forwarded options
-  const cliArgs = process.argv.slice(2);
-  const filters = [];
-  const forwardedArgs = [];
+  const cliArgs = process.argv.slice(2)
+  const filters = []
+  const forwardedArgs = []
 
   for (const arg of cliArgs) {
     if (arg.startsWith('-')) {
-      forwardedArgs.push(arg);
+      forwardedArgs.push(arg)
     } else {
-      filters.push(arg);
+      filters.push(arg)
     }
   }
 
   // Filter the spec targets if any filters were provided
-  let filteredSpecs = specFiles;
+  let filteredSpecs = specFiles
   if (filters.length > 0) {
-    filteredSpecs = specFiles.filter(spec => {
-      return filters.some(filter => {
-        return spec.name.includes(filter) || spec.relativePath.includes(filter);
-      });
-    });
+    filteredSpecs = specFiles.filter((spec) => {
+      return filters.some((filter) => {
+        return spec.name.includes(filter) || spec.relativePath.includes(filter)
+      })
+    })
   }
 
   // 4. Load Cache
-  let cache = { lastCoreHash: '', testCache: {} };
+  let cache = { lastCoreHash: '', testCache: {} }
   if (fs.existsSync(cacheFile)) {
     try {
-      cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
+      cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'))
     } catch (e) {
       // Invalid cache JSON, proceed with default
     }
   }
 
-  const noCache = process.env.NO_CACHE === '1' || process.env.NO_CACHE === 'true';
-  const coreHashChanged = cache.lastCoreHash !== currentCoreHash;
+  const noCache = process.env.NO_CACHE === '1' || process.env.NO_CACHE === 'true'
+  const coreHashChanged = cache.lastCoreHash !== currentCoreHash
 
   if (noCache) {
-    console.log('NO_CACHE env is set. Bypassing cache.');
+    console.log('NO_CACHE env is set. Bypassing cache.')
   } else if (coreHashChanged) {
-    console.log('Core files changed. Cache invalidated.');
+    console.log('Core files changed. Cache invalidated.')
   }
 
   // 5. Evaluate Cache Status for each filtered spec
   for (const spec of filteredSpecs) {
     // Individual spec hash consists of the spec file itself, and if it's an extension,
     // all files inside that extension's directory.
-    let specHash = '';
+    let specHash = ''
     if (spec.type === 'extension') {
-      const extFiles = getFiles(spec.dirPath).sort();
-      specHash = computeHashForFiles([spec.absolutePath, ...extFiles]);
+      const extFiles = getFiles(spec.dirPath).sort()
+      specHash = computeHashForFiles([spec.absolutePath, ...extFiles])
     } else {
-      specHash = computeHashForFiles([spec.absolutePath]);
+      specHash = computeHashForFiles([spec.absolutePath])
     }
 
-    spec.currentHash = specHash;
+    spec.currentHash = specHash
 
-    const cachedEntry = cache.testCache?.[spec.relativePath];
+    const cachedEntry = cache.testCache?.[spec.relativePath]
     if (!noCache && !coreHashChanged && cachedEntry?.passed && cachedEntry?.hash === specHash) {
-      spec.cached = true;
+      spec.cached = true
     } else {
-      spec.cached = false;
+      spec.cached = false
     }
   }
 
   // 6. Partition and print summary
-  const cachedSpecs = filteredSpecs.filter(s => s.cached);
-  const toRunSpecs = filteredSpecs.filter(s => !s.cached);
+  const cachedSpecs = filteredSpecs.filter((s) => s.cached)
+  const toRunSpecs = filteredSpecs.filter((s) => !s.cached)
 
   if (cachedSpecs.length > 0) {
-    console.log(`\n\x1b[32m[CACHE OK] ${cachedSpecs.length} spec(s) unchanged:\x1b[0m`);
+    console.log(`\n\x1b[32m[CACHE OK] ${cachedSpecs.length} spec(s) unchanged:\x1b[0m`)
     for (const spec of cachedSpecs) {
-      console.log(`  - ${spec.relativePath}`);
+      console.log(`  - ${spec.relativePath}`)
     }
   }
 
   if (toRunSpecs.length === 0) {
-    console.log('\n\x1b[32mAll matching tests are cached. Skipping Playwright run.\x1b[0m\n');
-    process.exit(0);
+    console.log('\n\x1b[32mAll matching tests are cached. Skipping Playwright run.\x1b[0m\n')
+    process.exit(0)
   }
 
-  console.log(`\n\x1b[33mRunning ${toRunSpecs.length} uncached spec(s):\x1b[0m`);
+  console.log(`\n\x1b[33mRunning ${toRunSpecs.length} uncached spec(s):\x1b[0m`)
   for (const spec of toRunSpecs) {
-    console.log(`  - ${spec.relativePath}`);
+    console.log(`  - ${spec.relativePath}`)
   }
 
   // 7. Spawn Playwright CLI
-  const runFiles = toRunSpecs.map(s => s.absolutePath);
-  fs.mkdirSync(cacheDir, { recursive: true });
+  const runFiles = toRunSpecs.map((s) => s.absolutePath)
+  fs.mkdirSync(cacheDir, { recursive: true })
 
   if (fs.existsSync(tempReportFile)) {
     try {
-      fs.unlinkSync(tempReportFile);
+      fs.unlinkSync(tempReportFile)
     } catch (e) {}
   }
 
-  const playwrightArgs = ['exec', 'playwright', 'test', ...runFiles, ...forwardedArgs, '--reporter=list,json'];
-  console.log(`\nSpawning: pnpm ${playwrightArgs.join(' ')}\n`);
+  const playwrightArgs = [
+    'exec',
+    'playwright',
+    'test',
+    ...runFiles,
+    ...forwardedArgs,
+    '--reporter=list,json',
+  ]
+  console.log(`\nSpawning: pnpm ${playwrightArgs.join(' ')}\n`)
 
   const child = spawn('pnpm', playwrightArgs, {
     cwd: srcDir,
     stdio: 'inherit',
     env: {
       ...process.env,
-      PLAYWRIGHT_JSON_OUTPUT_NAME: tempReportFile
-    }
-  });
+      PLAYWRIGHT_JSON_OUTPUT_NAME: tempReportFile,
+    },
+  })
 
   child.on('close', (code) => {
     if (fs.existsSync(tempReportFile)) {
       try {
-        const report = JSON.parse(fs.readFileSync(tempReportFile, 'utf8'));
-        const results = {};
+        const report = JSON.parse(fs.readFileSync(tempReportFile, 'utf8'))
+        const results = {}
 
         if (report.suites) {
           for (const suite of report.suites) {
-            getSpecResults(suite, results);
+            getSpecResults(suite, results)
           }
         }
 
-        let cacheUpdated = false;
+        let cacheUpdated = false
 
         if (!report.errors || report.errors.length === 0) {
           if (!cache.testCache) {
-            cache.testCache = {};
+            cache.testCache = {}
           }
 
           for (const [absOrRelPath, result] of Object.entries(results)) {
             const relPath = path.isAbsolute(absOrRelPath)
               ? path.relative(rootDir, absOrRelPath)
-              : absOrRelPath;
+              : absOrRelPath
 
-            const spec = toRunSpecs.find(s => s.relativePath === relPath);
+            const spec = toRunSpecs.find((s) => s.relativePath === relPath)
             if (spec) {
               if (result.passed) {
                 cache.testCache[relPath] = {
                   passed: true,
                   hash: spec.currentHash,
-                  timestamp: Date.now()
-                };
-                cacheUpdated = true;
+                  timestamp: Date.now(),
+                }
+                cacheUpdated = true
               } else {
-                delete cache.testCache[relPath];
-                cacheUpdated = true;
+                delete cache.testCache[relPath]
+                cacheUpdated = true
               }
             }
           }
         }
 
         if (cacheUpdated || coreHashChanged) {
-          cache.lastCoreHash = currentCoreHash;
-          fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2), 'utf8');
-          console.log(`\x1b[32mCache updated successfully in ${cacheFile}\x1b[0m`);
+          cache.lastCoreHash = currentCoreHash
+          fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2), 'utf8')
+          console.log(`\x1b[32mCache updated successfully in ${cacheFile}\x1b[0m`)
         }
-
       } catch (e) {
-        console.error('Failed to parse temp-report.json:', e);
+        console.error('Failed to parse temp-report.json:', e)
       } finally {
         try {
-          fs.unlinkSync(tempReportFile);
+          fs.unlinkSync(tempReportFile)
         } catch (e) {}
       }
     } else {
-      console.log('No Playwright JSON report found. Cache not updated.');
+      console.log('No Playwright JSON report found. Cache not updated.')
     }
 
-    process.exit(code === null ? 1 : code);
-  });
+    process.exit(code === null ? 1 : code)
+  })
 }
 
-run().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+run().catch((err) => {
+  console.error(err)
+  process.exit(1)
+})

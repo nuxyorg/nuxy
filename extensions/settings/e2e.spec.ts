@@ -620,7 +620,9 @@ test.describe('settings IPC channels', () => {
     expect(body.toLowerCase()).toMatch(/theme|dark|light/)
   })
 
-  test('keyboard interaction allows editing and saving location inputs and closing selectbox dropdowns with Enter', async ({ appPage }) => {
+  test('keyboard interaction allows editing and saving location inputs and closing selectbox dropdowns with Enter', async ({
+    appPage,
+  }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openSettings(appPage)
 

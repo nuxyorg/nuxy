@@ -198,3 +198,7 @@ export { AspectRatio } from './components/Text/AspectRatio'
 export type { AspectRatioProps } from './components/Text/AspectRatio'
 export { Portal } from './components/Text/Portal'
 export type { PortalProps } from './components/Text/Portal'
+
+// --- Media ---
+export { MediaPreview } from './components/MediaPreview'
+export type { MediaPreviewProps } from './components/MediaPreview'

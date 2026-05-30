@@ -1,5 +1,12 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
-import type { VideoFormat, DownloadJob, DownloadJobPublic, VideoDownloaderConfig, VideoMetadata, HistoryItem } from './types.ts'
+import type {
+  VideoFormat,
+  DownloadJob,
+  DownloadJobPublic,
+  VideoDownloaderConfig,
+  VideoMetadata,
+  HistoryItem,
+} from './types.ts'
 
 const PROGRESS_RE = /\[download\]\s+([\d.]+)%/
 
@@ -64,7 +71,12 @@ export async function register(core: CoreContext): Promise<void> {
     }
 
     const title = data.title ?? 'Unknown Video'
-    const thumbnail = data.thumbnail ?? (data.thumbnails && data.thumbnails.length > 0 ? data.thumbnails[data.thumbnails.length - 1].url : null) ?? null
+    const thumbnail =
+      data.thumbnail ??
+      (data.thumbnails && data.thumbnails.length > 0
+        ? data.thumbnails[data.thumbnails.length - 1].url
+        : null) ??
+      null
     const duration = typeof data.duration === 'number' ? data.duration : null
     const uploader = data.uploader ?? data.channel ?? null
 
@@ -72,7 +84,9 @@ export async function register(core: CoreContext): Promise<void> {
       (f): VideoFormat => ({
         formatId: f.format_id,
         ext: f.ext,
-        resolution: f.resolution ?? (f.vcodec !== 'none' && f.height ? `${f.width}x${f.height}` : 'audio only'),
+        resolution:
+          f.resolution ??
+          (f.vcodec !== 'none' && f.height ? `${f.width}x${f.height}` : 'audio only'),
         filesize: f.filesize ?? f.filesize_approx ?? null,
         note: f.format_note ?? f.resolution ?? '',
         vcodec: f.vcodec ?? 'none',
@@ -129,7 +143,6 @@ export async function register(core: CoreContext): Promise<void> {
     }
     jobs.set(jobId, job)
 
-
     handle.onData((chunk) => {
       const match = PROGRESS_RE.exec(chunk)
       if (match) {
@@ -181,7 +194,16 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.ipc.handle('ytdlp:queue', async () => {
     return Array.from(jobs.values()).map(
-      ({ jobId, url, formatId, progress, status, outputPath, metadata, resolution }): DownloadJobPublic => ({
+      ({
+        jobId,
+        url,
+        formatId,
+        progress,
+        status,
+        outputPath,
+        metadata,
+        resolution,
+      }): DownloadJobPublic => ({
         jobId,
         url,
         formatId,
@@ -193,7 +215,6 @@ export async function register(core: CoreContext): Promise<void> {
       })
     )
   })
-
 
   core.ipc.handle('ytdlp:cancel', async (payload: unknown) => {
     const { jobId } = payload as { jobId: string }
@@ -230,4 +251,3 @@ export async function register(core: CoreContext): Promise<void> {
     return { success: true }
   })
 }
-

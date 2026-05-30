@@ -513,7 +513,12 @@ export default function EmojiPicker({ query, extensionId }: Props) {
                       <SectionHeader label={cat.label} />
                     ) : (
                       <div
-                        style={{ padding: 'var(--space-1) var(--space-4)', fontSize: 'var(--font-sm)', opacity: 0.5, fontWeight: 500 }}
+                        style={{
+                          padding: 'var(--space-1) var(--space-4)',
+                          fontSize: 'var(--font-sm)',
+                          opacity: 0.5,
+                          fontWeight: 500,
+                        }}
                       >
                         {cat.label}
                       </div>

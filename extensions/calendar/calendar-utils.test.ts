@@ -147,7 +147,12 @@ describe('filterEventsByDay', () => {
 
   it('excludes events from neighboring months', () => {
     const crossMonth: TestEvent[] = [
-      { id: 'x', title: 'Feb event', datetime: new Date(2025, 1, 15, 9, 0).getTime(), remindMin: 0 },
+      {
+        id: 'x',
+        title: 'Feb event',
+        datetime: new Date(2025, 1, 15, 9, 0).getTime(),
+        remindMin: 0,
+      },
     ]
     const result = filterEventsByDay(crossMonth, 2025, 0, 15)
     expect(result).toHaveLength(0)

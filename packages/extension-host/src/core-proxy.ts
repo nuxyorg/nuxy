@@ -227,11 +227,7 @@ export function createCoreProxy(
             JSON.stringify(values, null, 2)
           )
         },
-        writeExtension: async (
-          targetExtId: string,
-          key: string,
-          value: unknown
-        ): Promise<void> => {
+        writeExtension: async (targetExtId: string, key: string, value: unknown): Promise<void> => {
           const dir = path.join(os.homedir(), '.nuxy', 'data', targetExtId)
           const p = path.join(dir, 'ext-settings.json')
           let data: Record<string, unknown> = {}

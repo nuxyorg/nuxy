@@ -7,9 +7,7 @@
       "type": "orchestrator",
       "icon": "ai",
       "orchestratorType": "tool_caller",
-      "permissions": [
-        "network"
-      ],
+      "permissions": ["network"],
       "capabilities": {
         "callable": false,
         "caller": true
@@ -31,10 +29,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "search",
-      "permissions": [
-        "storage",
-        "shell"
-      ],
+      "permissions": ["storage", "shell"],
       "capabilities": {
         "callable": true,
         "caller": false
@@ -57,11 +52,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "bitwarden",
-      "permissions": [
-        "clipboard",
-        "storage",
-        "shell"
-      ],
+      "permissions": ["clipboard", "storage", "shell"],
       "capabilities": {
         "callable": false,
         "caller": false
@@ -240,9 +231,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "calendar",
-      "permissions": [
-        "storage"
-      ],
+      "permissions": ["storage"],
       "capabilities": {
         "callable": true,
         "caller": false
@@ -265,10 +254,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "clipboard",
-      "permissions": [
-        "clipboard",
-        "storage"
-      ],
+      "permissions": ["clipboard", "storage"],
       "capabilities": {
         "callable": true,
         "caller": false
@@ -291,11 +277,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "emoji",
-      "permissions": [
-        "clipboard",
-        "storage",
-        "shell"
-      ],
+      "permissions": ["clipboard", "storage", "shell"],
       "capabilities": {
         "callable": true,
         "caller": false
@@ -382,10 +364,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "workflow",
-      "permissions": [
-        "storage",
-        "network"
-      ],
+      "permissions": ["storage", "network"],
       "capabilities": {
         "callable": false,
         "caller": false
@@ -445,10 +424,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "notes",
-      "permissions": [
-        "storage",
-        "network"
-      ],
+      "permissions": ["storage", "network"],
       "capabilities": {
         "callable": true,
         "caller": false
@@ -509,10 +485,7 @@
       "type": "orchestrator",
       "icon": "ai",
       "orchestratorType": "chatbot",
-      "permissions": [
-        "storage",
-        "network"
-      ],
+      "permissions": ["storage", "network"],
       "capabilities": {
         "callable": true,
         "caller": false
@@ -548,9 +521,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "settings",
-      "permissions": [
-        "storage"
-      ],
+      "permissions": ["storage"],
       "capabilities": {
         "callable": false,
         "caller": false
@@ -574,9 +545,7 @@
       "type": "tool",
       "icon": "shell",
       "bootstrap": true,
-      "permissions": [
-        "storage"
-      ],
+      "permissions": ["storage"],
       "capabilities": {
         "callable": false,
         "caller": false
@@ -695,10 +664,7 @@
       "version": "1.0.0",
       "type": "tool",
       "icon": "video",
-      "permissions": [
-        "storage",
-        "shell"
-      ],
+      "permissions": ["storage", "shell"],
       "capabilities": {
         "callable": false,
         "caller": false

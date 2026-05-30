@@ -160,9 +160,7 @@ describe('Escape — canGoBack never conflicts with canEnterCalendar', () => {
   })
 
   it('canGoBack is false on month view (Esc has nothing to go back to from month)', () => {
-    for (const s of ALL_STATES.filter(
-      (s) => s.mode === 'calendar' && s.calView === 'month'
-    )) {
+    for (const s of ALL_STATES.filter((s) => s.mode === 'calendar' && s.calView === 'month')) {
       expect(canGoBack(s)).toBe(false)
     }
   })

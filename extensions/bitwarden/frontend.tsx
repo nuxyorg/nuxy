@@ -266,19 +266,28 @@ export default function BitwardenView({ query }: Props) {
           }}
         >
           {Button && (
-            <Button onClick={() => setActiveTab('arch')} variant={activeTab === 'arch' ? 'primary' : 'ghost'}>
+            <Button
+              onClick={() => setActiveTab('arch')}
+              variant={activeTab === 'arch' ? 'primary' : 'ghost'}
+            >
               Arch Linux / CachyOS
               {status.os === 'arch' && Badge && <Badge active>Sisteminiz</Badge>}
             </Button>
           )}
           {Button && (
-            <Button onClick={() => setActiveTab('debian')} variant={activeTab === 'debian' ? 'primary' : 'ghost'}>
+            <Button
+              onClick={() => setActiveTab('debian')}
+              variant={activeTab === 'debian' ? 'primary' : 'ghost'}
+            >
               Ubuntu / Debian
               {status.os === 'debian' && Badge && <Badge active>Sisteminiz</Badge>}
             </Button>
           )}
           {Button && (
-            <Button onClick={() => setActiveTab('macos')} variant={activeTab === 'macos' ? 'primary' : 'ghost'}>
+            <Button
+              onClick={() => setActiveTab('macos')}
+              variant={activeTab === 'macos' ? 'primary' : 'ghost'}
+            >
               macOS
               {status.os === 'macos' && Badge && <Badge active>Sisteminiz</Badge>}
             </Button>
@@ -287,7 +296,14 @@ export default function BitwardenView({ query }: Props) {
 
         {/* Tab Contents */}
         {Card && (
-          <Card style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+          <Card
+            style={{
+              padding: 'var(--space-5)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-4)',
+            }}
+          >
             {activeTab === 'arch' && (
               <>
                 <strong>Arch Linux / CachyOS için Kurulum:</strong>
@@ -309,7 +325,9 @@ export default function BitwardenView({ query }: Props) {
                 >
                   <code>sudo pacman -S rbw pinentry</code>
                   <Button
-                    onClick={() => ipc('bw:copyText', { text: 'sudo pacman -S rbw pinentry' }).catch(() => {})}
+                    onClick={() =>
+                      ipc('bw:copyText', { text: 'sudo pacman -S rbw pinentry' }).catch(() => {})
+                    }
                   >
                     Kopyala
                   </Button>
@@ -336,7 +354,11 @@ export default function BitwardenView({ query }: Props) {
                   }}
                 >
                   <code>sudo apt install rbw</code>
-                  <Button onClick={() => ipc('bw:copyText', { text: 'sudo apt install rbw' }).catch(() => {})}>
+                  <Button
+                    onClick={() =>
+                      ipc('bw:copyText', { text: 'sudo apt install rbw' }).catch(() => {})
+                    }
+                  >
                     Kopyala
                   </Button>
                 </pre>
@@ -362,7 +384,9 @@ export default function BitwardenView({ query }: Props) {
                   }}
                 >
                   <code>brew install rbw</code>
-                  <Button onClick={() => ipc('bw:copyText', { text: 'brew install rbw' }).catch(() => {})}>
+                  <Button
+                    onClick={() => ipc('bw:copyText', { text: 'brew install rbw' }).catch(() => {})}
+                  >
                     Kopyala
                   </Button>
                 </pre>
@@ -403,7 +427,14 @@ export default function BitwardenView({ query }: Props) {
         </p>
 
         {Card && (
-          <Card style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+          <Card
+            style={{
+              padding: 'var(--space-5)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-5)',
+            }}
+          >
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontWeight: '600' }}>Bitwarden E-posta Adresi:</label>
               {Input && (
@@ -463,7 +494,14 @@ export default function BitwardenView({ query }: Props) {
         </p>
 
         {Card && (
-          <Card style={{ padding: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+          <Card
+            style={{
+              padding: 'var(--space-5)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-5)',
+            }}
+          >
             <div>
               <p style={{ margin: 0, opacity: 0.8 }}>
                 Kasanın kilidini açmak için aşağıdaki butona basın. Bilgisayarınızda bir şifre giriş
@@ -519,7 +557,9 @@ export default function BitwardenView({ query }: Props) {
             }}
           >
             <code>rbw unlock</code>
-            <Button onClick={() => ipc('bw:copyText', { text: 'rbw unlock' }).catch(() => {})}>Kopyala</Button>
+            <Button onClick={() => ipc('bw:copyText', { text: 'rbw unlock' }).catch(() => {})}>
+              Kopyala
+            </Button>
           </pre>
         </div>
       </div>

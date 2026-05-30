@@ -9,23 +9,14 @@ import type {
   ResolvedSection,
   NavSection,
   StateSnapshot,
+  ExtFieldDef,
+  ExtSettingsInfo,
+  BaseRow,
+  ExtSectionRow,
+  AnyRow,
+  RenderSection,
 } from './types.ts'
-
-interface ExtFieldDef {
-  key: string
-  label: string
-  type: string
-  default?: unknown
-  options?: Array<{ value: unknown; label: string }>
-  placeholder?: string
-  description?: string
-}
-
-interface ExtSettingsInfo {
-  extId: string
-  name: string
-  schema: { version?: number; fields: ExtFieldDef[] }
-}
+import type { UseTwoPanelNavResult } from '@nuxy/ui'
 
 const EXT_ID = 'com.nuxy.settings'
 
@@ -209,16 +200,16 @@ export default function SettingsView({ query: _query }: Props) {
   const extSectionRef = useRef<HTMLDivElement | null>(null)
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
-  const extSections = useMemo(() => {
+  const extSections = useMemo<Array<{ id: string; label: string; resolvedRows: ExtSectionRow[] }>>(() => {
     return extSchemas.map((info: ExtSettingsInfo) => {
-      const resolvedRows = info.schema.fields.map((field: ExtFieldDef) => {
+      const resolvedRows: ExtSectionRow[] = info.schema.fields.map((field: ExtFieldDef) => {
         const selectKey = `${info.extId}:${field.key}`
-        const selectOptions = field.type === 'toggle' ? BOOL_OPTIONS : (field.options || [])
+        const selectOptions: SelectOption[] = field.type === 'toggle' ? BOOL_OPTIONS : (field.options || [])
         return {
           key: selectKey,
           label: field.label,
           options: selectOptions,
-          isExtension: true,
+          isExtension: true as const,
           extId: info.extId,
           fieldKey: field.key,
           type: field.type,
@@ -244,16 +235,27 @@ export default function SettingsView({ query: _query }: Props) {
     [themes, iconPacks, fontOptions]
   )
 
-  const sectionsToRender = useMemo(() => {
-    return [
-      ...allSections.map(s => ({ ...s, isExtension: false, resolvedRows: s.resolvedRows })),
-      ...extSections.map(s => ({ ...s, isExtension: true }))
-    ]
+  const sectionsToRender = useMemo<RenderSection[]>(() => {
+    const base: RenderSection[] = allSections.map((s: ResolvedSection) => ({
+      id: s.id,
+      label: s.label,
+      isExtension: false,
+      resolvedRows: s.resolvedRows.map((r: SectionRow) => ({ ...r, isExtension: false as const })),
+    }))
+    const ext: RenderSection[] = extSections.map((s) => ({
+      id: s.id,
+      label: s.label,
+      isExtension: true,
+      resolvedRows: s.resolvedRows,
+    }))
+    return [...base, ...ext]
   }, [allSections, extSections])
 
-  const allRows = useMemo<any[]>(() => {
-    const base = allSections.flatMap((s: ResolvedSection) => s.resolvedRows.map(r => ({ ...r, isExtension: false })))
-    const ext = extSections.flatMap((s) => s.resolvedRows)
+  const allRows = useMemo<AnyRow[]>(() => {
+    const base: BaseRow[] = allSections.flatMap((s: ResolvedSection) =>
+      s.resolvedRows.map((r: SectionRow) => ({ ...r, isExtension: false as const }))
+    )
+    const ext: ExtSectionRow[] = extSections.flatMap((s) => s.resolvedRows)
     return [...base, ...ext]
   }, [allSections, extSections])
 
@@ -269,117 +271,123 @@ export default function SettingsView({ query: _query }: Props) {
     return base
   }, [allSections, extSections])
 
-  const stateRef = useRef<any>({})
-  stateRef.current = { settings, selectedRow, activeSelect, selectFocused, allRows, extValues, sectionsToRender }
+  const stateRef = useRef<StateSnapshot>({} as StateSnapshot)
+  stateRef.current = {
+    settings,
+    selectedRow,
+    activeSelect,
+    selectFocused,
+    allRows,
+    extValues,
+    sectionsToRender,
+  }
 
-  const rightPanelActions = useMemo(
-    () => {
-      const actions = [
-        {
-          key: 'ArrowUp',
-          label: 'Previous setting',
-          hint: '↑↓',
-          handler: () => {
-            const { activeSelect } = stateRef.current
-            if (activeSelect !== null) {
-              setSelectFocused((i: number) => Math.max(i - 1, 0))
-            } else {
-              setSelectedRow((prev) => {
-                if (prev > 0) {
-                  const nextIdx = prev - 1
-                  navRef.current?.onItemSelected(nextIdx)
-                  return nextIdx
-                }
-                if (prev === 0) {
-                  return -1
-                }
-                return prev
-              })
-            }
-          },
-        },
-        {
-          key: 'ArrowDown',
-          label: 'Next setting',
-          handler: () => {
-            const { activeSelect, allRows } = stateRef.current
-            if (activeSelect !== null) {
-              const row = allRows.find((r: any) => r.key === activeSelect)
-              if (row) setSelectFocused((i: number) => Math.min(i + 1, row.options.length - 1))
-            } else {
-              setSelectedRow((prev) => {
-                if (prev < 0) {
-                  const nextIdx = 0
-                  navRef.current?.onItemSelected(nextIdx)
-                  return nextIdx
-                }
-                if (prev < allRows.length - 1) {
-                  const nextIdx = prev + 1
-                  navRef.current?.onItemSelected(nextIdx)
-                  return nextIdx
-                }
-                return prev
-              })
-            }
-          },
-        },
-        {
-          key: 'Enter',
-          label: 'Open setting',
-          hint: '↵',
-          handler: () => {
-            const { selectedRow, activeSelect, selectFocused, allRows, extValues, settings } = stateRef.current
-            if (activeSelect !== null) {
-              const row = allRows.find((r: any) => r.key === activeSelect)
-              if (row) {
-                const opt = row.options[selectFocused]
-                if (opt) {
-                  if (row.isExtension) {
-                    updateExtSetting(row.extId, row.fieldKey, opt.value)
-                  } else {
-                    updateSetting(activeSelect as keyof NuxySettings, opt.value)
-                  }
-                }
-                setActiveSelect(null)
+  const rightPanelActions = useMemo(() => {
+    const actions = [
+      {
+        key: 'ArrowUp',
+        label: 'Previous setting',
+        hint: '↑↓',
+        handler: () => {
+          const { activeSelect } = stateRef.current
+          if (activeSelect !== null) {
+            setSelectFocused((i: number) => Math.max(i - 1, 0))
+          } else {
+            setSelectedRow((prev) => {
+              if (prev > 0) {
+                const nextIdx = prev - 1
+                navRef.current?.onItemSelected(nextIdx)
+                return nextIdx
               }
-            } else {
-              const row = allRows[selectedRow]
-              if (row) {
-                if (row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
-                  inputRefs.current[row.key]?.focus()
-                  inputRefs.current[row.key]?.select()
-                } else if (row.options && row.options.length > 0) {
-                  const currentValue = row.isExtension
-                    ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
-                    : settings[row.key]
-                  const currentIdx = row.options.findIndex(
-                    (o: SelectOption) => String(o.value) === String(currentValue)
-                  )
-                  setSelectFocused(Math.max(0, currentIdx))
-                  setActiveSelect(row.key)
+              if (prev === 0) {
+                return -1
+              }
+              return prev
+            })
+          }
+        },
+      },
+      {
+        key: 'ArrowDown',
+        label: 'Next setting',
+        handler: () => {
+          const { activeSelect, allRows } = stateRef.current
+          if (activeSelect !== null) {
+            const row = allRows.find((r: AnyRow) => r.key === activeSelect)
+            if (row) setSelectFocused((i: number) => Math.min(i + 1, row.options.length - 1))
+          } else {
+            setSelectedRow((prev) => {
+              if (prev < 0) {
+                const nextIdx = 0
+                navRef.current?.onItemSelected(nextIdx)
+                return nextIdx
+              }
+              if (prev < allRows.length - 1) {
+                const nextIdx = prev + 1
+                navRef.current?.onItemSelected(nextIdx)
+                return nextIdx
+              }
+              return prev
+            })
+          }
+        },
+      },
+      {
+        key: 'Enter',
+        label: 'Open setting',
+        hint: '↵',
+        handler: () => {
+          const { selectedRow, activeSelect, selectFocused, allRows, extValues, settings } =
+            stateRef.current
+          if (activeSelect !== null) {
+            const row = allRows.find((r: AnyRow) => r.key === activeSelect)
+            if (row) {
+              const opt = row.options[selectFocused]
+              if (opt) {
+                if (row.isExtension) {
+                  updateExtSetting(row.extId, row.fieldKey, opt.value)
+                } else {
+                  updateSetting(activeSelect as keyof NuxySettings, opt.value)
                 }
               }
+              setActiveSelect(null)
             }
-          },
+          } else {
+            const row = allRows[selectedRow]
+            if (row) {
+              if (row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
+                inputRefs.current[row.key]?.focus()
+                inputRefs.current[row.key]?.select()
+              } else if (row.options && row.options.length > 0) {
+                const currentValue = row.isExtension
+                  ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
+                  : settings[row.key]
+                const currentIdx = row.options.findIndex(
+                  (o: SelectOption) => String(o.value) === String(currentValue)
+                )
+                setSelectFocused(Math.max(0, currentIdx))
+                setActiveSelect(row.key)
+              }
+            }
+          }
         },
-      ]
+      },
+    ]
 
-      if (activeSelect !== null) {
-        actions.push({
-          key: 'Escape',
-          label: 'Close setting',
-          hint: 'Esc',
-          handler: () => setActiveSelect(null),
-        })
-      }
+    if (activeSelect !== null) {
+      actions.push({
+        key: 'Escape',
+        label: 'Close setting',
+        hint: 'Esc',
+        handler: () => setActiveSelect(null),
+      })
+    }
 
-      return actions
-    },
-    [activeSelect]
-  )
+    return actions
+  }, [activeSelect])
 
   // navRef avoids referencing nav before assignment inside onFocusRight closure
-  const navRef = useRef<any>(null)
+  const navRef = useRef<UseTwoPanelNavResult | null>(null)
 
   const nav = _useTwoPanelNav({
     sections: navSections,
@@ -402,7 +410,6 @@ export default function SettingsView({ query: _query }: Props) {
 
   const focusArea: string = nav.focusArea ?? 'right'
   const activeSectionId: string = nav.activeSectionId ?? SECTIONS[0].id
-
 
   const applyTheme = (name: string): void => {
     if (!name || !window.core?.ipc?.invoke) return
@@ -543,7 +550,7 @@ export default function SettingsView({ query: _query }: Props) {
 
   const right = ScrollArea ? (
     <ScrollArea ref={rightPanelRef} style={{ flex: 1 }}>
-      {sectionsToRender.map((section: any) => {
+      {sectionsToRender.map((section: RenderSection) => {
         const sectionOffset = nav.sectionStartIndex[section.id] ?? 0
         return (
           <React.Fragment key={section.id}>
@@ -557,12 +564,13 @@ export default function SettingsView({ query: _query }: Props) {
             )}
             {List && (
               <List>
-                {section.resolvedRows.map((row: any, i: number) => {
+                {section.resolvedRows.map((row: AnyRow, i: number) => {
                   const globalIdx = sectionOffset + i
                   const currentValue = row.isExtension
                     ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
                     : settings[row.key]
-                  const isSelectType = !row.isExtension || row.type === 'select' || row.type === 'toggle'
+                  const isSelectType =
+                    !row.isExtension || row.type === 'select' || row.type === 'toggle'
 
                   return (
                     ListItem && (
@@ -599,7 +607,7 @@ export default function SettingsView({ query: _query }: Props) {
                                 open={activeSelect === row.key}
                                 focusedIndex={selectFocused}
                                 placeholder={row.options?.length === 0 ? '(none)' : '—'}
-                                searchable={row.searchable || false}
+                                searchable={row.isExtension ? false : row.searchable || false}
                                 onSelect={(v: unknown) => {
                                   if (row.isExtension) {
                                     updateExtSetting(row.extId, row.fieldKey, v)
@@ -617,40 +625,40 @@ export default function SettingsView({ query: _query }: Props) {
                                 }}
                               />
                             ) : (
-                              <input
-                                ref={(el) => { inputRefs.current[row.key] = el }}
-                                type={row.type === 'color' ? 'color' : 'text'}
-                                value={String(currentValue)}
-                                placeholder={row.placeholder || ''}
-                                style={{
-                                  background: 'transparent',
-                                  border: '1px solid var(--border, rgba(255,255,255,0.15))',
-                                  borderRadius: '0.25em',
-                                  color: 'inherit',
-                                  fontSize: 'inherit',
-                                  padding: '0.2em 0.4em',
-                                  outline: 'none',
-                                  width: row.type === 'color' ? '2.5em' : '10em',
-                                }}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                  const v = e.target.value
-                                  setExtValues(
-                                    (prev: Record<string, Record<string, unknown>>) => ({
-                                      ...prev,
-                                      [row.extId]: { ...(prev[row.extId] || {}), [row.fieldKey]: v },
-                                    })
-                                  )
-                                  if (row.type === 'color') updateExtSetting(row.extId, row.fieldKey, v)
-                                }}
-                                onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
-                                  updateExtSetting(row.extId, row.fieldKey, e.target.value)
-                                }
-                                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                  if (e.key === 'Enter' || e.key === 'Escape') {
-                                    e.currentTarget.blur()
+                              Input &&
+                              row.isExtension && (
+                                <Input
+                                  ref={(el: HTMLInputElement | null) => {
+                                    inputRefs.current[row.key] = el
+                                  }}
+                                  type={row.type === 'color' ? 'color' : 'text'}
+                                  value={String(currentValue)}
+                                  placeholder={row.placeholder || ''}
+                                  style={{ width: row.type === 'color' ? '2.5em' : '10em' }}
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    const v = e.target.value
+                                    setExtValues(
+                                      (prev: Record<string, Record<string, unknown>>) => ({
+                                        ...prev,
+                                        [row.extId]: {
+                                          ...(prev[row.extId] || {}),
+                                          [row.fieldKey]: v,
+                                        },
+                                      })
+                                    )
+                                    if (row.type === 'color')
+                                      updateExtSetting(row.extId, row.fieldKey, v)
+                                  }}
+                                  onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
+                                    updateExtSetting(row.extId, row.fieldKey, e.target.value)
                                   }
-                                }}
-                              />
+                                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (e.key === 'Enter' || e.key === 'Escape') {
+                                      e.currentTarget.blur()
+                                    }
+                                  }}
+                                />
+                              )
                             )}
                           </ListItemActions>
                         )}

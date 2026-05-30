@@ -23,7 +23,7 @@ interface SelectOption {
 // ── Pure helpers ─────────────────────────────────────────────────────────────
 interface GridCell {
   day: number
-  monthOffset: -1 | 0 | 1  // -1 prev, 0 current, 1 next
+  monthOffset: -1 | 0 | 1 // -1 prev, 0 current, 1 next
 }
 
 function getDaysInMonth(year: number, month: number): number {
@@ -82,8 +82,18 @@ function isSelectField(f: CreateFormField): boolean {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ]
 const DAY_ABBR = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 const TIME_OPTIONS: SelectOption[] = [
@@ -194,23 +204,41 @@ export default function CalendarApp({ query }: Props) {
 
   // ── staleRef ─────────────────────────────────────────────────────────────────
   const stateRef = useRef({
-    mode, query,
-    calYear, calMonth, selectedDay,
+    mode,
+    query,
+    calYear,
+    calMonth,
+    selectedDay,
     calView,
-    dayEvents, filteredSearch,
-    listIdx, editingEvent,
-    titleValue, timeValue, reminderValue,
-    formFieldIdx, activeSelect, selectFocused,
+    dayEvents,
+    filteredSearch,
+    listIdx,
+    editingEvent,
+    titleValue,
+    timeValue,
+    reminderValue,
+    formFieldIdx,
+    activeSelect,
+    selectFocused,
   })
 
   stateRef.current = {
-    mode, query,
-    calYear, calMonth, selectedDay,
+    mode,
+    query,
+    calYear,
+    calMonth,
+    selectedDay,
     calView,
-    dayEvents, filteredSearch,
-    listIdx, editingEvent,
-    titleValue, timeValue, reminderValue,
-    formFieldIdx, activeSelect, selectFocused,
+    dayEvents,
+    filteredSearch,
+    listIdx,
+    editingEvent,
+    titleValue,
+    timeValue,
+    reminderValue,
+    formFieldIdx,
+    activeSelect,
+    selectFocused,
   }
 
   // ── Data loading ──────────────────────────────────────────────────────────────
@@ -397,37 +425,32 @@ export default function CalendarApp({ query }: Props) {
       key: 'ArrowLeft',
       label: 'Navigate',
       hint: '↑↓←→',
-      activeOn: () =>
-        stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
+      activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
       handler: () => navigateBy(-1),
     },
     {
       key: 'ArrowRight',
       label: '',
-      activeOn: () =>
-        stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
+      activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
       handler: () => navigateBy(1),
     },
     {
       key: 'ArrowUp',
       label: '',
-      activeOn: () =>
-        stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
+      activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
       handler: () => navigateBy(-7),
     },
     {
       key: 'ArrowDown',
       label: '',
-      activeOn: () =>
-        stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
+      activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
       handler: () => navigateBy(7),
     },
     {
       key: 'Enter',
       label: 'Open',
       hint: '↵',
-      activeOn: () =>
-        stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
+      activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
       handler: enterDayView,
     },
 
@@ -436,17 +459,14 @@ export default function CalendarApp({ query }: Props) {
       key: 'ArrowUp',
       label: 'Navigate',
       hint: '↑↓',
-      activeOn: () =>
-        stateRef.current.mode === 'calendar' && stateRef.current.calView === 'day',
+      activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'day',
       handler: () => setListIdx((i) => Math.max(-1, i - 1)),
     },
     {
       key: 'ArrowDown',
       label: '',
-      activeOn: () =>
-        stateRef.current.mode === 'calendar' && stateRef.current.calView === 'day',
-      handler: () =>
-        setListIdx((i) => Math.min(stateRef.current.dayEvents.length - 1, i + 1)),
+      activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'day',
+      handler: () => setListIdx((i) => Math.min(stateRef.current.dayEvents.length - 1, i + 1)),
     },
     {
       key: 'Enter',
@@ -575,7 +595,12 @@ export default function CalendarApp({ query }: Props) {
             // Open select for this field
             const opts = getSelectOptions(field)
             const cur = getSelectValue(field)
-            setSelectFocused(Math.max(0, opts.findIndex((o) => o.value === cur)))
+            setSelectFocused(
+              Math.max(
+                0,
+                opts.findIndex((o) => o.value === cur)
+              )
+            )
             setActiveSelect(field)
           }
         }
@@ -740,12 +765,18 @@ export default function CalendarApp({ query }: Props) {
                       setCalMonth(d.getMonth())
                       setSelectedDay(cell.day)
                       if (mode === 'calendar') enterDayView()
-                      else { enterCalendarMode(); setTimeout(enterDayView, 0) }
+                      else {
+                        enterCalendarMode()
+                        setTimeout(enterDayView, 0)
+                      }
                       return
                     }
                     setSelectedDay(cell.day)
                     if (mode === 'calendar') enterDayView()
-                    else { enterCalendarMode(); setTimeout(enterDayView, 0) }
+                    else {
+                      enterCalendarMode()
+                      setTimeout(enterDayView, 0)
+                    }
                   }}
                   style={{
                     position: 'relative',
@@ -763,8 +794,7 @@ export default function CalendarApp({ query }: Props) {
                         ? 'var(--accent-subtle, rgba(99, 102, 241, 0.15))'
                         : 'transparent',
                     color: isSelected ? '#fff' : 'inherit',
-                    outline:
-                      isToday && !isSelected ? '1.5px solid var(--accent, #6366f1)' : 'none',
+                    outline: isToday && !isSelected ? '1.5px solid var(--accent, #6366f1)' : 'none',
                     outlineOffset: '-1px',
                     opacity: !isCurrent ? 0.25 : mode === 'omnibox' ? 0.75 : 1,
                   }}
@@ -800,9 +830,7 @@ export default function CalendarApp({ query }: Props) {
     return (
       <div style={{ height: '100%' }}>
         {filteredSearch.length === 0
-          ? EmptyState && (
-              <EmptyState message="No events found" hint="Try a different search." />
-            )
+          ? EmptyState && <EmptyState message="No events found" hint="Try a different search." />
           : List && (
               <List>
                 {filteredSearch.map((evt, idx) => (
@@ -836,7 +864,11 @@ export default function CalendarApp({ query }: Props) {
                     {evt.remindMin > 0 && IconBell && ListItemActions && (
                       <ListItemActions>
                         <IconBell
-                          style={{ width: '14px', height: '14px', color: 'var(--color-warning, #eab308)' }}
+                          style={{
+                            width: '14px',
+                            height: '14px',
+                            color: 'var(--color-warning, #eab308)',
+                          }}
                         />
                       </ListItemActions>
                     )}
@@ -871,9 +903,7 @@ export default function CalendarApp({ query }: Props) {
           {dayLabel}
         </div>
         {dayEvents.length === 0
-          ? EmptyState && (
-              <EmptyState message="No events" hint="Press N to create an event." />
-            )
+          ? EmptyState && <EmptyState message="No events" hint="Press N to create an event." />
           : List && (
               <List>
                 {dayEvents.map((evt, idx) => (
@@ -890,7 +920,11 @@ export default function CalendarApp({ query }: Props) {
                     {evt.remindMin > 0 && IconBell && ListItemActions && (
                       <ListItemActions>
                         <IconBell
-                          style={{ width: '14px', height: '14px', color: 'var(--color-warning, #eab308)' }}
+                          style={{
+                            width: '14px',
+                            height: '14px',
+                            color: 'var(--color-warning, #eab308)',
+                          }}
                         />
                       </ListItemActions>
                     )}
@@ -962,13 +996,20 @@ export default function CalendarApp({ query }: Props) {
                   active={isFieldFocused}
                   onClick={() => {
                     setFormFieldIdx(idx)
-                    setSelectFocused(Math.max(0, opts.findIndex((o) => o.value === currentVal)))
+                    setSelectFocused(
+                      Math.max(
+                        0,
+                        opts.findIndex((o) => o.value === currentVal)
+                      )
+                    )
                     setActiveSelect(field)
                   }}
                 >
                   <ListItemBody>
                     <ListItemText>{fieldLabel[field]}</ListItemText>
-                    <ListItemMeta>{opts.find((o) => o.value === currentVal)?.label ?? '—'}</ListItemMeta>
+                    <ListItemMeta>
+                      {opts.find((o) => o.value === currentVal)?.label ?? '—'}
+                    </ListItemMeta>
                   </ListItemBody>
                   {ListItemActions && SelectBox && (
                     <ListItemActions>
@@ -1022,7 +1063,12 @@ export default function CalendarApp({ query }: Props) {
             <ListItem
               active={activeSelect === null}
               onClick={() => {
-                setSelectFocused(Math.max(0, opts.findIndex((o) => o.value === reminderValue)))
+                setSelectFocused(
+                  Math.max(
+                    0,
+                    opts.findIndex((o) => o.value === reminderValue)
+                  )
+                )
                 setActiveSelect('reminder')
               }}
             >

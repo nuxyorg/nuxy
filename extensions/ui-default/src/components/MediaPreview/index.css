@@ -1,0 +1,113 @@
+.nuxy-media-preview {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+}
+
+.nuxy-media-preview--horizontal {
+  flex-direction: row;
+}
+
+.nuxy-media-preview--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.nuxy-media-preview__thumbnail-container {
+  position: relative;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Sizing styles */
+.nuxy-media-preview--sm .nuxy-media-preview__thumbnail-container {
+  width: 80px;
+  height: 45px;
+}
+
+.nuxy-media-preview--md .nuxy-media-preview__thumbnail-container {
+  width: 120px;
+  height: 68px;
+}
+
+.nuxy-media-preview--lg .nuxy-media-preview__thumbnail-container {
+  width: 160px;
+  height: 90px;
+}
+
+.nuxy-media-preview__thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.nuxy-media-preview__duration {
+  position: absolute;
+  bottom: var(--space-1);
+  right: var(--space-1);
+  background: var(--surface-overlay, rgba(0, 0, 0, 0.8));
+  color: var(--text-on-accent, #fff);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-xs, 2px);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  line-height: 1.2;
+}
+
+.nuxy-media-preview__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  flex: 1;
+  gap: var(--space-1);
+}
+
+.nuxy-media-preview__title {
+  color: var(--text-normal);
+  font-weight: var(--font-semibold, bold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nuxy-media-preview--sm .nuxy-media-preview__title {
+  font-size: var(--font-sm);
+}
+
+.nuxy-media-preview--md .nuxy-media-preview__title {
+  font-size: var(--font-md);
+}
+
+.nuxy-media-preview--lg .nuxy-media-preview__title {
+  font-size: var(--font-lg);
+}
+
+.nuxy-media-preview__meta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.nuxy-media-preview__uploader {
+  color: var(--text-muted);
+  font-size: var(--font-xs);
+}
+
+.nuxy-media-preview__progress {
+  width: 100%;
+  margin-top: var(--space-1);
+}
+
+.nuxy-media-preview__footer-text {
+  color: var(--text-muted);
+  font-size: var(--font-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -55,7 +55,6 @@ export interface DownloadJobPublic {
   resolution?: string
 }
 
-
 export interface VideoDownloaderConfig {
   outputDir: string
 }
@@ -72,4 +71,3 @@ export interface HistoryItem {
   outputPath: string | null
   timestamp: number
 }
-

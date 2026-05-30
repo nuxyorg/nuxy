@@ -34,10 +34,7 @@ export function canNavigateDayList(s: KeyActionState): boolean {
 
 export function canOpenDayEvent(s: KeyActionState): boolean {
   return (
-    s.mode === 'calendar' &&
-    s.calView === 'day' &&
-    s.listIdx >= 0 &&
-    s.listIdx < s.dayEventsCount
+    s.mode === 'calendar' && s.calView === 'day' && s.listIdx >= 0 && s.listIdx < s.dayEventsCount
   )
 }
 
@@ -74,9 +71,7 @@ export function canGoBack(s: KeyActionState): boolean {
 
 // Resolves which action the `s` key performs — avoids implicit priority
 // by making the routing explicit and testable.
-export function sKeyTarget(
-  s: KeyActionState
-): 'return-to-omnibox' | 'save' | null {
+export function sKeyTarget(s: KeyActionState): 'return-to-omnibox' | 'save' | null {
   if (s.mode !== 'calendar') return null
   if (canSaveEvent(s)) return 'save'
   if (canReturnToOmnibox(s)) return 'return-to-omnibox'

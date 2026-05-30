@@ -5,7 +5,8 @@ import type { N8nWorkflow, N8nExecution, N8nStatusResult } from './types.ts'
 
 const EXT_ID = 'com.nuxy.n8n'
 
-const _useListNavigation = (window.UI || {}).useListNavigation ||
+const _useListNavigation =
+  (window.UI || {}).useListNavigation ||
   (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
 const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
@@ -59,7 +60,9 @@ export default function N8nApp({ query }: Props) {
         if (st.ok) {
           setConfigured(true)
           setStatus(st)
-          invoke<N8nWorkflow[]>('n8n:listWorkflows').then(setWorkflows).catch(() => {})
+          invoke<N8nWorkflow[]>('n8n:listWorkflows')
+            .then(setWorkflows)
+            .catch(() => {})
         }
       })
       .catch(() => {})
@@ -72,7 +75,9 @@ export default function N8nApp({ query }: Props) {
     const st = await invoke<N8nStatusResult>('n8n:status').catch(() => ({ ok: false }))
     setStatus(st)
     if (st.ok) {
-      invoke<N8nWorkflow[]>('n8n:listWorkflows').then(setWorkflows).catch(() => {})
+      invoke<N8nWorkflow[]>('n8n:listWorkflows')
+        .then(setWorkflows)
+        .catch(() => {})
     }
   }
 
@@ -103,7 +108,9 @@ export default function N8nApp({ query }: Props) {
   }
 
   const { selectedIndex } = _useListNavigation(filteredWorkflows, {
-    onEnter: (wf: N8nWorkflow) => { void handleSelectWorkflow(wf) },
+    onEnter: (wf: N8nWorkflow) => {
+      void handleSelectWorkflow(wf)
+    },
     enterLabel: 'Select',
     enterHint: 'Enter',
     extraActions: [
@@ -111,7 +118,9 @@ export default function N8nApp({ query }: Props) {
         key: 'r',
         label: 'Refresh',
         hint: 'R',
-        handler: () => { void handleRefresh() },
+        handler: () => {
+          void handleRefresh()
+        },
       },
     ],
   })
@@ -149,11 +158,15 @@ export default function N8nApp({ query }: Props) {
               />
             )}
             {Button && (
-              <Button onClick={() => { void handleSaveConfig() }}>Save</Button>
+              <Button
+                onClick={() => {
+                  void handleSaveConfig()
+                }}
+              >
+                Save
+              </Button>
             )}
-            {showConfig && Button && (
-              <Button onClick={() => setShowConfig(false)}>Cancel</Button>
-            )}
+            {showConfig && Button && <Button onClick={() => setShowConfig(false)}>Cancel</Button>}
           </Card>
         )}
       </>
@@ -162,11 +175,23 @@ export default function N8nApp({ query }: Props) {
 
   return (
     <>
-      {status && !status.ok && Alert && (
-        <Alert variant="danger">n8n unreachable</Alert>
-      )}
+      {status && !status.ok && Alert && <Alert variant="danger">n8n unreachable</Alert>}
       {SectionHeader && (
-        <SectionHeader title="Workflows" action={Button ? <Button onClick={() => { void handleRefresh() }} disabled={loading}>{loading ? '…' : 'Refresh'}</Button> : undefined} />
+        <SectionHeader
+          title="Workflows"
+          action={
+            Button ? (
+              <Button
+                onClick={() => {
+                  void handleRefresh()
+                }}
+                disabled={loading}
+              >
+                {loading ? '…' : 'Refresh'}
+              </Button>
+            ) : undefined
+          }
+        />
       )}
       <List>
         {filteredWorkflows.length === 0 ? (
@@ -176,16 +201,28 @@ export default function N8nApp({ query }: Props) {
             <ListItem
               key={wf.id}
               active={idx === selectedIndex}
-              onClick={() => { void handleSelectWorkflow(wf) }}
+              onClick={() => {
+                void handleSelectWorkflow(wf)
+              }}
             >
               <ListItemBody>
                 <ListItemText>{wf.name}</ListItemText>
                 <ListItemMeta>{wf.active ? 'active' : 'inactive'}</ListItemMeta>
               </ListItemBody>
               <ListItemActions>
-                {Badge && <Badge variant={wf.active ? 'success' : 'default'}>{wf.active ? 'active' : 'inactive'}</Badge>}
+                {Badge && (
+                  <Badge variant={wf.active ? 'success' : 'default'}>
+                    {wf.active ? 'active' : 'inactive'}
+                  </Badge>
+                )}
                 {Button && (
-                  <Button onClick={() => { void handleRunWebhook(wf) }}>Run</Button>
+                  <Button
+                    onClick={() => {
+                      void handleRunWebhook(wf)
+                    }}
+                  >
+                    Run
+                  </Button>
                 )}
               </ListItemActions>
             </ListItem>
@@ -206,7 +243,15 @@ export default function N8nApp({ query }: Props) {
                     <ListItemMeta>{ex.startedAt}</ListItemMeta>
                   </ListItemBody>
                   {Badge && (
-                    <Badge variant={ex.status === 'success' ? 'success' : ex.status === 'error' ? 'danger' : 'default'}>
+                    <Badge
+                      variant={
+                        ex.status === 'success'
+                          ? 'success'
+                          : ex.status === 'error'
+                            ? 'danger'
+                            : 'default'
+                      }
+                    >
                       {ex.status}
                     </Badge>
                   )}

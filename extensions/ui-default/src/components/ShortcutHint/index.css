@@ -18,7 +18,9 @@
   border-radius: var(--radius-sm);
   padding: 1px var(--space-1);
   margin: 0 -var(--space-1);
-  transition: opacity 0.1s, background 0.1s;
+  transition:
+    opacity 0.1s,
+    background 0.1s;
 }
 
 .nuxy-shortcut-action:hover {

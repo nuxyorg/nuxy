@@ -53,10 +53,54 @@ export interface NavSection {
   itemCount: number
 }
 
+export interface ExtFieldDef {
+  key: string
+  label: string
+  type: string
+  default?: unknown
+  options?: Array<{ value: unknown; label: string }>
+  placeholder?: string
+  description?: string
+}
+
+export interface ExtSettingsInfo {
+  extId: string
+  name: string
+  schema: { version?: number; fields: ExtFieldDef[] }
+}
+
+export interface BaseRow extends SectionRow {
+  isExtension: false
+}
+
+export interface ExtSectionRow {
+  key: string
+  label: string
+  options: SelectOption[]
+  isExtension: true
+  extId: string
+  fieldKey: string
+  type: string
+  description?: string
+  placeholder?: string
+  default?: unknown
+}
+
+export type AnyRow = BaseRow | ExtSectionRow
+
+export interface RenderSection {
+  id: string
+  label: string
+  isExtension: boolean
+  resolvedRows: AnyRow[]
+}
+
 export interface StateSnapshot {
   settings: NuxySettings
   selectedRow: number
   activeSelect: string | null
   selectFocused: number
-  allRows: any[]
+  allRows: AnyRow[]
+  extValues: Record<string, Record<string, unknown>>
+  sectionsToRender: RenderSection[]
 }

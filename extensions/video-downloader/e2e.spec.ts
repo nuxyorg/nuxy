@@ -12,11 +12,61 @@ const MOCK_URL = 'https://www.youtube.com/watch?v=wx1UiMbCv48'
 
 // Realistic format list matching the YouTube video
 const MOCK_FORMATS = [
-  { formatId: '137', ext: 'mp4',  resolution: '1920x1080', filesize: 52428800, note: '1080p',    vcodec: 'avc1', acodec: 'none', fps: 30,   tbr: 3500 },
-  { formatId: '136', ext: 'mp4',  resolution: '1280x720',  filesize: 26214400, note: '720p',     vcodec: 'avc1', acodec: 'none', fps: 30,   tbr: 1800 },
-  { formatId: '134', ext: 'mp4',  resolution: '854x480',   filesize: 15728640, note: '480p',     vcodec: 'avc1', acodec: 'none', fps: 30,   tbr: 900  },
-  { formatId: '140', ext: 'm4a',  resolution: 'audio only',filesize: 5242880,  note: '128k',     vcodec: 'none', acodec: 'mp4a', fps: null, tbr: 130  },
-  { formatId: '251', ext: 'webm', resolution: 'audio only',filesize: 4194304,  note: '160k',     vcodec: 'none', acodec: 'opus', fps: null, tbr: 160  },
+  {
+    formatId: '137',
+    ext: 'mp4',
+    resolution: '1920x1080',
+    filesize: 52428800,
+    note: '1080p',
+    vcodec: 'avc1',
+    acodec: 'none',
+    fps: 30,
+    tbr: 3500,
+  },
+  {
+    formatId: '136',
+    ext: 'mp4',
+    resolution: '1280x720',
+    filesize: 26214400,
+    note: '720p',
+    vcodec: 'avc1',
+    acodec: 'none',
+    fps: 30,
+    tbr: 1800,
+  },
+  {
+    formatId: '134',
+    ext: 'mp4',
+    resolution: '854x480',
+    filesize: 15728640,
+    note: '480p',
+    vcodec: 'avc1',
+    acodec: 'none',
+    fps: 30,
+    tbr: 900,
+  },
+  {
+    formatId: '140',
+    ext: 'm4a',
+    resolution: 'audio only',
+    filesize: 5242880,
+    note: '128k',
+    vcodec: 'none',
+    acodec: 'mp4a',
+    fps: null,
+    tbr: 130,
+  },
+  {
+    formatId: '251',
+    ext: 'webm',
+    resolution: 'audio only',
+    filesize: 4194304,
+    note: '160k',
+    vcodec: 'none',
+    acodec: 'opus',
+    fps: null,
+    tbr: 160,
+  },
 ]
 
 const MOCK_METADATA = {
@@ -64,7 +114,7 @@ async function installMock(appPage: any, electronApp: any) {
           resolution: '1920x1080',
           outputPath: '/path/to/video.mp4',
           timestamp: Date.now() - 60000,
-        }
+        },
       ]
       ;(global as any).__vdLastOpened = null
 
@@ -74,12 +124,9 @@ async function installMock(appPage: any, electronApp: any) {
         async (_ev: any, extId: string, channel: string, payload: any) => {
           // ── video-downloader mock ──────────────────────────────────────
           if (extId === 'com.nuxy.video-downloader') {
-            if (channel === 'ytdlp:status')
-              return { success: true, data: { installed: true } }
-            if (channel === 'ytdlp:queue')
-              return { success: true, data: (global as any).__vdJobs }
-            if (channel === 'ytdlp:getFormats')
-              return { success: true, data: metadata }
+            if (channel === 'ytdlp:status') return { success: true, data: { installed: true } }
+            if (channel === 'ytdlp:queue') return { success: true, data: (global as any).__vdJobs }
+            if (channel === 'ytdlp:getFormats') return { success: true, data: metadata }
             if (channel === 'ytdlp:download') {
               const jobId = 'mock-job-' + Date.now()
               console.log('    [MAIN-DEBUG] ytdlp:download received!', payload)
@@ -115,21 +162,20 @@ async function installMock(appPage: any, electronApp: any) {
             return { success: false, error: 'Unknown channel' }
           }
 
-
           // ── kernel: replay cached snapshot ────────────────────────────
           if (extId === 'kernel') {
-            if (channel === 'listTools')          return snapshot.tools
-            if (channel === 'listProviders')       return snapshot.providers
-            if (channel === 'listOrchestrators')   return snapshot.orchestrators
+            if (channel === 'listTools') return snapshot.tools
+            if (channel === 'listProviders') return snapshot.providers
+            if (channel === 'listOrchestrators') return snapshot.orchestrators
             if (channel === 'listUikitExtensions') return snapshot.uikit
-            if (channel === 'getConfig')           return snapshot.config
+            if (channel === 'getConfig') return snapshot.config
             if (channel === 'applyWindowSettings') return { success: true }
-            if (channel === 'getTheme')            return { success: true, data: {} }
-            if (channel === 'getThemeByName')      return { success: true, data: {} }
-            if (channel === 'listThemes')          return { success: true, data: [] }
-            if (channel === 'getIcon')             return { success: true, data: '<svg/>' }
-            if (channel === 'listIconPacks')       return { success: true, data: [] }
-            if (channel === 'listSystemFonts')     return { success: true, data: [] }
+            if (channel === 'getTheme') return { success: true, data: {} }
+            if (channel === 'getThemeByName') return { success: true, data: {} }
+            if (channel === 'listThemes') return { success: true, data: [] }
+            if (channel === 'getIcon') return { success: true, data: '<svg/>' }
+            if (channel === 'listIconPacks') return { success: true, data: [] }
+            if (channel === 'listSystemFonts') return { success: true, data: [] }
           }
 
           // ── other extensions: pass-through to null ────────────────────
@@ -150,8 +196,8 @@ async function resetShell(page: any) {
   await page.waitForFunction(
     () => {
       const toolName = document.querySelector('.nuxy-shell-omni-bar__tool-name')
-      const palette  = document.querySelector('.nuxy-command-palette')
-      const input    = document.querySelector('input') as HTMLInputElement | null
+      const palette = document.querySelector('.nuxy-command-palette')
+      const input = document.querySelector('input') as HTMLInputElement | null
       return toolName === null && palette === null && (input?.value ?? '') === ''
     },
     { timeout: 500 }
@@ -299,8 +345,6 @@ test.describe('video downloader — keyboard navigation', () => {
     expect(secondTabText).not.toBe(firstTabText)
   })
 
-
-
   test('ArrowLeft switches focus to left tab panel', async ({ appPage }) => {
     await openVideoDownloader(appPage)
     await loadFormats(appPage)
@@ -340,7 +384,10 @@ test.describe('video downloader — keyboard navigation', () => {
     expect(text).toMatch(/confirm|Select|↵/)
   })
 
-  test('transitions to full-screen downloads view upon download start', async ({ appPage, electronApp }) => {
+  test('transitions to full-screen downloads view upon download start', async ({
+    appPage,
+    electronApp,
+  }) => {
     await openVideoDownloader(appPage)
     await loadFormats(appPage)
 
@@ -388,7 +435,10 @@ test.describe('video downloader — keyboard navigation', () => {
     expect(opened).toEqual({ path: '/path/to/video.mp4' })
   })
 
-  test('Shift+Enter on completed item invokes ytdlp:open with isFolder', async ({ appPage, electronApp }) => {
+  test('Shift+Enter on completed item invokes ytdlp:open with isFolder', async ({
+    appPage,
+    electronApp,
+  }) => {
     await openVideoDownloader(appPage)
     await loadFormats(appPage)
     await appPage.keyboard.press('Control+k')
@@ -404,7 +454,9 @@ test.describe('video downloader — keyboard navigation', () => {
     expect(opened).toEqual({ path: '/path/to/video.mp4', isFolder: true })
   })
 
-  test('Escape key exits downloads view and returns to previous formats tab', async ({ appPage }) => {
+  test('Escape key exits downloads view and returns to previous formats tab', async ({
+    appPage,
+  }) => {
     await openVideoDownloader(appPage)
     await loadFormats(appPage)
     await appPage.keyboard.press('Control+k')
@@ -413,7 +465,9 @@ test.describe('video downloader — keyboard navigation', () => {
     await appPage.keyboard.press('Enter')
     await appPage.waitForTimeout(300)
 
-    await expect(appPage.locator('.nuxy-heading', { hasText: /Downloads & History/i })).toBeVisible()
+    await expect(
+      appPage.locator('.nuxy-heading', { hasText: /Downloads & History/i })
+    ).toBeVisible()
 
     await appPage.keyboard.press('Escape')
     await appPage.waitForTimeout(300)
@@ -423,4 +477,3 @@ test.describe('video downloader — keyboard navigation', () => {
     await expect(card).toContainText('Test Video')
   })
 })
-

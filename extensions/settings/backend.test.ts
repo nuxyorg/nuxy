@@ -312,9 +312,11 @@ describe('settings backend', () => {
           read: vi.fn().mockResolvedValue(null),
           write: vi.fn().mockResolvedValue(undefined),
           readAllExtension: vi.fn().mockImplementation(async () => stored),
-          writeAllExtension: vi.fn().mockImplementation(async (_extId: string, values: Record<string, unknown>) => {
-            stored = values
-          }),
+          writeAllExtension: vi
+            .fn()
+            .mockImplementation(async (_extId: string, values: Record<string, unknown>) => {
+              stored = values
+            }),
         },
       }) as any
 

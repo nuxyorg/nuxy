@@ -5,7 +5,8 @@ import type { Note } from './types.ts'
 
 const EXT_ID = 'com.nuxy.notes'
 
-const _useListNavigation = (window.UI || {}).useListNavigation ||
+const _useListNavigation =
+  (window.UI || {}).useListNavigation ||
   (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
 const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
@@ -45,17 +46,17 @@ export default function NotesApp({ query }: Props) {
   const mediaRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
 
-  const invoke = <T = unknown>(channel: string, payload?: unknown): Promise<T> =>
-    window.core.ipc
-      .invoke(EXT_ID, channel, payload)
-      .then((res) => {
-        const r = res as IpcResponse<T>
-        if (!r?.success) throw new Error(r?.error || 'IPC call failed')
-        return r.data as T
-      })
+  const invoke = <T = unknown,>(channel: string, payload?: unknown): Promise<T> =>
+    window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
+      const r = res as IpcResponse<T>
+      if (!r?.success) throw new Error(r?.error || 'IPC call failed')
+      return r.data as T
+    })
 
   useEffect(() => {
-    invoke<Note[]>('notes:list', {}).then(setNotes).catch(() => {})
+    invoke<Note[]>('notes:list', {})
+      .then(setNotes)
+      .catch(() => {})
   }, [])
 
   const filteredNotes = useMemo(() => {
@@ -145,21 +146,27 @@ export default function NotesApp({ query }: Props) {
       key: 'n',
       label: 'New note',
       hint: 'N',
-      handler: () => { void handleNew() },
+      handler: () => {
+        void handleNew()
+      },
     },
     {
       key: 's',
       label: 'Save',
       hint: 'S',
       activeOn: () => selected !== null,
-      handler: () => { void handleSave() },
+      handler: () => {
+        void handleSave()
+      },
     },
     {
       key: 'Delete',
       label: 'Delete',
       hint: 'Del',
       activeOn: () => selected !== null,
-      handler: () => { void handleDelete() },
+      handler: () => {
+        void handleDelete()
+      },
     },
   ])
 
@@ -168,19 +175,28 @@ export default function NotesApp({ query }: Props) {
       {SectionHeader && (
         <SectionHeader
           title="Notes"
-          action={Button ? <Button onClick={() => { void handleNew() }}>+</Button> : undefined}
+          action={
+            Button ? (
+              <Button
+                onClick={() => {
+                  void handleNew()
+                }}
+              >
+                +
+              </Button>
+            ) : undefined
+          }
         />
       )}
       <List>
         {filteredNotes.length === 0 ? (
-          <EmptyState message={query ? 'No matching notes.' : 'No notes yet.'} hint="Press N to create one." />
+          <EmptyState
+            message={query ? 'No matching notes.' : 'No notes yet.'}
+            hint="Press N to create one."
+          />
         ) : (
           filteredNotes.map((note, idx) => (
-            <ListItem
-              key={note.id}
-              active={idx === selectedIndex}
-              onClick={() => selectNote(note)}
-            >
+            <ListItem key={note.id} active={idx === selectedIndex} onClick={() => selectNote(note)}>
               <ListItemBody>
                 <ListItemText>{note.title}</ListItemText>
                 <ListItemMeta>{note.body.slice(0, 60)}</ListItemMeta>
@@ -193,7 +209,15 @@ export default function NotesApp({ query }: Props) {
   )
 
   const rightPanel = selected ? (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 'var(--space-2)', gap: 'var(--space-2)' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        padding: 'var(--space-2)',
+        gap: 'var(--space-2)',
+      }}
+    >
       {Input && (
         <Input
           value={title}
@@ -213,19 +237,49 @@ export default function NotesApp({ query }: Props) {
         />
       )}
       <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-        {Button && <Button onClick={() => { void handleSave() }}>Save</Button>}
-        {Button && <Button onClick={() => { void handleDelete() }}>Delete</Button>}
+        {Button && (
+          <Button
+            onClick={() => {
+              void handleSave()
+            }}
+          >
+            Save
+          </Button>
+        )}
+        {Button && (
+          <Button
+            onClick={() => {
+              void handleDelete()
+            }}
+          >
+            Delete
+          </Button>
+        )}
         <div style={{ flex: 1 }} />
         {Button && (
           <Button
-            onClick={recording ? handleStopRecord : () => { void handleRecord() }}
+            onClick={
+              recording
+                ? handleStopRecord
+                : () => {
+                    void handleRecord()
+                  }
+            }
             disabled={transcribing}
           >
-            {transcribing
-              ? 'Transcribing…'
-              : recording
-                ? (IconStop ? <IconStop style={{ width: '12px', height: '12px' }} /> : 'Stop')
-                : (IconMic ? <IconMic style={{ width: '12px', height: '12px' }} /> : 'Rec')}
+            {transcribing ? (
+              'Transcribing…'
+            ) : recording ? (
+              IconStop ? (
+                <IconStop style={{ width: '12px', height: '12px' }} />
+              ) : (
+                'Stop'
+              )
+            ) : IconMic ? (
+              <IconMic style={{ width: '12px', height: '12px' }} />
+            ) : (
+              'Rec'
+            )}
           </Button>
         )}
       </div>

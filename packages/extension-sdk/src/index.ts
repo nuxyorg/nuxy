@@ -35,4 +35,3 @@ export function defineExtension(module: ExtensionModule): ExtensionModule {
 }
 
 export { createMockCore } from './testing.js'
-

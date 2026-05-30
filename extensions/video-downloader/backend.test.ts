@@ -146,7 +146,9 @@ describe('video-downloader backend', () => {
         code: 0,
       })
 
-      const result = (await handlers['ytdlp:getFormats']({ url: 'https://example.com/video' })) as any
+      const result = (await handlers['ytdlp:getFormats']({
+        url: 'https://example.com/video',
+      })) as any
       expect(result.title).toBe('Test Video Title')
       expect(result.thumbnail).toBe('https://example.com/thumb.jpg')
       expect(result.duration).toBe(360)

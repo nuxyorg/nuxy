@@ -159,19 +159,25 @@ export async function register(core: CoreContext): Promise<void> {
   core.ipc.handle('bw:copyPassword', async (payload: unknown): Promise<void> => {
     const password = await fetchPassword(core, payload as BitwardenItem)
     await core.clipboard.writeText(password)
-    setTimeout(async () => { await core.clipboard.writeText('') }, 30_000)
+    setTimeout(async () => {
+      await core.clipboard.writeText('')
+    }, 30_000)
   })
 
   core.ipc.handle('bw:copyUsername', async (payload: unknown): Promise<void> => {
     const item = payload as BitwardenItem
     await core.clipboard.writeText(item.username ?? '')
-    setTimeout(async () => { await core.clipboard.writeText('') }, 30_000)
+    setTimeout(async () => {
+      await core.clipboard.writeText('')
+    }, 30_000)
   })
 
   core.ipc.handle('bw:copyTotp', async (payload: unknown): Promise<void> => {
     const { code } = payload as CopyTotpPayload
     await core.clipboard.writeText(code)
-    setTimeout(async () => { await core.clipboard.writeText('') }, 30_000)
+    setTimeout(async () => {
+      await core.clipboard.writeText('')
+    }, 30_000)
   })
 
   core.ipc.handle('bw:copyText', async (payload: unknown): Promise<void> => {

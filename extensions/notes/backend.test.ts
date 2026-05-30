@@ -74,9 +74,7 @@ describe('notes backend', () => {
       await register(core)
 
       const note = await (
-        handlers['notes:create'] as (
-          p: unknown
-        ) => Promise<{
+        handlers['notes:create'] as (p: unknown) => Promise<{
           id: string
           title: string
           body: string

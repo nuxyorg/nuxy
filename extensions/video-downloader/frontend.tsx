@@ -111,7 +111,6 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'all', label: 'All Streams' },
 ]
 
-
 interface Props {
   query: string
 }
@@ -142,6 +141,7 @@ export default function VideoDownloader({ query }: Props) {
     Text,
     Box,
     Stack,
+    MediaPreview,
   } = window.UI || {}
 
   const url = (query || '').trim()
@@ -180,7 +180,7 @@ export default function VideoDownloader({ query }: Props) {
       const hist = await ipc<HistoryItem[]>('ytdlp:history')
       setHistory(hist || [])
     } catch (e) {
-      console.error(e)
+      // Failed to load history
     }
   }
 
@@ -199,7 +199,6 @@ export default function VideoDownloader({ query }: Props) {
       void loadHistory()
     }
   }, [activeTab])
-
 
   const hasRunning = jobs.some((j) => j.status === 'running')
   useEffect(() => {
@@ -310,7 +309,6 @@ export default function VideoDownloader({ query }: Props) {
     combinedList,
   } as any
 
-
   async function getFormats() {
     const { url } = stateRef.current
     if (!url) return
@@ -375,7 +373,6 @@ export default function VideoDownloader({ query }: Props) {
     }
   }
 
-
   async function cancelJob(jobId: string) {
     await ipc('ytdlp:cancel', { jobId })
     setJobs((prev) => prev.filter((j) => j.jobId !== jobId))
@@ -429,7 +426,16 @@ export default function VideoDownloader({ query }: Props) {
         label: 'Download / Open',
         hint: '↵',
         handler: () => {
-          const { activeTab, metadata, url, loading, selectedIndex, filteredFormats, downloadSelectedIndex, combinedList } = stateRef.current
+          const {
+            activeTab,
+            metadata,
+            url,
+            loading,
+            selectedIndex,
+            filteredFormats,
+            downloadSelectedIndex,
+            combinedList,
+          } = stateRef.current
 
           if (activeTab === 'downloads') {
             const item = combinedList[downloadSelectedIndex]
@@ -545,11 +551,20 @@ export default function VideoDownloader({ query }: Props) {
     }
   }, [activeSectionId])
 
-
   useEffect(() => {
     window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
-  }, [url, metadata, loading, jobs, jobSelectedIndex, focusArea, activeTab, history, downloadSelectedIndex, combinedList])
-
+  }, [
+    url,
+    metadata,
+    loading,
+    jobs,
+    jobSelectedIndex,
+    focusArea,
+    activeTab,
+    history,
+    downloadSelectedIndex,
+    combinedList,
+  ])
 
   // Command palette actions
   useEffect(() => {
@@ -610,7 +625,7 @@ export default function VideoDownloader({ query }: Props) {
             nav.goToSection('all')
             setSelectedIndex(0)
           },
-        },
+        }
       )
     }
 
@@ -643,7 +658,14 @@ export default function VideoDownloader({ query }: Props) {
   // ── Full-screen Downloads & History view ──────────────────────────────────
   const fullScreenDownloadsView =
     Box && Stack && Text && List && ScrollArea ? (
-      <Box style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 'var(--space-3)' }}>
+      <Box
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          padding: 'var(--space-3)',
+        }}
+      >
         <Stack direction="horizontal" align="center" style={{ marginBottom: 'var(--space-3)' }}>
           <Heading size="lg">Downloads & History</Heading>
         </Stack>
@@ -684,71 +706,20 @@ export default function VideoDownloader({ query }: Props) {
                     style={{ cursor: 'pointer' }}
                   >
                     <ListItemBody style={{ gap: 'var(--space-3)', alignItems: 'center' }}>
-                      {item.thumbnail && (
-                        <Box
-                          style={{
-                            width: '80px',
-                            minWidth: '80px',
-                            height: '45px',
-                            borderRadius: 'var(--radius-sm)',
-                            overflow: 'hidden',
-                            position: 'relative',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <img
-                            src={item.thumbnail}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            alt=""
-                          />
-                          {item.duration && (
-                            <Text
-                              as="span"
-                              size="xs"
-                              mono
-                              style={{
-                                position: 'absolute',
-                                bottom: 'var(--space-1)',
-                                right: 'var(--space-1)',
-                                background: 'var(--surface-overlay, rgba(0,0,0,0.8))',
-                                color: 'var(--text-on-accent, #fff)',
-                                padding: '0px var(--space-1)',
-                                borderRadius: 'var(--radius-xs, 2px)',
-                                fontSize: '9px',
-                              }}
-                            >
-                              {fmtDuration(item.duration)}
-                            </Text>
-                          )}
-                        </Box>
+                      {MediaPreview && (
+                        <MediaPreview
+                          thumbnail={item.thumbnail}
+                          title={item.title}
+                          uploader={item.uploader}
+                          duration={item.duration}
+                          size="sm"
+                          badge={Badge && <Badge variant={badgeVariant as any}>{badgeText}</Badge>}
+                          progress={isRunning ? item.progress : null}
+                          footerText={
+                            isDone && item.outputPath ? `Saved to: ${item.outputPath}` : null
+                          }
+                        />
                       )}
-                      <Stack direction="vertical" style={{ minWidth: 0, flex: 1 }} gap="var(--space-1)">
-                        <Text as="span" bold size="sm" style={{ color: 'var(--text-normal)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {item.title}
-                        </Text>
-                        <Stack direction="horizontal" gap="var(--space-2)" align="center" style={{ flexWrap: 'wrap' }}>
-                          {item.uploader && (
-                            <Text as="span" variant="muted" size="xs">
-                              {item.uploader}
-                            </Text>
-                          )}
-                          {Badge && (
-                            <Badge variant={badgeVariant as any}>
-                              {badgeText}
-                            </Badge>
-                          )}
-                        </Stack>
-                        {isRunning && ProgressBar && (
-                          <Box style={{ width: '100%', marginTop: 'var(--space-1)' }}>
-                            <ProgressBar value={item.progress} max={100} />
-                          </Box>
-                        )}
-                        {isDone && item.outputPath && (
-                          <Text as="span" variant="muted" size="xs" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            Saved to: {item.outputPath}
-                          </Text>
-                        )}
-                      </Stack>
                     </ListItemBody>
                     <ListItemActions style={{ gap: 'var(--space-2)' }}>
                       {isRunning && Button && (
@@ -843,136 +814,85 @@ export default function VideoDownloader({ query }: Props) {
 
   // ── Meta card ─────────────────────────────────────────────────────────────
   const metaCard =
-    Card && CardBody && Stack && Box && Text ? (
+    Card && CardBody && MediaPreview ? (
       <Card style={{ flexShrink: 0 }}>
         <CardBody style={{ padding: 'var(--space-3)' }}>
-          <Stack direction="horizontal" gap="var(--space-4)">
-            {metadata.thumbnail && (
-              <Box
-                style={{
-                  position: 'relative',
-                  width: '120px',
-                  minWidth: '120px',
-                  height: '68px',
-                  borderRadius: 'var(--radius-sm)',
-                  overflow: 'hidden',
-                }}
-              >
-                <img
-                  src={metadata.thumbnail}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  alt=""
-                />
-                {metadata.duration && (
-                  <Text
-                    as="span"
-                    size="xs"
-                    mono
-                    style={{
-                      position: 'absolute',
-                      bottom: 'var(--space-1)',
-                      right: 'var(--space-1)',
-                      background: 'var(--surface-overlay, rgba(0,0,0,0.8))',
-                      color: 'var(--text-on-accent, #fff)',
-                      padding: '1px var(--space-1)',
-                      borderRadius: 'var(--radius-xs, 3px)',
-                    }}
-                  >
-                    {fmtDuration(metadata.duration)}
-                  </Text>
-                )}
-              </Box>
-            )}
-            <Stack
-              direction="vertical"
-              justify="center"
-              style={{ minWidth: 0, flex: 1 }}
-              gap="var(--space-1)"
-            >
-              <Text
-                as="span"
-                bold
-                size="md"
-                style={{
-                  color: 'var(--text-normal)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {metadata.title}
-              </Text>
-              {metadata.uploader && (
-                <Text as="span" variant="muted" size="sm">
-                  {metadata.uploader}
-                </Text>
-              )}
-            </Stack>
-          </Stack>
+          <MediaPreview
+            thumbnail={metadata.thumbnail}
+            title={metadata.title}
+            uploader={metadata.uploader}
+            duration={metadata.duration}
+            size="md"
+          />
         </CardBody>
       </Card>
     ) : null
 
   // ── Format list ───────────────────────────────────────────────────────────
-  const formatList = List && Text ? (
-    filteredFormats.length === 0 ? (
-      EmptyState && <EmptyState message="No matching formats for this category." />
-    ) : (
-      <List>
-        {filteredFormats.map((f, idx) => {
-          const isActive = focusArea === 'right' && idx === selectedIndex
-          const isAudioOnly = f.vcodec === 'none' || f.resolution === 'audio only'
-          const hasAudio = f.acodec !== 'none' || f.formatId.includes('+bestaudio')
-          let badgeVariant = 'default'
-          let badgeText = f.ext.toUpperCase()
-          if (isAudioOnly) {
-            badgeVariant = 'warning'
-            badgeText = 'AUDIO'
-          } else if (
-            f.resolution.includes('1080') ||
-            f.resolution.includes('2160') ||
-            f.resolution.includes('1440')
-          )
-            badgeVariant = 'success'
-          else if (!hasAudio) {
-            badgeVariant = 'danger'
-            badgeText = 'SILENT'
-          }
+  const formatList =
+    List && Text ? (
+      filteredFormats.length === 0 ? (
+        EmptyState && <EmptyState message="No matching formats for this category." />
+      ) : (
+        <List>
+          {filteredFormats.map((f, idx) => {
+            const isActive = focusArea === 'right' && idx === selectedIndex
+            const isAudioOnly = f.vcodec === 'none' || f.resolution === 'audio only'
+            const hasAudio = f.acodec !== 'none' || f.formatId.includes('+bestaudio')
+            let badgeVariant = 'default'
+            let badgeText = f.ext.toUpperCase()
+            if (isAudioOnly) {
+              badgeVariant = 'warning'
+              badgeText = 'AUDIO'
+            } else if (
+              f.resolution.includes('1080') ||
+              f.resolution.includes('2160') ||
+              f.resolution.includes('1440')
+            )
+              badgeVariant = 'success'
+            else if (!hasAudio) {
+              badgeVariant = 'danger'
+              badgeText = 'SILENT'
+            }
 
-          return (
-            <ListItem
-              key={f.formatId + '-' + idx}
-              active={isActive}
-              onClick={() => {
-                setSelectedIndex(idx)
-                nav.setFocusArea('right')
-                void startDownload(f.formatId)
-              }}
-              style={{ cursor: 'pointer' }}
-            >
-              <ListItemBody>
-                <ListItemText>
-                  <Text as="span" bold style={{ display: 'inline', marginRight: 'var(--space-2)' }}>
-                    {f.resolution}
-                  </Text>
-                  {Badge && <Badge variant={badgeVariant as any}>{badgeText}</Badge>}
-                  <Text
-                    as="span"
-                    variant="muted"
-                    size="sm"
-                    style={{ display: 'inline', marginLeft: 'var(--space-3)' }}
-                  >
-                    {f.note}
-                  </Text>
-                </ListItemText>
-                <ListItemMeta>{fmtSize(f.filesize)}</ListItemMeta>
-              </ListItemBody>
-            </ListItem>
-          )
-        })}
-      </List>
-    )
-  ) : null
+            return (
+              <ListItem
+                key={f.formatId + '-' + idx}
+                active={isActive}
+                onClick={() => {
+                  setSelectedIndex(idx)
+                  nav.setFocusArea('right')
+                  void startDownload(f.formatId)
+                }}
+                style={{ cursor: 'pointer' }}
+              >
+                <ListItemBody>
+                  <ListItemText>
+                    <Text
+                      as="span"
+                      bold
+                      style={{ display: 'inline', marginRight: 'var(--space-2)' }}
+                    >
+                      {f.resolution}
+                    </Text>
+                    {Badge && <Badge variant={badgeVariant as any}>{badgeText}</Badge>}
+                    <Text
+                      as="span"
+                      variant="muted"
+                      size="sm"
+                      style={{ display: 'inline', marginLeft: 'var(--space-3)' }}
+                    >
+                      {f.note}
+                    </Text>
+                  </ListItemText>
+                  <ListItemMeta>{fmtSize(f.filesize)}</ListItemMeta>
+                </ListItemBody>
+              </ListItem>
+            )
+          })}
+        </List>
+      )
+    ) : null
 
   // ── TwoPanel layout (same structure as settings) ──────────────────────────
   const left = TabBar ? (
@@ -986,20 +906,21 @@ export default function VideoDownloader({ query }: Props) {
     />
   ) : null
 
-  const right = ScrollArea && Box ? (
-    <ScrollArea ref={rightPanelRef} style={{ flex: 1 }}>
-      <Box
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 'var(--space-3)',
-          padding: 'var(--space-1) var(--space-2)',
-        }}
-      >
-        {formatList}
-      </Box>
-    </ScrollArea>
-  ) : null
+  const right =
+    ScrollArea && Box ? (
+      <ScrollArea ref={rightPanelRef} style={{ flex: 1 }}>
+        <Box
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-3)',
+            padding: 'var(--space-1) var(--space-2)',
+          }}
+        >
+          {formatList}
+        </Box>
+      </ScrollArea>
+    ) : null
 
   if (!TwoPanel) {
     return Stack ? (
@@ -1013,14 +934,11 @@ export default function VideoDownloader({ query }: Props) {
   return Box && TwoPanel ? (
     <Box style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {metaCard && (
-        <Box style={{ flexShrink: 0, padding: 'var(--space-1) var(--space-2) 0' }}>
-          {metaCard}
-        </Box>
+        <Box style={{ flexShrink: 0, padding: 'var(--space-1) var(--space-2) 0' }}>{metaCard}</Box>
       )}
       <Box style={{ flex: 1, minHeight: 0 }}>
         <TwoPanel left={left} right={right} split="160px" />
       </Box>
     </Box>
   ) : null
-
 }

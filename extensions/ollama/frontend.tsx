@@ -39,7 +39,7 @@ export default function OllamaApp({ query: _query }: Props) {
   const [modelFocusedIndex, setModelFocusedIndex] = useState<number>(0)
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
-  const ipc = <T = unknown>(channel: string, payload?: unknown): Promise<T> =>
+  const ipc = <T = unknown,>(channel: string, payload?: unknown): Promise<T> =>
     window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
       const r = res as IpcResponse<T>
       if (!r?.success) throw new Error(r?.error || 'IPC call failed')
@@ -90,7 +90,15 @@ export default function OllamaApp({ query: _query }: Props) {
   const selectedModelIndex = models.indexOf(selectedModel)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: 'var(--space-2)', padding: 'var(--space-2)' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        gap: 'var(--space-2)',
+        padding: 'var(--space-2)',
+      }}
+    >
       {models.length > 0 && SelectBox && (
         <SelectBox
           options={modelOptions}
@@ -108,14 +116,25 @@ export default function OllamaApp({ query: _query }: Props) {
         />
       )}
       {error && Alert && <Alert variant="danger">{error}</Alert>}
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-1)',
+        }}
+      >
         {messages.length === 0 && !loading && (
           <EmptyState message="Ask Ollama anything." hint="Type your message below." />
         )}
         {List && (
           <List>
             {messages.map((msg, i) => (
-              <ListItem key={i} style={{ alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
+              <ListItem
+                key={i}
+                style={{ alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start' }}
+              >
                 <ListItemBody>
                   <ListItemText>{msg.content}</ListItemText>
                   <ListItemMeta>{msg.role === 'user' ? 'You' : 'Ollama'}</ListItemMeta>
@@ -153,7 +172,12 @@ export default function OllamaApp({ query: _query }: Props) {
           />
         )}
         {Button && (
-          <Button onClick={() => { void handleSend() }} disabled={loading || !input.trim()}>
+          <Button
+            onClick={() => {
+              void handleSend()
+            }}
+            disabled={loading || !input.trim()}
+          >
             Send
           </Button>
         )}
