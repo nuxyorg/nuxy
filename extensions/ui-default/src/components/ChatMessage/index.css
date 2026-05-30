@@ -1,0 +1,47 @@
+.nuxy-chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2);
+}
+
+.nuxy-chat-message {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-width: 80%;
+}
+
+.nuxy-chat-message--user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.nuxy-chat-message--assistant {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.nuxy-chat-message__bubble {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-sm);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.nuxy-chat-message--user .nuxy-chat-message__bubble {
+  background: var(--surface-accent-subtle, rgba(120, 80, 255, 0.18));
+  color: var(--text-primary, rgba(255, 255, 255, 0.92));
+}
+
+.nuxy-chat-message--assistant .nuxy-chat-message__bubble {
+  background: var(--surface-overlay, rgba(20, 20, 20, 0.65));
+  color: var(--text-primary, rgba(255, 255, 255, 0.92));
+}
+
+.nuxy-chat-message__role {
+  font-size: var(--font-xs);
+  color: var(--text-muted, rgba(255, 255, 255, 0.4));
+  padding: 0 var(--space-1);
+}
