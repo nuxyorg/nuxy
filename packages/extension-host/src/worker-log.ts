@@ -14,7 +14,7 @@ const C = {
 
 export function createWorkerLogger(extId: string, logLevel: string) {
   function wlog(level: string, ns: string, msg: string, meta?: unknown): void {
-    if ((LEVELS[level] ?? 99) < (LEVELS[logLevel] ?? 1)) return
+    if ((LEVELS[level] ?? 99) < (LEVELS[logLevel] ?? 2)) return
     const ts = new Date().toISOString().replace('T', ' ').substring(0, 23)
     const lbl = C[level as keyof typeof C] + C.bold + level.toUpperCase().padEnd(5) + C.reset
     const nsp = C.ns + `[Worker:${extId}:${ns}]` + C.reset

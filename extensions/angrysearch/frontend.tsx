@@ -61,12 +61,6 @@ export default function AngrysearchView({ query }: Props) {
           if (item) handleOpenLocation(item)
         },
       },
-      {
-        key: 'F8',
-        label: 'Toggle mode',
-        hint: 'F8',
-        handler: () => setRegexMode((m: boolean) => !m),
-      },
     ],
   })
 
@@ -157,15 +151,11 @@ export default function AngrysearchView({ query }: Props) {
   }, [regexMode, status])
 
   return (
-    <List className="test">
+    <List>
       {items.length === 0 ? (
         <EmptyState
           message={searchQuery.length < 3 ? 'Type to search...' : 'No matches.'}
-          hint={
-            searchQuery.length < 3
-              ? 'Enter at least 3 chaaaabbbbaaaaracters.'
-              : 'Try a different search.'
-          }
+          hint={searchQuery.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'}
         />
       ) : (
         items.map((item, idx) => {

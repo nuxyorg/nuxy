@@ -238,38 +238,40 @@ export default function OllamaApp({ query }: Props) {
         abortControllerRef.current?.abort()
       },
     },
-    {
-      key: 'n',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Clear chat',
-      hint: ['ctrl', 'N'],
-      handler: () => {
-        setMessages([])
-        ipc('history:clear').catch(() => {})
-      },
-    },
-    {
-      key: 'ArrowUp',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Navigate models',
-      hint: ['ctrl', '↑↓'],
-      activeOn: () => models.length > 1,
-      handler: () => {
-        const idx = models.indexOf(selectedModel)
-        if (idx > 0) setSelectedModel(models[idx - 1])
-      },
-    },
-    {
-      key: 'ArrowDown',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: '',
-      activeOn: () => models.length > 1,
-      handler: () => {
-        const idx = models.indexOf(selectedModel)
-        if (idx < models.length - 1) setSelectedModel(models[idx + 1])
-      },
-    },
   ])
+
+  useEffect(() => {
+    const actions: {
+      id: string
+      label: string
+      onExecute?: () => void
+      children?: { id: string; label: string; onExecute: () => void }[]
+    }[] = [
+      {
+        id: 'ollama-clear-chat',
+        label: 'Clear Chat History',
+        onExecute: () => {
+          setMessages([])
+          ipc('history:clear').catch(() => {})
+        },
+      },
+    ]
+    if (models.length > 0) {
+      actions.push({
+        id: 'ollama-models',
+        label: 'Models',
+        children: models.map((m) => ({
+          id: `ollama-select-model-${m}`,
+          label: m,
+          onExecute: () => setSelectedModel(m),
+        })),
+      })
+    }
+    window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
+    }
+  }, [models])
 
   return (
     <div

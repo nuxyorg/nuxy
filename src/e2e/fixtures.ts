@@ -49,7 +49,7 @@ async function launchApp(userDataDir: string, headless: boolean): Promise<Electr
   // to X11 (and thus correctly uses the virtual display set by xvfb-run).
   delete cleanEnv.WAYLAND_DISPLAY
 
-  return electron.launch({
+  const app = await electron.launch({
     executablePath: ELECTRON_BIN,
     args: [
       '--no-sandbox',
@@ -60,12 +60,17 @@ async function launchApp(userDataDir: string, headless: boolean): Promise<Electr
     ],
     env: {
       ...cleanEnv,
+      NODE_ENV: 'test',
+      LOG_LEVEL: 'silly',
       DISPLAY: process.env.DISPLAY ?? ':0',
       ELECTRON_OZONE_PLATFORM_HINT: 'x11',
       NUXY_DATA_DIR: nuxyDataDir,
     },
     timeout: 3000,
   })
+  app.process().stdout?.on('data', (data) => console.log(`[MAIN-STDOUT] ${data.toString().trim()}`))
+  app.process().stderr?.on('data', (data) => console.error(`[MAIN-STDERR] ${data.toString().trim()}`))
+  return app
 }
 
 async function getAppPage(app: ElectronApplication): Promise<Page> {

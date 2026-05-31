@@ -209,7 +209,7 @@ export function useProviders({
 }
 
 function matchesAction(action: KeyAction, e: KeyboardEvent): boolean {
-  if (action.key !== e.key) return false
+  if (action.key.toLowerCase() !== e.key.toLowerCase()) return false
   const mods = action.modifiers || []
   if (mods.includes('ctrl') !== e.ctrlKey) return false
   if (mods.includes('shift') !== e.shiftKey) return false

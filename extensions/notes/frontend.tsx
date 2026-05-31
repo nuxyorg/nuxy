@@ -1,13 +1,31 @@
 const React = window.React
-const { useState, useEffect, useRef, useMemo } = React
+const { useState, useEffect, useRef, useMemo, Component } = React
 
 import type { Note } from './types.ts'
 
 const EXT_ID = 'com.nuxy.notes'
 
-const _useListNavigation =
-  (window.UI || {}).useListNavigation ||
-  (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { error: Error | null }> {
+  constructor(props: any) {
+    super(props)
+    this.state = { error: null }
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { error }
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: '16px', color: 'var(--text-muted, #888)', fontSize: '13px' }}>
+          <div style={{ marginBottom: '4px', color: 'var(--error, #f87171)', fontWeight: 500 }}>Render error</div>
+          <div style={{ opacity: 0.7 }}>{this.state.error.message}</div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
 interface Props {
@@ -20,6 +38,16 @@ interface IpcResponse<T = unknown> {
   error?: string
 }
 
+function deriveTitle(body: string): string {
+  const lines = body.split('\n').map((l) => l.trim()).filter(Boolean)
+  if (lines.length === 0) return 'New Note'
+  const firstLine = lines[0]
+  if (firstLine.length > 40) {
+    return firstLine.slice(0, 40) + '...'
+  }
+  return firstLine
+}
+
 export default function NotesApp({ query }: Props) {
   const {
     TwoPanel,
@@ -29,19 +57,23 @@ export default function NotesApp({ query }: Props) {
     ListItemText,
     ListItemMeta,
     EmptyState,
-    Input,
     Textarea,
     SectionHeader,
+    MarkdownText,
+    toast,
   } = window.UI || {}
 
   const [notes, setNotes] = useState<Note[]>([])
   const [selected, setSelected] = useState<Note | null>(null)
-  const [title, setTitle] = useState<string>('')
   const [body, setBody] = useState<string>('')
+  const [editMode, setEditMode] = useState<boolean>(false)
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1)
+
   const [recording, setRecording] = useState<boolean>(false)
   const [transcribing, setTranscribing] = useState<boolean>(false)
   const mediaRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
 
   const invoke = <T = unknown,>(channel: string, payload?: unknown): Promise<T> =>
     window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
@@ -50,49 +82,107 @@ export default function NotesApp({ query }: Props) {
       return r.data as T
     })
 
+  // Load notes on mount
   useEffect(() => {
     invoke<Note[]>('notes:list', {})
       .then(setNotes)
       .catch(() => {})
   }, [])
 
+  // Handle __create_note__: query from search provider click
+  useEffect(() => {
+    if (query && query.startsWith('__create_note__:')) {
+      const content = query.substring('__create_note__:'.length)
+      if (content.trim()) {
+        const title = deriveTitle(content)
+        invoke<Note>('notes:create', { title, body: content })
+          .then(async (newNote) => {
+            const list = await invoke<Note[]>('notes:list', {})
+            setNotes(list)
+            setSelected(newNote)
+            setBody(newNote.body)
+            setSelectedIndex(1) // Yeni Not is at index 0, so the first note is at index 1
+            setEditMode(false) // Start in preview mode
+            if (toast) toast('Note saved!', { type: 'success' })
+            // Clear omnibar query
+            window.dispatchEvent(
+              new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } })
+            )
+          })
+          .catch(() => {})
+      }
+    }
+  }, [query])
+
+  // Filter notes based on query
   const filteredNotes = useMemo(() => {
-    if (!query.trim()) return notes
+    if (!query.trim() || query.startsWith('__create_note__:')) return notes
     const q = query.toLowerCase()
     return notes.filter(
       (n) => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)
     )
   }, [notes, query])
 
-  function selectNote(note: Note): void {
-    setSelected(note)
-    setTitle(note.title)
-    setBody(note.body)
-  }
+  // Reset selectedIndex when query changes
+  useEffect(() => {
+    setSelectedIndex(-1)
+  }, [query])
+
+  // Sync selected note when selectedIndex changes
+  useEffect(() => {
+    if (editMode) return // Don't interrupt edit mode changes
+    if (selectedIndex > 0 && selectedIndex <= filteredNotes.length) {
+      const note = filteredNotes[selectedIndex - 1]
+      if (note) {
+        setSelected(note)
+        setBody(note.body)
+      }
+    } else {
+      setSelected(null)
+      setBody('')
+    }
+  }, [selectedIndex, filteredNotes, editMode])
+
+  // Focus textarea when editMode changes
+  useEffect(() => {
+    if (editMode && textareaRef.current) {
+      textareaRef.current.focus()
+      const len = textareaRef.current.value.length
+      textareaRef.current.setSelectionRange(len, len)
+    }
+  }, [editMode])
 
   async function handleNew(): Promise<void> {
     const note = await invoke<Note>('notes:create', { title: 'New Note', body: '' })
     const updated = await invoke<Note[]>('notes:list', {})
     setNotes(updated)
-    selectNote(note)
+    setSelected(note)
+    setBody('')
+    setSelectedIndex(1) // index 0 is "Yeni Not", index 1 is this new note
+    setEditMode(true)
   }
 
   async function handleSave(): Promise<void> {
     if (!selected) return
+    const title = deriveTitle(body)
     const updated = await invoke<Note>('notes:update', { id: selected.id, title, body })
     setSelected(updated)
     const list = await invoke<Note[]>('notes:list', {})
     setNotes(list)
+    if (toast) toast('Note saved!', { type: 'success' })
   }
 
   async function handleDelete(): Promise<void> {
-    if (!selected) return
-    await invoke('notes:delete', { id: selected.id })
+    const noteToDelete = selectedIndex > 0 ? filteredNotes[selectedIndex - 1] : selected
+    if (!noteToDelete) return
+    await invoke('notes:delete', { id: noteToDelete.id })
     setSelected(null)
-    setTitle('')
     setBody('')
+    setSelectedIndex(0)
+    setEditMode(false)
     const list = await invoke<Note[]>('notes:list', {})
     setNotes(list)
+    if (toast) toast('Note deleted', { type: 'info' })
   }
 
   async function handleRecord(): Promise<void> {
@@ -112,7 +202,7 @@ export default function NotesApp({ query }: Props) {
           const result = await invoke<{ transcript: string }>('notes:transcribe', { audioBuffer })
           setBody((prev: string) => prev + (prev ? ' ' : '') + result.transcript)
         } catch {
-          // silently fail if transcription unavailable
+          // silently fail
         } finally {
           setTranscribing(false)
         }
@@ -132,21 +222,12 @@ export default function NotesApp({ query }: Props) {
     }
   }
 
-  const { selectedIndex } = _useListNavigation(filteredNotes, {
-    onEnter: (note: Note) => selectNote(note),
-    enterLabel: 'Open',
-    enterHint: 'Enter',
-  })
-
-  useEffect(() => {
-    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
-  }, [selected, recording])
-
-  _useToolKeyActions([
+  // Register keyboard actions via useToolKeyActions
+  const keyActions = useMemo(() => [
     {
       key: 'n',
-      modifiers: ['ctrl'],
-      label: 'New note',
+      modifiers: ['ctrl'] as const,
+      label: 'New Note',
       hint: '⌃N',
       handler: () => {
         void handleNew()
@@ -154,48 +235,167 @@ export default function NotesApp({ query }: Props) {
     },
     {
       key: 's',
-      modifiers: ['ctrl'],
-      label: 'Save',
+      modifiers: ['ctrl'] as const,
+      label: 'Save Note',
       hint: '⌃S',
-      activeOn: () => selected !== null,
+      activeOn: () => editMode && selected !== null,
       handler: () => {
         void handleSave()
       },
     },
     {
       key: 'Delete',
-      label: 'Delete',
+      label: 'Delete Note',
       hint: 'Del',
-      activeOn: () => selected !== null,
+      activeOn: () => !editMode && selectedIndex > 0 && selectedIndex <= filteredNotes.length,
       handler: () => {
+        console.log('[DEBUG] Delete key action triggered. selectedIndex:', selectedIndex, 'editMode:', editMode)
         void handleDelete()
       },
     },
     {
-      key: 'r',
-      modifiers: ['ctrl'],
-      label: recording ? 'Stop recording' : 'Record',
-      hint: '⌃R',
-      activeOn: () => selected !== null,
+      key: 'Enter',
+      label: 'Edit Note',
+      hint: '↵',
+      activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex <= filteredNotes.length,
       handler: () => {
-        if (recording) handleStopRecord()
-        else void handleRecord()
+        if (selectedIndex === 0) {
+          void handleNew()
+        } else {
+          const note = filteredNotes[selectedIndex - 1]
+          if (note) {
+            setSelected(note)
+            setBody(note.body)
+            setEditMode(true)
+          }
+        }
       },
     },
-  ])
+    {
+      key: 'Escape',
+      label: 'Focus search / Exit edit',
+      hint: 'Esc',
+      handler: () => {
+        if (editMode) {
+          setEditMode(false)
+        } else {
+          window.dispatchEvent(
+            new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } })
+          )
+          setSelectedIndex(-1)
+        }
+      },
+    },
+    {
+      key: 'ArrowUp',
+      label: 'Previous',
+      allowRepeat: true,
+      activeOn: () => !editMode,
+      handler: () => {
+        setSelectedIndex((prev) => {
+          if (prev <= 0) {
+            window.dispatchEvent(
+              new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } })
+            )
+            return -1
+          }
+          return prev - 1
+        })
+      },
+    },
+    {
+      key: 'ArrowDown',
+      label: 'Next',
+      allowRepeat: true,
+      activeOn: () => !editMode,
+      handler: () => {
+        setSelectedIndex((prev) => {
+          const maxIdx = filteredNotes.length
+          if (prev < maxIdx) {
+            if (prev === -1) {
+              window.dispatchEvent(
+                new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'hide' } })
+              )
+            }
+            return prev + 1
+          }
+          return prev
+        })
+      },
+    },
+  ], [editMode, selectedIndex, filteredNotes, selected, body])
+
+  _useToolKeyActions(keyActions)
+
+  // Register command palette actions
+  useEffect(() => {
+    const actions = [
+      {
+        id: 'notes-new',
+        label: 'New note',
+        onExecute: () => {
+          void handleNew()
+        },
+      },
+    ]
+    if (selected !== null) {
+      actions.push(
+        {
+          id: 'notes-save',
+          label: 'Save',
+          onExecute: () => {
+            void handleSave()
+          },
+        },
+        {
+          id: 'notes-delete',
+          label: 'Delete',
+          onExecute: () => {
+            void handleDelete()
+          },
+        },
+        {
+          id: 'notes-record',
+          label: recording ? 'Stop recording' : 'Record',
+          onExecute: () => {
+            if (recording) handleStopRecord()
+            else void handleRecord()
+          },
+        }
+      )
+    }
+    window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
+    }
+  }, [selected, recording, editMode])
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
+  }, [selected, recording, editMode, selectedIndex])
 
   const leftPanel = (
     <>
       {SectionHeader && <SectionHeader label="Notes" />}
       <List>
+        <ListItem active={selectedIndex === 0} onClick={() => setSelectedIndex(0)}>
+          <ListItemBody>
+            <ListItemText>Yeni Not</ListItemText>
+            <ListItemMeta>Create a new note</ListItemMeta>
+          </ListItemBody>
+        </ListItem>
         {filteredNotes.length === 0 ? (
           <EmptyState
             message={query ? 'No matching notes.' : 'No notes yet.'}
-            hint="⌃N to create one."
+            hint="Use ⌃N to create a new note."
           />
         ) : (
           filteredNotes.map((note, idx) => (
-            <ListItem key={note.id} active={idx === selectedIndex}>
+            <ListItem
+              key={note.id}
+              active={idx + 1 === selectedIndex}
+              onClick={() => setSelectedIndex(idx + 1)}
+            >
               <ListItemBody>
                 <ListItemText>{note.title}</ListItemText>
                 <ListItemMeta>{note.body.slice(0, 60)}</ListItemMeta>
@@ -207,7 +407,9 @@ export default function NotesApp({ query }: Props) {
     </>
   )
 
-  const rightPanel = selected ? (
+  const Editor = Textarea || 'textarea'
+
+  const rightPanel = editMode && selected ? (
     <div
       style={{
         display: 'flex',
@@ -217,32 +419,63 @@ export default function NotesApp({ query }: Props) {
         gap: 'var(--space-2)',
       }}
     >
-      {Input && (
-        <Input
-          value={title}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-          placeholder="Title"
-        />
-      )}
-      {Textarea && (
-        <Textarea
-          value={body}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
-          placeholder={transcribing ? 'Transcribing…' : 'Start writing…'}
-          style={{
-            flex: 1,
-            resize: 'none',
-          }}
-        />
-      )}
+      <Editor
+        ref={textareaRef}
+        className="nuxy-textarea"
+        value={body}
+        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setBody(e.target.value)}
+        placeholder={transcribing ? 'Transcribing…' : 'Start writing…'}
+        style={{
+          flex: 1,
+          resize: 'none',
+          width: '100%',
+          height: '100%',
+          border: 'none',
+          background: 'transparent',
+          color: 'var(--text, #ffffff)',
+          outline: 'none',
+          padding: 'var(--space-4, 12px)',
+        }}
+      />
+    </div>
+  ) : selected ? (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        padding: 'var(--space-4, 12px)',
+        overflowY: 'auto',
+        color: 'var(--text, #ffffff)',
+        gap: 'var(--space-2)',
+      }}
+    >
+      <div style={{ fontSize: '1.2em', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '8px' }}>
+        {selected.title}
+      </div>
+      <div style={{ flex: 1, whiteSpace: 'pre-wrap', opacity: 0.8, fontSize: 'var(--font-md, 14px)', lineHeight: '1.5' }}>
+        {MarkdownText ? <ErrorBoundary><MarkdownText>{selected.body}</MarkdownText></ErrorBoundary> : selected.body}
+      </div>
     </div>
   ) : (
-    <EmptyState message="Select a note or create a new one." hint="⌃N to create." />
+    <EmptyState
+      message="Select a note or create a new one."
+      hint="Use ⌃N to create a new note."
+    />
   )
 
-  if (TwoPanel) {
-    return <TwoPanel left={leftPanel} right={rightPanel} />
-  }
-
-  return leftPanel
+  return (
+    <div className={`nuxy-notes-app ${editMode ? 'nuxy-notes-edit-mode' : ''}`} style={{ height: '100%' }}>
+      <style>{`
+        .nuxy-notes-edit-mode .nuxy-two-panel__left {
+          display: none !important;
+        }
+      `}</style>
+      {TwoPanel ? (
+        <TwoPanel left={leftPanel} right={rightPanel} />
+      ) : (
+        leftPanel
+      )}
+    </div>
+  )
 }

@@ -36,6 +36,8 @@ export function registerProtocols() {
             headers: {
               'Content-Type': 'application/javascript',
               'Access-Control-Allow-Origin': '*',
+              'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+              'Pragma': 'no-cache',
             },
           })
         }
@@ -73,6 +75,8 @@ export function registerProtocols() {
               headers: {
                 'Content-Type': 'application/javascript',
                 'Access-Control-Allow-Origin': '*',
+                'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+                'Pragma': 'no-cache',
               },
             })
           }
@@ -83,6 +87,14 @@ export function registerProtocols() {
       }
     }
 
-    return net.fetch(`file://${absolutePath}`)
+    const response = await net.fetch(`file://${absolutePath}`)
+    const headers = new Headers(response.headers)
+    headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+    headers.set('Pragma', 'no-cache')
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    })
   })
 }

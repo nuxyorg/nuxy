@@ -400,7 +400,7 @@ export default function ShellView({ query: _queryProp }: Props) {
   }
 
   const handleItemClick = (item: ListItem) => {
-    if (item.isTool) openTool(item.id)
+    if (item.isTool) openTool(item.id, (item as any).initialQuery || '')
   }
 
   const tryOrchestratorRoute = async () => {

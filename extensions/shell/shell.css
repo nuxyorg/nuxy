@@ -411,6 +411,50 @@
   color: var(--syntax-peach);
 }
 
+.nuxy-command-palette__submenu-arrow {
+  font-size: var(--font-lg);
+  color: var(--syntax-comment);
+  line-height: 1;
+}
+
+.nuxy-command-palette__item--active .nuxy-command-palette__submenu-arrow {
+  color: var(--syntax-function);
+}
+
+.nuxy-command-palette__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--syntax-comment);
+  background-color: color-mix(in srgb, var(--syntax-comment) 20%, transparent);
+}
+
+.nuxy-command-palette__back {
+  background: none;
+  border: none;
+  color: var(--syntax-comment);
+  cursor: pointer;
+  font-size: var(--font-lg);
+  padding: 0 4px;
+  line-height: 1;
+  border-radius: var(--radius-sm);
+  transition: color 150ms, background-color 150ms;
+}
+
+.nuxy-command-palette__back:hover {
+  color: var(--syntax-variable);
+  background-color: color-mix(in srgb, var(--syntax-comment) 40%, transparent);
+}
+
+.nuxy-command-palette__breadcrumb-path {
+  font-size: var(--font-sm);
+  color: var(--syntax-keyword);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Skeletons & Shimmering */
 @keyframes nuxy-shimmer {
   0% {

@@ -27,7 +27,7 @@ export function spawnExtension(
 
   migrateLegacyData(extId, folderName)
 
-  const logLevel = process.env.LOG_LEVEL ?? 'info'
+  const logLevel = process.env.LOG_LEVEL ?? 'warn'
 
   const worker = new Worker(hostScript, {
     workerData: {

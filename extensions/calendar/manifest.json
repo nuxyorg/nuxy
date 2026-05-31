@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "calendar",
-  "permissions": ["storage"],
+  "permissions": ["storage", "db"],
   "capabilities": {
     "callable": true,
     "caller": true

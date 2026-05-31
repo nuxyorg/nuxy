@@ -73,6 +73,48 @@ export async function register(core: CoreContext): Promise<void> {
   db.exec('CREATE VIRTUAL TABLE IF NOT EXISTS notes_fts USING fts5(id, title, body)')
 
   core.registry.registerTool({ name: 'notes' })
+  core.registry.registerProvider({ name: 'notes' })
+
+  core.ipc.handle('eval', async (payload: unknown): Promise<{ items: unknown[] }> => {
+    const text = (payload as { text?: string } | null | undefined)?.text ?? ''
+    if (!text.trim()) return { items: [] }
+
+    let matchingNotes: FtsRow[] = []
+    try {
+      const stmt = db!.prepare(
+        'SELECT id, title, body FROM notes_fts WHERE notes_fts MATCH ? ORDER BY rank'
+      )
+      matchingNotes = stmt.all(text) as unknown as FtsRow[]
+    } catch {
+      try {
+        const stmt = db!.prepare(
+          'SELECT id, title, body FROM notes_fts WHERE title LIKE ? OR body LIKE ?'
+        )
+        matchingNotes = stmt.all(`%${text}%`, `%${text}%`) as unknown as FtsRow[]
+      } catch {}
+    }
+
+    const items: unknown[] = []
+    matchingNotes.forEach((row) => {
+      items.push({
+        id: 'com.nuxy.notes',
+        title: row.title || 'Untitled',
+        subtitle: `notes — ${row.body.slice(0, 40)}`,
+        isTool: true,
+        initialQuery: text,
+      })
+    })
+
+    items.push({
+      id: 'com.nuxy.notes',
+      title: 'Not olarak kaydet',
+      subtitle: `notes — "${text}"`,
+      isTool: true,
+      initialQuery: `__create_note__:${text}`,
+    })
+
+    return { items }
+  })
 
   core.ipc.handle('notes:list', async (): Promise<Note[]> => {
     const entries = await core.fs.readDir(extDataDir!)

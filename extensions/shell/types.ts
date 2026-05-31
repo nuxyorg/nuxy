@@ -63,6 +63,7 @@ export interface CommandPaletteAction {
   id: string
   label: string
   onExecute?: () => void
+  children?: CommandPaletteAction[]
 }
 
 export interface Position {

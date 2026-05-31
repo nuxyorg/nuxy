@@ -13,8 +13,8 @@ Nuxy uses a structured, leveled logging system built into the Kernel. All loggin
 | Level   | Value | When to use                                                                             |
 | ------- | ----- | --------------------------------------------------------------------------------------- |
 | `error` | 3     | Unrecoverable runtime failures, unhandled exceptions                                    |
-| `warn`  | 2     | Non-fatal issues, unexpected-but-handled states                                         |
-| `info`  | 1     | Normal lifecycle events (module loads, IPC registration, worker spawns). **Default.**   |
+| `warn`  | 2     | Non-fatal issues, unexpected-but-handled states. **Default.**                           |
+| `info`  | 1     | Normal lifecycle events (module loads, IPC registration, worker spawns).                |
 | `silly` | 0     | Hyper-verbose trace: every IPC message payload, every manifest field, every regex match |
 
 Levels are additive upwards — setting `silly` shows everything.
@@ -29,11 +29,11 @@ Set the `LOG_LEVEL` environment variable before starting the app:
 # Show everything (development)
 LOG_LEVEL=silly pnpm --dir /home/xava/Documents/functiongemma dev
 
-# Normal (default)
-pnpm --dir /home/xava/Documents/functiongemma dev
+# Normal verbosity (shows info + warn + error)
+LOG_LEVEL=info pnpm --dir /home/xava/Documents/functiongemma dev
 
-# Quiet — only warnings and errors
-LOG_LEVEL=warn pnpm --dir /home/xava/Documents/functiongemma dev
+# Quiet (default) — only warnings and errors
+pnpm --dir /home/xava/Documents/functiongemma dev
 ```
 
 ---

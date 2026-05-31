@@ -177,6 +177,14 @@ function startExtensionWatcher(): void {
 
   const skipDirs = new Set(['node_modules', '.git'])
 
+  // Resolve symbolic link to watch the real directory
+  let resolvedDir = EXTENSION_DIR
+  try {
+    resolvedDir = fs.realpathSync(EXTENSION_DIR)
+  } catch (err) {
+    log.error(`Failed to resolve real path of ${EXTENSION_DIR}:`, err)
+  }
+
   const watchRecursive = (dir: string) => {
     try {
       const watcher = fs.watch(dir, { recursive: false }, () => {
@@ -203,8 +211,8 @@ function startExtensionWatcher(): void {
     } catch {}
   }
 
-  log.info(`Watching extension directory recursively: ${EXTENSION_DIR}`)
-  watchRecursive(EXTENSION_DIR)
+  log.info(`Watching extension directory recursively: ${resolvedDir} (resolved from ${EXTENSION_DIR})`)
+  watchRecursive(resolvedDir)
 }
 
 function promptTrustPublisherKey(extensionId: string, publicKeyPem: string): boolean {

@@ -26,7 +26,7 @@ function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedEx
   return loadedExtensions
     .filter((ext) => {
       if (isBootstrapExtension(ext)) return false
-      if (ext.id === 'com.nuxy.time-calculator') {
+      if (ext.id === 'com.nuxy.time-calculator' || ext.id === 'com.nuxy.notes') {
         return type === 'tool' || type === 'provider'
       }
       return ext.manifest.type === type

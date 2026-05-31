@@ -24,6 +24,7 @@ async function updateDatabase(core: CoreContext): Promise<void> {
     const tempDb = core.db.open('temp_angry_database')
     tempDb.exec('PRAGMA synchronous = OFF;')
     tempDb.exec('PRAGMA journal_mode = MEMORY;')
+    tempDb.exec('DROP TABLE IF EXISTS angry_table;')
     tempDb.exec('CREATE VIRTUAL TABLE angry_table USING fts4(directory, path)')
     const insertStmt = tempDb.prepare('INSERT INTO angry_table VALUES (?, ?)')
 
@@ -77,8 +78,19 @@ async function updateDatabase(core: CoreContext): Promise<void> {
     }
 
     // Replace main db with temp db
-    const mainDb = core.db.open('angry_database')
-    mainDb.close()
+    const homedir = core.fs.homedir()
+    const dataDir = `${homedir}/.nuxy/data/com.nuxy.angrysearch`
+    const tempDbPath = `${dataDir}/temp_angry_database.db`
+    const mainDbPath = `${dataDir}/angry_database.db`
+
+    try {
+      if (await core.fs.fileExists(tempDbPath)) {
+        await core.fs.rename(tempDbPath, mainDbPath)
+      }
+    } catch (renameError) {
+      core.logger.error('Failed to rename temp database:', renameError)
+    }
+
     // Re-open as active
     activeDb = core.db.open('angry_database')
     lastUpdate = new Date()

@@ -87,11 +87,11 @@ if (!gotTheLock) {
     log.silly('Registering IPC handlers')
     registerIpc()
 
-    log.info('Creating main window...')
-    createMainWindow()
-
     log.info('Scanning extensions...')
     await scanExtensions()
+
+    log.info('Creating main window...')
+    createMainWindow()
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {

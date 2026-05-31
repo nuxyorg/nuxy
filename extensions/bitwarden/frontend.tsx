@@ -280,34 +280,37 @@ export default function BitwardenView({ query }: Props) {
       activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
       handler: handleUnlock,
     },
-    {
-      key: 's',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Kasa Eşitle',
-      hint: '⌃S',
-      activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
-      handler: handleSync,
-    },
-    {
-      key: 'r',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Durumu Yenile',
-      hint: '⌃R',
-      activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
-      handler: refreshStatus,
-    },
-    {
-      key: 'e',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'E-postayı Düzenle',
-      hint: '⌃E',
-      activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
-      handler: () => {
-        setEmailInput(status.email || '')
-        setEditingEmail(true)
-      },
-    },
   ])
+
+  useEffect(() => {
+    const actions = []
+    if (isLockScreen && !isUnlocking && !isSyncing) {
+      actions.push(
+        {
+          id: 'bw-sync',
+          label: 'Kasa Eşitle',
+          onExecute: handleSync,
+        },
+        {
+          id: 'bw-refresh',
+          label: 'Durumu Yenile',
+          onExecute: refreshStatus,
+        },
+        {
+          id: 'bw-edit-email',
+          label: 'E-postayı Düzenle',
+          onExecute: () => {
+            setEmailInput(status.email || '')
+            setEditingEmail(true)
+          },
+        }
+      )
+    }
+    window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
+    }
+  }, [isLockScreen, isUnlocking, isSyncing, status])
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))

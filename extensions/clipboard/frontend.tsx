@@ -378,51 +378,33 @@ export default function ClipboardView({ query }: Props) {
         else handleCopy(item.id)
       },
     },
-    {
-      key: 'c',
-      modifiers: ['ctrl'],
-      label: 'Copy',
-      activeOn: () => selectedIndex >= 0,
-      handler: () => {
-        const item = filteredItems[selectedIndex]
-        if (!item) return
-        if (getItemType(item) === 'file') handleCopyFile(item.id)
-        else handleCopy(item.id)
-      },
-    },
-    {
-      key: 'd',
-      label: 'Delete',
-      hint: 'D',
-      activeOn: () => selectedIndex >= 0,
-      handler: () => {
-        if (selectedIndex === 0) return
-        const item = filteredItems[selectedIndex]
-        if (item) handleDelete(item.id)
-      },
-    },
-    {
-      key: 's',
-      label: 'Search',
-      hint: 'S',
-      activeOn: () => selectedIndex >= 0,
-      handler: () => {
-        setSelectedIndex(-1)
-      },
-    },
-    {
-      key: 'p',
-      label: 'Pin / Unpin',
-      hint: 'P',
-      activeOn: () => selectedIndex >= 0,
-      handler: () => {
-        const item = filteredItems[selectedIndex]
-        if (!item) return
-        if (item.pinned) handleUnpin(item.id)
-        else handlePin(item.id)
-      },
-    },
   ])
+
+  React.useEffect(() => {
+    const selectedItem = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
+    const actions = []
+    if (selectedItem) {
+      actions.push(
+        {
+          id: 'clipboard-delete',
+          label: 'Delete Selected Item',
+          onExecute: () => handleDelete(selectedItem.id),
+        },
+        {
+          id: 'clipboard-pin-unpin',
+          label: selectedItem.pinned ? 'Unpin Selected Item' : 'Pin Selected Item',
+          onExecute: () => {
+            if (selectedItem.pinned) handleUnpin(selectedItem.id)
+            else handlePin(selectedItem.id)
+          },
+        }
+      )
+    }
+    window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
+    }
+  }, [selectedIndex, filteredItems])
 
   const timeAgo = (dateString: string): string => {
     if (!dateString) return ''

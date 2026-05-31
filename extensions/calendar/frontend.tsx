@@ -490,166 +490,6 @@ export default function CalendarApp({ query }: Props) {
       },
     },
 
-    // n: new event (month or day view)
-    {
-      key: 'n',
-      label: 'New Event',
-      hint: 'N',
-      activeOn: () => {
-        const s = stateRef.current
-        return s.mode === 'calendar' && (s.calView === 'month' || s.calView === 'day')
-      },
-      handler: enterCreate,
-    },
-
-    // d: delete
-    {
-      key: 'd',
-      label: 'Delete',
-      hint: 'D',
-      activeOn: () => {
-        const s = stateRef.current
-        return (
-          s.mode === 'calendar' &&
-          ((s.calView === 'day' && s.listIdx >= 0 && s.listIdx < s.dayEvents.length) ||
-            (s.calView === 'detail' && s.editingEvent != null))
-        )
-      },
-      handler: () => {
-        const s = stateRef.current
-        const id = s.calView === 'day' ? s.dayEvents[s.listIdx]?.id : s.editingEvent?.id
-        if (!id) return
-        ipcCall('calendar:delete', { id })
-          .then(() => {
-            loadMonthEvents(s.calYear, s.calMonth)
-            if (s.calView === 'detail') backToDay()
-          })
-          .catch(() => {})
-      },
-    },
-
-    // create/detail: ArrowUp — handles both dropdown navigation and field navigation
-    {
-      key: 'ArrowUp',
-      label: 'Navigate',
-      hint: '↑↓',
-      activeOn: () => {
-        const s = stateRef.current
-        return s.mode === 'calendar' && (s.calView === 'create' || s.calView === 'detail')
-      },
-      handler: () => {
-        const { activeSelect, formFieldIdx } = stateRef.current
-        if (activeSelect !== null) {
-          setSelectFocused((i) => Math.max(0, i - 1))
-        } else if (formFieldIdx > 0) {
-          setFormFieldIdx((i) => i - 1)
-        }
-      },
-    },
-
-    // create/detail: ArrowDown — handles both dropdown navigation and field navigation
-    {
-      key: 'ArrowDown',
-      label: '',
-      activeOn: () => {
-        const s = stateRef.current
-        return s.mode === 'calendar' && (s.calView === 'create' || s.calView === 'detail')
-      },
-      handler: () => {
-        const { calView, activeSelect, formFieldIdx } = stateRef.current
-        if (activeSelect !== null) {
-          const opts = getSelectOptions(activeSelect)
-          setSelectFocused((i) => Math.min(opts.length - 1, i + 1))
-        } else {
-          const fields = calView === 'detail' ? ['reminder'] : CREATE_SELECT_FIELDS
-          setFormFieldIdx((i) => Math.min(fields.length - 1, i + 1))
-        }
-      },
-    },
-
-    // create/detail: Enter — open select or confirm selection
-    {
-      key: 'Enter',
-      label: activeSelect !== null ? 'Confirm' : 'Select',
-      hint: '↵',
-      activeOn: () => {
-        const s = stateRef.current
-        return s.mode === 'calendar' && (s.calView === 'create' || s.calView === 'detail')
-      },
-      handler: () => {
-        const s = stateRef.current
-        if (s.activeSelect !== null) {
-          // Confirm dropdown selection
-          const opts = getSelectOptions(s.activeSelect)
-          const opt = opts[s.selectFocused]
-          if (opt) setSelectValue(s.activeSelect, opt.value)
-          setActiveSelect(null)
-          const fields = s.calView === 'detail' ? ['reminder'] : CREATE_SELECT_FIELDS
-          const fi = fields.indexOf(s.activeSelect as CreateSelectField)
-          if (fi >= 0 && fi < fields.length - 1) setFormFieldIdx(fi + 1)
-        } else {
-          const fields = s.calView === 'detail' ? ['reminder'] : CREATE_SELECT_FIELDS
-          const field = fields[s.formFieldIdx] as CreateSelectField | undefined
-          if (!field) return
-          // Open select for this field
-          const opts = getSelectOptions(field)
-          const cur = getSelectValue(field)
-          setSelectFocused(
-            Math.max(
-              0,
-              opts.findIndex((o) => o.value === cur)
-            )
-          )
-          setActiveSelect(field)
-        }
-      },
-    },
-
-    // create/detail: s saves
-    {
-      key: 's',
-      label: 'Save',
-      hint: 'S',
-      activeOn: () => {
-        const s = stateRef.current
-        return (
-          s.mode === 'calendar' &&
-          (s.calView === 'create' || s.calView === 'detail') &&
-          s.activeSelect === null
-        )
-      },
-      handler: () => {
-        const s = stateRef.current
-        if (s.calView === 'create') {
-          const title = s.query.trim()
-          if (!title) return
-          const base = new Date(s.calYear, s.calMonth, s.selectedDay)
-          base.setHours(parseInt(s.timeValue, 10), 0, 0, 0)
-          ipcCall('calendar:create', {
-            title,
-            datetime: base.getTime(),
-            notes: '',
-            remindMin: parseInt(s.reminderValue, 10),
-          })
-            .then(() => {
-              loadMonthEvents(s.calYear, s.calMonth)
-              backToDay()
-            })
-            .catch(() => {})
-        } else if (s.calView === 'detail' && s.editingEvent) {
-          ipcCall('calendar:update', {
-            id: s.editingEvent.id,
-            remindMin: parseInt(s.reminderValue, 10),
-          })
-            .then(() => {
-              loadMonthEvents(s.calYear, s.calMonth)
-              backToDay()
-            })
-            .catch(() => {})
-        }
-      },
-    },
-
     // Escape: go back
     {
       key: 'Escape',
@@ -674,6 +514,77 @@ export default function CalendarApp({ query }: Props) {
       },
     },
   ])
+
+  useEffect(() => {
+    const actions = []
+    if (mode === 'calendar') {
+      if (calView === 'month' || calView === 'day') {
+        actions.push({
+          id: 'calendar-new',
+          label: 'New Event',
+          onExecute: enterCreate,
+        })
+      }
+      if (
+        (calView === 'day' && listIdx >= 0 && listIdx < dayEvents.length) ||
+        (calView === 'detail' && editingEvent != null)
+      ) {
+        actions.push({
+          id: 'calendar-delete',
+          label: 'Delete Event',
+          onExecute: () => {
+            const id = calView === 'day' ? dayEvents[listIdx]?.id : editingEvent?.id
+            if (!id) return
+            ipcCall('calendar:delete', { id })
+              .then(() => {
+                loadMonthEvents(calYear, calMonth)
+                if (calView === 'detail') backToDay()
+              })
+              .catch(() => {})
+          },
+        })
+      }
+      if ((calView === 'create' || calView === 'detail') && activeSelect === null) {
+        actions.push({
+          id: 'calendar-save',
+          label: 'Save Event',
+          onExecute: () => {
+            if (calView === 'create') {
+              const title = query.trim()
+              if (!title) return
+              const base = new Date(calYear, calMonth, selectedDay)
+              base.setHours(parseInt(timeValue, 10), 0, 0, 0)
+              ipcCall('calendar:create', {
+                title,
+                datetime: base.getTime(),
+                notes: '',
+                remindMin: parseInt(reminderValue, 10),
+              })
+                .then(() => {
+                  loadMonthEvents(calYear, calMonth)
+                  backToDay()
+                })
+                .catch(() => {})
+            } else if (calView === 'detail' && editingEvent) {
+              ipcCall('calendar:update', {
+                id: editingEvent.id,
+                remindMin: parseInt(reminderValue, 10),
+              })
+                .then(() => {
+                  loadMonthEvents(calYear, calMonth)
+                  backToDay()
+                })
+                .catch(() => {})
+            }
+          },
+        })
+      }
+    }
+    window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
+    }
+  }, [mode, calView, listIdx, dayEvents, editingEvent, calYear, calMonth, selectedDay, timeValue, reminderValue, query, activeSelect])
 
   // ── Month grid ─────────────────────────────────────────────────────────────────
   function renderMonthGrid() {

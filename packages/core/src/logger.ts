@@ -8,8 +8,8 @@
  *
  * Set the LOG_LEVEL env-var to control verbosity:
  *   LOG_LEVEL=silly  → shows everything
- *   LOG_LEVEL=info   → shows info + warn + error  (default)
- *   LOG_LEVEL=warn   → shows warn + error
+ *   LOG_LEVEL=info   → shows info + warn + error
+ *   LOG_LEVEL=warn   → shows warn + error  (default)
  *   LOG_LEVEL=error  → shows only errors
  */
 
@@ -39,8 +39,8 @@ const C = {
 }
 
 function currentLevel(): LogLevel {
-  const env = (process.env.LOG_LEVEL ?? 'info').toLowerCase() as LogLevel
-  return LEVELS[env] !== undefined ? env : 'info'
+  const env = (process.env.LOG_LEVEL ?? 'warn').toLowerCase() as LogLevel
+  return LEVELS[env] !== undefined ? env : 'warn'
 }
 
 function timestamp(): string {

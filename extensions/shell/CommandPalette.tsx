@@ -3,6 +3,8 @@ const { useState, useEffect, useLayoutEffect } = React
 
 import type { CommandPaletteAction, Position } from './types.ts'
 
+const MAX_DEPTH = 10
+
 interface CommandPaletteProps {
   actions: CommandPaletteAction[]
   onClose: () => void
@@ -19,8 +21,41 @@ export default function CommandPalette({
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [style, setStyle] = useState<React.CSSProperties>({})
+  const [menuStack, setMenuStack] = useState<CommandPaletteAction[][]>([actions])
+  const [pathLabels, setPathLabels] = useState<string[]>([])
 
-  const filteredActions = actions.filter((a) => a.label.toLowerCase().includes(query.toLowerCase()))
+  const currentLevel = menuStack[menuStack.length - 1]
+  const filteredActions = currentLevel.filter((a) =>
+    a.label.toLowerCase().includes(query.toLowerCase())
+  )
+
+  const goBack = () => {
+    if (menuStack.length > 1) {
+      setMenuStack((prev) => prev.slice(0, -1))
+      setPathLabels((prev) => prev.slice(0, -1))
+      setQuery('')
+      setSelectedIndex(0)
+    } else {
+      onClose()
+    }
+  }
+
+  const openSubmenu = (action: CommandPaletteAction) => {
+    if (!action.children || menuStack.length >= MAX_DEPTH) return
+    setMenuStack((prev) => [...prev, action.children!])
+    setPathLabels((prev) => [...prev, action.label])
+    setQuery('')
+    setSelectedIndex(0)
+  }
+
+  const executeAction = (action: CommandPaletteAction) => {
+    if (action.children) {
+      openSubmenu(action)
+    } else if (action.onExecute) {
+      action.onExecute()
+      onClose()
+    }
+  }
 
   useLayoutEffect(() => {
     if (containerRef?.current && position) {
@@ -61,7 +96,10 @@ export default function CommandPalette({
       if (e.key === 'Escape') {
         e.preventDefault()
         e.stopPropagation()
-        onClose()
+        goBack()
+      } else if (e.key === 'ArrowLeft' && query === '' && menuStack.length > 1) {
+        e.preventDefault()
+        goBack()
       } else if (e.key === 'ArrowDown') {
         e.preventDefault()
         setSelectedIndex((prev) => Math.min(prev + 1, Math.max(0, filteredActions.length - 1)))
@@ -71,15 +109,16 @@ export default function CommandPalette({
       } else if (e.key === 'Enter') {
         e.preventDefault()
         const action = filteredActions[selectedIndex]
-        if (action && action.onExecute) {
-          action.onExecute()
-          onClose()
-        }
+        if (action) executeAction(action)
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        const action = filteredActions[selectedIndex]
+        if (action?.children) openSubmenu(action)
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [filteredActions, selectedIndex, onClose])
+  }, [filteredActions, selectedIndex, query, menuStack, onClose])
 
   return (
     <div
@@ -89,6 +128,16 @@ export default function CommandPalette({
       }}
     >
       <div className="nuxy-command-palette" style={style}>
+        {pathLabels.length > 0 && (
+          <div className="nuxy-command-palette__breadcrumb">
+            <button className="nuxy-command-palette__back" onClick={goBack}>
+              ←
+            </button>
+            <span className="nuxy-command-palette__breadcrumb-path">
+              {pathLabels.join(' › ')}
+            </span>
+          </div>
+        )}
         <div className="nuxy-command-palette__input-wrapper">
           <input
             autoFocus
@@ -108,13 +157,14 @@ export default function CommandPalette({
               <div
                 key={action.id}
                 className={`nuxy-command-palette__item ${idx === selectedIndex ? 'nuxy-command-palette__item--active' : ''}`}
-                onClick={() => {
-                  if (action.onExecute) action.onExecute()
-                  onClose()
-                }}
+                onClick={() => executeAction(action)}
               >
                 <span>{action.label}</span>
-                <span className="nuxy-command-palette__shortcut">Enter</span>
+                {action.children ? (
+                  <span className="nuxy-command-palette__submenu-arrow">›</span>
+                ) : (
+                  <span className="nuxy-command-palette__shortcut">Enter</span>
+                )}
               </div>
             ))
           )}

@@ -112,39 +112,9 @@ export default function N8nApp({ query }: Props) {
     },
     enterLabel: 'Select',
     enterHint: 'Enter',
-    extraActions: [
-      {
-        key: 'Enter',
-        modifiers: ['shift'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-        label: 'Run webhook',
-        hint: '⇧↵',
-        activeOn: () => selectedIndex >= 0,
-        handler: () => {
-          const wf = filteredWorkflows[selectedIndex]
-          if (wf) void handleRunWebhook(wf)
-        },
-      },
-    ],
   })
 
   _useToolKeyActions([
-    {
-      key: ',',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Configure',
-      hint: '⌃,',
-      handler: () => setShowConfig((v) => !v),
-    },
-    {
-      key: 'r',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Refresh',
-      hint: '⌃R',
-      activeOn: () => !showConfig && configured,
-      handler: () => {
-        void handleRefresh()
-      },
-    },
     {
       key: 'Enter',
       modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
@@ -162,6 +132,39 @@ export default function N8nApp({ query }: Props) {
       handler: () => setShowConfig(false),
     },
   ])
+
+  useEffect(() => {
+    const actions = [
+      {
+        id: 'n8n-configure',
+        label: showConfig ? 'Show Workflows' : 'Configure Connection',
+        onExecute: () => setShowConfig((v) => !v),
+      },
+    ]
+    if (!showConfig && configured) {
+      actions.push({
+        id: 'n8n-refresh',
+        label: 'Refresh Workflows',
+        onExecute: () => {
+          void handleRefresh()
+        },
+      })
+    }
+    const activeWorkflow = filteredWorkflows[selectedIndex]
+    if (activeWorkflow) {
+      actions.push({
+        id: 'n8n-run-webhook',
+        label: `Run Webhook: ${activeWorkflow.name}`,
+        onExecute: () => {
+          void handleRunWebhook(activeWorkflow)
+        },
+      })
+    }
+    window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
+    return () => {
+      window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
+    }
+  }, [showConfig, configured, selectedIndex, filteredWorkflows])
 
   // Re-evaluate key-action hints when selection state changes
   useEffect(() => {
