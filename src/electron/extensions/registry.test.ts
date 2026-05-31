@@ -60,4 +60,20 @@ describe('registry', () => {
     const loaded = getExtensionById('com.nuxy.clipboard')!
     expect(getDisplayName(loaded)).toBe('Clip')
   })
+
+  it('prevents duplicate registration for the same extension id', () => {
+    const duplicate: LoadedExtension = {
+      id: 'com.nuxy.clipboard',
+      folderName: '.tmp_clipboard',
+      manifest: {
+        id: 'com.nuxy.clipboard',
+        name: 'Clipboard',
+        version: '1.0.0',
+        type: 'tool',
+      },
+    }
+    registerExtension(duplicate)
+    expect(loadedExtensions).toHaveLength(1)
+    expect(loadedExtensions[0].folderName).toBe('clipboard')
+  })
 })

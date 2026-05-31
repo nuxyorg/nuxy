@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import { getConfig } from '../config/nuxyconfig.js'
 import { applyConfigToWindow, positionWindowOnDisplay } from './runtime.js'
@@ -7,9 +7,29 @@ import { kernelLogger } from '@nuxy/core'
 const log = kernelLogger.child('Window')
 
 let mainWindow: BrowserWindow | null = null
+let readyToShowFired = false
+let rendererReady = false
+let showOnStartup = false
 
 export function getMainWindow(): BrowserWindow | null {
   return mainWindow
+}
+
+export function onRendererReady(): void {
+  log.info(`[FLASH-DEBUG] onRendererReady. readyToShowFired=${readyToShowFired}`)
+  rendererReady = true
+  checkAndShow()
+}
+
+function checkAndShow() {
+  if (readyToShowFired && rendererReady && mainWindow && !mainWindow.isDestroyed()) {
+    if (showOnStartup && !mainWindow.isVisible()) {
+      log.info(`[FLASH-DEBUG] Showing window (ready-to-show and renderer ready) at ${Date.now()}`)
+      positionWindowOnDisplay(mainWindow)
+      mainWindow.show()
+      mainWindow.webContents.send('window:show')
+    }
+  }
 }
 
 export function createMainWindow() {
@@ -19,7 +39,11 @@ export function createMainWindow() {
     mainWindow = null
   }
 
+  readyToShowFired = false
+  rendererReady = false
+
   const cfg = getConfig()
+  showOnStartup = cfg.showOnStartup
   log.info('Creating main window', cfg)
 
   mainWindow = new BrowserWindow({
@@ -42,6 +66,12 @@ export function createMainWindow() {
   })
 
   applyConfigToWindow(mainWindow)
+
+  mainWindow.once('ready-to-show', () => {
+    log.info(`[FLASH-DEBUG] ready-to-show fired at ${Date.now()}`)
+    readyToShowFired = true
+    checkAndShow()
+  })
 
   mainWindow.on('show', () => {
     positionWindowOnDisplay(mainWindow!)
@@ -66,23 +96,19 @@ export function createMainWindow() {
     }
   })
 
-  if (cfg.showOnStartup) {
-    try {
-      const cursorPoint = screen.getCursorScreenPoint()
-      const display = screen.getDisplayNearestPoint(cursorPoint)
-      log.info(
-        `Showing main window on display ${display.id} near cursor (${cursorPoint.x}, ${cursorPoint.y})`
-      )
-    } catch (err) {
-      log.warn('Could not determine display before show', err)
-    }
-    positionWindowOnDisplay(mainWindow)
-    mainWindow.show()
-  }
-
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL)
   } else {
     mainWindow.loadFile(path.join(app.getAppPath(), 'dist', 'index.html'))
   }
+}
+
+let preloadsLoaded = false
+
+export function isPreloadsLoaded(): boolean {
+  return preloadsLoaded
+}
+
+export function onPreloadsLoaded(): void {
+  preloadsLoaded = true
 }

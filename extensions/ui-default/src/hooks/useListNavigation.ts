@@ -44,17 +44,14 @@ export function useListNavigation<T>(
   }, [items.length, loop])
 
   const handleEnter = useCallback(() => {
-    setSelectedIndex((i) => {
-      if (onEnter && i >= 0 && i < items.length) {
-        onEnter(items[i], i)
-      }
-      return i
-    })
-  }, [items, onEnter])
+    if (onEnter && selectedIndex >= 0 && selectedIndex < items.length) {
+      onEnter(items[selectedIndex], selectedIndex)
+    }
+  }, [items, onEnter, selectedIndex])
 
   const navActions: KeyAction[] = [
-    { key: 'ArrowUp', label: 'Navigate', hint: '↑↓', handler: moveUp },
-    { key: 'ArrowDown', label: '', handler: moveDown },
+    { key: 'ArrowUp', label: 'Navigate', hint: '↑↓', handler: moveUp, allowRepeat: true },
+    { key: 'ArrowDown', label: '', handler: moveDown, allowRepeat: true },
     ...(onEnter
       ? [{ key: 'Enter', label: enterLabel, hint: enterHint, handler: handleEnter }]
       : []),

@@ -2,9 +2,16 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import fs from 'fs'
 
 vi.mock('../themes/install.js', () => ({
-  ensureUserThemes: vi.fn(),
   DEFAULT_DARK_THEME: { version: 1, name: 'dark', vars: {} },
   DEFAULT_LIGHT_THEME: { version: 1, name: 'light', vars: {} },
+}))
+
+vi.mock('../window/runtime.js', () => ({
+  applyConfigToWindow: vi.fn(),
+}))
+
+vi.mock('../window/manager.js', () => ({
+  getMainWindow: vi.fn(),
 }))
 
 import { getWindowPosition, reloadConfig, getConfig } from './nuxyconfig.js'
@@ -252,6 +259,17 @@ describe('config validation', () => {
     expect(cfg.opacity).toBe(1)
     expect(cfg.showInTaskbar).toBe(false)
     expect(cfg.showOnStartup).toBe(false)
+    expect(cfg.theme).toBe('dark')
+    expect(cfg.zoom).toBe('100%')
+    expect(cfg.font).toBe('system')
+  })
+
+  it('accepts string theme, zoom, and font', () => {
+    setupWithSettings({ theme: 'light', zoom: '90%', font: 'monospace' })
+    const cfg = getConfig()
+    expect(cfg.theme).toBe('light')
+    expect(cfg.zoom).toBe('90%')
+    expect(cfg.font).toBe('monospace')
   })
 
   it('reloadConfig clears cached config and re-reads new values', () => {

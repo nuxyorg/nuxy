@@ -56,6 +56,7 @@ export interface KeyAction {
   activeOn?: () => boolean
   handler: () => void
   onExecute?: () => void
+  allowRepeat?: boolean
 }
 
 export interface CommandPaletteAction {

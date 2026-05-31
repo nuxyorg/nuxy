@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('core', {
       ipcRenderer.invoke('ext:invoke', extId, channel, payload),
   },
   window: {
+    ready: () => ipcRenderer.send('window:ready'),
     resize: (width: number, height: number) => ipcRenderer.send('window:resize', width, height),
     hide: () => ipcRenderer.send('window:hide'),
     esc: () => ipcRenderer.send('window:esc'),
@@ -30,3 +31,25 @@ contextBridge.exposeInMainWorld('core', {
     list: () => ipcRenderer.invoke('ext:invoke', 'kernel', 'listThemes', {}),
   },
 })
+
+// Dynamically load active extension preload scripts
+console.log(`[FLASH-DEBUG] preload.ts start at ${Date.now()}`)
+ipcRenderer
+  .invoke('ext:invoke', 'kernel', 'getPreloads', {})
+  .then(async (res: any) => {
+    if (res?.success && Array.isArray(res.data)) {
+      const promises = res.data.map((item: any) =>
+        import(/* @vite-ignore */ item.url).catch((err) => {
+          console.error(`[Preload] Failed to load extension preload for "${item.id}":`, err)
+        })
+      )
+      await Promise.all(promises)
+    }
+  })
+  .catch((err) => {
+    console.error('[Preload] Failed to fetch extension preloads:', err)
+  })
+  .finally(() => {
+    console.log(`[FLASH-DEBUG] sending window:preloads-loaded at ${Date.now()}`)
+    ipcRenderer.send('window:preloads-loaded')
+  })

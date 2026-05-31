@@ -37,11 +37,13 @@ export default function AngrysearchView({ query }: Props) {
   const handleOpen = (item: AngrysearchItem): void => {
     if (!window.core?.ipc?.invoke || !item) return
     window.core.ipc.invoke(EXT_ID, 'openFile', item.value).catch(() => {})
+    window.core?.window?.hide?.()
   }
 
   const handleOpenLocation = (item: AngrysearchItem): void => {
     if (!window.core?.ipc?.invoke || !item) return
     window.core.ipc.invoke(EXT_ID, 'openLocation', item.value).catch(() => {})
+    window.core?.window?.hide?.()
   }
 
   const { selectedIndex, setSelectedIndex } = _useListNavigation(items, {
@@ -155,11 +157,15 @@ export default function AngrysearchView({ query }: Props) {
   }, [regexMode, status])
 
   return (
-    <List maxHeight="md">
+    <List className="test">
       {items.length === 0 ? (
         <EmptyState
           message={searchQuery.length < 3 ? 'Type to search...' : 'No matches.'}
-          hint={searchQuery.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'}
+          hint={
+            searchQuery.length < 3
+              ? 'Enter at least 3 chaaaabbbbaaaaracters.'
+              : 'Try a different search.'
+          }
         />
       ) : (
         items.map((item, idx) => {

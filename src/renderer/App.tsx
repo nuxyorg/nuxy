@@ -31,67 +31,98 @@ export default function App() {
     const dynamicImport = new Function('url', 'return import(url)')
 
     void (async () => {
-      // 1. Fetch kernel data in parallel.
-      const [toolsRes, themeRes, uikitRes] = await Promise.all([
-        core?.ipc?.invoke('kernel', 'listTools', {}),
-        core?.ipc?.invoke('kernel', 'getTheme', {}),
-        core?.ipc?.invoke('kernel', 'listUikitExtensions', {}),
-      ]).catch((e: unknown) => {
-        console.error('Failed to load kernel data:', e)
-        return [null, null, null]
-      })
+      console.log(`[FLASH-DEBUG] App.tsx async init start at ${Date.now()}`)
+      try {
+        // 1. Fetch config first to know the custom theme name, zoom, and font
+        const configRes = await core?.ipc?.invoke('kernel', 'getConfig', {}).catch(() => null)
+        const config = configRes as IpcResult<{ zoom?: string; font?: string; theme?: string }> | undefined
+        const themeName = config?.success && config.data?.theme ? config.data.theme : 'dark'
 
-      // Apply extension count.
-      if (toolsRes?.success && Array.isArray(toolsRes.data)) {
-        setExtensionCount(toolsRes.data.length)
-      } else {
-        setExtensionCount(0)
-      }
-
-      // Apply theme tokens.
-      const theme = themeRes as IpcResult<ThemeDefinition> | undefined
-      if (theme?.success && theme.data) {
-        const root = document.documentElement
-        const { colors, tokens } = theme.data
-        if (colors) {
-          Object.entries(colors).forEach(([key, val]) => {
-            root.style.setProperty(`--${key}`, val as string)
-          })
-        }
-        if (tokens) {
-          Object.entries(tokens).forEach(([key, val]) => {
-            root.style.setProperty(`--${key}`, val as string)
-          })
-        }
-      }
-
-      // 2. Load uikit extensions in priority order.
-      //    Each frontend.js is a side-effect module that extends window.UI.
-      //    This MUST complete before the shell bootstrap so extensions see
-      //    the updated window.UI when their own frontends load.
-      const uikitExts = uikitRes as IpcResult<Array<{ id: string }>> | undefined
-      if (uikitExts?.success && Array.isArray(uikitExts.data)) {
-        for (const ext of uikitExts.data) {
-          try {
-            await dynamicImport(`nuxy-ext://${ext.id}/frontend.js`)
-          } catch (err) {
-            console.warn(`[UIKit] Failed to load uikit extension "${ext.id}":`, err)
+        // Apply zoom & font immediately on startup
+        if (config?.success && config.data) {
+          const { zoom, font } = config.data
+          if (zoom) document.documentElement.style.zoom = zoom
+          if (font) {
+            const FONT_FAMILY_MAP: Record<string, string> = {
+              system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
+              monospace: 'monospace',
+            }
+            document.body.style.fontFamily = FONT_FAMILY_MAP[font] || font
           }
         }
-      }
 
-      // 3. Load the shell bootstrap — window.UI is now fully resolved.
-      try {
-        const mod = (await dynamicImport(`nuxy-ext://${BOOTSTRAP_ID}/frontend.js`)) as {
-          default: React.ComponentType<{ query?: string }>
+        // 2. Fetch other kernel data in parallel
+        const [toolsRes, themeRes, uikitRes] = await Promise.all([
+          core?.ipc?.invoke('kernel', 'listTools', {}),
+          core?.ipc?.invoke('kernel', 'getThemeByName', { name: themeName }),
+          core?.ipc?.invoke('kernel', 'listUikitExtensions', {}),
+        ]).catch((e: unknown) => {
+          console.error('Failed to load kernel data:', e)
+          return [null, null, null]
+        })
+
+        // Apply extension count.
+        if (toolsRes?.success && Array.isArray(toolsRes.data)) {
+          setExtensionCount(toolsRes.data.length)
+        } else {
+          setExtensionCount(0)
         }
-        setShellComponent(() => mod.default)
-        setLoadError(null)
-      } catch (err) {
-        const error = err as Error
-        console.error('[Kernel] Failed to load shell extension:', error)
-        setLoadError(error.message)
-        setShellComponent(null)
+
+        // Apply theme tokens.
+        const theme = themeRes as IpcResult<ThemeDefinition> | undefined
+        if (theme?.success && theme.data) {
+          const root = document.documentElement
+          const { colors, tokens } = theme.data
+          if (colors) {
+            Object.entries(colors).forEach(([key, val]) => {
+              root.style.setProperty(`--${key}`, val as string)
+            })
+          }
+          if (tokens) {
+            Object.entries(tokens).forEach(([key, val]) => {
+              root.style.setProperty(`--${key}`, val as string)
+            })
+          }
+        }
+
+        // 2. Load uikit extensions in priority order.
+        //    Each frontend.js is a side-effect module that extends window.UI.
+        //    This MUST complete before the shell bootstrap so extensions see
+        //    the updated window.UI when their own frontends load.
+        const uikitExts = uikitRes as IpcResult<Array<{ id: string }>> | undefined
+        if (uikitExts?.success && Array.isArray(uikitExts.data)) {
+          for (const ext of uikitExts.data) {
+            try {
+              await dynamicImport(`nuxy-ext://${ext.id}/frontend.js`)
+            } catch (err) {
+              console.warn(`[UIKit] Failed to load uikit extension "${ext.id}":`, err)
+            }
+          }
+        }
+
+        // 3. Load the shell bootstrap — window.UI is now fully resolved.
+        console.log(`[FLASH-DEBUG] loading shell at ${Date.now()}`)
+        try {
+          const mod = (await dynamicImport(`nuxy-ext://${BOOTSTRAP_ID}/frontend.js`)) as {
+            default: React.ComponentType<{ query?: string }>
+          }
+          console.log(`[FLASH-DEBUG] shell loaded, setShellComponent at ${Date.now()}`)
+          setShellComponent(() => mod.default)
+          setLoadError(null)
+        } catch (err) {
+          const error = err as Error
+          console.error('[Kernel] Failed to load shell extension:', error)
+          setLoadError(error.message)
+          setShellComponent(null)
+        }
+      } finally {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            console.log(`[FLASH-DEBUG] sending window:ready at ${Date.now()}`)
+            const w = window as any
+            w.core?.window?.ready?.()
+          }, 50)
+        })
       }
     })()
 

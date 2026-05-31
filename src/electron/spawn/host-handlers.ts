@@ -146,6 +146,9 @@ export async function handleHostCall(
         return { result: await getNowPlaying() }
 
       case HostChannel.THEME_REGISTER: {
+        if (ext.manifest.type !== 'theme') {
+          return { error: 'PERMISSION_DENIED: Only theme extensions can register themes' }
+        }
         const def = payload as ThemeDefinition
         if (!def?.name || typeof def.name !== 'string' || !def.colors) {
           return { error: 'Invalid ThemeDefinition: missing name or colors' }
@@ -156,6 +159,9 @@ export async function handleHostCall(
       }
 
       case HostChannel.ICONPACK_REGISTER: {
+        if (ext.manifest.type !== 'iconpack') {
+          return { error: 'PERMISSION_DENIED: Only iconpack extensions can register icon packs' }
+        }
         const def = payload as IconPackDefinition
         if (!def?.name || typeof def.name !== 'string' || !def.icons) {
           return { error: 'Invalid IconPackDefinition: missing name or icons' }

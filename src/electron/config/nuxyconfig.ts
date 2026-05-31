@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import { kernelLogger } from '@nuxy/core'
 import { DATA_DIR, CONFIG_DIR } from './paths.js'
-import { ensureUserThemes } from '../themes/install.js'
 
 const log = kernelLogger.child('NuxyConfig')
 
@@ -18,6 +17,9 @@ export interface NuxyConfig {
   showInTaskbar: boolean
   showOnStartup: boolean
   windowPosition?: string
+  theme?: string
+  zoom?: string
+  font?: string
   extensions: Record<string, Record<string, string>>
 }
 
@@ -30,10 +32,13 @@ const DEFAULTS: NuxyConfig = {
   opacity: 1,
   showInTaskbar: false,
   showOnStartup: false,
+  theme: 'dark',
+  zoom: '100%',
+  font: 'system',
   extensions: {},
 }
 
-export { CONFIG_DIR, THEMES_DIR } from './paths.js'
+export { CONFIG_DIR } from './paths.js'
 export { DEFAULT_DARK_THEME, DEFAULT_LIGHT_THEME } from '../themes/install.js'
 
 /** Path to the settings.json written by the settings extension. */
@@ -60,6 +65,9 @@ function readSettingsJson(): Partial<NuxyConfig> {
     if (typeof parsed.showInTaskbar === 'boolean') result.showInTaskbar = parsed.showInTaskbar
     if (typeof parsed.showOnStartup === 'boolean') result.showOnStartup = parsed.showOnStartup
     if (typeof parsed.windowPosition === 'string') result.windowPosition = parsed.windowPosition
+    if (typeof parsed.theme === 'string') result.theme = parsed.theme
+    if (typeof parsed.zoom === 'string') result.zoom = parsed.zoom
+    if (typeof parsed.font === 'string') result.font = parsed.font
 
     return result
   } catch (err) {
@@ -76,12 +84,6 @@ export function loadConfig(): NuxyConfig {
 
   if (!fs.existsSync(CONFIG_DIR)) {
     fs.mkdirSync(CONFIG_DIR, { recursive: true })
-  }
-
-  try {
-    ensureUserThemes()
-  } catch (e) {
-    log.error('Failed to initialize user themes:', e)
   }
 
   function watchSettings() {

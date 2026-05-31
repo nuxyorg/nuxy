@@ -4,7 +4,7 @@ import os from 'os'
 import fs from 'fs'
 import path from 'path'
 
-import { createMainWindow, getMainWindow } from '../window/manager.js'
+import { createMainWindow, getMainWindow, isPreloadsLoaded } from '../window/manager.js'
 import { applyConfigToWindow, positionWindowOnDisplay } from '../window/runtime.js'
 import { registerProtocols } from '../protocol/register.js'
 import { registerIpc } from '../ipc/register.js'
@@ -54,6 +54,11 @@ if (!gotTheLock) {
       reloadConfig()
     } catch (err) {
       log.error('Failed to reload config on second-instance:', err)
+    }
+
+    if (!isPreloadsLoaded()) {
+      log.warn('Ignoring second-instance show because preloads are not fully loaded yet.')
+      return
     }
 
     const win = getMainWindow() ?? BrowserWindow.getAllWindows()[0]
@@ -113,6 +118,11 @@ if (!gotTheLock) {
 
         const win = getMainWindow() ?? BrowserWindow.getAllWindows()[0]
         if (!win || win.isDestroyed()) return
+
+        if (!isPreloadsLoaded()) {
+          log.warn(`Ignoring socket command "${cmd}" because preloads are not fully loaded yet.`)
+          return
+        }
 
         if (cmd === 'toggle') {
           if (win.isVisible()) {

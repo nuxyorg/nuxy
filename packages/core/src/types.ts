@@ -57,6 +57,7 @@ export interface ExtensionManifest {
   entry?: {
     backend?: string
     frontend?: string
+    preload?: string
     /** Path to a ThemeDefinition JSON file within the extension folder. */
     theme?: string
     /** Path to an IconPackDefinition JSON file within the extension folder. */

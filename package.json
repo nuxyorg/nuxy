@@ -27,6 +27,8 @@
   },
   "type": "module",
   "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
+    "adm-zip": "^0.5.17",
     "prettier": "^3.8.3",
     "typescript": "^5.9.0"
   },

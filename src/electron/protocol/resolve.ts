@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs'
-import { EXTENSION_DIR } from '../config/paths.js'
+import { EXTRACTED_DIR } from '../config/paths.js'
 import { getExtensionFolder, resolveExtensionId } from '../extensions/registry.js'
 
 export interface ResolvedExtensionFile {
@@ -12,7 +12,7 @@ export interface ResolvedExtensionFile {
 export function resolveExtensionFile(
   idOrFolder: string,
   filePath: string,
-  extensionsRoot: string = EXTENSION_DIR
+  extensionsRoot: string = EXTRACTED_DIR
 ): ResolvedExtensionFile | null {
   const extensionId = resolveExtensionId(idOrFolder) ?? idOrFolder
   const folderName = getExtensionFolder(extensionId) ?? idOrFolder

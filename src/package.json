@@ -20,6 +20,7 @@
     "test:e2e:core": "node e2e/run-cached.js core"
   },
   "dependencies": {
+    "adm-zip": "^0.5.17",
     "dbus-next": "^0.10.2",
     "typescript": "^5.9.0"
   },
@@ -28,18 +29,19 @@
     "@nuxy/extension-host": "workspace:*",
     "@nuxy/extension-sdk": "workspace:*",
     "@nuxy/ui": "workspace:*",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@playwright/test": "^1.51.0",
+    "@types/adm-zip": "^0.5.8",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.0",
     "electron": "^42.1.0",
     "electron-builder": "^25.1.8",
-    "vite": "^4.4.5",
-    "autoprefixer": "^10.4.0",
     "postcss": "^8.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vite": "^4.4.5",
     "vite-plugin-electron": "^0.28.0",
-    "vitest": "^3.0.5",
-    "@playwright/test": "^1.51.0"
+    "vitest": "^3.0.5"
   }
 }

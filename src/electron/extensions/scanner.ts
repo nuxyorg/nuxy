@@ -2,14 +2,27 @@
 import fs from 'fs'
 import path from 'path'
 import module from 'module'
-import { EXTENSION_DIR } from '../config/paths.js'
+import { dialog } from 'electron'
+import { EXTENSION_DIR, EXTRACTED_DIR } from '../config/paths.js'
 import { spawnExtension, activeWorkers } from '../spawn/spawn.js'
 import { getMainWindow } from '../window/manager.js'
 import { registerExtension, clearRegistry } from './registry.js'
 import { seedBundledExtensions } from './seed-bundled.js'
 import { registerExtensionTheme, clearExtensionThemes } from '../themes/extension-themes.js'
 import { registerIconPack, clearIconRegistry } from '../icons/registry.js'
+import { sha256 } from '../security/sign-tool.js'
+import {
+  loadStateCache,
+  saveStateCache,
+  isKeyTrusted,
+  addTrustedKey,
+  isRevoked,
+  verifyDirectoryIntegrity,
+  makeDirectoryReadOnly,
+  updateRevocationList,
+} from '../security/security.js'
 import { kernelLogger } from '@nuxy/core'
+import AdmZip from 'adm-zip'
 import type {
   ExtensionManifest,
   LoadedExtension,
@@ -135,9 +148,10 @@ export function scanDirectoryForNodeImports(dir: string): { file: string; import
 }
 
 let watchDebounce: ReturnType<typeof setTimeout> | null = null
-let watcherStarted = false
+const activeWatchers = new Set<fs.FSWatcher>()
 
 export async function rescanExtensions(): Promise<void> {
+  clearWatchers()
   for (const [, worker] of activeWorkers) {
     await worker.terminate()
   }
@@ -146,19 +160,72 @@ export async function rescanExtensions(): Promise<void> {
   getMainWindow()?.webContents.reload()
 }
 
-function startExtensionWatcher(): void {
-  if (!import.meta.env.DEV || watcherStarted) return
-  if (!fs.existsSync(EXTENSION_DIR)) return
-  watcherStarted = true
+function clearWatchers(): void {
+  for (const watcher of activeWatchers) {
+    try {
+      watcher.close()
+    } catch {}
+  }
+  activeWatchers.clear()
+}
 
-  fs.watch(EXTENSION_DIR, { recursive: true }, () => {
-    if (watchDebounce) clearTimeout(watchDebounce)
-    watchDebounce = setTimeout(() => {
-      log.info('Extension directory changed — rescanning')
-      void rescanExtensions()
-    }, 500)
-  })
-  log.silly('Watching extension directory for changes')
+function startExtensionWatcher(): void {
+  if (!import.meta.env.DEV) return
+  if (!fs.existsSync(EXTENSION_DIR)) return
+
+  clearWatchers()
+
+  const skipDirs = new Set(['node_modules', '.git'])
+
+  const watchRecursive = (dir: string) => {
+    try {
+      const watcher = fs.watch(dir, { recursive: false }, () => {
+        if (watchDebounce) clearTimeout(watchDebounce)
+        watchDebounce = setTimeout(() => {
+          log.info('Extension directory changed — rescanning')
+          void rescanExtensions()
+        }, 500)
+      })
+      activeWatchers.add(watcher)
+    } catch (err) {
+      log.error(`Failed to watch directory: ${dir}`, err)
+    }
+
+    try {
+      const items = fs.readdirSync(dir)
+      for (const item of items) {
+        if (skipDirs.has(item)) continue
+        const fullPath = path.join(dir, item)
+        if (fs.existsSync(fullPath) && fs.statSync(fullPath).isDirectory()) {
+          watchRecursive(fullPath)
+        }
+      }
+    } catch {}
+  }
+
+  log.info(`Watching extension directory recursively: ${EXTENSION_DIR}`)
+  watchRecursive(EXTENSION_DIR)
+}
+
+function promptTrustPublisherKey(extensionId: string, publicKeyPem: string): boolean {
+  if (process.env.NODE_ENV === 'test') {
+    return true
+  }
+  const win = getMainWindow()
+  const hash = sha256(publicKeyPem)
+  try {
+    const choice = dialog.showMessageBoxSync(win!, {
+      type: 'warning',
+      buttons: ['Trust & Install', 'Block'],
+      defaultId: 0,
+      title: 'Untrusted Publisher Key',
+      message: `Extension "${extensionId}" is signed by an untrusted publisher key.\n\nKey Hash: ${hash}\n\nDo you want to trust this publisher and install the extension?`,
+    })
+    return choice === 0
+  } catch (err) {
+    log.error('Failed to show message box dialog (auto-blocking publisher key):', err)
+    return false
+  }
 }
 
 export async function scanExtensions(): Promise<void> {
@@ -167,13 +234,24 @@ export async function scanExtensions(): Promise<void> {
   clearExtensionThemes()
   clearIconRegistry()
 
-  if (import.meta.env.DEV) {
-    try {
-      const { copyDefaultExtensions } = await import('../dev/extensions.js')
-      copyDefaultExtensions()
-    } catch (err) {
-      log.error('Failed to run developer-only setup:', err)
+  // Update revocation list in background (fails silently if offline)
+  await updateRevocationList().catch(() => {})
+
+  // Load state cache and prepare updated state cache
+  const stateCache = loadStateCache()
+  const newStateCache: Record<string, string> = {}
+
+  try {
+    if (!fs.existsSync(EXTRACTED_DIR)) {
+      fs.mkdirSync(EXTRACTED_DIR, { recursive: true })
     }
+  } catch (err) {
+    log.error(`Failed to initialize extracted directory ${EXTRACTED_DIR}:`, err)
+  }
+
+  if (import.meta.env.DEV) {
+    // In dev mode, the symlink-extensions Vite plugin handles zipping extensions
+    // into .nuxyext files in dist/extensions and symlinking it to EXTENSION_DIR.
   } else {
     seedBundledExtensions()
     if (!fs.existsSync(EXTENSION_DIR)) {
@@ -185,10 +263,149 @@ export async function scanExtensions(): Promise<void> {
   const items = fs.readdirSync(EXTENSION_DIR)
   log.silly(`Found ${items.length} item(s) in extension dir`, items)
 
-  for (const folderName of items) {
-    const itemPath = path.join(EXTENSION_DIR, folderName)
+  const activeFolders = new Set<string>()
+
+  // Extract .nuxyext files and copy folders into EXTRACTED_DIR with security checks
+  for (const itemName of items) {
+    const itemPath = path.join(EXTENSION_DIR, itemName)
+    try {
+      const stat = fs.statSync(itemPath)
+      const isZip = itemName.endsWith('.nuxyext') && stat.isFile()
+      const isDir = stat.isDirectory()
+
+      if (!isZip && !isDir) continue
+
+      const folderName = itemName.replace(/\.nuxyext$/, '')
+      const targetPath = path.join(EXTRACTED_DIR, folderName)
+
+      // Calculate ZIP hash for state cache (if zip)
+      let zipHash = ''
+      if (isZip) {
+        zipHash = sha256(fs.readFileSync(itemPath))
+      }
+
+      // Check state cache to see if we can skip verification/extraction
+      const isCached = isZip && stateCache[folderName] === zipHash && fs.existsSync(targetPath)
+
+      if (isCached) {
+        log.info(`Extension "${folderName}" verified via state cache (Skipped extraction).`)
+        newStateCache[folderName] = zipHash
+        activeFolders.add(folderName)
+        continue
+      }
+
+      // Extract to a temp folder first for verification
+      const tempPath = path.join(EXTRACTED_DIR, `.tmp_${folderName}`)
+      if (fs.existsSync(tempPath)) {
+        fs.rmSync(tempPath, { recursive: true, force: true })
+      }
+      fs.mkdirSync(tempPath, { recursive: true })
+
+      if (isZip) {
+        const zip = new AdmZip(itemPath)
+        zip.extractAllTo(tempPath, true)
+      } else {
+        fs.cpSync(itemPath, tempPath, { recursive: true })
+      }
+
+      // 1. Verify directory integrity & signature
+      const verification = verifyDirectoryIntegrity(tempPath)
+      if (!verification.success) {
+        log.error(`Security validation failed for "${folderName}": ${verification.error}`)
+        fs.rmSync(tempPath, { recursive: true, force: true })
+        continue
+      }
+
+      const { publicKey, hash } = verification
+      if (!publicKey || !hash) {
+        log.error(`Security check for "${folderName}" returned empty signature properties.`)
+        fs.rmSync(tempPath, { recursive: true, force: true })
+        continue
+      }
+
+      // 2. Check revocation list
+      if (isRevoked(folderName, hash, publicKey)) {
+        log.error(`Security Violation: Extension "${folderName}" is revoked/blacklisted.`)
+        fs.rmSync(tempPath, { recursive: true, force: true })
+        continue
+      }
+
+      // 3. Verify public key trust (Self-Signed user approval prompt)
+      const trusted = isKeyTrusted(publicKey)
+      if (!trusted) {
+        const approved = promptTrustPublisherKey(folderName, publicKey)
+        if (approved) {
+          addTrustedKey(publicKey)
+          log.info(`Publisher key trusted for "${folderName}". Restarting scan to initialize extensions cleanly.`)
+          setTimeout(() => {
+            void rescanExtensions()
+          }, 100)
+          fs.rmSync(tempPath, { recursive: true, force: true })
+          return // Abort current scan run to restart cleanly
+        } else {
+          log.warn(`Installation blocked: Publisher key for "${folderName}" is untrusted.`)
+          fs.rmSync(tempPath, { recursive: true, force: true })
+          continue
+        }
+      }
+
+      // Move temp folder to final destination path
+      if (fs.existsSync(targetPath)) {
+        // Restore write permissions before removal — makeDirectoryReadOnly sets 0o555
+        // and rmSync cannot delete files inside read-only directories on Linux.
+        const restoreWritable = (p: string) => {
+          try {
+            fs.chmodSync(p, 0o755)
+            if (fs.statSync(p).isDirectory()) {
+              for (const item of fs.readdirSync(p)) restoreWritable(path.join(p, item))
+            }
+          } catch {}
+        }
+        restoreWritable(targetPath)
+        fs.rmSync(targetPath, { recursive: true, force: true })
+      }
+      fs.renameSync(tempPath, targetPath)
+
+      // 4. Enforce read-only permissions
+      makeDirectoryReadOnly(targetPath)
+
+      log.info(`Extracted packaged extension: ${itemName} → ${targetPath}`)
+      if (isZip) {
+        newStateCache[folderName] = zipHash
+      }
+      activeFolders.add(folderName)
+    } catch (err) {
+      log.error(`Failed to process extension item ${itemName}:`, err)
+    }
+  }
+
+  // Clean stale/removed directories in EXTRACTED_DIR (including leftover .tmp_ folders)
+  try {
+    const extractedDirs = fs.readdirSync(EXTRACTED_DIR)
+    for (const extDir of extractedDirs) {
+      if (activeFolders.has(extDir)) continue
+      const fullPath = path.join(EXTRACTED_DIR, extDir)
+      if (fs.statSync(fullPath).isDirectory()) {
+        fs.rmSync(fullPath, { recursive: true, force: true })
+        log.info(`Cleaned stale extracted folder: ${extDir}`)
+      }
+    }
+  } catch {}
+
+  // Save new cache state
+  saveStateCache(newStateCache)
+
+  const extractedItems = fs.readdirSync(EXTRACTED_DIR)
+  log.silly(`Found ${extractedItems.length} extracted item(s) in EXTRACTED_DIR`, extractedItems)
+
+  for (const folderName of extractedItems) {
+    if (folderName.startsWith('.')) {
+      log.silly(`Skipping hidden/temp folder in EXTRACTED_DIR: ${folderName}`)
+      continue
+    }
+    const itemPath = path.join(EXTRACTED_DIR, folderName)
     if (!fs.statSync(itemPath).isDirectory()) {
-      log.silly(`Skipping non-directory item: ${folderName}`)
+      log.silly(`Skipping non-directory extracted item: ${folderName}`)
       continue
     }
 

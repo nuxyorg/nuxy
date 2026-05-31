@@ -43,10 +43,39 @@ export function useShellInit({
       })
       .catch(() => {})
 
+    const FONT_FAMILY_MAP: Record<string, string> = {
+      system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
+      monospace: 'monospace',
+    }
+
+    const applyTheme = (name: string) => {
+      window.core?.ipc
+        ?.invoke('kernel', 'getThemeByName', { name })
+        .then((themeRes: unknown) => {
+          const tr = themeRes as {
+            success: boolean
+            data: { colors?: Record<string, string>; tokens?: Record<string, string> }
+          } | null
+          if (!tr?.success || !tr.data) return
+          const { colors, tokens } = tr.data
+          const root = document.documentElement
+          if (colors)
+            Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
+          if (tokens)
+            Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
+        })
+        .catch(() => {})
+    }
+
     window.core?.ipc?.invoke('kernel', 'getConfig', {}).then((res: unknown) => {
       const r = res as { success: boolean; data: ShellConfig }
       if (r.success && r.data) {
         cfgRef.current = r.data
+        const s = r.data
+        setSettings(s)
+        if (s.zoom) document.documentElement.style.zoom = s.zoom
+        if (s.font) document.body.style.fontFamily = FONT_FAMILY_MAP[s.font] || s.font
+        if (s.theme) applyTheme(s.theme)
         window.dispatchEvent(new Event('resize'))
       }
     })
@@ -99,11 +128,6 @@ export function useShellInit({
       }
     })
 
-    const FONT_FAMILY_MAP: Record<string, string> = {
-      system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
-      monospace: 'monospace',
-    }
-
     window.core?.ipc
       ?.invoke('com.nuxy.settings', 'getSettings', {})
       .then((res: unknown) => {
@@ -113,24 +137,7 @@ export function useShellInit({
         setSettings(s)
         if (s.zoom) document.documentElement.style.zoom = s.zoom
         if (s.font) document.body.style.fontFamily = FONT_FAMILY_MAP[s.font] || s.font
-        if (s.theme) {
-          window.core.ipc
-            .invoke('kernel', 'getThemeByName', { name: s.theme })
-            .then((themeRes: unknown) => {
-              const tr = themeRes as {
-                success: boolean
-                data: { colors?: Record<string, string>; tokens?: Record<string, string> }
-              } | null
-              if (!tr?.success || !tr.data) return
-              const { colors, tokens } = tr.data
-              const root = document.documentElement
-              if (colors)
-                Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
-              if (tokens)
-                Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
-            })
-            .catch(() => {})
-        }
+        if (s.theme) applyTheme(s.theme)
       })
       .catch(() => {})
   }, [])
@@ -325,6 +332,7 @@ export function useKeyboard({
         if (actions && actions.length > 0) {
           const matched = actions.find((a) => {
             if (!matchesAction(a, e)) return false
+            if (e.repeat && !a.allowRepeat) return false
             if (isInput) {
               if (isOmniBar) {
                 if (!a.modifiers?.length && a.key.length === 1) return false

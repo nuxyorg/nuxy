@@ -7,11 +7,12 @@ import { getOrCreateSpring } from '../window/spring.js'
 import { kernelLogger } from '@nuxy/core'
 import type { IpcResult } from '@nuxy/core'
 import { getConfig, reloadConfig } from '../config/nuxyconfig.js'
-import { loadTheme, listFileThemeNames } from '../themes/install.js'
+import { loadTheme } from '../themes/install.js'
 import { listExtensionThemeNames } from '../themes/extension-themes.js'
 import { getIcon, listIconPacks } from '../icons/registry.js'
 import { positionWindowOnDisplay, applyConfigToWindow } from '../window/runtime.js'
 import { validateExtInvokeArgs, validateWindowResize } from './validate.js'
+import { onPreloadsLoaded, onRendererReady } from '../window/manager.js'
 import { invokeWorker } from './worker-invoke.js'
 
 const log = kernelLogger.child('IPC')
@@ -103,9 +104,18 @@ export function registerIpc() {
 
         if (ch === 'listThemes') {
           const extNames = listExtensionThemeNames()
-          const fileNames = listFileThemeNames()
-          const all = [...new Set([...extNames, ...fileNames])]
+          const all = [...new Set(['dark', 'light', ...extNames])]
           return { success: true, data: all }
+        }
+
+        if (ch === 'getPreloads') {
+          const list = loadedExtensions
+            .filter((ext) => ext.manifest.entry?.preload)
+            .map((ext) => ({
+              id: ext.id,
+              url: `nuxy-ext://${ext.id}/${ext.manifest.entry!.preload!.replace(/\.ts$/, '.js')}`,
+            }))
+          return { success: true, data: list }
         }
 
         if (ch === 'getIcon') {
@@ -231,6 +241,16 @@ export function registerIpc() {
         win.hide()
         break
     }
+  })
+
+  ipcMain.on('window:preloads-loaded', () => {
+    log.info(`[FLASH-DEBUG] window:preloads-loaded received at ${Date.now()}`)
+    onPreloadsLoaded()
+  })
+
+  ipcMain.on('window:ready', () => {
+    log.info(`[FLASH-DEBUG] window:ready received at ${Date.now()}`)
+    onRendererReady()
   })
 
   log.info('IPC handlers registered.')

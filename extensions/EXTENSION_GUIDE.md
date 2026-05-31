@@ -25,6 +25,7 @@
 extensions/
   my-extension/
     manifest.json        # required
+    preload.ts           # optional, runs in isolated window preload script context at startup
     backend.ts           # required if type is tool/provider/orchestrator; optional for helper
     backend.test.ts      # required when backend.ts exists
     frontend.tsx         # optional, JSX/TSX component
@@ -34,6 +35,7 @@ extensions/
 
 - Extensions live strictly inside their own folder. No file may reference paths outside it.
 - `frontend.tsx` must be a single self-contained file — no relative imports.
+- `preload.ts` runs directly in the main window's Electron preload context. It must contain the background listeners (like clipboard watchers), default settings initializers, and other early setup tasks.
 - `backend.ts` must export a named `register` function (`export function register(core: CoreContext): void`).
 - All extension-specific types belong in `types.ts` inside the extension folder — not in shared packages.
 - The protocol server transpiles `.ts` and `.tsx` files at runtime via `typescript.transpileModule`; no separate build step is needed.
@@ -54,6 +56,7 @@ extensions/
     "caller": false
   },
   "entry": {
+    "preload": "preload.js",
     "backend": "backend.js",
     "frontend": "frontend.js"
   }

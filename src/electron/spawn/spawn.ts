@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads'
 import path from 'path'
 import { pathToFileURL } from 'url'
-import { EXTENSION_DIR } from '../config/paths.js'
+import { EXTRACTED_DIR } from '../config/paths.js'
 import { kernelLogger } from '@nuxy/core'
 import { activeWorkers } from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
@@ -22,7 +22,7 @@ export function spawnExtension(
   entryFile: string,
   permissions: string[] = []
 ): Worker {
-  const absolutePath = path.join(EXTENSION_DIR, folderName, entryFile)
+  const absolutePath = path.join(EXTRACTED_DIR, folderName, entryFile)
   log.info(`Spawning worker for extension "${extId}" (folder: ${folderName}) → ${absolutePath}`)
 
   migrateLegacyData(extId, folderName)

@@ -48,6 +48,12 @@ describe('validateExtInvokeArgs', () => {
     if (r.ok) expect(r.channel).toBe('getExtensionSettingsSchemas')
   })
 
+  it('allows kernel getPreloads', () => {
+    const r = validateExtInvokeArgs('kernel', 'getPreloads', {})
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.channel).toBe('getPreloads')
+  })
+
   it('rejects unknown kernel channel', () => {
     const r = validateExtInvokeArgs('kernel', 'deleteEverything', {})
     expect(r.ok).toBe(false)

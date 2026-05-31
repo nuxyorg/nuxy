@@ -13,6 +13,8 @@ export interface KeyAction {
    */
   activeOn?: () => boolean
   handler: () => void
+  /** When true, the handler fires on every repeated keydown while the key is held. Default: false. */
+  allowRepeat?: boolean
 }
 
 export function useToolKeyActions(actions: KeyAction[]): void {

@@ -64,7 +64,22 @@ export default function ShellView({ query: _queryProp }: Props) {
     y: Math.round(window.innerHeight * 0.15),
   })
   const [size, setSize] = useState<Size>({ width: null, height: null })
-  const [settings, setSettings] = useState<ShellConfig | null>(null)
+  const [settings, setSettings] = useState<ShellConfig>({
+    windowWidth: 800,
+    windowMaxHeight: 600,
+    opacity: 1,
+    theme: 'dark',
+    zoom: '100%',
+    font: 'system',
+    windowPosition: '1/2, 1/3',
+  })
+  const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true)
+
+  useEffect(() => {
+    const t = setTimeout(() => setIsInitialLoad(false), 500)
+    return () => clearTimeout(t)
+  }, [])
+
   const [providerStates, setProviderStates] = useState<Record<string, ProviderState>>({})
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [searchIcon, setSearchIcon] = useState<string | null>(null)
@@ -134,13 +149,20 @@ export default function ShellView({ query: _queryProp }: Props) {
   }
 
   const listResults = useMemo<ListItem[]>(() => {
-    const toolItems: ListItem[] = tools.map((t) => ({
-      id: t.id,
-      title: t.manifest.name,
-      subtitle: (t.manifest as { id?: string }).id || 'Tool',
-      isTool: true,
-      value: t.manifest.name,
-    }))
+    const seenIds = new Set<string>()
+    const toolItems: ListItem[] = tools
+      .filter((t) => {
+        if (seenIds.has(t.id)) return false
+        seenIds.add(t.id)
+        return true
+      })
+      .map((t) => ({
+        id: t.id,
+        title: t.manifest.name,
+        subtitle: (t.manifest as { id?: string }).id || 'Tool',
+        isTool: true,
+        value: t.manifest.name,
+      }))
 
     let filteredTools: ListItem[]
     if (savedQuery.trim().length > 0) {
@@ -150,10 +172,11 @@ export default function ShellView({ query: _queryProp }: Props) {
           item.id.toLowerCase().includes(savedQuery.toLowerCase())
       )
     } else if (recentToolIds.length > 0) {
-      const recent = recentToolIds
+      const recentSet = new Set(recentToolIds)
+      const recent = [...new Set(recentToolIds)]
         .map((id) => toolItems.find((t) => t.id === id))
         .filter((x): x is ListItem => Boolean(x))
-      const rest = toolItems.filter((t) => !recentToolIds.includes(t.id))
+      const rest = toolItems.filter((t) => !recentSet.has(t.id))
       filteredTools = [...recent, ...rest]
     } else {
       filteredTools = toolItems
@@ -584,7 +607,7 @@ export default function ShellView({ query: _queryProp }: Props) {
               : undefined,
           maxHeight: size.height ? 'none' : `${settings?.windowMaxHeight ?? 600}px`,
           opacity: settings?.opacity !== undefined ? settings.opacity : undefined,
-          transition: isDraggingState
+          transition: (isDraggingState || isInitialLoad)
             ? 'none'
             : 'left 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
         }}

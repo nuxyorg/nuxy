@@ -31,6 +31,7 @@ Create `manifest.json` with the following content:
     "caller": false
   },
   "entry": {
+    "preload": "preload.ts",
     "backend": "backend.ts",
     "frontend": "frontend.tsx"
   }
@@ -111,7 +112,7 @@ The `manifest.json` file configures how the extension behaves. Below is the list
 | `permissions` | `string[]` | No | Array of permissions indicating host APIs the extension needs access to. |
 | `capabilities` | `object` | No | Defines capabilities: `callable` (whether others can invoke it) and `caller` (whether it invokes others). |
 | `placeholder` | `string` | No | Custom omnibar placeholder text shown when this tool is active (e.g. `"Ask anything"`). Falls back to `Search <name>` if omitted. |
-| `entry` | `object` | Yes | Relative paths to entry files: `backend`, `frontend`, `theme`, `settings`, etc. |
+| `entry` | `object` | Yes | Relative paths to entry files: `backend`, `frontend`, `preload`, `theme`, `settings`, etc. |
 
 ### Extension Types
 

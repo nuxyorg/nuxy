@@ -7,6 +7,9 @@ const ipcChannelsByExtId = new Map<string, Set<string>>()
 export const loadedExtensions: LoadedExtension[] = []
 
 export function registerExtension(ext: LoadedExtension): void {
+  if (byId.has(ext.id)) {
+    return
+  }
   byId.set(ext.id, ext)
   folderToId.set(ext.folderName, ext.id)
   loadedExtensions.push(ext)
