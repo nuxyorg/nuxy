@@ -16,6 +16,19 @@
       "default": "llama3",
       "placeholder": "llama3",
       "description": "Model name to use for chat (e.g. llama3, mistral)"
+    },
+    {
+      "key": "thinkingColor",
+      "label": "Thinking Indicator",
+      "type": "select",
+      "default": "light",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "rainbow", "label": "Rainbow" },
+        { "value": "bit", "label": "Bit" },
+        { "value": "off", "label": "Off" }
+      ],
+      "description": "Border effect shown while Ollama is generating a response"
     }
   ]
 }

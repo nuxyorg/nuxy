@@ -2,7 +2,7 @@
   "id": "com.nuxy.gradient",
   "name": "Gradient",
   "version": "1.0.0",
-  "type": "tool",
+  "type": "helper",
   "icon": "gradient",
   "permissions": [],
   "capabilities": {

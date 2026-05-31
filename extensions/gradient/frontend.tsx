@@ -106,7 +106,9 @@ if (typeof window !== 'undefined') {
 
   // Handle toggles from other extensions
   const handleToggle = (e: Event) => {
-    const active = (e as CustomEvent).detail
+    const detail = (e as CustomEvent).detail
+    const active = typeof detail === 'object' && detail !== null ? detail.active : Boolean(detail)
+    const mode: string = typeof detail === 'object' && detail !== null ? (detail.mode ?? 'light') : 'light'
     const container = document.querySelector('.nuxy-shell-container')
     if (container) {
       if (active) {
@@ -114,15 +116,23 @@ if (typeof window !== 'undefined') {
           clearTimeout(pauseTimeout)
           pauseTimeout = null
         }
-        container.classList.add('nuxy-shell-container--gradient-active')
-        gInstance?.play?.()
-        requestAnimationFrame(() => {
-          if (gInstance && gInstance.mesh && gInstance.mesh.geometry) {
-            gInstance.resize?.()
-          }
-        })
+        if (mode === 'rainbow') {
+          container.classList.add('nuxy-shell-container--gradient-rainbow')
+        } else if (mode === 'bit') {
+          container.classList.add('nuxy-shell-container--gradient-bit')
+        } else {
+          container.classList.add('nuxy-shell-container--gradient-active')
+          gInstance?.play?.()
+          requestAnimationFrame(() => {
+            if (gInstance && gInstance.mesh && gInstance.mesh.geometry) {
+              gInstance.resize?.()
+            }
+          })
+        }
       } else {
         container.classList.remove('nuxy-shell-container--gradient-active')
+        container.classList.remove('nuxy-shell-container--gradient-rainbow')
+        container.classList.remove('nuxy-shell-container--gradient-bit')
         if (pauseTimeout) clearTimeout(pauseTimeout)
         pauseTimeout = setTimeout(() => {
           gInstance?.pause?.()

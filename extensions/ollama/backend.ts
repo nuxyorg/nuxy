@@ -13,14 +13,17 @@ import type {
 
 const DEFAULT_MODEL = 'llama3'
 const DEFAULT_HOST = 'http://localhost:11434'
+const DEFAULT_THINKING_COLOR = 'light'
 
 export async function register(core: CoreContext): Promise<void> {
-  const config: OllamaConfig = { model: DEFAULT_MODEL, host: DEFAULT_HOST }
+  const config: OllamaConfig = { model: DEFAULT_MODEL, host: DEFAULT_HOST, thinkingColor: DEFAULT_THINKING_COLOR }
 
   const savedHost = await core.settings.read<string>('host')
   const savedModel = await core.settings.read<string>('model')
+  const savedThinkingColor = await core.settings.read<string>('thinkingColor')
   if (savedHost) config.host = savedHost
   if (savedModel) config.model = savedModel
+  if (savedThinkingColor) config.thinkingColor = savedThinkingColor
 
   async function chat(payload: ChatPayload): Promise<ChatResult> {
     const response = await fetch(`${config.host}/api/chat`, {
@@ -71,7 +74,7 @@ export async function register(core: CoreContext): Promise<void> {
   })
 
   core.ipc.handle('configure', async (payload: unknown): Promise<void> => {
-    const { model, host } = (payload as ConfigurePayload) ?? {}
+    const { model, host, thinkingColor } = (payload as ConfigurePayload) ?? {}
     if (model !== undefined) {
       config.model = model
       await core.settings.write('model', model)
@@ -80,10 +83,15 @@ export async function register(core: CoreContext): Promise<void> {
       config.host = host
       await core.settings.write('host', host)
     }
+    if (thinkingColor !== undefined) {
+      config.thinkingColor = thinkingColor
+      await core.settings.write('thinkingColor', thinkingColor)
+    }
   })
 
   core.ipc.handle('getConfig', async (): Promise<OllamaConfig> => {
-    return { host: config.host, model: config.model }
+    const freshThinkingColor = await core.settings.read<string>('thinkingColor')
+    return { host: config.host, model: config.model, thinkingColor: freshThinkingColor ?? config.thinkingColor }
   })
 
   core.ipc.handle('history:save', async (payload: unknown): Promise<void> => {

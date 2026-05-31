@@ -40,7 +40,7 @@ function listUikitExtensions(): typeof loadedExtensions {
   return loadedExtensions
     .filter(
       (ext) =>
-        (ext.manifest.type === 'uikit' || ext.id === 'com.nuxy.gradient') &&
+        (ext.manifest.type === 'uikit' || ext.manifest.type === 'helper') &&
         ext.manifest.entry?.frontend
     )
     .sort((a, b) => (a.manifest.priority ?? 100) - (b.manifest.priority ?? 100))

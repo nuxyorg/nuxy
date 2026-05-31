@@ -26,8 +26,15 @@ export default function OllamaApp({ query }: Props) {
   const [loading, setLoading] = useState<boolean>(false)
   const [models, setModels] = useState<string[]>([])
   const [selectedModel, setSelectedModel] = useState<string>('')
+  const [thinkingColor, setThinkingColor] = useState<string>('light')
   const [error, setError] = useState<string | null>(null)
+  const [queuedMessage, setQueuedMessage] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement | null>(null)
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+  const isAtBottomRef = useRef(true)
+  const abortControllerRef = useRef<AbortController | null>(null)
+  const queueRef = useRef<string | null>(null)
+  const handleSendRef = useRef<(text?: string) => Promise<void>>(async () => {})
 
   const ipc = <T = unknown,>(channel: string, payload?: unknown): Promise<T> =>
     window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
@@ -48,6 +55,7 @@ export default function OllamaApp({ query }: Props) {
       const savedModel = cfg?.model ?? ''
       const activeModel = savedModel && list.includes(savedModel) ? savedModel : (list[0] ?? '')
       setSelectedModel(activeModel)
+      if (cfg?.thinkingColor) setThinkingColor(cfg.thinkingColor)
 
       if (Array.isArray(history) && history.length > 0) {
         setMessages(history)
@@ -55,13 +63,20 @@ export default function OllamaApp({ query }: Props) {
     })
   }, [])
 
+  // Reset to follow mode whenever the user sends a new message
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'instant' })
+    if (loading) isAtBottomRef.current = true
+  }, [loading])
+
+  useEffect(() => {
+    if (isAtBottomRef.current) {
+      bottomRef.current?.scrollIntoView({ behavior: 'instant' })
+    }
   }, [messages])
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
-  }, [query, loading, messages.length, models.length, selectedModel])
+  }, [query, loading, messages.length, models.length, selectedModel, queuedMessage])
 
   useEffect(() => {
     window.dispatchEvent(
@@ -75,17 +90,38 @@ export default function OllamaApp({ query }: Props) {
   }, [selectedModel])
 
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: loading }))
+    if (loading && thinkingColor !== 'off') {
+      window.dispatchEvent(
+        new CustomEvent('nuxy-gradient-toggle', { detail: { active: true, mode: thinkingColor } })
+      )
+    } else {
+      window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: false }))
+    }
     return () => {
       window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: false }))
     }
+  }, [loading, thinkingColor])
+
+  // When loading finishes, process any queued message
+  useEffect(() => {
+    if (!loading && queueRef.current) {
+      const text = queueRef.current
+      queueRef.current = null
+      setQueuedMessage(null)
+      void handleSendRef.current(text)
+    }
   }, [loading])
 
-  async function handleSend(): Promise<void> {
-    const text = query.trim()
+  async function handleSend(overrideText?: string): Promise<void> {
+    const text = overrideText ?? query.trim()
     if (!text || loading) return
 
-    window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } }))
+    if (!overrideText) {
+      window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } }))
+    }
+
+    const controller = new AbortController()
+    abortControllerRef.current = controller
 
     const next: ChatMessage[] = [...messages, { role: 'user', content: text }]
     setMessages(next)
@@ -106,6 +142,7 @@ export default function OllamaApp({ query }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model, messages: next, stream: true }),
+        signal: controller.signal,
       })
 
       if (!response.ok) {
@@ -149,25 +186,56 @@ export default function OllamaApp({ query }: Props) {
       ipc('history:save', { messages: finalMessages }).catch(() => {})
     } catch (err) {
       const e = err as Error
-      setError(e?.message ?? String(err))
-      setMessages((prev) => {
-        const last = prev[prev.length - 1]
-        if (last?.role === 'assistant' && last.content === '') return prev.slice(0, -1)
-        return prev
-      })
+      if (e?.name === 'AbortError') {
+        // Stopped by user — keep whatever was generated so far
+        if (assistantContent) {
+          const partial: ChatMessage[] = [...next, { role: 'assistant', content: assistantContent }]
+          setMessages(partial)
+          ipc('history:save', { messages: partial }).catch(() => {})
+        } else {
+          setMessages(next)
+        }
+      } else {
+        setError(e?.message ?? String(err))
+        setMessages((prev) => {
+          const last = prev[prev.length - 1]
+          if (last?.role === 'assistant' && last.content === '') return prev.slice(0, -1)
+          return prev
+        })
+      }
     } finally {
       setLoading(false)
+      abortControllerRef.current = null
     }
   }
+
+  handleSendRef.current = handleSend
 
   _useToolKeyActions([
     {
       key: 'Enter',
-      label: 'Send',
+      label: loading && query.trim().length > 0 ? 'Queue' : 'Send',
       hint: '↵',
-      activeOn: () => query.trim().length > 0 && !loading,
+      activeOn: () => query.trim().length > 0,
       handler: () => {
-        void handleSend()
+        const text = query.trim()
+        if (!text) return
+        if (loading) {
+          queueRef.current = text
+          setQueuedMessage(text)
+          window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } }))
+        } else {
+          void handleSend()
+        }
+      },
+    },
+    {
+      key: 'Escape',
+      label: 'Stop',
+      hint: 'Esc',
+      activeOn: () => loading,
+      handler: () => {
+        abortControllerRef.current?.abort()
       },
     },
     {
@@ -214,7 +282,14 @@ export default function OllamaApp({ query }: Props) {
       }}
     >
       {error && Alert && <Alert variant="danger">{error}</Alert>}
+      {queuedMessage && Alert && <Alert variant="info">Queued: {queuedMessage}</Alert>}
       <div
+        ref={scrollContainerRef}
+        onScroll={() => {
+          const el = scrollContainerRef.current
+          if (!el) return
+          isAtBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80
+        }}
         style={{
           flex: 1,
           overflowY: 'auto',

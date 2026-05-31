@@ -106,12 +106,26 @@ The `manifest.json` file configures how the extension behaves. Below is the list
 | `id` | `string` | Yes | Unique reverse-DNS identifier (e.g. `com.nuxy.my-extension`). |
 | `name` | `string` | Yes | Human-readable name displayed in the launcher. |
 | `version` | `string` | Yes | Semantic version string (e.g., `1.0.0`). |
-| `type` | `string` | Yes | Type of extension. Allowed values: `theme`, `iconpack`, `uikit`, `tool`. |
+| `type` | `string` | Yes | Type of extension. Allowed values: `tool`, `provider`, `orchestrator`, `helper`, `theme`, `iconpack`, `uikit`. |
 | `icon` | `string` | No | Name of the Lucide icon representing the tool. |
 | `permissions` | `string[]` | No | Array of permissions indicating host APIs the extension needs access to. |
 | `capabilities` | `object` | No | Defines capabilities: `callable` (whether others can invoke it) and `caller` (whether it invokes others). |
 | `placeholder` | `string` | No | Custom omnibar placeholder text shown when this tool is active (e.g. `"Ask anything"`). Falls back to `Search <name>` if omitted. |
 | `entry` | `object` | Yes | Relative paths to entry files: `backend`, `frontend`, `theme`, `settings`, etc. |
+
+### Extension Types
+
+| Type | User-visible | Backend worker | Frontend loaded | Purpose |
+|---|---|---|---|---|
+| `tool` | Yes | Required | Optional, on activation | Interactive tool the user activates directly. |
+| `provider` | Yes | Required | Optional | Data provider surfaced by orchestrators. |
+| `orchestrator` | Yes | Required | Optional | Coordinates one or more providers. |
+| `helper` | No | Optional | Optional, loaded early | Utility called by other extensions; never shown in the tool list. |
+| `uikit` | No | No | Yes, loaded early | Ships UI components that extend `window.UI` before shell bootstrap. |
+| `theme` | No | No | No | JSON theme definition consumed by the theme engine. |
+| `iconpack` | No | No | No | JSON icon pack consumed by the icon registry. |
+
+**`helper` specifics:** A `helper` extension has no user-facing presence. It exposes IPC channels consumed by other backends via `core.extensions.invoke`, or it attaches side-effects to the shell DOM / event bus from its `frontend.tsx`. Helpers must **not** call `core.registry.registerTool`. A backend worker is only spawned when `entry.backend` is declared.
 
 ---
 

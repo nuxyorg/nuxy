@@ -36,11 +36,13 @@ export interface QueryPayload {
 export interface ConfigurePayload {
   model?: string
   host?: string
+  thinkingColor?: string
 }
 
 export interface OllamaConfig {
   model: string
   host: string
+  thinkingColor: string
 }
 
 export interface HealthResult {

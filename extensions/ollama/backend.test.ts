@@ -205,14 +205,14 @@ describe('ollama backend', () => {
       })
       await register(core)
       const result = await (handlers['getConfig'] as () => Promise<unknown>)()
-      expect(result).toEqual({ host: 'http://remote:11434', model: 'mistral' })
+      expect(result).toEqual({ host: 'http://remote:11434', model: 'mistral', thinkingColor: 'light' })
     })
 
     it('returns defaults when no settings exist', async () => {
       const { core, handlers } = createCore()
       await register(core)
       const result = await (handlers['getConfig'] as () => Promise<unknown>)()
-      expect(result).toEqual({ host: 'http://localhost:11434', model: 'llama3' })
+      expect(result).toEqual({ host: 'http://localhost:11434', model: 'llama3', thinkingColor: 'light' })
     })
   })
 

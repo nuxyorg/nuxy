@@ -1,4 +1,4 @@
-export type ExtensionType = 'tool' | 'provider' | 'orchestrator' | 'theme' | 'iconpack' | 'uikit'
+export type ExtensionType = 'tool' | 'provider' | 'orchestrator' | 'helper' | 'theme' | 'iconpack' | 'uikit'
 
 export type ExtensionPermission =
   | 'storage'

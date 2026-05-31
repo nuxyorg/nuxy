@@ -25,7 +25,7 @@
 extensions/
   my-extension/
     manifest.json        # required
-    backend.ts           # required if type is tool/provider/orchestrator
+    backend.ts           # required if type is tool/provider/orchestrator; optional for helper
     backend.test.ts      # required when backend.ts exists
     frontend.tsx         # optional, JSX/TSX component
     types.ts             # extension-specific interfaces (data models, IPC payload types)
@@ -62,7 +62,7 @@ extensions/
 
 ### Permitted types
 
-`tool` | `provider` | `orchestrator` | `theme` | `iconpack` | `uikit`
+`tool` | `provider` | `orchestrator` | `helper` | `theme` | `iconpack` | `uikit`
 
 ### Permissions
 
@@ -137,6 +137,46 @@ window.UI = {
 - Must always spread `...window.UI` when reassigning, to preserve components you are not overriding.
 - May add brand-new components (e.g. `DataTable`, `ColorPicker`) that other extension frontends can then use via `window.UI`.
 - Uses `window.React` — same as any other frontend.
+
+### Helper Extensions (`type: "helper"`)
+
+A `helper` extension provides utility services to other extensions. Helpers are **not** shown in the tool list and are never directly activated by the user. They are called from other extension backends via `core.extensions.invoke`, or they may emit and listen to approved `window.dispatchEvent` channels from their frontend.
+
+```json
+{
+  "id": "com.nuxy.my-helper",
+  "name": "My Helper",
+  "version": "1.0.0",
+  "type": "helper",
+  "permissions": [],
+  "capabilities": {
+    "callable": true,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
+  }
+}
+```
+
+**Key differences from `tool`:**
+
+| | `tool` | `helper` |
+| --- | --- | --- |
+| Appears in tool list | Yes | No |
+| User activates directly | Yes | No |
+| Backend (worker) | Required | Optional |
+| Frontend | Optional | Optional — self-attaches or responds to events |
+| Called by other extensions | Via `capabilities.callable` | Via `capabilities.callable` or events |
+
+**Rules for `helper` extensions:**
+
+- Must **not** register a tool via `core.registry.registerTool` — helpers are not tools.
+- A `backend.ts` is optional. Only declare one if the helper exposes IPC channels to other extensions.
+- A `frontend.tsx` is optional. If present, it is loaded early alongside `uikit` extensions. It may self-attach to the shell DOM or listen for custom events.
+- Must set `capabilities.callable: true` when other extensions call it via `core.extensions.invoke`.
+- May use any approved `window.dispatchEvent` channel.
 
 ---
 
@@ -1225,6 +1265,14 @@ Before submitting or merging an extension, verify every item:
 - [ ] Frontend has `interface Props { query: string }` and typed component
 - [ ] `const React = window.React` at top of every `.tsx` file — no `import React`
 - [ ] All `useState` calls have explicit type parameters where non-trivial
+
+**Helper-specific**
+
+- [ ] `type: "helper"` in manifest — not `tool`
+- [ ] Does not call `core.registry.registerTool` / `registerProvider` / `registerOrchestrator`
+- [ ] `capabilities.callable: true` if other extensions call this helper via `core.extensions.invoke`
+- [ ] No backend worker spawned unless `entry.backend` is declared
+- [ ] Frontend (if any) self-attaches via module-level code or approved event channels — no `default export` required when no view is rendered
 
 **Backend**
 

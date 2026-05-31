@@ -263,6 +263,17 @@ export async function scanExtensions(): Promise<void> {
         } else {
           log.info(`UIKit extension registered: ${extId} (frontend: ${manifest.entry.frontend})`)
         }
+      } else if (manifest.type === 'helper') {
+        // helper extensions provide utility services to other extensions.
+        // Their frontend (if any) is loaded early alongside uikit extensions.
+        // A backend worker is spawned only when a backend entry is declared.
+        if (manifest.entry?.backend) {
+          log.info(`Loading helper extension: ${extId} (backend: ${manifest.entry.backend})`)
+          spawnExtension(extId, folderName, manifest.entry.backend, manifest.permissions ?? [])
+          log.info(`Sandboxed worker started for helper: ${extId}`)
+        } else {
+          log.info(`Helper extension registered: ${extId} (frontend-only)`)
+        }
       } else if (manifest.entry?.backend) {
         log.info(`Loading extension: ${extId} (backend: ${manifest.entry.backend})`)
         spawnExtension(extId, folderName, manifest.entry.backend, manifest.permissions ?? [])

@@ -10,14 +10,20 @@ export interface MarkdownTextProps {
 
 type Align = 'left' | 'center' | 'right' | undefined
 
+type ListItem = {
+  text: string
+  children?: { ordered: boolean; items: ListItem[] }
+}
+
 type Block =
   | { type: 'heading'; level: 1 | 2 | 3 | 4 | 5 | 6; text: string }
   | { type: 'code'; lang: string; code: string }
   | { type: 'hr' }
-  | { type: 'ul'; items: string[] }
-  | { type: 'ol'; items: string[] }
+  | { type: 'ul'; items: ListItem[] }
+  | { type: 'ol'; items: ListItem[] }
   | { type: 'table'; headers: string[]; aligns: Align[]; rows: string[][] }
   | { type: 'paragraph'; text: string }
+  | { type: 'blockquote'; text: string }
 
 function parseInline(text: string): React.ReactNode[] {
   const nodes: React.ReactNode[] = []
@@ -99,6 +105,61 @@ function parseTableRow(row: string): string[] {
   return row.split('|').slice(1, -1).map((c) => c.trim())
 }
 
+function parseListBlock(
+  lines: string[],
+  start: number,
+  baseIndent: number,
+): { items: ListItem[]; end: number } {
+  const items: ListItem[] = []
+  let i = start
+
+  while (i < lines.length) {
+    const line = lines[i]
+    const m = line.match(/^(\s*)([-*+]|\d+\.)\s+(.*)/)
+    if (!m) break
+
+    const indent = m[1].length
+    if (indent < baseIndent) break
+    if (indent > baseIndent) {
+      i++
+      continue
+    }
+
+    const text = m[3]
+    i++
+
+    let children: { ordered: boolean; items: ListItem[] } | undefined
+    if (i < lines.length) {
+      const nextM = lines[i].match(/^(\s*)([-*+]|\d+\.)\s+/)
+      if (nextM && nextM[1].length > baseIndent) {
+        const childIndent = nextM[1].length
+        const childOrdered = /^\d+\./.test(lines[i].slice(childIndent))
+        const result = parseListBlock(lines, i, childIndent)
+        children = { ordered: childOrdered, items: result.items }
+        i = result.end
+      }
+    }
+
+    items.push(children ? { text, children } : { text })
+  }
+
+  return { items, end: i }
+}
+
+function renderListItems(items: ListItem[]): React.ReactNode[] {
+  return items.map((item, idx) => (
+    <li key={idx} className="nuxy-md-li">
+      {parseInline(item.text)}
+      {item.children &&
+        (item.children.ordered ? (
+          <ol className="nuxy-md-ol">{renderListItems(item.children.items)}</ol>
+        ) : (
+          <ul className="nuxy-md-ul">{renderListItems(item.children.items)}</ul>
+        ))}
+    </li>
+  ))
+}
+
 function parseBlocks(text: string): Block[] {
   const lines = text.split('\n')
   const blocks: Block[] = []
@@ -141,6 +202,17 @@ function parseBlocks(text: string): Block[] {
       continue
     }
 
+    // Blockquote
+    if (line.startsWith('> ') || line === '>') {
+      const quoteLines: string[] = []
+      while (i < lines.length && (lines[i].startsWith('> ') || lines[i] === '>')) {
+        quoteLines.push(lines[i].replace(/^>\s?/, ''))
+        i++
+      }
+      blocks.push({ type: 'blockquote', text: quoteLines.join('\n') })
+      continue
+    }
+
     // Table: line starting with |, followed by a separator row
     if (line.startsWith('|') && i + 1 < lines.length && lines[i + 1].match(/^\|[\s\-:|]+/)) {
       const headers = parseTableRow(line)
@@ -164,23 +236,17 @@ function parseBlocks(text: string): Block[] {
 
     // Unordered list
     if (line.match(/^[-*+]\s+/)) {
-      const items: string[] = []
-      while (i < lines.length && lines[i].match(/^[-*+]\s+/)) {
-        items.push(lines[i].replace(/^[-*+]\s+/, ''))
-        i++
-      }
-      blocks.push({ type: 'ul', items })
+      const result = parseListBlock(lines, i, 0)
+      blocks.push({ type: 'ul', items: result.items })
+      i = result.end
       continue
     }
 
     // Ordered list
     if (line.match(/^\d+\.\s+/)) {
-      const items: string[] = []
-      while (i < lines.length && lines[i].match(/^\d+\.\s+/)) {
-        items.push(lines[i].replace(/^\d+\.\s+/, ''))
-        i++
-      }
-      blocks.push({ type: 'ol', items })
+      const result = parseListBlock(lines, i, 0)
+      blocks.push({ type: 'ol', items: result.items })
+      i = result.end
       continue
     }
 
@@ -199,7 +265,8 @@ function parseBlocks(text: string): Block[] {
       !lines[i].match(/^[-*+]\s+/) &&
       !lines[i].match(/^\d+\.\s+/) &&
       !lines[i].match(/^```/) &&
-      !lines[i].match(/^[-*_]{3,}$/)
+      !lines[i].match(/^[-*_]{3,}$/) &&
+      !lines[i].startsWith('> ')
     ) {
       paraLines.push(lines[i])
       i++
@@ -207,7 +274,6 @@ function parseBlocks(text: string): Block[] {
     if (paraLines.length > 0) {
       blocks.push({ type: 'paragraph', text: paraLines.join('\n') })
     } else {
-      // Safety: if nothing was consumed (should not happen), advance to prevent infinite loop
       i++
     }
   }
@@ -243,6 +309,15 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
       continue
     }
 
+    if (block.type === 'blockquote') {
+      elements.push(
+        <blockquote key={key++} className="nuxy-md-blockquote">
+          {parseInline(block.text)}
+        </blockquote>,
+      )
+      continue
+    }
+
     if (block.type === 'table') {
       elements.push(
         <Table key={key++} className="nuxy-md-table">
@@ -274,11 +349,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
     if (block.type === 'ul') {
       elements.push(
         <ul key={key++} className="nuxy-md-ul">
-          {block.items.map((item, idx) => (
-            <li key={idx} className="nuxy-md-li">
-              {parseInline(item)}
-            </li>
-          ))}
+          {renderListItems(block.items)}
         </ul>,
       )
       continue
@@ -287,11 +358,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
     if (block.type === 'ol') {
       elements.push(
         <ol key={key++} className="nuxy-md-ol">
-          {block.items.map((item, idx) => (
-            <li key={idx} className="nuxy-md-li">
-              {parseInline(item)}
-            </li>
-          ))}
+          {renderListItems(block.items)}
         </ol>,
       )
       continue
