@@ -112,6 +112,7 @@ The `manifest.json` file configures how the extension behaves. Below is the list
 | `permissions` | `string[]` | No | Array of permissions indicating host APIs the extension needs access to. |
 | `capabilities` | `object` | No | Defines capabilities: `callable` (whether others can invoke it) and `caller` (whether it invokes others). |
 | `placeholder` | `string` | No | Custom omnibar placeholder text shown when this tool is active (e.g. `"Ask anything"`). Falls back to `Search <name>` if omitted. |
+| `locales` | `object` | No | Localisation config. Declare when the extension ships translated strings (see §Localisation below). |
 | `entry` | `object` | Yes | Relative paths to entry files: `backend`, `frontend`, `preload`, `theme`, `settings`, etc. |
 
 ### Extension Types
@@ -158,7 +159,74 @@ Every core API accessed via the `core` object must be explicitly requested in th
 
 ---
 
-## 4. Proposed Manifest Improvements
+## 4. Localisation (`locales`)
+
+Extensions that support multiple languages declare a `locales` block. The kernel resolves the best locale for each extension at load time using the user's ordered language preference list (Settings → Language), the OS locale, and the extension default as a final fallback.
+
+### `locales` object
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `default` | `string` | Yes | BCP 47 code of the extension's built-in language (e.g. `"en"`). |
+| `supported` | `string[]` | Yes | All BCP 47 codes the extension ships translations for. |
+| `dir` | `string` | No | Relative path to the directory containing locale files. Defaults to `"locales"`. |
+
+### Example
+
+```json
+{
+  "id": "com.nuxy.my-extension",
+  "name": "My Extension",
+  "version": "1.0.0",
+  "type": "tool",
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja", "ar"]
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
+  }
+}
+```
+
+Each entry in `supported` must have a corresponding JSON file at `locales/<code>.json` inside the extension folder. The scanner emits a warning for missing files and an error if the default locale file is absent.
+
+### Translation file format (`locales/tr.json`)
+
+```json
+{
+  "meta": {
+    "name": "Benim Uzantım",
+    "direction": "ltr"
+  },
+  "hello": "Merhaba",
+  "greeting": "Merhaba, {name}!",
+  "section": {
+    "label": "Bir değer"
+  },
+  "items": {
+    "one": "{count} öğe",
+    "other": "{count} öğe"
+  }
+}
+```
+
+`meta.name` (optional) overrides the extension's display name in the tool list when this locale is active. `meta.direction` is informational — the kernel auto-detects RTL from the BCP 47 code.
+
+### Locale resolution algorithm
+
+```
+For each candidate in [user preferredLanguages..., OS locale]:
+  1. Exact match        "tr-TR" === "tr-TR"
+  2. Language match     "tr-TR"  → "tr"
+  3. Region variant     "tr"     → "tr-TR"
+→ if nothing matched: use extension's default locale
+```
+
+---
+
+## 5. Proposed Manifest Improvements
 
 To continue evolving Nuxy's extension ecosystem, we propose the following manifest improvements:
 

@@ -99,6 +99,7 @@ The numbered series covers the architectural decisions behind Nuxy:
 - [18. Advanced Capabilities](./18-advanced-capabilities.md)
 - [19. MVP Roadmap](./19-mvp-roadmap.md)
 - [21. Extension Access & Permissions](./21-extension-access.md)
+- [22. Store Extension Design & Implementation](./22-store-extension.md)
 
 ### Implementation guides
 

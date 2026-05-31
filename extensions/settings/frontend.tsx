@@ -13,6 +13,7 @@ import type {
   ExtSettingsInfo,
   BaseRow,
   ExtSectionRow,
+  LanguageRow,
   AnyRow,
   RenderSection,
 } from './types.ts'
@@ -100,6 +101,48 @@ const BOOL_OPTIONS: SelectOption<boolean>[] = [
   { value: false, label: 'No' },
 ]
 
+const LANGUAGE_OPTIONS: SelectOption<string>[] = [
+  { value: '', label: '— (none)' },
+  { value: 'ar', label: 'Arabic (العربية)' },
+  { value: 'zh-Hans', label: 'Chinese, Simplified (简体中文)' },
+  { value: 'zh-Hant', label: 'Chinese, Traditional (繁體中文)' },
+  { value: 'cs', label: 'Czech (čeština)' },
+  { value: 'da', label: 'Danish (dansk)' },
+  { value: 'nl', label: 'Dutch (Nederlands)' },
+  { value: 'en', label: 'English' },
+  { value: 'fi', label: 'Finnish (suomi)' },
+  { value: 'fr', label: 'French (français)' },
+  { value: 'de', label: 'German (Deutsch)' },
+  { value: 'el', label: 'Greek (ελληνικά)' },
+  { value: 'he', label: 'Hebrew (עברית)' },
+  { value: 'hi', label: 'Hindi (हिन्दी)' },
+  { value: 'hu', label: 'Hungarian (magyar)' },
+  { value: 'id', label: 'Indonesian (Bahasa Indonesia)' },
+  { value: 'it', label: 'Italian (italiano)' },
+  { value: 'ja', label: 'Japanese (日本語)' },
+  { value: 'ko', label: 'Korean (한국어)' },
+  { value: 'ms', label: 'Malay (Bahasa Melayu)' },
+  { value: 'no', label: 'Norwegian (norsk)' },
+  { value: 'fa', label: 'Persian (فارسی)' },
+  { value: 'pl', label: 'Polish (polski)' },
+  { value: 'pt', label: 'Portuguese (português)' },
+  { value: 'ro', label: 'Romanian (română)' },
+  { value: 'ru', label: 'Russian (русский)' },
+  { value: 'sk', label: 'Slovak (slovenčina)' },
+  { value: 'es', label: 'Spanish (español)' },
+  { value: 'sv', label: 'Swedish (svenska)' },
+  { value: 'th', label: 'Thai (ภาษาไทย)' },
+  { value: 'tr', label: 'Turkish (Türkçe)' },
+  { value: 'uk', label: 'Ukrainian (українська)' },
+  { value: 'vi', label: 'Vietnamese (tiếng Việt)' },
+]
+
+const LANGUAGE_SLOT_LABELS = [
+  'Preferred Language (1st)',
+  'Preferred Language (2nd)',
+  'Preferred Language (3rd)',
+]
+
 function buildFontFamilyMap(systemFonts: string[]): Record<string, string> {
   const base: Record<string, string> = {
     system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
@@ -129,6 +172,7 @@ const DEFAULT_SETTINGS: NuxySettings = {
   showInTaskbar: false,
   showOnStartup: false,
   windowPosition: '1/2, 1/3',
+  preferredLanguages: [],
 }
 
 const SECTIONS: SectionDef[] = [
@@ -229,6 +273,20 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
     [themes, iconPacks, fontOptions]
   )
 
+  const languageRows = useMemo<LanguageRow[]>(
+    () =>
+      LANGUAGE_SLOT_LABELS.map((label, index) => ({
+        key: `lang:${index}`,
+        label,
+        options: LANGUAGE_OPTIONS,
+        isExtension: false as const,
+        isLanguage: true as const,
+        langIndex: index,
+        searchable: true,
+      })),
+    []
+  )
+
   const sectionsToRender = useMemo<RenderSection[]>(() => {
     const base: RenderSection[] = allSections.map((s: ResolvedSection) => ({
       id: s.id,
@@ -236,22 +294,28 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
       isExtension: false,
       resolvedRows: s.resolvedRows.map((r: SectionRow) => ({ ...r, isExtension: false as const })),
     }))
+    const langSection: RenderSection = {
+      id: 'language',
+      label: 'Language',
+      isExtension: false,
+      resolvedRows: languageRows,
+    }
     const ext: RenderSection[] = extSections.map((s) => ({
       id: s.id,
       label: s.label,
       isExtension: true,
       resolvedRows: s.resolvedRows,
     }))
-    return [...base, ...ext]
-  }, [allSections, extSections])
+    return [...base, langSection, ...ext]
+  }, [allSections, extSections, languageRows])
 
   const allRows = useMemo<AnyRow[]>(() => {
     const base: BaseRow[] = allSections.flatMap((s: ResolvedSection) =>
       s.resolvedRows.map((r: SectionRow) => ({ ...r, isExtension: false as const }))
     )
     const ext: ExtSectionRow[] = extSections.flatMap((s) => s.resolvedRows)
-    return [...base, ...ext]
-  }, [allSections, extSections])
+    return [...base, ...languageRows, ...ext]
+  }, [allSections, extSections, languageRows])
 
   const navSections = useMemo<NavSection[]>(() => {
     const base = allSections.map((s: ResolvedSection) => ({
@@ -259,11 +323,12 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
       label: s.label,
       itemCount: s.resolvedRows.length,
     }))
+    base.push({ id: 'language', label: 'Language', itemCount: languageRows.length })
     extSections.forEach((s) => {
       base.push({ id: s.id, label: s.label, itemCount: s.resolvedRows.length })
     })
     return base
-  }, [allSections, extSections])
+  }, [allSections, extSections, languageRows])
 
   const stateRef = useRef<StateSnapshot>({} as StateSnapshot)
   stateRef.current = {
@@ -338,7 +403,10 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
             if (row) {
               const opt = row.options[selectFocused]
               if (opt) {
-                if (row.isExtension) {
+                const isLang = 'isLanguage' in row && row.isLanguage
+                if (isLang) {
+                  updateLanguageSlot(row.langIndex, opt.value as string)
+                } else if (row.isExtension) {
                   updateExtSetting(row.extId, row.fieldKey, opt.value)
                 } else {
                   updateSetting(activeSelect as keyof NuxySettings, opt.value)
@@ -349,13 +417,16 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
           } else {
             const row = allRows[selectedRow]
             if (row) {
-              if (row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
+              const isLang = 'isLanguage' in row && row.isLanguage
+              if (!isLang && row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
                 inputRefs.current[row.key]?.focus()
                 inputRefs.current[row.key]?.select()
               } else if (row.options && row.options.length > 0) {
-                const currentValue = row.isExtension
-                  ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
-                  : settings[row.key]
+                const currentValue = isLang
+                  ? (settings.preferredLanguages?.[row.langIndex] ?? '')
+                  : row.isExtension
+                    ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
+                    : settings[row.key]
                 const currentIdx = row.options.findIndex(
                   (o: SelectOption) => String(o.value) === String(currentValue)
                 )
@@ -436,6 +507,9 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
     setActiveSelect(null)
 
     window.dispatchEvent(new CustomEvent('nuxy-settings-updated', { detail: next }))
+    if (key === 'preferredLanguages') {
+      window.dispatchEvent(new CustomEvent('nuxy-locale-changed'))
+    }
 
     if (!window.core?.ipc?.invoke) return
     window.core.ipc
@@ -444,6 +518,23 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
         window.core.ipc.invoke('kernel', 'applyWindowSettings', next).catch(() => {})
       })
       .catch(() => {})
+  }
+
+  const updateLanguageSlot = (langIndex: number, value: string): void => {
+    const langs = [...(stateRef.current.settings.preferredLanguages || [])]
+    if (value === '') {
+      langs.splice(langIndex, 1)
+    } else {
+      langs[langIndex] = value
+    }
+    // Deduplicate while preserving order
+    const seen = new Set<string>()
+    const cleaned = langs.filter((l) => {
+      if (!l || seen.has(l)) return false
+      seen.add(l)
+      return true
+    })
+    updateSetting('preferredLanguages', cleaned)
   }
 
   const updateExtSetting = (extId: string, key: string, value: unknown): void => {
@@ -560,11 +651,14 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
               <List>
                 {section.resolvedRows.map((row: AnyRow, i: number) => {
                   const globalIdx = sectionOffset + i
-                  const currentValue = row.isExtension
-                    ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
-                    : settings[row.key]
+                  const isLanguageRow = 'isLanguage' in row && row.isLanguage
+                  const currentValue = isLanguageRow
+                    ? (settings.preferredLanguages?.[row.langIndex] ?? '')
+                    : row.isExtension
+                      ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
+                      : settings[row.key]
                   const isSelectType =
-                    !row.isExtension || row.type === 'select' || row.type === 'toggle'
+                    isLanguageRow || !row.isExtension || row.type === 'select' || row.type === 'toggle'
 
                   return (
                     ListItem && (
@@ -601,9 +695,11 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
                                 open={activeSelect === row.key}
                                 focusedIndex={selectFocused}
                                 placeholder={row.options?.length === 0 ? '(none)' : '—'}
-                                searchable={row.isExtension ? false : row.searchable || false}
+                                searchable={isLanguageRow ? true : row.isExtension ? false : row.searchable || false}
                                 onSelect={(v: unknown) => {
-                                  if (row.isExtension) {
+                                  if (isLanguageRow) {
+                                    updateLanguageSlot(row.langIndex, v as string)
+                                  } else if (row.isExtension) {
                                     updateExtSetting(row.extId, row.fieldKey, v)
                                   } else {
                                     updateSetting(row.key, v)

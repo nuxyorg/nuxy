@@ -7,6 +7,7 @@ import type { HostToWorkerMessage, WorkerToHostMessage } from '@nuxy/core'
 interface WorkerData {
   extId: string
   absolutePath: string
+  extDir: string
   logLevel: string
   permissions: string[]
 }
@@ -24,7 +25,7 @@ function assertWorkerData(d: unknown): asserts d is WorkerData {
 }
 
 assertWorkerData(workerData)
-const { extId, absolutePath, logLevel, permissions = [] } = workerData
+const { extId, absolutePath, extDir, logLevel, permissions = [] } = workerData
 const logger = createWorkerLogger(extId, logLevel)
 
 const pendingHostCalls = new Map<
@@ -72,14 +73,15 @@ function callHost(channel: string, payload?: unknown): Promise<unknown> {
   })
 }
 
-const { core, getSyncPayload } = createCoreProxy(
+const { core, initI18n, getSyncPayload } = createCoreProxy(
   callHost,
   logger,
   (channel, handler) => {
     channelHandlers.set(channel, handler)
   },
   extId,
-  permissions
+  permissions,
+  extDir
 )
 
 if (!permissions.includes('network')) {
@@ -92,6 +94,7 @@ if (!permissions.includes('network')) {
 
 void (async () => {
   try {
+    await initI18n()
     await loadExtensionModule(absolutePath, core, logger)
     const syncMsg: WorkerToHostMessage = {
       type: 'registry:sync',

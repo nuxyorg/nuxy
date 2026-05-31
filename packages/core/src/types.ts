@@ -12,7 +12,7 @@ export type ExtensionPermission =
   | 'settings.read'
   | 'settings.write'
 
-export type ExtensionSettingType = 'text' | 'select' | 'color' | 'location' | 'list' | 'toggle'
+export type ExtensionSettingType = 'text' | 'select' | 'color' | 'location' | 'list' | 'toggle' | 'language-list'
 
 export interface ExtensionSettingField {
   key: string
@@ -33,6 +33,18 @@ export interface ExtensionSettingsInfo {
   extId: string
   name: string
   schema: ExtensionSettingsSchema
+}
+
+export interface ExtensionLocaleConfig {
+  /** Default BCP 47 locale code used when no preferred language matches. */
+  default: string
+  /** All BCP 47 locale codes this extension ships translations for. */
+  supported: string[]
+  /**
+   * Subdirectory containing locale JSON files, relative to the extension root.
+   * Defaults to "locales" when omitted.
+   */
+  dir?: string
 }
 
 export interface ExtensionManifest {
@@ -56,6 +68,12 @@ export interface ExtensionManifest {
   priority?: number
   /** Custom omnibar placeholder shown when this extension is active. */
   placeholder?: string
+  /**
+   * Localisation configuration. Declare this when the extension ships translation
+   * files. Omitting it means the extension is English-only and no locale loading
+   * is attempted.
+   */
+  locales?: ExtensionLocaleConfig
   entry?: {
     backend?: string
     frontend?: string

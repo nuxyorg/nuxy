@@ -11,11 +11,12 @@
 3. [Extension Settings](#3-extension-settings)
 4. [Backend Rules](#4-backend-rules)
 5. [Frontend Rules](#5-frontend-rules)
-6. [TypeScript Rules](#6-typescript-rules)
-7. [Core API Reference](#7-core-api-reference)
-8. [Testing Requirements](#8-testing-requirements)
-9. [Anti-Patterns](#9-anti-patterns)
-10. [Checklist](#10-checklist)
+6. [Localisation (i18n)](#6-localisation-i18n)
+7. [TypeScript Rules](#7-typescript-rules)
+8. [Core API Reference](#8-core-api-reference)
+9. [Testing Requirements](#9-testing-requirements)
+10. [Anti-Patterns](#10-anti-patterns)
+11. [Checklist](#11-checklist)
 
 ---
 
@@ -725,12 +726,163 @@ Communicate with the shell via `window.dispatchEvent(new CustomEvent(...))` for 
 | `nuxy-register-actions`       | Register command palette actions (`detail: Action[]`)                                                                                                               |
 | `nuxy-settings-updated`       | Notify that settings changed (`detail: settingsObj`)                                                                                                                |
 | `nuxy-key-hints-changed`      | Ask the shell to re-evaluate which key-action hints are active (no detail needed). Dispatch this whenever the state that drives your `activeOn` predicates changes. |
+| `nuxy-locale-changed`         | Emitted by the settings extension when the user changes `preferredLanguages`. `useTranslation` listens to this automatically — no manual handling required.          |
 
 Do not dispatch or listen for arbitrary custom events not listed here.
 
 ---
 
-## 6. TypeScript Rules
+## 6. Localisation (i18n)
+
+Extensions that support multiple languages declare a `locales` block in their manifest and ship one JSON translation file per locale under a `locales/` directory.
+
+### 6.1 File layout
+
+```
+extensions/
+  my-extension/
+    manifest.json
+    locales/
+      en.json          # default locale
+      tr.json
+      ja.json
+```
+
+### 6.2 Manifest declaration
+
+```json
+{
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja"]
+  }
+}
+```
+
+| Field | Required | Description |
+|---|---|---|
+| `default` | Yes | BCP 47 fallback locale when no preferred language matches. |
+| `supported` | Yes | All BCP 47 locale codes the extension ships. Scanner warns if a file is missing. |
+| `dir` | No | Subdirectory with locale files. Defaults to `"locales"`. |
+
+### 6.3 Translation file format
+
+```json
+{
+  "meta": {
+    "name": "Benim Uzantım",
+    "direction": "ltr"
+  },
+  "hello": "Merhaba",
+  "greeting": "Merhaba, {name}!",
+  "section": {
+    "nested": "İç içe değer"
+  },
+  "items": {
+    "one": "{count} öğe",
+    "other": "{count} öğe"
+  }
+}
+```
+
+| Feature | Syntax | Notes |
+|---|---|---|
+| Simple key | `"hello": "Merhaba"` | Accessed as `t('hello')` |
+| Nested key | `{ "a": { "b": "val" } }` | Accessed as `t('a.b')` |
+| Interpolation | `"Hi {name}!"` | `t('key', { name: 'Ali' })` → `"Hi Ali!"` |
+| Plurals | `{ "one": "…", "other": "…" }` | `t('items', { count: 3 }, 3)` |
+| `meta.name` | Translated extension name | Overrides the display name in the tool list |
+| `meta.direction` | `"ltr"` / `"rtl"` | Informational; direction is auto-detected from the locale |
+
+**Rules:**
+- The `meta` key is reserved and ignored by the translation lookup.
+- Plural keys must be an object whose *all* keys are CLDR plural categories (`zero`, `one`, `two`, `few`, `many`, `other`). Any mixed object is treated as a nested group.
+- Unresolved `{placeholder}` values are left as-is (not stripped).
+- Missing keys return the key string itself; a `silly`-level warning is logged in the backend.
+
+### 6.4 Locale resolution
+
+The kernel resolves the best locale for each extension using an ordered preference chain:
+
+```
+User's preferredLanguages list (Settings → Language)
+  ↓ (for each candidate)
+  1. Exact match        ("tr-TR" === "tr-TR")
+  2. Language match     ("tr-TR" → "tr")
+  3. Region variant     ("tr" → "tr-TR")
+  ↓ none matched
+System OS locale (app.getLocale())
+  ↓ none matched
+Extension's declared default locale
+```
+
+### 6.5 Using i18n in the backend
+
+`core.i18n` is populated before `register()` is called. No async setup needed.
+
+```ts
+import type { CoreContext } from '@nuxy/extension-sdk'
+
+export function register(core: CoreContext): void {
+  core.ipc.handle('getSomething', async () => {
+    const label = core.i18n.t('section.label')
+    const msg   = core.i18n.t('greeting', { name: 'World' })
+    const count = core.i18n.t('items', { count: 5 }, 5)
+    core.logger.info(`locale=${core.i18n.locale}, dir=${core.i18n.dir}`)
+    return { label, msg, count }
+  })
+}
+```
+
+If the extension has no `locales` declaration, `core.i18n.t(key)` returns `key` unchanged.
+
+### 6.6 Using i18n in the frontend
+
+Use the `useTranslation` hook from `window.UI`. It fetches translations from the kernel on mount and re-fetches automatically when the `nuxy-locale-changed` event fires (i.e. when the user changes their language preferences).
+
+```tsx
+const React = window.React
+const { useState } = React
+
+const EXT_ID = 'com.nuxy.my-extension'
+const _useTranslation = (window.UI || {}).useTranslation || (() => ({
+  t: (key: string) => key,
+  locale: 'en',
+  dir: 'ltr' as const,
+}))
+
+export default function MyView({ query }: { query: string }) {
+  const { List, ListItem, ListItemText, EmptyState } = window.UI || {}
+  const { t, dir } = _useTranslation(EXT_ID)
+
+  return (
+    <div style={{ direction: dir }}>
+      <span>{t('hello')}</span>
+      <span>{t('greeting', { name: 'World' })}</span>
+      <span>{t('items', { count: 3 }, 3)}</span>
+    </div>
+  )
+}
+```
+
+**Rules:**
+- Always define a safe fallback for `useTranslation` in case the UI kit version doesn't include it yet.
+- Pass `dir` to the root container's `style.direction` for RTL language support.
+- `useTranslation` returns `{ t, locale, dir }`. Do not call `window.core.ipc.invoke('kernel', 'getExtensionTranslations', ...)` directly — use the hook instead.
+
+### 6.7 RTL layout
+
+When `dir === 'rtl'`, logical CSS properties (`margin-inline-start`, `padding-inline-end`, etc.) are preferred over physical ones (`margin-left`, `padding-right`). The `direction` CSS property should be set on the extension root element:
+
+```tsx
+<div style={{ direction: dir }}>
+  {/* all child elements inherit RTL automatically */}
+</div>
+```
+
+---
+
+## 7. TypeScript Rules
 
 All extensions must be written in TypeScript. JavaScript (`.js`) extension files are no longer accepted.
 
@@ -878,7 +1030,7 @@ This file is picked up automatically by `extensions/tsconfig.json`.
 
 ---
 
-## 7. Core API Reference
+## 8. Core API Reference
 
 ### Currently available (`CoreContext`)
 
@@ -904,6 +1056,12 @@ core.config.get()                     // → Promise<NuxyConfig>
 
 core.ipc.handle(channel, handler)     // register an IPC handler
 core.registry.registerTool/registerProvider/registerOrchestrator/registerTheme/registerIconPack
+
+core.i18n.locale                      // resolved BCP 47 locale string (e.g. "tr", "ja-JP")
+core.i18n.dir                         // 'ltr' | 'rtl'
+core.i18n.t(key)                      // → translated string (returns key if not found)
+core.i18n.t(key, vars)                // → interpolated string ("Hello, {name}!" + { name: "Ali" })
+core.i18n.t(key, vars, count)         // → plural-form string ("3 items")
 ```
 
 ### Core TODOs — must be added before any extension uses them
@@ -925,7 +1083,7 @@ These APIs are required by the rules above but do not yet exist. Before writing 
 
 ---
 
-## 8. Testing Requirements
+## 9. Testing Requirements
 
 ### Backend tests (`backend.test.ts`)
 
@@ -973,6 +1131,7 @@ function makeCore(overrides: Partial<CoreContext> = {}): CoreContext {
     extensions: { invoke: vi.fn() },
     logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
     config: { get: vi.fn() },
+    i18n: { locale: 'en', dir: 'ltr', t: vi.fn((key: string) => key) },
     ...overrides,
   } as CoreContext
 }
@@ -1048,7 +1207,7 @@ pnpm test:e2e:core                 # core app e2e tests (src/e2e/)
 
 ---
 
-## 9. Anti-Patterns
+## 10. Anti-Patterns
 
 The following patterns are banned. Reviewers and AI agents must flag these.
 
@@ -1238,9 +1397,45 @@ const cfg = await core.storage.read<Config>('config.json')
 
 `core.storage` is for extension-internal data (e.g. history, cache). User-facing settings that appear in the settings extension must use `core.settings.read` / `core.settings.write`, which share the same `ext-settings.json` file the settings extension reads and writes.
 
+### R. Hardcoded user-facing strings
+
+```ts
+// BANNED — string will not be translated
+core.ipc.handle('getLabel', async () => 'Open file')
+```
+
+```tsx
+// BANNED
+<span>Search results</span>
+```
+
+Use `core.i18n.t('label')` in backend, `t('label')` from `useTranslation` in frontend.
+
+### S. Custom locale resolution in extensions
+
+```ts
+// BANNED — extensions must not detect or resolve locales themselves
+const locale = process.env.LANG?.split('.')[0] ?? 'en'
+const msgs = require(`./locales/${locale}.json`)
+```
+
+Use `core.i18n` — the kernel resolves the locale and loads the file before `register()` is called.
+
+### T. Calling `getExtensionTranslations` directly from frontend
+
+```tsx
+// BANNED — use the hook instead
+useEffect(() => {
+  window.core.ipc.invoke('kernel', 'getExtensionTranslations', { extId: EXT_ID })
+    .then(res => setTranslations(res.data.translations))
+}, [])
+```
+
+Use `const { t } = useTranslation(EXT_ID)` from `window.UI`.
+
 ---
 
-## 10. Checklist
+## 11. Checklist
 
 Before submitting or merging an extension, verify every item:
 
@@ -1249,6 +1444,18 @@ Before submitting or merging an extension, verify every item:
 - [ ] `id` follows `com.nuxy.<name>` convention
 - [ ] All used `core.*` APIs have a matching entry in `permissions`
 - [ ] `capabilities.caller` is only `true` if the extension calls other extensions
+- [ ] If the extension ships translations, `locales.default` and `locales.supported` are declared
+
+**Localisation**
+
+- [ ] Every locale listed in `locales.supported` has a corresponding `locales/<code>.json` file
+- [ ] `locales.default` locale file exists
+- [ ] Default locale file covers all keys used in code (it is the ultimate fallback)
+- [ ] Plural keys use CLDR categories: `one`, `other`, etc. — not custom names
+- [ ] Backend calls `core.i18n.t(key)` — never hardcodes user-facing strings
+- [ ] Frontend uses `useTranslation(EXT_ID)` from `window.UI` — never calls `getExtensionTranslations` directly
+- [ ] Root container has `style={{ direction: dir }}` for RTL support
+- [ ] No hardcoded locale strings or language detection logic in the extension
 
 **Settings**
 

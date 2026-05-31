@@ -17,6 +17,7 @@ const DEFAULT_SETTINGS: NuxySettings = {
   showInTaskbar: false,
   showOnStartup: false,
   windowPosition: '1/2, 1/3',
+  preferredLanguages: [],
 }
 
 function createCore(storageData: Partial<NuxySettings> | null | undefined = null): {

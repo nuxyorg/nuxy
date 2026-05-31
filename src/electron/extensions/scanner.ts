@@ -522,6 +522,25 @@ export async function scanExtensions(): Promise<void> {
         }
       }
 
+      if (manifest.locales) {
+        const localesDir = manifest.locales.dir ?? 'locales'
+        for (const locale of manifest.locales.supported) {
+          const localePath = path.join(itemPath, localesDir, `${locale}.json`)
+          if (!fs.existsSync(localePath)) {
+            log.warn(
+              `Extension "${extId}" declares locale "${locale}" but "${localesDir}/${locale}.json" was not found`
+            )
+          }
+        }
+        const defaultPath = path.join(itemPath, localesDir, `${manifest.locales.default}.json`)
+        if (!fs.existsSync(defaultPath)) {
+          log.error(
+            `Extension "${extId}" default locale "${manifest.locales.default}" has no translation file — i18n will not work`
+          )
+        }
+        log.info(`Extension "${extId}" supports locales: [${manifest.locales.supported.join(', ')}], default: ${manifest.locales.default}`)
+      }
+
       registerExtension(loaded)
     } catch (e) {
       log.error(`Failed to load extension "${folderName}"`, e)

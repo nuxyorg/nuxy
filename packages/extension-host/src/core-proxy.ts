@@ -12,8 +12,16 @@ import type {
   IconPackDefinition,
   DbHandle,
   SpawnHandle,
+  ExtensionManifest,
 } from '@nuxy/core'
-import { HostChannel } from '@nuxy/core'
+import {
+  HostChannel,
+  resolveLocale,
+  flattenTranslations,
+  interpolate,
+  selectPlural,
+  getTextDirection,
+} from '@nuxy/core'
 import type { WorkerLogger } from './worker-log.js'
 
 export type { ExtensionRuntimeMeta as RegistrySyncPayload }
@@ -24,13 +32,62 @@ export function createCoreProxy(
   registerIpcHandler: (channel: string, handler: (payload: unknown) => Promise<unknown>) => void,
   extId: string,
   permissions: string[] = [],
+  extDir?: string,
   onRegistryEntry?: (entry: { kind: string; displayName?: string }) => void
-): { core: CoreContext; getSyncPayload: () => ExtensionRuntimeMeta } {
+): { core: CoreContext; initI18n: () => Promise<void>; getSyncPayload: () => ExtensionRuntimeMeta } {
   const ipcChannels: string[] = []
   let displayName: string | undefined
 
   const dataDir = path.join(os.homedir(), '.nuxy', 'data', extId)
   const extSettingsFile = path.join(dataDir, 'ext-settings.json')
+
+  // i18n state — populated by initI18n() before register() is called
+  let i18nLocale = 'en'
+  let i18nDir: 'ltr' | 'rtl' = 'ltr'
+  let i18nTranslations: Record<string, string> = {}
+
+  async function initI18n(): Promise<void> {
+    if (!extDir) return
+    try {
+      const manifestPath = path.join(extDir, 'manifest.json')
+      const manifestRaw = await fsPromises.readFile(manifestPath, 'utf8').catch(() => null)
+      if (!manifestRaw) return
+      const manifest = JSON.parse(manifestRaw) as ExtensionManifest
+      if (!manifest.locales) return
+
+      const { supported, default: defaultLocale, dir: localesDir = 'locales' } = manifest.locales
+
+      // Read user's preferred languages from the global settings store
+      const globalSettings = path.join(os.homedir(), '.nuxy', 'data', 'com.nuxy.settings', 'settings.json')
+      let preferredLanguages: string[] = []
+      try {
+        const raw = await fsPromises.readFile(globalSettings, 'utf8')
+        const parsed = JSON.parse(raw) as { preferredLanguages?: string[] }
+        preferredLanguages = parsed.preferredLanguages ?? []
+      } catch {}
+
+      // Use LANG env as a last-resort system locale hint
+      const systemHint = (process.env.LANG ?? '').split('.')[0].replace('_', '-')
+      const candidates = [...preferredLanguages, systemHint].filter(Boolean)
+
+      i18nLocale = resolveLocale(candidates, supported, defaultLocale)
+      i18nDir = getTextDirection(i18nLocale)
+
+      const tryLoad = async (locale: string): Promise<Record<string, string> | null> => {
+        const p = path.join(extDir, localesDir, `${locale}.json`)
+        try {
+          const raw = await fsPromises.readFile(p, 'utf8')
+          return flattenTranslations(JSON.parse(raw))
+        } catch {
+          return null
+        }
+      }
+
+      i18nTranslations = (await tryLoad(i18nLocale)) ?? (await tryLoad(defaultLocale)) ?? {}
+    } catch (err) {
+      logger.warn('i18n: initialization failed', err)
+    }
+  }
 
   function openDb(name: string): DbHandle {
     fs.mkdirSync(dataDir, { recursive: true })
@@ -237,6 +294,22 @@ export function createCoreProxy(
         return res?.data
       },
     },
+    i18n: {
+      get locale() { return i18nLocale },
+      get dir() { return i18nDir },
+      t: (key: string, vars?: Record<string, string | number>, count?: number): string => {
+        let template: string | undefined
+        if (count !== undefined) {
+          template = selectPlural(i18nTranslations, key, count, i18nLocale)
+        }
+        if (!template) template = i18nTranslations[key]
+        if (!template) {
+          logger.silly(`i18n: missing key "${key}" for locale "${i18nLocale}"`)
+          return key
+        }
+        return vars ? interpolate(template, vars) : template
+      },
+    },
     settings: {
       read: async <T = unknown>(key: string): Promise<T | null> => {
         try {
@@ -308,6 +381,7 @@ export function createCoreProxy(
 
   return {
     core,
+    initI18n,
     getSyncPayload: (): ExtensionRuntimeMeta => ({
       ipcChannels: [...ipcChannels],
       displayName,

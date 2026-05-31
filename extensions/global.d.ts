@@ -35,6 +35,17 @@ declare global {
       themes: {
         list: () => Promise<unknown>
       }
+      /**
+       * Kernel i18n helper — fetches translations for any extension.
+       * Prefer using `useTranslation(extId)` from `window.UI` in component code.
+       */
+      i18n?: {
+        getTranslations: (extId: string) => Promise<{
+          locale: string
+          dir: 'ltr' | 'rtl'
+          translations: Record<string, string>
+        }>
+      }
     }
   }
 }

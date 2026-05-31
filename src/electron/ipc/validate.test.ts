@@ -48,10 +48,28 @@ describe('validateExtInvokeArgs', () => {
     if (r.ok) expect(r.channel).toBe('getExtensionSettingsSchemas')
   })
 
-  it('allows kernel getPreloads', () => {
+  it('allows kernel listPreloads', () => {
     const r = validateExtInvokeArgs('kernel', 'getPreloads', {})
     expect(r.ok).toBe(true)
     if (r.ok) expect(r.channel).toBe('getPreloads')
+  })
+
+  it('allows kernel listInstalledExtensions', () => {
+    const r = validateExtInvokeArgs('kernel', 'listInstalledExtensions', {})
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.channel).toBe('listInstalledExtensions')
+  })
+
+  it('allows kernel installExtension', () => {
+    const r = validateExtInvokeArgs('kernel', 'installExtension', { downloadUrl: 'https://example.com' })
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.channel).toBe('installExtension')
+  })
+
+  it('allows kernel uninstallExtension', () => {
+    const r = validateExtInvokeArgs('kernel', 'uninstallExtension', { extId: 'com.nuxy.test' })
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.channel).toBe('uninstallExtension')
   })
 
   it('rejects unknown kernel channel', () => {

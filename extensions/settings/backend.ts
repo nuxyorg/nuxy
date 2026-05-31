@@ -17,6 +17,8 @@ const DEFAULT: NuxySettings = {
   showInTaskbar: false,
   showOnStartup: false,
   windowPosition: '1/2, 1/3',
+  // Language
+  preferredLanguages: [],
 }
 
 export function register(core: CoreContext): void {

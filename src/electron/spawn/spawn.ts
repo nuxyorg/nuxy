@@ -23,6 +23,7 @@ export function spawnExtension(
   permissions: string[] = []
 ): Worker {
   const absolutePath = path.join(EXTRACTED_DIR, folderName, entryFile)
+  const extDir = path.join(EXTRACTED_DIR, folderName)
   log.info(`Spawning worker for extension "${extId}" (folder: ${folderName}) → ${absolutePath}`)
 
   migrateLegacyData(extId, folderName)
@@ -33,6 +34,7 @@ export function spawnExtension(
     workerData: {
       extId,
       absolutePath: pathToFileURL(absolutePath).href,
+      extDir,
       logLevel,
       permissions,
     },

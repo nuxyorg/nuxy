@@ -18,6 +18,8 @@ export interface NuxySettings {
   showInTaskbar: boolean
   showOnStartup: boolean
   windowPosition: string
+  /** Ordered list of BCP 47 locale codes (most preferred first). */
+  preferredLanguages: string[]
   [key: string]: unknown
 }
 
@@ -31,6 +33,16 @@ export interface SectionRow {
   label: string
   options: SelectOption[]
   searchable?: boolean
+}
+
+export interface LanguageRow {
+  key: string
+  label: string
+  options: SelectOption[]
+  isExtension: false
+  isLanguage: true
+  langIndex: number
+  searchable: true
 }
 
 export interface SectionDef {
@@ -86,7 +98,7 @@ export interface ExtSectionRow {
   default?: unknown
 }
 
-export type AnyRow = BaseRow | ExtSectionRow
+export type AnyRow = BaseRow | ExtSectionRow | LanguageRow
 
 export interface RenderSection {
   id: string
