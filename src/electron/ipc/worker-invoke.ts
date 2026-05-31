@@ -1,6 +1,6 @@
 import { kernelLogger } from '@nuxy/core'
 import type { IpcResult } from '@nuxy/core'
-import { activeWorkers } from '../spawn/spawn.js'
+import { activeWorkers } from '../spawn/active-workers.js'
 
 const log = kernelLogger.child('WorkerInvoke')
 const EXT_INVOKE_TIMEOUT_MS = 15_000

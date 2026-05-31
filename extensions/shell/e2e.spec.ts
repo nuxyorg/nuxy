@@ -570,6 +570,64 @@ test.describe('command palette filtering', () => {
   })
 })
 
+// ---------------------------------------------------------------------------
+// Omnibox DOM stability
+// ---------------------------------------------------------------------------
+
+test.describe('omnibox DOM stability', () => {
+  test('typing "not" and clearing 9 times leaves the same number of main-page elements', async ({
+    appPage,
+  }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await resetShell(appPage)
+
+    // Wait for the tool list to stabilize in the idle (empty-query) state
+    await appPage.waitForFunction(
+      () => document.querySelectorAll('[role="option"]').length > 0,
+      { timeout: 400 }
+    )
+
+    const initialOptionCount = await appPage.evaluate(
+      () => document.querySelectorAll('[role="option"]').length
+    )
+    const initialElementCount = await appPage.evaluate(
+      () => document.querySelectorAll('.nuxy-main-wrapper *').length
+    )
+
+    for (let i = 0; i < 9; i++) {
+      // Type "not" into the omnibox
+      await appPage.keyboard.type('not')
+      await appPage.waitForFunction(
+        () => (document.querySelector('input') as HTMLInputElement | null)?.value === 'not',
+        { timeout: 400 }
+      )
+
+      // Clear the input
+      await appPage.keyboard.press('Control+a')
+      await appPage.keyboard.press('Delete')
+
+      // Wait for the input to be empty
+      await appPage.waitForFunction(
+        () => (document.querySelector('input') as HTMLInputElement | null)?.value === '',
+        { timeout: 400 }
+      )
+
+      // Wait for the tool list to restore to the initial option count
+      await appPage.waitForFunction(
+        (expected: number) => document.querySelectorAll('[role="option"]').length === expected,
+        initialOptionCount,
+        { timeout: 2000 }
+      )
+
+      // Assert the overall element count in the main wrapper is unchanged
+      const count = await appPage.evaluate(
+        () => document.querySelectorAll('.nuxy-main-wrapper *').length
+      )
+      expect(count).toBe(initialElementCount)
+    }
+  })
+})
+
 test.describe('command palette dismissal', () => {
   test('Escape closes the command palette', async ({ appPage }) => {
     await appPage.waitForSelector('input', { timeout: 400 })

@@ -8,7 +8,7 @@ window.ReactDOM = ReactDOMBase
 // window.UI is populated by com.nuxy.ui-default (type: uikit) extension,
 // which loads before the shell bootstrap. Initialize as empty so third-party
 // uikit extensions that load with higher priority can merge safely.
-window.UI = {}
+window.UI = {} as any
 window.__NUXY_DEV__ = import.meta.env.DEV
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

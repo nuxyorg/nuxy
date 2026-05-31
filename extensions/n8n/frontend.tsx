@@ -116,6 +116,13 @@ export default function N8nApp({ query }: Props) {
 
   _useToolKeyActions([
     {
+      key: ',',
+      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
+      label: 'Configure',
+      hint: '⌃,',
+      handler: () => setShowConfig((v) => !v),
+    },
+    {
       key: 'Enter',
       modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
       label: 'Save',

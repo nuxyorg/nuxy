@@ -14,6 +14,12 @@ import { registerIconPack } from '../icons/registry.js'
 
 const log = kernelLogger.child('HostHandlers')
 
+interface BrokerInvokePayload {
+  targetId: string
+  channel: string
+  payload?: unknown
+}
+
 export interface HostCallReply {
   result?: unknown
   error?: string
@@ -33,20 +39,12 @@ export async function handleHostCall(
     if (
       typeof payload !== 'object' ||
       payload === null ||
-      typeof (payload as Record<string, unknown>).targetId !== 'string' ||
-      typeof (payload as Record<string, unknown>).channel !== 'string'
+      typeof (payload as BrokerInvokePayload).targetId !== 'string' ||
+      typeof (payload as BrokerInvokePayload).channel !== 'string'
     ) {
       return { error: 'Invalid broker invoke payload: missing targetId or channel' }
     }
-    const {
-      targetId,
-      channel: targetChannel,
-      payload: pl,
-    } = payload as {
-      targetId: string
-      channel: string
-      payload?: unknown
-    }
+    const { targetId, channel: targetChannel, payload: pl } = payload as BrokerInvokePayload
     const result = await invokeExtension(extId, targetId, targetChannel, pl)
     if (!result.success) {
       return { error: result.error ?? 'Broker invoke failed' }

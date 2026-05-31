@@ -36,9 +36,9 @@ contextBridge.exposeInMainWorld('core', {
 console.log(`[FLASH-DEBUG] preload.ts start at ${Date.now()}`)
 ipcRenderer
   .invoke('ext:invoke', 'kernel', 'getPreloads', {})
-  .then(async (res: any) => {
+  .then(async (res: { success: boolean; data?: Array<{ id: string; url: string }> }) => {
     if (res?.success && Array.isArray(res.data)) {
-      const promises = res.data.map((item: any) =>
+      const promises = res.data.map((item: { id: string; url: string }) =>
         import(/* @vite-ignore */ item.url).catch((err) => {
           console.error(`[Preload] Failed to load extension preload for "${item.id}":`, err)
         })

@@ -142,7 +142,7 @@ export async function updateRevocationList(): Promise<void> {
       log.info('Revocation list updated successfully.')
     }
   } catch (err) {
-    log.debug('Could not update revocation list (offline or timeout):', err)
+    log.silly('Could not update revocation list (offline or timeout):', err)
   }
 }
 

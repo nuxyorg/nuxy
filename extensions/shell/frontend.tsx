@@ -149,13 +149,7 @@ export default function ShellView({ query: _queryProp }: Props) {
   }
 
   const listResults = useMemo<ListItem[]>(() => {
-    const seenIds = new Set<string>()
     const toolItems: ListItem[] = tools
-      .filter((t) => {
-        if (seenIds.has(t.id)) return false
-        seenIds.add(t.id)
-        return true
-      })
       .map((t) => ({
         id: t.id,
         title: t.manifest.name,
@@ -182,15 +176,29 @@ export default function ShellView({ query: _queryProp }: Props) {
       filteredTools = toolItems
     }
 
-    const listProviderItems: ListItem[] = []
-    Object.keys(providerStates).forEach((provId) => {
-      const state = providerStates[provId]
-      if (state && state.type === 'list' && !state.loading && state.items) {
-        listProviderItems.push(...state.items)
+    const finalResults: ListItem[] = []
+    const seenIds = new Set<string>()
+
+    filteredTools.forEach((item) => {
+      if (!seenIds.has(item.id)) {
+        seenIds.add(item.id)
+        finalResults.push(item)
       }
     })
 
-    return [...filteredTools, ...listProviderItems]
+    Object.keys(providerStates).forEach((provId) => {
+      const state = providerStates[provId]
+      if (state && state.type === 'list' && !state.loading && state.items) {
+        state.items.forEach((item) => {
+          if (!seenIds.has(item.id)) {
+            seenIds.add(item.id)
+            finalResults.push(item)
+          }
+        })
+      }
+    })
+
+    return finalResults
   }, [tools, savedQuery, providerStates, recentToolIds])
 
   const getZoom = (): number => {
@@ -399,8 +407,20 @@ export default function ShellView({ query: _queryProp }: Props) {
       .catch(() => {})
   }
 
-  const handleItemClick = (item: ListItem) => {
-    if (item.isTool) openTool(item.id, (item as any).initialQuery || '')
+  const handleItemClick = async (item: ListItem) => {
+    if (item.execute) {
+      try {
+        const res = await window.core.ipc.invoke(item.id, item.execute.channel, item.execute.payload)
+        const r = res as { success: boolean; data?: { toolId?: string; query?: string } } | null
+        if (r?.success && r.data?.toolId) {
+          openTool(r.data.toolId, r.data.query || '')
+        }
+      } catch (e) {
+        console.error('Failed to execute item action:', e)
+      }
+    } else if (item.isTool) {
+      openTool(item.id, (item as any).initialQuery || '')
+    }
   }
 
   const tryOrchestratorRoute = async () => {
@@ -607,12 +627,12 @@ export default function ShellView({ query: _queryProp }: Props) {
               : undefined,
           maxHeight: size.height ? 'none' : `${settings?.windowMaxHeight ?? 600}px`,
           opacity: settings?.opacity !== undefined ? settings.opacity : undefined,
-          transition: (isDraggingState || isInitialLoad)
-            ? 'none'
-            : 'left 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition:
+            isDraggingState || isInitialLoad
+              ? 'none'
+              : 'left 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
-
         {(['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as const).map((dir) => (
           <div
             key={dir}
@@ -825,7 +845,24 @@ export default function ShellView({ query: _queryProp }: Props) {
             )}
 
             {ToolComponent && activeTool && (
-              <React.Suspense fallback={<div className="nuxy-loading-state" style={{ flex: 1, minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7, fontSize: 'var(--font-sm)' }}>Loading…</div>}>
+              <React.Suspense
+                fallback={
+                  <div
+                    className="nuxy-loading-state"
+                    style={{
+                      flex: 1,
+                      minHeight: '200px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: 0.7,
+                      fontSize: 'var(--font-sm)',
+                    }}
+                  >
+                    Loading…
+                  </div>
+                }
+              >
                 <div className="nuxy-shell-tool-wrapper">
                   <ToolComponent query={query} extensionId={activeTool} />
                 </div>

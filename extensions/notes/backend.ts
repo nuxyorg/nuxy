@@ -65,6 +65,19 @@ async function whisperTranscribe(
   return data.text ?? ''
 }
 
+function deriveTitle(body: string): string {
+  const lines = body
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+  if (lines.length === 0) return 'New Note'
+  const firstLine = lines[0]
+  if (firstLine.length > 40) {
+    return firstLine.slice(0, 40) + '...'
+  }
+  return firstLine
+}
+
 export async function register(core: CoreContext): Promise<void> {
   extDataDir = `${core.fs.homedir()}/.nuxy/data/com.nuxy.notes`
   await core.fs.mkdir(extDataDir, { recursive: true })
@@ -74,6 +87,25 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.registry.registerTool({ name: 'notes' })
   core.registry.registerProvider({ name: 'notes' })
+
+  core.ipc.handle('notes:create_from_provider', async (payload: unknown): Promise<{ toolId: string; query: string }> => {
+    const { text } = payload as { text: string }
+    const title = deriveTitle(text)
+    const now = Date.now()
+    const note: Note = {
+      id: crypto.randomUUID(),
+      title,
+      body: text,
+      createdAt: now,
+      updatedAt: now,
+    }
+    await writeNote(core, note)
+    upsertFts(note)
+    return {
+      toolId: 'com.nuxy.notes',
+      query: `select:${note.id}`,
+    }
+  })
 
   core.ipc.handle('eval', async (payload: unknown): Promise<{ items: unknown[] }> => {
     const text = (payload as { text?: string } | null | undefined)?.text ?? ''
@@ -107,10 +139,12 @@ export async function register(core: CoreContext): Promise<void> {
 
     items.push({
       id: 'com.nuxy.notes',
-      title: 'Not olarak kaydet',
+      title: 'Save as note',
       subtitle: `notes — "${text}"`,
-      isTool: true,
-      initialQuery: `__create_note__:${text}`,
+      execute: {
+        channel: 'notes:create_from_provider',
+        payload: { text },
+      },
     })
 
     return { items }

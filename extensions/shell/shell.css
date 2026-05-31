@@ -512,7 +512,9 @@
   border-radius: var(--radius-md);
   padding: 12px 16px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -565,7 +567,8 @@
   align-items: stretch;
   min-height: 70px;
   overflow: hidden;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
@@ -632,4 +635,11 @@
 .nuxy-skeleton-list-item {
   height: 38px;
   border-radius: var(--radius-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nuxy-result-card,
+  .nuxy-compare-card {
+    transition: none;
+  }
 }

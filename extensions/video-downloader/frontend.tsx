@@ -499,6 +499,21 @@ export default function VideoDownloader({ query }: Props) {
         },
       },
       {
+        key: 'Tab',
+        label: 'Next tab',
+        hint: 'Tab',
+        handler: () => {
+          setActiveTab((prev) => {
+            const idx = TABS.findIndex((t) => t.id === prev)
+            const nextTab = TABS[(idx + 1) % TABS.length].id as TabId
+            nav.goToSection(nextTab)
+            return nextTab
+          })
+          setSelectedIndex(0)
+          setDownloadSelectedIndex(0)
+        },
+      },
+      {
         key: 'Escape',
         label: 'Back to formats',
         hint: 'Esc',

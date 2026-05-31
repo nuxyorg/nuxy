@@ -82,6 +82,14 @@ const { core, getSyncPayload } = createCoreProxy(
   permissions
 )
 
+if (!permissions.includes('network')) {
+  globalThis.fetch = (() => {
+    throw new Error(
+      `Permission Denied: Extension "${extId}" lacks "network" permission required for "fetch"`
+    )
+  }) as unknown as typeof fetch
+}
+
 void (async () => {
   try {
     await loadExtensionModule(absolutePath, core, logger)

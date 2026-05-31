@@ -5,10 +5,12 @@ const HOST_CHANNEL_PERMISSION: Partial<Record<string, ExtensionPermission>> = {
   [HostChannel.CLIPBOARD_READ]: 'clipboard',
   [HostChannel.CLIPBOARD_WRITE]: 'clipboard',
   [HostChannel.CLIPBOARD_WRITE_FILES]: 'clipboard',
-  [HostChannel.FS_FILE_EXISTS]: 'clipboard',
+
   [HostChannel.STORAGE_READ]: 'storage',
   [HostChannel.STORAGE_WRITE]: 'storage',
   [HostChannel.MEDIA_GET_NOW_PLAYING]: 'media',
+
+  [HostChannel.FS_FILE_EXISTS]: 'fs',
 }
 
 /** Default when manifest omits permissions (backward compatible). */

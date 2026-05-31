@@ -7,6 +7,8 @@ export type ExtensionPermission =
   | 'notifications'
   | 'media'
   | 'shell'
+  | 'fs'
+  | 'db'
   | 'settings.read'
   | 'settings.write'
 

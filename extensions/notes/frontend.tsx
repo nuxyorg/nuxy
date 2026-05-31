@@ -82,6 +82,15 @@ export default function NotesApp({ query }: Props) {
       return r.data as T
     })
 
+  // Filter notes based on query
+  const filteredNotes = useMemo(() => {
+    if (!query.trim() || query.startsWith('select:')) return notes
+    const q = query.toLowerCase()
+    return notes.filter(
+      (n) => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)
+    )
+  }, [notes, query])
+
   // Load notes on mount
   useEffect(() => {
     invoke<Note[]>('notes:list', {})
@@ -89,43 +98,32 @@ export default function NotesApp({ query }: Props) {
       .catch(() => {})
   }, [])
 
-  // Handle __create_note__: query from search provider click
+  // Handle select: query from search provider click
   useEffect(() => {
-    if (query && query.startsWith('__create_note__:')) {
-      const content = query.substring('__create_note__:'.length)
-      if (content.trim()) {
-        const title = deriveTitle(content)
-        invoke<Note>('notes:create', { title, body: content })
-          .then(async (newNote) => {
-            const list = await invoke<Note[]>('notes:list', {})
-            setNotes(list)
-            setSelected(newNote)
-            setBody(newNote.body)
-            setSelectedIndex(1) // Yeni Not is at index 0, so the first note is at index 1
-            setEditMode(false) // Start in preview mode
-            if (toast) toast('Note saved!', { type: 'success' })
-            // Clear omnibar query
-            window.dispatchEvent(
-              new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } })
-            )
-          })
-          .catch(() => {})
+    if (query && query.startsWith('select:')) {
+      const noteId = query.substring('select:'.length)
+      const note = notes.find((n) => n.id === noteId)
+      if (note) {
+        setSelected(note)
+        setBody(note.body)
+        const idx = filteredNotes.findIndex((n) => n.id === noteId)
+        if (idx !== -1) {
+          setSelectedIndex(idx + 1)
+        }
+        setEditMode(false) // Start in preview mode
+        // Clear omnibar query
+        window.dispatchEvent(
+          new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } })
+        )
       }
     }
-  }, [query])
+  }, [query, notes, filteredNotes])
 
-  // Filter notes based on query
-  const filteredNotes = useMemo(() => {
-    if (!query.trim() || query.startsWith('__create_note__:')) return notes
-    const q = query.toLowerCase()
-    return notes.filter(
-      (n) => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)
-    )
-  }, [notes, query])
-
-  // Reset selectedIndex when query changes
+  // Reset selectedIndex when query changes (only when it is an actual search query)
   useEffect(() => {
-    setSelectedIndex(-1)
+    if (query && !query.startsWith('select:')) {
+      setSelectedIndex(-1)
+    }
   }, [query])
 
   // Sync selected note when selectedIndex changes
@@ -158,7 +156,7 @@ export default function NotesApp({ query }: Props) {
     setNotes(updated)
     setSelected(note)
     setBody('')
-    setSelectedIndex(1) // index 0 is "Yeni Not", index 1 is this new note
+    setSelectedIndex(1) // index 0 is "New Note", index 1 is this new note
     setEditMode(true)
   }
 
@@ -168,6 +166,22 @@ export default function NotesApp({ query }: Props) {
     const updated = await invoke<Note>('notes:update', { id: selected.id, title, body })
     setSelected(updated)
     const list = await invoke<Note[]>('notes:list', {})
+
+    // Find the new index of the updated note in the filtered notes list
+    let newFiltered = list
+    if (query && !query.startsWith('select:')) {
+      const q = query.trim().toLowerCase()
+      if (q) {
+        newFiltered = list.filter(
+          (n) => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)
+        )
+      }
+    }
+    const newIdx = newFiltered.findIndex((n) => n.id === updated.id)
+    if (newIdx !== -1) {
+      setSelectedIndex(newIdx + 1)
+    }
+
     setNotes(list)
     if (toast) toast('Note saved!', { type: 'success' })
   }
@@ -380,7 +394,7 @@ export default function NotesApp({ query }: Props) {
       <List>
         <ListItem active={selectedIndex === 0} onClick={() => setSelectedIndex(0)}>
           <ListItemBody>
-            <ListItemText>Yeni Not</ListItemText>
+            <ListItemText>New Note</ListItemText>
             <ListItemMeta>Create a new note</ListItemMeta>
           </ListItemBody>
         </ListItem>

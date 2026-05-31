@@ -13,20 +13,7 @@ export default function App() {
   const [extensionCount, setExtensionCount] = useState<number | null>(null)
 
   useEffect(() => {
-    const core = (
-      window as Window & {
-        core?: {
-          ipc?: {
-            invoke: (
-              extId: string,
-              channel: string,
-              payload: unknown
-            ) => Promise<IpcResult<unknown>>
-          }
-          window?: { onShow?: (cb: () => void) => (() => void) | undefined }
-        }
-      }
-    ).core
+    const core = window.core
 
     const dynamicImport = new Function('url', 'return import(url)')
 
@@ -119,8 +106,7 @@ export default function App() {
         requestAnimationFrame(() => {
           setTimeout(() => {
             console.log(`[FLASH-DEBUG] sending window:ready at ${Date.now()}`)
-            const w = window as any
-            w.core?.window?.ready?.()
+            window.core?.window?.ready()
           }, 50)
         })
       }

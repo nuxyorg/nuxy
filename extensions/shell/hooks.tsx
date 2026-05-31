@@ -169,13 +169,17 @@ export function useProviders({
       return
     }
 
+    const initialStates: Record<string, ProviderState> = {}
     providers.forEach((provider) => {
       const type = (provider.manifest?.providerType as ProviderState['type']) || 'list'
       const name = provider.manifest?.name || provider.id
-      setProviderStates((prev) => ({
-        ...prev,
-        [provider.id]: { loading: true, items: [], type, name },
-      }))
+      initialStates[provider.id] = { loading: true, items: [], type, name }
+    })
+    setProviderStates(initialStates)
+
+    providers.forEach((provider) => {
+      const type = (provider.manifest?.providerType as ProviderState['type']) || 'list'
+      const name = provider.manifest?.name || provider.id
       window.core?.ipc
         ?.invoke(provider.id, 'eval', { text: savedQuery })
         .then((res: unknown) => {

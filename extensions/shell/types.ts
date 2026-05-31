@@ -39,6 +39,10 @@ export interface ListItem {
   subtitle?: string
   isTool?: boolean
   value?: string
+  execute?: {
+    channel: string
+    payload?: unknown
+  }
 }
 
 export interface ProviderState {

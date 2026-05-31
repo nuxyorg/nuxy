@@ -29,6 +29,9 @@ function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedEx
       if (ext.id === 'com.nuxy.time-calculator' || ext.id === 'com.nuxy.notes') {
         return type === 'tool' || type === 'provider'
       }
+      if (type === 'tool' && ext.manifest.type === 'helper' && ext.manifest.entry?.frontend) {
+        return true
+      }
       return ext.manifest.type === type
     })
     .map((ext) => ({
