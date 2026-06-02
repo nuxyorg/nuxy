@@ -6,5 +6,27 @@
       "Bash(pnpm test *)",
       "Bash(pnpm test:e2e *)"
     ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "_tty=$(readlink /proc/$PPID/fd/2 2>/dev/null); [[ \"$_tty\" == /dev/pts/* ]] && { printf '\\033]11;#1a2a1a\\007' > \"$_tty\" 2>/dev/null; (sleep 5 && printf '\\033]11;#131313\\007' > \"$_tty\" 2>/dev/null) & }; true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "_tty=$(readlink /proc/$PPID/fd/2 2>/dev/null); [[ \"$_tty\" == /dev/pts/* ]] && printf '\\033]11;#131313\\007' > \"$_tty\" 2>/dev/null; true"
+          }
+        ]
+      }
+    ]
   }
 }

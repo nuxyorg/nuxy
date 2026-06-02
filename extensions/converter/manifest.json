@@ -1,0 +1,21 @@
+{
+  "id": "com.nuxy.converter",
+  "name": "Unit Converter",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "convert",
+  "permissions": ["clipboard"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
+  }
+}

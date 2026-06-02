@@ -1,0 +1,17 @@
+{
+  "meta": { "name": "İşlem Sonlandırıcı", "direction": "ltr" },
+  "empty": "İşlem bulunamadı",
+  "emptyHint": "İşlem adına göre ara",
+  "noResults": "Eşleşen işlem yok",
+  "noResultsHint": "Farklı bir arama deneyin",
+  "actions": {
+    "kill": "Sonlandır",
+    "forceKill": "Zorla sonlandır",
+    "refresh": "Yenile"
+  },
+  "errors": {
+    "killFailed": "İşlem sonlandırılamadı",
+    "invalidPid": "Geçersiz işlem kimliği",
+    "listFailed": "İşlem listesi alınamadı"
+  }
+}

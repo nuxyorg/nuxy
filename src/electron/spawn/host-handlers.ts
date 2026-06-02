@@ -1,11 +1,11 @@
 import fs from 'fs'
 import fsPromises from 'fs/promises'
-import { clipboard, nativeImage } from 'electron'
+import { clipboard, nativeImage, BrowserWindow } from 'electron'
 import { HostChannel, kernelLogger } from '@nuxy/core'
 import type { ThemeDefinition, IconPackDefinition } from '@nuxy/core'
 import { assertHostPermission } from '../config/permissions.js'
 import { resolveStoragePath } from '../config/storage-path.js'
-import { getExtensionById } from '../extensions/registry.js'
+import { getExtensionById, loadedExtensions } from '../extensions/registry.js'
 import { invokeExtension } from '../ipc/broker.js'
 import { getNowPlaying } from '../media/index.js'
 import { extensionDataDir } from './migrate-data.js'
@@ -167,6 +167,27 @@ export async function handleHostCall(
         registerIconPack(def)
         log.info(`Extension "${extId}" registered icon pack: ${def.name}`)
         return { result: true }
+      }
+
+      case HostChannel.IPC_BROADCAST: {
+        const p = payload as { channel?: string; data?: unknown } | null
+        if (!p || typeof p.channel !== 'string') {
+          return { error: 'IPC_BROADCAST: payload must be { channel: string, data: unknown }' }
+        }
+        BrowserWindow.getAllWindows().forEach((win) => {
+          if (!win.isDestroyed()) win.webContents.send('ext:broadcast', p.channel, p.data)
+        })
+        return { result: true }
+      }
+
+      case HostChannel.REGISTRY_GET_CALLABLE_TOOLS: {
+        const tools = loadedExtensions
+          .filter((ext) => !ext.disabled && ext.manifest.type === 'tool')
+          .map((ext) => ({
+            id: ext.id,
+            manifest: { name: ext.manifest.name },
+          }))
+        return { result: tools }
       }
 
       default:

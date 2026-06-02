@@ -35,3 +35,37 @@ export function defineExtension(module: ExtensionModule): ExtensionModule {
 }
 
 export { createMockCore } from './testing.js'
+
+/**
+ * Shape of a single IPC channel: what it accepts and what it returns.
+ * Define this map in your extension's `types.ts`:
+ *
+ * ```ts
+ * export interface IpcChannels {
+ *   getItems: { input: void; output: MyItem[] }
+ *   createItem: { input: { title: string }; output: MyItem }
+ * }
+ * ```
+ */
+export type IpcChannelMap = Record<string, { input: unknown; output: unknown }>
+
+/**
+ * Typed invoke function for extension frontends.
+ * Channel names and payload/return types are inferred from `TChannels`.
+ *
+ * Usage in `frontend.tsx`:
+ * ```tsx
+ * import type { TypedInvoker } from '@nuxy/extension-sdk'
+ * import type { IpcChannels } from './types.ts'
+ *
+ * const invoke: TypedInvoker<IpcChannels> = async (channel, ...args) => {
+ *   const res = await window.core.ipc.invoke(EXT_ID, channel, args[0])
+ *   if (!res?.success) throw new Error(res?.error ?? 'IPC failed')
+ *   return res.data
+ * }
+ * ```
+ */
+export type TypedInvoker<TChannels extends IpcChannelMap> = <K extends keyof TChannels & string>(
+  channel: K,
+  ...args: TChannels[K]['input'] extends void ? [] : [payload: TChannels[K]['input']]
+) => Promise<TChannels[K]['output']>

@@ -13,7 +13,10 @@
     "test:e2e:extensions": "pnpm -C src test:e2e:all",
     "test:e2e:core": "pnpm -C src test:e2e:core",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "create-ext": "node scripts/create-ext.mjs",
+    "dev-ext": "node scripts/dev-ext.mjs",
+    "doctor": "node scripts/doctor.mjs"
   },
   "keywords": [],
   "author": "",

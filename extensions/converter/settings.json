@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "unitSystem",
+      "label": "Unit system",
+      "type": "select",
+      "default": "both",
+      "options": [
+        { "value": "both", "label": "Both" },
+        { "value": "metric", "label": "Metric" },
+        { "value": "imperial", "label": "Imperial" }
+      ]
+    },
+    {
+      "key": "precision",
+      "label": "Decimal places",
+      "type": "select",
+      "default": "2",
+      "options": [
+        { "value": "0", "label": "0" },
+        { "value": "2", "label": "2" },
+        { "value": "4", "label": "4" }
+      ]
+    }
+  ]
+}

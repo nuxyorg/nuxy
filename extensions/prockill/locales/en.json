@@ -1,0 +1,17 @@
+{
+  "meta": { "name": "Process Killer", "direction": "ltr" },
+  "empty": "No processes found",
+  "emptyHint": "Search by process name",
+  "noResults": "No matching processes",
+  "noResultsHint": "Try a different search",
+  "actions": {
+    "kill": "Kill",
+    "forceKill": "Force kill",
+    "refresh": "Refresh"
+  },
+  "errors": {
+    "killFailed": "Failed to kill process",
+    "invalidPid": "Invalid process ID",
+    "listFailed": "Failed to list processes"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "showSystemProcesses",
+      "label": "Show system processes",
+      "type": "toggle",
+      "default": false,
+      "description": "Include root/system-owned processes in the list"
+    },
+    {
+      "key": "defaultSignal",
+      "label": "Default kill signal",
+      "type": "select",
+      "default": "SIGTERM",
+      "options": [
+        { "value": "SIGTERM", "label": "SIGTERM (graceful)" },
+        { "value": "SIGKILL", "label": "SIGKILL (force)" }
+      ]
+    }
+  ]
+}

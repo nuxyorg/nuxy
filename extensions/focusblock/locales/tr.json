@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "name": "Odak Bloğu"
+  },
+  "sections": {
+    "recent": "Son Oturumlar"
+  },
+  "idle": {
+    "message": "Odak bloğu başlatmak için Enter'a basın",
+    "hint": "Süre girmek için sayı yazın (örn. 45), etiket eklemek için metin yazın (örn. 45 derin çalışma)"
+  },
+  "session": {
+    "untitled": "Odak Oturumu",
+    "completed": "Tamamlandı",
+    "stopped": "Durduruldu"
+  },
+  "actions": {
+    "start": "Başlat",
+    "stop": "Durdur",
+    "prev": "Önceki",
+    "next": "Sonraki"
+  }
+}

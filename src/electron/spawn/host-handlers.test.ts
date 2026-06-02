@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 // IMPORTANT: All vi.mock calls must be at top level before imports
 
+const mockWebContents = { send: vi.fn(), isDestroyed: vi.fn(() => false) }
+const mockWin = { webContents: mockWebContents, isDestroyed: vi.fn(() => false) }
+
 vi.mock('electron', () => ({
   clipboard: {
     readText: vi.fn(() => 'clipboard text'),
@@ -15,6 +18,9 @@ vi.mock('electron', () => ({
   },
   nativeImage: {
     createFromDataURL: vi.fn(() => ({})),
+  },
+  BrowserWindow: {
+    getAllWindows: vi.fn(() => [mockWin]),
   },
 }))
 
@@ -32,6 +38,8 @@ vi.mock('@nuxy/core', () => ({
     BROKER_INVOKE: 'broker:invoke',
     THEME_REGISTER: 'theme:register',
     ICONPACK_REGISTER: 'iconpack:register',
+    IPC_BROADCAST: 'ipc:broadcast',
+    REGISTRY_GET_CALLABLE_TOOLS: 'registry:getCallableTools',
   },
   kernelLogger: {
     child: vi.fn(() => ({
@@ -53,6 +61,7 @@ vi.mock('../config/storage-path.js', () => ({
 
 vi.mock('../extensions/registry.js', () => ({
   getExtensionById: vi.fn(),
+  loadedExtensions: [],
 }))
 
 vi.mock('../ipc/broker.js', () => ({
@@ -76,12 +85,12 @@ vi.mock('../icons/registry.js', () => ({
 }))
 
 import { handleHostCall } from './host-handlers.js'
-import { getExtensionById } from '../extensions/registry.js'
+import { getExtensionById, loadedExtensions } from '../extensions/registry.js'
 import { invokeExtension } from '../ipc/broker.js'
 import { assertHostPermission } from '../config/permissions.js'
 import { registerExtensionTheme } from '../themes/extension-themes.js'
 import { registerIconPack } from '../icons/registry.js'
-import { clipboard, nativeImage } from 'electron'
+import { clipboard, nativeImage, BrowserWindow } from 'electron'
 import fs from 'fs'
 import fsPromises from 'fs/promises'
 
@@ -105,6 +114,8 @@ describe('handleHostCall', () => {
     vi.clearAllMocks()
     vi.mocked(getExtensionById).mockReturnValue(makeExt() as any)
     vi.mocked(assertHostPermission).mockReturnValue(null as any)
+    mockWebContents.send.mockClear()
+    ;(loadedExtensions as unknown[]).length = 0
   })
 
   afterEach(() => {
@@ -440,6 +451,80 @@ describe('handleHostCall', () => {
     const result = await handleHostCall('com.nuxy.test', 'iconpack:register', def)
     expect(registerIconPack).toHaveBeenCalledWith(def)
     expect(result).toEqual({ result: true })
+  })
+
+  // ---------------------------------------------------------------------------
+  // ipc:broadcast
+  // ---------------------------------------------------------------------------
+
+  it('ipc:broadcast sends ext:broadcast to all windows and returns true', async () => {
+    const result = await handleHostCall('com.nuxy.test', 'ipc:broadcast', {
+      channel: 'some:event',
+      data: { foo: 'bar' },
+    })
+    expect(mockWebContents.send).toHaveBeenCalledWith('ext:broadcast', 'some:event', { foo: 'bar' })
+    expect(result).toEqual({ result: true })
+  })
+
+  it('ipc:broadcast returns error when payload is null', async () => {
+    const result = await handleHostCall('com.nuxy.test', 'ipc:broadcast', null)
+    expect(result).toEqual({ error: 'IPC_BROADCAST: payload must be { channel: string, data: unknown }' })
+  })
+
+  it('ipc:broadcast returns error when channel is missing', async () => {
+    const result = await handleHostCall('com.nuxy.test', 'ipc:broadcast', { data: 42 })
+    expect(result).toEqual({ error: 'IPC_BROADCAST: payload must be { channel: string, data: unknown }' })
+  })
+
+  it('ipc:broadcast skips destroyed windows', async () => {
+    mockWin.isDestroyed.mockReturnValueOnce(true)
+    const result = await handleHostCall('com.nuxy.test', 'ipc:broadcast', {
+      channel: 'test',
+      data: null,
+    })
+    expect(mockWebContents.send).not.toHaveBeenCalled()
+    expect(result).toEqual({ result: true })
+  })
+
+  // ---------------------------------------------------------------------------
+  // registry:getCallableTools
+  // ---------------------------------------------------------------------------
+
+  it('registry:getCallableTools returns tool extensions', async () => {
+    ;(loadedExtensions as unknown[]).push(
+      { id: 'com.nuxy.tool1', disabled: false, manifest: { type: 'tool', name: 'Tool One' } },
+      { id: 'com.nuxy.tool2', disabled: false, manifest: { type: 'tool', name: 'Tool Two' } }
+    )
+    const result = await handleHostCall('com.nuxy.test', 'registry:getCallableTools', {})
+    expect(result).toEqual({
+      result: [
+        { id: 'com.nuxy.tool1', manifest: { name: 'Tool One' } },
+        { id: 'com.nuxy.tool2', manifest: { name: 'Tool Two' } },
+      ],
+    })
+  })
+
+  it('registry:getCallableTools excludes non-tool extensions', async () => {
+    ;(loadedExtensions as unknown[]).push(
+      { id: 'com.nuxy.provider', disabled: false, manifest: { type: 'provider', name: 'Provider' } },
+      { id: 'com.nuxy.tool', disabled: false, manifest: { type: 'tool', name: 'Tool' } }
+    )
+    const result = await handleHostCall('com.nuxy.test', 'registry:getCallableTools', {})
+    expect(result).toEqual({ result: [{ id: 'com.nuxy.tool', manifest: { name: 'Tool' } }] })
+  })
+
+  it('registry:getCallableTools excludes disabled extensions', async () => {
+    ;(loadedExtensions as unknown[]).push(
+      { id: 'com.nuxy.disabled', disabled: true, manifest: { type: 'tool', name: 'Disabled' } },
+      { id: 'com.nuxy.active', disabled: false, manifest: { type: 'tool', name: 'Active' } }
+    )
+    const result = await handleHostCall('com.nuxy.test', 'registry:getCallableTools', {})
+    expect(result).toEqual({ result: [{ id: 'com.nuxy.active', manifest: { name: 'Active' } }] })
+  })
+
+  it('registry:getCallableTools returns empty array when no tools loaded', async () => {
+    const result = await handleHostCall('com.nuxy.test', 'registry:getCallableTools', {})
+    expect(result).toEqual({ result: [] })
   })
 
   // ---------------------------------------------------------------------------

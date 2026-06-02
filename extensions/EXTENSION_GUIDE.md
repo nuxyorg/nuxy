@@ -29,13 +29,17 @@ extensions/
     preload.ts           # optional, runs in isolated window preload script context at startup
     backend.ts           # required if type is tool/provider/orchestrator; optional for helper
     backend.test.ts      # required when backend.ts exists
-    frontend.tsx         # optional, JSX/TSX component
+    frontend.tsx         # optional, JSX/TSX component (entry point)
     types.ts             # extension-specific interfaces (data models, IPC payload types)
     package.json         # only if the extension has its own npm deps
+    components/          # optional — reusable TSX components imported by frontend.tsx
+    hooks/               # optional — custom React hooks (useXxx.ts / useXxx.tsx)
+    utils/               # optional — pure utility/helper functions (.ts)
 ```
 
 - Extensions live strictly inside their own folder. No file may reference paths outside it.
-- `frontend.tsx` must be a single self-contained file — no relative imports.
+- Relative imports within the extension folder are allowed in both backend and frontend files. The protocol server resolves and transpiles each imported file individually via `nuxy-ext://`.
+- `components/`, `hooks/`, and `utils/` subdirectories are the only permitted subfolders for source files. A `styles/` directory is not permitted — all styling is done via CSS custom property tokens inline.
 - `preload.ts` runs directly in the main window's Electron preload context. It must contain the background listeners (like clipboard watchers), default settings initializers, and other early setup tasks.
 - `backend.ts` must export a named `register` function (`export function register(core: CoreContext): void`).
 - All extension-specific types belong in `types.ts` inside the extension folder — not in shared packages.
@@ -442,13 +446,20 @@ All IPC handlers must return a value (or `undefined`). The kernel wraps them in 
 
 Frontend files are `.tsx` files containing JSX. They are loaded at runtime via `nuxy-ext://` — no build step, no bundler. All external dependencies come from `window.React` and `window.UI`.
 
+`frontend.tsx` is the entry point. Large frontends can be split across `components/`, `hooks/`, and `utils/` subdirectories using relative imports — the protocol server resolves and transpiles each file on demand.
+
 ```tsx
-// Top of every frontend.tsx — window.React MUST be in scope for JSX to work
+// Top of every .tsx file — window.React MUST be in scope for JSX to work
 const React = window.React
 const { useState, useEffect, useRef, useMemo, useCallback } = React
 
-// Import types from the extension's own types.ts (type-only, erased at runtime)
+// Type-only imports are erased at runtime — always safe
 import type { MyItem } from './types.ts'
+
+// Runtime imports from subdirectories work via nuxy-ext:// resolution
+import { useMyData } from './hooks/useMyData.ts'
+import { MyCard } from './components/MyCard.tsx'
+import { formatDate } from './utils/format.ts'
 
 interface Props {
   query: string
@@ -459,7 +470,13 @@ export default function MyView({ query }: Props) {
 }
 ```
 
-**Do NOT** add `import React from 'react'` — it is not available as an ES module in this context. JSX compiles to `React.createElement(...)` using the `window.React` reference.
+**Rules for submodule files (`components/`, `hooks/`, `utils/`):**
+- Every `.tsx` file in `components/` must start with `const React = window.React` — the same as `frontend.tsx`.
+- Hook files in `hooks/` are plain `.ts` files that call `React.useState`, `React.useEffect`, etc. via the `React` reference passed in, or destructured from `window.React` at the top.
+- `utils/` files are pure `.ts` with no React or UI kit dependencies.
+- No file in any subdirectory may use `import React from 'react'` or import from outside the extension folder.
+
+**Do NOT** add `import React from 'react'` anywhere — it is not available as an ES module in this context. JSX compiles to `React.createElement(...)` using the `window.React` reference.
 
 ### 5.2 UI Kit only — no custom components
 
@@ -950,11 +967,31 @@ export function register(core: CoreContext): void {
 
 ### 6.4 Frontend typing
 
+Define your IPC channel contract in `types.ts` using `IpcChannelMap`, then use `TypedInvoker` in the frontend to get channel-name autocomplete and typed return values.
+
+```ts
+// types.ts
+import type { IpcChannelMap } from '@nuxy/extension-sdk'
+
+export interface MyItem {
+  id: string
+  title: string
+  createdAt: string
+}
+
+export interface IpcChannels extends IpcChannelMap {
+  getItems:   { input: void;              output: MyItem[] }
+  createItem: { input: { title: string }; output: MyItem  }
+  deleteItem: { input: string;            output: void    }
+}
+```
+
 ```tsx
 const React = window.React
 const { useState, useEffect } = React
 
-import type { MyItem } from './types.ts'
+import type { TypedInvoker } from '@nuxy/extension-sdk'
+import type { MyItem, IpcChannels } from './types.ts'
 
 interface Props {
   query: string
@@ -964,19 +1001,15 @@ export default function MyView({ query }: Props) {
   const { List, ListItem, EmptyState } = window.UI || {}
   const [items, setItems] = useState<MyItem[]>([])
 
-  // IPC helper — cast result explicitly
-  const invoke = async <T,>(channel: string, payload?: unknown): Promise<T> => {
-    const res = (await window.core.ipc.invoke('com.nuxy.my-extension', channel, payload)) as {
-      success: boolean
-      data?: T
-      error?: string
-    }
-    if (!res?.success) throw new Error(res?.error || 'IPC failed')
-    return res.data as T
+  // Typed IPC helper — channel names and return types come from IpcChannels in types.ts
+  const invoke: TypedInvoker<IpcChannels> = async (channel, ...args) => {
+    const res = await window.core.ipc.invoke('com.nuxy.my-extension', channel, args[0])
+    if (!res?.success) throw new Error(res?.error ?? 'IPC failed')
+    return res.data
   }
 
   useEffect(() => {
-    invoke<MyItem[]>('getItems')
+    invoke('getItems')   // return type is MyItem[] — no cast needed
       .then(setItems)
       .catch(() => {})
   }, [])
@@ -1072,64 +1105,19 @@ core.i18n.t(key, vars, count)         // → plural-form string ("3 items")
 
 Every extension with a `backend.ts` must have a corresponding `backend.test.ts` in the same folder.
 
+Use `createMockCore` from `@nuxy/extension-sdk` — it sets up all `CoreContext` mocks and captures IPC handlers automatically. Never hand-roll a `makeCore` function.
+
 ```ts
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { CoreContext } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import { register } from './backend.ts'
-
-function makeCore(overrides: Partial<CoreContext> = {}): CoreContext {
-  return {
-    registry: {
-      registerTool: vi.fn(),
-      registerProvider: vi.fn(),
-      registerOrchestrator: vi.fn(),
-      registerTheme: vi.fn(),
-      registerIconPack: vi.fn(),
-    },
-    ipc: { handle: vi.fn() },
-    storage: { read: vi.fn().mockResolvedValue(null), write: vi.fn().mockResolvedValue(undefined) },
-    clipboard: {
-      readText: vi.fn(),
-      writeText: vi.fn(),
-      readImage: vi.fn(),
-      writeImage: vi.fn(),
-      writeFiles: vi.fn(),
-    },
-    fs: {
-      fileExists: vi.fn().mockResolvedValue(false),
-      readDir: vi.fn(),
-      readFile: vi.fn(),
-      readFileBinary: vi.fn(),
-      writeFile: vi.fn(),
-      mkdir: vi.fn(),
-      rename: vi.fn(),
-      rm: vi.fn(),
-      stat: vi.fn(),
-      homedir: vi.fn().mockReturnValue('/home/user'),
-      tmpdir: vi.fn().mockReturnValue('/tmp'),
-    },
-    db: { open: vi.fn() },
-    shell: { open: vi.fn(), exec: vi.fn(), spawn: vi.fn() },
-    media: { getNowPlaying: vi.fn() },
-    extensions: { invoke: vi.fn() },
-    logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), silly: vi.fn() },
-    config: { get: vi.fn() },
-    i18n: { locale: 'en', dir: 'ltr', t: vi.fn((key: string) => key) },
-    ...overrides,
-  } as CoreContext
-}
 
 describe('my-extension backend', () => {
   let core: CoreContext
-  const handlers: Record<string, (payload: unknown) => Promise<unknown>> = {}
+  let handlers: Record<string, (payload?: unknown) => Promise<unknown>>
 
   beforeEach(() => {
-    core = makeCore()
-    ;(core.ipc.handle as ReturnType<typeof vi.fn>).mockImplementation(
-      (channel: string, fn: (payload: unknown) => Promise<unknown>) => {
-        handlers[channel] = fn
-      }
-    )
+    ;({ core, handlers } = createMockCore())
     register(core)
   })
 
@@ -1146,9 +1134,24 @@ describe('my-extension backend', () => {
 })
 ```
 
+**Overriding specific mocks** — pass overrides to `createMockCore`:
+
+```ts
+beforeEach(() => {
+  ;({ core, handlers } = createMockCore({
+    storage: {
+      read: vi.fn().mockResolvedValue([{ id: '1', title: 'existing' }]),
+    },
+    clipboard: {
+      readText: vi.fn().mockResolvedValue('hello'),
+    },
+  }))
+  register(core)
+})
+```
+
 - Use `vi.spyOn(module, 'method')` in `beforeEach` + `vi.restoreAllMocks()` in `afterEach` for CJS modules.
 - Use `vi.mock` factory for ESM-only modules (`node:sqlite` etc.).
-- Mock `CoreContext` inline — never import the real proxy.
 - Test every IPC handler registered in `register()`.
 - Test error paths (storage failure, network timeout, etc.).
 
@@ -1416,11 +1419,33 @@ useEffect(() => {
 
 Use `const { t } = useTranslation(EXT_ID)` from `window.UI`.
 
+### U. `styles/` directory or external CSS
+
+```
+// BANNED — styles/ subdirectory
+extensions/my-extension/styles/main.css
+extensions/my-extension/styles/item.module.css
+```
+
+```tsx
+// BANNED — hardcoded values that bypass the theme system
+<div style={{ color: '#333', padding: '12px', background: '#fff' }}>
+```
+
+All styling is done via CSS custom property tokens inline. Use `var(--color-*)`, `var(--space-*)`, `var(--font-*)`, `var(--radius-*)` tokens directly in `style` props. A `styles/` directory will not be served by the protocol server.
+
 ---
 
 ## 11. Checklist
 
 Before submitting or merging an extension, verify every item:
+
+**File Structure**
+
+- [ ] Source subdirectories are limited to `components/`, `hooks/`, `utils/` — no `styles/` directory
+- [ ] No file references paths outside the extension folder (no `../../`)
+- [ ] Every `.tsx` file (including those in `components/`) starts with `const React = window.React`
+- [ ] `utils/` files are pure `.ts` with no React or UI kit dependencies
 
 **Manifest**
 

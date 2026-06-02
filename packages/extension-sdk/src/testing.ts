@@ -70,6 +70,11 @@ export function createMockCore(
       read: vi.fn().mockResolvedValue(null),
       write: vi.fn().mockResolvedValue(undefined),
     },
+    i18n: {
+      locale: 'en',
+      dir: 'ltr' as const,
+      t: vi.fn((key: string) => key),
+    },
   } as any
 
   if (overrides) {
