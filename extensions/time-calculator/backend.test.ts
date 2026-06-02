@@ -21,7 +21,7 @@ afterAll(() => {
  * closure-scoped — every register() call gets its own isolated state.
  */
 function createCore() {
-  return createMockCore(vi)
+  return createMockCore()
 }
 
 describe('time-calculator backend', () => {

@@ -32,7 +32,7 @@ function createCore(dbArg: MockDb | null = null): {
   preparedStmt: PreparedStatement
 } {
   const { db, mockPrepare, preparedStmt } = dbArg ?? makeMockDb()
-  const { core, handlers } = createMockCore(vi, {
+  const { core, handlers } = createMockCore({
     db: { open: vi.fn().mockReturnValue(db) },
     fs: {
       mkdir: vi.fn().mockResolvedValue(undefined),
@@ -225,7 +225,7 @@ describe('notes backend', () => {
     it('throws when API key is not configured', async () => {
       const register = await freshBackend()
       const { core, handlers } = createCore()
-      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue(null)
+      ;(core.settings.read as ReturnType<typeof vi.fn>).mockResolvedValue(null)
       await register(core)
 
       await expect(
@@ -246,9 +246,10 @@ describe('notes backend', () => {
 
       const register = await freshBackend()
       const { core, handlers } = createCore()
-      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue({
-        openaiApiKey: 'sk-test-key',
-        language: 'en',
+      ;(core.settings.read as ReturnType<typeof vi.fn>).mockImplementation(async (key: string) => {
+        if (key === 'openaiApiKey') return 'sk-test-key'
+        if (key === 'language') return 'en'
+        return null
       })
       await register(core)
 
@@ -268,9 +269,10 @@ describe('notes backend', () => {
 
       const register = await freshBackend()
       const { core, handlers } = createCore()
-      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue({
-        openaiApiKey: 'sk-test-key',
-        language: 'en',
+      ;(core.settings.read as ReturnType<typeof vi.fn>).mockImplementation(async (key: string) => {
+        if (key === 'openaiApiKey') return 'sk-test-key'
+        if (key === 'language') return 'en'
+        return null
       })
       await register(core)
 
@@ -297,9 +299,13 @@ describe('notes backend', () => {
         language: 'fr',
       })
 
-      expect(core.storage.write as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
-        'config.json',
-        expect.objectContaining({ openaiApiKey: 'sk-abc', language: 'fr' })
+      expect(core.settings.write as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+        'openaiApiKey',
+        'sk-abc'
+      )
+      expect(core.settings.write as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+        'language',
+        'fr'
       )
     })
   })

@@ -6,7 +6,7 @@ import { register } from './backend.ts'
 type Handlers = Record<string, (...args: unknown[]) => Promise<unknown>>
 
 function createCore(storedFavorites: unknown = null): { core: CoreContext; handlers: Handlers } {
-  return createMockCore(vi, {
+  return createMockCore({
     storage: {
       read: vi.fn().mockResolvedValue(storedFavorites),
     },
@@ -32,7 +32,7 @@ describe('emoji-picker backend', () => {
 
   describe('getFavorites', () => {
     it('returns empty array initially', async () => {
-      const { core, handlers } = createMockCore(vi, {
+      const { core, handlers } = createMockCore({
         shell: {
           exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }),
         },

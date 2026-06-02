@@ -14,7 +14,7 @@ function createCore({
   const storageData = { ...storage }
   const settingsData = { ...settings }
 
-  const { core, handlers } = createMockCore(vi, {
+  const { core, handlers } = createMockCore({
     storage: {
       read: vi.fn(async (key: string) => storageData[key] ?? null),
       write: vi.fn(async (key: string, value: unknown) => {

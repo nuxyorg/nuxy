@@ -12,5 +12,9 @@
   },
   "entry": {
     "backend": "backend.ts"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
   }
 }

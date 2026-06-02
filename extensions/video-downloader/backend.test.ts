@@ -31,7 +31,7 @@ function makeSpawnHandle(): SpawnHandle {
 
 function createCore() {
   const storage: Record<string, unknown> = {}
-  const { core, handlers } = createMockCore(vi, {
+  const { core, handlers } = createMockCore({
     storage: {
       read: vi.fn(async (key: string) => storage[key] ?? null),
       write: vi.fn(async (key: string, val: unknown) => {

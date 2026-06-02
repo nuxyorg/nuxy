@@ -120,7 +120,7 @@ export default function AngrysearchView({ query }: Props) {
       },
     ]
     window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
-    return () => window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
+    return () => { window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] })) }
   }, [triggerUpdate])
 
   useEffect(() => {

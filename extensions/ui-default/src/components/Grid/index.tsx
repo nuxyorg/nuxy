@@ -35,7 +35,7 @@ Grid.displayName = 'Grid'
 
 export const GridItem = React.forwardRef<HTMLButtonElement, GridItemProps>(
   ({ active, className, children, ...rest }, ref) => {
-    const itemRef = useRef<HTMLButtonElement>(null)
+    const itemRef = useRef<HTMLButtonElement | null>(null)
 
     useEffect(() => {
       if (active && itemRef.current) {
@@ -48,7 +48,7 @@ export const GridItem = React.forwardRef<HTMLButtonElement, GridItemProps>(
         ref={(node) => {
           itemRef.current = node
           if (typeof ref === 'function') ref(node)
-          else if (ref) ref.current = node
+          else if (ref) (ref as React.MutableRefObject<HTMLButtonElement | null>).current = node
         }}
         className={`nuxy-grid-item ${active ? 'nuxy-grid-item--active' : ''} ${className ?? ''}`}
         {...rest}

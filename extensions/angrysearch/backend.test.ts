@@ -40,7 +40,7 @@ function createCore(dbArg: MockDbResult | null = null): {
   db: MockDb
 } {
   const { db } = dbArg ?? makeMockDb()
-  const { core, handlers } = createMockCore(vi, {
+  const { core, handlers } = createMockCore({
     db: { open: vi.fn().mockReturnValue(db) },
     fs: {
       readDir: vi.fn().mockResolvedValue([]),

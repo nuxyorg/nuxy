@@ -13,5 +13,9 @@
   "entry": {
     "backend": "backend.ts",
     "frontend": "frontend.tsx"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
   }
 }

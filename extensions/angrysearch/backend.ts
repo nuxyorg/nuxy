@@ -21,6 +21,10 @@ async function updateDatabase(core: CoreContext): Promise<void> {
   isUpdating = true
 
   try {
+    const scanRoot = (await core.settings.read<string>('scanRoot')) ?? '/'
+    const ignoredRootsRaw = (await core.settings.read<string>('ignoredRoots')) ?? '/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock'
+    const ignoredSet = new Set(ignoredRootsRaw.split(',').map(s => s.trim()).filter(Boolean))
+
     const tempDb = core.db.open('temp_angry_database')
     tempDb.exec('PRAGMA synchronous = OFF;')
     tempDb.exec('PRAGMA journal_mode = MEMORY;')
@@ -39,7 +43,7 @@ async function updateDatabase(core: CoreContext): Promise<void> {
       batch = []
     }
 
-    const queue: string[] = ['/']
+    const queue: string[] = [scanRoot]
 
     while (queue.length > 0) {
       const currentDir = queue.shift()!
@@ -50,7 +54,7 @@ async function updateDatabase(core: CoreContext): Promise<void> {
           const fullPath = currentDir === '/' ? `/${entry.name}` : `${currentDir}/${entry.name}`
 
           if (entry.isDir) {
-            if (currentDir === '/' && IGNORED_ROOTS.has(fullPath)) {
+            if (currentDir === scanRoot && ignoredSet.has(fullPath)) {
               continue
             }
             queue.push(fullPath)
@@ -110,7 +114,9 @@ export function register(core: CoreContext): void {
     if (activeDb) return activeDb
     try {
       activeDb = core.db.open('angry_database')
-      activeDb.function('REGEXP', (pattern: string, text: string): number => {
+      activeDb.function('REGEXP', (...args: unknown[]): unknown => {
+        const pattern = args[0] as string
+        const text = args[1] as string
         try {
           return new RegExp(pattern, 'i').test(text) ? 1 : 0
         } catch (_e) {
@@ -126,8 +132,18 @@ export function register(core: CoreContext): void {
   // Start initial background update if db not populated
   updateDatabase(core)
 
-  // Update every 6 hours
-  setInterval(() => updateDatabase(core), 6 * 60 * 60 * 1000)
+  // Periodic check tick for automatic re-indexing
+  setInterval(async () => {
+    try {
+      const updateIntervalHours = (await core.settings.read<number>('updateIntervalHours')) ?? 6
+      const intervalMs = updateIntervalHours * 60 * 60 * 1000
+      if (lastUpdate && Date.now() - lastUpdate.getTime() >= intervalMs) {
+        updateDatabase(core)
+      }
+    } catch (_e) {
+      // ignore
+    }
+  }, 5 * 60 * 1000)
 
   core.ipc.handle('updateDatabase', async (): Promise<boolean> => {
     if (!isUpdating) updateDatabase(core)
@@ -171,19 +187,22 @@ export function register(core: CoreContext): void {
         return { items: [] }
       }
 
+      const searchLimit = (await core.settings.read<number>('searchLimit')) ?? 500
+      const limitVal = Number(searchLimit)
+
       let stmt: ReturnType<typeof database.prepare>
       let results: DbRow[]
 
       if (isRegex) {
         stmt = database.prepare(
-          'SELECT path, directory FROM angry_table WHERE path REGEXP ? LIMIT 500'
+          `SELECT path, directory FROM angry_table WHERE path REGEXP ? LIMIT ${limitVal}`
         )
-        results = stmt.all(query) as DbRow[]
+        results = stmt.all(query) as unknown as DbRow[]
       } else {
         stmt = database.prepare(
-          'SELECT path, directory FROM angry_table WHERE path LIKE ? LIMIT 500'
+          `SELECT path, directory FROM angry_table WHERE path LIKE ? LIMIT ${limitVal}`
         )
-        results = stmt.all(`%${query}%`) as DbRow[]
+        results = stmt.all(`%${query}%`) as unknown as DbRow[]
       }
 
       const items: AngrysearchItem[] = results.map((row) => {

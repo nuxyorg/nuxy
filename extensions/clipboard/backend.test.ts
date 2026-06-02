@@ -22,7 +22,7 @@ function createCore({
   core: CoreContext
   handlers: Record<string, (payload?: unknown) => Promise<unknown>>
 } {
-  return createMockCore(vi, {
+  return createMockCore({
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
     },
@@ -54,7 +54,7 @@ describe('clipboard backend', () => {
 
   describe('getHistory', () => {
     it('returns empty array before init resolves', async () => {
-      const { core, handlers } = createMockCore(vi)
+      const { core, handlers } = createMockCore()
       register(core)
       expect(await handlers.getHistory()).toEqual([])
     })

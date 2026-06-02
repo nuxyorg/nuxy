@@ -25,10 +25,13 @@ export function register(core: CoreContext): void {
       history = []
     }
 
+    sortHistory()
+
     // Initialize the lastText and lastImage with current clipboard value
     try {
       lastText = (await core.clipboard.readText()) || ''
-      lastImage = (await core.clipboard.readImage()) as string | null
+      const storeImages = (await core.settings.read<boolean>('storeImages')) ?? true
+      lastImage = storeImages ? ((await core.clipboard.readImage()) as string | null) : null
       // If there's something already on clipboard and history is empty, add it
       if (history.length === 0) {
         if (lastImage) {
@@ -41,16 +44,17 @@ export function register(core: CoreContext): void {
       core.logger.error('Failed to read initial system clipboard.', err)
     }
 
-    // Start the monitoring loop (polling every 1000ms)
-    setInterval(async () => {
+    // Start the monitoring loop with dynamic timeout
+    const monitorTick = async () => {
       try {
+        const storeImages = (await core.settings.read<boolean>('storeImages')) ?? true
         const currentText = await core.clipboard.readText()
-        const currentImage = (await core.clipboard.readImage()) as string | null
+        const currentImage = storeImages ? ((await core.clipboard.readImage()) as string | null) : null
 
         if (currentImage) {
           if (currentImage !== lastImage) {
             lastImage = currentImage
-            lastText = currentText // update text too so we don't trigger text change next tick
+            lastText = currentText
             await addHistoryItem({ text: currentText || 'Image', image: currentImage })
           }
         } else if (currentText && currentText.trim() && currentText !== lastText) {
@@ -59,10 +63,18 @@ export function register(core: CoreContext): void {
           await addHistoryItem({ text: currentText })
         }
       } catch (err) {
-        // Gracefully log error if clipboard becomes temporarily unavailable
         core.logger.silly('Error reading clipboard in poll loop', err)
       }
-    }, 1000)
+
+      let pollDelay = 1000
+      try {
+        const pollInterval = await core.settings.read<number>('pollIntervalMs')
+        if (pollInterval) pollDelay = pollInterval
+      } catch {}
+      setTimeout(monitorTick, pollDelay)
+    }
+
+    setTimeout(monitorTick, 1000)
   }
 
   function sortHistory(): void {
@@ -91,10 +103,11 @@ export function register(core: CoreContext): void {
       }),
     ]
 
-    // Cap at 100 unpinned entries (pinned items are never evicted)
+    // Cap at maxHistoryItems unpinned entries (pinned items are never evicted)
+    const maxHistoryItems = (await core.settings.read<number>('maxHistoryItems')) ?? 100
     const pinned = history.filter((i) => i.pinned)
     const unpinned = history.filter((i) => !i.pinned)
-    history = [...pinned, ...unpinned.slice(0, 100)]
+    history = [...pinned, ...unpinned.slice(0, maxHistoryItems)]
 
     sortHistory()
 

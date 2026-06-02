@@ -10,6 +10,10 @@
     "callable": false,
     "caller": true
   },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
+  },
   "entry": {
     "backend": "backend.ts"
   }

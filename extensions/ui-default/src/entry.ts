@@ -9,17 +9,11 @@
  */
 import * as UI from './index'
 
-declare global {
-  interface Window {
-    UI: Record<string, unknown>
-  }
-}
-
 // Merge into window.UI — spread preserves any overrides already set by
 // extensions with a higher priority (lower priority number) that loaded first.
 // Since this extension has priority: 0, it loads first, so the spread is
 // mainly a safety net for future ordering changes.
-window.UI = {
+;(window as any).UI = {
   ...window.UI,
   ...UI,
 }

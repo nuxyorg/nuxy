@@ -11,6 +11,10 @@
     "callable": true,
     "caller": false
   },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
+  },
   "entry": {
     "backend": "backend.ts",
     "frontend": "frontend.tsx",

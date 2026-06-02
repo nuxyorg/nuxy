@@ -35,7 +35,7 @@ export function checkReminders(
      AND datetime - remind_min * 60 * 1000 >= ?
      AND datetime - remind_min * 60 * 1000 < ?`
   )
-  const allRows = stmt.all(windowStart, windowEnd) as CalendarEventRow[]
+  const allRows = stmt.all(windowStart, windowEnd) as unknown as CalendarEventRow[]
   const rows = allRows.filter((row) => {
     if (row.remind_min <= 0) return false
     const fireAt = row.datetime - row.remind_min * 60 * 1000
@@ -129,23 +129,31 @@ export function register(core: CoreContext): void {
       const stmt = db.prepare(
         'SELECT * FROM events WHERE datetime BETWEEN ? AND ? ORDER BY datetime ASC'
       )
-      rows = stmt.all(from, to) as CalendarEventRow[]
+      rows = stmt.all(from, to) as unknown as CalendarEventRow[]
     } else {
       const stmt = db.prepare('SELECT * FROM events ORDER BY datetime ASC')
-      rows = stmt.all() as CalendarEventRow[]
+      rows = stmt.all() as unknown as CalendarEventRow[]
     }
     return rows.map(rowToEvent)
   })
 
+  core.ipc.handle('calendar:getConfig', async () => {
+    const defaultReminderMin = (await core.settings.read<number>('defaultReminderMin')) ?? 0
+    const weekStart = (await core.settings.read<number>('weekStart')) ?? 1
+    return { defaultReminderMin, weekStart }
+  })
+
   core.ipc.handle('calendar:create', async (payload: unknown) => {
-    const { title, datetime, notes = '', remindMin = 0 } = payload as CalendarCreatePayload
+    const { title, datetime, notes = '', remindMin } = payload as CalendarCreatePayload
+    const defaultReminderMin = (await core.settings.read<number>('defaultReminderMin')) ?? 0
+    const actualRemindMin = remindMin !== undefined ? remindMin : defaultReminderMin
     const id = crypto.randomUUID()
     const createdAt = Date.now()
     const insertStmt = db.prepare(
       'INSERT INTO events (id, title, datetime, notes, remind_min, created_at) VALUES (?, ?, ?, ?, ?, ?)'
     )
-    insertStmt.run(id, title, datetime, notes, remindMin, createdAt)
-    const row = db.prepare('SELECT * FROM events WHERE id = ?').get(id) as CalendarEventRow
+    insertStmt.run(id, title, datetime, notes, actualRemindMin, createdAt)
+    const row = db.prepare('SELECT * FROM events WHERE id = ?').get(id) as unknown as CalendarEventRow
     return rowToEvent(row)
   })
 
@@ -177,7 +185,7 @@ export function register(core: CoreContext): void {
       updateStmt.run(...values)
     }
 
-    const row = db.prepare('SELECT * FROM events WHERE id = ?').get(id) as CalendarEventRow
+    const row = db.prepare('SELECT * FROM events WHERE id = ?').get(id) as unknown as CalendarEventRow
     return rowToEvent(row)
   })
 

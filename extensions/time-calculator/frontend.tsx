@@ -228,7 +228,7 @@ function TimeCard({ meta }: TimeCardProps) {
     ),
 
     // Arrow
-    (window.UI || {}).IconArrowRight
+    (window.UI as any)?.IconArrowRight
       ? React.createElement((window.UI || {}).IconArrowRight, {
           className: 'tc-arrow',
           style: { width: '20px', height: '20px' },
@@ -360,7 +360,7 @@ export default function TimeCalculatorView({ query }: Props) {
           React.createElement(
             'div',
             { className: 'tc-empty__icon' },
-            (window.UI || {}).IconClock
+            (window.UI as any)?.IconClock
               ? React.createElement((window.UI || {}).IconClock!, {
                   style: { width: '32px', height: '32px' },
                 })

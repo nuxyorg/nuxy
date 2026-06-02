@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { createMockCore } from '@nuxy/extension-sdk'
 import { register } from './backend.ts'
 
 describe('calculator backend', () => {
   it('registers as a provider with the correct name', () => {
-    const { core } = createMockCore(vi)
+    const { core } = createMockCore()
     register(core)
     expect(core.registry.registerProvider).toHaveBeenCalledOnce()
     expect(core.registry.registerProvider).toHaveBeenCalledWith({ name: 'calculator' })
@@ -15,7 +15,7 @@ describe('calculator backend', () => {
     let handlers: Record<string, (payload?: any) => Promise<any>>
 
     beforeEach(() => {
-      ;({ core, handlers } = createMockCore(vi))
+      ;({ core, handlers } = createMockCore())
       register(core)
     })
 

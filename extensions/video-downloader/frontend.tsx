@@ -157,14 +157,14 @@ export default function VideoDownloader({ query }: Props) {
     ScrollArea,
     Card,
     CardBody,
-    LoadingState,
     toast,
     ShortcutSep,
     Text,
     Box,
     Stack,
-    MediaPreview,
   } = window.UI || {}
+  const LoadingState = (window.UI as any)?.LoadingState
+  const MediaPreview = (window.UI as any)?.MediaPreview
 
   const url = (query || '').trim()
   const [ytdlpInstalled, setYtdlpInstalled] = useState<boolean | null>(null)
@@ -175,7 +175,7 @@ export default function VideoDownloader({ query }: Props) {
   const [jobs, setJobs] = useState<DownloadJobPublic[]>([])
   const [lastUrl, setLastUrl] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const [jobSelectedIndex, setJobSelectedIndex] = useState(0)
+
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [downloadSelectedIndex, setDownloadSelectedIndex] = useState(0)
   const [previousFormatTab, setPreviousFormatTab] = useState<TabId>('recommended')
@@ -189,7 +189,6 @@ export default function VideoDownloader({ query }: Props) {
     selectedIndex,
     filteredFormats: [] as VideoFormat[],
     jobs,
-    jobSelectedIndex,
     activeTab,
     history,
     downloadSelectedIndex,
@@ -323,7 +322,6 @@ export default function VideoDownloader({ query }: Props) {
     selectedIndex,
     filteredFormats,
     jobs,
-    jobSelectedIndex,
     activeTab,
     history,
     downloadSelectedIndex,
@@ -419,10 +417,7 @@ export default function VideoDownloader({ query }: Props) {
             setDownloadSelectedIndex((i) => Math.max(0, i - 1))
             return
           }
-          if (stateRef.current.jobs.length > 0) {
-            setJobSelectedIndex((i) => Math.max(0, i - 1))
-            return
-          }
+          if (stateRef.current.jobs.length > 0) return
           if (!metadata) return
           setSelectedIndex((i) => (i <= 0 ? 0 : i - 1))
         },
@@ -436,10 +431,7 @@ export default function VideoDownloader({ query }: Props) {
             setDownloadSelectedIndex((i) => Math.min(combinedList.length - 1, i + 1))
             return
           }
-          if (stateRef.current.jobs.length > 0) {
-            setJobSelectedIndex((i) => Math.min(stateRef.current.jobs.length - 1, i + 1))
-            return
-          }
+          if (stateRef.current.jobs.length > 0) return
           setSelectedIndex((i) => (i >= filteredFormats.length - 1 ? 0 : i + 1))
         },
       },
@@ -580,7 +572,6 @@ export default function VideoDownloader({ query }: Props) {
     metadata,
     loading,
     jobs,
-    jobSelectedIndex,
     focusArea,
     activeTab,
     history,
@@ -679,7 +670,7 @@ export default function VideoDownloader({ query }: Props) {
 
   // ── Full-screen Downloads & History view ──────────────────────────────────
   const fullScreenDownloadsView =
-    Box && Stack && Text && List && ScrollArea ? (
+    (Box as unknown) && (Stack as unknown) && (Text as unknown) && (List as unknown) && (ScrollArea as unknown) ? (
       <Box
         style={{
           display: 'flex',
@@ -807,7 +798,7 @@ export default function VideoDownloader({ query }: Props) {
 
   // ── Meta card ─────────────────────────────────────────────────────────────
   const metaCard =
-    Card && CardBody && MediaPreview ? (
+    (Card as unknown) && (CardBody as unknown) && (MediaPreview as unknown) ? (
       <Card style={{ flexShrink: 0 }}>
         <CardBody style={{ padding: 'var(--space-3)' }}>
           <MediaPreview
@@ -823,7 +814,7 @@ export default function VideoDownloader({ query }: Props) {
 
   // ── Format list ───────────────────────────────────────────────────────────
   const formatList =
-    List && Text ? (
+    (List as unknown) && (Text as unknown) ? (
       filteredFormats.length === 0 ? (
         EmptyState && <EmptyState message="No matching formats for this category." />
       ) : (
@@ -894,7 +885,7 @@ export default function VideoDownloader({ query }: Props) {
   ) : null
 
   const right =
-    ScrollArea && Box ? (
+    (ScrollArea as unknown) && (Box as unknown) ? (
       <ScrollArea ref={rightPanelRef} style={{ flex: 1 }}>
         <Box
           style={{
@@ -918,7 +909,7 @@ export default function VideoDownloader({ query }: Props) {
     ) : null
   }
 
-  return Box && TwoPanel ? (
+  return (Box as unknown) && (TwoPanel as unknown) ? (
     <Box style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {metaCard && (
         <Box style={{ flexShrink: 0, padding: 'var(--space-1) var(--space-2) 0' }}>{metaCard}</Box>

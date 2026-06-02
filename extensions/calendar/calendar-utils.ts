@@ -13,14 +13,15 @@ export function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate()
 }
 
-// Monday-first weekday index (0 = Monday, 6 = Sunday)
-function mondayFirstWeekday(date: Date): number {
-  return (date.getDay() + 6) % 7
+// Calculate weekday index based on starting day (weekStart: 0 = Sunday, 1 = Monday)
+export function getFirstWeekday(date: Date, weekStart: number = 1): number {
+  const day = date.getDay()
+  return (day - weekStart + 7) % 7
 }
 
-export function buildCalendarGrid(year: number, month: number): (number | null)[] {
+export function buildCalendarGrid(year: number, month: number, weekStart: number = 1): (number | null)[] {
   const daysInMonth = getDaysInMonth(year, month)
-  const firstWeekday = mondayFirstWeekday(new Date(year, month, 1))
+  const firstWeekday = getFirstWeekday(new Date(year, month, 1), weekStart)
   const cells: (number | null)[] = []
   for (let i = 0; i < firstWeekday; i++) cells.push(null)
   for (let d = 1; d <= daysInMonth; d++) cells.push(d)

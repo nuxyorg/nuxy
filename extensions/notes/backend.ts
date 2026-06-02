@@ -213,18 +213,26 @@ export async function register(core: CoreContext): Promise<void> {
     )
   })
 
+  core.ipc.handle('notes:getConfig', async (): Promise<{ openaiApiKey: string; language: string; fontSize: string }> => {
+    const openaiApiKey = (await core.settings.read<string>('openaiApiKey')) ?? ''
+    const language = (await core.settings.read<string>('language')) ?? 'en'
+    const fontSize = (await core.settings.read<string>('fontSize')) ?? '14px'
+    return { openaiApiKey, language, fontSize }
+  })
+
   core.ipc.handle('notes:transcribe', async (payload: unknown): Promise<TranscribeResult> => {
     const { audioBuffer, language } = payload as NotesTranscribePayload
-    const config = await core.storage.read<NotesConfig>('config.json')
-    if (!config?.openaiApiKey) throw new Error('OpenAI API key not configured')
+    const openaiApiKey = (await core.settings.read<string>('openaiApiKey')) ?? ''
+    const configLanguage = (await core.settings.read<string>('language')) ?? 'en'
+    if (!openaiApiKey) throw new Error('OpenAI API key not configured')
 
     const tmpPath = `${core.fs.tmpdir()}/nuxy-voice-${Date.now()}.webm`
     await core.fs.writeFile(tmpPath, new Uint8Array(audioBuffer))
     try {
       const transcript = await whisperTranscribe(
         new Uint8Array(audioBuffer),
-        config.openaiApiKey,
-        language ?? config.language ?? 'en'
+        openaiApiKey,
+        language ?? configLanguage ?? 'en'
       )
       return { transcript }
     } finally {
@@ -234,12 +242,11 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.ipc.handle('notes:configure', async (payload: unknown): Promise<void> => {
     const { openaiApiKey, language } = (payload as NotesConfigurePayload) ?? {}
-    const existing = (await core.storage.read<NotesConfig>('config.json')) ?? {}
-    const updated: NotesConfig = {
-      ...existing,
-      ...(openaiApiKey !== undefined ? { openaiApiKey } : {}),
-      ...(language !== undefined ? { language } : {}),
+    if (openaiApiKey !== undefined) {
+      await core.settings.write('openaiApiKey', openaiApiKey)
     }
-    await core.storage.write('config.json', updated)
+    if (language !== undefined) {
+      await core.settings.write('language', language)
+    }
   })
 }

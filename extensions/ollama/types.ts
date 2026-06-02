@@ -37,12 +37,16 @@ export interface ConfigurePayload {
   model?: string
   host?: string
   thinkingColor?: string
+  systemPrompt?: string
+  temperature?: number
 }
 
 export interface OllamaConfig {
   model: string
   host: string
   thinkingColor: string
+  systemPrompt?: string
+  temperature?: number
 }
 
 export interface HealthResult {

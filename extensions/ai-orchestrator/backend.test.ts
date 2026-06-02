@@ -27,7 +27,7 @@ function createCore({
     fetchImpl ?? (defaultFetchImpl as typeof global.fetch)
   )
 
-  const { core, handlers } = createMockCore(vi, {
+  const { core, handlers } = createMockCore({
     registry: {
       getCallableTools: vi.fn().mockReturnValue(callableTools),
     },

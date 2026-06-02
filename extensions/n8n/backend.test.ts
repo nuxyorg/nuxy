@@ -5,7 +5,7 @@ import { register } from './backend.ts'
 type Handlers = Record<string, (...args: unknown[]) => Promise<unknown>>
 
 function createCore(): { core: CoreContext; handlers: Handlers } {
-  const { core, handlers } = createMockCore(vi)
+  const { core, handlers } = createMockCore()
   return { core, handlers }
 }
 
@@ -18,14 +18,12 @@ describe('n8n backend', () => {
     expect(core.registry.registerTool).toHaveBeenCalledWith({ name: 'n8n' })
   })
 
-  it('n8n:configure writes config to storage', async () => {
+  it('n8n:configure writes config via settings', async () => {
     const { core, handlers } = createCore()
     await register(core)
     await handlers['n8n:configure']({ baseUrl: 'http://my-n8n:5678', apiKey: 'secret' })
-    expect(core.storage.write).toHaveBeenCalledWith('config.json', {
-      baseUrl: 'http://my-n8n:5678',
-      apiKey: 'secret',
-    })
+    expect(core.settings.write).toHaveBeenCalledWith('baseUrl', 'http://my-n8n:5678')
+    expect(core.settings.write).toHaveBeenCalledWith('apiKey', 'secret')
   })
 
   it('n8n:configure updates in-memory baseUrl and apiKey used by subsequent calls', async () => {

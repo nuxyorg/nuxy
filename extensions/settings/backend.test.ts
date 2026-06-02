@@ -24,7 +24,7 @@ function createCore(storageData: Partial<NuxySettings> | null | undefined = null
   core: CoreContext
   handlers: Record<string, (payload: unknown) => unknown>
 } {
-  return createMockCore(vi, {
+  return createMockCore({
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
     },
@@ -287,7 +287,7 @@ describe('settings backend', () => {
 
   describe('error paths', () => {
     it('getSettings propagates storage read failure', async () => {
-      const { core, handlers } = createMockCore(vi, {
+      const { core, handlers } = createMockCore({
         storage: {
           read: vi.fn().mockRejectedValue(new Error('disk read error')),
         },
@@ -299,7 +299,7 @@ describe('settings backend', () => {
     })
 
     it('saveSettings propagates storage write failure', async () => {
-      const { core, handlers } = createMockCore(vi, {
+      const { core, handlers } = createMockCore({
         storage: {
           read: vi.fn().mockResolvedValue(null),
           write: vi.fn().mockRejectedValue(new Error('disk write error')),
@@ -312,7 +312,7 @@ describe('settings backend', () => {
     })
 
     it('getExtensionSettingValues propagates when readAllExtension rejects', async () => {
-      const { core, handlers } = createMockCore(vi, {
+      const { core, handlers } = createMockCore({
         settings: {
           readAllExtension: vi.fn().mockRejectedValue(new Error('settings read error')),
         },
@@ -326,7 +326,7 @@ describe('settings backend', () => {
     })
 
     it('saveExtensionSettingValues propagates when writeAllExtension rejects', async () => {
-      const { core, handlers } = createMockCore(vi, {
+      const { core, handlers } = createMockCore({
         settings: {
           writeAllExtension: vi.fn().mockRejectedValue(new Error('settings write error')),
         },
@@ -365,7 +365,7 @@ describe('settings backend', () => {
     it('saveExtensionSettingValues writes values and getExtensionSettingValues reads them back', async () => {
       let stored: Record<string, unknown> = {}
 
-      const { core, handlers } = createMockCore(vi, {
+      const { core, handlers } = createMockCore({
         settings: {
           read: vi.fn().mockResolvedValue(null),
           write: vi.fn().mockResolvedValue(undefined),

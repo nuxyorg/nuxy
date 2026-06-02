@@ -54,6 +54,15 @@ export default function N8nApp({ query }: Props) {
   }, [workflows, query])
 
   useEffect(() => {
+    invoke<{ baseUrl: string; apiKey: string }>('n8n:getConfig')
+      .then(({ baseUrl: url, apiKey: key }) => {
+        if (url) setBaseUrl(url)
+        if (key) setApiKey(key)
+      })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
     invoke<N8nStatusResult>('n8n:status')
       .then((st) => {
         if (st.ok) {
@@ -186,7 +195,6 @@ export default function N8nApp({ query }: Props) {
           <Card>
             {Input && (
               <Input
-                label="Base URL"
                 value={baseUrl}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBaseUrl(e.target.value)}
                 placeholder="http://localhost:5678"
@@ -194,7 +202,6 @@ export default function N8nApp({ query }: Props) {
             )}
             {Input && (
               <Input
-                label="API Key"
                 type="password"
                 value={apiKey}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setApiKey(e.target.value)}

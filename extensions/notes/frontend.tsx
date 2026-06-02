@@ -71,6 +71,7 @@ export default function NotesApp({ query }: Props) {
 
   const [recording, setRecording] = useState<boolean>(false)
   const [transcribing, setTranscribing] = useState<boolean>(false)
+  const [fontSize, setFontSize] = useState<string>('14px')
   const mediaRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
@@ -95,6 +96,15 @@ export default function NotesApp({ query }: Props) {
   useEffect(() => {
     invoke<Note[]>('notes:list', {})
       .then(setNotes)
+      .catch(() => {})
+  }, [])
+
+  // Fetch settings config
+  useEffect(() => {
+    invoke<{ fontSize: string }>('notes:getConfig', {})
+      .then((cfg) => {
+        if (cfg?.fontSize) setFontSize(cfg.fontSize)
+      })
       .catch(() => {})
   }, [])
 
@@ -263,7 +273,6 @@ export default function NotesApp({ query }: Props) {
       hint: 'Del',
       activeOn: () => !editMode && selectedIndex > 0 && selectedIndex <= filteredNotes.length,
       handler: () => {
-        console.log('[DEBUG] Delete key action triggered. selectedIndex:', selectedIndex, 'editMode:', editMode)
         void handleDelete()
       },
     },
@@ -449,6 +458,7 @@ export default function NotesApp({ query }: Props) {
           color: 'var(--text, #ffffff)',
           outline: 'none',
           padding: 'var(--space-4, 12px)',
+          fontSize,
         }}
       />
     </div>
@@ -467,7 +477,7 @@ export default function NotesApp({ query }: Props) {
       <div style={{ fontSize: '1.2em', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '8px' }}>
         {selected.title}
       </div>
-      <div style={{ flex: 1, whiteSpace: 'pre-wrap', opacity: 0.8, fontSize: 'var(--font-md, 14px)', lineHeight: '1.5' }}>
+      <div style={{ flex: 1, whiteSpace: 'pre-wrap', opacity: 0.8, fontSize: fontSize, lineHeight: '1.5' }}>
         {MarkdownText ? <ErrorBoundary><MarkdownText>{selected.body}</MarkdownText></ErrorBoundary> : selected.body}
       </div>
     </div>

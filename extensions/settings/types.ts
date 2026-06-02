@@ -98,7 +98,16 @@ export interface ExtSectionRow {
   default?: unknown
 }
 
-export type AnyRow = BaseRow | ExtSectionRow | LanguageRow
+export interface ExtToggleRow {
+  key: string
+  label: string
+  options: SelectOption[]
+  isExtension: false
+  isExtToggle: true
+  extId: string
+}
+
+export type AnyRow = BaseRow | ExtSectionRow | LanguageRow | ExtToggleRow
 
 export interface RenderSection {
   id: string

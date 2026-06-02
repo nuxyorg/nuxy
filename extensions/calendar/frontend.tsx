@@ -30,13 +30,9 @@ function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate()
 }
 
-function mondayWeekday(d: Date): number {
-  return (d.getDay() + 6) % 7
-}
-
-function buildGrid(year: number, month: number): GridCell[] {
+function buildGrid(year: number, month: number, weekStart: number = 1): GridCell[] {
   const total = getDaysInMonth(year, month)
-  const firstWeekday = mondayWeekday(new Date(year, month, 1))
+  const firstWeekday = (new Date(year, month, 1).getDay() - weekStart + 7) % 7
   const prevTotal = getDaysInMonth(year, month - 1)
   const cells: GridCell[] = []
   for (let i = firstWeekday; i > 0; i--) cells.push({ day: prevTotal - i + 1, monthOffset: -1 })
@@ -45,6 +41,8 @@ function buildGrid(year: number, month: number): GridCell[] {
   while (cells.length < 42) cells.push({ day: nd++, monthOffset: 1 })
   return cells
 }
+
+const ALL_DAY_ABBR = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
 function shiftDays(
   year: number,
@@ -78,6 +76,7 @@ const CREATE_SELECT_FIELDS = ['time', 'reminder'] as const
 type CreateSelectField = (typeof CREATE_SELECT_FIELDS)[number]
 
 // ── Constants ─────────────────────────────────────────────────────────────────
+// DAY_ABBR is computed dynamically from weekStart — see MonthGridView
 const MONTH_NAMES = [
   'January',
   'February',
@@ -92,7 +91,6 @@ const MONTH_NAMES = [
   'November',
   'December',
 ]
-const DAY_ABBR = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
 const TIME_OPTIONS: SelectOption[] = [
   { value: '8', label: '8:00 AM' },
   { value: '9', label: '9:00 AM' },
@@ -137,20 +135,527 @@ function hideOmniBar() {
   )
 }
 
+// ── MonthGridView ─────────────────────────────────────────────────────────────
+interface MonthGridViewProps {
+  calYear: number
+  calMonth: number
+  weekStart: number
+  selectedDay: number
+  mode: 'omnibox' | 'calendar'
+  todayYear: number
+  todayMonth: number
+  todayDate: number
+  eventDays: Set<number>
+  monthEnterDir: 'fromTop' | 'fromBottom' | null
+  onSelectDay: (day: number) => void
+  onNavigateToMonth: (year: number, month: number, day: number, dir: 'fromTop' | 'fromBottom') => void
+  onEnterCalendarMode: () => void
+  onEnterDayView: () => void
+}
+
+function MonthGridView({
+  calYear,
+  calMonth,
+  weekStart,
+  selectedDay,
+  mode,
+  todayYear,
+  todayMonth,
+  todayDate,
+  eventDays,
+  monthEnterDir,
+  onSelectDay,
+  onNavigateToMonth,
+  onEnterCalendarMode,
+  onEnterDayView,
+}: MonthGridViewProps) {
+  const grid = buildGrid(calYear, calMonth, weekStart)
+  const dayAbbr = Array.from({ length: 7 }, (_, i) => ALL_DAY_ABBR[(weekStart + i) % 7])
+  const isCurrentCalMonth = calYear === todayYear && calMonth === todayMonth
+
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: 'var(--space-3) var(--space-4) var(--space-2)',
+        }}
+      >
+        <span style={{ fontSize: 'var(--font-sm)', fontWeight: 600 }}>
+          {MONTH_NAMES[calMonth]} {calYear}
+        </span>
+        {mode === 'calendar' && (
+          <span style={{ fontSize: 'var(--font-xs)', opacity: 0.55 }}>
+            {new Date(calYear, calMonth, selectedDay).toLocaleDateString(undefined, {
+              weekday: 'short',
+              month: 'short',
+              day: 'numeric',
+            })}
+          </span>
+        )}
+      </div>
+
+      {/* Day abbreviation row — outside the animated wrapper so it doesn't slide */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gap: '2px',
+          padding: '0 var(--space-3) 2px',
+        }}
+      >
+        {dayAbbr.map((abbr) => (
+          <div
+            key={abbr}
+            style={{
+              textAlign: 'center',
+              fontSize: 'var(--font-xs)',
+              opacity: 0.3,
+              padding: '0 0 2px',
+              fontWeight: 600,
+            }}
+          >
+            {abbr}
+          </div>
+        ))}
+      </div>
+
+      {/* Animated grid — keyed by month so React remounts on month change */}
+      <div style={{ overflow: 'clip', flex: 1, minHeight: 0 }}>
+        <div
+          key={`${calYear}-${calMonth}`}
+          style={{
+            height: '100%',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(7, 1fr)',
+            gridTemplateRows: 'repeat(6, 1fr)',
+            gap: '2px',
+            padding: '0 var(--space-3) var(--space-3)',
+            animation: monthEnterDir
+              ? `cal${monthEnterDir === 'fromTop' ? 'FromTop' : 'FromBottom'} 0.22s ease`
+              : undefined,
+          }}
+        >
+          {grid.map((cell, idx) => {
+            const isCurrent = cell.monthOffset === 0
+            const isToday = isCurrent && isCurrentCalMonth && cell.day === todayDate
+            const isSelected = isCurrent && mode === 'calendar' && cell.day === selectedDay
+            const hasEvent = isCurrent && eventDays.has(cell.day)
+
+            return (
+              <div
+                key={idx}
+                onClick={() => {
+                  if (!isCurrent) {
+                    // Clicking overflow day: navigate to that month
+                    const d = new Date(calYear, calMonth + cell.monthOffset, cell.day)
+                    onNavigateToMonth(
+                      d.getFullYear(),
+                      d.getMonth(),
+                      cell.day,
+                      cell.monthOffset < 0 ? 'fromTop' : 'fromBottom'
+                    )
+                    if (mode === 'calendar') onEnterDayView()
+                    else {
+                      onEnterCalendarMode()
+                      setTimeout(onEnterDayView, 0)
+                    }
+                    return
+                  }
+                  onSelectDay(cell.day)
+                  if (mode === 'calendar') onEnterDayView()
+                  else {
+                    onEnterCalendarMode()
+                    setTimeout(onEnterDayView, 0)
+                  }
+                }}
+                style={{
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 'var(--radius-sm)',
+                  cursor: 'pointer',
+                  fontSize: 'var(--font-xs)',
+                  fontWeight: isToday ? 700 : 400,
+                  background: isSelected
+                    ? 'var(--accent, #6366f1)'
+                    : isToday
+                      ? 'var(--accent-subtle, rgba(99, 102, 241, 0.15))'
+                      : 'transparent',
+                  color: isSelected ? 'var(--accent-fg, #fff)' : 'inherit',
+                  outline: isToday && !isSelected ? '1.5px solid var(--accent, #6366f1)' : 'none',
+                  outlineOffset: '-1px',
+                  opacity: !isCurrent ? 0.25 : mode === 'omnibox' ? 0.75 : 1,
+                }}
+              >
+                {cell.day}
+                {hasEvent && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      bottom: '2px',
+                      width: '3px',
+                      height: '3px',
+                      borderRadius: '50%',
+                      background: isSelected
+                        ? 'var(--accent-fg-muted, rgba(255,255,255,0.7))'
+                        : 'var(--accent, #6366f1)',
+                    }}
+                  />
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── SearchResultsView ─────────────────────────────────────────────────────────
+interface SearchResultsViewProps {
+  filteredSearch: CalendarEvent[]
+  listIdx: number
+  onSelectEvent: (evt: CalendarEvent) => void
+}
+
+function SearchResultsView({ filteredSearch, listIdx, onSelectEvent }: SearchResultsViewProps) {
+  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, ListItemActions, EmptyState, IconBell } =
+    window.UI || {}
+
+  return (
+    <div style={{ height: '100%' }}>
+      {filteredSearch.length === 0
+        ? EmptyState && <EmptyState message="No events found" hint="Try a different search." />
+        : List && (
+            <List>
+              {filteredSearch.map((evt, idx) => (
+                <ListItem
+                  key={evt.id}
+                  active={idx === listIdx}
+                  onClick={() => onSelectEvent(evt)}
+                >
+                  <ListItemBody>
+                    <ListItemText>{evt.title}</ListItemText>
+                    <ListItemMeta>
+                      {new Date(evt.datetime).toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </ListItemMeta>
+                  </ListItemBody>
+                  {evt.remindMin > 0 && IconBell && ListItemActions && (
+                    <ListItemActions>
+                      <IconBell
+                        style={{
+                          width: '14px',
+                          height: '14px',
+                          color: 'var(--color-warning, #eab308)',
+                        }}
+                      />
+                    </ListItemActions>
+                  )}
+                </ListItem>
+              ))}
+            </List>
+          )}
+    </div>
+  )
+}
+
+// ── DayView ───────────────────────────────────────────────────────────────────
+interface DayViewProps {
+  calYear: number
+  calMonth: number
+  selectedDay: number
+  dayEvents: CalendarEvent[]
+  listIdx: number
+}
+
+function DayView({ calYear, calMonth, selectedDay, dayEvents, listIdx }: DayViewProps) {
+  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, ListItemActions, EmptyState, IconBell } =
+    window.UI || {}
+
+  const dayLabel = new Date(calYear, calMonth, selectedDay).toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  return (
+    <div style={{ height: '100%' }}>
+      <div
+        style={{
+          padding: 'var(--space-3) var(--space-4) var(--space-1)',
+          opacity: 0.55,
+          fontSize: 'var(--font-sm)',
+        }}
+      >
+        {dayLabel}
+      </div>
+      {dayEvents.length === 0
+        ? EmptyState && <EmptyState message="No events" hint="Press N to create an event." />
+        : List && (
+            <List>
+              {dayEvents.map((evt, idx) => (
+                <ListItem key={evt.id} active={idx === listIdx}>
+                  <ListItemBody>
+                    <ListItemText>{evt.title}</ListItemText>
+                    <ListItemMeta>
+                      {new Date(evt.datetime).toLocaleTimeString(undefined, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </ListItemMeta>
+                  </ListItemBody>
+                  {evt.remindMin > 0 && IconBell && ListItemActions && (
+                    <ListItemActions>
+                      <IconBell
+                        style={{
+                          width: '14px',
+                          height: '14px',
+                          color: 'var(--color-warning, #eab308)',
+                        }}
+                      />
+                    </ListItemActions>
+                  )}
+                </ListItem>
+              ))}
+            </List>
+          )}
+    </div>
+  )
+}
+
+// ── CreateEventView ───────────────────────────────────────────────────────────
+interface CreateEventViewProps {
+  calYear: number
+  calMonth: number
+  selectedDay: number
+  query: string
+  timeValue: string
+  reminderValue: string
+  formFieldIdx: number
+  activeSelect: string | null
+  selectFocused: number
+  onSetFormFieldIdx: (idx: number) => void
+  onSetSelectFocused: (idx: number) => void
+  onSetActiveSelect: (field: string | null) => void
+  onSetTimeValue: (val: string) => void
+  onSetReminderValue: (val: string) => void
+}
+
+function CreateEventView({
+  calYear,
+  calMonth,
+  selectedDay,
+  query,
+  timeValue,
+  reminderValue,
+  formFieldIdx,
+  activeSelect,
+  selectFocused,
+  onSetFormFieldIdx,
+  onSetSelectFocused,
+  onSetActiveSelect,
+  onSetTimeValue,
+  onSetReminderValue,
+}: CreateEventViewProps) {
+  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, ListItemActions, SelectBox } =
+    window.UI || {}
+
+  const dateLabel = new Date(calYear, calMonth, selectedDay).toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+  })
+  const fieldCurrentValues: Record<string, string> = { time: timeValue, reminder: reminderValue }
+  const fieldLabel: Record<string, string> = { time: 'Time', reminder: 'Reminder' }
+
+  function getSelectOptions(field: string): SelectOption[] {
+    return field === 'time' ? TIME_OPTIONS : REMINDER_OPTIONS
+  }
+
+  function setSelectValue(field: string, val: string): void {
+    if (field === 'time') onSetTimeValue(val)
+    else onSetReminderValue(val)
+  }
+
+  return (
+    <div style={{ height: '100%' }}>
+      <div
+        style={{
+          padding: 'var(--space-3) var(--space-4) var(--space-1)',
+          opacity: 0.55,
+          fontSize: 'var(--font-sm)',
+        }}
+      >
+        {dateLabel}
+      </div>
+
+      {List && (
+        <List>
+          {/* Title field — displays the current omnibar query as the event title */}
+          <ListItem active={false}>
+            <ListItemBody>
+              <ListItemText>Title</ListItemText>
+              <ListItemMeta>
+                {query.trim() || (
+                  <span style={{ opacity: 0.4 }}>Type in search bar…</span>
+                )}
+              </ListItemMeta>
+            </ListItemBody>
+          </ListItem>
+
+          {/* Time and Reminder — SelectBox (idx maps to CREATE_SELECT_FIELDS indices) */}
+          {(CREATE_SELECT_FIELDS).map((field, idx) => {
+            const opts = getSelectOptions(field)
+            const currentVal = fieldCurrentValues[field]
+            const isFieldFocused = idx === formFieldIdx && activeSelect === null
+            return (
+              <ListItem
+                key={field}
+                active={isFieldFocused}
+                onClick={() => {
+                  onSetFormFieldIdx(idx)
+                  onSetSelectFocused(
+                    Math.max(
+                      0,
+                      opts.findIndex((o) => o.value === currentVal)
+                    )
+                  )
+                  onSetActiveSelect(field)
+                }}
+              >
+                <ListItemBody>
+                  <ListItemText>{fieldLabel[field]}</ListItemText>
+                  <ListItemMeta>
+                    {opts.find((o) => o.value === currentVal)?.label ?? '—'}
+                  </ListItemMeta>
+                </ListItemBody>
+                {ListItemActions && SelectBox && (
+                  <ListItemActions>
+                    <SelectBox
+                      options={opts}
+                      value={currentVal}
+                      open={activeSelect === field}
+                      focusedIndex={activeSelect === field ? selectFocused : 0}
+                      onSelect={(val: string) => {
+                        setSelectValue(field, val)
+                        onSetActiveSelect(null)
+                        if (idx < CREATE_SELECT_FIELDS.length - 1) onSetFormFieldIdx(idx + 1)
+                      }}
+                      onClose={() => onSetActiveSelect(null)}
+                      onOpen={(startIdx: number) => {
+                        onSetFormFieldIdx(idx)
+                        onSetSelectFocused(startIdx)
+                        onSetActiveSelect(field)
+                      }}
+                    />
+                  </ListItemActions>
+                )}
+              </ListItem>
+            )
+          })}
+        </List>
+      )}
+    </div>
+  )
+}
+
+// ── DetailView ────────────────────────────────────────────────────────────────
+interface DetailViewProps {
+  editingEvent: CalendarEvent
+  reminderValue: string
+  activeSelect: string | null
+  selectFocused: number
+  onSetSelectFocused: (idx: number) => void
+  onSetActiveSelect: (field: string | null) => void
+  onSetReminderValue: (val: string) => void
+}
+
+function DetailView({
+  editingEvent,
+  reminderValue,
+  activeSelect,
+  selectFocused,
+  onSetSelectFocused,
+  onSetActiveSelect,
+  onSetReminderValue,
+}: DetailViewProps) {
+  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, ListItemActions, SelectBox } =
+    window.UI || {}
+
+  const opts = REMINDER_OPTIONS
+  const dateLabel = new Date(editingEvent.datetime).toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+
+  return (
+    <div style={{ height: '100%' }}>
+      <div style={{ padding: 'var(--space-3) var(--space-4) var(--space-1)' }}>
+        <div style={{ fontWeight: 600, fontSize: 'var(--font-md)' }}>{editingEvent.title}</div>
+        <div style={{ fontSize: 'var(--font-sm)', opacity: 0.55, marginTop: 'var(--space-1)' }}>
+          {dateLabel}
+        </div>
+      </div>
+      {List && (
+        <List>
+          <ListItem
+            active={activeSelect === null}
+            onClick={() => {
+              onSetSelectFocused(
+                Math.max(
+                  0,
+                  opts.findIndex((o) => o.value === reminderValue)
+                )
+              )
+              onSetActiveSelect('reminder')
+            }}
+          >
+            <ListItemBody>
+              <ListItemText>Reminder</ListItemText>
+              <ListItemMeta>
+                {opts.find((o) => o.value === reminderValue)?.label ?? '—'}
+              </ListItemMeta>
+            </ListItemBody>
+            {ListItemActions && SelectBox && (
+              <ListItemActions>
+                <SelectBox
+                  options={opts}
+                  value={reminderValue}
+                  open={activeSelect === 'reminder'}
+                  focusedIndex={activeSelect === 'reminder' ? selectFocused : 0}
+                  onSelect={(val: string) => {
+                    onSetReminderValue(val)
+                    onSetActiveSelect(null)
+                  }}
+                  onClose={() => onSetActiveSelect(null)}
+                  onOpen={(startIdx: number) => {
+                    onSetSelectFocused(startIdx)
+                    onSetActiveSelect('reminder')
+                  }}
+                />
+              </ListItemActions>
+            )}
+          </ListItem>
+        </List>
+      )}
+    </div>
+  )
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function CalendarApp({ query }: Props) {
-  const {
-    List,
-    ListItem,
-    ListItemBody,
-    ListItemText,
-    ListItemMeta,
-    ListItemActions,
-    EmptyState,
-    SelectBox,
-    IconBell,
-  } = window.UI || {}
-
   const todayObj = new Date()
   todayObj.setHours(0, 0, 0, 0)
   const todayYear = todayObj.getFullYear()
@@ -170,6 +675,9 @@ export default function CalendarApp({ query }: Props) {
 
   const [listIdx, setListIdx] = useState(-1)
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null)
+
+  const [weekStart, setWeekStart] = useState(1)
+  const [defaultReminderMin, setDefaultReminderMin] = useState(0)
 
   // Create form state — title comes from the omnibar query prop
   const [timeValue, setTimeValue] = useState('10')
@@ -231,6 +739,16 @@ export default function CalendarApp({ query }: Props) {
     activeSelect,
     selectFocused,
   }
+
+  useEffect(() => {
+    ipcCall('calendar:getConfig', {})
+      .then((cfg) => {
+        const c = cfg as { defaultReminderMin: number; weekStart: number }
+        setWeekStart(c.weekStart ?? 1)
+        setDefaultReminderMin(c.defaultReminderMin ?? 0)
+      })
+      .catch(() => {})
+  }, [])
 
   // ── Data loading ──────────────────────────────────────────────────────────────
   function loadMonthEvents(year: number, month: number): void {
@@ -335,7 +853,7 @@ export default function CalendarApp({ query }: Props) {
 
   function enterCreate(): void {
     setTimeValue('10')
-    setReminderValue('0')
+    setReminderValue(String(defaultReminderMin))
     setFormFieldIdx(0)
     setActiveSelect(null)
     setCalView('create')
@@ -363,19 +881,6 @@ export default function CalendarApp({ query }: Props) {
     setEditingEvent(null)
     setActiveSelect(null)
     hideOmniBar()
-  }
-
-  function getSelectOptions(field: string): SelectOption[] {
-    return field === 'time' ? TIME_OPTIONS : REMINDER_OPTIONS
-  }
-
-  function getSelectValue(field: string): string {
-    return field === 'time' ? stateRef.current.timeValue : stateRef.current.reminderValue
-  }
-
-  function setSelectValue(field: string, val: string): void {
-    if (field === 'time') setTimeValue(val)
-    else setReminderValue(val)
   }
 
   // ── Key actions ───────────────────────────────────────────────────────────────
@@ -586,417 +1091,100 @@ export default function CalendarApp({ query }: Props) {
     }
   }, [mode, calView, listIdx, dayEvents, editingEvent, calYear, calMonth, selectedDay, timeValue, reminderValue, query, activeSelect])
 
-  // ── Month grid ─────────────────────────────────────────────────────────────────
-  function renderMonthGrid() {
-    const grid = buildGrid(calYear, calMonth)
-    const isCurrentCalMonth = calYear === todayYear && calMonth === todayMonth
-
-    return (
-      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: 'var(--space-3) var(--space-4) var(--space-2)',
-          }}
-        >
-          <span style={{ fontSize: 'var(--font-sm)', fontWeight: 600 }}>
-            {MONTH_NAMES[calMonth]} {calYear}
-          </span>
-          {mode === 'calendar' && (
-            <span style={{ fontSize: 'var(--font-xs)', opacity: 0.55 }}>
-              {new Date(calYear, calMonth, selectedDay).toLocaleDateString(undefined, {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
-              })}
-            </span>
-          )}
-        </div>
-
-        {/* Day abbreviation row — outside the animated wrapper so it doesn't slide */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)',
-            gap: '2px',
-            padding: '0 var(--space-3) 2px',
-          }}
-        >
-          {DAY_ABBR.map((abbr) => (
-            <div
-              key={abbr}
-              style={{
-                textAlign: 'center',
-                fontSize: 'var(--font-xs)',
-                opacity: 0.3,
-                padding: '0 0 2px',
-                fontWeight: 600,
-              }}
-            >
-              {abbr}
-            </div>
-          ))}
-        </div>
-
-        {/* Animated grid — keyed by month so React remounts on month change */}
-        <div style={{ overflow: 'clip', flex: 1, minHeight: 0 }}>
-          <div
-            key={`${calYear}-${calMonth}`}
-            style={{
-              height: '100%',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(7, 1fr)',
-              gridTemplateRows: 'repeat(6, 1fr)',
-              gap: '2px',
-              padding: '0 var(--space-3) var(--space-3)',
-              animation: monthEnterDir
-                ? `cal${monthEnterDir === 'fromTop' ? 'FromTop' : 'FromBottom'} 0.22s ease`
-                : undefined,
-            }}
-          >
-            {grid.map((cell, idx) => {
-              const isCurrent = cell.monthOffset === 0
-              const isToday = isCurrent && isCurrentCalMonth && cell.day === todayDate
-              const isSelected = isCurrent && mode === 'calendar' && cell.day === selectedDay
-              const hasEvent = isCurrent && eventDays.has(cell.day)
-
-              return (
-                <div
-                  key={idx}
-                  onClick={() => {
-                    if (!isCurrent) {
-                      // Clicking overflow day: navigate to that month
-                      const d = new Date(calYear, calMonth + cell.monthOffset, cell.day)
-                      setMonthEnterDir(cell.monthOffset < 0 ? 'fromTop' : 'fromBottom')
-                      setCalYear(d.getFullYear())
-                      setCalMonth(d.getMonth())
-                      setSelectedDay(cell.day)
-                      if (mode === 'calendar') enterDayView()
-                      else {
-                        enterCalendarMode()
-                        setTimeout(enterDayView, 0)
-                      }
-                      return
-                    }
-                    setSelectedDay(cell.day)
-                    if (mode === 'calendar') enterDayView()
-                    else {
-                      enterCalendarMode()
-                      setTimeout(enterDayView, 0)
-                    }
-                  }}
-                  style={{
-                    position: 'relative',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 'var(--radius-sm)',
-                    cursor: 'pointer',
-                    fontSize: 'var(--font-xs)',
-                    fontWeight: isToday ? 700 : 400,
-                    background: isSelected
-                      ? 'var(--accent, #6366f1)'
-                      : isToday
-                        ? 'var(--accent-subtle, rgba(99, 102, 241, 0.15))'
-                        : 'transparent',
-                    color: isSelected ? 'var(--accent-fg, #fff)' : 'inherit',
-                    outline: isToday && !isSelected ? '1.5px solid var(--accent, #6366f1)' : 'none',
-                    outlineOffset: '-1px',
-                    opacity: !isCurrent ? 0.25 : mode === 'omnibox' ? 0.75 : 1,
-                  }}
-                >
-                  {cell.day}
-                  {hasEvent && (
-                    <span
-                      style={{
-                        position: 'absolute',
-                        bottom: '2px',
-                        width: '3px',
-                        height: '3px',
-                        borderRadius: '50%',
-                        background: isSelected
-                          ? 'var(--accent-fg-muted, rgba(255,255,255,0.7))'
-                          : 'var(--accent, #6366f1)',
-                      }}
-                    />
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   // ── Render ─────────────────────────────────────────────────────────────────────
   const isSearching = mode === 'omnibox' && !!(query || '').trim()
 
   if (isSearching) {
     return (
-      <div style={{ height: '100%' }}>
-        {filteredSearch.length === 0
-          ? EmptyState && <EmptyState message="No events found" hint="Try a different search." />
-          : List && (
-              <List>
-                {filteredSearch.map((evt, idx) => (
-                  <ListItem
-                    key={evt.id}
-                    active={idx === listIdx}
-                    onClick={() => {
-                      const d = new Date(evt.datetime)
-                      setCalYear(d.getFullYear())
-                      setCalMonth(d.getMonth())
-                      setSelectedDay(d.getDate())
-                      setMode('calendar')
-                      hideOmniBar()
-                      setTimeout(() => {
-                        enterDayView()
-                        enterDetail(evt)
-                      }, 0)
-                    }}
-                  >
-                    <ListItemBody>
-                      <ListItemText>{evt.title}</ListItemText>
-                      <ListItemMeta>
-                        {new Date(evt.datetime).toLocaleDateString(undefined, {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </ListItemMeta>
-                    </ListItemBody>
-                    {evt.remindMin > 0 && IconBell && ListItemActions && (
-                      <ListItemActions>
-                        <IconBell
-                          style={{
-                            width: '14px',
-                            height: '14px',
-                            color: 'var(--color-warning, #eab308)',
-                          }}
-                        />
-                      </ListItemActions>
-                    )}
-                  </ListItem>
-                ))}
-              </List>
-            )}
-      </div>
+      <SearchResultsView
+        filteredSearch={filteredSearch}
+        listIdx={listIdx}
+        onSelectEvent={(evt) => {
+          const d = new Date(evt.datetime)
+          setCalYear(d.getFullYear())
+          setCalMonth(d.getMonth())
+          setSelectedDay(d.getDate())
+          setMode('calendar')
+          hideOmniBar()
+          setTimeout(() => {
+            enterDayView()
+            enterDetail(evt)
+          }, 0)
+        }}
+      />
     )
   }
 
   if (mode === 'omnibox' || calView === 'month') {
-    return renderMonthGrid()
+    return (
+      <MonthGridView
+        calYear={calYear}
+        calMonth={calMonth}
+        weekStart={weekStart}
+        selectedDay={selectedDay}
+        mode={mode}
+        todayYear={todayYear}
+        todayMonth={todayMonth}
+        todayDate={todayDate}
+        eventDays={eventDays}
+        monthEnterDir={monthEnterDir}
+        onSelectDay={(day) => setSelectedDay(day)}
+        onNavigateToMonth={(year, month, day, dir) => {
+          setMonthEnterDir(dir)
+          setCalYear(year)
+          setCalMonth(month)
+          setSelectedDay(day)
+        }}
+        onEnterCalendarMode={enterCalendarMode}
+        onEnterDayView={enterDayView}
+      />
+    )
   }
 
-  // ── Day view ─────────────────────────────────────────────────────────────────
   if (calView === 'day') {
-    const dayLabel = new Date(calYear, calMonth, selectedDay).toLocaleDateString(undefined, {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-    })
     return (
-      <div style={{ height: '100%' }}>
-        <div
-          style={{
-            padding: 'var(--space-3) var(--space-4) var(--space-1)',
-            opacity: 0.55,
-            fontSize: 'var(--font-sm)',
-          }}
-        >
-          {dayLabel}
-        </div>
-        {dayEvents.length === 0
-          ? EmptyState && <EmptyState message="No events" hint="Press N to create an event." />
-          : List && (
-              <List>
-                {dayEvents.map((evt, idx) => (
-                  <ListItem key={evt.id} active={idx === listIdx}>
-                    <ListItemBody>
-                      <ListItemText>{evt.title}</ListItemText>
-                      <ListItemMeta>
-                        {new Date(evt.datetime).toLocaleTimeString(undefined, {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </ListItemMeta>
-                    </ListItemBody>
-                    {evt.remindMin > 0 && IconBell && ListItemActions && (
-                      <ListItemActions>
-                        <IconBell
-                          style={{
-                            width: '14px',
-                            height: '14px',
-                            color: 'var(--color-warning, #eab308)',
-                          }}
-                        />
-                      </ListItemActions>
-                    )}
-                  </ListItem>
-                ))}
-              </List>
-            )}
-      </div>
+      <DayView
+        calYear={calYear}
+        calMonth={calMonth}
+        selectedDay={selectedDay}
+        dayEvents={dayEvents}
+        listIdx={listIdx}
+      />
     )
   }
 
-  // ── Create view ───────────────────────────────────────────────────────────────
   if (calView === 'create') {
-    const dateLabel = new Date(calYear, calMonth, selectedDay).toLocaleDateString(undefined, {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-    })
-    const fieldCurrentValues: Record<string, string> = { time: timeValue, reminder: reminderValue }
-    const fieldLabel: Record<string, string> = { time: 'Time', reminder: 'Reminder' }
-
     return (
-      <div style={{ height: '100%' }}>
-        <div
-          style={{
-            padding: 'var(--space-3) var(--space-4) var(--space-1)',
-            opacity: 0.55,
-            fontSize: 'var(--font-sm)',
-          }}
-        >
-          {dateLabel}
-        </div>
-
-        {List && (
-          <List>
-            {/* Title field — displays the current omnibar query as the event title */}
-            <ListItem active={false}>
-              <ListItemBody>
-                <ListItemText>Title</ListItemText>
-                <ListItemMeta>
-                  {query.trim() || (
-                    <span style={{ opacity: 0.4 }}>Type in search bar…</span>
-                  )}
-                </ListItemMeta>
-              </ListItemBody>
-            </ListItem>
-
-            {/* Time and Reminder — SelectBox (idx maps to CREATE_SELECT_FIELDS indices) */}
-            {(CREATE_SELECT_FIELDS).map((field, idx) => {
-              const opts = getSelectOptions(field)
-              const currentVal = fieldCurrentValues[field]
-              const isFieldFocused = idx === formFieldIdx && activeSelect === null
-              return (
-                <ListItem
-                  key={field}
-                  active={isFieldFocused}
-                  onClick={() => {
-                    setFormFieldIdx(idx)
-                    setSelectFocused(
-                      Math.max(
-                        0,
-                        opts.findIndex((o) => o.value === currentVal)
-                      )
-                    )
-                    setActiveSelect(field)
-                  }}
-                >
-                  <ListItemBody>
-                    <ListItemText>{fieldLabel[field]}</ListItemText>
-                    <ListItemMeta>
-                      {opts.find((o) => o.value === currentVal)?.label ?? '—'}
-                    </ListItemMeta>
-                  </ListItemBody>
-                  {ListItemActions && SelectBox && (
-                    <ListItemActions>
-                      <SelectBox
-                        options={opts}
-                        value={currentVal}
-                        open={activeSelect === field}
-                        focusedIndex={activeSelect === field ? selectFocused : 0}
-                        onSelect={(val: string) => {
-                          setSelectValue(field, val)
-                          setActiveSelect(null)
-                          if (idx < CREATE_SELECT_FIELDS.length - 1) setFormFieldIdx(idx + 1)
-                        }}
-                        onClose={() => setActiveSelect(null)}
-                        onOpen={(startIdx: number) => {
-                          setFormFieldIdx(idx)
-                          setSelectFocused(startIdx)
-                          setActiveSelect(field)
-                        }}
-                      />
-                    </ListItemActions>
-                  )}
-                </ListItem>
-              )
-            })}
-          </List>
-        )}
-      </div>
+      <CreateEventView
+        calYear={calYear}
+        calMonth={calMonth}
+        selectedDay={selectedDay}
+        query={query}
+        timeValue={timeValue}
+        reminderValue={reminderValue}
+        formFieldIdx={formFieldIdx}
+        activeSelect={activeSelect}
+        selectFocused={selectFocused}
+        onSetFormFieldIdx={setFormFieldIdx}
+        onSetSelectFocused={setSelectFocused}
+        onSetActiveSelect={setActiveSelect}
+        onSetTimeValue={setTimeValue}
+        onSetReminderValue={setReminderValue}
+      />
     )
   }
 
-  // ── Detail view ───────────────────────────────────────────────────────────────
   if (calView === 'detail' && editingEvent) {
-    const opts = REMINDER_OPTIONS
-    const dateLabel = new Date(editingEvent.datetime).toLocaleString(undefined, {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
     return (
-      <div style={{ height: '100%' }}>
-        <div style={{ padding: 'var(--space-3) var(--space-4) var(--space-1)' }}>
-          <div style={{ fontWeight: 600, fontSize: 'var(--font-md)' }}>{editingEvent.title}</div>
-          <div style={{ fontSize: 'var(--font-sm)', opacity: 0.55, marginTop: 'var(--space-1)' }}>
-            {dateLabel}
-          </div>
-        </div>
-        {List && (
-          <List>
-            <ListItem
-              active={activeSelect === null}
-              onClick={() => {
-                setSelectFocused(
-                  Math.max(
-                    0,
-                    opts.findIndex((o) => o.value === reminderValue)
-                  )
-                )
-                setActiveSelect('reminder')
-              }}
-            >
-              <ListItemBody>
-                <ListItemText>Reminder</ListItemText>
-                <ListItemMeta>
-                  {opts.find((o) => o.value === reminderValue)?.label ?? '—'}
-                </ListItemMeta>
-              </ListItemBody>
-              {ListItemActions && SelectBox && (
-                <ListItemActions>
-                  <SelectBox
-                    options={opts}
-                    value={reminderValue}
-                    open={activeSelect === 'reminder'}
-                    focusedIndex={activeSelect === 'reminder' ? selectFocused : 0}
-                    onSelect={(val: string) => {
-                      setReminderValue(val)
-                      setActiveSelect(null)
-                    }}
-                    onClose={() => setActiveSelect(null)}
-                    onOpen={(startIdx: number) => {
-                      setSelectFocused(startIdx)
-                      setActiveSelect('reminder')
-                    }}
-                  />
-                </ListItemActions>
-              )}
-            </ListItem>
-          </List>
-        )}
-      </div>
+      <DetailView
+        editingEvent={editingEvent}
+        reminderValue={reminderValue}
+        activeSelect={activeSelect}
+        selectFocused={selectFocused}
+        onSetSelectFocused={setSelectFocused}
+        onSetActiveSelect={setActiveSelect}
+        onSetReminderValue={setReminderValue}
+      />
     )
   }
 

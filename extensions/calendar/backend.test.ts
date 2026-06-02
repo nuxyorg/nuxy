@@ -32,7 +32,7 @@ function createCore(dbOverride: MockDb | null = null): {
   preparedStmt: PreparedStatement
 } {
   const { db, mockPrepare, preparedStmt } = dbOverride ?? makeMockDb()
-  const { core, handlers } = createMockCore(vi, {
+  const { core, handlers } = createMockCore({
     db: { open: vi.fn().mockReturnValue(db) },
   })
   return { core, handlers, db, mockPrepare, preparedStmt }

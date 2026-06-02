@@ -48,15 +48,15 @@ export default function BitwardenView({ query }: Props) {
     IconLock,
     IconUser,
     CodeBlock,
-    WizardSection,
   } = window.UI || {}
+  const WizardSection = (window.UI as any)?.WizardSection
 
   const [status, setStatus] = useState<BitwardenStatus | null>(null)
   const [results, setResults] = useState<BitwardenItem[]>([])
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const { selectedIndex, setSelectedIndex } = _useListNavigation(results, {
+  const { selectedIndex, setSelectedIndex } = (_useListNavigation(results, {
     onEnter: (item: BitwardenItem) => copyPassword(item),
     enterLabel: 'Şifreyi Kopyala',
     enterHint: 'Enter',
@@ -66,9 +66,9 @@ export default function BitwardenView({ query }: Props) {
         modifiers: ['shift'],
         label: 'Kullanıcı Adını Kopyala',
         hint: ['⇧', 'Enter'],
-        activeOn: () => selectedIndex >= 0,
+        activeOn: () => (selectedIndex as number) >= 0,
         handler: () => {
-          const item = results[selectedIndex]
+          const item = results[selectedIndex as number]
           if (item) copyUsername(item)
         },
       },
@@ -77,14 +77,14 @@ export default function BitwardenView({ query }: Props) {
         modifiers: ['ctrl'],
         label: 'TOTP Kopyala',
         hint: ['Ctrl', 'Enter'],
-        activeOn: () => selectedIndex >= 0,
+        activeOn: () => (selectedIndex as number) >= 0,
         handler: () => {
-          const item = results[selectedIndex]
+          const item = results[selectedIndex as number]
           if (item) copyTotp(item)
         },
       },
     ],
-  })
+  }) as UseListNavigationResult<BitwardenItem>)
 
   useEffect(() => {
     setSelectedIndex(-1)

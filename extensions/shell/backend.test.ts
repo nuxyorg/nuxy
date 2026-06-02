@@ -3,7 +3,7 @@ import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import { register } from './backend.ts'
 
 function createCore(storageData: unknown = null) {
-  const { core, handlers } = createMockCore(vi, {
+  const { core, handlers } = createMockCore({
     storage: {
       read: vi.fn().mockResolvedValue(storageData),
     },

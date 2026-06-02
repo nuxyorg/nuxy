@@ -1,6 +1,6 @@
 # Nuxy Extension Development Guide
 
-> **AI agents building or reviewing extensions MUST follow every rule in this document.** Rules marked **[CORE TODO]** require a Core API that does not yet exist — if you encounter a case requiring it, add the API to `packages/core` first, then use it.
+> **AI agents building or reviewing extensions MUST follow every rule in this document.**
 
 ---
 
@@ -309,7 +309,7 @@ import { execFile } from 'child_process'
 import { DatabaseSync } from 'node:sqlite'
 ```
 
-Use `core.*` APIs instead. If the required API does not exist in `CoreContext`, it must be added to `packages/core` first (see [Core TODO](#core-todos)).
+Use `core.*` APIs instead. If the required API does not exist in `CoreContext`, it must be added to `packages/core` first.
 
 ### 4.2 File system via `core.fs`
 
@@ -317,25 +317,25 @@ Use `core.*` APIs instead. If the required API does not exist in `CoreContext`, 
 // Check if a file exists
 const exists = await core.fs.fileExists('/some/path')
 
-// [CORE TODO] Read a directory listing
+// Read a directory listing
 const entries = await core.fs.readDir('/some/dir')
 
-// [CORE TODO] Read a file as text
+// Read a file as text
 const text = await core.fs.readFile('/some/path', 'utf8')
 
-// [CORE TODO] Write a file
+// Write a file
 await core.fs.writeFile('/some/path', data)
 
-// [CORE TODO] Create directories recursively
+// Create directories recursively
 await core.fs.mkdir('/some/dir', { recursive: true })
 
-// [CORE TODO] Rename / move a file
+// Rename / move a file
 await core.fs.rename('/old', '/new')
 
-// [CORE TODO] Delete a file
+// Delete a file
 await core.fs.rm('/some/path')
 
-// [CORE TODO] Stat (type, size, mtime)
+// Stat (type, size, mtime)
 const stat = await core.fs.stat('/some/path')
 ```
 
@@ -353,12 +353,12 @@ await core.storage.write('history.json', data)
 
 Do not store data by manually constructing paths under `~/.nuxy/data/` — that bypasses sandboxing.
 
-### 4.4 Database via `core.db` [CORE TODO]
+### 4.4 Database via `core.db`
 
 When an extension requires a relational or FTS database:
 
 ```js
-// [CORE TODO] Open an extension-scoped SQLite database by name
+// Open an extension-scoped SQLite database by name
 const db = await core.db.open('my-data')
 
 // Execute SQL
@@ -377,14 +377,14 @@ db.close()
 
 The database file is stored under the extension's data directory — extensions never touch the path directly.
 
-### 4.5 Opening files / URLs via `core.shell` [CORE TODO]
+### 4.5 Opening files / URLs via `core.shell`
 
 ```js
-// [CORE TODO] Open a file or URL with the system default handler (xdg-open / open / start)
+// Open a file or URL with the system default handler (xdg-open / open / start)
 await core.shell.open('/path/to/file')
 await core.shell.open('https://example.com')
 
-// [CORE TODO] Execute an allowed command (requires 'shell' permission)
+// Execute an allowed command (requires 'shell' permission)
 const result = await core.shell.exec('ffmpeg', ['-i', input, output])
 ```
 
@@ -1063,23 +1063,6 @@ core.i18n.t(key)                      // → translated string (returns key if n
 core.i18n.t(key, vars)                // → interpolated string ("Hello, {name}!" + { name: "Ali" })
 core.i18n.t(key, vars, count)         // → plural-form string ("3 items")
 ```
-
-### Core TODOs — must be added before any extension uses them
-
-These APIs are required by the rules above but do not yet exist. Before writing an extension that needs them, add the type to `packages/core/src/index.ts`, the host channel to `packages/core/src/host-channels.ts`, the proxy method to `packages/extension-host/src/core-proxy.ts`, and the main-process handler to `src/electron/ipc/register.ts`.
-
-| API                                 | Purpose                                           |
-| ----------------------------------- | ------------------------------------------------- |
-| `core.fs.readDir(path)`             | List directory entries                            |
-| `core.fs.readFile(path, encoding?)` | Read file contents                                |
-| `core.fs.writeFile(path, data)`     | Write file contents                               |
-| `core.fs.mkdir(path, opts?)`        | Create directory                                  |
-| `core.fs.rename(src, dest)`         | Move/rename                                       |
-| `core.fs.rm(path)`                  | Delete file                                       |
-| `core.fs.stat(path)`                | File metadata (type, size, mtime)                 |
-| `core.db.open(name)`                | Open/create a sandboxed SQLite database           |
-| `core.shell.open(pathOrUrl)`        | Open with system default handler                  |
-| `core.shell.exec(cmd, args, opts?)` | Run allowed command (requires `shell` permission) |
 
 ---
 

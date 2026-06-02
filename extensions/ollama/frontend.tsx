@@ -19,8 +19,8 @@ interface IpcResponse<T = unknown> {
 
 export default function OllamaApp({ query }: Props) {
   const { EmptyState, Alert, MarkdownText } = window.UI || {}
-  const _ChatList = (window.UI || {}).ChatList || null
-  const _ChatMessage = (window.UI || {}).ChatMessage || null
+  const _ChatList = (window.UI as any)?.ChatList || null
+  const _ChatMessage = (window.UI as any)?.ChatMessage || null
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [loading, setLoading] = useState<boolean>(false)
@@ -45,7 +45,7 @@ export default function OllamaApp({ query }: Props) {
 
   useEffect(() => {
     Promise.all([
-      ipc<{ host: string; model: string }>('getConfig').catch(() => null),
+      ipc<{ host: string; model: string; thinkingColor?: string }>('getConfig').catch(() => null),
       ipc<ChatMessage[]>('history:load').catch(() => [] as ChatMessage[]),
       ipc<string[]>('models', {}).catch(() => [] as string[]),
     ]).then(([cfg, history, modelList]) => {

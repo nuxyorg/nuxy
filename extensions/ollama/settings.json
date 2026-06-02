@@ -29,6 +29,28 @@
         { "value": "off", "label": "Off" }
       ],
       "description": "Border effect shown while Ollama is generating a response"
+    },
+    {
+      "key": "systemPrompt",
+      "label": "System Instructions",
+      "type": "text",
+      "default": "",
+      "placeholder": "You are a helpful assistant...",
+      "description": "System prompt instructions to guide the model's behavior"
+    },
+    {
+      "key": "temperature",
+      "label": "Temperature",
+      "type": "select",
+      "default": 0.7,
+      "options": [
+        { "value": 0.2, "label": "0.2 (Deterministic)" },
+        { "value": 0.5, "label": "0.5 (Balanced)" },
+        { "value": 0.7, "label": "0.7 (Default)" },
+        { "value": 0.9, "label": "0.9 (Creative)" },
+        { "value": 1.0, "label": "1.0 (Maximum)" }
+      ],
+      "description": "Output randomness control (lower is more focused and deterministic)"
     }
   ]
 }

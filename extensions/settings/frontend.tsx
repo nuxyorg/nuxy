@@ -13,6 +13,7 @@ import type {
   ExtSettingsInfo,
   BaseRow,
   ExtSectionRow,
+  ExtToggleRow,
   LanguageRow,
   AnyRow,
   RenderSection,
@@ -158,6 +159,30 @@ function buildFontOptions(systemFonts: string[]): SelectOption<string>[] {
   return [...FONT_OPTIONS_STATIC, ...systemFonts.map((name) => ({ value: name, label: name }))]
 }
 
+function getRowOptions(row: AnyRow, state: StateSnapshot): SelectOption[] {
+  const isLang = 'isLanguage' in row && row.isLanguage
+  const isExtToggle = 'isExtToggle' in row && row.isExtToggle
+  if (isLang || isExtToggle || !row.isExtension) {
+    return row.options
+  }
+  // extension row
+  return row.options
+}
+
+function getRowCurrentValue(
+  row: AnyRow,
+  settings: NuxySettings,
+  extValues: Record<string, Record<string, unknown>>,
+  installedExtensions: Array<{ id: string; manifest: { name: string; bootstrap?: boolean; type: string }; disabled?: boolean }>
+): unknown {
+  const isLanguageRow = 'isLanguage' in row && row.isLanguage
+  const isExtToggleRow = 'isExtToggle' in row && row.isExtToggle
+  if (isLanguageRow) return settings.preferredLanguages?.[row.langIndex] ?? ''
+  if (isExtToggleRow) return !(installedExtensions.find((e) => e.id === row.extId)?.disabled ?? false)
+  if (row.isExtension) return extValues[row.extId]?.[row.fieldKey] ?? row.default ?? ''
+  return settings[row.key]
+}
+
 const DEFAULT_SETTINGS: NuxySettings = {
   theme: 'dark',
   iconPack: '',
@@ -203,6 +228,115 @@ const SECTIONS: SectionDef[] = [
   },
 ]
 
+interface SettingRowProps {
+  row: AnyRow
+  value: unknown
+  options: SelectOption[]
+  isOpen: boolean
+  focusedIndex: number
+  globalIdx: number
+  selectedRow: number
+  focusArea: string
+  activeSectionId: string
+  sectionId: string
+  activeSelect: string | null
+  inputRefs: React.MutableRefObject<Record<string, HTMLInputElement | null>>
+  onSelect: (v: unknown) => void
+  onOpen: (idx: number) => void
+  onClose: () => void
+  onItemClick: () => void
+  onExtInputChange: (v: string) => void
+  onExtInputBlur: (v: string) => void
+}
+
+function SettingRow({
+  row,
+  value,
+  options,
+  isOpen,
+  focusedIndex,
+  globalIdx,
+  selectedRow,
+  focusArea,
+  activeSectionId,
+  sectionId,
+  activeSelect,
+  inputRefs,
+  onSelect,
+  onOpen,
+  onClose,
+  onItemClick,
+  onExtInputChange,
+  onExtInputBlur,
+}: SettingRowProps) {
+  const { ListItem, ListItemBody, ListItemText, ListItemActions, SelectBox, Input } = window.UI || {}
+  if (!ListItem) return null
+
+  const isLanguageRow = 'isLanguage' in row && row.isLanguage
+  const isExtToggleRow = 'isExtToggle' in row && row.isExtToggle
+  const isSelectType =
+    isLanguageRow || isExtToggleRow || !row.isExtension || row.type === 'select' || row.type === 'toggle'
+
+  return (
+    <ListItem
+      key={row.key}
+      active={
+        focusArea === 'right' &&
+        globalIdx === selectedRow &&
+        activeSelect === null &&
+        sectionId === activeSectionId
+      }
+      onClick={onItemClick}
+    >
+      {ListItemBody && (
+        <ListItemBody>
+          {ListItemText && <ListItemText>{row.label}</ListItemText>}
+          {row.isExtension && row.description && (
+            <span style={{ fontSize: '0.75em', opacity: 0.6 }}>{row.description}</span>
+          )}
+        </ListItemBody>
+      )}
+      {ListItemActions && (
+        <ListItemActions>
+          {isSelectType && SelectBox ? (
+            <SelectBox
+              options={options}
+              value={value}
+              open={isOpen}
+              focusedIndex={focusedIndex}
+              placeholder={options?.length === 0 ? '(none)' : '—'}
+              searchable={isLanguageRow ? true : row.isExtension ? false : ('searchable' in row ? row.searchable : false) || false}
+              onSelect={onSelect}
+              onClose={onClose}
+              onOpen={onOpen}
+            />
+          ) : (
+            Input &&
+            row.isExtension && (
+              <Input
+                ref={(el: HTMLInputElement | null) => {
+                  inputRefs.current[row.key] = el
+                }}
+                type={row.type === 'color' ? 'color' : 'text'}
+                value={String(value)}
+                placeholder={('placeholder' in row ? row.placeholder : '') || ''}
+                style={{ width: row.type === 'color' ? '2.5em' : '10em' }}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onExtInputChange(e.target.value)}
+                onBlur={(e: React.FocusEvent<HTMLInputElement>) => onExtInputBlur(e.target.value)}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === 'Enter' || e.key === 'Escape') {
+                    e.currentTarget.blur()
+                  }
+                }}
+              />
+            )
+          )}
+        </ListItemActions>
+      )}
+    </ListItem>
+  )
+}
+
 export default function SettingsView({ query: _query }: Props) {
   const {
     List,
@@ -227,6 +361,9 @@ export default function SettingsView({ query: _query }: Props) {
   const [selectFocused, setSelectFocused] = useState<number>(0)
   const [extSchemas, setExtSchemas] = useState<ExtSettingsInfo[]>([])
   const [extValues, setExtValues] = useState<Record<string, Record<string, unknown>>>({})
+  const [installedExtensions, setInstalledExtensions] = useState<
+    Array<{ id: string; manifest: { name: string; bootstrap?: boolean; type: string }; disabled?: boolean }>
+  >([])
 
   const fontFamilyMap = useMemo(() => buildFontFamilyMap(systemFonts), [systemFonts])
   const fontOptions = useMemo(() => buildFontOptions(systemFonts), [systemFonts])
@@ -264,6 +401,19 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
     })
   }, [extSchemas])
 
+  const extToggleRows = useMemo<ExtToggleRow[]>(() => {
+    return installedExtensions
+      .filter((ext) => !ext.manifest.bootstrap && ext.id !== 'com.nuxy.settings')
+      .map((ext) => ({
+        key: `ext-toggle:${ext.id}`,
+        label: ext.manifest.name,
+        options: BOOL_OPTIONS,
+        isExtension: false as const,
+        isExtToggle: true as const,
+        extId: ext.id,
+      }))
+  }, [installedExtensions])
+
   const allSections = useMemo<ResolvedSection[]>(
     () =>
       SECTIONS.map((s: SectionDef) => ({
@@ -300,22 +450,26 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
       isExtension: false,
       resolvedRows: languageRows,
     }
+    const extToggleSection: RenderSection | null =
+      extToggleRows.length > 0
+        ? { id: 'extensions', label: 'Extensions', isExtension: false, resolvedRows: extToggleRows }
+        : null
     const ext: RenderSection[] = extSections.map((s) => ({
       id: s.id,
       label: s.label,
       isExtension: true,
       resolvedRows: s.resolvedRows,
     }))
-    return [...base, langSection, ...ext]
-  }, [allSections, extSections, languageRows])
+    return [...base, langSection, ...(extToggleSection ? [extToggleSection] : []), ...ext]
+  }, [allSections, extSections, languageRows, extToggleRows])
 
   const allRows = useMemo<AnyRow[]>(() => {
     const base: BaseRow[] = allSections.flatMap((s: ResolvedSection) =>
       s.resolvedRows.map((r: SectionRow) => ({ ...r, isExtension: false as const }))
     )
     const ext: ExtSectionRow[] = extSections.flatMap((s) => s.resolvedRows)
-    return [...base, ...languageRows, ...ext]
-  }, [allSections, extSections, languageRows])
+    return [...base, ...languageRows, ...extToggleRows, ...ext]
+  }, [allSections, extSections, languageRows, extToggleRows])
 
   const navSections = useMemo<NavSection[]>(() => {
     const base = allSections.map((s: ResolvedSection) => ({
@@ -324,11 +478,14 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
       itemCount: s.resolvedRows.length,
     }))
     base.push({ id: 'language', label: 'Language', itemCount: languageRows.length })
+    if (extToggleRows.length > 0) {
+      base.push({ id: 'extensions', label: 'Extensions', itemCount: extToggleRows.length })
+    }
     extSections.forEach((s) => {
       base.push({ id: s.id, label: s.label, itemCount: s.resolvedRows.length })
     })
     return base
-  }, [allSections, extSections, languageRows])
+  }, [allSections, extSections, languageRows, extToggleRows])
 
   const stateRef = useRef<StateSnapshot>({} as StateSnapshot)
   stateRef.current = {
@@ -404,8 +561,11 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
               const opt = row.options[selectFocused]
               if (opt) {
                 const isLang = 'isLanguage' in row && row.isLanguage
+                const isToggle = 'isExtToggle' in row && row.isExtToggle
                 if (isLang) {
                   updateLanguageSlot(row.langIndex, opt.value as string)
+                } else if (isToggle) {
+                  toggleExtension(row.extId, opt.value as boolean)
                 } else if (row.isExtension) {
                   updateExtSetting(row.extId, row.fieldKey, opt.value)
                 } else {
@@ -547,9 +707,14 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
       .catch(() => {})
   }
 
-  useEffect(() => {
+  const toggleExtension = (extId: string, enabled: boolean): void => {
+    setActiveSelect(null)
     if (!window.core?.ipc?.invoke) return
+    window.core.ipc.invoke('kernel', 'setExtensionEnabled', { extId, enabled }).catch(() => {})
+  }
 
+  // Effect 1: Load themes
+  useEffect(() => {
     window.core.themes
       ?.list()
       .then((res) => {
@@ -559,7 +724,10 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
         }
       })
       .catch(() => {})
+  }, [])
 
+  // Effect 2: Load icon packs
+  useEffect(() => {
     window.core.icons
       ?.listPacks()
       .then((res) => {
@@ -569,9 +737,13 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
         }
       })
       .catch(() => {})
+  }, [])
 
-    window.core?.ipc
-      ?.invoke('kernel', 'listSystemFonts', {})
+  // Effect 3: Load system fonts
+  useEffect(() => {
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke('kernel', 'listSystemFonts', {})
       .then((res) => {
         const r = res as { success: boolean; data?: unknown[] }
         if (r?.success && Array.isArray(r.data)) {
@@ -579,7 +751,11 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
         }
       })
       .catch(() => {})
+  }, [])
 
+  // Effect 4: Load settings values
+  useEffect(() => {
+    if (!window.core?.ipc?.invoke) return
     window.core.ipc
       .invoke(EXT_ID, 'getSettings', {})
       .then((res) => {
@@ -587,6 +763,21 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
         if (r?.success && r.data) {
           setSettings(r.data)
           applySettings(r.data)
+        }
+      })
+      .catch(() => {})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Effect 5: Load extension schemas + per-extension values
+  useEffect(() => {
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke('kernel', 'listInstalledExtensions', {})
+      .then((res) => {
+        const r = res as { success: boolean; data?: unknown[] }
+        if (r?.success && Array.isArray(r.data)) {
+          setInstalledExtensions(r.data as typeof installedExtensions)
         }
       })
       .catch(() => {})
@@ -614,7 +805,6 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
         }
       })
       .catch(() => {})
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (!TwoPanel) return null
@@ -652,108 +842,66 @@ const inputRefs = useRef<Record<string, HTMLInputElement | null>>({})
                 {section.resolvedRows.map((row: AnyRow, i: number) => {
                   const globalIdx = sectionOffset + i
                   const isLanguageRow = 'isLanguage' in row && row.isLanguage
-                  const currentValue = isLanguageRow
-                    ? (settings.preferredLanguages?.[row.langIndex] ?? '')
-                    : row.isExtension
-                      ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
-                      : settings[row.key]
-                  const isSelectType =
-                    isLanguageRow || !row.isExtension || row.type === 'select' || row.type === 'toggle'
+                  const isExtToggleRow = 'isExtToggle' in row && row.isExtToggle
+                  const currentValue = getRowCurrentValue(row, settings, extValues, installedExtensions)
+                  const options = getRowOptions(row, stateRef.current)
 
                   return (
-                    ListItem && (
-                      <ListItem
-                        key={row.key}
-                        active={
-                          focusArea === 'right' &&
-                          globalIdx === selectedRow &&
-                          activeSelect === null &&
-                          section.id === activeSectionId
+                    <SettingRow
+                      key={row.key}
+                      row={row}
+                      value={currentValue}
+                      options={options}
+                      isOpen={activeSelect === row.key}
+                      focusedIndex={selectFocused}
+                      globalIdx={globalIdx}
+                      selectedRow={selectedRow}
+                      focusArea={focusArea}
+                      activeSectionId={activeSectionId}
+                      sectionId={section.id}
+                      activeSelect={activeSelect}
+                      inputRefs={inputRefs}
+                      onSelect={(v: unknown) => {
+                        if (isLanguageRow) {
+                          updateLanguageSlot(row.langIndex, v as string)
+                        } else if (isExtToggleRow) {
+                          toggleExtension(row.extId, v as boolean)
+                        } else if (row.isExtension) {
+                          updateExtSetting(row.extId, row.fieldKey, v)
+                        } else {
+                          updateSetting(row.key, v)
                         }
-                        onClick={() => {
-                          setSelectedRow(globalIdx)
-                          nav.onItemSelected(globalIdx)
-                          nav.setFocusArea('right')
-                        }}
-                      >
-                        {ListItemBody && (
-                          <ListItemBody>
-                            {ListItemText && <ListItemText>{row.label}</ListItemText>}
-                            {row.isExtension && row.description && (
-                              <span style={{ fontSize: '0.75em', opacity: 0.6 }}>
-                                {row.description}
-                              </span>
-                            )}
-                          </ListItemBody>
-                        )}
-                        {ListItemActions && (
-                          <ListItemActions>
-                            {isSelectType && SelectBox ? (
-                              <SelectBox
-                                options={row.options}
-                                value={currentValue}
-                                open={activeSelect === row.key}
-                                focusedIndex={selectFocused}
-                                placeholder={row.options?.length === 0 ? '(none)' : '—'}
-                                searchable={isLanguageRow ? true : row.isExtension ? false : row.searchable || false}
-                                onSelect={(v: unknown) => {
-                                  if (isLanguageRow) {
-                                    updateLanguageSlot(row.langIndex, v as string)
-                                  } else if (row.isExtension) {
-                                    updateExtSetting(row.extId, row.fieldKey, v)
-                                  } else {
-                                    updateSetting(row.key, v)
-                                  }
-                                }}
-                                onClose={() => setActiveSelect(null)}
-                                onOpen={(idx: number) => {
-                                  setSelectedRow(globalIdx)
-                                  nav.onItemSelected(globalIdx)
-                                  nav.setFocusArea('right')
-                                  setSelectFocused(idx)
-                                  setActiveSelect(row.key)
-                                }}
-                              />
-                            ) : (
-                              Input &&
-                              row.isExtension && (
-                                <Input
-                                  ref={(el: HTMLInputElement | null) => {
-                                    inputRefs.current[row.key] = el
-                                  }}
-                                  type={row.type === 'color' ? 'color' : 'text'}
-                                  value={String(currentValue)}
-                                  placeholder={row.placeholder || ''}
-                                  style={{ width: row.type === 'color' ? '2.5em' : '10em' }}
-                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    const v = e.target.value
-                                    setExtValues(
-                                      (prev: Record<string, Record<string, unknown>>) => ({
-                                        ...prev,
-                                        [row.extId]: {
-                                          ...(prev[row.extId] || {}),
-                                          [row.fieldKey]: v,
-                                        },
-                                      })
-                                    )
-                                    if (row.type === 'color')
-                                      updateExtSetting(row.extId, row.fieldKey, v)
-                                  }}
-                                  onBlur={(e: React.FocusEvent<HTMLInputElement>) =>
-                                    updateExtSetting(row.extId, row.fieldKey, e.target.value)
-                                  }
-                                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (e.key === 'Enter' || e.key === 'Escape') {
-                                      e.currentTarget.blur()
-                                    }
-                                  }}
-                                />
-                              )
-                            )}
-                          </ListItemActions>
-                        )}
-                      </ListItem>
-                    )
+                      }}
+                      onClose={() => setActiveSelect(null)}
+                      onOpen={(idx: number) => {
+                        setSelectedRow(globalIdx)
+                        nav.onItemSelected(globalIdx)
+                        nav.setFocusArea('right')
+                        setSelectFocused(idx)
+                        setActiveSelect(row.key)
+                      }}
+                      onItemClick={() => {
+                        setSelectedRow(globalIdx)
+                        nav.onItemSelected(globalIdx)
+                        nav.setFocusArea('right')
+                      }}
+                      onExtInputChange={(v: string) => {
+                        setExtValues(
+                          (prev: Record<string, Record<string, unknown>>) => ({
+                            ...prev,
+                            [(row as any).extId]: {
+                              ...(prev[(row as any).extId] || {}),
+                              [(row as any).fieldKey]: v,
+                            },
+                          })
+                        )
+                        if (row.isExtension && row.type === 'color')
+                          updateExtSetting((row as any).extId, (row as any).fieldKey, v)
+                      }}
+                      onExtInputBlur={(v: string) => {
+                        if (row.isExtension) updateExtSetting(row.extId, row.fieldKey, v)
+                      }}
+                    />
                   )
                 })}
               </List>

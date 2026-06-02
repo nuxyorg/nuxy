@@ -45,7 +45,7 @@ function createCore(exec: ReturnType<typeof vi.fn> | null = null): {
   core: CoreContext
   handlers: Record<string, (payload?: unknown) => Promise<unknown>>
 } {
-  const { core, handlers } = createMockCore(vi, {
+  const { core, handlers } = createMockCore({
     clipboard: {
       writeText: vi.fn().mockResolvedValue(undefined),
     },

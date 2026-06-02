@@ -163,21 +163,320 @@ function getListMeta(
   return timeAgo(item.copiedAt)
 }
 
+// ── pure time helper ──────────────────────────────────────────────────────────
+
+function timeAgo(dateString: string): string {
+  if (!dateString) return ''
+  const m = Math.floor((Date.now() - new Date(dateString).getTime()) / 60000)
+  if (m < 1) return 'now'
+  if (m < 60) return `${m}m`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h}h`
+  return new Date(dateString).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+}
+
+// ── ClipboardLeftPanel ────────────────────────────────────────────────────────
+
+interface LeftPanelProps {
+  items: ClipboardItemData[]
+  allItems: ClipboardItemData[]
+  copiedId: string | null
+  selectedIndex: number
+  searchQuery: string
+  onSelect: (index: number) => void
+}
+
+function ClipboardLeftPanel({
+  items,
+  allItems,
+  copiedId,
+  selectedIndex,
+  searchQuery,
+  onSelect,
+}: LeftPanelProps) {
+  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState, IconPin } =
+    window.UI || {}
+
+  return (
+    <List>
+      {items.length === 0 ? (
+        <EmptyState
+          message={searchQuery ? 'No matches.' : 'History is empty.'}
+          hint={searchQuery ? 'Try a different search.' : 'Copied text will appear here.'}
+        />
+      ) : (
+        items.map((item, idx) => {
+          const isCopied = copiedId === item.id
+          const isActive = idx === selectedIndex
+          const isCurrent = allItems.length > 0 && item.id === allItems[0].id
+          const type = getItemType(item)
+          const label = getListLabel(item, type, isCopied)
+          const meta = getListMeta(item, type, isCurrent, timeAgo)
+          return (
+            <ListItem
+              key={item.id}
+              active={isActive}
+              onClick={() => onSelect(idx)}
+            >
+              <ClipboardItemLeading item={item} type={type} />
+              <ListItemBody>
+                <ListItemText variant={isCopied ? 'success' : 'default'}>
+                  {item.pinned && IconPin && (
+                    <IconPin
+                      size="14"
+                      style={{
+                        marginRight: 'var(--space-2)',
+                        verticalAlign: 'middle',
+                      }}
+                    />
+                  )}
+                  {label}
+                </ListItemText>
+                <ListItemMeta>{meta}</ListItemMeta>
+              </ListItemBody>
+            </ListItem>
+          )
+        })
+      )}
+    </List>
+  )
+}
+
+// ── ClipboardRightPanel ───────────────────────────────────────────────────────
+
+interface RightPanelProps {
+  item: ClipboardItemData | null
+  imageDimensions: string | null
+  onCopy: (id: string, eStop?: { stopPropagation: () => void }) => void
+  onCopyFile: (id: string, eStop?: { stopPropagation: () => void }) => void
+  onPin: (id: string, eStop?: { stopPropagation: () => void }) => void
+  onUnpin: (id: string, eStop?: { stopPropagation: () => void }) => void
+  onDelete: (id: string, eStop?: { stopPropagation: () => void }) => void
+}
+
+function ClipboardRightPanel({ item, imageDimensions }: RightPanelProps) {
+  const PropertiesPanel = (window.UI as any)?.PropertiesPanel
+
+  if (!item) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          height: 'calc(100% - var(--space-4))',
+          justifyContent: 'center',
+          alignItems: 'center',
+          opacity: 0.4,
+          fontSize: 'var(--font-sm)',
+        }}
+      >
+        Select an item to preview
+      </div>
+    )
+  }
+
+  const type = getItemType(item)
+  const txt = item.text?.trim() || ''
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        padding: 'var(--space-5)',
+        overflow: 'hidden',
+        justifyContent: 'space-between',
+        height: 'calc(100% - var(--space-6))',
+      }}
+    >
+      {/* preview area */}
+      <div
+        style={{
+          flex: '1 1 auto',
+          overflowY: 'auto',
+          marginBottom: 'var(--space-4)',
+          minHeight: 0,
+        }}
+      >
+        {type === 'image' ? (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 'var(--radius-lg)',
+              background: 'var(--color-preview-bg, rgba(0, 0, 0, 0.2))',
+              padding: 'var(--space-3)',
+              overflow: 'hidden',
+              height: 'calc(100% - var(--space-5))',
+            }}
+          >
+            <img
+              src={item.image!}
+              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+              alt="Clipboard preview"
+            />
+          </div>
+        ) : type === 'color' ? (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 'var(--space-3)',
+              height: 'calc(100% - var(--space-5))',
+            }}
+          >
+            <div
+              style={{
+                flex: 1,
+                borderRadius: 'var(--radius-lg)',
+                background: txt,
+                border: 'var(--space-px) solid var(--color-border, rgba(255, 255, 255, 0.1))',
+                minHeight: '80px',
+              }}
+            />
+            <div
+              style={{
+                fontFamily: 'monospace',
+                fontSize: 'var(--font-body)',
+                textAlign: 'center',
+                opacity: 0.85,
+                padding: 'var(--space-1)',
+              }}
+            >
+              {txt}
+            </div>
+          </div>
+        ) : (
+          <div
+            style={{
+              fontSize: 'var(--font-sm)',
+              lineHeight: 1.55,
+              opacity: 0.8,
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              fontFamily: type === 'text' ? 'inherit' : 'monospace',
+              padding: 'var(--space-3)',
+              background: 'var(--color-preview-bg, rgba(0, 0, 0, 0.2))',
+              borderRadius: 'var(--radius-lg)',
+              height: 'calc(100% - var(--space-5))',
+              overflow: 'auto',
+            }}
+          >
+            {item.text}
+          </div>
+        )}
+      </div>
+
+      {/* properties */}
+      {PropertiesPanel ? (
+        <div style={{ flex: '0 0 auto' }}>
+          <PropertiesPanel
+            title="Properties"
+            rows={[
+              {
+                label: 'Type',
+                value: (
+                  <span style={{ textTransform: 'capitalize' }}>
+                    {(type as string) === 'image-file' ? 'Image File' : type}
+                  </span>
+                ),
+              },
+              ...(type === 'file'
+                ? [
+                    { label: 'Name', value: getFilename(txt) },
+                    {
+                      label: 'Path',
+                      value: (
+                        <span style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</span>
+                      ),
+                    },
+                  ]
+                : []),
+              ...(type === 'image' && imageDimensions
+                ? [{ label: 'Dimensions', value: imageDimensions }]
+                : []),
+              ...(type === 'color'
+                ? [
+                    {
+                      label: 'Value',
+                      value: <span style={{ fontFamily: 'monospace' }}>{txt}</span>,
+                    },
+                  ]
+                : []),
+              { label: 'Copied', value: new Date(item.copiedAt).toLocaleString() },
+            ]}
+          />
+        </div>
+      ) : (
+        <div
+          style={{
+            flex: '0 0 auto',
+            padding: 'var(--space-3) var(--space-4)',
+            background: 'var(--color-surface, rgba(255, 255, 255, 0.05))',
+            borderRadius: 'var(--radius-lg)',
+            fontSize: 'var(--font-sm)',
+          }}
+        >
+          <div
+            style={{
+              fontWeight: 600,
+              marginBottom: 'var(--space-3)',
+              borderBottom: 'var(--space-px) solid var(--color-border, rgba(255, 255, 255, 0.1))',
+              paddingBottom: 'var(--space-2)',
+              opacity: 0.9,
+            }}
+          >
+            Properties
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '90px 1fr',
+              gap: 'var(--space-2) var(--space-4)',
+              opacity: 0.85,
+            }}
+          >
+            <div style={{ opacity: 0.5 }}>Type</div>
+            <div style={{ textTransform: 'capitalize' }}>
+              {(type as string) === 'image-file' ? 'Image File' : type}
+            </div>
+
+            {type === 'file' && (
+              <>
+                <div style={{ opacity: 0.5 }}>Name</div>
+                <div>{getFilename(txt)}</div>
+                <div style={{ opacity: 0.5 }}>Path</div>
+                <div style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</div>
+              </>
+            )}
+
+            {type === 'image' && imageDimensions && (
+              <>
+                <div style={{ opacity: 0.5 }}>Dimensions</div>
+                <div>{imageDimensions}</div>
+              </>
+            )}
+
+            {type === 'color' && (
+              <>
+                <div style={{ opacity: 0.5 }}>Value</div>
+                <div style={{ fontFamily: 'monospace' }}>{txt}</div>
+              </>
+            )}
+
+            <div style={{ opacity: 0.5 }}>Copied</div>
+            <div>{new Date(item.copiedAt).toLocaleString()}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── main component ────────────────────────────────────────────────────────────
 
 export default function ClipboardView({ query }: Props) {
-  const {
-    List,
-    ListItem,
-    ListItemBody,
-    ListItemText,
-    ListItemMeta,
-    EmptyState,
-    TwoPanel,
-    Alert,
-    IconPin,
-    PropertiesPanel,
-  } = window.UI || {}
+  const { TwoPanel, Alert } = window.UI || {}
 
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
@@ -406,274 +705,29 @@ export default function ClipboardView({ query }: Props) {
     }
   }, [selectedIndex, filteredItems])
 
-  const timeAgo = (dateString: string): string => {
-    if (!dateString) return ''
-    const m = Math.floor((Date.now() - new Date(dateString).getTime()) / 60000)
-    if (m < 1) return 'now'
-    if (m < 60) return `${m}m`
-    const h = Math.floor(m / 60)
-    if (h < 24) return `${h}h`
-    return new Date(dateString).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-  }
-
   const selectedItem = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
 
   const leftPanel = (
-    <List>
-      {filteredItems.length === 0 ? (
-        <EmptyState
-          message={searchQuery ? 'No matches.' : 'History is empty.'}
-          hint={searchQuery ? 'Try a different search.' : 'Copied text will appear here.'}
-        />
-      ) : (
-        filteredItems.map((item, idx) => {
-          const isCopied = copiedId === item.id
-          const isActive = idx === selectedIndex
-          const isCurrent = items.length > 0 && item.id === items[0].id
-          const type = getItemType(item)
-          const label = getListLabel(item, type, isCopied)
-          const meta = getListMeta(item, type, isCurrent, timeAgo)
-          return (
-            <ListItem
-              key={item.id}
-              active={isActive}
-            >
-              <ClipboardItemLeading item={item} type={type} />
-              <ListItemBody>
-                <ListItemText variant={isCopied ? 'success' : 'default'}>
-                  {item.pinned && IconPin && (
-                    <IconPin
-                      size="14"
-                      style={{
-                        marginRight: 'var(--space-2)',
-                        verticalAlign: 'middle',
-                      }}
-                    />
-                  )}
-                  {label}
-                </ListItemText>
-                <ListItemMeta>{meta}</ListItemMeta>
-              </ListItemBody>
-            </ListItem>
-          )
-        })
-      )}
-    </List>
+    <ClipboardLeftPanel
+      items={filteredItems}
+      allItems={items}
+      copiedId={copiedId}
+      selectedIndex={selectedIndex}
+      searchQuery={searchQuery}
+      onSelect={setSelectedIndex}
+    />
   )
 
-  const rightPanel = selectedItem ? (
-    (() => {
-      const type = getItemType(selectedItem)
-      const txt = selectedItem.text?.trim() || ''
-
-      return (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 'var(--space-5)',
-            overflow: 'hidden',
-            justifyContent: 'space-between',
-            height: 'calc(100% - var(--space-6))',
-          }}
-        >
-          {/* preview area */}
-          <div
-            style={{
-              flex: '1 1 auto',
-              overflowY: 'auto',
-              marginBottom: 'var(--space-4)',
-              minHeight: 0,
-            }}
-          >
-            {type === 'image' ? (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 'var(--radius-lg)',
-                  background: 'var(--color-preview-bg, rgba(0, 0, 0, 0.2))',
-                  padding: 'var(--space-3)',
-                  overflow: 'hidden',
-                  height: 'calc(100% - var(--space-5))',
-                }}
-              >
-                <img
-                  src={selectedItem.image!}
-                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                  alt="Clipboard preview"
-                />
-              </div>
-            ) : type === 'color' ? (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 'var(--space-3)',
-                  height: 'calc(100% - var(--space-5))',
-                }}
-              >
-                <div
-                  style={{
-                    flex: 1,
-                    borderRadius: 'var(--radius-lg)',
-                    background: txt,
-                    border: 'var(--space-px) solid var(--color-border, rgba(255, 255, 255, 0.1))',
-                    minHeight: '80px',
-                  }}
-                />
-                <div
-                  style={{
-                    fontFamily: 'monospace',
-                    fontSize: 'var(--font-body)',
-                    textAlign: 'center',
-                    opacity: 0.85,
-                    padding: 'var(--space-1)',
-                  }}
-                >
-                  {txt}
-                </div>
-              </div>
-            ) : (
-              <div
-                style={{
-                  fontSize: 'var(--font-sm)',
-                  lineHeight: 1.55,
-                  opacity: 0.8,
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                  fontFamily: type === 'text' ? 'inherit' : 'monospace',
-                  padding: 'var(--space-3)',
-                  background: 'var(--color-preview-bg, rgba(0, 0, 0, 0.2))',
-                  borderRadius: 'var(--radius-lg)',
-                  height: 'calc(100% - var(--space-5))',
-                  overflow: 'auto',
-                }}
-              >
-                {selectedItem.text}
-              </div>
-            )}
-          </div>
-
-          {/* properties */}
-          {PropertiesPanel ? (
-            <div style={{ flex: '0 0 auto' }}>
-              <PropertiesPanel
-                title="Properties"
-                rows={[
-                  {
-                    label: 'Type',
-                    value: (
-                      <span style={{ textTransform: 'capitalize' }}>
-                        {type === 'image-file' ? 'Image File' : type}
-                      </span>
-                    ),
-                  },
-                  ...(type === 'file'
-                    ? [
-                        { label: 'Name', value: getFilename(txt) },
-                        {
-                          label: 'Path',
-                          value: (
-                            <span style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</span>
-                          ),
-                        },
-                      ]
-                    : []),
-                  ...(type === 'image' && imageDimensions
-                    ? [{ label: 'Dimensions', value: imageDimensions }]
-                    : []),
-                  ...(type === 'color'
-                    ? [
-                        {
-                          label: 'Value',
-                          value: <span style={{ fontFamily: 'monospace' }}>{txt}</span>,
-                        },
-                      ]
-                    : []),
-                  { label: 'Copied', value: new Date(selectedItem.copiedAt).toLocaleString() },
-                ]}
-              />
-            </div>
-          ) : (
-            <div
-              style={{
-                flex: '0 0 auto',
-                padding: 'var(--space-3) var(--space-4)',
-                background: 'var(--color-surface, rgba(255, 255, 255, 0.05))',
-                borderRadius: 'var(--radius-lg)',
-                fontSize: 'var(--font-sm)',
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: 600,
-                  marginBottom: 'var(--space-3)',
-                  borderBottom: 'var(--space-px) solid var(--color-border, rgba(255, 255, 255, 0.1))',
-                  paddingBottom: 'var(--space-2)',
-                  opacity: 0.9,
-                }}
-              >
-                Properties
-              </div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '90px 1fr',
-                  gap: 'var(--space-2) var(--space-4)',
-                  opacity: 0.85,
-                }}
-              >
-                <div style={{ opacity: 0.5 }}>Type</div>
-                <div style={{ textTransform: 'capitalize' }}>
-                  {type === 'image-file' ? 'Image File' : type}
-                </div>
-
-                {type === 'file' && (
-                  <>
-                    <div style={{ opacity: 0.5 }}>Name</div>
-                    <div>{getFilename(txt)}</div>
-                    <div style={{ opacity: 0.5 }}>Path</div>
-                    <div style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</div>
-                  </>
-                )}
-
-                {type === 'image' && imageDimensions && (
-                  <>
-                    <div style={{ opacity: 0.5 }}>Dimensions</div>
-                    <div>{imageDimensions}</div>
-                  </>
-                )}
-
-                {type === 'color' && (
-                  <>
-                    <div style={{ opacity: 0.5 }}>Value</div>
-                    <div style={{ fontFamily: 'monospace' }}>{txt}</div>
-                  </>
-                )}
-
-                <div style={{ opacity: 0.5 }}>Copied</div>
-                <div>{new Date(selectedItem.copiedAt).toLocaleString()}</div>
-              </div>
-            </div>
-          )}
-        </div>
-      )
-    })()
-  ) : (
-    <div
-      style={{
-        display: 'flex',
-        height: 'calc(100% - var(--space-4))',
-        justifyContent: 'center',
-        alignItems: 'center',
-        opacity: 0.4,
-        fontSize: 'var(--font-sm)',
-      }}
-    >
-      Select an item to preview
-    </div>
+  const rightPanel = (
+    <ClipboardRightPanel
+      item={selectedItem}
+      imageDimensions={imageDimensions}
+      onCopy={handleCopy}
+      onCopyFile={handleCopyFile}
+      onPin={handlePin}
+      onUnpin={handleUnpin}
+      onDelete={handleDelete}
+    />
   )
 
   return (

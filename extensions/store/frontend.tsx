@@ -50,7 +50,6 @@ export default function StoreView({ query }: { query: string }) {
     ScrollArea,
     Card,
     CardBody,
-    LoadingState,
     toast,
     ShortcutSep,
     Text,
@@ -63,6 +62,7 @@ export default function StoreView({ query }: { query: string }) {
     IconCheck,
     IconInfo,
   } = window.UI || {}
+  const LoadingState = (window.UI as any)?.LoadingState
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -463,7 +463,7 @@ export default function StoreView({ query }: { query: string }) {
       {/* 2. Extension Detail View */}
       <Box style={{ width: '320px', padding: 'var(--space-3)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
         {selectedExtension ? (
-          Card && CardBody ? (
+          (Card as unknown) && (CardBody as unknown) ? (
             <Card style={{ height: '100%', display: 'flex', flexDirection: 'column', background: 'transparent', border: 'none' }}>
               <CardBody style={{ padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                 {/* Header */}

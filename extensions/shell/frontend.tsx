@@ -10,8 +10,6 @@ import type {
   ProviderState,
   KeyAction,
   CommandPaletteAction,
-  Position,
-  Size,
 } from './types.ts'
 
 const _imp = new Function('url', 'return import(url)')
@@ -20,7 +18,7 @@ const { parseCoordinate, ensureShellStyles, SHELL_EXT_ID } = await _imp(
 )
 const { default: CommandPalette } = await _imp('nuxy-ext://com.nuxy.shell/CommandPalette.tsx')
 const { ResultCard, CompareCard } = await _imp('nuxy-ext://com.nuxy.shell/ResultCard.tsx')
-const { useShellInit, useProviders, useKeyboard, useToolHistory } = await _imp(
+const { useShellInit, useProviders, useKeyboard, useToolHistory, useDragResize } = await _imp(
   'nuxy-ext://com.nuxy.shell/hooks.tsx'
 )
 
@@ -59,11 +57,6 @@ export default function ShellView({ query: _queryProp }: Props) {
   const [themeStyles, setThemeStyles] = useState<Record<string, string> | null>(null)
   const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false)
   const [toolActions, setToolActions] = useState<CommandPaletteAction[]>([])
-  const [position, setPosition] = useState<Position>({
-    x: Math.round((window.innerWidth - 800) / 2),
-    y: Math.round(window.innerHeight * 0.15),
-  })
-  const [size, setSize] = useState<Size>({ width: null, height: null })
   const [settings, setSettings] = useState<ShellConfig>({
     windowWidth: 800,
     windowMaxHeight: 600,
@@ -90,13 +83,21 @@ export default function ShellView({ query: _queryProp }: Props) {
   const [keyActionHints, setKeyActionHints] = useState<KeyAction[]>([])
 
   const cfgRef = useRef<ShellConfig | null>(null)
-  const hasDragged = useRef<boolean>(false)
-  const isDragging = useRef<boolean>(false)
-  const [isDraggingState, setIsDraggingState] = useState<boolean>(false)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const omniBarRef = useRef<HTMLDivElement | null>(null)
   const queryGeneration = useRef<number>(0)
+
+  const {
+    position,
+    size,
+    setPosition,
+    setSize,
+    hasDragged,
+    isDraggingState,
+    handleDragMouseDown,
+    handleResizeMouseDown,
+  } = useDragResize(containerRef)
 
   // Initialize hooks
   useShellInit({
@@ -292,16 +293,18 @@ export default function ShellView({ query: _queryProp }: Props) {
       }
     }
 
+    const onResize = () => updatePosition(false)
+
     window.addEventListener('nuxy-shell-reset', onReset)
     window.addEventListener('focus', onFocus)
-    window.addEventListener('resize', () => updatePosition(false))
+    window.addEventListener('resize', onResize)
     window.addEventListener('nuxy-settings-updated', handleSettingsUpdate)
 
     return () => {
       observer.disconnect()
       window.removeEventListener('nuxy-shell-reset', onReset)
       window.removeEventListener('focus', onFocus)
-      window.removeEventListener('resize', () => updatePosition(false))
+      window.removeEventListener('resize', onResize)
       window.removeEventListener('nuxy-settings-updated', handleSettingsUpdate)
     }
   }, [])
@@ -313,8 +316,12 @@ export default function ShellView({ query: _queryProp }: Props) {
     return () => window.removeEventListener('nuxy-register-actions', handleActions)
   }, [])
 
+  // Reset all tool-scoped state in one effect when activeTool changes
   useEffect(() => {
     setToolActions([])
+    keyActionsGetterRef.current = null
+    setKeyActionHints([])
+    setFooterHints(null)
   }, [activeTool])
 
   useEffect(() => {
@@ -352,20 +359,11 @@ export default function ShellView({ query: _queryProp }: Props) {
   }, [])
 
   useEffect(() => {
-    keyActionsGetterRef.current = null
-    setKeyActionHints([])
-  }, [activeTool])
-
-  useEffect(() => {
     const handleFooterHints = (e: Event) =>
       setFooterHints((e as CustomEvent<React.ReactNode>).detail || null)
     window.addEventListener('nuxy-shell-footer-hints', handleFooterHints)
     return () => window.removeEventListener('nuxy-shell-footer-hints', handleFooterHints)
   }, [])
-
-  useEffect(() => {
-    setFooterHints(null)
-  }, [activeTool])
 
   useEffect(() => {
     const handleOmniBarControl = (e: Event) => {
@@ -490,112 +488,6 @@ export default function ShellView({ query: _queryProp }: Props) {
     index === selectedIndex
       ? (themeStyles?.itemActive ?? 'nuxy-shell-results-item nuxy-shell-results-item--active')
       : (themeStyles?.itemInactive ?? 'nuxy-shell-results-item')
-
-  const handleDragMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.button !== 0) return
-    if (!(e.target instanceof HTMLInputElement)) {
-      e.preventDefault()
-    }
-    isDragging.current = true
-    setIsDraggingState(true)
-    hasDragged.current = true
-
-    let zoom = 1
-    const zoomStyle = document.documentElement.style.zoom
-    if (zoomStyle) {
-      zoom = zoomStyle.endsWith('%') ? parseFloat(zoomStyle) / 100 : parseFloat(zoomStyle)
-    }
-    if (isNaN(zoom) || zoom <= 0) zoom = 1
-
-    const startClientX = e.clientX
-    const startClientY = e.clientY
-    const startPosX = position.x
-    const startPosY = position.y
-
-    const onMouseMove = (moveEvent: MouseEvent) => {
-      if (!isDragging.current) return
-      const deltaX = (moveEvent.clientX - startClientX) / zoom
-      const deltaY = (moveEvent.clientY - startClientY) / zoom
-      const winWidth = containerRef.current ? containerRef.current.offsetWidth : 0
-      const winHeight = containerRef.current ? containerRef.current.offsetHeight : 0
-      const dw = window.innerWidth / zoom
-      const dh = window.innerHeight / zoom
-      setPosition({
-        x: Math.max(0, Math.min(startPosX + deltaX, Math.max(0, dw - winWidth))),
-        y: Math.max(0, Math.min(startPosY + deltaY, Math.max(0, dh - winHeight))),
-      })
-    }
-    const onMouseUp = () => {
-      isDragging.current = false
-      setIsDraggingState(false)
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
-    }
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', onMouseUp)
-  }
-
-  const handleResizeMouseDown = (e: React.MouseEvent<HTMLDivElement>, direction: string) => {
-    e.preventDefault()
-    e.stopPropagation()
-    isDragging.current = true
-    setIsDraggingState(true)
-    hasDragged.current = true
-
-    const zoom = getZoom()
-    const startClientX = e.clientX
-    const startClientY = e.clientY
-    const startWidth = containerRef.current!.offsetWidth
-    const startHeight = containerRef.current!.offsetHeight
-    const startX = position.x
-    const startY = position.y
-
-    const onMouseMove = (moveEvent: MouseEvent) => {
-      if (!isDragging.current) return
-      const deltaX = (moveEvent.clientX - startClientX) / zoom
-      const deltaY = (moveEvent.clientY - startClientY) / zoom
-
-      let newWidth = startWidth
-      let newHeight = startHeight
-      let newX = startX
-      let newY = startY
-
-      if (direction.includes('e')) newWidth = startWidth + deltaX
-      if (direction.includes('w')) {
-        newWidth = startWidth - deltaX
-        newX = startX + deltaX
-      }
-      if (direction.includes('s')) newHeight = startHeight + deltaY
-      if (direction.includes('n')) {
-        newHeight = startHeight - deltaY
-        newY = startY + deltaY
-      }
-
-      if (newWidth < 300) {
-        if (direction.includes('w')) newX -= 300 - newWidth
-        newWidth = 300
-      }
-      if (newHeight < 100) {
-        if (direction.includes('n')) newY -= 100 - newHeight
-        newHeight = 100
-      }
-
-      setSize({ width: newWidth, height: newHeight })
-      if (newX !== startX || newY !== startY) {
-        setPosition({ x: newX, y: newY })
-      }
-    }
-
-    const onMouseUp = () => {
-      isDragging.current = false
-      setIsDraggingState(false)
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
-    }
-
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', onMouseUp)
-  }
 
   return (
     <div

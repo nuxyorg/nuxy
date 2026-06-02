@@ -18,12 +18,10 @@ export async function register(core: CoreContext): Promise<void> {
     apiKey: '',
   }
 
-  const saved = await core.storage.read('config.json')
-  if (saved && typeof saved === 'object' && saved !== null) {
-    const s = saved as Partial<N8nConfig>
-    if (s.baseUrl) config.baseUrl = s.baseUrl
-    if (s.apiKey) config.apiKey = s.apiKey
-  }
+  const savedBaseUrl = await core.settings.read<string>('baseUrl')
+  const savedApiKey = await core.settings.read<string>('apiKey')
+  if (savedBaseUrl) config.baseUrl = savedBaseUrl
+  if (savedApiKey != null) config.apiKey = savedApiKey
 
   async function apiFetch(path: string, options: RequestInit = {}): Promise<unknown> {
     const res = await fetch(`${config.baseUrl}${path}`, {
@@ -42,7 +40,12 @@ export async function register(core: CoreContext): Promise<void> {
     const { baseUrl, apiKey } = payload as N8nConfigurePayload
     config.baseUrl = baseUrl
     config.apiKey = apiKey
-    await core.storage.write('config.json', { baseUrl, apiKey })
+    await core.settings.write('baseUrl', baseUrl)
+    await core.settings.write('apiKey', apiKey)
+  })
+
+  core.ipc.handle('n8n:getConfig', async (): Promise<N8nConfig> => {
+    return { baseUrl: config.baseUrl, apiKey: config.apiKey }
   })
 
   core.ipc.handle('n8n:status', async (): Promise<N8nStatusResult> => {

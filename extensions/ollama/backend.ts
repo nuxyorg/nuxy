@@ -21,15 +21,27 @@ export async function register(core: CoreContext): Promise<void> {
   const savedHost = await core.settings.read<string>('host')
   const savedModel = await core.settings.read<string>('model')
   const savedThinkingColor = await core.settings.read<string>('thinkingColor')
+  const savedSystemPrompt = await core.settings.read<string>('systemPrompt')
+  const savedTemperature = await core.settings.read<number>('temperature')
   if (savedHost) config.host = savedHost
   if (savedModel) config.model = savedModel
   if (savedThinkingColor) config.thinkingColor = savedThinkingColor
+  if (savedSystemPrompt != null) config.systemPrompt = savedSystemPrompt
+  if (savedTemperature != null) config.temperature = savedTemperature
 
   async function chat(payload: ChatPayload): Promise<ChatResult> {
+    const messages = config.systemPrompt
+      ? [{ role: 'system' as const, content: config.systemPrompt }, ...payload.messages]
+      : payload.messages
     const response = await fetch(`${config.host}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: config.model, messages: payload.messages, stream: false }),
+      body: JSON.stringify({
+        model: config.model,
+        messages,
+        stream: false,
+        ...(config.temperature !== undefined ? { options: { temperature: config.temperature } } : {}),
+      }),
     })
 
     if (!response.ok) {
@@ -74,7 +86,7 @@ export async function register(core: CoreContext): Promise<void> {
   })
 
   core.ipc.handle('configure', async (payload: unknown): Promise<void> => {
-    const { model, host, thinkingColor } = (payload as ConfigurePayload) ?? {}
+    const { model, host, thinkingColor, systemPrompt, temperature } = (payload as ConfigurePayload) ?? {}
     if (model !== undefined) {
       config.model = model
       await core.settings.write('model', model)
@@ -87,11 +99,25 @@ export async function register(core: CoreContext): Promise<void> {
       config.thinkingColor = thinkingColor
       await core.settings.write('thinkingColor', thinkingColor)
     }
+    if (systemPrompt !== undefined) {
+      config.systemPrompt = systemPrompt
+      await core.settings.write('systemPrompt', systemPrompt)
+    }
+    if (temperature !== undefined) {
+      config.temperature = temperature
+      await core.settings.write('temperature', temperature)
+    }
   })
 
   core.ipc.handle('getConfig', async (): Promise<OllamaConfig> => {
     const freshThinkingColor = await core.settings.read<string>('thinkingColor')
-    return { host: config.host, model: config.model, thinkingColor: freshThinkingColor ?? config.thinkingColor }
+    return {
+      host: config.host,
+      model: config.model,
+      thinkingColor: freshThinkingColor ?? config.thinkingColor,
+      systemPrompt: config.systemPrompt,
+      temperature: config.temperature,
+    }
   })
 
   core.ipc.handle('history:save', async (payload: unknown): Promise<void> => {
