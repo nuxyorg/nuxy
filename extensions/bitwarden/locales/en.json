@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "name": "Bitwarden"
+  },
+  "status": {
+    "checking": "Checking vault status..."
+  },
+  "install": {
+    "title": "Bitwarden CLI Not Found",
+    "description": "The Nuxy Bitwarden extension uses {tool} (a Rust-based Bitwarden CLI client) in the background to securely access your passwords. Please install rbw before continuing.",
+    "yourSystem": "Your system",
+    "pressEnter": "Press ↵ after installation is complete.",
+    "arch": {
+      "label": "Arch Linux / CachyOS",
+      "heading": "Installation for Arch Linux / CachyOS:",
+      "description": "Install the {rbw} and {pinentry} packages from the repositories:"
+    },
+    "debian": {
+      "label": "Ubuntu / Debian",
+      "heading": "Installation for Ubuntu / Debian:",
+      "description": "Install the {rbw} package using {apt}:"
+    },
+    "macos": {
+      "label": "macOS",
+      "heading": "Installation for macOS:",
+      "description": "Install the {rbw} package using {homebrew}:"
+    }
+  },
+  "configure": {
+    "title": "Connect Your Bitwarden Account",
+    "description": "Enter the email address for your Bitwarden account. This address will be saved to the {rbw} configuration file on your local machine.",
+    "emailLabel": "Bitwarden Email Address:",
+    "emailPlaceholder": "example@domain.com",
+    "saving": "Saving...",
+    "hint": "↵ Save · Esc Cancel",
+    "errors": {
+      "emailRequired": "Please enter a valid email address.",
+      "emailFailed": "Failed to configure email."
+    }
+  },
+  "lock": {
+    "title": "Your Bitwarden Vault is Locked",
+    "account": "Account:",
+    "description": "Press the button below to unlock your vault. A password entry window (Pinentry) will open on your desktop:",
+    "waitingForPassword": "Waiting for password...",
+    "syncing": "Syncing...",
+    "hint": "↵ Unlock · ⌃S Sync · ⌃R Refresh",
+    "unlocking": "A password entry window has opened on your desktop. Please enter your Bitwarden master password.",
+    "alternativeUnlock": "Alternatively, you can also unlock via your terminal:",
+    "errors": {
+      "unlockFailed": "Unlock failed. Pinentry may have been closed."
+    }
+  },
+  "search": {
+    "empty": "No results found.",
+    "placeholder": "Type the name of the password you want to search for."
+  },
+  "actions": {
+    "previousTab": "Previous Tab",
+    "recheck": "Recheck",
+    "save": "Save",
+    "cancel": "Cancel",
+    "unlock": "Unlock",
+    "syncVault": "Sync Vault",
+    "refreshStatus": "Refresh Status",
+    "editEmail": "Edit Email",
+    "copyPassword": "Copy Password",
+    "copyUsername": "Copy Username",
+    "copyTotp": "Copy TOTP"
+  }
+}

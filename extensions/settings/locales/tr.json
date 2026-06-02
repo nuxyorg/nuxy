@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "name": "Ayarlar"
+  },
+  "nav": {
+    "general": "Genel",
+    "window": "Pencere",
+    "language": "Dil"
+  },
+  "general": {
+    "theme": "Tema",
+    "iconPack": "Simge Paketi",
+    "zoom": "Yakınlaştırma",
+    "font": "Yazı Tipi"
+  },
+  "window": {
+    "escAction": "Esc Tuşu Eylemi",
+    "blurAction": "Odak Kaybı Eylemi",
+    "windowWidth": "Pencere Genişliği",
+    "windowMaxHeight": "Maks. Yükseklik",
+    "windowPosition": "Başlangıç Konumu",
+    "opacity": "Saydamlık",
+    "alwaysOnTop": "Her Zaman Üstte",
+    "showInTaskbar": "Görev Çubuğunda Göster",
+    "showOnStartup": "Başlangıçta Göster"
+  },
+  "language": {
+    "slot1": "Tercih Edilen Dil (1.)",
+    "slot2": "Tercih Edilen Dil (2.)",
+    "slot3": "Tercih Edilen Dil (3.)"
+  },
+  "font": {
+    "systemDefault": "Sistem Varsayılanı",
+    "monospace": "Monospace"
+  },
+  "escAction": {
+    "hide": "Gizle",
+    "minimize": "Küçült",
+    "quit": "Kapat",
+    "none": "Hiçbir Şey Yapma"
+  },
+  "windowPosition": {
+    "topCenter": "Üst Orta",
+    "leftCenter": "Sol Orta",
+    "screenCenter": "Ekran Merkezi",
+    "rightCenter": "Sağ Orta",
+    "bottomCenter": "Alt Orta",
+    "topLeft": "Sol Üst",
+    "topRight": "Sağ Üst",
+    "bottomLeft": "Sol Alt",
+    "bottomRight": "Sağ Alt",
+    "upperCenterDefault": "Üst Orta (varsayılan)"
+  },
+  "bool": {
+    "yes": "Evet",
+    "no": "Hayır"
+  },
+  "selectBox": {
+    "none": "(yok)",
+    "placeholder": "—"
+  },
+  "actions": {
+    "previousSetting": "Önceki ayar",
+    "nextSetting": "Sonraki ayar",
+    "openSetting": "Ayarı aç",
+    "closeSetting": "Ayarı kapat"
+  }
+}

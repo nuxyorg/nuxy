@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "name": "Bitwarden"
+  },
+  "status": {
+    "checking": "Kasa durumu kontrol ediliyor..."
+  },
+  "install": {
+    "title": "Bitwarden CLI Bulunamadı",
+    "description": "Nuxy Bitwarden eklentisi, şifrelerinize güvenli bir şekilde erişmek için arka planda {tool} (Rust tabanlı Bitwarden CLI istemcisi) aracını kullanır. Lütfen devam etmeden önce rbw'yi kurun.",
+    "yourSystem": "Sisteminiz",
+    "pressEnter": "Kurulumu tamamladıktan sonra ↵ tuşuna basın.",
+    "arch": {
+      "label": "Arch Linux / CachyOS",
+      "heading": "Arch Linux / CachyOS için Kurulum:",
+      "description": "Depolarda bulunan {rbw} ve şifre sorması için {pinentry} paketlerini kurun:"
+    },
+    "debian": {
+      "label": "Ubuntu / Debian",
+      "heading": "Ubuntu / Debian için Kurulum:",
+      "description": "{apt} kullanarak {rbw} paketini kurun:"
+    },
+    "macos": {
+      "label": "macOS",
+      "heading": "macOS için Kurulum:",
+      "description": "{homebrew} kullanarak {rbw} paketini kurun:"
+    }
+  },
+  "configure": {
+    "title": "Bitwarden Hesabınızı Bağlayın",
+    "description": "Bitwarden hesabınıza ait e-posta adresini girin. Bu adres yerel bilgisayarınızdaki {rbw} konfigürasyon dosyasına kaydedilecektir.",
+    "emailLabel": "Bitwarden E-posta Adresi:",
+    "emailPlaceholder": "ornek@alanadi.com",
+    "saving": "Kaydediliyor...",
+    "hint": "↵ Kaydet · Esc İptal",
+    "errors": {
+      "emailRequired": "Lütfen geçerli bir e-posta adresi girin.",
+      "emailFailed": "E-posta yapılandırılamadı."
+    }
+  },
+  "lock": {
+    "title": "Bitwarden Kasanız Kilitli",
+    "account": "Hesabınız:",
+    "description": "Kasanın kilidini açmak için aşağıdaki butona basın. Bilgisayarınızda bir şifre giriş penceresi (Pinentry) açılacaktır:",
+    "waitingForPassword": "Şifre bekleniyor...",
+    "syncing": "Eşitleniyor...",
+    "hint": "↵ Kilit Aç · ⌃S Eşitle · ⌃R Yenile",
+    "unlocking": "Masaüstünüzde şifre giriş penceresi açıldı. Lütfen Bitwarden ana şifrenizi girin.",
+    "alternativeUnlock": "Alternatif olarak, terminaliniz üzerinden de kilidi açabilirsiniz:",
+    "errors": {
+      "unlockFailed": "Kilit açma başarısız oldu. Pinentry kapatılmış olabilir."
+    }
+  },
+  "search": {
+    "empty": "Sonuç bulunamadı.",
+    "placeholder": "Aramak istediğiniz şifre adını yazın."
+  },
+  "actions": {
+    "previousTab": "Önceki Sekme",
+    "recheck": "Yeniden Denetle",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "unlock": "Kilit Aç",
+    "syncVault": "Kasa Eşitle",
+    "refreshStatus": "Durumu Yenile",
+    "editEmail": "E-postayı Düzenle",
+    "copyPassword": "Şifreyi Kopyala",
+    "copyUsername": "Kullanıcı Adını Kopyala",
+    "copyTotp": "TOTP Kopyala"
+  }
+}

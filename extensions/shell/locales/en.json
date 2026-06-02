@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "name": "Nuxy Shell"
+  },
+  "omniBar": {
+    "placeholder": "What do you have in mind?",
+    "searchTool": "Search {toolName}",
+    "ariaLabel": "Search"
+  },
+  "results": {
+    "ariaLabel": "Results"
+  },
+  "footer": {
+    "extensionsLoaded": "{count} extensions loaded",
+    "pressToRun": "Press",
+    "toRun": "to run",
+    "toActions": "to actions"
+  },
+  "loading": "Loading…",
+  "commandPalette": {
+    "searchPlaceholder": "Search commands...",
+    "noActions": "No actions available.",
+    "enterShortcut": "Enter"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "name": "n8n"
+  },
+  "config": {
+    "sectionHeader": "n8n Yapılandır",
+    "baseUrlLabel": "Temel URL",
+    "baseUrlPlaceholder": "http://localhost:5678",
+    "apiKeyLabel": "API Anahtarı",
+    "apiKeyPlaceholder": "n8n_api_…"
+  },
+  "workflows": {
+    "sectionHeader": "İş Akışları",
+    "status": {
+      "active": "aktif",
+      "inactive": "pasif"
+    },
+    "empty": "İş akışı bulunamadı.",
+    "emptySearch": "Eşleşen iş akışı bulunamadı."
+  },
+  "executions": {
+    "sectionHeaderPrefix": "Çalıştırmalar:",
+    "empty": "Çalıştırma bulunamadı."
+  },
+  "status": {
+    "unreachable": "n8n'e ulaşılamıyor"
+  },
+  "actions": {
+    "configure": "Yapılandır",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "showWorkflows": "İş Akışlarını Göster",
+    "configureConnection": "Bağlantıyı Yapılandır",
+    "refreshWorkflows": "İş Akışlarını Yenile",
+    "runWebhookPrefix": "Webhook Çalıştır:",
+    "select": "Seç"
+  }
+}

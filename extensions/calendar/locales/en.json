@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "name": "Calendar"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "days": {
+    "mo": "Mo",
+    "tu": "Tu",
+    "we": "We",
+    "th": "Th",
+    "fr": "Fr",
+    "sa": "Sa",
+    "su": "Su"
+  },
+  "search": {
+    "noEvents": "No events found",
+    "noEventsHint": "Try a different search."
+  },
+  "day": {
+    "noEvents": "No events",
+    "noEventsHint": "Press N to create an event."
+  },
+  "create": {
+    "titleField": "Title",
+    "titlePlaceholder": "Type in search bar…",
+    "timeField": "Time",
+    "reminderField": "Reminder"
+  },
+  "detail": {
+    "reminderField": "Reminder"
+  },
+  "reminder": {
+    "none": "No reminder",
+    "fiveMin": "5 min before",
+    "fifteenMin": "15 min before",
+    "thirtyMin": "30 min before",
+    "oneHour": "1 hour before",
+    "oneDay": "1 day before"
+  },
+  "actions": {
+    "enterCalendar": "Enter calendar",
+    "next": "Next",
+    "prev": "Prev",
+    "search": "Search",
+    "navigate": "Navigate",
+    "open": "Open",
+    "back": "Back",
+    "newEvent": "New Event",
+    "deleteEvent": "Delete Event",
+    "saveEvent": "Save Event"
+  },
+  "notification": {
+    "reminderTitle": "Reminder"
+  }
+}

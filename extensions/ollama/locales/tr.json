@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "name": "Ollama"
+  },
+  "empty": {
+    "message": "Ollama'ya istediğini sor.",
+    "hint": "Arama çubuğuna yaz ve Enter'a bas."
+  },
+  "actions": {
+    "send": "Gönder",
+    "queue": "Sıraya Al",
+    "stop": "Durdur",
+    "clearHistory": "Sohbet Geçmişini Temizle",
+    "models": "Modeller"
+  },
+  "hints": {
+    "model": "Model: {name}"
+  },
+  "alert": {
+    "queued": "Sırada: {message}"
+  },
+  "settings": {
+    "host": {
+      "label": "Ollama Sunucusu",
+      "placeholder": "http://localhost:11434",
+      "description": "Ollama sunucusunun çalıştığı URL"
+    },
+    "model": {
+      "label": "Varsayılan Model",
+      "placeholder": "llama3",
+      "description": "Sohbet için kullanılacak model adı (örn. llama3, mistral)"
+    },
+    "thinkingColor": {
+      "label": "Düşünme Göstergesi",
+      "description": "Ollama yanıt üretirken gösterilen kenarlık efekti",
+      "options": {
+        "light": "Açık",
+        "rainbow": "Gökkuşağı",
+        "bit": "Bit",
+        "off": "Kapalı"
+      }
+    }
+  }
+}

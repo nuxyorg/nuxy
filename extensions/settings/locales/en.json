@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "name": "Settings"
+  },
+  "nav": {
+    "general": "General",
+    "window": "Window",
+    "language": "Language"
+  },
+  "general": {
+    "theme": "Theme",
+    "iconPack": "Icon Pack",
+    "zoom": "Zoom",
+    "font": "Font"
+  },
+  "window": {
+    "escAction": "Esc Key Action",
+    "blurAction": "Focus-Out Action",
+    "windowWidth": "Window Width",
+    "windowMaxHeight": "Max Height",
+    "windowPosition": "Launch Position",
+    "opacity": "Opacity",
+    "alwaysOnTop": "Always on Top",
+    "showInTaskbar": "Show in Taskbar",
+    "showOnStartup": "Show on Startup"
+  },
+  "language": {
+    "slot1": "Preferred Language (1st)",
+    "slot2": "Preferred Language (2nd)",
+    "slot3": "Preferred Language (3rd)"
+  },
+  "font": {
+    "systemDefault": "System Default",
+    "monospace": "Monospace"
+  },
+  "escAction": {
+    "hide": "Hide",
+    "minimize": "Minimize",
+    "quit": "Quit",
+    "none": "Do Nothing"
+  },
+  "windowPosition": {
+    "topCenter": "Top Center",
+    "leftCenter": "Left Center",
+    "screenCenter": "Screen Center",
+    "rightCenter": "Right Center",
+    "bottomCenter": "Bottom Center",
+    "topLeft": "Top Left",
+    "topRight": "Top Right",
+    "bottomLeft": "Bottom Left",
+    "bottomRight": "Bottom Right",
+    "upperCenterDefault": "Upper Center (default)"
+  },
+  "bool": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "selectBox": {
+    "none": "(none)",
+    "placeholder": "—"
+  },
+  "actions": {
+    "previousSetting": "Previous setting",
+    "nextSetting": "Next setting",
+    "openSetting": "Open setting",
+    "closeSetting": "Close setting"
+  }
+}

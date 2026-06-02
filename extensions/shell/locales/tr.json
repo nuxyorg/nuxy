@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "name": "Nuxy Shell"
+  },
+  "omniBar": {
+    "placeholder": "Aklınızda ne var?",
+    "searchTool": "{toolName} içinde ara",
+    "ariaLabel": "Ara"
+  },
+  "results": {
+    "ariaLabel": "Sonuçlar"
+  },
+  "footer": {
+    "extensionsLoaded": "{count} uzantı yüklendi",
+    "pressToRun": "Çalıştırmak için",
+    "toRun": "tuşuna basın",
+    "toActions": "işlemler için"
+  },
+  "loading": "Yükleniyor…",
+  "commandPalette": {
+    "searchPlaceholder": "Komut ara...",
+    "noActions": "Kullanılabilir işlem yok.",
+    "enterShortcut": "Enter"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "name": "Video Downloader"
+  },
+  "empty": {
+    "noDownloads": "No downloads yet. Search for a video to start.",
+    "pasteUrl": "Paste a video URL in the search bar and press Enter.",
+    "noFormats": "No matching formats for this category."
+  },
+  "loading": {
+    "fetchingFormats": "Fetching video details and formats…",
+    "generic": "Loading…"
+  },
+  "tabs": {
+    "recommended": "Recommended",
+    "video_audio": "Video & Audio",
+    "audio_only": "Audio Only",
+    "video_only": "Video Only",
+    "all": "All Streams",
+    "downloads": "Downloads"
+  },
+  "formats": {
+    "bestQuality": "Best Quality",
+    "highestVideoAudio": "Highest video & audio merged",
+    "highestAudio": "Highest audio quality",
+    "audioOnly": "audio only",
+    "resolution": "{height}p resolution",
+    "videoAudio": "video + audio"
+  },
+  "badges": {
+    "audio": "AUDIO",
+    "silent": "SILENT",
+    "error": "ERROR",
+    "downloading": "Downloading ({progress}%)"
+  },
+  "downloads": {
+    "title": "Downloads & History",
+    "savedTo": "Saved to: {path}",
+    "unknownVideo": "Unknown Video",
+    "unknownResolution": "Unknown"
+  },
+  "actions": {
+    "download": "Download / Open",
+    "openFolder": "Open Folder",
+    "nextTab": "Next tab",
+    "backToFormats": "Back to formats",
+    "navigate": "Navigate",
+    "openVideo": "[↵] Open Video",
+    "openFolderHint": "[⇧↵] Open Folder"
+  },
+  "toast": {
+    "downloadQueued": "Download queued!",
+    "downloadFailed": "Failed to start download",
+    "downloadCancelled": "Download cancelled"
+  },
+  "install": {
+    "notInstalled": "yt-dlp is not installed.",
+    "viaPip": "Install via pip",
+    "viaBrew": "Install via brew",
+    "viaPacman": "Install via pacman"
+  },
+  "footer": {
+    "formats": "{count} formats"
+  },
+  "commandPalette": {
+    "viewDownloads": "View Downloads & History",
+    "filterRecommended": "Filter: Recommended",
+    "filterVideoAudio": "Filter: Video & Audio",
+    "filterAudioOnly": "Filter: Audio Only",
+    "filterVideoOnly": "Filter: Video Only",
+    "filterAllStreams": "Filter: All Streams"
+  },
+  "settings": {
+    "downloadPath": {
+      "label": "Download Location",
+      "placeholder": "~/Downloads",
+      "description": "Folder where downloaded videos are saved"
+    },
+    "format": {
+      "label": "Preferred Format",
+      "options": {
+        "mp4": "MP4",
+        "webm": "WebM",
+        "mkv": "MKV",
+        "best": "Best Quality"
+      }
+    },
+    "audioOnly": {
+      "label": "Audio Only"
+    },
+    "subtitles": {
+      "label": "Download Subtitles"
+    }
+  }
+}

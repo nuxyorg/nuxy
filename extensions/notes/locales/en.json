@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "name": "Notes"
+  },
+  "sections": {
+    "notes": "Notes"
+  },
+  "list": {
+    "newNote": "New Note",
+    "newNoteHint": "Create a new note",
+    "noNotes": "No notes yet.",
+    "noMatching": "No matching notes.",
+    "createHint": "Use ⌃N to create a new note."
+  },
+  "editor": {
+    "placeholder": "Start writing…",
+    "transcribing": "Transcribing…"
+  },
+  "empty": {
+    "selectOrCreate": "Select a note or create a new one.",
+    "createHint": "Use ⌃N to create a new note."
+  },
+  "errors": {
+    "renderError": "Render error"
+  },
+  "toasts": {
+    "saved": "Note saved!",
+    "deleted": "Note deleted"
+  },
+  "actions": {
+    "newNote": "New note",
+    "save": "Save",
+    "saveNote": "Save Note",
+    "delete": "Delete",
+    "deleteNote": "Delete Note",
+    "editNote": "Edit Note",
+    "record": "Record",
+    "stopRecording": "Stop recording",
+    "focusSearchExitEdit": "Focus search / Exit edit",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "provider": {
+    "saveAsNote": "Save as note"
+  }
+}

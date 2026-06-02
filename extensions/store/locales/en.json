@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "name": "Store"
+  },
+  "tabs": {
+    "all": "All Extensions",
+    "tool": "Tools",
+    "theme": "Themes",
+    "iconpack": "Icon Packs",
+    "installed": "Installed",
+    "updates": "Updates"
+  },
+  "list": {
+    "empty": "No extensions found.",
+    "items": "{count} items"
+  },
+  "status": {
+    "installedVersion": "Installed v{version}",
+    "availableUpdate": "v{installed} (Update to v{latest})",
+    "available": "v{version}"
+  },
+  "badge": {
+    "update": "Update",
+    "installed": "Installed"
+  },
+  "detail": {
+    "selectPrompt": "Select an extension to see details",
+    "author": "Author",
+    "version": "Version",
+    "installedVersion": "(Installed: {version})",
+    "type": "Type",
+    "description": "Description",
+    "permissions": "Permissions Required",
+    "noPermissions": "No permissions required",
+    "riskyWarning": "This extension requests system command or file write privileges. Verify publisher integrity."
+  },
+  "actions": {
+    "install": "Install",
+    "update": "Update",
+    "uninstall": "Uninstall",
+    "refresh": "Refresh store",
+    "navigate": "Navigate list",
+    "installUpdate": "Install / Update",
+    "nextCategory": "Next Category",
+    "focusSidebar": "Focus Sidebar",
+    "performAction": "Perform Action"
+  },
+  "loading": {
+    "connecting": "Connecting to extension store...",
+    "installing": "Installing {name}...",
+    "uninstalling": "Uninstalling {name}..."
+  },
+  "toast": {
+    "installSuccess": "{name} installed successfully!",
+    "installFailed": "Installation failed",
+    "uninstallSuccess": "{name} uninstalled.",
+    "uninstallFailed": "Uninstall failed"
+  },
+  "error": {
+    "fetchFailed": "Failed to fetch catalog",
+    "networkError": "Network error fetching extensions",
+    "installFailed": "Failed to install {name}",
+    "uninstallFailed": "Failed to uninstall {name}",
+    "installError": "Installation error",
+    "uninstallError": "Uninstall error",
+    "requiresUiCard": "Detail views require UI Card components"
+  }
+}

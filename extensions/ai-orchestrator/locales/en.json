@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "name": "AI Orchestrator"
+  },
+  "errors": {
+    "emptyQuery": "Empty query",
+    "unknownTool": "Unknown tool: {name}",
+    "invokeFailed": "Extension invoke failed: {error}"
+  },
+  "status": {
+    "routing": "Routing: \"{query}\"",
+    "noCallableTools": "No callable tools registered, using built-in definitions",
+    "sending": "Sending to model...",
+    "directAnswer": "Direct answer (no tool called)",
+    "toolCall": "Tool call: {name}",
+    "toolResult": "Tool result received",
+    "finalResponse": "Final response received"
+  },
+  "tools": {
+    "timeCalculator": {
+      "description": "Convert a time from one timezone/city to another."
+    },
+    "calculator": {
+      "description": "Evaluate a mathematical expression like \"2+2\" or \"sqrt(16)\"."
+    },
+    "calendar": {
+      "description": "Set a reminder or schedule something on a specific date."
+    },
+    "ollama": {
+      "description": "Answer general questions, open-ended conversation, creative tasks, coding help, and anything else."
+    }
+  }
+}

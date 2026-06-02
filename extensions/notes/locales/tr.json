@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "name": "Notlar"
+  },
+  "sections": {
+    "notes": "Notlar"
+  },
+  "list": {
+    "newNote": "Yeni Not",
+    "newNoteHint": "Yeni bir not oluştur",
+    "noNotes": "Henüz not yok.",
+    "noMatching": "Eşleşen not yok.",
+    "createHint": "Yeni not oluşturmak için ⌃N kullanın."
+  },
+  "editor": {
+    "placeholder": "Yazmaya başlayın…",
+    "transcribing": "Yazıya dönüştürülüyor…"
+  },
+  "empty": {
+    "selectOrCreate": "Bir not seçin veya yeni bir tane oluşturun.",
+    "createHint": "Yeni not oluşturmak için ⌃N kullanın."
+  },
+  "errors": {
+    "renderError": "Görüntüleme hatası"
+  },
+  "toasts": {
+    "saved": "Not kaydedildi!",
+    "deleted": "Not silindi"
+  },
+  "actions": {
+    "newNote": "Yeni not",
+    "save": "Kaydet",
+    "saveNote": "Notu Kaydet",
+    "delete": "Sil",
+    "deleteNote": "Notu Sil",
+    "editNote": "Notu Düzenle",
+    "record": "Kaydet",
+    "stopRecording": "Kaydı durdur",
+    "focusSearchExitEdit": "Aramaya odaklan / Düzenlemeyi çık",
+    "previous": "Önceki",
+    "next": "Sonraki"
+  },
+  "provider": {
+    "saveAsNote": "Not olarak kaydet"
+  }
+}

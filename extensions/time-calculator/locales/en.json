@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "name": "Time Calculator"
+  },
+  "header": {
+    "calculator": "Calculator",
+    "ai": "AI"
+  },
+  "empty": {
+    "prompt": "Type a time conversion query above"
+  },
+  "loading": {
+    "calculating": "Calculating…"
+  },
+  "hint": {
+    "tryExamples": "Try these examples:"
+  },
+  "subtitle": {
+    "addCity": "Add a city — e.g. \"in london\", \"in tokyo\""
+  }
+}

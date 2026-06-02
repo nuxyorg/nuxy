@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "name": "Emoji Seçici"
+  },
+  "categories": {
+    "favorites": "Favoriler"
+  },
+  "search": {
+    "resultsCount": {
+      "one": "{count} emoji bulundu",
+      "other": "{count} emoji bulundu"
+    }
+  },
+  "empty": {
+    "noFavorites": "Henüz favori yok — eklemek için bir emoji üzerinde Ctrl+F'ye basın.",
+    "noResults": "Sonuç yok."
+  },
+  "tooltip": {
+    "favorite": "(favori)"
+  },
+  "actions": {
+    "moveLeft": "Sola git",
+    "moveRight": "Sağa git",
+    "moveUp": "Yukarı git",
+    "moveDown": "Aşağı git",
+    "copyEmoji": "Emoji kopyala",
+    "toggleFavorite": "Favoriye ekle/çıkar"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "meta": {
+    "name": "Pano Yöneticisi"
+  },
+  "list": {
+    "empty": {
+      "message": "Geçmiş boş.",
+      "hint": "Kopyalanan metinler burada görünecek."
+    },
+    "noMatches": {
+      "message": "Eşleşme yok.",
+      "hint": "Farklı bir arama deneyin."
+    }
+  },
+  "item": {
+    "copied": "Kopyalandı!",
+    "current": "güncel",
+    "type": {
+      "image": "Görsel",
+      "color": "Renk",
+      "url": "URL"
+    }
+  },
+  "preview": {
+    "selectPrompt": "Önizlemek için bir öğe seçin",
+    "imageAlt": "Pano önizlemesi"
+  },
+  "properties": {
+    "title": "Özellikler",
+    "type": "Tür",
+    "name": "Ad",
+    "path": "Yol",
+    "dimensions": "Boyutlar",
+    "value": "Değer",
+    "copied": "Kopyalandı",
+    "imageFile": "Görsel Dosyası"
+  },
+  "actions": {
+    "navigate": "Gezin",
+    "nextItem": "Sonraki öğe",
+    "copy": "Kopyala",
+    "deleteSelected": "Seçili Öğeyi Sil",
+    "pinSelected": "Seçili Öğeyi Sabitle",
+    "unpinSelected": "Seçili Öğenin Sabitlemesini Kaldır"
+  },
+  "alert": {
+    "fileNotFound": "Dosya bulunamadı — taşınmış veya silinmiş olabilir."
+  },
+  "time": {
+    "now": "şimdi"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "openaiApiKey",
+      "label": "OpenAI API Key",
+      "type": "text",
+      "default": "",
+      "placeholder": "sk-...",
+      "description": "API Key used to perform speech-to-text notes transcription via Whisper"
+    },
+    {
+      "key": "language",
+      "label": "Transcription Language",
+      "type": "select",
+      "default": "en",
+      "options": [
+        { "value": "en", "label": "English" },
+        { "value": "tr", "label": "Turkish" },
+        { "value": "de", "label": "German" },
+        { "value": "fr", "label": "French" },
+        { "value": "es", "label": "Spanish" }
+      ],
+      "description": "Default language hint sent to the Whisper speech-to-text API"
+    },
+    {
+      "key": "fontSize",
+      "label": "Editor Font Size",
+      "type": "select",
+      "default": "14px",
+      "options": [
+        { "value": "12px", "label": "12px" },
+        { "value": "14px", "label": "14px" },
+        { "value": "16px", "label": "16px" },
+        { "value": "18px", "label": "18px" },
+        { "value": "20px", "label": "20px" }
+      ],
+      "description": "Visual font size inside the note body editor and preview"
+    }
+  ]
+}
