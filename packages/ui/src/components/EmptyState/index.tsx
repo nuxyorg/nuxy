@@ -23,9 +23,9 @@ export function EmptyState(props: any): React.ReactElement {
     padding: '24px',
     textAlign: 'center',
     fontFamily: 'system-ui, -apple-system, sans-serif',
-    color: '#a1a1aa',
+    color: 'var(--text-muted, #a1a1aa)',
     minHeight: page ? '100vh' : 'auto',
-    backgroundColor: page ? '#09090b' : 'transparent',
+    backgroundColor: page ? 'var(--surface-1, #09090b)' : 'transparent',
     boxSizing: 'border-box',
     ...style,
   }
@@ -33,22 +33,47 @@ export function EmptyState(props: any): React.ReactElement {
   return (
     <div style={containerStyle} {...rest}>
       {title && (
-        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#f4f4f5', margin: '0 0 8px 0' }}>
+        <h2
+          style={{
+            fontSize: 'var(--font-lg, 18px)',
+            fontWeight: 600,
+            color: 'var(--text-primary, #f4f4f5)',
+            margin: '0 0 8px 0',
+          }}
+        >
           {title}
         </h2>
       )}
       {message && (
-        <p style={{ fontSize: '14px', margin: '0 0 8px 0', color: '#a1a1aa' }}>{message}</p>
+        <p
+          style={{
+            fontSize: 'var(--font-sm, 14px)',
+            margin: '0 0 8px 0',
+            color: 'var(--text-muted, #a1a1aa)',
+          }}
+        >
+          {message}
+        </p>
       )}
-      {hint && <p style={{ fontSize: '12px', margin: '0 0 8px 0', color: '#71717a' }}>{hint}</p>}
+      {hint && (
+        <p
+          style={{
+            fontSize: 'var(--font-xs, 12px)',
+            margin: '0 0 8px 0',
+            color: 'var(--text-subtle, #71717a)',
+          }}
+        >
+          {hint}
+        </p>
+      )}
       {error && (
         <pre
           style={{
-            fontSize: '12px',
+            fontSize: 'var(--font-xs, 12px)',
             padding: '12px',
-            background: '#27272a',
-            borderRadius: '6px',
-            color: '#ef4444',
+            background: 'var(--surface-2, #27272a)',
+            borderRadius: 'var(--radius, 6px)',
+            color: 'var(--error, #ef4444)',
             margin: '8px 0 0 0',
             overflowX: 'auto',
             maxWidth: '100%',

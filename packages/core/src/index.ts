@@ -75,13 +75,15 @@ export interface CoreContext {
   }
   ipc: {
     handle: <T, R>(channel: string, handler: (payload: T) => Promise<R>) => void
+    broadcast: (channel: string, data: unknown) => void
   }
   registry: {
     registerTool: (config: { name: string; [key: string]: unknown }) => void
     registerProvider: (config: { name: string; [key: string]: unknown }) => void
-    registerOrchestrator: (config: { [key: string]: unknown }) => void
+    registerOrchestrator: (fn: (rawText: string) => void | Promise<void>) => void
     registerTheme: (def: ThemeDefinition) => void
     registerIconPack: (def: IconPackDefinition) => void
+    getCallableTools: () => unknown[]
   }
   extensions: {
     invoke: (targetId: string, channel: string, payload?: unknown) => Promise<IpcResult>
@@ -150,6 +152,7 @@ export type {
   ExtensionType,
   LoadedExtension,
   IpcResult,
+  RegistryEntry,
   ThemeDefinition,
   IconPackDefinition,
   ExtensionSettingType,

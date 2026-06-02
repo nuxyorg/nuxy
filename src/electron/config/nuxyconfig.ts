@@ -1,4 +1,5 @@
 import fs from 'fs'
+import fsPromises from 'fs/promises'
 import path from 'path'
 import { kernelLogger } from '@nuxy/core'
 import { DATA_DIR, CONFIG_DIR } from './paths.js'
@@ -95,17 +96,17 @@ export function loadConfig(): NuxyConfig {
       fs.watch(settingsDir, (_, filename) => {
         if (filename === 'settings.json') {
           log.info('settings.json changed — reloading config.')
-          try {
-            reloadConfig()
-            void import('../window/runtime.js').then(({ applyConfigToWindow }) =>
-              import('../window/manager.js').then(({ getMainWindow }) => {
-                const win = getMainWindow()
-                if (win) applyConfigToWindow(win)
-              })
-            )
-          } catch (e) {
-            log.error('Failed to reload config on settings.json change:', e)
-          }
+          void (async () => {
+            try {
+              await reloadConfigAsync()
+              const { applyConfigToWindow } = await import('../window/runtime.js')
+              const { getMainWindow } = await import('../window/manager.js')
+              const win = getMainWindow()
+              if (win) applyConfigToWindow(win)
+            } catch (e) {
+              log.error('Failed to reload config on settings.json change:', e)
+            }
+          })()
         }
       })
     } catch (err) {
@@ -124,6 +125,49 @@ export function loadConfig(): NuxyConfig {
 export function reloadConfig(): NuxyConfig {
   _config = null
   return loadConfig()
+}
+
+async function readSettingsJsonAsync(): Promise<Partial<NuxyConfig>> {
+  try {
+    let raw: string
+    try {
+      raw = await fsPromises.readFile(SETTINGS_JSON_PATH, 'utf-8')
+    } catch {
+      return {}
+    }
+    const parsed = JSON.parse(raw)
+    const result: Partial<NuxyConfig> = {}
+
+    if (['hide', 'minimize', 'quit', 'none'].includes(parsed.escAction))
+      result.escAction = parsed.escAction
+    if (['hide', 'minimize', 'quit', 'none'].includes(parsed.blurAction))
+      result.blurAction = parsed.blurAction
+    if (typeof parsed.windowWidth === 'number' && parsed.windowWidth >= 200)
+      result.windowWidth = parsed.windowWidth
+    if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)
+      result.windowMaxHeight = parsed.windowMaxHeight
+    if (typeof parsed.alwaysOnTop === 'boolean') result.alwaysOnTop = parsed.alwaysOnTop
+    if (typeof parsed.opacity === 'number')
+      result.opacity = Math.min(1, Math.max(0, parsed.opacity))
+    if (typeof parsed.showInTaskbar === 'boolean') result.showInTaskbar = parsed.showInTaskbar
+    if (typeof parsed.showOnStartup === 'boolean') result.showOnStartup = parsed.showOnStartup
+    if (typeof parsed.windowPosition === 'string') result.windowPosition = parsed.windowPosition
+    if (typeof parsed.theme === 'string') result.theme = parsed.theme
+    if (typeof parsed.zoom === 'string') result.zoom = parsed.zoom
+    if (typeof parsed.font === 'string') result.font = parsed.font
+
+    return result
+  } catch (err) {
+    log.warn('Failed to read settings.json — using defaults.', err)
+    return {}
+  }
+}
+
+export async function reloadConfigAsync(): Promise<NuxyConfig> {
+  const fromSettings = await readSettingsJsonAsync()
+  _config = { ...DEFAULTS, ...fromSettings, extensions: {} }
+  log.info('Config reloaded from settings.json', _config)
+  return _config
 }
 
 export function getConfig(): NuxyConfig {

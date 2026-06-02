@@ -7,6 +7,7 @@ import { DatabaseSync } from 'node:sqlite'
 import type {
   CoreContext,
   ExtensionRuntimeMeta,
+  RegistryEntry,
   NowPlaying,
   ThemeDefinition,
   IconPackDefinition,
@@ -36,6 +37,7 @@ export function createCoreProxy(
   onRegistryEntry?: (entry: { kind: string; displayName?: string }) => void
 ): { core: CoreContext; initI18n: () => Promise<void>; getSyncPayload: () => ExtensionRuntimeMeta } {
   const ipcChannels: string[] = []
+  const registeredEntries: RegistryEntry[] = []
   let displayName: string | undefined
 
   const dataDir = path.join(os.homedir(), '.nuxy', 'data', extId)
@@ -248,20 +250,29 @@ export function createCoreProxy(
         ipcChannels.push(channel)
         registerIpcHandler(channel, handler as (payload: unknown) => Promise<unknown>)
       },
+      broadcast: (channel, data) => {
+        void callHost(HostChannel.IPC_BROADCAST, { channel, data })
+      },
     },
     registry: {
       registerTool: (cfg) => {
         displayName = cfg.displayName as string | undefined
-        onRegistryEntry?.({ kind: 'tool', displayName })
+        const entry: RegistryEntry = { kind: 'tool', name: cfg.name as string | undefined, displayName }
+        registeredEntries.push(entry)
+        onRegistryEntry?.(entry)
         logger.log('info', 'Registry', 'Registered Tool: ' + cfg.name, cfg)
       },
       registerProvider: (cfg) => {
         displayName = cfg.displayName as string | undefined
-        onRegistryEntry?.({ kind: 'provider', displayName })
+        const entry: RegistryEntry = { kind: 'provider', name: cfg.name as string | undefined, displayName }
+        registeredEntries.push(entry)
+        onRegistryEntry?.(entry)
         logger.log('info', 'Registry', 'Registered Provider: ' + cfg.name, cfg)
       },
       registerOrchestrator: (cfg) => {
-        onRegistryEntry?.({ kind: 'orchestrator' })
+        const entry: RegistryEntry = { kind: 'orchestrator' }
+        registeredEntries.push(entry)
+        onRegistryEntry?.(entry)
         logger.log('info', 'Registry', 'Registered Orchestrator', cfg)
       },
       registerTheme: (def: ThemeDefinition) => {
@@ -271,6 +282,9 @@ export function createCoreProxy(
       registerIconPack: (def: IconPackDefinition) => {
         void callHost(HostChannel.ICONPACK_REGISTER, def)
         logger.log('info', 'Registry', 'Registered IconPack: ' + def.name)
+      },
+      getCallableTools: () => {
+        return (callHost(HostChannel.REGISTRY_GET_CALLABLE_TOOLS, {}) as unknown as unknown[]) ?? []
       },
     },
     extensions: {
@@ -385,6 +399,7 @@ export function createCoreProxy(
     getSyncPayload: (): ExtensionRuntimeMeta => ({
       ipcChannels: [...ipcChannels],
       displayName,
+      registeredEntries: registeredEntries.length > 0 ? [...registeredEntries] : undefined,
     }),
   }
 }

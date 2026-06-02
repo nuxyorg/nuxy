@@ -5,8 +5,8 @@ export type {
   ExtensionManifest,
   ExtensionType,
   IpcResult,
-  HostChannel,
   HostChannelName,
+  LoadedExtension,
 } from '@nuxy/core'
 
 export { HostChannel } from '@nuxy/core'

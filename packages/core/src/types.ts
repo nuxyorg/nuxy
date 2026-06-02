@@ -87,9 +87,16 @@ export interface ExtensionManifest {
   }
 }
 
+export interface RegistryEntry {
+  kind: 'tool' | 'provider' | 'orchestrator'
+  name?: string
+  displayName?: string
+}
+
 export interface ExtensionRuntimeMeta {
   ipcChannels: string[]
   displayName?: string
+  registeredEntries?: RegistryEntry[]
 }
 
 export interface LoadedExtension {
@@ -100,6 +107,8 @@ export interface LoadedExtension {
   manifest: ExtensionManifest
   runtime?: ExtensionRuntimeMeta
   settingsSchema?: ExtensionSettingsSchema
+  /** When true, extension is installed but its worker/frontend is not active. */
+  disabled?: boolean
 }
 
 export interface IpcResult<T = unknown> {

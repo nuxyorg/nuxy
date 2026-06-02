@@ -75,7 +75,7 @@ export function createMainWindow() {
 
   mainWindow.on('show', () => {
     positionWindowOnDisplay(mainWindow!)
-    mainWindow?.webContents.send('window-show')
+    mainWindow?.webContents.send('window:show')
   })
 
   mainWindow.on('blur', () => {

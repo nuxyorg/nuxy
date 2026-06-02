@@ -1,13 +1,12 @@
+import { vi } from 'vitest'
 import type { CoreContext } from '@nuxy/core'
 
 /**
- * Creates a mocked `CoreContext` using the provided test runner mock utility (`vi` in Vitest).
+ * Creates a mocked `CoreContext` for use in Vitest tests.
  *
- * @param vi The mock utility object (e.g., `vi` from Vitest).
  * @param overrides Optional overrides for specific nested properties.
  */
 export function createMockCore(
-  vi: any,
   overrides?: any
 ): {
   core: CoreContext

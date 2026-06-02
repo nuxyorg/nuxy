@@ -391,6 +391,9 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.9.3
+      vitest:
+        specifier: '*'
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@25.8.0)
 
   packages/ui:
     dependencies:

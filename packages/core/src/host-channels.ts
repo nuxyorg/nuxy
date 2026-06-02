@@ -12,6 +12,8 @@ export const HostChannel = {
   FS_FILE_EXISTS: 'fs:fileExists',
   THEME_REGISTER: 'theme:register',
   ICONPACK_REGISTER: 'iconpack:register',
+  IPC_BROADCAST: 'ipc:broadcast',
+  REGISTRY_GET_CALLABLE_TOOLS: 'registry:getCallableTools',
 } as const
 
 export type HostChannelName = (typeof HostChannel)[keyof typeof HostChannel]

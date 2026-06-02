@@ -1,6 +1,7 @@
 // --- Existing components ---
 export { Card, CardHeader, CardBody, CardFooter } from './components/Card'
 export { Input } from './components/Input'
+export type { InputProps } from './components/Input'
 export { Button } from './components/Button'
 export type { ButtonProps } from './components/Button'
 export { List } from './components/List'
@@ -200,6 +201,30 @@ export type { PortalProps } from './components/Text/Portal'
 // --- Markdown ---
 export { MarkdownText } from './components/MarkdownText'
 export type { MarkdownTextProps } from './components/MarkdownText'
+
+// --- Media ---
+export { MediaPreview } from './components/MediaPreview'
+export type { MediaPreviewProps } from './components/MediaPreview'
+
+// --- Chat ---
+export { ChatMessage, ChatList } from './components/ChatMessage'
+export type { ChatMessageProps, ChatListProps } from './components/ChatMessage'
+
+// --- Wizard ---
+export { WizardSection } from './components/WizardSection'
+export type { WizardSectionProps } from './components/WizardSection'
+
+// --- Properties ---
+export { PropertiesPanel } from './components/PropertiesPanel'
+export type { PropertiesPanelProps, PropertyRow } from './components/PropertiesPanel'
+
+// --- ConversionCard ---
+export { ConversionCard } from './components/ConversionCard'
+export type { ConversionCardProps } from './components/ConversionCard'
+
+// --- LoadingState ---
+export { LoadingState } from './components/LoadingState'
+export type { LoadingStateProps } from './components/LoadingState'
 
 // --- i18n ---
 export { useTranslation } from './hooks/useTranslation'

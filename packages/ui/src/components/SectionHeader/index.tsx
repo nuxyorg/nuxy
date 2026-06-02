@@ -3,6 +3,7 @@ import React from 'react'
 export interface SectionHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string
   description?: string
+  action?: React.ReactNode
 }
 
 export const SectionHeader = React.forwardRef<HTMLDivElement, SectionHeaderProps>((props, ref) => {

@@ -22,6 +22,7 @@ import {
   updateRevocationList,
 } from '../security/security.js'
 import { kernelLogger } from '@nuxy/core'
+import { readDisabledList } from './disabled.js'
 import AdmZip from 'adm-zip'
 import type {
   ExtensionManifest,
@@ -149,6 +150,162 @@ export function scanDirectoryForNodeImports(dir: string): { file: string; import
 
 let watchDebounce: ReturnType<typeof setTimeout> | null = null
 const activeWatchers = new Set<fs.FSWatcher>()
+
+/**
+ * Phase 3 + Phase 4: Verify directory integrity, check revocation, prompt for publisher trust,
+ * and enforce read-only permissions on the final target path.
+ *
+ * Returns `{ trusted: true }` when the extension passed all checks and has been moved to
+ * `targetPath` with read-only permissions applied.
+ * Returns `{ trusted: false, reason }` when the extension must be skipped (tempPath is already
+ * cleaned up by this function before returning).
+ * Throws on unexpected fatal errors.
+ */
+async function verifyAndSecureExtension(
+  folderName: string,
+  tempPath: string,
+  targetPath: string,
+): Promise<{ trusted: boolean; reason?: string }> {
+  // 1. Verify directory integrity & signature
+  const verification = verifyDirectoryIntegrity(tempPath)
+  if (!verification.success) {
+    log.error(`Security validation failed for "${folderName}": ${verification.error}`)
+    fs.rmSync(tempPath, { recursive: true, force: true })
+    return { trusted: false, reason: verification.error }
+  }
+
+  const { publicKey, hash } = verification
+  if (!publicKey || !hash) {
+    log.error(`Security check for "${folderName}" returned empty signature properties.`)
+    fs.rmSync(tempPath, { recursive: true, force: true })
+    return { trusted: false, reason: 'Empty signature properties' }
+  }
+
+  // 2. Check revocation list
+  if (isRevoked(folderName, hash, publicKey)) {
+    log.error(`Security Violation: Extension "${folderName}" is revoked/blacklisted.`)
+    fs.rmSync(tempPath, { recursive: true, force: true })
+    return { trusted: false, reason: 'Revoked/blacklisted' }
+  }
+
+  // 3. Verify public key trust (Self-Signed user approval prompt)
+  const trusted = isKeyTrusted(publicKey)
+  if (!trusted) {
+    const approved = promptTrustPublisherKey(folderName, publicKey)
+    if (approved) {
+      addTrustedKey(publicKey)
+      log.info(`Publisher key trusted for "${folderName}". Restarting scan to initialize extensions cleanly.`)
+      setTimeout(() => {
+        void rescanExtensions()
+      }, 100)
+      fs.rmSync(tempPath, { recursive: true, force: true })
+      // Signal to caller that a rescan was triggered and the current scan should abort
+      return { trusted: false, reason: 'rescan-triggered' }
+    } else {
+      log.warn(`Installation blocked: Publisher key for "${folderName}" is untrusted.`)
+      fs.rmSync(tempPath, { recursive: true, force: true })
+      return { trusted: false, reason: 'Publisher key untrusted' }
+    }
+  }
+
+  // Move temp folder to final destination path
+  if (fs.existsSync(targetPath)) {
+    // Restore write permissions before removal — makeDirectoryReadOnly sets 0o555
+    // and rmSync cannot delete files inside read-only directories on Linux.
+    const restoreWritable = (p: string) => {
+      try {
+        fs.chmodSync(p, 0o755)
+        if (fs.statSync(p).isDirectory()) {
+          for (const item of fs.readdirSync(p)) restoreWritable(path.join(p, item))
+        }
+      } catch {}
+    }
+    restoreWritable(targetPath)
+    fs.rmSync(targetPath, { recursive: true, force: true })
+  }
+  fs.renameSync(tempPath, targetPath)
+
+  // 4. Enforce read-only permissions
+  makeDirectoryReadOnly(targetPath)
+
+  return { trusted: true }
+}
+
+/**
+ * Type-dispatch: register or spawn an extension based on its manifest type.
+ *
+ * Fixes the latent bug where `type === 'theme'` with no `entry.theme` (or `type === 'iconpack'`
+ * with no `entry.icons`) would silently fall through to the backend-spawn branches.
+ */
+function registerExtensionByType(
+  manifest: ExtensionManifest,
+  extId: string,
+  folderName: string,
+  itemPath: string,
+  spawnExt: typeof spawnExtension,
+): void {
+  const { type, entry } = manifest
+
+  if (type === 'theme') {
+    // theme type: requires entry.theme — do NOT fall through to spawn
+    if (!entry?.theme) {
+      log.warn(`Theme extension "${extId}" has no entry.theme — skipping.`)
+      return
+    }
+    const themePath = path.join(itemPath, entry.theme)
+    if (fs.existsSync(themePath)) {
+      try {
+        const def = JSON.parse(fs.readFileSync(themePath, 'utf8')) as ThemeDefinition
+        registerExtensionTheme(def)
+        log.info(`Loaded theme "${def.name}" from extension: ${extId}`)
+      } catch (e) {
+        log.error(`Failed to parse theme file for "${extId}"`, e)
+      }
+    }
+  } else if (type === 'iconpack') {
+    // iconpack type: requires entry.icons — do NOT fall through to spawn
+    if (!entry?.icons) {
+      log.warn(`Icon pack extension "${extId}" has no entry.icons — skipping.`)
+      return
+    }
+    const iconsPath = path.join(itemPath, entry.icons)
+    if (fs.existsSync(iconsPath)) {
+      try {
+        const def = JSON.parse(fs.readFileSync(iconsPath, 'utf8')) as IconPackDefinition
+        registerIconPack(def)
+        log.info(`Loaded icon pack "${def.name}" from extension: ${extId}`)
+      } catch (e) {
+        log.error(`Failed to parse icons file for "${extId}"`, e)
+      }
+    }
+  } else if (type === 'uikit') {
+    // uikit extensions are pure renderer-side — no backend worker.
+    // The renderer loads their frontend.js early, before the shell bootstrap,
+    // allowing them to extend or override window.UI components at runtime.
+    if (!entry?.frontend) {
+      log.warn(`UIKit extension "${extId}" has no frontend entry — it will have no effect.`)
+    } else {
+      log.info(`UIKit extension registered: ${extId} (frontend: ${entry.frontend})`)
+    }
+  } else if (type === 'helper') {
+    // helper extensions provide utility services to other extensions.
+    // Their frontend (if any) is loaded early alongside uikit extensions.
+    // A backend worker is spawned only when a backend entry is declared.
+    if (entry?.backend) {
+      log.info(`Loading helper extension: ${extId} (backend: ${entry.backend})`)
+      spawnExt(extId, folderName, entry.backend, manifest.permissions ?? [])
+      log.info(`Sandboxed worker started for helper: ${extId}`)
+    } else {
+      log.info(`Helper extension registered: ${extId} (frontend-only)`)
+    }
+  } else if (entry?.backend) {
+    log.info(`Loading extension: ${extId} (backend: ${entry.backend})`)
+    spawnExt(extId, folderName, entry.backend, manifest.permissions ?? [])
+    log.info(`Sandboxed worker started for: ${extId}`)
+  } else {
+    log.warn(`Extension "${extId}" has no backend entry — skipping worker.`)
+  }
+}
 
 export async function rescanExtensions(): Promise<void> {
   clearWatchers()
@@ -316,66 +473,14 @@ export async function scanExtensions(): Promise<void> {
         fs.cpSync(itemPath, tempPath, { recursive: true })
       }
 
-      // 1. Verify directory integrity & signature
-      const verification = verifyDirectoryIntegrity(tempPath)
-      if (!verification.success) {
-        log.error(`Security validation failed for "${folderName}": ${verification.error}`)
-        fs.rmSync(tempPath, { recursive: true, force: true })
-        continue
-      }
-
-      const { publicKey, hash } = verification
-      if (!publicKey || !hash) {
-        log.error(`Security check for "${folderName}" returned empty signature properties.`)
-        fs.rmSync(tempPath, { recursive: true, force: true })
-        continue
-      }
-
-      // 2. Check revocation list
-      if (isRevoked(folderName, hash, publicKey)) {
-        log.error(`Security Violation: Extension "${folderName}" is revoked/blacklisted.`)
-        fs.rmSync(tempPath, { recursive: true, force: true })
-        continue
-      }
-
-      // 3. Verify public key trust (Self-Signed user approval prompt)
-      const trusted = isKeyTrusted(publicKey)
-      if (!trusted) {
-        const approved = promptTrustPublisherKey(folderName, publicKey)
-        if (approved) {
-          addTrustedKey(publicKey)
-          log.info(`Publisher key trusted for "${folderName}". Restarting scan to initialize extensions cleanly.`)
-          setTimeout(() => {
-            void rescanExtensions()
-          }, 100)
-          fs.rmSync(tempPath, { recursive: true, force: true })
+      // Phase 3 + Phase 4: Integrity verification & security hardening
+      const secResult = await verifyAndSecureExtension(folderName, tempPath, targetPath)
+      if (!secResult.trusted) {
+        if (secResult.reason === 'rescan-triggered') {
           return // Abort current scan run to restart cleanly
-        } else {
-          log.warn(`Installation blocked: Publisher key for "${folderName}" is untrusted.`)
-          fs.rmSync(tempPath, { recursive: true, force: true })
-          continue
         }
+        continue
       }
-
-      // Move temp folder to final destination path
-      if (fs.existsSync(targetPath)) {
-        // Restore write permissions before removal — makeDirectoryReadOnly sets 0o555
-        // and rmSync cannot delete files inside read-only directories on Linux.
-        const restoreWritable = (p: string) => {
-          try {
-            fs.chmodSync(p, 0o755)
-            if (fs.statSync(p).isDirectory()) {
-              for (const item of fs.readdirSync(p)) restoreWritable(path.join(p, item))
-            }
-          } catch {}
-        }
-        restoreWritable(targetPath)
-        fs.rmSync(targetPath, { recursive: true, force: true })
-      }
-      fs.renameSync(tempPath, targetPath)
-
-      // 4. Enforce read-only permissions
-      makeDirectoryReadOnly(targetPath)
 
       log.info(`Extracted packaged extension: ${itemName} → ${targetPath}`)
       if (isZip) {
@@ -451,60 +556,20 @@ export async function scanExtensions(): Promise<void> {
         log.warn(`Extension "${folderName}" has no manifest.id — using folder name`)
       }
 
+      const disabledSet = readDisabledList()
+      const isDisabled = !manifest.bootstrap && disabledSet.has(extId)
+
       const loaded: LoadedExtension = {
         id: extId,
         folderName,
         manifest: { ...manifest, id: extId },
+        ...(isDisabled ? { disabled: true } : {}),
       }
 
-      if (manifest.type === 'theme' && manifest.entry?.theme) {
-        const themePath = path.join(itemPath, manifest.entry.theme)
-        if (fs.existsSync(themePath)) {
-          try {
-            const def = JSON.parse(fs.readFileSync(themePath, 'utf8')) as ThemeDefinition
-            registerExtensionTheme(def)
-            log.info(`Loaded theme "${def.name}" from extension: ${extId}`)
-          } catch (e) {
-            log.error(`Failed to parse theme file for "${extId}"`, e)
-          }
-        }
-      } else if (manifest.type === 'iconpack' && manifest.entry?.icons) {
-        const iconsPath = path.join(itemPath, manifest.entry.icons)
-        if (fs.existsSync(iconsPath)) {
-          try {
-            const def = JSON.parse(fs.readFileSync(iconsPath, 'utf8')) as IconPackDefinition
-            registerIconPack(def)
-            log.info(`Loaded icon pack "${def.name}" from extension: ${extId}`)
-          } catch (e) {
-            log.error(`Failed to parse icons file for "${extId}"`, e)
-          }
-        }
-      } else if (manifest.type === 'uikit') {
-        // uikit extensions are pure renderer-side — no backend worker.
-        // The renderer loads their frontend.js early, before the shell bootstrap,
-        // allowing them to extend or override window.UI components at runtime.
-        if (!manifest.entry?.frontend) {
-          log.warn(`UIKit extension "${extId}" has no frontend entry — it will have no effect.`)
-        } else {
-          log.info(`UIKit extension registered: ${extId} (frontend: ${manifest.entry.frontend})`)
-        }
-      } else if (manifest.type === 'helper') {
-        // helper extensions provide utility services to other extensions.
-        // Their frontend (if any) is loaded early alongside uikit extensions.
-        // A backend worker is spawned only when a backend entry is declared.
-        if (manifest.entry?.backend) {
-          log.info(`Loading helper extension: ${extId} (backend: ${manifest.entry.backend})`)
-          spawnExtension(extId, folderName, manifest.entry.backend, manifest.permissions ?? [])
-          log.info(`Sandboxed worker started for helper: ${extId}`)
-        } else {
-          log.info(`Helper extension registered: ${extId} (frontend-only)`)
-        }
-      } else if (manifest.entry?.backend) {
-        log.info(`Loading extension: ${extId} (backend: ${manifest.entry.backend})`)
-        spawnExtension(extId, folderName, manifest.entry.backend, manifest.permissions ?? [])
-        log.info(`Sandboxed worker started for: ${extId}`)
-      } else if (manifest.type !== 'theme' && manifest.type !== 'iconpack') {
-        log.warn(`Extension "${extId}" has no backend entry — skipping worker.`)
+      if (isDisabled) {
+        log.info(`Extension "${extId}" is disabled — skipping activation`)
+      } else {
+        registerExtensionByType(manifest, extId, folderName, itemPath, spawnExtension)
       }
 
       if (manifest.entry?.settings) {

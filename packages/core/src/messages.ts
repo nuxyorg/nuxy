@@ -1,6 +1,6 @@
 /** Messages sent from the extension worker to the host (main process). */
 export type WorkerToHostMessage =
-  | { type: 'registry:sync'; ipcChannels: string[]; displayName?: string }
+  | { type: 'registry:sync'; ipcChannels: string[]; displayName?: string; registeredEntries?: import('./types.js').RegistryEntry[] }
   | { type: 'registry:error'; error: string }
   | { type: 'host:call'; id: string; channel: string; payload?: unknown }
 

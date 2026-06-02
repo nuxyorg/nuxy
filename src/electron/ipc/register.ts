@@ -2,6 +2,7 @@
 import { ipcMain, BrowserWindow, screen, app } from 'electron'
 import { execFile } from 'child_process'
 import { loadedExtensions, rescanExtensions } from '../extensions/scanner.js'
+import { setExtensionEnabled } from '../extensions/disabled.js'
 import fs from 'fs'
 import path from 'path'
 import { EXTENSION_DIR, EXTRACTED_DIR, DATA_DIR } from '../config/paths.js'
@@ -28,6 +29,7 @@ let dragOffset: { x: number; y: number } | null = null
 function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedExtensions {
   return loadedExtensions
     .filter((ext) => {
+      if (ext.disabled) return false
       if (isBootstrapExtension(ext)) return false
       if (ext.id === 'com.nuxy.time-calculator' || ext.id === 'com.nuxy.notes') {
         return type === 'tool' || type === 'provider'
@@ -47,6 +49,7 @@ function listUikitExtensions(): typeof loadedExtensions {
   return loadedExtensions
     .filter(
       (ext) =>
+        !ext.disabled &&
         (ext.manifest.type === 'uikit' || ext.manifest.type === 'helper') &&
         ext.manifest.entry?.frontend
     )
@@ -116,7 +119,7 @@ export function registerIpc() {
 
         if (ch === 'getPreloads') {
           const list = loadedExtensions
-            .filter((ext) => ext.manifest.entry?.preload)
+            .filter((ext) => !ext.disabled && ext.manifest.entry?.preload)
             .map((ext) => ({
               id: ext.id,
               url: `nuxy-ext://${ext.id}/${ext.manifest.entry!.preload!.replace(/\.ts$/, '.js')}`,
@@ -271,6 +274,27 @@ export function registerIpc() {
             log.error(`Failed to uninstall extension ${extId}`, e)
             return { success: false, error: `Uninstall failed: ${e.message}`, code: 'ERROR' }
           }
+        }
+
+        if (ch === 'setExtensionEnabled') {
+          const args = pl as { extId?: string; enabled?: boolean } | undefined
+          const extId = args?.extId
+          const enabled = args?.enabled
+          if (!extId || typeof extId !== 'string' || typeof enabled !== 'boolean') {
+            return { success: false, error: 'Missing extId or enabled', code: 'INVALID_ARGS' }
+          }
+          if (extId === 'com.nuxy.shell' || extId === 'com.nuxy.settings') {
+            return { success: false, error: 'Cannot disable system extension', code: 'FORBIDDEN' }
+          }
+          const ext = loadedExtensions.find((e) => e.id === extId)
+          if (ext?.manifest.bootstrap) {
+            return { success: false, error: 'Cannot disable bootstrap extension', code: 'FORBIDDEN' }
+          }
+          setExtensionEnabled(extId, enabled)
+          setTimeout(() => {
+            void rescanExtensions()
+          }, 100)
+          return { success: true }
         }
 
         if (ch === 'installExtension') {

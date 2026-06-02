@@ -54,6 +54,7 @@ export function spawnExtension(
 
     if (msg.type === 'registry:error') {
       log.error(`Extension "${extId}" failed to load: ${msg.error}`)
+      activeWorkers.delete(extId)
       return
     }
 
@@ -81,6 +82,7 @@ export function spawnExtension(
     }
   })
 
+  worker.setMaxListeners(100)
   activeWorkers.set(extId, worker)
   log.silly(`Worker registered. Active: ${[...activeWorkers.keys()].join(', ')}`)
   return worker

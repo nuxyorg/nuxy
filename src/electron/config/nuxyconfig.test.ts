@@ -295,9 +295,10 @@ describe('settings.json watch callback triggers hot-reload', () => {
 
     vi.spyOn(fs, 'existsSync').mockReturnValue(true)
     vi.spyOn(fs, 'mkdirSync').mockImplementation(() => undefined as any)
-    const readSpy = vi
-      .spyOn(fs, 'readFileSync')
-      .mockReturnValue(JSON.stringify({ escAction: 'hide' }))
+    vi.spyOn(fs, 'readFileSync').mockReturnValue(JSON.stringify({ escAction: 'hide' }))
+    const readFileSpy = vi
+      .spyOn(fs.promises, 'readFile')
+      .mockResolvedValue(JSON.stringify({ escAction: 'hide' }) as any)
     vi.spyOn(fs, 'watch').mockImplementation((_p: any, cb: any) => {
       capturedCallback = cb
       return { close: vi.fn() } as any
@@ -309,8 +310,10 @@ describe('settings.json watch callback triggers hot-reload', () => {
     expect(mod.getConfig().escAction).toBe('hide')
     expect(capturedCallback).not.toBeNull()
 
-    readSpy.mockReturnValue(JSON.stringify({ escAction: 'minimize' }))
+    readFileSpy.mockResolvedValue(JSON.stringify({ escAction: 'minimize' }) as any)
     capturedCallback!('change', 'settings.json')
+
+    await new Promise((resolve) => setTimeout(resolve, 0))
 
     expect(mod.getConfig().escAction).toBe('minimize')
   })
