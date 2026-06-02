@@ -1,0 +1,16 @@
+{
+  "id": "com.nuxy.status-clock",
+  "name": "Status Clock",
+  "version": "1.0.0",
+  "type": "helper",
+  "permissions": [],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx",
+    "settings": "settings.json"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "com.nuxy.particles",
+  "name": "Particles",
+  "version": "1.0.0",
+  "type": "helper",
+  "permissions": [],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "frontend": "frontend.tsx"
+  }
+}

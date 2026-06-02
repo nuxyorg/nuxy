@@ -1,0 +1,13 @@
+{
+  "id": "com.nuxy.ambient-sound",
+  "name": "Ambient Sound",
+  "version": "1.0.0",
+  "type": "helper",
+  "permissions": [],
+  "capabilities": { "callable": false, "caller": false },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx",
+    "settings": "settings.json"
+  }
+}

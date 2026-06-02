@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "format",
+      "label": "Time format",
+      "type": "select",
+      "default": "24h",
+      "options": [
+        { "value": "24h", "label": "24-hour" },
+        { "value": "12h", "label": "12-hour" }
+      ]
+    },
+    {
+      "key": "showSeconds",
+      "label": "Show seconds",
+      "type": "toggle",
+      "default": true
+    }
+  ]
+}

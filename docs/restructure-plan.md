@@ -387,7 +387,7 @@ Actions:
 
 ### Phase 0 — Hygiene (low risk, do first)
 
-- [ ] Confirm `dist-electron/` never committed (already in `.gitignore`).
+- [x] Confirm `dist-electron/` never committed (already in `.gitignore`).
 - [ ] Add `docs/plans/` and move planning docs (optional, can do with phase 1).
 - [ ] Update root `package.json` scripts after path changes (`pnpm -C apps/desktop dev`).
 

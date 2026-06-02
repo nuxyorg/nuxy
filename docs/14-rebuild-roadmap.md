@@ -18,7 +18,7 @@ This roadmap transitions the theoretical analysis into an actionable execution p
 **Goal**: Build the secure `CoreContext`, routing mechanism, and directory scanner.
 
 - Implement the `WindowManager` to handle invisible daemon status.
-- Build the `electron/core/ipc.ts` strict router.
+- Build the IPC router (`src/electron/ipc/register.ts`).
 - Implement the `ExtensionScanner` to watch `~/.nuxy/extensions/`.
 - Implement the Node `vm` sandbox to securely execute third-party backend code.
 - **Actionable Guide**: [02. Core Infrastructure](./implementation/02-core-infrastructure.md)
