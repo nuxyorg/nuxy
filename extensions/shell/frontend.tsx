@@ -1,16 +1,7 @@
 const React = window.React
-const { useState, useEffect, useRef, useLayoutEffect, useMemo } = React
+const { useState, useEffect, useRef } = React
 
-import type {
-  Tool,
-  Provider,
-  Orchestrator,
-  ShellConfig,
-  ListItem,
-  ProviderState,
-  KeyAction,
-  CommandPaletteAction,
-} from './types.ts'
+import type { ShellConfig, CommandPaletteAction, KeyAction } from './types.ts'
 
 const _imp = new Function('url', 'return import(url)')
 const { parseCoordinate, ensureShellStyles, SHELL_EXT_ID } = await _imp(
@@ -21,6 +12,18 @@ const { ResultCard, CompareCard } = await _imp('nuxy-ext://com.nuxy.shell/Result
 const { useShellInit, useProviders, useKeyboard, useToolHistory, useDragResize } = await _imp(
   'nuxy-ext://com.nuxy.shell/hooks.tsx'
 )
+
+import { useShellData } from './hooks/useShellData.ts'
+import { useShellActions } from './hooks/useShellActions.ts'
+import { useShellMeta } from './hooks/useShellMeta.ts'
+import { useShellKeyboard } from './hooks/useShellKeyboard.ts'
+import { useShellSync } from './hooks/useShellSync.ts'
+import { ShellResizeHandles } from './components/ShellResizeHandles.tsx'
+import { ShellOmniBar } from './components/ShellOmniBar.tsx'
+import { ShellProviderResults } from './components/ShellProviderResults.tsx'
+import { ShellListResults } from './components/ShellListResults.tsx'
+import { ShellShortcutBar } from './components/ShellShortcutBar.tsx'
+import { ShellToolView } from './components/ShellToolView.tsx'
 
 ensureShellStyles()
 
@@ -42,30 +45,20 @@ export default function ShellView({ query: _queryProp }: Props) {
     Toaster,
   } = window.UI || {}
 
+  // Core UI state
   const [query, setQuery] = useState<string>('')
   const [savedQuery, setSavedQuery] = useState<string>('')
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
-  const [tools, setTools] = useState<Tool[]>([])
-  const [providers, setProviders] = useState<Provider[]>([])
-  const [orchestrators, setOrchestrators] = useState<Orchestrator[]>([])
   const [activeTool, setActiveTool] = useState<string | null>(null)
   const [ToolComponent, setToolComponent] = useState<React.ComponentType<{
     query: string
     extensionId?: string
   }> | null>(null)
   const [showOmniBar, setShowOmniBar] = useState<boolean>(true)
-  const [themeStyles, setThemeStyles] = useState<Record<string, string> | null>(null)
   const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false)
   const [toolActions, setToolActions] = useState<CommandPaletteAction[]>([])
-  const [settings, setSettings] = useState<ShellConfig>({
-    windowWidth: 800,
-    windowMaxHeight: 600,
-    opacity: 1,
-    theme: 'dark',
-    zoom: '100%',
-    font: 'system',
-    windowPosition: '1/2, 1/3',
-  })
+  const [keyActionHints, setKeyActionHints] = useState<KeyAction[]>([])
+  const [footerHints, setFooterHints] = useState<React.ReactNode | null>(null)
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true)
 
   useEffect(() => {
@@ -73,51 +66,86 @@ export default function ShellView({ query: _queryProp }: Props) {
     return () => clearTimeout(t)
   }, [])
 
-  const [providerStates, setProviderStates] = useState<Record<string, ProviderState>>({})
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-  const [searchIcon, setSearchIcon] = useState<string | null>(null)
-  const [footerHints, setFooterHints] = useState<React.ReactNode | null>(null)
-
+  // Refs
   const keyActionsGetterRef = useRef<(() => KeyAction[]) | null>(null)
   const toolActionsRef = useRef<CommandPaletteAction[]>([])
-  const [keyActionHints, setKeyActionHints] = useState<KeyAction[]>([])
-
-  const cfgRef = useRef<ShellConfig | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const omniBarRef = useRef<HTMLDivElement | null>(null)
   const queryGeneration = useRef<number>(0)
 
+  // Drag + resize
   const {
     position,
     size,
     setPosition,
-    setSize,
+    setSize: _setSize,
     hasDragged,
     isDraggingState,
     handleDragMouseDown,
     handleResizeMouseDown,
   } = useDragResize(containerRef)
 
-  // Initialize hooks
-  useShellInit({
-    cfgRef,
-    setTools,
-    setProviders,
-    setOrchestrators,
-    setThemeStyles,
-    setSettings,
-    setSearchIcon,
-    SHELL_EXT_ID,
-  })
-  const { isAnyListProviderLoading } = useProviders({
-    activeTool,
-    savedQuery,
-    providers,
+  // Data hook
+  const {
+    tools,
+    orchestrators,
+    themeStyles,
+    settings,
+    searchIcon,
     providerStates,
     setProviderStates,
+    recordToolUsed,
+    isAnyListProviderLoading,
+    listResults,
+    cfgRef,
+    setSettings,
+  } = useShellData({
+    activeTool,
+    savedQuery,
     queryGeneration,
+    deps: { useShellInit, useProviders, useToolHistory, SHELL_EXT_ID },
   })
+
+  // Actions hook
+  const { copiedId, handleCopy, openTool, handleItemClick, tryOrchestratorRoute } = useShellActions(
+    {
+      orchestrators,
+      savedQuery,
+      setActiveTool,
+      setProviderStates,
+      setQuery,
+      setSavedQuery,
+      recordToolUsed,
+      setToolComponent,
+    }
+  )
+
+  // Derived state hook
+  const { activeToolName, activeToolPlaceholder, itemClass } = useShellMeta({
+    activeTool,
+    tools,
+    selectedIndex,
+    listResults,
+    themeStyles,
+  })
+
+  // Input keyboard hook
+  const { handleKeyDown } = useShellKeyboard({
+    activeTool,
+    query,
+    savedQuery,
+    selectedIndex,
+    listResults,
+    setActiveTool,
+    setToolComponent,
+    setQuery,
+    setSavedQuery,
+    setSelectedIndex,
+    tryOrchestratorRoute,
+    handleItemClick,
+  })
+
+  // Global keyboard hook (from hooks.tsx)
   useKeyboard({
     activeTool,
     showCommandPalette,
@@ -132,256 +160,34 @@ export default function ShellView({ query: _queryProp }: Props) {
     keyActionsGetterRef,
     toolActionsRef,
   })
-  const { recentToolIds, recordToolUsed } = useToolHistory(SHELL_EXT_ID)
 
-  useEffect(() => {
-    if (containerRef.current) {
-      window.dispatchEvent(
-        new CustomEvent('nuxy-shell-mounted', {
-          detail: { container: containerRef.current },
-        })
-      )
-    }
-  }, [])
+  // Shell sync hook (event listeners + position effects)
+  useShellSync({
+    containerRef,
+    inputRef,
+    cfgRef,
+    hasDragged,
+    activeTool,
+    listResults,
+    parseCoordinate,
+    setPosition,
+    setQuery,
+    setSavedQuery,
+    setProviderStates,
+    setActiveTool,
+    setToolComponent,
+    setSelectedIndex,
+    setShowOmniBar,
+    setShowCommandPalette,
+    setSettings,
+    setToolActions,
+    setKeyActionHints,
+    setFooterHints,
+    keyActionsGetterRef,
+    toolActionsRef,
+  })
 
-  const handleCopy = (id: string) => {
-    setCopiedId(id)
-    setTimeout(() => setCopiedId(null), 1200)
-  }
-
-  const listResults = useMemo<ListItem[]>(() => {
-    const toolItems: ListItem[] = tools
-      .map((t) => ({
-        id: t.id,
-        title: t.manifest.name,
-        subtitle: (t.manifest as { id?: string }).id || 'Tool',
-        isTool: true,
-        value: t.manifest.name,
-      }))
-
-    let filteredTools: ListItem[]
-    if (savedQuery.trim().length > 0) {
-      filteredTools = toolItems.filter(
-        (item) =>
-          item.title.toLowerCase().includes(savedQuery.toLowerCase()) ||
-          item.id.toLowerCase().includes(savedQuery.toLowerCase())
-      )
-    } else if (recentToolIds.length > 0) {
-      const recentSet = new Set(recentToolIds)
-      const recent = [...new Set(recentToolIds)]
-        .map((id) => toolItems.find((t) => t.id === id))
-        .filter((x): x is ListItem => Boolean(x))
-      const rest = toolItems.filter((t) => !recentSet.has(t.id))
-      filteredTools = [...recent, ...rest]
-    } else {
-      filteredTools = toolItems
-    }
-
-    const finalResults: ListItem[] = []
-    const seenIds = new Set<string>()
-
-    filteredTools.forEach((item) => {
-      if (!seenIds.has(item.id)) {
-        seenIds.add(item.id)
-        finalResults.push(item)
-      }
-    })
-
-    Object.keys(providerStates).forEach((provId) => {
-      const state = providerStates[provId]
-      if (state && state.type === 'list' && !state.loading && state.items) {
-        state.items.forEach((item) => {
-          if (!seenIds.has(item.id)) {
-            seenIds.add(item.id)
-            finalResults.push(item)
-          }
-        })
-      }
-    })
-
-    return finalResults
-  }, [tools, savedQuery, providerStates, recentToolIds])
-
-  const getZoom = (): number => {
-    const z = document.documentElement.style.zoom
-    if (!z) return 1
-    if (z.endsWith('%')) return parseFloat(z) / 100
-    return parseFloat(z) || 1
-  }
-
-  useLayoutEffect(() => {
-    if (!containerRef.current) return
-    const zoom = getZoom()
-    const dw = window.innerWidth / zoom
-    const dh = window.innerHeight / zoom
-    const winWidth = containerRef.current.offsetWidth
-    const winHeight = containerRef.current.offsetHeight
-
-    const maxX = Math.max(0, dw - winWidth)
-    const maxY = Math.max(0, dh - winHeight)
-    const clampedX = Math.max(0, Math.min(position.x, maxX))
-    const clampedY = Math.max(0, Math.min(position.y, maxY))
-
-    if (clampedX !== position.x || clampedY !== position.y) {
-      setPosition({ x: clampedX, y: clampedY })
-    }
-  }, [position.x, position.y, listResults, activeTool])
-
-  useEffect(() => {
-    let lastZoom = document.documentElement.style.zoom || '100%'
-
-    const updatePosition = (force = false) => {
-      if (
-        !cfgRef.current?.windowPosition ||
-        !containerRef.current ||
-        (!force && hasDragged.current)
-      )
-        return
-      const parts = cfgRef.current.windowPosition.split(/[\s,]+/)
-      const winWidth = containerRef.current.offsetWidth
-      const winHeight = containerRef.current.offsetHeight
-      const zoom = getZoom()
-      const dw = window.innerWidth / zoom
-      const dh = window.innerHeight / zoom
-      setPosition({
-        x: parseCoordinate(parts[0], dw, winWidth),
-        y: parseCoordinate(parts.length >= 2 ? parts[1] : '', dh, winHeight),
-      })
-    }
-
-    const observer = new MutationObserver((mutations: MutationRecord[]) => {
-      for (const m of mutations) {
-        if (m.attributeName === 'style') {
-          const currentZoom = document.documentElement.style.zoom || '100%'
-          if (currentZoom !== lastZoom) {
-            lastZoom = currentZoom
-            hasDragged.current = false
-            setTimeout(() => updatePosition(true), 10)
-          }
-        }
-      }
-    })
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] })
-
-    const onReset = () => {
-      setQuery('')
-      setSavedQuery('')
-      setProviderStates({})
-      setActiveTool(null)
-      setToolComponent(null)
-      setSelectedIndex(-1)
-      setShowOmniBar(true)
-      setShowCommandPalette(false)
-      hasDragged.current = false
-      updatePosition(true)
-      setTimeout(() => inputRef.current?.focus(), 50)
-    }
-    const onFocus = () => {
-      const paletteInput = document.querySelector('.nuxy-command-palette__input')
-      if (paletteInput) {
-        ;(paletteInput as HTMLInputElement).focus()
-      } else {
-        inputRef.current?.focus()
-      }
-    }
-    const handleSettingsUpdate = (e: Event) => {
-      const detail = (e as CustomEvent<ShellConfig>).detail
-      if (detail) {
-        setSettings(detail)
-        if (cfgRef.current) cfgRef.current = { ...cfgRef.current, ...detail }
-        setTimeout(() => updatePosition(true), 0)
-      }
-    }
-
-    const onResize = () => updatePosition(false)
-
-    window.addEventListener('nuxy-shell-reset', onReset)
-    window.addEventListener('focus', onFocus)
-    window.addEventListener('resize', onResize)
-    window.addEventListener('nuxy-settings-updated', handleSettingsUpdate)
-
-    return () => {
-      observer.disconnect()
-      window.removeEventListener('nuxy-shell-reset', onReset)
-      window.removeEventListener('focus', onFocus)
-      window.removeEventListener('resize', onResize)
-      window.removeEventListener('nuxy-settings-updated', handleSettingsUpdate)
-    }
-  }, [])
-
-  useEffect(() => {
-    const handleActions = (e: Event) =>
-      setToolActions((e as CustomEvent<CommandPaletteAction[]>).detail || [])
-    window.addEventListener('nuxy-register-actions', handleActions)
-    return () => window.removeEventListener('nuxy-register-actions', handleActions)
-  }, [])
-
-  // Reset all tool-scoped state in one effect when activeTool changes
-  useEffect(() => {
-    setToolActions([])
-    keyActionsGetterRef.current = null
-    setKeyActionHints([])
-    setFooterHints(null)
-  }, [activeTool])
-
-  useEffect(() => {
-    toolActionsRef.current = toolActions
-  }, [toolActions])
-
-  useEffect(() => {
-    const computeHints = (): KeyAction[] => {
-      const actions = keyActionsGetterRef.current?.()
-      if (!actions) return []
-      return actions.filter((a) => a.hint && (typeof a.activeOn !== 'function' || a.activeOn()))
-    }
-
-    const handleRegister = (e: Event) => {
-      const detail = (e as CustomEvent<{ getActions: () => KeyAction[] } | null>).detail
-      if (!detail) {
-        keyActionsGetterRef.current = null
-        setKeyActionHints([])
-      } else {
-        keyActionsGetterRef.current = detail.getActions
-        setKeyActionHints(computeHints())
-      }
-    }
-
-    const handleHintsChanged = () => {
-      setKeyActionHints(computeHints())
-    }
-
-    window.addEventListener('nuxy-register-key-actions', handleRegister)
-    window.addEventListener('nuxy-key-hints-changed', handleHintsChanged)
-    return () => {
-      window.removeEventListener('nuxy-register-key-actions', handleRegister)
-      window.removeEventListener('nuxy-key-hints-changed', handleHintsChanged)
-    }
-  }, [])
-
-  useEffect(() => {
-    const handleFooterHints = (e: Event) =>
-      setFooterHints((e as CustomEvent<React.ReactNode>).detail || null)
-    window.addEventListener('nuxy-shell-footer-hints', handleFooterHints)
-    return () => window.removeEventListener('nuxy-shell-footer-hints', handleFooterHints)
-  }, [])
-
-  useEffect(() => {
-    const handleOmniBarControl = (e: Event) => {
-      const { action } = (e as CustomEvent<{ action: string }>).detail
-      if (action === 'hide') {
-        setShowOmniBar(false)
-        inputRef.current?.blur()
-      } else if (action === 'show') {
-        setShowOmniBar(true)
-        setTimeout(() => inputRef.current?.focus(), 50)
-      } else if (action === 'clear') {
-        setQuery('')
-      }
-    }
-    window.addEventListener('nuxy-shell-omni-bar-control', handleOmniBarControl)
-    return () => window.removeEventListener('nuxy-shell-omni-bar-control', handleOmniBarControl)
-  }, [])
-
+  // Sync query display with selection
   useEffect(() => {
     if (activeTool) return
     if (selectedIndex === -1) {
@@ -391,103 +197,31 @@ export default function ShellView({ query: _queryProp }: Props) {
     }
   }, [selectedIndex, savedQuery, listResults, activeTool])
 
-  const openTool = (toolId: string, initialQuery: string = '') => {
-    setActiveTool(toolId)
-    setProviderStates({})
-    setQuery(initialQuery)
-    setSavedQuery(initialQuery)
-    recordToolUsed(toolId)
-    const dynamicImport = new Function('url', 'return import(url)')
-    dynamicImport(`nuxy-ext://${toolId}/frontend.js`)
-      .then((module: { default: React.ComponentType<{ query: string; extensionId?: string }> }) =>
-        setToolComponent(() => module.default)
-      )
-      .catch(() => {})
+  const containerStyle: React.CSSProperties = {
+    left: position.x,
+    top: position.y,
+    width: size.width
+      ? `${size.width}px`
+      : settings?.windowWidth
+        ? `${settings.windowWidth}px`
+        : undefined,
+    height: size.height
+      ? `${size.height}px`
+      : activeTool
+        ? `${settings?.windowMaxHeight ?? 600}px`
+        : undefined,
+    maxWidth: size.width
+      ? 'none'
+      : settings?.windowWidth
+        ? `${settings.windowWidth}px`
+        : undefined,
+    maxHeight: size.height ? 'none' : `${settings?.windowMaxHeight ?? 600}px`,
+    opacity: settings?.opacity !== undefined ? settings.opacity : undefined,
+    transition:
+      isDraggingState || isInitialLoad
+        ? 'none'
+        : 'left 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
   }
-
-  const handleItemClick = async (item: ListItem) => {
-    if (item.execute) {
-      try {
-        const res = await window.core.ipc.invoke(item.id, item.execute.channel, item.execute.payload)
-        const r = res as { success: boolean; data?: { toolId?: string; query?: string } } | null
-        if (r?.success && r.data?.toolId) {
-          openTool(r.data.toolId, r.data.query || '')
-        }
-      } catch (e) {
-        console.error('Failed to execute item action:', e)
-      }
-    } else if (item.isTool) {
-      openTool(item.id, (item as any).initialQuery || '')
-    }
-  }
-
-  const tryOrchestratorRoute = async () => {
-    if (!savedQuery.trim() || orchestrators.length === 0) return
-    try {
-      const res = await window.core.ipc.invoke(orchestrators[0].id, 'route', { text: savedQuery })
-      const r = res as { ok: boolean; data?: { toolCalled?: string; initialQuery?: string } } | null
-      if (r?.ok && r.data?.toolCalled) {
-        openTool(r.data.toolCalled, r.data.initialQuery)
-      }
-    } catch {
-      // silently ignore orchestrator route failures
-    }
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (activeTool && query === '' && e.key === 'Backspace') {
-      e.preventDefault()
-      setActiveTool(null)
-      setToolComponent(null)
-      setQuery('')
-      setSavedQuery('')
-      setSelectedIndex(0)
-      return
-    }
-
-    // If we're inside a tool, let useKeyboard handle forwarding events via IPC/CustomEvent
-    // BUT we still need to handle Arrow keys for navigation if not inside a tool
-    if (activeTool) return
-
-    if (e.key === 'Enter' && selectedIndex < 0 && savedQuery.trim()) {
-      void tryOrchestratorRoute()
-    }
-    if (listResults.length === 0) return
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      setSelectedIndex((prev) => {
-        const next = prev + 1
-        return next < listResults.length ? next : prev
-      })
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setSelectedIndex((prev) => {
-        const next = prev - 1
-        return next >= -1 ? next : prev
-      })
-    } else if (e.key === 'ArrowRight') {
-      if (selectedIndex === 0 && listResults[0]) {
-        e.preventDefault()
-        setSavedQuery(listResults[0].title)
-        setQuery(listResults[0].title)
-        setSelectedIndex(-1)
-      }
-    } else if (e.key === 'Enter') {
-      if (selectedIndex >= 0 && listResults[selectedIndex]) {
-        e.preventDefault()
-        handleItemClick(listResults[selectedIndex])
-      }
-    }
-  }
-
-  const activeTool_ = activeTool ? tools.find((t) => t.id === activeTool) : null
-  const activeToolName = activeTool_?.manifest.name ?? activeTool ?? null
-  const activeToolPlaceholder = activeTool_?.manifest.placeholder ?? null
-
-  const itemClass = (index: number): string =>
-    index === selectedIndex
-      ? (themeStyles?.itemActive ?? 'nuxy-shell-results-item nuxy-shell-results-item--active')
-      : (themeStyles?.itemInactive ?? 'nuxy-shell-results-item')
 
   return (
     <div
@@ -499,311 +233,73 @@ export default function ShellView({ query: _queryProp }: Props) {
       <div
         ref={containerRef}
         className={themeStyles?.container ?? 'nuxy-shell-container'}
-        style={{
-          left: position.x,
-          top: position.y,
-          width: size.width
-            ? `${size.width}px`
-            : settings?.windowWidth
-              ? `${settings.windowWidth}px`
-              : undefined,
-          height: size.height
-            ? `${size.height}px`
-            : activeTool
-              ? `${settings?.windowMaxHeight ?? 600}px`
-              : undefined,
-          maxWidth: size.width
-            ? 'none'
-            : settings?.windowWidth
-              ? `${settings.windowWidth}px`
-              : undefined,
-          maxHeight: size.height ? 'none' : `${settings?.windowMaxHeight ?? 600}px`,
-          opacity: settings?.opacity !== undefined ? settings.opacity : undefined,
-          transition:
-            isDraggingState || isInitialLoad
-              ? 'none'
-              : 'left 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
+        style={containerStyle}
       >
-        {(['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as const).map((dir) => (
-          <div
-            key={dir}
-            style={{
-              position: 'absolute',
-              zIndex: 9999,
-              ...(dir === 'n' ? { top: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' } : {}),
-              ...(dir === 's'
-                ? { bottom: 0, left: 0, right: 0, height: 6, cursor: 'ns-resize' }
-                : {}),
-              ...(dir === 'e'
-                ? { top: 0, bottom: 0, right: 0, width: 6, cursor: 'ew-resize' }
-                : {}),
-              ...(dir === 'w' ? { top: 0, bottom: 0, left: 0, width: 6, cursor: 'ew-resize' } : {}),
-              ...(dir === 'ne'
-                ? { top: 0, right: 0, width: 10, height: 10, cursor: 'nesw-resize' }
-                : {}),
-              ...(dir === 'nw'
-                ? { top: 0, left: 0, width: 10, height: 10, cursor: 'nwse-resize' }
-                : {}),
-              ...(dir === 'se'
-                ? { bottom: 0, right: 0, width: 10, height: 10, cursor: 'nwse-resize' }
-                : {}),
-              ...(dir === 'sw'
-                ? { bottom: 0, left: 0, width: 10, height: 10, cursor: 'nesw-resize' }
-                : {}),
-            }}
-            onMouseDown={(e) => handleResizeMouseDown(e, dir)}
-          />
-        ))}
+        <ShellResizeHandles onResizeMouseDown={handleResizeMouseDown} />
+
         <div className="nuxy-main-wrapper">
           <div className="nuxy-shell-body">
             <div>
-              <div
-                ref={omniBarRef}
-                className={`nuxy-shell-omni-bar ${showOmniBar ? '' : 'nuxy-shell-omni-bar--static'}`}
-                onClick={() => showOmniBar && inputRef.current?.focus()}
-                onMouseDown={handleDragMouseDown}
-              >
-                <span className="nuxy-shell-omni-bar__icon" aria-hidden="true">
-                  {searchIcon ? (
-                    <span
-                      dangerouslySetInnerHTML={{ __html: searchIcon }}
-                      style={{ display: 'flex', alignItems: 'center' }}
-                    />
-                  ) : (
-                    <span className="nuxy-shell-omni-bar__icon-placeholder" aria-hidden="true" />
-                  )}
-                </span>
-                <span className="nuxy-shell-omni-bar__sep">›</span>
-                {activeToolName && (
-                  <>
-                    <span className="nuxy-shell-omni-bar__tool-name">{activeToolName}</span>
-                    <span className="nuxy-shell-omni-bar__sep">›</span>
-                  </>
-                )}
-                <input
-                  autoFocus
-                  ref={inputRef}
-                  disabled={!showOmniBar}
-                  value={query}
-                  onChange={(e) => {
-                    setQuery(e.target.value)
-                    setSavedQuery(e.target.value)
-                    setSelectedIndex(-1)
-                  }}
-                  onKeyDown={handleKeyDown}
-                  className="nuxy-shell-omni-bar__input"
-                  aria-label="Search"
-                  placeholder={
-                    activeToolPlaceholder
-                      ? activeToolPlaceholder
-                      : activeToolName
-                        ? `Search ${activeToolName}`
-                        : 'What do you have in mind?'
-                  }
-                />
-              </div>
+              <ShellOmniBar
+                inputRef={inputRef}
+                query={query}
+                showOmniBar={showOmniBar}
+                searchIcon={searchIcon}
+                activeToolName={activeToolName}
+                activeToolPlaceholder={activeToolPlaceholder}
+                onQueryChange={(val) => {
+                  setQuery(val)
+                  setSavedQuery(val)
+                  setSelectedIndex(-1)
+                }}
+                onKeyDown={handleKeyDown}
+                onDragMouseDown={handleDragMouseDown}
+              />
             </div>
 
             {!activeTool && (
               <>
-                {/* 1. Result Providers */}
-                {Object.keys(providerStates)
-                  .filter((id) => providerStates[id].type === 'result')
-                  .map((id) => {
-                    const state = providerStates[id]
-                    if (state.loading)
-                      return (
-                        <div key={id} className="nuxy-provider-section">
-                          <div className="nuxy-provider-section__header">
-                            <span>{state.name}</span>
-                            <div className="nuxy-provider-section__loading-dot" />
-                          </div>
-                          <div className="nuxy-skeleton-result nuxy-shimmer-bg" />
-                        </div>
-                      )
-                    if (!state.items || state.items.length === 0) return null
-                    return (
-                      <div key={id} className="nuxy-provider-section">
-                        <div className="nuxy-provider-section__header">
-                          <span>{state.name}</span>
-                        </div>
-                        {state.items.map((item) => (
-                          <ResultCard
-                            key={item.id}
-                            item={item}
-                            providerName={state.name}
-                            copiedId={copiedId}
-                            onCopy={handleCopy}
-                          />
-                        ))}
-                      </div>
-                    )
-                  })}
-
-                {/* 2. Compare Providers */}
-                {Object.keys(providerStates)
-                  .filter((id) => providerStates[id].type === 'compare')
-                  .map((id) => {
-                    const state = providerStates[id]
-                    if (state.loading)
-                      return (
-                        <div key={id} className="nuxy-provider-section">
-                          <div className="nuxy-provider-section__header">
-                            <span>{state.name}</span>
-                            <div className="nuxy-provider-section__loading-dot" />
-                          </div>
-                          <div className="nuxy-skeleton-compare nuxy-shimmer-bg" />
-                        </div>
-                      )
-                    if (!state.items || state.items.length === 0) return null
-                    return (
-                      <div key={id} className="nuxy-provider-section">
-                        <div className="nuxy-provider-section__header">
-                          <span>{state.name}</span>
-                        </div>
-                        {state.items.map((item) => (
-                          <CompareCard
-                            key={item.id}
-                            item={item}
-                            providerName={state.name}
-                            copiedId={copiedId}
-                            onCopy={handleCopy}
-                          />
-                        ))}
-                      </div>
-                    )
-                  })}
-
-                {/* 3. List Results */}
-                {listResults.length > 0 && List ? (
-                  <List role="listbox" aria-label="Results">
-                    {listResults.map(
-                      (item, index) =>
-                        ListItem && (
-                          <ListItem
-                            key={item.id}
-                            active={index === selectedIndex}
-                            role="option"
-                            aria-selected={index === selectedIndex}
-                            onClick={() => handleItemClick(item)}
-                          >
-                            {ListItemBody && (
-                              <ListItemBody>
-                                {ListItemText && <ListItemText>{item.title}</ListItemText>}
-                              </ListItemBody>
-                            )}
-                            {ListItemActions && item.subtitle && (
-                              <ListItemActions>
-                                <span className="nuxy-shell-results-item__subtitle">
-                                  {item.subtitle}
-                                </span>
-                              </ListItemActions>
-                            )}
-                          </ListItem>
-                        )
-                    )}
-                  </List>
-                ) : (
-                  listResults.length > 0 && (
-                    <div className="nuxy-shell-results-list" role="listbox" aria-label="Results">
-                      {listResults.map((item, index) => (
-                        <div
-                          key={item.id}
-                          className={itemClass(index)}
-                          role="option"
-                          aria-selected={index === selectedIndex}
-                          onClick={() => handleItemClick(item)}
-                        >
-                          <span className="nuxy-shell-results-item__title">{item.title}</span>
-                          <span className="nuxy-shell-results-item__subtitle">{item.subtitle}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                )}
-
-                {/* 4. List Provider Skeletons */}
-                {isAnyListProviderLoading && (
-                  <div className="nuxy-skeleton-list">
-                    <div className="nuxy-skeleton-list-item nuxy-shimmer-bg" />
-                    <div
-                      className="nuxy-skeleton-list-item nuxy-shimmer-bg"
-                      style={{ width: '80%' }}
-                    />
-                  </div>
-                )}
+                <ShellProviderResults
+                  providerStates={providerStates}
+                  copiedId={copiedId}
+                  onCopy={handleCopy}
+                  ResultCard={ResultCard}
+                  CompareCard={CompareCard}
+                />
+                <ShellListResults
+                  listResults={listResults}
+                  selectedIndex={selectedIndex}
+                  isAnyListProviderLoading={isAnyListProviderLoading}
+                  itemClass={itemClass}
+                  onItemClick={handleItemClick}
+                  List={List}
+                  ListItem={ListItem}
+                  ListItemBody={ListItemBody}
+                  ListItemText={ListItemText}
+                  ListItemActions={ListItemActions}
+                />
               </>
             )}
 
             {ToolComponent && activeTool && (
-              <React.Suspense
-                fallback={
-                  <div
-                    className="nuxy-loading-state"
-                    style={{
-                      flex: 1,
-                      minHeight: '200px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      opacity: 0.7,
-                      fontSize: 'var(--font-sm)',
-                    }}
-                  >
-                    Loading…
-                  </div>
-                }
-              >
-                <div className="nuxy-shell-tool-wrapper">
-                  <ToolComponent query={query} extensionId={activeTool} />
-                </div>
-              </React.Suspense>
+              <ShellToolView ToolComponent={ToolComponent} activeTool={activeTool} query={query} />
             )}
           </div>
 
           {ShortcutBar && (
-            <ShortcutBar style={{ justifyContent: 'space-between' }}>
-              <ShortcutHint>
-                {footerHints || (activeTool && keyActionHints.length > 0) ? (
-                  <>
-                    {footerHints}
-                    {activeTool &&
-                      keyActionHints.map((a, i) => (
-                        <React.Fragment key={a.key + (a.modifiers || []).join('')}>
-                          {(i > 0 || footerHints) && ShortcutSep && <ShortcutSep />}
-                          <span className="nuxy-shortcut-action" onClick={() => a.handler()}>
-                            {Kbd &&
-                              (Array.isArray(a.hint) ? (
-                                a.hint.map((k, ki) => <Kbd key={ki}>{k}</Kbd>)
-                              ) : (
-                                <Kbd>{a.hint}</Kbd>
-                              ))}
-                            <span>{a.label}</span>
-                          </span>
-                        </React.Fragment>
-                      ))}
-                  </>
-                ) : (
-                  <span>{tools.length + 1} extensions loaded</span>
-                )}
-              </ShortcutHint>
-              <ShortcutHint>
-                {selectedIndex >= 0 && listResults.length > 0 && !activeTool ? (
-                  <>
-                    <span>Press</span>
-                    <Kbd>Enter</Kbd>
-                    <span>to run</span>
-                  </>
-                ) : toolActions.length > 0 ? (
-                  <>
-                    <Kbd>Ctrl</Kbd>
-                    <Kbd>K</Kbd>
-                    <span>to actions</span>
-                  </>
-                ) : null}
-              </ShortcutHint>
-            </ShortcutBar>
+            <ShellShortcutBar
+              tools={tools}
+              activeTool={activeTool}
+              selectedIndex={selectedIndex}
+              listResults={listResults}
+              keyActionHints={keyActionHints}
+              toolActions={toolActions}
+              footerHints={footerHints}
+              ShortcutBar={ShortcutBar}
+              ShortcutHint={ShortcutHint}
+              ShortcutSep={ShortcutSep}
+              Kbd={Kbd}
+            />
           )}
         </div>
       </div>

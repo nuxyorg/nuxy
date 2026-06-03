@@ -1,55 +1,11 @@
 const React = window.React
-const { useEffect, useRef } = React
 
-const EXT_ID = 'com.nuxy.gradient'
+import { useGradientCanvas } from './hooks/useGradientCanvas.ts'
+
 const CANVAS_ID = 'nuxy-gradient-canvas'
 
-interface GradientInstance {
-  height: number
-  initGradient: (selector: string) => GradientInstance
-  pause?: () => void
-  play?: () => void
-  resize?: () => void
-  disconnect?: () => void
-}
-
-const COLORS: Record<string, string> = {
-  '--gradient-color-1': 'var(--gradient-1, #c3e4f5)',
-  '--gradient-color-2': 'var(--gradient-2, #6ec3f4)',
-  '--gradient-color-3': 'var(--gradient-3, #eae2ff)',
-  '--gradient-color-4': 'var(--gradient-4, #b2c7f8)',
-}
-
 export default function GradientView() {
-  useEffect(() => {
-    // When the gradient tool is opened, turn on the border glow
-    window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: true }))
-
-    const canvas = document.getElementById(CANVAS_ID)
-    if (!canvas) return
-
-    Object.entries(COLORS).forEach(([k, v]) => (canvas as HTMLElement).style.setProperty(k, v))
-
-    const dynamicImport = new Function('url', 'return import(url)') as (
-      url: string
-    ) => Promise<{ Gradient: new () => GradientInstance }>
-
-    let toolGInstance: any = null
-    dynamicImport(`nuxy-ext://${EXT_ID}/gradient.ts`)
-      .then(({ Gradient }) => {
-        const g = new Gradient()
-        g.height = window.innerHeight
-        g.initGradient(`#${CANVAS_ID}`)
-        toolGInstance = g
-      })
-      .catch(() => {})
-
-    return () => {
-      // Turn off the border glow when the gradient tool is closed
-      window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: false }))
-      toolGInstance?.pause?.()
-    }
-  }, [])
+  useGradientCanvas()
 
   return React.createElement('canvas', {
     id: CANVAS_ID,
@@ -71,7 +27,6 @@ if (typeof window !== 'undefined') {
   let observer: ResizeObserver | null = null
 
   const initShellGradient = (container: HTMLElement) => {
-    // Avoid double setup
     if (document.getElementById('nuxy-shell-gradient-canvas')) return
 
     const canvas = document.createElement('canvas')
@@ -86,10 +41,8 @@ if (typeof window !== 'undefined') {
         g.initGradient('#nuxy-shell-gradient-canvas')
         gInstance = g
 
-        // Initially paused until toggle is activated
         g.pause?.()
 
-        // Set up ResizeObserver
         observer = new ResizeObserver(() => {
           if (g.mesh && g.mesh.geometry) {
             g.resize?.()
@@ -104,7 +57,6 @@ if (typeof window !== 'undefined') {
 
   let pauseTimeout: any = null
 
-  // Handle toggles from other extensions
   const handleToggle = (e: Event) => {
     const detail = (e as CustomEvent).detail
     const active = typeof detail === 'object' && detail !== null ? detail.active : Boolean(detail)
@@ -144,7 +96,6 @@ if (typeof window !== 'undefined') {
 
   window.addEventListener('nuxy-gradient-toggle', handleToggle)
 
-  // Listen to shell mount event
   window.addEventListener('nuxy-shell-mounted', (e: Event) => {
     const container = (e as CustomEvent).detail?.container
     if (container) {
@@ -152,7 +103,6 @@ if (typeof window !== 'undefined') {
     }
   })
 
-  // Check if shell container is already in DOM (fallback)
   const existing = document.querySelector('.nuxy-shell-container') as HTMLElement | null
   if (existing) {
     initShellGradient(existing)

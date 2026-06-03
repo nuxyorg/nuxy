@@ -1,283 +1,82 @@
 const React = window.React
-const { useState, useEffect, useMemo } = React
 
-import type { N8nWorkflow, N8nExecution, N8nStatusResult } from './types.ts'
-
-const EXT_ID = 'com.nuxy.n8n'
-
-const _useListNavigation =
-  (window.UI || {}).useListNavigation ||
-  (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
-const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
+import type { N8nWorkflow, N8nExecution } from './types.ts'
+import { useN8nData } from './hooks/useN8nData.ts'
+import { useN8nActions } from './hooks/useN8nActions.ts'
+import { useN8nKeyboard } from './hooks/useN8nKeyboard.ts'
+import { N8nConfigPanel } from './components/N8nConfigPanel.tsx'
+import { N8nWorkflowList } from './components/N8nWorkflowList.tsx'
+import { N8nExecutionList } from './components/N8nExecutionList.tsx'
 
 interface Props {
   query: string
 }
 
-async function invoke<T>(channel: string, payload?: unknown): Promise<T> {
-  const res = await window.core.ipc.invoke(EXT_ID, channel, payload)
-  const r = res as { success: boolean; data?: T; error?: string } | null
-  if (r && r.success) return r.data as T
-  throw new Error(r?.error || 'IPC call failed')
-}
-
 export default function N8nApp({ query }: Props) {
+  const { Alert } = window.UI || {}
+
+  const [showConfig, setShowConfig] = React.useState<boolean>(false)
+  const [selected, setSelected] = React.useState<N8nWorkflow | null>(null)
+  const [executions, setExecutions] = React.useState<N8nExecution[]>([])
+
   const {
-    List,
-    ListItem,
-    ListItemBody,
-    ListItemText,
-    ListItemMeta,
-    ListItemActions,
-    Input,
-    EmptyState,
-    Alert,
-    Card,
-    Badge,
-    SectionHeader,
-  } = window.UI || {}
+    configured, setConfigured,
+    status, setStatus,
+    workflows, setWorkflows,
+    baseUrl, setBaseUrl,
+    apiKey, setApiKey,
+  } = useN8nData()
 
-  const [configured, setConfigured] = useState<boolean>(false)
-  const [showConfig, setShowConfig] = useState<boolean>(false)
-  const [status, setStatus] = useState<N8nStatusResult | null>(null)
-  const [workflows, setWorkflows] = useState<N8nWorkflow[]>([])
-  const [selected, setSelected] = useState<N8nWorkflow | null>(null)
-  const [executions, setExecutions] = useState<N8nExecution[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-  const [baseUrl, setBaseUrl] = useState<string>('http://localhost:5678')
-  const [apiKey, setApiKey] = useState<string>('')
-
-  const filteredWorkflows = useMemo(() => {
+  const filteredWorkflows = React.useMemo(() => {
     if (!query.trim()) return workflows
     const q = query.toLowerCase()
     return workflows.filter((wf) => wf.name.toLowerCase().includes(q))
   }, [workflows, query])
 
-  useEffect(() => {
-    invoke<{ baseUrl: string; apiKey: string }>('n8n:getConfig')
-      .then(({ baseUrl: url, apiKey: key }) => {
-        if (url) setBaseUrl(url)
-        if (key) setApiKey(key)
-      })
-      .catch(() => {})
-  }, [])
-
-  useEffect(() => {
-    invoke<N8nStatusResult>('n8n:status')
-      .then((st) => {
-        if (st.ok) {
-          setConfigured(true)
-          setStatus(st)
-          invoke<N8nWorkflow[]>('n8n:listWorkflows')
-            .then(setWorkflows)
-            .catch(() => {})
-        }
-      })
-      .catch(() => {})
-  }, [])
-
-  async function handleSaveConfig(): Promise<void> {
-    await invoke('n8n:configure', { baseUrl, apiKey })
-    setShowConfig(false)
-    setConfigured(true)
-    const st = await invoke<N8nStatusResult>('n8n:status').catch(() => ({ ok: false }))
-    setStatus(st)
-    if (st.ok) {
-      invoke<N8nWorkflow[]>('n8n:listWorkflows')
-        .then(setWorkflows)
-        .catch(() => {})
-    }
-  }
-
-  async function handleRefresh(): Promise<void> {
-    setLoading(true)
-    try {
-      const st = await invoke<N8nStatusResult>('n8n:status')
-      setStatus(st)
-      if (st.ok) {
-        const wfs = await invoke<N8nWorkflow[]>('n8n:listWorkflows')
-        setWorkflows(wfs)
-      }
-    } catch {}
-    setLoading(false)
-  }
-
-  async function handleSelectWorkflow(wf: N8nWorkflow): Promise<void> {
-    setSelected(wf)
-    const execs = await invoke<N8nExecution[]>('n8n:executions', {
-      workflowId: wf.id,
-      limit: 5,
-    }).catch(() => [] as N8nExecution[])
-    setExecutions(execs)
-  }
-
-  async function handleRunWebhook(wf: N8nWorkflow): Promise<void> {
-    await invoke('n8n:triggerWebhook', { webhookPath: wf.id }).catch(() => {})
-  }
-
-  const { selectedIndex } = _useListNavigation(filteredWorkflows, {
-    onEnter: (wf: N8nWorkflow) => {
-      void handleSelectWorkflow(wf)
-    },
-    enterLabel: 'Select',
-    enterHint: 'Enter',
+  const { handleSaveConfig, handleRefresh, handleSelectWorkflow, handleRunWebhook } = useN8nActions({
+    baseUrl,
+    apiKey,
+    setConfigured,
+    setShowConfig,
+    setStatus,
+    setWorkflows,
+    setSelected,
+    setExecutions,
   })
 
-  _useToolKeyActions([
-    {
-      key: ',',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Configure',
-      hint: '⌃,',
-      handler: () => setShowConfig((v) => !v),
-    },
-    {
-      key: 'Enter',
-      modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Save',
-      hint: '⌃↵',
-      activeOn: () => showConfig || !configured,
-      handler: () => {
-        void handleSaveConfig()
-      },
-    },
-    {
-      key: 'Escape',
-      label: 'Cancel',
-      activeOn: () => showConfig,
-      handler: () => setShowConfig(false),
-    },
-  ])
-
-  useEffect(() => {
-    const actions = [
-      {
-        id: 'n8n-configure',
-        label: showConfig ? 'Show Workflows' : 'Configure Connection',
-        onExecute: () => setShowConfig((v) => !v),
-      },
-    ]
-    if (!showConfig && configured) {
-      actions.push({
-        id: 'n8n-refresh',
-        label: 'Refresh Workflows',
-        onExecute: () => {
-          void handleRefresh()
-        },
-      })
-    }
-    const activeWorkflow = filteredWorkflows[selectedIndex]
-    if (activeWorkflow) {
-      actions.push({
-        id: 'n8n-run-webhook',
-        label: `Run Webhook: ${activeWorkflow.name}`,
-        onExecute: () => {
-          void handleRunWebhook(activeWorkflow)
-        },
-      })
-    }
-    window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: actions }))
-    return () => {
-      window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
-    }
-  }, [showConfig, configured, selectedIndex, filteredWorkflows])
-
-  // Re-evaluate key-action hints when selection state changes
-  useEffect(() => {
-    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
-  }, [selectedIndex])
+  const { selectedIndex } = useN8nKeyboard({
+    filteredWorkflows,
+    showConfig,
+    configured,
+    setShowConfig,
+    handleSaveConfig,
+    handleRefresh,
+    handleSelectWorkflow,
+    handleRunWebhook,
+  })
 
   if (showConfig || !configured) {
     return (
-      <>
-        {SectionHeader && <SectionHeader label="Configure n8n" />}
-        {Card && (
-          <Card>
-            {Input && (
-              <Input
-                value={baseUrl}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBaseUrl(e.target.value)}
-                placeholder="http://localhost:5678"
-              />
-            )}
-            {Input && (
-              <Input
-                type="password"
-                value={apiKey}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setApiKey(e.target.value)}
-                placeholder="n8n_api_…"
-              />
-            )}
-          </Card>
-        )}
-      </>
+      <N8nConfigPanel
+        baseUrl={baseUrl}
+        apiKey={apiKey}
+        onBaseUrlChange={setBaseUrl}
+        onApiKeyChange={setApiKey}
+      />
     )
   }
 
   return (
     <>
       {status && !status.ok && Alert && <Alert variant="danger">n8n unreachable</Alert>}
-      {SectionHeader && <SectionHeader label="Workflows" />}
-      <List>
-        {filteredWorkflows.length === 0 ? (
-          EmptyState ? (
-            <EmptyState message={query ? 'No matching workflows.' : 'No workflows found.'} />
-          ) : null
-        ) : (
-          filteredWorkflows.map((wf, idx) => (
-            <ListItem
-              key={wf.id}
-              active={idx === selectedIndex}
-              onClick={() => {
-                void handleSelectWorkflow(wf)
-              }}
-            >
-              <ListItemBody>
-                <ListItemText>{wf.name}</ListItemText>
-                <ListItemMeta>{wf.active ? 'active' : 'inactive'}</ListItemMeta>
-              </ListItemBody>
-              <ListItemActions>
-                {Badge && (
-                  <Badge variant={wf.active ? 'success' : 'default'}>
-                    {wf.active ? 'active' : 'inactive'}
-                  </Badge>
-                )}
-              </ListItemActions>
-            </ListItem>
-          ))
-        )}
-      </List>
+      <N8nWorkflowList
+        workflows={filteredWorkflows}
+        selectedIndex={selectedIndex}
+        query={query}
+        onSelect={(wf) => void handleSelectWorkflow(wf)}
+      />
       {selected && (
-        <>
-          {SectionHeader && <SectionHeader label={`Executions: ${selected.name}`} />}
-          <List>
-            {executions.length === 0 ? (
-              EmptyState ? <EmptyState message="No executions found." /> : null
-            ) : (
-              executions.map((ex) => (
-                <ListItem key={ex.id}>
-                  <ListItemBody>
-                    <ListItemText>{ex.status}</ListItemText>
-                    <ListItemMeta>{ex.startedAt}</ListItemMeta>
-                  </ListItemBody>
-                  {Badge && (
-                    <Badge
-                      variant={
-                        ex.status === 'success'
-                          ? 'success'
-                          : ex.status === 'error'
-                            ? 'danger'
-                            : 'default'
-                      }
-                    >
-                      {ex.status}
-                    </Badge>
-                  )}
-                </ListItem>
-              ))
-            )}
-          </List>
-        </>
+        <N8nExecutionList selected={selected} executions={executions} />
       )}
     </>
   )

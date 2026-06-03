@@ -442,6 +442,8 @@ All IPC handlers must return a value (or `undefined`). The kernel wraps them in 
 
 ## 5. Frontend Rules
 
+> For detailed guidance on *when* and *how* to split `frontend.tsx` into hooks and components, see [`FRONTEND_STRUCTURE_GUIDE.md`](FRONTEND_STRUCTURE_GUIDE.md).
+
 ### 5.1 TSX format
 
 Frontend files are `.tsx` files containing JSX. They are loaded at runtime via `nuxy-ext://` — no build step, no bundler. All external dependencies come from `window.React` and `window.UI`.

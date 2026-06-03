@@ -1,5 +1,6 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
 import type { ClipboardItem, AddHistoryItemInput } from './types.ts'
+import { sortHistory, createHistoryItem } from './utils/history.ts'
 
 export function register(core: CoreContext): void {
   core.registry.registerTool({
@@ -10,29 +11,22 @@ export function register(core: CoreContext): void {
   let lastText = ''
   let lastImage: string | null = null
 
-  // Initialize from sandboxed storage
   async function init(): Promise<void> {
     try {
       const stored = await core.storage.read('history.json')
-      if (Array.isArray(stored)) {
-        history = stored as ClipboardItem[]
-      } else {
-        history = []
-      }
+      history = Array.isArray(stored) ? (stored as ClipboardItem[]) : []
       core.logger.info(`Loaded ${history.length} clipboard history item(s) from storage.`)
     } catch (err) {
       core.logger.error('Failed to read clipboard history from storage, initializing empty.', err)
       history = []
     }
 
-    sortHistory()
+    history = sortHistory(history)
 
-    // Initialize the lastText and lastImage with current clipboard value
     try {
       lastText = (await core.clipboard.readText()) || ''
       const storeImages = (await core.settings.read<boolean>('storeImages')) ?? true
       lastImage = storeImages ? ((await core.clipboard.readImage()) as string | null) : null
-      // If there's something already on clipboard and history is empty, add it
       if (history.length === 0) {
         if (lastImage) {
           await addHistoryItem({ text: lastText || 'Image', image: lastImage })
@@ -44,7 +38,6 @@ export function register(core: CoreContext): void {
       core.logger.error('Failed to read initial system clipboard.', err)
     }
 
-    // Start the monitoring loop with dynamic timeout
     const monitorTick = async () => {
       try {
         const storeImages = (await core.settings.read<boolean>('storeImages')) ?? true
@@ -77,41 +70,24 @@ export function register(core: CoreContext): void {
     setTimeout(monitorTick, 1000)
   }
 
-  function sortHistory(): void {
-    history.sort((a, b) => new Date(b.copiedAt).getTime() - new Date(a.copiedAt).getTime())
-    const pinned = history.filter((i) => i.pinned)
-    const unpinned = history.filter((i) => !i.pinned)
-    history = [...pinned, ...unpinned]
-  }
+  async function addHistoryItem(input: AddHistoryItemInput): Promise<void> {
+    const newItem = createHistoryItem(input)
 
-  // Add an item to the history, deduplicate, and persist
-  async function addHistoryItem(item: AddHistoryItemInput): Promise<void> {
-    const newItem: ClipboardItem = {
-      id: Math.random().toString(36).slice(2) + Date.now().toString(),
-      text: item.text,
-      image: item.image ?? null,
-      copiedAt: new Date().toISOString(),
-      pinned: false,
-    }
-
-    // De-duplicate: remove older items with exact same text (if no image), or exact same image
     history = [
       newItem,
       ...history.filter((i) => {
-        if (item.image) return i.image !== item.image
-        return i.text !== item.text
+        if (input.image) return i.image !== input.image
+        return i.text !== input.text
       }),
     ]
 
-    // Cap at maxHistoryItems unpinned entries (pinned items are never evicted)
     const maxHistoryItems = (await core.settings.read<number>('maxHistoryItems')) ?? 100
     const pinned = history.filter((i) => i.pinned)
     const unpinned = history.filter((i) => !i.pinned)
     history = [...pinned, ...unpinned.slice(0, maxHistoryItems)]
 
-    sortHistory()
+    history = sortHistory(history)
 
-    // Persist to sandboxed storage
     try {
       await core.storage.write('history.json', history)
     } catch (err) {
@@ -119,75 +95,54 @@ export function register(core: CoreContext): void {
     }
   }
 
-  // IPC Handler: get history list
-  core.ipc.handle('getHistory', async (_payload: unknown) => {
-    return history
-  })
-
-  // IPC Handler: clear all items (preserves pinned)
-  core.ipc.handle('clearHistory', async (_payload: unknown) => {
-    history = history.filter((i) => i.pinned)
+  async function persistAfterMutation(): Promise<void> {
     try {
       await core.storage.write('history.json', history)
     } catch (err) {
-      core.logger.error('Failed to clear clipboard storage.', err)
+      core.logger.error('Failed to persist clipboard history.', err)
     }
+  }
+
+  core.ipc.handle('getHistory', async () => history)
+
+  core.ipc.handle('clearHistory', async () => {
+    history = history.filter((i) => i.pinned)
+    await persistAfterMutation()
     return history
   })
 
-  // IPC Handler: pin an item
   core.ipc.handle('pinItem', async (payload: unknown) => {
-    const id = payload as string
-    const item = history.find((i) => i.id === id)
+    const item = history.find((i) => i.id === (payload as string))
     if (item) {
       item.pinned = true
-      sortHistory()
-      try {
-        await core.storage.write('history.json', history)
-      } catch (err) {
-        core.logger.error('Failed to update clipboard storage after pin.', err)
-      }
+      history = sortHistory(history)
+      await persistAfterMutation()
     }
     return history
   })
 
-  // IPC Handler: unpin an item
   core.ipc.handle('unpinItem', async (payload: unknown) => {
-    const id = payload as string
-    const item = history.find((i) => i.id === id)
+    const item = history.find((i) => i.id === (payload as string))
     if (item) {
       item.pinned = false
-      sortHistory()
-      try {
-        await core.storage.write('history.json', history)
-      } catch (err) {
-        core.logger.error('Failed to update clipboard storage after unpin.', err)
-      }
+      history = sortHistory(history)
+      await persistAfterMutation()
     }
     return history
   })
 
-  // IPC Handler: delete specific item
   core.ipc.handle('deleteItem', async (payload: unknown) => {
-    const id = payload as string
-    history = history.filter((item) => item.id !== id)
-    try {
-      await core.storage.write('history.json', history)
-    } catch (err) {
-      core.logger.error('Failed to update clipboard storage after deletion.', err)
-    }
+    history = history.filter((item) => item.id !== (payload as string))
+    await persistAfterMutation()
     return history
   })
 
-  // IPC Handler: check if a file path exists on disk
   core.ipc.handle('checkFile', async (payload: unknown) => {
     return core.fs.fileExists(payload as string)
   })
 
-  // IPC Handler: copy a file item to the system clipboard (as a file, not text)
   core.ipc.handle('copyFile', async (payload: unknown) => {
-    const id = payload as string
-    const found = history.find((item) => item.id === id)
+    const found = history.find((item) => item.id === (payload as string))
     if (!found) return history
     const path = found.text?.trim()
     if (!path) return history
@@ -195,15 +150,13 @@ export function register(core: CoreContext): void {
     if (!exists) throw new Error(`File not found: ${path}`)
     await core.clipboard.writeFiles([path])
     found.copiedAt = new Date().toISOString()
-    history = [found, ...history.filter((item) => item.id !== id)]
+    history = [found, ...history.filter((item) => item.id !== found.id)]
     await core.storage.write('history.json', history)
     return history
   })
 
-  // IPC Handler: copy item to system clipboard and move it to top of history
   core.ipc.handle('copyItem', async (payload: unknown) => {
-    const id = payload as string
-    const found = history.find((item) => item.id === id)
+    const found = history.find((item) => item.id === (payload as string))
     if (found) {
       try {
         if (found.image && core.clipboard.writeImage) {
@@ -215,20 +168,16 @@ export function register(core: CoreContext): void {
           lastText = found.text
           lastImage = null
         }
-        // Prevent triggering the poll loop since we set it ourselves
-
-        // Re-sort: move this item to the top of its group (pinned stays in pinned section)
         found.copiedAt = new Date().toISOString()
-        history = [found, ...history.filter((item) => item.id !== id)]
-        sortHistory()
+        history = [found, ...history.filter((item) => item.id !== found.id)]
+        history = sortHistory(history)
         await core.storage.write('history.json', history)
       } catch (err) {
-        core.logger.error(`Failed to copy item "${id}" to clipboard.`, err)
+        core.logger.error(`Failed to copy item "${found.id}" to clipboard.`, err)
       }
     }
     return history
   })
 
-  // Run initialization
   init()
 }

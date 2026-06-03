@@ -1,104 +1,39 @@
 const React = window.React
-const { useState, useEffect } = React
-
-import type { ConversionResult } from './types.ts'
 
 const EXT_ID = 'com.nuxy.converter'
+
+import type { ConversionResult } from './types.ts'
+import { useConverterData } from './hooks/useConverterData.ts'
+import { useConverterActions } from './hooks/useConverterActions.ts'
+import { useConverterKeyboard } from './hooks/useConverterKeyboard.ts'
+import { ConverterList } from './components/ConverterList.tsx'
 
 interface Props {
   query: string
 }
 
 export default function ConverterView({ query }: Props) {
-  const {
-    List,
-    ListItem,
-    ListItemBody,
-    ListItemText,
-    ListItemMeta,
-    EmptyState,
-  } = window.UI || {}
-
-  const _useListNavigation =
-    (window.UI || {}).useListNavigation ||
-    (() => ({ selectedIndex: -1, setSelectedIndex: () => {} }))
+  const { EmptyState } = window.UI || {}
 
   const _useTranslation =
     (window.UI || {}).useTranslation ||
     (() => ({ t: (k: string) => k, dir: 'ltr' as const }))
 
   const { t, dir } = _useTranslation(EXT_ID)
-  const [results, setResults] = useState<ConversionResult[]>([])
-  const [loading, setLoading] = useState(false)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
 
-  const handleCopy = (item: ConversionResult): void => {
-    if (!window.core?.ipc?.invoke) return
-    window.core.ipc
-      .invoke(EXT_ID, 'copyResult', { value: item.formattedResult })
-      .then(() => {
-        setCopiedId(item.id)
-        setTimeout(() => setCopiedId(null), 1800)
-      })
-      .catch(() => {})
-  }
-
-  const { selectedIndex, setSelectedIndex } = _useListNavigation(results, {
-    onEnter: (item: ConversionResult) => handleCopy(item),
+  const { results, loading } = useConverterData(query)
+  const { copiedId, handleCopy } = useConverterActions()
+  const { selectedIndex, setSelectedIndex } = useConverterKeyboard({
+    results,
+    handleCopy,
     enterLabel: t('actions.copy'),
-    enterHint: '↵',
   })
-
-  // Dispatch nuxy-key-hints-changed when selectedIndex changes
-  useEffect(() => {
-    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
-  }, [selectedIndex])
-
-  // Debounce query and call convert IPC
-  useEffect(() => {
-    const q = query || ''
-    if (!q.trim()) {
-      setResults([])
-      setLoading(false)
-      return
-    }
-
-    setLoading(true)
-    const timer = setTimeout(() => {
-      if (!window.core?.ipc?.invoke) {
-        setLoading(false)
-        return
-      }
-      window.core.ipc
-        .invoke(EXT_ID, 'convert', { query: q })
-        .then((res: unknown) => {
-          setLoading(false)
-          const r = res as { success: boolean; data?: ConversionResult[] } | null
-          if (r?.success && Array.isArray(r.data)) {
-            setResults(r.data)
-          } else {
-            setResults([])
-          }
-        })
-        .catch(() => {
-          setLoading(false)
-          setResults([])
-        })
-    }, 120)
-
-    return () => clearTimeout(timer)
-  }, [query])
 
   const currentQuery = query || ''
   const isEmpty = !currentQuery.trim()
   const hasResults = results.length > 0
 
-  const emptyMessage = isEmpty
-    ? t('empty')
-    : loading
-      ? '...'
-      : t('noResults')
-
+  const emptyMessage = isEmpty ? t('empty') : loading ? '...' : t('noResults')
   const emptyHint = isEmpty ? t('emptyHint') : t('noResultsHint')
 
   return (
@@ -126,39 +61,13 @@ export default function ConverterView({ query }: Props) {
           </div>
         )
       ) : (
-        List && (
-          <List>
-            {results.map((r, idx) => {
-              const isCopied = copiedId === r.id
-              const isActive = idx === selectedIndex
-              const displayText = isCopied ? t('copied') : r.formattedResult
-              return (
-                ListItem && (
-                  <ListItem
-                    key={r.id}
-                    active={isActive}
-                    onClick={() => setSelectedIndex(idx)}
-                  >
-                    {ListItemBody && (
-                      <ListItemBody>
-                        {ListItemText && (
-                          <ListItemText variant={isCopied ? 'success' : 'default'}>
-                            {displayText}
-                          </ListItemText>
-                        )}
-                        {ListItemMeta && (
-                          <ListItemMeta>
-                            {r.fromValue} {r.fromSymbol} → {r.toSymbol}
-                          </ListItemMeta>
-                        )}
-                      </ListItemBody>
-                    )}
-                  </ListItem>
-                )
-              )
-            })}
-          </List>
-        )
+        <ConverterList
+          results={results}
+          selectedIndex={selectedIndex}
+          copiedId={copiedId}
+          copiedLabel={t('copied')}
+          onSelect={setSelectedIndex}
+        />
       )}
     </div>
   )
