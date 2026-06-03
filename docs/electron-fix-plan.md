@@ -95,3 +95,14 @@ Bundled defaults ship in `src/themes/default-*.json` (UI assets; kernel copies t
 - [ ] `windowPosition` applied on show
 - [ ] Dev mode does not wipe `~/.nuxy/extensions` edits
 - [ ] Config reload updates opacity / alwaysOnTop
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Monorepo file structure | [structure.md](./structure.md) | Package layout and workspace boundaries |
+| Pain points and remediation plan | [pain-points-plan.md](./pain-points-plan.md) | Open security and architectural gaps beyond this audit |
+| Open bugs and resolved items | [open-issues.md](./open-issues.md) | Runtime issue tracker with resolved items |
+| Architecture overview | [02-architecture.md](./02-architecture.md) | High-level kernel, threads, and React canvas topology |

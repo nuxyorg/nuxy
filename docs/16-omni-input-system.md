@@ -89,3 +89,12 @@ export function register(core: CoreContext) {
 ## 5. Summary
 
 By combining **Manifest Capabilities (`callable`, `caller`)** with strict **Extension Types (`Tool`, `Provider`, `Orchestrator`)**, Nuxy creates an impenetrable sandbox. The AI Orchestrator can confidently call Tools without crashing them, and standard Tools are strictly prevented from gaining unauthorized control over the system or other extensions.
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Plugin system and CoreContext proxy | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Thread isolation and extension loading sequence |
+| Frontend extension rendering | [17-frontend-extensions.md](./17-frontend-extensions.md) | Canvas zones for Provider dropdowns and Tool views |

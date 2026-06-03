@@ -41,3 +41,14 @@ Source: [electron-fix-plan.md](./electron-fix-plan.md), [structure.md](./structu
 Historical references to `~/.local/share/nuxy` are obsolete. Use `~/.nuxy` only.
 
 Pain-point audit: [pain-points-plan.md](./pain-points-plan.md).
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Pain points and remediation plan | [pain-points-plan.md](./pain-points-plan.md) | Phased fix plan with P1–P18 gap analysis |
+| Open bugs and resolved items | [open-issues.md](./open-issues.md) | Runtime issue tracker |
+| Kernel audit and canonical paths | [electron-fix-plan.md](./electron-fix-plan.md) | Source of truth for `~/.nuxy/` layout |
+| Monorepo file structure | [structure.md](./structure.md) | Package and workspace boundaries |

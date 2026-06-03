@@ -69,3 +69,13 @@ Once the MVP is stable, you begin adding the "Pro" features iteratively:
 1. Implement the AI Orchestrator (Ollama integration).
 2. Enforce strict Chroot paths in `core.storage`.
 3. Build the Vault and add the capabilities/permissions firewall.
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Gap analysis between design and reality | [pain-points-plan.md](./pain-points-plan.md) | Phased remediation plan aligned with MVP phases |
+| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) | Implemented vs planned tracker |
+| Full rebuild phases | [14-rebuild-roadmap.md](./14-rebuild-roadmap.md) | Longer-term execution plan beyond the MVP |

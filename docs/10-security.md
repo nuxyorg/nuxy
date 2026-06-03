@@ -73,3 +73,13 @@ Nuxy implements an **OS-Style Permission Prompt**:
 5. The Kernel resumes the Worker thread, either returning the clipboard text or throwing an `UnauthorizedError`.
 
 This ensures the user is in absolute control of their privacy at all times, making stealthy data exfiltration practically impossible.
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Extension access and permission status | [21-extension-access.md](./21-extension-access.md) | Implemented vs planned permissions, clipboard consent status |
+| Plugin system and isolation loading | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Thread spawning and CoreContext proxy detail |
+| Known security gaps and remediation plan | [pain-points-plan.md](./pain-points-plan.md) | P4 (capabilities), P5 (clipboard), P6 (IPC allowlist), P7 (sandbox gap) |

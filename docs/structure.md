@@ -47,3 +47,13 @@ To enforce modular boundaries, Nuxy should be structured as a workspace (e.g. us
 - **No Monoliths**: Every functional piece of logic (even basic OS utilities) must be an extension.
 - **Clear Boundaries**: `src` is completely devoid of application logic. It only handles IPC, React rendering, and Web Workers.
 - **Small Files**: Keep logic focused. Instead of a massive `main.ts`, isolate `scanner.ts` from `worker/spawn.ts`.
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Architecture topology | [02-architecture.md](./02-architecture.md) | Kernel, worker threads, and React canvas roles |
+| Kernel audit and canonical paths | [electron-fix-plan.md](./electron-fix-plan.md) | `~/.nuxy/` layout and completed remediation |
+| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) | Implemented vs planned tracker with canonical path table |

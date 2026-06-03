@@ -70,3 +70,12 @@ Kontrol edildi — tüm yollar zaten güncel (`src/electron/ipc/broker.ts`, `src
 - `settings.json` şema dosyaları eklendi (angrysearch, bitwarden, calendar, clipboard, n8n, notes, ollama)
 - `manifest.json` dosyaları `locales` alanıyla güncellendi
 - `backend.ts` dosyaları i18n entegrasyonuyla güncellendi
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Pain points and remediation plan | [pain-points-plan.md](./pain-points-plan.md) | Phased fixes for architectural and security gaps |
+| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) | Implemented vs planned feature tracker |

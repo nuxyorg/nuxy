@@ -1421,6 +1421,19 @@ useEffect(() => {
 
 Use `const { t } = useTranslation(EXT_ID)` from `window.UI`.
 
+---
+
+## See Also
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| CoreContext API reference | [docs/21-extension-access.md](../docs/21-extension-access.md) | Full list of implemented and planned host APIs, renderer bridge, and manifest rules |
+| Security model | [docs/10-security.md](../docs/10-security.md) | Thread isolation, chroot jails, and permission prompt design |
+| Plugin system deep dive | [docs/15-modular-plugin-system.md](../docs/15-modular-plugin-system.md) | Extension loading sequence and CoreContext proxy internals |
+| Feature implementation status | [docs/DOCUMENTATION.md](../docs/DOCUMENTATION.md) | Implemented vs planned features tracker |
+
+---
+
 ### U. `styles/` directory or external CSS
 
 ```

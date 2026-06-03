@@ -132,3 +132,13 @@ pnpm -C src test -- run
 # Test Files  41 passed (41)
 #      Tests  705 passed (705)
 ```
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Plugin system and extension isolation | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Worker thread model that the store installs into |
+| Extension access and permissions | [21-extension-access.md](./21-extension-access.md) | `kernel:installExtension` channel and permission gate |
+| Frontend rendering and UI kit | [17-frontend-extensions.md](./17-frontend-extensions.md) | How the store's dual-pane frontend mounts |

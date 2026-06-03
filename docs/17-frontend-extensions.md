@@ -113,3 +113,13 @@ Although the React component renders in the main DOM, it is still securely restr
 1. **No Node API**: The React component has `nodeIntegration: false`. It cannot read the filesystem.
 2. **Context Bridge Only**: The _only_ way the UI can do anything system-level is by calling `window.core.ipc.invoke()`.
 3. **Backend Firewall**: When the UI calls `invoke()`, the message goes to the Nuxy Kernel. The Kernel verifies the request and forwards it to the extension's isolated `Worker` thread. Thus, the Frontend UI cannot bypass the Kernel's security rules.
+
+---
+
+## Related Documents
+
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Plugin system and backend isolation | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Worker thread loading and CoreContext injection |
+| Omni-input arbitration and canvas zones | [16-omni-input-system.md](./16-omni-input-system.md) | Provider vs Tool rendering zones |
+| Extension access and renderer APIs | [21-extension-access.md](./21-extension-access.md) | Full `window.core` API reference and implementation status |

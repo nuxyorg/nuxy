@@ -286,14 +286,15 @@ Recommended order: fix **truth in docs + agents.md** (cheap), then **capability 
 
 ## Related documents
 
-| Topic                              | Doc                                                  |
-| ---------------------------------- | ---------------------------------------------------- |
-| Canonical paths & kernel fixes     | [electron-fix-plan.md](./electron-fix-plan.md)       |
-| MVP scope                          | [19-mvp-roadmap.md](./19-mvp-roadmap.md)             |
-| Security target state              | [10-security.md](./10-security.md)                   |
-| Extension types & omni input       | [16-omni-input-system.md](./16-omni-input-system.md) |
-| Testing                            | [12-testing-strategy.md](./12-testing-strategy.md)   |
-| Agent rules (update after Phase 0) | [../agents.md](../agents.md)                         |
+| Topic | Document | Notes |
+| ----- | -------- | ----- |
+| Canonical paths & kernel fixes | [electron-fix-plan.md](./electron-fix-plan.md) | Completed remediation phases and manual test checklist |
+| MVP scope | [19-mvp-roadmap.md](./19-mvp-roadmap.md) | Sprint-by-sprint minimal scope |
+| Security target state | [10-security.md](./10-security.md) | P4, P5, P6, P7 coverage — threat model and consent flow |
+| Extension types & omni input | [16-omni-input-system.md](./16-omni-input-system.md) | P12 — orchestrator Enter path |
+| Testing strategy | [12-testing-strategy.md](./12-testing-strategy.md) | P14 — Playwright E2E gap |
+| Open bugs and resolved items | [open-issues.md](./open-issues.md) | Runtime issues tracking alongside pain points |
+| Agent rules (update after Phase 0) | [../agents.md](../agents.md) | Sandbox and path model for AI agents |
 
 ---
 
