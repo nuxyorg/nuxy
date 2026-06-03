@@ -1,0 +1,21 @@
+{
+  "id": "com.nuxy.nyaa",
+  "name": "Nyaa Search",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "search",
+  "permissions": ["network", "clipboard"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en"]
+  }
+}

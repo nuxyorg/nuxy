@@ -121,15 +121,18 @@ const CITY_TO_TZ: Record<string, string> = {
 
 // ─── Parse helpers ────────────────────────────────────────────────────────────
 
+// Pre-sorted longest-first so findTimezone matches multi-word cities before shorter aliases
+const CITY_KEYS_SORTED = Object.keys(CITY_TO_TZ).sort((a, b) => b.length - a.length)
+
+const LOCAL_ALIASES = new Set(['local', 'local time', 'here', 'my time', 'my timezone', 'current', 'system'])
+
 /**
  * Finds a timezone string from a city/alias name within the query text.
  * Returns { tz, label } or null.
  */
 function findTimezone(text: string): TimezoneMatch | null {
   const lower = text.toLowerCase()
-  // Try longest match first (multi-word cities)
-  const sorted = Object.keys(CITY_TO_TZ).sort((a, b) => b.length - a.length)
-  for (const key of sorted) {
+  for (const key of CITY_KEYS_SORTED) {
     if (lower.includes(key)) {
       return { tz: CITY_TO_TZ[key], label: toTitleCase(key) }
     }
@@ -349,16 +352,6 @@ export function register(core: CoreContext): void {
     const { time, from, to } = p ?? {}
     if (!time) return { error: 'Missing required parameter: time' }
 
-    const LOCAL_ALIASES = new Set([
-      'local',
-      'local time',
-      'here',
-      'my time',
-      'my timezone',
-      'current',
-      'system',
-    ])
-
     const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone
 
     try {
@@ -379,6 +372,11 @@ export function register(core: CoreContext): void {
 
       const result = convertTime(parsed.hours, parsed.minutes, fromTz, toTz)
       const srcFormatted = formatTime12h(parsed.hours, parsed.minutes)
+      const isLocalFrom = !fromKey || LOCAL_ALIASES.has(fromKey)
+      const fromLabel = isLocalFrom ? 'Local' : toTitleCase(fromKey)
+      const fromSuffix = isLocalFrom ? '' : ` · ${fromLabel}`
+      const toLabel = toKey ? toTitleCase(toKey) : 'Destination'
+      const destTime = result.time24.replace(/^0/, '') || result.time24
 
       const response: ConvertResponse = {
         originalTime: srcFormatted,
@@ -386,20 +384,20 @@ export function register(core: CoreContext): void {
         timezone: toKey,
         tzAbbreviation: result.tzLabel,
         meta: {
-          sourceText: `${srcFormatted}${fromKey && !LOCAL_ALIASES.has(fromKey) ? ' · ' + toTitleCase(fromKey) : ''}`,
+          sourceText: `${srcFormatted}${fromSuffix}`,
           sourceTime: srcFormatted,
-          sourceLabel: fromKey && !LOCAL_ALIASES.has(fromKey) ? toTitleCase(fromKey) : 'Local',
-          destTime: result.time24.replace(/^0/, '') || result.time24,
+          sourceLabel: fromLabel,
+          destTime,
           destTime12h: result.time12h,
-          destLabel: toKey ? toTitleCase(toKey) : 'Destination',
+          destLabel: toLabel,
           destTzLabel: result.tzLabel,
           left: {
-            text: `${srcFormatted}${fromKey && !LOCAL_ALIASES.has(fromKey) ? ' · ' + toTitleCase(fromKey) : ''}`,
+            text: `${srcFormatted}${fromSuffix}`,
             badge: srcFormatted,
           },
           right: {
-            text: result.time24.replace(/^0/, '') || result.time24,
-            badge: `${toKey ? toTitleCase(toKey) : 'Destination'}, ${result.tzLabel}`,
+            text: destTime,
+            badge: `${toLabel}, ${result.tzLabel}`,
           },
         },
       }

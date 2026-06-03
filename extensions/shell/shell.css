@@ -1,3 +1,7 @@
+@keyframes nuxy-omni-spin {
+  to { transform: rotate(360deg); }
+}
+
 @keyframes nuxy-slide-fade-in {
   from {
     opacity: 0;
@@ -227,6 +231,17 @@
 
 .nuxy-shell-omni-bar__input:disabled {
   pointer-events: none;
+}
+
+.nuxy-shell-omni-bar__loader {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--syntax-comment);
+  border-top-color: var(--syntax-operator);
+  animation: nuxy-omni-spin 0.65s linear infinite;
+  flex-shrink: 0;
 }
 
 .nuxy-shell-results-list {

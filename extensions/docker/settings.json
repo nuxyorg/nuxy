@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "showAll",
+      "label": "Show Stopped Containers",
+      "type": "toggle",
+      "default": false,
+      "description": "Show stopped containers too"
+    }
+  ]
+}

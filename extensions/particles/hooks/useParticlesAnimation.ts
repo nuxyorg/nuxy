@@ -71,11 +71,13 @@ export function useParticlesAnimation() {
       }
     }
 
-    function onResize() {
-      const canvas = canvasRef.current
-      if (!canvas) return
+    function resizeCanvas(canvas: HTMLCanvasElement) {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+    }
+
+    function onResize() {
+      if (canvasRef.current) resizeCanvas(canvasRef.current)
     }
 
     function initParticles() {
@@ -83,15 +85,16 @@ export function useParticlesAnimation() {
 
       const canvas = document.createElement('canvas')
       canvas.id = 'nuxy-particles-canvas'
-      canvas.style.position = 'fixed'
-      canvas.style.top = '0'
-      canvas.style.left = '0'
-      canvas.style.width = '100vw'
-      canvas.style.height = '100vh'
-      canvas.style.pointerEvents = 'none'
-      canvas.style.zIndex = '9998'
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      Object.assign(canvas.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100vw',
+        height: '100vh',
+        pointerEvents: 'none',
+        zIndex: '9998',
+      })
+      resizeCanvas(canvas)
       document.body.appendChild(canvas)
       canvasRef.current = canvas
       ctxRef.current = canvas.getContext('2d')

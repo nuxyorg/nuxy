@@ -484,12 +484,6 @@ const ALL_CATEGORIES: UnitCategory[] = [
   'data',
 ]
 
-// ─── Format number ────────────────────────────────────────────────────────────
-
-function formatNumber(value: number, precision: number): string {
-  return parseFloat(value.toFixed(precision)).toString()
-}
-
 // ─── parseQuery ───────────────────────────────────────────────────────────────
 
 const QUERY_REGEX =
@@ -554,7 +548,7 @@ export function convert(
 
   const baseValue = fromEntry.toBase(value)
   const toValue = toEntry.fromBase(baseValue)
-  const formatted = formatNumber(toValue, precision)
+  const formatted = parseFloat(toValue.toFixed(precision)).toString()
   const formattedResult = `${formatted} ${toEntry.symbol}`
 
   return {

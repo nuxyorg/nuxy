@@ -26,6 +26,7 @@ interface Params {
   setToolActions: React.Dispatch<React.SetStateAction<CommandPaletteAction[]>>
   setKeyActionHints: React.Dispatch<React.SetStateAction<KeyAction[]>>
   setFooterHints: React.Dispatch<React.SetStateAction<React.ReactNode | null>>
+  setOmniBarPortal: React.Dispatch<React.SetStateAction<React.ReactNode | null>>
   keyActionsGetterRef: React.MutableRefObject<(() => KeyAction[]) | null>
   toolActionsRef: React.MutableRefObject<CommandPaletteAction[]>
 }
@@ -54,6 +55,7 @@ export function useShellSync({
   setToolActions,
   setKeyActionHints,
   setFooterHints,
+  setOmniBarPortal,
   keyActionsGetterRef,
   toolActionsRef,
 }: Params): void {
@@ -175,6 +177,7 @@ export function useShellSync({
     keyActionsGetterRef.current = null
     setKeyActionHints([])
     setFooterHints(null)
+    setOmniBarPortal(null)
   }, [activeTool])
 
   // Listen for nuxy-register-key-actions + nuxy-key-hints-changed
@@ -214,6 +217,14 @@ export function useShellSync({
       setFooterHints((e as CustomEvent<React.ReactNode>).detail || null)
     window.addEventListener('nuxy-shell-footer-hints', handleFooterHints)
     return () => window.removeEventListener('nuxy-shell-footer-hints', handleFooterHints)
+  }, [])
+
+  // Listen for nuxy-omnibar-portal
+  React.useEffect(() => {
+    const handlePortal = (e: Event) =>
+      setOmniBarPortal((e as CustomEvent<React.ReactNode>).detail ?? null)
+    window.addEventListener('nuxy-omnibar-portal', handlePortal)
+    return () => window.removeEventListener('nuxy-omnibar-portal', handlePortal)
   }, [])
 
   // Listen for nuxy-shell-omni-bar-control

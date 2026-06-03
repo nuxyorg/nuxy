@@ -51,15 +51,13 @@ export default function SnippetsView({ query }: Props) {
     handleDeleteRef.current = handleDelete
   })
 
-  const hasQuery = Boolean(query)
-
   return (
     <div style={{ direction: dir, height: '100%', overflowY: 'auto' }}>
       {snippets.length === 0 ? (
         EmptyState && (
           <EmptyState
-            message={hasQuery ? t('noResults') : t('empty')}
-            hint={hasQuery ? t('noResultsHint') : t('emptyHint')}
+            message={Boolean(query) ? t('noResults') : t('empty')}
+            hint={Boolean(query) ? t('noResultsHint') : t('emptyHint')}
           />
         )
       ) : (

@@ -130,7 +130,7 @@ export default function CommandPalette({
       <div className="nuxy-command-palette" style={style}>
         {pathLabels.length > 0 && (
           <div className="nuxy-command-palette__breadcrumb">
-            <button className="nuxy-command-palette__back" onClick={goBack}>
+            <button type="button" className="nuxy-command-palette__back" onClick={goBack}>
               ←
             </button>
             <span className="nuxy-command-palette__breadcrumb-path">

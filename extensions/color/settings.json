@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "copyFormat",
+      "label": "Default copy format",
+      "type": "select",
+      "default": "hex",
+      "options": [
+        { "value": "hex", "label": "HEX (#rrggbb)" },
+        { "value": "rgb", "label": "RGB (rgb(r, g, b))" },
+        { "value": "hsl", "label": "HSL (hsl(h, s%, l%))" }
+      ]
+    }
+  ]
+}

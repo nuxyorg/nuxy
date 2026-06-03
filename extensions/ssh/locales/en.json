@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "name": "SSH"
+  },
+  "tool": {
+    "name": "SSH"
+  },
+  "empty": {
+    "noHosts": "No SSH hosts found.",
+    "noMatch": "No hosts match your search."
+  },
+  "action": {
+    "connect": "Connect",
+    "refresh": "Refresh"
+  },
+  "label": {
+    "user": "User",
+    "port": "Port"
+  }
+}

@@ -1,6 +1,6 @@
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'fs'
 import { tmpdir } from 'os'
-import { join, dirname, basename } from 'path'
+import { join, dirname, basename, relative } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import type { CoreContext } from '@nuxy/core'
 import type { WorkerLogger } from './worker-log.js'
@@ -44,12 +44,21 @@ async function transpileTsBackend(fileUrl: string, logger: WorkerLogger): Promis
   const tmpDir = join(tmpdir(), `nuxy-ext-${Date.now()}-${Math.random().toString(36).slice(2)}`)
   mkdirSync(tmpDir, { recursive: true })
 
-  const tsFiles = readdirSync(extDir).filter(
-    (f) => /\.(ts|tsx)$/.test(f) && !f.endsWith('.test.ts') && !f.endsWith('.spec.ts')
-  )
+  const tsFiles: string[] = []
+  const walkDir = (dir: string) => {
+    for (const entry of readdirSync(dir)) {
+      const full = join(dir, entry)
+      if (statSync(full).isDirectory()) {
+        if (entry !== 'node_modules' && entry !== '.git') walkDir(full)
+      } else if (/\.(ts|tsx)$/.test(entry) && !entry.endsWith('.test.ts') && !entry.endsWith('.spec.ts')) {
+        tsFiles.push(full)
+      }
+    }
+  }
+  walkDir(extDir)
 
   for (const file of tsFiles) {
-    const src = readFileSync(join(extDir, file), 'utf8')
+    const src = readFileSync(file, 'utf8')
     const transpiled = ts.transpileModule(src, {
       compilerOptions: {
         module: ts.ModuleKind.ESNext,
@@ -58,8 +67,11 @@ async function transpileTsBackend(fileUrl: string, logger: WorkerLogger): Promis
       },
     })
     const output = rewriteLocalTsImports(transpiled.outputText)
-    const outName = file.replace(/\.(ts|tsx)$/, '.mjs')
-    writeFileSync(join(tmpDir, outName), output, 'utf8')
+    const relPath = relative(extDir, file)
+    const outName = relPath.replace(/\.(ts|tsx)$/, '.mjs')
+    const outPath = join(tmpDir, outName)
+    mkdirSync(dirname(outPath), { recursive: true })
+    writeFileSync(outPath, output, 'utf8')
   }
 
   const backendOutName = backendBasename.replace(/\.(ts|tsx)$/, '.mjs')

@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "name": "Docker"
+  },
+  "tool": {
+    "name": "Docker"
+  },
+  "tab": {
+    "containers": "Konteynerler",
+    "images": "Imgeler"
+  },
+  "empty": {
+    "noContainers": "Konteyner bulunamadı.",
+    "noImages": "İmge bulunamadı."
+  },
+  "action": {
+    "start": "Başlat",
+    "stop": "Durdur",
+    "restart": "Yeniden Başlat",
+    "remove": "Kaldır",
+    "logs": "Günlükler",
+    "refresh": "Yenile"
+  },
+  "status": {
+    "running": "Çalışıyor",
+    "stopped": "Durdu"
+  }
+}

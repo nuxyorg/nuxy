@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "name": "SSH"
+  },
+  "tool": {
+    "name": "SSH"
+  },
+  "empty": {
+    "noHosts": "SSH sunucusu bulunamadı.",
+    "noMatch": "Aramanızla eşleşen sunucu yok."
+  },
+  "action": {
+    "connect": "Bağlan",
+    "refresh": "Yenile"
+  },
+  "label": {
+    "user": "Kullanıcı",
+    "port": "Port"
+  }
+}

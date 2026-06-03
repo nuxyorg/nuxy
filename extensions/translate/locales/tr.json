@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "name": "Çeviri"
+  },
+  "tool": {
+    "name": "Çeviri"
+  },
+  "empty": {
+    "placeholder": "Çevirmek için metin yazın"
+  },
+  "action": {
+    "copy": "Kopyala",
+    "translate": "Çevir"
+  },
+  "label": {
+    "source": "Kaynak",
+    "target": "Hedef",
+    "detected": "Algılanan: {lang}"
+  },
+  "error": {
+    "noApiKey": "API anahtarı gerekli. Ayarlar'dan yapılandırın.",
+    "failed": "Çeviri başarısız: {message}"
+  }
+}

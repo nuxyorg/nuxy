@@ -29,9 +29,10 @@ export function RadioGroup({
   className,
 }: RadioGroupProps) {
   const [internalValue, setInternalValue] = React.useState(defaultValue ?? '')
+  const generatedId = React.useId()
   const isControlled = value !== undefined
   const selected = isControlled ? value : internalValue
-  const groupName = name ?? React.useId()
+  const groupName = name ?? generatedId
 
   const handleChange = (optValue: string, optDisabled?: boolean) => {
     if (disabled || optDisabled) return

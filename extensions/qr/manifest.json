@@ -1,0 +1,21 @@
+{
+  "id": "com.nuxy.qr",
+  "name": "QR Code Generator",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "qrcode",
+  "permissions": ["clipboard"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
+  }
+}

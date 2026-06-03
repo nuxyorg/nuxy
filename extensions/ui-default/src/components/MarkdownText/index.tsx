@@ -28,7 +28,6 @@ type Block =
 function parseInline(text: string): React.ReactNode[] {
   const nodes: React.ReactNode[] = []
   let remaining = text
-  let key = 0
 
   while (remaining.length > 0) {
     // Link: [text](url)
@@ -37,7 +36,7 @@ function parseInline(text: string): React.ReactNode[] {
       if (linkMatch[1]) nodes.push(...parseInline(linkMatch[1]))
       nodes.push(
         <a
-          key={key++}
+          key={nodes.length}
           href={linkMatch[3]}
           className="nuxy-md-link"
           target="_blank"
@@ -55,7 +54,7 @@ function parseInline(text: string): React.ReactNode[] {
     if (boldItalicMatch) {
       if (boldItalicMatch[1]) nodes.push(boldItalicMatch[1])
       nodes.push(
-        <strong key={key++}>
+        <strong key={nodes.length}>
           <em>{boldItalicMatch[2]}</em>
         </strong>
       )
@@ -67,7 +66,7 @@ function parseInline(text: string): React.ReactNode[] {
     const boldMatch = remaining.match(/^([\s\S]*?)\*\*([\s\S]+?)\*\*/)
     if (boldMatch) {
       if (boldMatch[1]) nodes.push(boldMatch[1])
-      nodes.push(<strong key={key++}>{boldMatch[2]}</strong>)
+      nodes.push(<strong key={nodes.length}>{boldMatch[2]}</strong>)
       remaining = remaining.slice(boldMatch[0].length)
       continue
     }
@@ -76,7 +75,7 @@ function parseInline(text: string): React.ReactNode[] {
     const italicMatch = remaining.match(/^([\s\S]*?)(?:\*([^*\n]+?)\*|_([^_\n]+?)_)/)
     if (italicMatch) {
       if (italicMatch[1]) nodes.push(italicMatch[1])
-      nodes.push(<em key={key++}>{italicMatch[2] ?? italicMatch[3]}</em>)
+      nodes.push(<em key={nodes.length}>{italicMatch[2] ?? italicMatch[3]}</em>)
       remaining = remaining.slice(italicMatch[0].length)
       continue
     }
@@ -86,7 +85,7 @@ function parseInline(text: string): React.ReactNode[] {
     if (codeMatch) {
       if (codeMatch[1]) nodes.push(codeMatch[1])
       nodes.push(
-        <code key={key++} className="nuxy-md-inline-code">
+        <code key={nodes.length} className="nuxy-md-inline-code">
           {codeMatch[2]}
         </code>
       )
@@ -284,17 +283,16 @@ function parseBlocks(text: string): Block[] {
 export function MarkdownText({ children, className }: MarkdownTextProps) {
   const blocks = parseBlocks(children)
   const elements: React.ReactNode[] = []
-  let key = 0
 
   for (const block of blocks) {
     if (block.type === 'hr') {
-      elements.push(<hr key={key++} className="nuxy-md-hr" />)
+      elements.push(<hr key={elements.length} className="nuxy-md-hr" />)
       continue
     }
 
     if (block.type === 'code') {
       elements.push(
-        <CodeBlock key={key++} code={block.code} language={block.lang} showCopy />,
+        <CodeBlock key={elements.length} code={block.code} language={block.lang} showCopy />,
       )
       continue
     }
@@ -302,7 +300,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
     if (block.type === 'heading') {
       const Tag = `h${block.level}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
       elements.push(
-        <Tag key={key++} className={`nuxy-md-h${block.level}`}>
+        <Tag key={elements.length} className={`nuxy-md-h${block.level}`}>
           {parseInline(block.text)}
         </Tag>,
       )
@@ -311,7 +309,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
 
     if (block.type === 'blockquote') {
       elements.push(
-        <blockquote key={key++} className="nuxy-md-blockquote">
+        <blockquote key={elements.length} className="nuxy-md-blockquote">
           {parseInline(block.text)}
         </blockquote>,
       )
@@ -320,7 +318,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
 
     if (block.type === 'table') {
       elements.push(
-        <Table key={key++} className="nuxy-md-table">
+        <Table key={elements.length} className="nuxy-md-table">
           <thead>
             <TableRow>
               {block.headers.map((h, idx) => (
@@ -348,7 +346,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
 
     if (block.type === 'ul') {
       elements.push(
-        <ul key={key++} className="nuxy-md-ul">
+        <ul key={elements.length} className="nuxy-md-ul">
           {renderListItems(block.items)}
         </ul>,
       )
@@ -357,7 +355,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
 
     if (block.type === 'ol') {
       elements.push(
-        <ol key={key++} className="nuxy-md-ol">
+        <ol key={elements.length} className="nuxy-md-ol">
           {renderListItems(block.items)}
         </ol>,
       )
@@ -372,7 +370,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
         if (idx < lines.length - 1) inlineNodes.push(<br key={`br-${idx}`} />)
       })
       elements.push(
-        <p key={key++} className="nuxy-md-p">
+        <p key={elements.length} className="nuxy-md-p">
           {inlineNodes}
         </p>,
       )

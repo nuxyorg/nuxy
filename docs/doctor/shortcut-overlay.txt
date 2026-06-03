@@ -1,0 +1,16 @@
+[WARN] The "pnpm" field in package.json is no longer read by pnpm. The following keys were ignored: "pnpm.onlyBuiltDependencies". See https://pnpm.io/settings for the new home of each setting.
+$ node scripts/doctor.mjs shortcut-overlay
+
+  Nuxy Doctor — Shortcut Overlay (com.nuxy.shortcut-overlay)
+
+React Doctor v0.2.16
+
+
+
+Something went wrong. Please check the error below for more details.
+If the problem persists, please open this prefilled issue: https://github.com/millionco/react-doctor/issues/new?title=CLI+error%3A+No+React+project+found+in+%2Fhome%2Fxava%2FDocuments%2Fnuxy%2Fextensions%2Fshortcut-overlay.+Expected+a+package.json+at+the+directory+root+or+a+nested+package.json+with+a+React+dependency.&labels=bug&body=%23%23+Error%0A%0A%60%60%60text%0ANo+React+project+found+in+%2Fhome%2Fxava%2FDocuments%2Fnuxy%2Fextensions%2Fshortcut-overlay.+Expected+a+package.json+at+the+directory+root+or+a+nested+package.json+with+a+React+dependency.%0A%60%60%60%0A%0A%23%23+Runtime%0A%0A-+react-doctor+version%3A+0.2.16%0A-+node%3A+v24.15.0%0A-+platform%3A+linux+x64%0A-+cwd%3A+%2Fhome%2Fxava%2FDocuments%2Fnuxy%0A-+command%3A+%2Fhome%2Fxava%2F.local%2Fshare%2Fnvm%2Fv24.15.0%2Fbin%2Fnode+%2Fhome%2Fxava%2F.local%2Fshare%2Fpnpm%2Fstore%2Fv11%2Flinks%2F%40%2Freact-doctor%2F0.2.16%2F2c524657a112e702c9c8a4d191cdb558782f2eca77d75e7fcb412b7ddd409137%2Fnode_modules%2Freact-doctor%2Fbin%2Freact-doctor.js+--no-telemetry+%2Fhome%2Fxava%2FDocuments%2Fnuxy%2Fextensions%2Fshortcut-overlay%0A%0A%23%23+OpenTelemetry%0A%0A-+REACT_DOCTOR_OTLP_ENDPOINT+configured%3A+no%0A-+REACT_DOCTOR_OTLP_AUTH_HEADER+configured%3A+no+%28value+redacted%29%0A-+OTLP+exporter+enabled%3A+no%0A-+trace%2Fspan+link%2C+if+exported%3A+%0A%0A%23%23+Notes%0A%0APlease+add+reproduction+steps+and+any+relevant+repository+details.
+You can also ask for help in Discord: https://react.doctor/discord
+
+No React project found in /home/xava/Documents/nuxy/extensions/shortcut-overlay. Expected a package.json at the directory root or a nested package.json with a React dependency.
+
+[ELIFECYCLE] Command failed with exit code 1.

@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "apiUrl",
+      "label": "API URL",
+      "type": "text",
+      "default": "https://libretranslate.com",
+      "placeholder": "https://libretranslate.com",
+      "description": "LibreTranslate server URL"
+    },
+    {
+      "key": "apiKey",
+      "label": "API Key",
+      "type": "text",
+      "default": "",
+      "placeholder": "your-api-key",
+      "description": "API key for LibreTranslate (leave empty if not required)"
+    },
+    {
+      "key": "sourceLanguage",
+      "label": "Source Language",
+      "type": "select",
+      "default": "auto",
+      "options": [
+        { "value": "auto", "label": "Auto-detect" },
+        { "value": "en", "label": "English" },
+        { "value": "tr", "label": "Turkish" },
+        { "value": "de", "label": "German" },
+        { "value": "fr", "label": "French" },
+        { "value": "es", "label": "Spanish" },
+        { "value": "ja", "label": "Japanese" },
+        { "value": "zh", "label": "Chinese" }
+      ],
+      "description": "Language of the source text"
+    },
+    {
+      "key": "targetLanguage",
+      "label": "Target Language",
+      "type": "select",
+      "default": "en",
+      "options": [
+        { "value": "en", "label": "English" },
+        { "value": "tr", "label": "Turkish" },
+        { "value": "de", "label": "German" },
+        { "value": "fr", "label": "French" },
+        { "value": "es", "label": "Spanish" },
+        { "value": "ja", "label": "Japanese" },
+        { "value": "zh", "label": "Chinese" }
+      ],
+      "description": "Language to translate into"
+    }
+  ]
+}

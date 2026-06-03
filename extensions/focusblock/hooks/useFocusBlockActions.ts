@@ -1,22 +1,7 @@
 const React = window.React
 
 import type { TimerStatus } from '../types.ts'
-
-const EXT_ID = 'com.nuxy.focusblock'
-
-interface IpcResponse<T = unknown> {
-  success: boolean
-  data?: T
-  error?: string
-}
-
-function invoke<T>(channel: string, payload?: unknown): Promise<T> {
-  return window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
-    const r = res as IpcResponse<T>
-    if (!r?.success) throw new Error(r?.error || 'IPC failed')
-    return r.data as T
-  })
-}
+import { ipc as invoke } from '../utils/ipc.ts'
 
 interface Params {
   duration: number

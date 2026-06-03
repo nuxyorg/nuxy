@@ -1,18 +1,7 @@
 const React = window.React
 
 import type { DownloadJobPublic, HistoryItem } from '../types.ts'
-
-const EXT_ID = 'com.nuxy.video-downloader'
-
-async function ipc<T>(channel: string, payload?: unknown): Promise<T> {
-  const res = (await window.core.ipc.invoke(EXT_ID, channel, payload)) as {
-    success: boolean
-    data?: T
-    error?: string
-  }
-  if (res && res.success) return res.data as T
-  throw new Error(res?.error || 'IPC call failed')
-}
+import { ipc } from '../utils/ipc.ts'
 
 interface VideoDataResult {
   ytdlpInstalled: boolean | null
@@ -54,26 +43,23 @@ export function useVideoData(): VideoDataResult {
 
   React.useEffect(() => {
     if (hasRunning && !pollRef.current) {
-      pollRef.current = setInterval(async () => {
+      const id = setInterval(async () => {
         const queue = await ipc<DownloadJobPublic[]>('ytdlp:queue')
         setJobs(queue)
         if (queue.every((j) => j.status !== 'running')) {
           void loadHistory()
         }
       }, 1000)
+      pollRef.current = id
+      return () => {
+        clearInterval(id)
+        pollRef.current = null
+      }
     } else if (!hasRunning && pollRef.current) {
       clearInterval(pollRef.current)
       pollRef.current = null
     }
-    return () => {}
   }, [hasRunning, loadHistory])
-
-  // Cleanup interval on unmount
-  React.useEffect(() => {
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current)
-    }
-  }, [])
 
   return { ytdlpInstalled, jobs, setJobs, history, setHistory, loadHistory }
 }

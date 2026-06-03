@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "name": "Remind"
+  },
+  "tool": {
+    "name": "Remind"
+  },
+  "empty": {
+    "noReminders": "No active reminders"
+  },
+  "action": {
+    "create": "Remind",
+    "cancel": "Cancel"
+  },
+  "label": {
+    "in": "in",
+    "overdue": "overdue",
+    "fired": "fired",
+    "unnamed": "Reminder"
+  },
+  "notification": {
+    "title": "Reminder",
+    "defaultBody": "Your reminder is due"
+  },
+  "error": {
+    "invalidFormat": "Could not parse reminder time. Try formats like: 20m meeting, 2h lunch, 14:30 standup"
+  }
+}

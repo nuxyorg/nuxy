@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "name": "Nyaa Search"
+  },
+  "search": {
+    "empty": {
+      "message": "Search nyaa.si",
+      "hint": "Type a title to search for torrents."
+    },
+    "loading": {
+      "message": "Searching...",
+      "hint": "Fetching results from nyaa.si"
+    },
+    "noResults": {
+      "message": "No results.",
+      "hint": "Try a different search term."
+    }
+  },
+  "item": {
+    "copied": "Copied!",
+    "selectPrompt": "Select a result to view details",
+    "magnetCopied": "Magnet copied!"
+  },
+  "details": {
+    "title": "Details",
+    "category": "Category",
+    "size": "Size",
+    "date": "Date",
+    "seeders": "Seeders",
+    "leechers": "Leechers",
+    "status": {
+      "label": "Status",
+      "trusted": "Trusted",
+      "remake": "Remake",
+      "normal": "Normal"
+    }
+  },
+  "actions": {
+    "navigate": "Navigate",
+    "copyMagnet": "Copy Magnet",
+    "copyMagnetLabel": "Copy Magnet Link"
+  }
+}

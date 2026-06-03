@@ -13,16 +13,19 @@ interface Actions {
 }
 
 export function useAngrysearchActions({ setStatus }: Params): Actions {
+  const openAndHide = (channel: string, value: string): void => {
+    window.core.ipc.invoke(EXT_ID, channel, value).catch(() => {})
+    window.core?.window?.hide?.()
+  }
+
   const handleOpen = (item: AngrysearchItem): void => {
     if (!window.core?.ipc?.invoke || !item) return
-    window.core.ipc.invoke(EXT_ID, 'openFile', item.value).catch(() => {})
-    window.core?.window?.hide?.()
+    openAndHide('openFile', item.value)
   }
 
   const handleOpenLocation = (item: AngrysearchItem): void => {
     if (!window.core?.ipc?.invoke || !item) return
-    window.core.ipc.invoke(EXT_ID, 'openLocation', item.value).catch(() => {})
-    window.core?.window?.hide?.()
+    openAndHide('openLocation', item.value)
   }
 
   const triggerUpdate = (): void => {

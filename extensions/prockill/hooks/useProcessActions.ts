@@ -3,6 +3,7 @@ const React = window.React
 import type { ProcessInfo } from '../types.ts'
 
 const EXT_ID = 'com.nuxy.prockill'
+const KILL_ERROR_RESET_MS = 3000
 
 interface Params {
   loadProcesses: () => void
@@ -29,12 +30,12 @@ export function useProcessActions({ loadProcesses, killFailedMessage }: Params):
           } else {
             const errorMsg = r?.data?.error || killFailedMessage
             setKillError(errorMsg)
-            setTimeout(() => setKillError(null), 3000)
+            setTimeout(() => setKillError(null), KILL_ERROR_RESET_MS)
           }
         })
         .catch(() => {
           setKillError(killFailedMessage)
-          setTimeout(() => setKillError(null), 3000)
+          setTimeout(() => setKillError(null), KILL_ERROR_RESET_MS)
         })
     },
     [loadProcesses, killFailedMessage]

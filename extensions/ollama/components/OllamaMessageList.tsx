@@ -7,6 +7,8 @@ interface Props {
   loading: boolean
 }
 
+const SCROLL_BOTTOM_THRESHOLD = 80
+
 export function OllamaMessageList({ messages, loading }: Props) {
   const { EmptyState, MarkdownText } = window.UI || {}
   const _ChatList = (window.UI as any)?.ChatList || null
@@ -31,7 +33,7 @@ export function OllamaMessageList({ messages, loading }: Props) {
       onScroll={() => {
         const el = scrollContainerRef.current
         if (!el) return
-        isAtBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80
+        isAtBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < SCROLL_BOTTOM_THRESHOLD
       }}
       style={{
         flex: 1,
@@ -48,7 +50,9 @@ export function OllamaMessageList({ messages, loading }: Props) {
         <>
           <_ChatList messages={messages} />
           {loading && messages.at(-1)?.role !== 'assistant' && _ChatMessage && (
-            <_ChatMessage role="assistant" content="…" />
+            <div role="listitem" aria-label="Assistant is typing">
+              <_ChatMessage content="…" />
+            </div>
           )}
         </>
       ) : (

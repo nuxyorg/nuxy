@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "name": "Hatırlatıcı"
+  },
+  "tool": {
+    "name": "Hatırlatıcı"
+  },
+  "empty": {
+    "noReminders": "Aktif hatırlatıcı yok"
+  },
+  "action": {
+    "create": "Hatırlat",
+    "cancel": "İptal"
+  },
+  "label": {
+    "in": "içinde",
+    "overdue": "gecikmiş",
+    "fired": "tetiklendi",
+    "unnamed": "Hatırlatıcı"
+  },
+  "notification": {
+    "title": "Hatırlatıcı",
+    "defaultBody": "Hatırlatıcınız zamanı geldi"
+  },
+  "error": {
+    "invalidFormat": "Hatırlatıcı zamanı ayrıştırılamadı. Şu biçimleri deneyin: 20d toplantı, 2s öğle, 14:30 stand-up"
+  }
+}

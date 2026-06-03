@@ -8,6 +8,7 @@ interface Params {
   savedQuery: string
   selectedIndex: number
   listResults: ListItem[]
+  selectionSourceRef: React.MutableRefObject<'type' | 'nav'>
   setActiveTool: React.Dispatch<React.SetStateAction<string | null>>
   setToolComponent: React.Dispatch<
     React.SetStateAction<React.ComponentType<{ query: string; extensionId?: string }> | null>
@@ -25,6 +26,7 @@ export function useShellKeyboard({
   savedQuery,
   selectedIndex,
   listResults,
+  selectionSourceRef,
   setActiveTool,
   setToolComponent,
   setQuery,
@@ -47,27 +49,29 @@ export function useShellKeyboard({
     // If inside a tool, global useKeyboard in hooks.tsx handles forwarding — skip here
     if (activeTool) return
 
-    if (e.key === 'Enter' && selectedIndex < 0 && savedQuery.trim()) {
+    if (e.key === 'Enter' && (selectedIndex < 0 || !listResults[selectedIndex]) && savedQuery.trim()) {
       void tryOrchestratorRoute()
     }
     if (listResults.length === 0) return
     if (e.key === 'ArrowDown') {
       e.preventDefault()
+      selectionSourceRef.current = 'nav'
       setSelectedIndex((prev) => {
         const next = prev + 1
         return next < listResults.length ? next : prev
       })
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
+      selectionSourceRef.current = 'nav'
       setSelectedIndex((prev) => {
         const next = prev - 1
         return next >= -1 ? next : prev
       })
     } else if (e.key === 'ArrowRight') {
-      if (selectedIndex === 0 && listResults[0]) {
+      if (selectedIndex >= 0 && listResults[selectedIndex]) {
         e.preventDefault()
-        setSavedQuery(listResults[0].title)
-        setQuery(listResults[0].title)
+        setSavedQuery(listResults[selectedIndex].title)
+        setQuery(listResults[selectedIndex].title)
         setSelectedIndex(-1)
       }
     } else if (e.key === 'Enter') {

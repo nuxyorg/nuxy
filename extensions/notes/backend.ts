@@ -11,6 +11,7 @@ import type {
   TranscribeResult,
   FtsRow,
 } from './types.ts'
+import { deriveTitle } from './utils/noteTitle.ts'
 
 let db: ReturnType<CoreContext['db']['open']> | null = null
 let extDataDir: string | null = null
@@ -65,18 +66,6 @@ async function whisperTranscribe(
   return data.text ?? ''
 }
 
-function deriveTitle(body: string): string {
-  const lines = body
-    .split('\n')
-    .map((l) => l.trim())
-    .filter(Boolean)
-  if (lines.length === 0) return 'New Note'
-  const firstLine = lines[0]
-  if (firstLine.length > 40) {
-    return firstLine.slice(0, 40) + '...'
-  }
-  return firstLine
-}
 
 export async function register(core: CoreContext): Promise<void> {
   extDataDir = `${core.fs.homedir()}/.nuxy/data/com.nuxy.notes`

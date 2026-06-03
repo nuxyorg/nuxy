@@ -30,6 +30,17 @@ export function register(core: CoreContext): void {
     }
   }
 
+  function createSession(timer: NonNullable<typeof activeTimer>, completed: boolean): Session {
+    return {
+      id: crypto.randomUUID(),
+      label: timer.label,
+      duration: timer.duration,
+      startedAt: timer.startedAt,
+      endedAt: Date.now(),
+      completed,
+    }
+  }
+
   async function saveSession(session: Session): Promise<void> {
     const history = (await core.storage.read<Session[]>('history.json')) ?? []
     history.unshift(session)
@@ -49,28 +60,14 @@ export function register(core: CoreContext): void {
 
     if (activeTimer) {
       clearTimeout(activeTimer.timeout)
-      await saveSession({
-        id: crypto.randomUUID(),
-        label: activeTimer.label,
-        duration: activeTimer.duration,
-        startedAt: activeTimer.startedAt,
-        endedAt: Date.now(),
-        completed: false,
-      })
+      await saveSession(createSession(activeTimer, false))
       activeTimer = null
     }
 
     const startedAt = Date.now()
     const timeout = setTimeout(async () => {
       if (!activeTimer) return
-      const session: Session = {
-        id: crypto.randomUUID(),
-        label: activeTimer.label,
-        duration: activeTimer.duration,
-        startedAt: activeTimer.startedAt,
-        endedAt: Date.now(),
-        completed: true,
-      }
+      const session = createSession(activeTimer, true)
       activeTimer = null
       await saveSession(session)
       core.logger.info('Focus block completed', { label, duration })
@@ -84,14 +81,7 @@ export function register(core: CoreContext): void {
   core.ipc.handle('focusblock:stop', async (): Promise<void> => {
     if (!activeTimer) return
     clearTimeout(activeTimer.timeout)
-    const session: Session = {
-      id: crypto.randomUUID(),
-      label: activeTimer.label,
-      duration: activeTimer.duration,
-      startedAt: activeTimer.startedAt,
-      endedAt: Date.now(),
-      completed: false,
-    }
+    const session = createSession(activeTimer, false)
     activeTimer = null
     await saveSession(session)
     core.logger.info('Focus block stopped')

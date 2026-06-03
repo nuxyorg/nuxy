@@ -15,6 +15,19 @@ export function useTimeCalculatorData(query: string): TimeCalculatorData {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [fromAI, setFromAI] = React.useState<boolean>(false)
 
+  // Inline reset: when query changes, sync derived state during render
+  const [prevQuery, setPrevQuery] = React.useState(query)
+  if (query !== prevQuery) {
+    setPrevQuery(query)
+    const currentQuery = query || ''
+    if (!currentQuery.trim()) {
+      if (!fromAI) setResult(null)
+    } else {
+      setFromAI(false)
+      setLoading(true)
+    }
+  }
+
   // On mount: check if there's a last result from the AI orchestrator
   React.useEffect(() => {
     if (!window.core?.ipc?.invoke) return
@@ -33,13 +46,8 @@ export function useTimeCalculatorData(query: string): TimeCalculatorData {
   // Live eval when user types in omnibar
   React.useEffect(() => {
     const currentQuery = query || ''
-    if (!currentQuery.trim()) {
-      if (!fromAI) setResult(null)
-      return
-    }
+    if (!currentQuery.trim()) return
 
-    setFromAI(false)
-    setLoading(true)
     const timer = setTimeout(() => {
       if (!window.core?.ipc?.invoke) {
         setLoading(false)

@@ -7,6 +7,8 @@ interface Props {
   searchIcon: string | null
   activeToolName: string | null
   activeToolPlaceholder: string | null
+  omniBarPortal?: React.ReactNode | null
+  isLoading?: boolean
   onQueryChange: (value: string) => void
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
   onDragMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void
@@ -19,6 +21,8 @@ export function ShellOmniBar({
   searchIcon,
   activeToolName,
   activeToolPlaceholder,
+  omniBarPortal,
+  isLoading,
   onQueryChange,
   onKeyDown,
   onDragMouseDown,
@@ -63,6 +67,20 @@ export function ShellOmniBar({
               : 'What do you have in mind?'
         }
       />
+      {(omniBarPortal != null || isLoading) && (
+        <div
+          className="nuxy-shell-omni-bar__portal"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            paddingRight: 'var(--space-3)',
+            flexShrink: 0,
+          }}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          {omniBarPortal ?? (isLoading && <span className="nuxy-shell-omni-bar__loader" />)}
+        </div>
+      )}
     </div>
   )
 }

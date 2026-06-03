@@ -1,0 +1,20 @@
+{
+  "id": "com.nuxy.remind",
+  "name": "Remind",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "bell",
+  "permissions": ["storage", "notifications"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.tsx"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
+  }
+}

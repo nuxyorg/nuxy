@@ -2,22 +2,7 @@ const React = window.React
 
 import type { Note } from '../types.ts'
 import { deriveTitle } from '../utils/noteTitle.ts'
-
-const EXT_ID = 'com.nuxy.notes'
-
-interface IpcResponse<T = unknown> {
-  success: boolean
-  data?: T
-  error?: string
-}
-
-function invoke<T = unknown>(channel: string, payload?: unknown): Promise<T> {
-  return window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
-    const r = res as IpcResponse<T>
-    if (!r?.success) throw new Error(r?.error || 'IPC call failed')
-    return r.data as T
-  })
-}
+import { invoke } from '../utils/ipc.ts'
 
 interface Params {
   selected: Note | null

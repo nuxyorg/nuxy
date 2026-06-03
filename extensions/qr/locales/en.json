@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "name": "QR Code Generator"
+  },
+  "tool": {
+    "name": "QR Code Generator"
+  },
+  "empty": {
+    "placeholder": "Type text or a URL to generate a QR code"
+  },
+  "action": {
+    "copy": "Copy text"
+  },
+  "label": {
+    "encoding": "Encoding"
+  }
+}

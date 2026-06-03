@@ -1,6 +1,7 @@
 import type { IpcResult } from '@nuxy/core'
 import { getExtensionById, isChannelAllowed } from '../extensions/registry.js'
 import { invokeWorker } from './worker-invoke.js'
+import { callKernelChannel } from './kernel-invokable.js'
 
 export async function invokeExtension(
   callerId: string,
@@ -17,20 +18,29 @@ export async function invokeExtension(
     }
   }
 
+  if (!caller.manifest.capabilities?.caller) {
+    return {
+      success: false,
+      error: 'Caller lacks caller capability',
+      code: 'CALLER_DENIED',
+    }
+  }
+
+  // Route kernel channels directly — kernel is not a worker extension
+  if (targetId === 'kernel') {
+    const kernelResult = await callKernelChannel(channel, payload)
+    // Wrap so host-handlers extracts kernelResult as the data;
+    // the worker caller then receives kernelResult via core.extensions.invoke,
+    // preserving the same { success, data, error } shape the renderer sees.
+    return { success: true, data: kernelResult }
+  }
+
   const target = getExtensionById(targetId)
   if (!target) {
     return {
       success: false,
       error: `Target extension not found: ${targetId}`,
       code: 'EXTENSION_NOT_FOUND',
-    }
-  }
-
-  if (!caller.manifest.capabilities?.caller) {
-    return {
-      success: false,
-      error: 'Caller lacks caller capability',
-      code: 'CALLER_DENIED',
     }
   }
 

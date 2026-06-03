@@ -15,9 +15,8 @@ export default function AngrysearchView({ query }: Props) {
   const { List, EmptyState } = window.UI || {}
 
   const [regexMode, setRegexMode] = React.useState<boolean>(false)
-  const searchQuery = query || ''
 
-  const { items, status, setStatus } = useAngrysearchData(searchQuery, regexMode)
+  const { items, status, setStatus } = useAngrysearchData(query, regexMode)
   const { handleOpen, handleOpenLocation, triggerUpdate } = useAngrysearchActions({ setStatus })
 
   const { selectedIndex } = useAngrysearchKeyboard({
@@ -34,8 +33,8 @@ export default function AngrysearchView({ query }: Props) {
     <List>
       {items.length === 0 ? (
         <EmptyState
-          message={searchQuery.length < 3 ? 'Type to search...' : 'No matches.'}
-          hint={searchQuery.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'}
+          message={query.length < 3 ? 'Type to search...' : 'No matches.'}
+          hint={query.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'}
         />
       ) : (
         items.map((item: AngrysearchItem, idx: number) => (

@@ -59,6 +59,7 @@ export default function ShellView({ query: _queryProp }: Props) {
   const [toolActions, setToolActions] = useState<CommandPaletteAction[]>([])
   const [keyActionHints, setKeyActionHints] = useState<KeyAction[]>([])
   const [footerHints, setFooterHints] = useState<React.ReactNode | null>(null)
+  const [omniBarPortal, setOmniBarPortal] = useState<React.ReactNode | null>(null)
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true)
 
   useEffect(() => {
@@ -72,6 +73,8 @@ export default function ShellView({ query: _queryProp }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const queryGeneration = useRef<number>(0)
+  // Tracks whether selectedIndex was last changed by typing ('type') or arrow-key navigation ('nav')
+  const selectionSourceRef = useRef<'type' | 'nav'>('type')
 
   // Drag + resize
   const {
@@ -136,6 +139,7 @@ export default function ShellView({ query: _queryProp }: Props) {
     savedQuery,
     selectedIndex,
     listResults,
+    selectionSourceRef,
     setActiveTool,
     setToolComponent,
     setQuery,
@@ -183,14 +187,17 @@ export default function ShellView({ query: _queryProp }: Props) {
     setToolActions,
     setKeyActionHints,
     setFooterHints,
+    setOmniBarPortal,
     keyActionsGetterRef,
     toolActionsRef,
   })
 
-  // Sync query display with selection
+  // Sync query display with selection.
+  // When selectedIndex changes due to typing ('type'), keep the user's raw input visible.
+  // When changed by arrow-key navigation ('nav'), show the highlighted item's title.
   useEffect(() => {
     if (activeTool) return
-    if (selectedIndex === -1) {
+    if (selectedIndex === -1 || selectionSourceRef.current === 'type') {
       setQuery(savedQuery)
     } else if (listResults[selectedIndex]) {
       setQuery(listResults[selectedIndex].title)
@@ -247,10 +254,13 @@ export default function ShellView({ query: _queryProp }: Props) {
                 searchIcon={searchIcon}
                 activeToolName={activeToolName}
                 activeToolPlaceholder={activeToolPlaceholder}
+                omniBarPortal={omniBarPortal}
+                isLoading={Object.values(providerStates).some((s) => s.loading)}
                 onQueryChange={(val) => {
+                  selectionSourceRef.current = 'type'
                   setQuery(val)
                   setSavedQuery(val)
-                  setSelectedIndex(-1)
+                  setSelectedIndex(val.length > 0 ? 0 : -1)
                 }}
                 onKeyDown={handleKeyDown}
                 onDragMouseDown={handleDragMouseDown}

@@ -1,8 +1,23 @@
 .nuxy-kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
   padding: var(--space-0) var(--space-2);
   border-radius: var(--radius-sm);
   background-color: var(--syntax-comment);
   border: 1px solid var(--syntax-keyword);
   font-size: var(--font-xs);
   color: var(--syntax-variable);
+  line-height: 1;
+}
+
+.nuxy-kbd-icon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+.nuxy-kbd-icon svg {
+  width: 0.9em;
+  height: 0.9em;
 }

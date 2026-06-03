@@ -1,18 +1,7 @@
 const React = window.React
 
 import type { BitwardenStatus, BitwardenItem } from '../types.ts'
-
-const EXT_ID = 'com.nuxy.bitwarden'
-
-async function ipc(channel: string, payload?: unknown): Promise<unknown> {
-  const res = (await window.core.ipc.invoke(EXT_ID, channel, payload)) as {
-    success?: boolean
-    data?: unknown
-    error?: string
-  } | null
-  if (res && res.success) return res.data
-  throw new Error(res?.error || 'IPC call failed')
-}
+import { ipc } from '../utils/ipc.ts'
 
 interface BitwardenData {
   status: BitwardenStatus | null

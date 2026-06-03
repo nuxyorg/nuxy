@@ -36,6 +36,15 @@ export function useNotesMeta({ query, notes, editMode: editModeIn }: Params): Se
   const [selectedIndex, setSelectedIndex] = React.useState<number>(-1)
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null)
 
+  // Inline reset: when query changes to a real search query, reset selectedIndex during render
+  const [prevQuery, setPrevQuery] = React.useState(query)
+  if (query !== prevQuery) {
+    setPrevQuery(query)
+    if (query && !query.startsWith('select:')) {
+      setSelectedIndex(-1)
+    }
+  }
+
   // Handle select: query from search provider click
   React.useEffect(() => {
     if (query && query.startsWith('select:')) {
@@ -55,13 +64,6 @@ export function useNotesMeta({ query, notes, editMode: editModeIn }: Params): Se
       }
     }
   }, [query, notes, filteredNotes])
-
-  // Reset selectedIndex when query changes (only for real search queries)
-  React.useEffect(() => {
-    if (query && !query.startsWith('select:')) {
-      setSelectedIndex(-1)
-    }
-  }, [query])
 
   // Sync selected note when selectedIndex changes
   React.useEffect(() => {

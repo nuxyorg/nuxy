@@ -7,7 +7,15 @@ vi.mock('./worker-invoke.js', () => ({
   invokeWorker: vi.fn(async () => ({ success: true, data: { ok: true } })),
 }))
 
+vi.mock('./kernel-invokable.js', () => ({
+  callKernelChannel: vi.fn(async (channel: string) => {
+    if (channel === 'listInstalledExtensions') return { success: true, data: [{ id: 'com.nuxy.test' }] }
+    return { success: false, error: `Unknown kernel channel: ${channel}`, code: 'UNKNOWN_CHANNEL' }
+  }),
+}))
+
 import { invokeWorker } from './worker-invoke.js'
+import { callKernelChannel } from './kernel-invokable.js'
 
 const caller: LoadedExtension = {
   id: 'com.nuxy.caller',
@@ -40,6 +48,7 @@ describe('invokeExtension', () => {
     registerExtension(target)
     setExtensionChannels('com.nuxy.target', ['eval'])
     vi.mocked(invokeWorker).mockClear()
+    vi.mocked(callKernelChannel).mockClear()
   })
 
   it('returns EXTENSION_NOT_FOUND when caller is not registered', async () => {
@@ -123,5 +132,32 @@ describe('invokeExtension', () => {
   it('does not call worker when denied', async () => {
     await invokeExtension('com.nuxy.caller', 'com.nuxy.target', 'forbidden', {})
     expect(invokeWorker).not.toHaveBeenCalled()
+  })
+
+  describe('kernel routing', () => {
+    it('routes kernel target to callKernelChannel, not invokeWorker', async () => {
+      const r = await invokeExtension('com.nuxy.caller', 'kernel', 'listInstalledExtensions', {})
+      expect(invokeWorker).not.toHaveBeenCalled()
+      expect(callKernelChannel).toHaveBeenCalledWith('listInstalledExtensions', {})
+      expect(r.success).toBe(true)
+    })
+
+    it('wraps kernel result as data so caller receives IpcResult-shaped data', async () => {
+      const r = await invokeExtension('com.nuxy.caller', 'kernel', 'listInstalledExtensions', {})
+      expect(r.success).toBe(true)
+      expect((r.data as any)?.success).toBe(true)
+      expect(Array.isArray((r.data as any)?.data)).toBe(true)
+    })
+
+    it('returns CALLER_DENIED when caller lacks caller capability for kernel invocation', async () => {
+      registerExtension({
+        ...caller,
+        id: 'com.nuxy.nocaller',
+        manifest: { ...caller.manifest, id: 'com.nuxy.nocaller', capabilities: { caller: false } },
+      })
+      const r = await invokeExtension('com.nuxy.nocaller', 'kernel', 'listInstalledExtensions', {})
+      expect(r.code).toBe('CALLER_DENIED')
+      expect(callKernelChannel).not.toHaveBeenCalled()
+    })
   })
 })

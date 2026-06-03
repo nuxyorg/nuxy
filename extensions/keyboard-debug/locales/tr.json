@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "name": "Klavye Debug"
+  },
+  "list": {
+    "empty": {
+      "message": "Henüz tuşa basılmadı.",
+      "hint": "Kaydetmeye başlamak için herhangi bir tuşa basın."
+    }
+  },
+  "display": {
+    "pressAnyKey": "Herhangi bir tuşa basın",
+    "hint": "Tuş basışları burada görünecek."
+  },
+  "actions": {
+    "navigate": "Gezin",
+    "clear": "Geçmişi temizle"
+  }
+}

@@ -98,21 +98,15 @@ export function useEmojiScrollSync({
     if (!container) return
 
     const containerRect = container.getBoundingClientRect()
-    let currentCatId: string | null = null
-
     const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5
-    if (isAtBottom && allCategories.length > 0) {
-      currentCatId = allCategories[allCategories.length - 1].id
-    } else {
+    if (!isAtBottom) {
       const threshold = containerRect.top + 30
       for (const cat of allCategories) {
         const sectionEl = sectionRefs.current[cat.id]
         if (!sectionEl) continue
-        if (sectionEl.getBoundingClientRect().top <= threshold) currentCatId = cat.id
-        else break
+        if (sectionEl.getBoundingClientRect().top > threshold) break
       }
     }
-    void currentCatId
   }, [allCategories])
 
   return {

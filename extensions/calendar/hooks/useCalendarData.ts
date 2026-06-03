@@ -1,16 +1,7 @@
 const React = window.React
 
 import type { CalendarEvent } from '../types.ts'
-
-const EXT_ID = 'com.nuxy.calendar'
-
-function ipcCall(channel: string, payload: unknown): Promise<unknown> {
-  return window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
-    const r = res as { success: boolean; error?: string; data?: unknown } | null
-    if (!r?.success) throw new Error(r?.error || 'IPC failed')
-    return r.data
-  })
-}
+import { ipc as ipcCall } from '../utils/ipc.ts'
 
 export interface CalendarDataResult {
   monthEvents: CalendarEvent[]

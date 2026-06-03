@@ -1,0 +1,10 @@
+{
+  "id": "com.nuxy.theme-desert",
+  "name": "Desert Theme",
+  "version": "1.0.0",
+  "type": "theme",
+  "permissions": [],
+  "entry": {
+    "theme": "theme.json"
+  }
+}

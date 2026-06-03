@@ -1,0 +1,14 @@
+{
+  "meta": { "name": "Color Picker", "direction": "ltr" },
+  "tool.name": "Color Picker",
+  "empty.history": "No saved colors",
+  "empty.history.hint": "Type a color and press S to save",
+  "empty.hint": "Type a hex, rgb(), or hsl() value",
+  "action.copy": "Copy",
+  "action.save": "Save",
+  "action.delete": "Delete",
+  "label.hex": "HEX",
+  "label.rgb": "RGB",
+  "label.hsl": "HSL",
+  "error.invalid": "Invalid color"
+}

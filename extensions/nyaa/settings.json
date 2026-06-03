@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "category",
+      "label": "Category",
+      "type": "select",
+      "default": "1_2",
+      "options": [
+        { "value": "0_0", "label": "All Categories" },
+        { "value": "1_0", "label": "Anime" },
+        { "value": "1_2", "label": "Anime - English" },
+        { "value": "1_4", "label": "Anime - Raw" },
+        { "value": "3_0", "label": "Literature" },
+        { "value": "3_1", "label": "Literature - English" },
+        { "value": "2_0", "label": "Audio" },
+        { "value": "4_0", "label": "Live Action" },
+        { "value": "5_0", "label": "Pictures" },
+        { "value": "6_0", "label": "Software" }
+      ]
+    },
+    {
+      "key": "filter",
+      "label": "Filter",
+      "type": "select",
+      "default": "0",
+      "options": [
+        { "value": "0", "label": "No Filter" },
+        { "value": "1", "label": "No Remakes" },
+        { "value": "2", "label": "Trusted Only" }
+      ]
+    },
+    {
+      "key": "sortBy",
+      "label": "Sort By",
+      "type": "select",
+      "default": "seeders",
+      "options": [
+        { "value": "seeders", "label": "Seeders (High to Low)" },
+        { "value": "date", "label": "Newest First" },
+        { "value": "size", "label": "Size (High to Low)" },
+        { "value": "completed", "label": "Downloads (High to Low)" }
+      ]
+    }
+  ]
+}

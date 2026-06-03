@@ -2,18 +2,7 @@ const React = window.React
 
 import type { VideoFormat, VideoMetadata, DownloadJobPublic } from '../types.ts'
 import type { TabId } from '../utils/format.ts'
-
-const EXT_ID = 'com.nuxy.video-downloader'
-
-async function ipc<T>(channel: string, payload?: unknown): Promise<T> {
-  const res = (await window.core.ipc.invoke(EXT_ID, channel, payload)) as {
-    success: boolean
-    data?: T
-    error?: string
-  }
-  if (res && res.success) return res.data as T
-  throw new Error(res?.error || 'IPC call failed')
-}
+import { ipc } from '../utils/ipc.ts'
 
 interface Params {
   url: string

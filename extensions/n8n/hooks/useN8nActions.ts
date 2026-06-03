@@ -1,15 +1,7 @@
 const React = window.React
 
 import type { N8nWorkflow, N8nExecution, N8nStatusResult } from '../types.ts'
-
-const EXT_ID = 'com.nuxy.n8n'
-
-async function invoke<T>(channel: string, payload?: unknown): Promise<T> {
-  const res = await window.core.ipc.invoke(EXT_ID, channel, payload)
-  const r = res as { success: boolean; data?: T; error?: string } | null
-  if (r && r.success) return r.data as T
-  throw new Error(r?.error || 'IPC call failed')
-}
+import { ipc as invoke } from '../utils/ipc.ts'
 
 interface Params {
   baseUrl: string

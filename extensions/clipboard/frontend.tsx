@@ -28,9 +28,12 @@ export default function ClipboardView({ query }: Props) {
     return items.filter((item) => item.text?.toLowerCase().includes(q))
   }, [items, searchQuery])
 
-  React.useEffect(() => {
+  // Inline reset: when searchQuery changes, reset selectedIndex during render
+  const [prevSearchQuery, setPrevSearchQuery] = React.useState(searchQuery)
+  if (searchQuery !== prevSearchQuery) {
+    setPrevSearchQuery(searchQuery)
     setSelectedIndex(-1)
-  }, [searchQuery])
+  }
 
   useOmniBarSync(selectedIndex)
 

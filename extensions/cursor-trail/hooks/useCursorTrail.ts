@@ -1,5 +1,7 @@
 const React = window.React
 
+const DEFAULT_TRAIL_COLOR = '#6ec3f4'
+
 export interface TrailPoint {
   x: number
   y: number
@@ -25,7 +27,7 @@ export function useCursorTrail() {
 
       const color =
         getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim() ||
-        '#6ec3f4'
+        DEFAULT_TRAIL_COLOR
 
       const trail = trailRef.current
       for (let i = trail.length - 1; i >= 0; i--) {
@@ -52,11 +54,13 @@ export function useCursorTrail() {
       }
     }
 
-    function onResize() {
-      const canvas = canvasRef.current
-      if (!canvas) return
+    function resizeCanvas(canvas: HTMLCanvasElement) {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+    }
+
+    function onResize() {
+      if (canvasRef.current) resizeCanvas(canvasRef.current)
     }
 
     function onMouseMove(e: MouseEvent) {
@@ -79,8 +83,7 @@ export function useCursorTrail() {
         pointerEvents: 'none',
         zIndex: '10000',
       })
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      resizeCanvas(canvas)
       canvasRef.current = canvas
       ctxRef.current = canvas.getContext('2d')
       document.body.appendChild(canvas)

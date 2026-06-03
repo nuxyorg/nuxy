@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "name": "Translate"
+  },
+  "tool": {
+    "name": "Translate"
+  },
+  "empty": {
+    "placeholder": "Type text to translate"
+  },
+  "action": {
+    "copy": "Copy",
+    "translate": "Translate"
+  },
+  "label": {
+    "source": "Source",
+    "target": "Target",
+    "detected": "Detected: {lang}"
+  },
+  "error": {
+    "noApiKey": "API key required. Configure it in Settings.",
+    "failed": "Translation failed: {message}"
+  }
+}

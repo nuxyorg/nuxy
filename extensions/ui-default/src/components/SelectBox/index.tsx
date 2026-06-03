@@ -52,7 +52,9 @@ export function SelectBox({
     return () => document.removeEventListener('keydown', handleKeyCapture, true)
   }, [open])
 
-  useEffect(() => {
+  const [prevOpen, setPrevOpen] = useState(open)
+  if (open !== prevOpen) {
+    setPrevOpen(open)
     if (open) {
       const idx = Math.max(
         0,
@@ -61,7 +63,7 @@ export function SelectBox({
       setInternalFocused(idx)
       setSearchQuery('')
     }
-  }, [open])
+  }
 
   useEffect(() => {
     if (searchQuery.trim()) setInternalFocused(0)
@@ -69,7 +71,8 @@ export function SelectBox({
 
   useEffect(() => {
     if (open && searchable) {
-      setTimeout(() => searchRef.current?.focus(), 30)
+      const id = setTimeout(() => searchRef.current?.focus(), 30)
+      return () => clearTimeout(id)
     }
   }, [open, searchable])
 

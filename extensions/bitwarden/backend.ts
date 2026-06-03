@@ -61,12 +61,11 @@ async function getRbwConfig(core: CoreContext): Promise<RbwConfig> {
 }
 
 export async function register(core: CoreContext): Promise<void> {
-  if (await hasBinary(core, 'rbw')) {
-    detectedBackend = 'rbw'
-  } else if (await hasBinary(core, 'bw')) {
-    detectedBackend = 'bw'
-  } else {
-    detectedBackend = 'none'
+  for (const backend of ['rbw', 'bw'] as const) {
+    if (await hasBinary(core, backend)) {
+      detectedBackend = backend
+      break
+    }
   }
 
   core.registry.registerTool({ name: 'bitwarden' })
