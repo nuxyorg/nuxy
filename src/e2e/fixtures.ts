@@ -69,7 +69,9 @@ async function launchApp(userDataDir: string, headless: boolean): Promise<Electr
     timeout: 3000,
   })
   app.process().stdout?.on('data', (data) => console.log(`[MAIN-STDOUT] ${data.toString().trim()}`))
-  app.process().stderr?.on('data', (data) => console.error(`[MAIN-STDERR] ${data.toString().trim()}`))
+  app
+    .process()
+    .stderr?.on('data', (data) => console.error(`[MAIN-STDERR] ${data.toString().trim()}`))
   return app
 }
 
@@ -84,7 +86,9 @@ async function getAppPage(app: ElectronApplication): Promise<Page> {
   const page =
     app.windows().find((w) => !w.url().startsWith('devtools://')) ?? (await app.firstWindow())
   page.on('console', (msg) => console.log(`[BROWSER-CONSOLE] ${msg.type()}: ${msg.text()}`))
-  page.on('pageerror', (err) => console.error(`[BROWSER-PAGEERROR] ${err.message}\nStack:\n${err.stack}`))
+  page.on('pageerror', (err) =>
+    console.error(`[BROWSER-PAGEERROR] ${err.message}\nStack:\n${err.stack}`)
+  )
   await page.waitForSelector('input', { timeout: 3000 })
   return page
 }

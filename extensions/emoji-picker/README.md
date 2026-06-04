@@ -18,6 +18,7 @@ Emoji Picker presents the full emoji set in a two-panel layout: a category sideb
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user activates it by selecting **Emoji Picker** from the shell, then either browses by category or types a search term in the omnibar.
 
 ---
@@ -32,26 +33,26 @@ Select **Emoji Picker** from the tool list. The category list is focused on the 
 
 **Left panel (category navigation):**
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate categories |
+| Key           | Action                                   |
+| ------------- | ---------------------------------------- |
+| `↑` `↓`       | Navigate categories                      |
 | `→` / `Enter` | Focus emoji grid for the active category |
 
 **Right panel (emoji grid):**
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Move up / down one row |
-| `←` `→` | Move left / right one column; `←` at the left edge returns focus to the category list |
-| `Enter` | Copy the focused emoji and paste it into the previously active window |
-| `Ctrl+F` | Toggle the focused emoji in/out of favorites |
+| Key      | Action                                                                                |
+| -------- | ------------------------------------------------------------------------------------- |
+| `↑` `↓`  | Move up / down one row                                                                |
+| `←` `→`  | Move left / right one column; `←` at the left edge returns focus to the category list |
+| `Enter`  | Copy the focused emoji and paste it into the previously active window                 |
+| `Ctrl+F` | Toggle the focused emoji in/out of favorites                                          |
 
 **Mouse:**
 
-| Gesture | Action |
-|---------|--------|
-| Left click | Copy and paste emoji |
-| Right click | Toggle favorite |
+| Gesture     | Action               |
+| ----------- | -------------------- |
+| Left click  | Copy and paste emoji |
+| Right click | Toggle favorite      |
 
 ### Examples
 
@@ -68,20 +69,20 @@ Focus any emoji and press `Ctrl+F`. It is immediately added to the **Favorites**
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `clipboard` | Writing the selected emoji as text to the system clipboard; additionally writing to the X11 selection buffer (`selection` type) |
-| `storage` | Persisting the favorites list (`favorites.json`) between sessions |
-| `shell` | Running `xdotool key Shift+Insert` (falling back to `ctrl+v`) to trigger a paste in the previously focused window after Nuxy hides |
+| Permission  | Used for                                                                                                                           |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `clipboard` | Writing the selected emoji as text to the system clipboard; additionally writing to the X11 selection buffer (`selection` type)    |
+| `storage`   | Persisting the favorites list (`favorites.json`) between sessions                                                                  |
+| `shell`     | Running `xdotool key Shift+Insert` (falling back to `ctrl+v`) to trigger a paste in the previously focused window after Nuxy hides |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -89,19 +90,19 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | Full paste support via `xdotool` |
-| Linux (Wayland) | Partial | `xdotool` is not available on Wayland; the emoji is copied to the clipboard but auto-paste does not work |
-| macOS | Partial | `xdotool` is not available on macOS; the emoji is copied to the clipboard but auto-paste does not work |
+| Platform        | Supported | Notes                                                                                                    |
+| --------------- | --------- | -------------------------------------------------------------------------------------------------------- |
+| Linux (X11)     | Yes       | Full paste support via `xdotool`                                                                         |
+| Linux (Wayland) | Partial   | `xdotool` is not available on Wayland; the emoji is copied to the clipboard but auto-paste does not work |
+| macOS           | Partial   | `xdotool` is not available on macOS; the emoji is copied to the clipboard but auto-paste does not work   |
 
 **Auto-paste** (the step where Nuxy hides and triggers `Shift+Insert` / `Ctrl+V` in the previously focused app) requires `xdotool`, which is an X11-only tool. On Wayland and macOS the emoji is still copied to the clipboard — the user must paste manually.
 
 ## Requirements
 
-| Requirement | Minimum version | Install |
-|-------------|-----------------|---------|
-| `xdotool` | any | `sudo apt install xdotool` / `sudo pacman -S xdotool` |
+| Requirement | Minimum version | Install                                               |
+| ----------- | --------------- | ----------------------------------------------------- |
+| `xdotool`   | any             | `sudo apt install xdotool` / `sudo pacman -S xdotool` |
 
 Required only for auto-paste on X11. The extension functions without it (copy only).
 
@@ -119,12 +120,12 @@ const favorites = await core.extensions.invoke('com.nuxy.emoji-picker', 'getFavo
 
 **Exposed IPC channels:**
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
-| `getFavorites` | `null` | `string[]` | Return the current favorites list (emoji characters) |
-| `toggleFavorite` | `emoji: string` | `string[]` | Add or remove an emoji from favorites; returns updated list |
-| `copy` | `emoji: string` | `{ ok: true }` | Write the emoji to the clipboard (and selection buffer) |
-| `paste` | `null` | `{ ok: true }` | Trigger a paste keystroke in the previously focused window via `xdotool` |
+| Channel          | Payload         | Returns        | Description                                                              |
+| ---------------- | --------------- | -------------- | ------------------------------------------------------------------------ |
+| `getFavorites`   | `null`          | `string[]`     | Return the current favorites list (emoji characters)                     |
+| `toggleFavorite` | `emoji: string` | `string[]`     | Add or remove an emoji from favorites; returns updated list              |
+| `copy`           | `emoji: string` | `{ ok: true }` | Write the emoji to the clipboard (and selection buffer)                  |
+| `paste`          | `null`          | `{ ok: true }` | Trigger a paste keystroke in the previously focused window via `xdotool` |
 
 ---
 

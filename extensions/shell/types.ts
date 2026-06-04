@@ -13,6 +13,8 @@ export interface Provider {
   manifest: ExtensionManifest & {
     name: string
     providerType?: 'list' | 'result' | 'compare'
+    providerGroup?: string
+    providerGroupLabel?: string
   }
 }
 
@@ -61,6 +63,8 @@ export interface KeyAction {
   handler: () => void
   onExecute?: () => void
   allowRepeat?: boolean
+  trigger?: 'press' | 'hold'
+  holdMs?: number
 }
 
 export interface CommandPaletteAction {

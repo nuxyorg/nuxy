@@ -20,11 +20,15 @@ export function useFocusBlockData(): FocusBlockData {
   const active = status?.active ?? false
 
   const refreshStatus = React.useCallback(() => {
-    invoke<TimerStatus>('focusblock:status').then(setStatus).catch(() => {})
+    invoke<TimerStatus>('focusblock:status')
+      .then(setStatus)
+      .catch(() => {})
   }, [])
 
   const refreshHistory = React.useCallback(() => {
-    invoke<Session[]>('focusblock:history').then(setSessions).catch(() => {})
+    invoke<Session[]>('focusblock:history')
+      .then(setSessions)
+      .catch(() => {})
   }, [])
 
   React.useEffect(() => {

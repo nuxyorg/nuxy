@@ -16,16 +16,23 @@ interface Params {
   selectedIndex: number
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
   handlers: Handlers
+  t: (key: string) => string
 }
 
-export function useClipboardKeyboard({ filteredItems, selectedIndex, setSelectedIndex, handlers }: Params): void {
+export function useClipboardKeyboard({
+  filteredItems,
+  selectedIndex,
+  setSelectedIndex,
+  handlers,
+  t,
+}: Params): void {
   const { handleCopy, handleCopyFile, handleDelete, handlePin, handleUnpin } = handlers
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
   _useToolKeyActions([
     {
       key: 'ArrowUp',
-      label: 'Navigate',
+      label: t('actions.navigate'),
       hint: '↑↓',
       handler: () => {
         if (filteredItems.length === 0) return
@@ -34,7 +41,7 @@ export function useClipboardKeyboard({ filteredItems, selectedIndex, setSelected
     },
     {
       key: 'ArrowDown',
-      label: 'Next item',
+      label: t('actions.nextItem'),
       handler: () => {
         if (filteredItems.length === 0) return
         setSelectedIndex((prev: number) => Math.min(prev + 1, filteredItems.length - 1))
@@ -42,7 +49,7 @@ export function useClipboardKeyboard({ filteredItems, selectedIndex, setSelected
     },
     {
       key: 'Enter',
-      label: 'Copy',
+      label: t('actions.copy'),
       hint: '↵',
       activeOn: () => selectedIndex >= 0,
       handler: () => {
@@ -58,10 +65,14 @@ export function useClipboardKeyboard({ filteredItems, selectedIndex, setSelected
     const selectedItem = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
     const actions = selectedItem
       ? [
-          { id: 'clipboard-delete', label: 'Delete Selected Item', onExecute: () => handleDelete(selectedItem.id) },
+          {
+            id: 'clipboard-delete',
+            label: t('actions.deleteSelected'),
+            onExecute: () => handleDelete(selectedItem.id),
+          },
           {
             id: 'clipboard-pin-unpin',
-            label: selectedItem.pinned ? 'Unpin Selected Item' : 'Pin Selected Item',
+            label: selectedItem.pinned ? t('actions.unpinSelected') : t('actions.pinSelected'),
             onExecute: () => {
               if (selectedItem.pinned) handleUnpin(selectedItem.id)
               else handlePin(selectedItem.id)

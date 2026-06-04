@@ -1,1 +1,28 @@
-{"nodes": [{"id": "src_electron_builder", "label": "electron-builder.yml (Packaging Config)", "file_type": "document", "source_file": "src/electron-builder.yml", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "src_electron_builder", "target": "features_nuxy_featuretracker", "relation": "references", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": "src/electron-builder.yml", "source_location": null, "weight": 0.75}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "src_electron_builder",
+      "label": "electron-builder.yml (Packaging Config)",
+      "file_type": "document",
+      "source_file": "src/electron-builder.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "src_electron_builder",
+      "target": "features_nuxy_featuretracker",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "src/electron-builder.yml",
+      "source_location": null,
+      "weight": 0.75
+    }
+  ],
+  "hyperedges": []
+}

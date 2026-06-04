@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "name": "ノート"
+  },
+  "sections": {
+    "notes": "ノート"
+  },
+  "list": {
+    "newNote": "新しいノート",
+    "newNoteHint": "新しいノートを作成",
+    "noNotes": "ノートがまだありません。",
+    "noMatching": "一致するノートがありません。",
+    "createHint": "⌃Nで新しいノートを作成してください。"
+  },
+  "editor": {
+    "placeholder": "書き始めましょう…",
+    "transcribing": "文字起こし中…"
+  },
+  "empty": {
+    "selectOrCreate": "ノートを選択するか、新しいノートを作成してください。",
+    "createHint": "⌃Nで新しいノートを作成してください。"
+  },
+  "errors": {
+    "renderError": "レンダリングエラー"
+  },
+  "toasts": {
+    "saved": "ノートを保存しました！",
+    "deleted": "ノートを削除しました"
+  },
+  "actions": {
+    "newNote": "新しいノート",
+    "save": "保存",
+    "saveNote": "ノートを保存",
+    "delete": "削除",
+    "deleteNote": "ノートを削除",
+    "editNote": "ノートを編集",
+    "record": "録音",
+    "stopRecording": "録音を停止",
+    "focusSearchExitEdit": "検索にフォーカス / 編集を終了",
+    "previous": "前",
+    "next": "次"
+  },
+  "provider": {
+    "saveAsNote": "ノートとして保存"
+  }
+}

@@ -137,9 +137,9 @@ test.describe('app health after errors', () => {
     // 1. Three consecutive error-producing calls of different failure kinds
     await appPage.evaluate(async () => {
       const c = (window as any).core.ipc
-      await c.invoke('com.nuxy.nonexistent', 'someChannel', {})     // EXTENSION_NOT_FOUND
-      await c.invoke('com.nuxy.calculator', 'doesNotExist', {})     // UNKNOWN_CHANNEL
-      await c.invoke('', 'someChannel', {})                         // INVALID_ARGS
+      await c.invoke('com.nuxy.nonexistent', 'someChannel', {}) // EXTENSION_NOT_FOUND
+      await c.invoke('com.nuxy.calculator', 'doesNotExist', {}) // UNKNOWN_CHANNEL
+      await c.invoke('', 'someChannel', {}) // INVALID_ARGS
     })
 
     // 2. A real kernel call must succeed immediately after

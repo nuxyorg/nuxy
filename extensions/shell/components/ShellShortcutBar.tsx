@@ -14,6 +14,7 @@ interface Props {
   ShortcutHint: React.ComponentType<React.HTMLAttributes<HTMLElement>>
   ShortcutSep?: React.ComponentType
   Kbd?: React.ComponentType<React.HTMLAttributes<HTMLElement>>
+  t: (key: string, vars?: Record<string, string | number>) => string
 }
 
 export function ShellShortcutBar({
@@ -28,6 +29,7 @@ export function ShellShortcutBar({
   ShortcutHint,
   ShortcutSep,
   Kbd,
+  t,
 }: Props) {
   return (
     <ShortcutBar style={{ justifyContent: 'space-between' }}>
@@ -52,21 +54,21 @@ export function ShellShortcutBar({
               ))}
           </>
         ) : (
-          <span>{tools.length + 1} extensions loaded</span>
+          <span>{t('footer.extensionsLoaded', { count: tools.length + 1 })}</span>
         )}
       </ShortcutHint>
       <ShortcutHint>
         {selectedIndex >= 0 && listResults.length > 0 && !activeTool ? (
           <>
-            <span>Press</span>
-            {Kbd && <Kbd>Enter</Kbd>}
-            <span>to run</span>
+            <span>{t('footer.pressToRun')}</span>
+            {Kbd && <Kbd>↵</Kbd>}
+            <span>{t('footer.toRun')}</span>
           </>
         ) : toolActions.length > 0 ? (
           <>
             {Kbd && <Kbd>Ctrl</Kbd>}
             {Kbd && <Kbd>K</Kbd>}
-            <span>to actions</span>
+            <span>{t('footer.toActions')}</span>
           </>
         ) : null}
       </ShortcutHint>

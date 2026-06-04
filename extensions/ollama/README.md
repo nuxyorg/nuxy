@@ -18,6 +18,7 @@ Ollama brings a full chat interface directly into Nuxy, powered by any model run
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user activates it by selecting **Ollama** from the shell, then interacts through the omnibar query and keyboard shortcuts.
 
 ---
@@ -30,11 +31,11 @@ Select **Ollama** from the tool list. The omnibar placeholder changes to "Ask an
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `Enter` | Send the current query to the model |
-| `Enter` *(while generating)* | Queue the typed message — it sends automatically when the current response finishes |
-| `Esc` | Stop the in-progress generation |
+| Key                          | Action                                                                              |
+| ---------------------------- | ----------------------------------------------------------------------------------- |
+| `Enter`                      | Send the current query to the model                                                 |
+| `Enter` _(while generating)_ | Queue the typed message — it sends automatically when the current response finishes |
+| `Esc`                        | Stop the in-progress generation                                                     |
 
 ### Examples
 
@@ -56,31 +57,31 @@ Open the Command Palette (`Ctrl K`) and select **Clear Chat History** to start a
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `host` | text | `http://localhost:11434` | URL where the Ollama server is running |
-| `model` | text | `llama3` | Model name to use for chat (e.g. `llama3`, `mistral`) |
-| `thinkingColor` | select | `light` | Border animation shown while the model is generating: `light`, `rainbow`, `bit`, or `off` |
-| `systemPrompt` | text | *(empty)* | System-level instructions prepended to every conversation |
-| `temperature` | select | `0.7` | Output randomness — `0.2` (deterministic) through `1.0` (maximum creativity) |
+| Key             | Type   | Default                  | Description                                                                               |
+| --------------- | ------ | ------------------------ | ----------------------------------------------------------------------------------------- |
+| `host`          | text   | `http://localhost:11434` | URL where the Ollama server is running                                                    |
+| `model`         | text   | `llama3`                 | Model name to use for chat (e.g. `llama3`, `mistral`)                                     |
+| `thinkingColor` | select | `light`                  | Border animation shown while the model is generating: `light`, `rainbow`, `bit`, or `off` |
+| `systemPrompt`  | text   | _(empty)_                | System-level instructions prepended to every conversation                                 |
+| `temperature`   | select | `0.7`                    | Output randomness — `0.2` (deterministic) through `1.0` (maximum creativity)              |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Persisting chat history and configuration between sessions |
-| `network` | Calling the local Ollama REST API (`/api/chat`, `/api/tags`) |
+| Permission | Used for                                                     |
+| ---------- | ------------------------------------------------------------ |
+| `storage`  | Persisting chat history and configuration between sessions   |
+| `network`  | Calling the local Ollama REST API (`/api/chat`, `/api/tags`) |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -88,11 +89,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 **Note:** The extension communicates with Ollama over HTTP — no shell access required. It works on any platform where Ollama is reachable at the configured host URL.
 
@@ -100,9 +101,9 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Requirements
 
-| Requirement | Minimum version | Install |
-|-------------|-----------------|---------|
-| Ollama | 0.1.x | [ollama.ai](https://ollama.ai) |
+| Requirement | Minimum version | Install                        |
+| ----------- | --------------- | ------------------------------ |
+| Ollama      | 0.1.x           | [ollama.ai](https://ollama.ai) |
 
 At least one model must be pulled before use: `ollama pull llama3`.
 
@@ -128,17 +129,17 @@ const result = await core.extensions.invoke('com.nuxy.ollama', 'chat', {
 
 **Exposed IPC channels:**
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
-| `chat` | `{ messages: ChatMessage[] }` | `{ content: string }` | Send a full message array and get the assistant reply |
-| `query` | `{ prompt: string, model?: string }` | `{ content: string }` | Single-turn prompt shorthand |
-| `models` | — | `string[]` | List all models available in the local Ollama instance |
-| `health` | — | `{ ok: boolean }` | Check whether the Ollama server is reachable |
-| `configure` | `{ model?, host?, thinkingColor?, systemPrompt?, temperature? }` | `void` | Update runtime config and persist settings |
-| `getConfig` | — | `OllamaConfig` | Read the current runtime configuration |
-| `history:save` | `{ messages: ChatMessage[] }` | `void` | Overwrite the stored chat history |
-| `history:load` | — | `ChatMessage[]` | Load the stored chat history |
-| `history:clear` | — | `void` | Delete all stored chat history |
+| Channel         | Payload                                                          | Returns               | Description                                            |
+| --------------- | ---------------------------------------------------------------- | --------------------- | ------------------------------------------------------ |
+| `chat`          | `{ messages: ChatMessage[] }`                                    | `{ content: string }` | Send a full message array and get the assistant reply  |
+| `query`         | `{ prompt: string, model?: string }`                             | `{ content: string }` | Single-turn prompt shorthand                           |
+| `models`        | —                                                                | `string[]`            | List all models available in the local Ollama instance |
+| `health`        | —                                                                | `{ ok: boolean }`     | Check whether the Ollama server is reachable           |
+| `configure`     | `{ model?, host?, thinkingColor?, systemPrompt?, temperature? }` | `void`                | Update runtime config and persist settings             |
+| `getConfig`     | —                                                                | `OllamaConfig`        | Read the current runtime configuration                 |
+| `history:save`  | `{ messages: ChatMessage[] }`                                    | `void`                | Overwrite the stored chat history                      |
+| `history:load`  | —                                                                | `ChatMessage[]`       | Load the stored chat history                           |
+| `history:clear` | —                                                                | `void`                | Delete all stored chat history                         |
 
 ---
 

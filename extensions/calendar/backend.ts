@@ -153,7 +153,9 @@ export function register(core: CoreContext): void {
       'INSERT INTO events (id, title, datetime, notes, remind_min, created_at) VALUES (?, ?, ?, ?, ?, ?)'
     )
     insertStmt.run(id, title, datetime, notes, actualRemindMin, createdAt)
-    const row = db.prepare('SELECT * FROM events WHERE id = ?').get(id) as unknown as CalendarEventRow
+    const row = db
+      .prepare('SELECT * FROM events WHERE id = ?')
+      .get(id) as unknown as CalendarEventRow
     return rowToEvent(row)
   })
 
@@ -185,7 +187,9 @@ export function register(core: CoreContext): void {
       updateStmt.run(...values)
     }
 
-    const row = db.prepare('SELECT * FROM events WHERE id = ?').get(id) as unknown as CalendarEventRow
+    const row = db
+      .prepare('SELECT * FROM events WHERE id = ?')
+      .get(id) as unknown as CalendarEventRow
     return rowToEvent(row)
   })
 

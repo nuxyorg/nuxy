@@ -71,36 +71,31 @@ export default function SshView({ query }: Props) {
     <div style={{ direction: dir }}>
       {List && (
         <List>
-          {isEmpty ? (
-            EmptyState && (
-              <EmptyState
-                message={hosts.length === 0 ? t('empty.noHosts') : t('empty.noMatch')}
-              />
-            )
-          ) : (
-            filteredHosts.map((host: SshHost, idx: number) =>
-              ListItem && ListItemBody && ListItemText ? (
-                <ListItem
-                  key={host.name}
-                  active={idx === selectedIndex}
-                  onClick={() => {
-                    setSelectedIndex(idx)
-                    handleConnect(host)
-                  }}
-                >
-                  <ListItemBody>
-                    <ListItemText
-                      title={host.name}
-                      subtitle={buildSubtitle(host)}
-                    />
-                    {ListItemMeta && connecting && idx === selectedIndex && (
-                      <ListItemMeta>...</ListItemMeta>
-                    )}
-                  </ListItemBody>
-                </ListItem>
-              ) : null
-            )
-          )}
+          {isEmpty
+            ? EmptyState && (
+                <EmptyState
+                  message={hosts.length === 0 ? t('empty.noHosts') : t('empty.noMatch')}
+                />
+              )
+            : filteredHosts.map((host: SshHost, idx: number) =>
+                ListItem && ListItemBody && ListItemText ? (
+                  <ListItem
+                    key={host.name}
+                    active={idx === selectedIndex}
+                    onClick={() => {
+                      setSelectedIndex(idx)
+                      handleConnect(host)
+                    }}
+                  >
+                    <ListItemBody>
+                      <ListItemText title={host.name} subtitle={buildSubtitle(host)} />
+                      {ListItemMeta && connecting && idx === selectedIndex && (
+                        <ListItemMeta>...</ListItemMeta>
+                      )}
+                    </ListItemBody>
+                  </ListItem>
+                ) : null
+              )}
         </List>
       )}
     </div>

@@ -1,1 +1,80 @@
-{"nodes": [{"id": "docs_08_auth_vaultextension", "label": "Password Vault Extension Security Architecture", "file_type": "concept", "source_file": "docs/08-authentication.md", "source_location": "Section 2", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_08_auth_cryptoengine", "label": "Vault Cryptographic Engine (scryptSync + aes-256-gcm)", "file_type": "concept", "source_file": "docs/08-authentication.md", "source_location": "Section 2.1", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_08_auth_memhandling", "label": "Strict Memory Handling (Volatile Key, Auto-Lock)", "file_type": "concept", "source_file": "docs/08-authentication.md", "source_location": "Section 2.3", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "docs_08_auth_vaultextension", "target": "docs_16_omni_tooltype", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/08-authentication.md", "source_location": "Section 2", "weight": 1.0}, {"source": "docs_08_auth_cryptoengine", "target": "docs_08_auth_vaultextension", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/08-authentication.md", "source_location": "Section 2.1", "weight": 1.0}, {"source": "docs_08_auth_memhandling", "target": "docs_08_auth_vaultextension", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/08-authentication.md", "source_location": "Section 2.3", "weight": 1.0}, {"source": "docs_08_auth_vaultextension", "target": "docs_15_pluginsystem_orchestratorpattern", "relation": "conceptually_related_to", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/08-authentication.md", "source_location": "Section 2.2", "weight": 1.0}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "docs_08_auth_vaultextension",
+      "label": "Password Vault Extension Security Architecture",
+      "file_type": "concept",
+      "source_file": "docs/08-authentication.md",
+      "source_location": "Section 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_08_auth_cryptoengine",
+      "label": "Vault Cryptographic Engine (scryptSync + aes-256-gcm)",
+      "file_type": "concept",
+      "source_file": "docs/08-authentication.md",
+      "source_location": "Section 2.1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_08_auth_memhandling",
+      "label": "Strict Memory Handling (Volatile Key, Auto-Lock)",
+      "file_type": "concept",
+      "source_file": "docs/08-authentication.md",
+      "source_location": "Section 2.3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_08_auth_vaultextension",
+      "target": "docs_16_omni_tooltype",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/08-authentication.md",
+      "source_location": "Section 2",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_08_auth_cryptoengine",
+      "target": "docs_08_auth_vaultextension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/08-authentication.md",
+      "source_location": "Section 2.1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_08_auth_memhandling",
+      "target": "docs_08_auth_vaultextension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/08-authentication.md",
+      "source_location": "Section 2.3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_08_auth_vaultextension",
+      "target": "docs_15_pluginsystem_orchestratorpattern",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/08-authentication.md",
+      "source_location": "Section 2.2",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

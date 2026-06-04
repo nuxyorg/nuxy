@@ -41,6 +41,17 @@
         { "value": "size", "label": "Size (High to Low)" },
         { "value": "completed", "label": "Downloads (High to Low)" }
       ]
+    },
+    {
+      "key": "enterAction",
+      "label": "Enter Key Action",
+      "type": "select",
+      "default": "copyMagnet",
+      "description": "What Enter does on a result. Shift+Enter always does the opposite.",
+      "options": [
+        { "value": "copyMagnet", "label": "Copy Magnet Link" },
+        { "value": "downloadTorrent", "label": "Save Torrent File" }
+      ]
     }
   ]
 }

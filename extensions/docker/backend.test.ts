@@ -65,11 +65,7 @@ describe('docker backend', () => {
         name: string
         state: string
       }>
-      expect(core.shell.exec).toHaveBeenCalledWith('docker', [
-        'ps',
-        '--format',
-        '{{json .}}',
-      ])
+      expect(core.shell.exec).toHaveBeenCalledWith('docker', ['ps', '--format', '{{json .}}'])
       expect(containers).toHaveLength(1)
       expect(containers[0].id).toBe('abc123def456')
       expect(containers[0].name).toBe('my-nginx')
@@ -113,7 +109,9 @@ describe('docker backend', () => {
     it('returns empty array and warns when docker ps fails', async () => {
       const { core, handlers } = setup({
         shell: {
-          exec: vi.fn().mockResolvedValue({ stdout: '', stderr: 'daemon not running', exitCode: 1 }),
+          exec: vi
+            .fn()
+            .mockResolvedValue({ stdout: '', stderr: 'daemon not running', exitCode: 1 }),
         },
       })
       const result = await handlers['docker:containers']({})
@@ -232,7 +230,9 @@ describe('docker backend', () => {
     it('calls docker logs with default tail of 50', async () => {
       const { core, handlers } = setup({
         shell: {
-          exec: vi.fn().mockResolvedValue({ stdout: 'log line 1\nlog line 2', stderr: '', exitCode: 0 }),
+          exec: vi
+            .fn()
+            .mockResolvedValue({ stdout: 'log line 1\nlog line 2', stderr: '', exitCode: 0 }),
         },
       })
       const result = (await handlers['docker:logs']({ id: 'abc123' })) as { logs: string }

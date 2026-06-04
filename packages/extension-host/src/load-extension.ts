@@ -50,7 +50,11 @@ async function transpileTsBackend(fileUrl: string, logger: WorkerLogger): Promis
       const full = join(dir, entry)
       if (statSync(full).isDirectory()) {
         if (entry !== 'node_modules' && entry !== '.git') walkDir(full)
-      } else if (/\.(ts|tsx)$/.test(entry) && !entry.endsWith('.test.ts') && !entry.endsWith('.spec.ts')) {
+      } else if (
+        /\.(ts|tsx)$/.test(entry) &&
+        !entry.endsWith('.test.ts') &&
+        !entry.endsWith('.spec.ts')
+      ) {
         tsFiles.push(full)
       }
     }

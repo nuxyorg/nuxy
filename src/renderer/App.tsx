@@ -22,7 +22,9 @@ export default function App() {
       try {
         // 1. Fetch config first to know the custom theme name, zoom, and font
         const configRes = await core?.ipc?.invoke('kernel', 'getConfig', {}).catch(() => null)
-        const config = configRes as IpcResult<{ zoom?: string; font?: string; theme?: string }> | undefined
+        const config = configRes as
+          | IpcResult<{ zoom?: string; font?: string; theme?: string }>
+          | undefined
         const themeName = config?.success && config.data?.theme ? config.data.theme : 'dark'
 
         // Apply zoom & font immediately on startup
@@ -113,7 +115,17 @@ export default function App() {
     })()
 
     const handleWindowShow = () => {
-      window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
+      void (async () => {
+        const configRes = (await core?.ipc
+          ?.invoke('kernel', 'getConfig', {})
+          .catch(() => null)) as IpcResult<{ backgroundBehavior?: string }> | null
+        const resume = configRes?.success && configRes.data?.backgroundBehavior === 'resume-session'
+        if (resume) {
+          window.dispatchEvent(new Event('focus'))
+        } else {
+          window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
+        }
+      })()
     }
     const cleanup = core?.window?.onShow?.(handleWindowShow)
     return () => {

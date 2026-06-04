@@ -15,8 +15,7 @@ interface Props {
 
 export default function ProcKillView({ query }: Props) {
   const _useTranslation =
-    (window.UI || {}).useTranslation ||
-    (() => ({ t: (k: string) => k, dir: 'ltr' as const }))
+    (window.UI || {}).useTranslation || (() => ({ t: (k: string) => k, dir: 'ltr' as const }))
 
   const { t, dir } = _useTranslation(EXT_ID)
 

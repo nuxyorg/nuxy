@@ -11,8 +11,6 @@
   },
   "copied": "Copied!",
   "errors": {
-    "notFound": "Snippet not found",
-    "saveFailed": "Failed to save snippet",
-    "copyFailed": "Failed to copy snippet"
+    "notFound": "Snippet not found"
   }
 }

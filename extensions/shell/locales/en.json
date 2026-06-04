@@ -21,5 +21,14 @@
     "searchPlaceholder": "Search commands...",
     "noActions": "No actions available.",
     "enterShortcut": "Enter"
+  },
+  "keyboard": {
+    "focusTabs": "Focus tabs",
+    "focusContent": "Focus content",
+    "previous": "Previous",
+    "next": "Next",
+    "selectConfirm": "Select / confirm",
+    "navigate": "Navigate",
+    "select": "Select"
   }
 }

@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "name": "絵文字ピッカー"
+  },
+  "categories": {
+    "favorites": "お気に入り"
+  },
+  "search": {
+    "resultsCount": {
+      "one": "{count}個の絵文字が見つかりました",
+      "other": "{count}個の絵文字が見つかりました"
+    }
+  },
+  "empty": {
+    "noFavorites": "お気に入りがまだありません — 絵文字にカーソルを合わせてCtrl+Fで追加してください。",
+    "noResults": "結果なし。"
+  },
+  "tooltip": {
+    "favorite": "（お気に入り）"
+  },
+  "actions": {
+    "moveLeft": "左に移動",
+    "moveRight": "右に移動",
+    "moveUp": "上に移動",
+    "moveDown": "下に移動",
+    "copyEmoji": "絵文字をコピー",
+    "toggleFavorite": "お気に入りを切り替え"
+  }
+}

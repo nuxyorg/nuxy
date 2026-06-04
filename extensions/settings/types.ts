@@ -1,5 +1,6 @@
 export type EscAction = 'hide' | 'minimize' | 'quit' | 'none'
 export type BlurAction = 'hide' | 'minimize' | 'quit' | 'none'
+export type BackgroundBehavior = 'reset-on-show' | 'resume-session'
 export type Theme = string
 export type ZoomLevel = string
 export type FontFamily = string
@@ -11,6 +12,7 @@ export interface NuxySettings {
   font: FontFamily
   escAction: EscAction
   blurAction: BlurAction
+  backgroundBehavior: BackgroundBehavior
   windowWidth: number
   windowMaxHeight: number
   alwaysOnTop: boolean
@@ -41,7 +43,6 @@ export interface LanguageRow {
   options: SelectOption[]
   isExtension: false
   isLanguage: true
-  langIndex: number
   searchable: true
 }
 
@@ -107,7 +108,16 @@ export interface ExtToggleRow {
   extId: string
 }
 
-export type AnyRow = BaseRow | ExtSectionRow | LanguageRow | ExtToggleRow
+export interface LanguageRemoveRow {
+  key: string
+  label: string
+  options: SelectOption[]
+  isExtension: false
+  isLanguageRemove: true
+  langCode: string
+}
+
+export type AnyRow = BaseRow | ExtSectionRow | LanguageRow | LanguageRemoveRow | ExtToggleRow
 
 export interface RenderSection {
   id: string

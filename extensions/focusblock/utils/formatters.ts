@@ -1,6 +1,6 @@
 export function parseQuery(
   query: string,
-  defaultDuration: number,
+  defaultDuration: number
 ): { duration: number; label: string } {
   const trimmed = query.trim()
   if (!trimmed) return { duration: defaultDuration, label: '' }

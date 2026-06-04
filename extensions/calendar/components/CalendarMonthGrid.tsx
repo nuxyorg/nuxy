@@ -14,7 +14,12 @@ interface Props {
   eventDays: Set<number>
   monthEnterDir: 'fromTop' | 'fromBottom' | null
   onSelectDay: (day: number) => void
-  onNavigateToMonth: (year: number, month: number, day: number, dir: 'fromTop' | 'fromBottom') => void
+  onNavigateToMonth: (
+    year: number,
+    month: number,
+    day: number,
+    dir: 'fromTop' | 'fromBottom'
+  ) => void
   onEnterCalendarMode: () => void
   onEnterDayView: () => void
 }

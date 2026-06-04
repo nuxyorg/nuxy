@@ -5,6 +5,13 @@ import module from 'module'
 import { dialog } from 'electron'
 import { EXTENSION_DIR, EXTRACTED_DIR } from '../config/paths.js'
 import { spawnExtension, activeWorkers } from '../spawn/spawn.js'
+import { workerExitListeners, workerRegistryErrorListeners } from '../spawn/active-workers.js'
+import {
+  onExtensionWorkerExit,
+  scheduleWorkerRestart,
+  startExtensionDirectoryWatcher,
+  clearExtensionWatchers,
+} from './extension-reload.js'
 import { getMainWindow } from '../window/manager.js'
 import { registerExtension, clearRegistry } from './registry.js'
 import { seedBundledExtensions } from './seed-bundled.js'
@@ -57,7 +64,7 @@ const BUILTIN_LIST = new Set([
 export function detectNodeImports(code: string): string[] {
   const cleanCode = code
     .replace(/\/\*[\s\S]*?\*\//g, '') // remove multi-line comments
-    .replace(/\/\/.*$/gm, '')        // remove single-line comments
+    .replace(/\/\/.*$/gm, '') // remove single-line comments
 
   const found: string[] = []
 
@@ -148,8 +155,21 @@ export function scanDirectoryForNodeImports(dir: string): { file: string; import
   return violations
 }
 
-let watchDebounce: ReturnType<typeof setTimeout> | null = null
-const activeWatchers = new Set<fs.FSWatcher>()
+export async function rescanExtensions(): Promise<void> {
+  clearExtensionWatchers()
+  for (const [, worker] of activeWorkers) {
+    await worker.terminate()
+  }
+  activeWorkers.clear()
+  await scanExtensions()
+  getMainWindow()?.webContents.reload()
+}
+
+function startExtensionWatcher(): void {
+  startExtensionDirectoryWatcher(import.meta.env.DEV, () => {
+    void rescanExtensions()
+  })
+}
 
 /**
  * Phase 3 + Phase 4: Verify directory integrity, check revocation, prompt for publisher trust,
@@ -164,7 +184,7 @@ const activeWatchers = new Set<fs.FSWatcher>()
 async function verifyAndSecureExtension(
   folderName: string,
   tempPath: string,
-  targetPath: string,
+  targetPath: string
 ): Promise<{ trusted: boolean; reason?: string }> {
   // 1. Verify directory integrity & signature
   const verification = verifyDirectoryIntegrity(tempPath)
@@ -194,7 +214,9 @@ async function verifyAndSecureExtension(
     const approved = promptTrustPublisherKey(folderName, publicKey)
     if (approved) {
       addTrustedKey(publicKey)
-      log.info(`Publisher key trusted for "${folderName}". Restarting scan to initialize extensions cleanly.`)
+      log.info(
+        `Publisher key trusted for "${folderName}". Restarting scan to initialize extensions cleanly.`
+      )
       setTimeout(() => {
         void rescanExtensions()
       }, 100)
@@ -242,7 +264,7 @@ function registerExtensionByType(
   extId: string,
   folderName: string,
   itemPath: string,
-  spawnExt: typeof spawnExtension,
+  spawnExt: typeof spawnExtension
 ): void {
   const { type, entry } = manifest
 
@@ -307,70 +329,12 @@ function registerExtensionByType(
   }
 }
 
-export async function rescanExtensions(): Promise<void> {
-  clearWatchers()
-  for (const [, worker] of activeWorkers) {
-    await worker.terminate()
-  }
-  activeWorkers.clear()
-  await scanExtensions()
-  getMainWindow()?.webContents.reload()
-}
+workerExitListeners.add(onExtensionWorkerExit)
 
-function clearWatchers(): void {
-  for (const watcher of activeWatchers) {
-    try {
-      watcher.close()
-    } catch {}
-  }
-  activeWatchers.clear()
-}
-
-function startExtensionWatcher(): void {
-  if (!import.meta.env.DEV) return
-  if (!fs.existsSync(EXTENSION_DIR)) return
-
-  clearWatchers()
-
-  const skipDirs = new Set(['node_modules', '.git'])
-
-  // Resolve symbolic link to watch the real directory
-  let resolvedDir = EXTENSION_DIR
-  try {
-    resolvedDir = fs.realpathSync(EXTENSION_DIR)
-  } catch (err) {
-    log.error(`Failed to resolve real path of ${EXTENSION_DIR}:`, err)
-  }
-
-  const watchRecursive = (dir: string) => {
-    try {
-      const watcher = fs.watch(dir, { recursive: false }, () => {
-        if (watchDebounce) clearTimeout(watchDebounce)
-        watchDebounce = setTimeout(() => {
-          log.info('Extension directory changed — rescanning')
-          void rescanExtensions()
-        }, 500)
-      })
-      activeWatchers.add(watcher)
-    } catch (err) {
-      log.error(`Failed to watch directory: ${dir}`, err)
-    }
-
-    try {
-      const items = fs.readdirSync(dir)
-      for (const item of items) {
-        if (skipDirs.has(item)) continue
-        const fullPath = path.join(dir, item)
-        if (fs.existsSync(fullPath) && fs.statSync(fullPath).isDirectory()) {
-          watchRecursive(fullPath)
-        }
-      }
-    } catch {}
-  }
-
-  log.info(`Watching extension directory recursively: ${resolvedDir} (resolved from ${EXTENSION_DIR})`)
-  watchRecursive(resolvedDir)
-}
+workerRegistryErrorListeners.add((extId) => {
+  log.info(`Extension "${extId}" failed to register — scheduling restart`)
+  scheduleWorkerRestart(extId)
+})
 
 function promptTrustPublisherKey(extensionId: string, publicKeyPem: string): boolean {
   if (process.env.NODE_ENV === 'test') {
@@ -547,8 +511,12 @@ export async function scanExtensions(): Promise<void> {
       // Security check: Scan for forbidden Node.js built-in imports
       const violations = scanDirectoryForNodeImports(itemPath)
       if (violations.length > 0) {
-        const details = violations.map(v => `${path.basename(v.file)}: imports ${v.imports.join(', ')}`).join('; ')
-        throw new Error(`Security Violation: Extension imports forbidden Node.js built-in module(s) (${details})`)
+        const details = violations
+          .map((v) => `${path.basename(v.file)}: imports ${v.imports.join(', ')}`)
+          .join('; ')
+        throw new Error(
+          `Security Violation: Extension imports forbidden Node.js built-in module(s) (${details})`
+        )
       }
 
       const extId = manifest.id || folderName
@@ -603,7 +571,9 @@ export async function scanExtensions(): Promise<void> {
             `Extension "${extId}" default locale "${manifest.locales.default}" has no translation file — i18n will not work`
           )
         }
-        log.info(`Extension "${extId}" supports locales: [${manifest.locales.supported.join(', ')}], default: ${manifest.locales.default}`)
+        log.info(
+          `Extension "${extId}" supports locales: [${manifest.locales.supported.join(', ')}], default: ${manifest.locales.default}`
+        )
       }
 
       registerExtension(loaded)

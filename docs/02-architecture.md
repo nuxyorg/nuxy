@@ -67,11 +67,11 @@ Because the frontend also runs in Chromium with `contextIsolation: true` and `sa
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Data flow between processes | [03-data-flow.md](./03-data-flow.md) | IPC message lifecycle |
-| Module breakdown | [04-modules.md](./04-modules.md) | Per-module responsibilities |
-| Plugin system deep dive | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Extension loading sequence and CoreContext proxy |
-| Frontend rendering and UI zones | [17-frontend-extensions.md](./17-frontend-extensions.md) | How extension UIs mount into the React canvas |
-| Kernel audit and path fixes | [electron-fix-plan.md](./electron-fix-plan.md) | Canonical paths and completed remediation phases |
-| Monorepo layout reference | [structure.md](./structure.md) | File structure and workspace boundaries |
+| Topic                           | Document                                                     | Notes                                            |
+| ------------------------------- | ------------------------------------------------------------ | ------------------------------------------------ |
+| Data flow between processes     | [03-data-flow.md](./03-data-flow.md)                         | IPC message lifecycle                            |
+| Module breakdown                | [04-modules.md](./04-modules.md)                             | Per-module responsibilities                      |
+| Plugin system deep dive         | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Extension loading sequence and CoreContext proxy |
+| Frontend rendering and UI zones | [17-frontend-extensions.md](./17-frontend-extensions.md)     | How extension UIs mount into the React canvas    |
+| Kernel audit and path fixes     | [electron-fix-plan.md](./electron-fix-plan.md)               | Canonical paths and completed remediation phases |
+| Monorepo layout reference       | [structure.md](./structure.md)                               | File structure and workspace boundaries          |

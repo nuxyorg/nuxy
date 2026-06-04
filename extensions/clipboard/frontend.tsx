@@ -1,5 +1,10 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.clipboard'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import type { ClipboardItem } from './types.ts'
 import { useClipboardHistory } from './hooks/useClipboardHistory.ts'
 import { useClipboardActions } from './hooks/useClipboardActions.ts'
@@ -16,6 +21,7 @@ interface Props {
 
 export default function ClipboardView({ query }: Props) {
   const { TwoPanel } = window.UI || {}
+  const { t } = _useTranslation(EXT_ID)
 
   const { items, setItems } = useClipboardHistory()
   const [selectedIndex, setSelectedIndex] = React.useState(-1)
@@ -37,12 +43,13 @@ export default function ClipboardView({ query }: Props) {
 
   useOmniBarSync(selectedIndex)
 
-  const { copiedId, handleCopy, handleCopyFile, handlePin, handleUnpin, handleDelete } = useClipboardActions({
-    filteredItems,
-    searchQuery,
-    setItems,
-    setSelectedIndex,
-  })
+  const { copiedId, handleCopy, handleCopyFile, handlePin, handleUnpin, handleDelete } =
+    useClipboardActions({
+      filteredItems,
+      searchQuery,
+      setItems,
+      setSelectedIndex,
+    })
 
   const { imageDimensions, fileExists } = useSelectedItemMeta({ selectedIndex, filteredItems })
 
@@ -51,6 +58,7 @@ export default function ClipboardView({ query }: Props) {
     selectedIndex,
     setSelectedIndex,
     handlers: { handleCopy, handleCopyFile, handleDelete, handlePin, handleUnpin },
+    t,
   })
 
   const selectedItem = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
@@ -66,9 +74,7 @@ export default function ClipboardView({ query }: Props) {
     />
   )
 
-  const rightPanel = (
-    <ClipboardRightPanel item={selectedItem} imageDimensions={imageDimensions} />
-  )
+  const rightPanel = <ClipboardRightPanel item={selectedItem} imageDimensions={imageDimensions} />
 
   return (
     <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
@@ -86,7 +92,14 @@ export default function ClipboardView({ query }: Props) {
           >
             {leftPanel}
           </div>
-          <div style={{ flex: '1 1 50%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div
+            style={{
+              flex: '1 1 50%',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+            }}
+          >
             {rightPanel}
           </div>
         </div>

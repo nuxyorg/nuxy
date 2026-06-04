@@ -240,15 +240,15 @@ See [Security & Strict Isolation](./10-security.md) for the full threat model an
 
 ## 9. Related documentation
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Module layout and manifest example | [04-modules.md](./04-modules.md) | Extension folder structure |
-| CoreContext and IPC contracts | [05-api-design.md](./05-api-design.md) | IpcResponse wrapper, Zod validation pattern |
-| Isolation, chroot, permission prompts | [10-security.md](./10-security.md) | Full threat model and consent flow |
-| Tool / Provider / Orchestrator roles | [16-omni-input-system.md](./16-omni-input-system.md) | Capability flags and schema validation |
-| UI loading and omni bar events | [17-frontend-extensions.md](./17-frontend-extensions.md) | Canvas zones and shortcut management |
-| Plugin system and CoreContext proxy | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Thread isolation and MessagePort detail |
-| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) | Implemented vs planned feature tracker |
+| Topic                                 | Document                                                     | Notes                                       |
+| ------------------------------------- | ------------------------------------------------------------ | ------------------------------------------- |
+| Module layout and manifest example    | [04-modules.md](./04-modules.md)                             | Extension folder structure                  |
+| CoreContext and IPC contracts         | [05-api-design.md](./05-api-design.md)                       | IpcResponse wrapper, Zod validation pattern |
+| Isolation, chroot, permission prompts | [10-security.md](./10-security.md)                           | Full threat model and consent flow          |
+| Tool / Provider / Orchestrator roles  | [16-omni-input-system.md](./16-omni-input-system.md)         | Capability flags and schema validation      |
+| UI loading and omni bar events        | [17-frontend-extensions.md](./17-frontend-extensions.md)     | Canvas zones and shortcut management        |
+| Plugin system and CoreContext proxy   | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Thread isolation and MessagePort detail     |
+| Feature implementation status         | [DOCUMENTATION.md](./DOCUMENTATION.md)                       | Implemented vs planned feature tracker      |
 
 ---
 

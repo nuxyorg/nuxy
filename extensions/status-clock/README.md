@@ -18,6 +18,7 @@ Status Clock is a lightweight background helper that injects a non-interactive c
 ## Extension Type
 
 ### `helper`
+
 Invisible to the user in the tool list. Attaches itself to the shell on the `nuxy-shell-mounted` event and ticks independently in the background. Re-reads settings whenever a `nuxy-settings-updated` event is dispatched for this extension ID.
 
 ---
@@ -26,20 +27,20 @@ Invisible to the user in the tool list. Attaches itself to the shell on the `nux
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `format` | select | `24h` | Time display format: `24h` (24-hour) or `12h` (12-hour with AM/PM) |
-| `showSeconds` | toggle | `true` | Whether to show the seconds component in the clock |
+| Key           | Type   | Default | Description                                                        |
+| ------------- | ------ | ------- | ------------------------------------------------------------------ |
+| `format`      | select | `24h`   | Time display format: `24h` (24-hour) or `12h` (12-hour with AM/PM) |
+| `showSeconds` | toggle | `true`  | Whether to show the seconds component in the clock                 |
 
 ---
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 All platforms supported by Nuxy. No external dependencies.
 

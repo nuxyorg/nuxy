@@ -116,10 +116,16 @@ export default defineConfig({
         }
 
         server.middlewares.use('/api/invoke', (req, res) => {
-          if (req.method !== 'POST') { res.statusCode = 405; res.end(); return }
+          if (req.method !== 'POST') {
+            res.statusCode = 405
+            res.end()
+            return
+          }
 
           let body = ''
-          req.on('data', (chunk: Buffer) => { body += chunk })
+          req.on('data', (chunk: Buffer) => {
+            body += chunk
+          })
           req.on('end', async () => {
             await ensureInit()
             try {
@@ -127,11 +133,13 @@ export default defineConfig({
               const handler = handlers[channel]
               const data = handler ? await handler(payload) : undefined
               res.setHeader('Content-Type', 'application/json')
-              res.end(JSON.stringify({
-                success: true,
-                data: data !== undefined ? data : null,
-                hasHandler: !!handler,
-              }))
+              res.end(
+                JSON.stringify({
+                  success: true,
+                  data: data !== undefined ? data : null,
+                  hasHandler: !!handler,
+                })
+              )
             } catch (err) {
               res.setHeader('Content-Type', 'application/json')
               res.end(JSON.stringify({ success: false, error: String(err) }))

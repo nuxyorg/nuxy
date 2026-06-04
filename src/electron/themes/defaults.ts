@@ -18,7 +18,7 @@ export const DEFAULT_DARK_THEME: ThemeDefinition = {
     'syntax-peach': '#ff8b5a',
     'syntax-green': '#CCFF2D',
     'scrollbar-thumb': 'rgba(255, 255, 255, 0.15)',
-    'scrollbar-thumb-hover': 'rgba(255, 255, 255, 0.25)'
+    'scrollbar-thumb-hover': 'rgba(255, 255, 255, 0.25)',
   },
   tokens: {
     'space-px': '1px',
@@ -38,8 +38,8 @@ export const DEFAULT_DARK_THEME: ThemeDefinition = {
     'radius-sm': '4px',
     'radius-md': '6px',
     'radius-lg': '8px',
-    'radius-xl': '12px'
-  }
+    'radius-xl': '12px',
+  },
 }
 
 export const DEFAULT_LIGHT_THEME: ThemeDefinition = {
@@ -60,7 +60,50 @@ export const DEFAULT_LIGHT_THEME: ThemeDefinition = {
     'syntax-peach': '#F97316',
     'syntax-green': '#16A34A',
     'scrollbar-thumb': 'rgba(0, 0, 0, 0.15)',
-    'scrollbar-thumb-hover': 'rgba(0, 0, 0, 0.25)'
+    'scrollbar-thumb-hover': 'rgba(0, 0, 0, 0.25)',
+    // Semantic — Text
+    text: '#18181B',
+    'text-primary': '#18181B',
+    'color-text': '#18181B',
+    'text-secondary': 'rgba(0, 0, 0, 0.65)',
+    'text-muted': 'rgba(0, 0, 0, 0.45)',
+    'color-text-muted': 'rgba(0, 0, 0, 0.45)',
+    'text-dim': 'rgba(0, 0, 0, 0.3)',
+    'text-subtle': 'rgba(0, 0, 0, 0.35)',
+    'text-accent': '#6366f1',
+    'text-on-accent': '#fff',
+    error: '#DC2626',
+    // Semantic — Surfaces
+    'surface-overlay': 'rgba(0, 0, 0, 0.35)',
+    'surface-raised': 'rgba(0, 0, 0, 0.04)',
+    'surface-inset': 'rgba(0, 0, 0, 0.06)',
+    'surface-accent': 'rgba(99, 102, 241, 0.12)',
+    'surface-accent-subtle': 'rgba(99, 102, 241, 0.08)',
+    'surface-1': '#FFFFFF',
+    'surface-2': '#E4E4E7',
+    'bg-subtle': 'rgba(0, 0, 0, 0.04)',
+    'color-surface': 'rgba(0, 0, 0, 0.03)',
+    'color-preview-bg': 'rgba(0, 0, 0, 0.05)',
+    // Semantic — Borders
+    border: 'rgba(0, 0, 0, 0.12)',
+    'border-accent': 'rgba(99, 102, 241, 0.35)',
+    'border-default': 'rgba(0, 0, 0, 0.15)',
+    'border-color': 'rgba(0, 0, 0, 0.12)',
+    'color-border': 'rgba(0, 0, 0, 0.12)',
+    // Semantic — Accent
+    accent: '#6366f1',
+    'accent-fg': '#fff',
+    'accent-fg-muted': 'rgba(255, 255, 255, 0.7)',
+    'accent-subtle': 'rgba(99, 102, 241, 0.12)',
+    'color-accent': 'rgba(99, 102, 241, 0.9)',
+    hover: 'rgba(0, 0, 0, 0.05)',
+    // Semantic — Status
+    'color-danger': '#DC2626',
+    'color-danger-bg': 'rgba(220, 50, 50, 0.06)',
+    'color-danger-border': 'rgba(220, 50, 50, 0.2)',
+    'color-warning': '#D97706',
+    'color-info': '#2563EB',
+    'color-success': '#16A34A',
   },
   tokens: {
     'space-px': '1px',
@@ -80,6 +123,6 @@ export const DEFAULT_LIGHT_THEME: ThemeDefinition = {
     'radius-sm': '4px',
     'radius-md': '6px',
     'radius-lg': '8px',
-    'radius-xl': '12px'
-  }
+    'radius-xl': '12px',
+  },
 }

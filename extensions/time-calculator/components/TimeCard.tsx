@@ -10,7 +10,8 @@ export function TimeCard({ meta }: Props) {
   const leftText = meta.left ? meta.left.text : meta.sourceText || meta.sourceTime
   const leftBadge = meta.left
     ? meta.left.badge
-    : meta.sourceTime + (meta.sourceLabel && meta.sourceLabel !== 'Local' ? ` · ${meta.sourceLabel}` : '')
+    : meta.sourceTime +
+      (meta.sourceLabel && meta.sourceLabel !== 'Local' ? ` · ${meta.sourceLabel}` : '')
   const rightText = meta.right ? meta.right.text : meta.destTime
   const rightBadge = meta.right ? meta.right.badge : `${meta.destLabel}, ${meta.destTzLabel}`
 
@@ -26,7 +27,11 @@ export function TimeCard({ meta }: Props) {
       to: React.createElement(
         React.Fragment,
         null,
-        React.createElement('div', { className: 'tc-panel__time tc-panel__time--large' }, rightText),
+        React.createElement(
+          'div',
+          { className: 'tc-panel__time tc-panel__time--large' },
+          rightText
+        ),
         React.createElement('div', { className: 'tc-panel__badge' }, rightBadge)
       ),
     })

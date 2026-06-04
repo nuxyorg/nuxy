@@ -8,6 +8,7 @@ interface Params {
   emojiMap: Map<string, EmojiEntry> | null
   favorites: string[]
   query: string
+  favoritesLabel?: string
 }
 
 interface NavSection {
@@ -25,11 +26,17 @@ interface EmojiDerivedData {
   navSections: NavSection[]
 }
 
-export function useEmojiDerivedData({ emojiCategories, emojiMap, favorites, query }: Params): EmojiDerivedData {
+export function useEmojiDerivedData({
+  emojiCategories,
+  emojiMap,
+  favorites,
+  query,
+  favoritesLabel,
+}: Params): EmojiDerivedData {
   const allCategories = React.useMemo<EmojiCategory[]>(() => {
     if (!emojiCategories || !emojiMap) return []
-    return buildAllCategories(emojiCategories, emojiMap, favorites)
-  }, [favorites, emojiCategories, emojiMap])
+    return buildAllCategories(emojiCategories, emojiMap, favorites, favoritesLabel)
+  }, [favorites, emojiCategories, emojiMap, favoritesLabel])
 
   const searchResults = React.useMemo(
     () => (emojiCategories ? searchEmojis(query, emojiCategories) : null),
@@ -48,7 +55,12 @@ export function useEmojiDerivedData({ emojiCategories, emojiMap, favorites, quer
     () =>
       allCategories
         .filter((cat) => cat.emojis.length > 0)
-        .map((cat) => ({ id: cat.id, label: cat.label, icon: cat.icon, itemCount: cat.emojis.length })),
+        .map((cat) => ({
+          id: cat.id,
+          label: cat.label,
+          icon: cat.icon,
+          itemCount: cat.emojis.length,
+        })),
     [allCategories]
   )
 

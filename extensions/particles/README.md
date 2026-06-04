@@ -18,17 +18,18 @@ Particles is a purely visual helper extension. It injects a full-screen canvas o
 ## Extension Type
 
 ### `helper`
+
 Invisible to the user. Runs entirely in the renderer as a frontend-only extension. The canvas is mounted once when the shell boots and stays active for the lifetime of the window.
 
 ---
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 The animation uses the CSS custom property `--color-accent` for particle colour, so it automatically adapts to the active theme.
 

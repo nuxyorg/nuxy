@@ -1,5 +1,10 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.settings'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import type { UseTwoPanelNavResult } from '@nuxy/ui'
 import { useSettingsData } from './hooks/useSettingsData.ts'
 import { useSettingsMeta } from './hooks/useSettingsMeta.ts'
@@ -27,6 +32,7 @@ interface Props {
 
 export default function SettingsView({ query: _query }: Props) {
   const { TwoPanel } = window.UI || {}
+  const { t } = _useTranslation(EXT_ID)
 
   const [selectedRow, setSelectedRow] = React.useState<number>(-1)
   const [activeSelect, setActiveSelect] = React.useState<string | null>(null)
@@ -39,6 +45,9 @@ export default function SettingsView({ query: _query }: Props) {
     systemFonts: data.systemFonts,
     extSchemas: data.extSchemas,
     installedExtensions: data.installedExtensions,
+    ollamaModelOptions: data.ollamaModelOptions,
+    preferredLanguages: data.settings.preferredLanguages,
+    t,
   })
   const actions = useSettingsActions({
     settings: data.settings,
@@ -82,6 +91,7 @@ export default function SettingsView({ query: _query }: Props) {
     setSelectFocused,
     inputRefs,
     actions,
+    t,
   })
 
   const nav = _useTwoPanelNav({
@@ -136,6 +146,7 @@ export default function SettingsView({ query: _query }: Props) {
       inputRefs={inputRefs}
       rightPanelRef={rightPanelRef}
       stateRef={stateRef}
+      languageHintText={t('language.hint')}
       onItemSelect={actions.handleRowSelect}
       onSelectOpen={(rowKey, globalIdx, focusedIdx) => {
         setSelectedRow(globalIdx)

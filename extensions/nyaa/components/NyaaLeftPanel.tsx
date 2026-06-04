@@ -10,26 +10,45 @@ interface Props {
   selectedIndex: number
   copiedId: string | null
   onSelect: (index: number) => void
+  multiSelectMode: boolean
+  checkedIds: Set<string>
+  onToggleCheck: (id: string) => void
+  t: (key: string) => string
 }
 
-export function NyaaLeftPanel({ results, loading, error, query, selectedIndex, copiedId, onSelect }: Props) {
-  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState, Alert } = window.UI || {}
+export function NyaaLeftPanel({
+  results,
+  loading,
+  error,
+  query,
+  selectedIndex,
+  copiedId,
+  onSelect,
+  multiSelectMode,
+  checkedIds,
+  onToggleCheck,
+  t,
+}: Props) {
+  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState, Alert } =
+    window.UI || {}
 
   if (!query.trim()) {
     return EmptyState ? (
-      <EmptyState message="Search nyaa.si" hint="Type a title to search for torrents." />
+      <EmptyState message={t('search.empty.message')} hint={t('search.empty.hint')} />
     ) : (
       <div style={{ padding: 'var(--space-5)', opacity: 0.5, fontSize: 'var(--font-sm)' }}>
-        Type a title to search for torrents.
+        {t('search.empty.hint')}
       </div>
     )
   }
 
   if (loading) {
     return EmptyState ? (
-      <EmptyState message="Searching..." hint={`Fetching results from nyaa.si`} />
+      <EmptyState message={t('search.loading.message')} hint={t('search.loading.hint')} />
     ) : (
-      <div style={{ padding: 'var(--space-5)', opacity: 0.5, fontSize: 'var(--font-sm)' }}>Searching...</div>
+      <div style={{ padding: 'var(--space-5)', opacity: 0.5, fontSize: 'var(--font-sm)' }}>
+        {t('search.loading.message')}
+      </div>
     )
   }
 
@@ -37,7 +56,13 @@ export function NyaaLeftPanel({ results, loading, error, query, selectedIndex, c
     return Alert ? (
       <Alert variant="error">{error}</Alert>
     ) : (
-      <div style={{ padding: 'var(--space-5)', color: 'var(--color-danger)', fontSize: 'var(--font-sm)' }}>
+      <div
+        style={{
+          padding: 'var(--space-5)',
+          color: 'var(--color-danger)',
+          fontSize: 'var(--font-sm)',
+        }}
+      >
         {error}
       </div>
     )
@@ -45,9 +70,11 @@ export function NyaaLeftPanel({ results, loading, error, query, selectedIndex, c
 
   if (results.length === 0) {
     return EmptyState ? (
-      <EmptyState message="No results." hint={`Nothing found for "${query}"`} />
+      <EmptyState message={t('search.noResults.message')} hint={t('search.noResults.hint')} />
     ) : (
-      <div style={{ padding: 'var(--space-5)', opacity: 0.5, fontSize: 'var(--font-sm)' }}>No results found.</div>
+      <div style={{ padding: 'var(--space-5)', opacity: 0.5, fontSize: 'var(--font-sm)' }}>
+        {t('search.noResults.message')}
+      </div>
     )
   }
 
@@ -56,13 +83,54 @@ export function NyaaLeftPanel({ results, loading, error, query, selectedIndex, c
       {results.map((item, idx) => {
         const isActive = idx === selectedIndex
         const isCopied = copiedId === item.id
-        const textVariant =
-          isCopied ? 'success' : item.status === 'success' ? 'success' : item.status === 'danger' ? 'error' : 'default'
+        const isChecked = checkedIds.has(item.id)
+        const textVariant = isCopied
+          ? 'success'
+          : item.status === 'success'
+            ? 'success'
+            : item.status === 'danger'
+              ? 'error'
+              : 'default'
+
+        const handleClick = () => {
+          if (multiSelectMode) {
+            onToggleCheck(item.id)
+          } else {
+            onSelect(idx)
+          }
+        }
 
         return (
-          <ListItem key={item.id} active={isActive} onClick={() => onSelect(idx)}>
+          <ListItem key={item.id} active={isActive} onClick={handleClick}>
+            {multiSelectMode && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  paddingRight: 'var(--space-2)',
+                  flexShrink: 0,
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={() => onToggleCheck(item.id)}
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    width: '14px',
+                    height: '14px',
+                    cursor: 'pointer',
+                    accentColor: 'var(--color-accent, var(--color-primary))',
+                    flexShrink: 0,
+                  }}
+                  aria-label={item.title}
+                />
+              </div>
+            )}
             <ListItemBody>
-              <ListItemText variant={textVariant}>{isCopied ? 'Copied!' : item.title}</ListItemText>
+              <ListItemText variant={textVariant}>
+                {isCopied ? t('item.copied') : item.title}
+              </ListItemText>
               <ListItemMeta>
                 {item.seeds}S / {item.leeches}L · {item.size}
               </ListItemMeta>

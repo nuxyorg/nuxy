@@ -8,10 +8,13 @@ export function useShortcutOverlay(): void {
     const el = document.createElement('div')
     el.id = 'nuxy-shortcut-overlay'
     el.style.cssText = [
-      'position:fixed', 'inset:0', 'display:none',
-      'align-items:center', 'justify-content:center',
+      'position:fixed',
+      'inset:0',
+      'display:none',
+      'align-items:center',
+      'justify-content:center',
       'background:var(--overlay-backdrop, rgba(0,0,0,0.75))',
-      'z-index:99999'
+      'z-index:99999',
     ].join(';')
 
     const card = document.createElement('div')
@@ -23,12 +26,13 @@ export function useShortcutOverlay(): void {
       'max-width:480px',
       'color:var(--color-text, #fff)',
       'font-family:var(--font-sans, system-ui)',
-      'box-shadow:0 8px 32px rgba(0,0,0,0.5)'
+      'box-shadow:0 8px 32px rgba(0,0,0,0.5)',
     ].join(';')
 
     const title = document.createElement('h2')
     title.textContent = 'Keyboard Shortcuts'
-    title.style.cssText = 'margin:0 0 16px;font-size:var(--font-size-lg, 16px);font-weight:600;color:var(--color-text, #fff)'
+    title.style.cssText =
+      'margin:0 0 16px;font-size:var(--font-size-lg, 16px);font-weight:600;color:var(--color-text, #fff)'
     card.appendChild(title)
 
     const shortcuts = [
@@ -41,7 +45,8 @@ export function useShortcutOverlay(): void {
 
     for (const { key, desc } of shortcuts) {
       const row = document.createElement('div')
-      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:var(--space-2, 8px) 0;border-bottom:1px solid var(--border-subtle, rgba(255,255,255,0.08))'
+      row.style.cssText =
+        'display:flex;align-items:center;justify-content:space-between;padding:var(--space-2, 8px) 0;border-bottom:1px solid var(--border-subtle, rgba(255,255,255,0.08))'
 
       const keyEl = document.createElement('kbd')
       keyEl.textContent = key
@@ -52,12 +57,13 @@ export function useShortcutOverlay(): void {
         'padding:2px 8px',
         'font-family:var(--font-mono, monospace)',
         'font-size:var(--font-size-sm, 12px)',
-        'color:var(--color-text, #fff)'
+        'color:var(--color-text, #fff)',
       ].join(';')
 
       const descEl = document.createElement('span')
       descEl.textContent = desc
-      descEl.style.cssText = 'color:var(--color-text-muted, rgba(255,255,255,0.6));font-size:var(--font-size-sm, 13px)'
+      descEl.style.cssText =
+        'color:var(--color-text-muted, rgba(255,255,255,0.6));font-size:var(--font-size-sm, 13px)'
 
       row.appendChild(keyEl)
       row.appendChild(descEl)
@@ -66,7 +72,8 @@ export function useShortcutOverlay(): void {
 
     const closeHint = document.createElement('p')
     closeHint.textContent = 'Press Esc or click outside to close'
-    closeHint.style.cssText = 'margin:12px 0 0;font-size:var(--font-size-xs, 11px);color:var(--color-text-muted, rgba(255,255,255,0.4));text-align:center'
+    closeHint.style.cssText =
+      'margin:12px 0 0;font-size:var(--font-size-xs, 11px);color:var(--color-text-muted, rgba(255,255,255,0.4));text-align:center'
     card.appendChild(closeHint)
 
     el.appendChild(card)
@@ -100,17 +107,23 @@ export function useShortcutOverlay(): void {
   }
 
   function registerAction(): void {
-    window.dispatchEvent(new CustomEvent('nuxy-register-actions', {
-      detail: [{
-        id: 'shortcut-overlay.show',
-        label: 'Keyboard Shortcuts',
-        handler: () => showOverlay(),
-      }]
-    }))
+    window.dispatchEvent(
+      new CustomEvent('nuxy-register-actions', {
+        detail: [
+          {
+            id: 'shortcut-overlay.show',
+            label: 'Keyboard Shortcuts',
+            handler: () => showOverlay(),
+          },
+        ],
+      })
+    )
   }
 
   React.useEffect(() => {
-    const onMounted = () => { setTimeout(registerAction, 100) }
+    const onMounted = () => {
+      setTimeout(registerAction, 100)
+    }
 
     if (document.querySelector('.nuxy-shell-container')) setTimeout(registerAction, 100)
 

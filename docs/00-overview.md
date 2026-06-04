@@ -35,10 +35,10 @@ Because Nuxy executes third-party code from the filesystem, it implements dracon
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Architecture deep dive | [02-architecture.md](./02-architecture.md) | Kernel, thread isolation, React canvas |
-| Plugin system philosophy | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Extension loading sequence and CoreContext |
-| Omni-input arbitration | [16-omni-input-system.md](./16-omni-input-system.md) | Tool / Provider / Orchestrator roles |
-| MVP execution plan | [19-mvp-roadmap.md](./19-mvp-roadmap.md) | Sprint-by-sprint minimal scope |
-| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) | Implemented vs planned tracker |
+| Topic                         | Document                                                     | Notes                                      |
+| ----------------------------- | ------------------------------------------------------------ | ------------------------------------------ |
+| Architecture deep dive        | [02-architecture.md](./02-architecture.md)                   | Kernel, thread isolation, React canvas     |
+| Plugin system philosophy      | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Extension loading sequence and CoreContext |
+| Omni-input arbitration        | [16-omni-input-system.md](./16-omni-input-system.md)         | Tool / Provider / Orchestrator roles       |
+| MVP execution plan            | [19-mvp-roadmap.md](./19-mvp-roadmap.md)                     | Sprint-by-sprint minimal scope             |
+| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md)                       | Implemented vs planned tracker             |

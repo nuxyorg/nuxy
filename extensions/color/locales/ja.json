@@ -1,0 +1,15 @@
+{
+  "meta": { "name": "カラーピッカー", "direction": "ltr" },
+  "tool.name": "カラーピッカー",
+  "empty.history": "保存された色がありません",
+  "empty.history.hint": "色を入力してSを押して保存",
+  "empty.hint": "hex、rgb()、またはhsl()の値を入力してください",
+  "action.navigate": "ナビゲート",
+  "action.copy": "コピー",
+  "action.save": "保存",
+  "action.delete": "削除",
+  "label.hex": "HEX",
+  "label.rgb": "RGB",
+  "label.hsl": "HSL",
+  "error.invalid": "無効な色"
+}

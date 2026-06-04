@@ -21,6 +21,7 @@ interface Params {
   searchResults: EmojiEntry[] | null
   navRef: React.MutableRefObject<NavRef | null>
   handlers: Handlers
+  t: (key: string) => string
 }
 
 export function buildRightPanelActions({
@@ -31,6 +32,7 @@ export function buildRightPanelActions({
   searchResults,
   navRef,
   handlers,
+  t,
 }: Params) {
   const { copyEmoji, toggleFavorite } = handlers
 
@@ -108,14 +110,17 @@ export function buildRightPanelActions({
             prevCat = cat
             prevSectionStart = 0
             for (let j = 0; j < i; j++) {
-              if (allCategories[j].emojis.length > 0) prevSectionStart += allCategories[j].emojis.length
+              if (allCategories[j].emojis.length > 0)
+                prevSectionStart += allCategories[j].emojis.length
             }
             break
           }
         }
         if (prevCat) {
           const prevLastRow = Math.floor((prevCat.emojis.length - 1) / COLS)
-          setSelectedIdx(prevSectionStart + Math.min(prevCat.emojis.length - 1, prevLastRow * COLS + col))
+          setSelectedIdx(
+            prevSectionStart + Math.min(prevCat.emojis.length - 1, prevLastRow * COLS + col)
+          )
         }
       }
     } else {
@@ -142,13 +147,13 @@ export function buildRightPanelActions({
   }
 
   return [
-    { key: 'ArrowLeft', label: 'Move left', handler: () => moveFocusRight(-1) },
-    { key: 'ArrowRight', label: 'Move right', handler: () => moveFocusRight(1) },
-    { key: 'ArrowUp', label: 'Move up', hint: '↑↓', handler: () => moveFocusUpDown(-1) },
-    { key: 'ArrowDown', label: 'Move down', handler: () => moveFocusUpDown(1) },
+    { key: 'ArrowLeft', label: t('actions.moveLeft'), handler: () => moveFocusRight(-1) },
+    { key: 'ArrowRight', label: t('actions.moveRight'), handler: () => moveFocusRight(1) },
+    { key: 'ArrowUp', label: t('actions.moveUp'), hint: '↑↓', handler: () => moveFocusUpDown(-1) },
+    { key: 'ArrowDown', label: t('actions.moveDown'), handler: () => moveFocusUpDown(1) },
     {
       key: 'Enter',
-      label: 'Copy emoji',
+      label: t('actions.copyEmoji'),
       hint: '↵',
       handler: () => {
         const em = visibleEmojis[selectedIdx]
@@ -158,7 +163,7 @@ export function buildRightPanelActions({
     {
       key: 'f',
       modifiers: ['ctrl'],
-      label: 'Toggle favorite',
+      label: t('actions.toggleFavorite'),
       handler: () => {
         const em = visibleEmojis[selectedIdx]
         if (em) toggleFavorite(em.e)

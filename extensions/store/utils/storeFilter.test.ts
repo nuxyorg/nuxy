@@ -20,8 +20,21 @@ const makeExt = (overrides: Partial<ExtensionListItem>): ExtensionListItem => ({
 
 const TOOL = makeExt({ id: 'com.test.tool', name: 'My Tool', type: 'tool' })
 const THEME = makeExt({ id: 'com.test.theme', name: 'Dark Theme', type: 'theme' })
-const INSTALLED = makeExt({ id: 'com.test.installed', name: 'Installed Ext', type: 'tool', installed: true, installedVersion: '1.0.0' })
-const UPDATABLE = makeExt({ id: 'com.test.update', name: 'Update Me', type: 'tool', installed: true, installedVersion: '0.9.0', canUpdate: true })
+const INSTALLED = makeExt({
+  id: 'com.test.installed',
+  name: 'Installed Ext',
+  type: 'tool',
+  installed: true,
+  installedVersion: '1.0.0',
+})
+const UPDATABLE = makeExt({
+  id: 'com.test.update',
+  name: 'Update Me',
+  type: 'tool',
+  installed: true,
+  installedVersion: '0.9.0',
+  canUpdate: true,
+})
 
 describe('filterExtensions', () => {
   const all = [TOOL, THEME, INSTALLED, UPDATABLE]

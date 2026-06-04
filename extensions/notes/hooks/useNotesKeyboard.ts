@@ -21,6 +21,7 @@ interface Params {
   setBody: React.Dispatch<React.SetStateAction<string>>
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>
   handlers: Handlers
+  t: (key: string) => string
 }
 
 export function useNotesKeyboard({
@@ -34,6 +35,7 @@ export function useNotesKeyboard({
   setBody,
   setEditMode,
   handlers,
+  t,
 }: Params): void {
   const { handleNew, handleSave, handleDelete, handleRecord, handleStopRecord } = handlers
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
@@ -44,7 +46,7 @@ export function useNotesKeyboard({
         {
           key: 'n',
           modifiers: ['ctrl'] as const,
-          label: 'New Note',
+          label: t('actions.newNote'),
           hint: '⌃N',
           handler: () => {
             void handleNew()
@@ -53,7 +55,7 @@ export function useNotesKeyboard({
         {
           key: 's',
           modifiers: ['ctrl'] as const,
-          label: 'Save Note',
+          label: t('actions.saveNote'),
           hint: '⌃S',
           activeOn: () => editMode && selected !== null,
           handler: () => {
@@ -62,7 +64,7 @@ export function useNotesKeyboard({
         },
         {
           key: 'Delete',
-          label: 'Delete Note',
+          label: t('actions.deleteNote'),
           hint: 'Del',
           activeOn: () => !editMode && selectedIndex > 0 && selectedIndex <= filteredNotes.length,
           handler: () => {
@@ -71,7 +73,7 @@ export function useNotesKeyboard({
         },
         {
           key: 'Enter',
-          label: 'Edit Note',
+          label: t('actions.editNote'),
           hint: '↵',
           activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex <= filteredNotes.length,
           handler: () => {
@@ -89,7 +91,7 @@ export function useNotesKeyboard({
         },
         {
           key: 'Escape',
-          label: 'Focus search / Exit edit',
+          label: t('actions.focusSearchExitEdit'),
           hint: 'Esc',
           handler: () => {
             if (editMode) {
@@ -104,7 +106,7 @@ export function useNotesKeyboard({
         },
         {
           key: 'ArrowUp',
-          label: 'Previous',
+          label: t('actions.previous'),
           allowRepeat: true,
           activeOn: () => !editMode,
           handler: () => {
@@ -121,7 +123,7 @@ export function useNotesKeyboard({
         },
         {
           key: 'ArrowDown',
-          label: 'Next',
+          label: t('actions.next'),
           allowRepeat: true,
           activeOn: () => !editMode,
           handler: () => {
@@ -140,7 +142,7 @@ export function useNotesKeyboard({
           },
         },
       ],
-      [editMode, selectedIndex, filteredNotes, selected]
+      [editMode, selectedIndex, filteredNotes, selected, t]
     )
   )
 
@@ -149,7 +151,7 @@ export function useNotesKeyboard({
     const actions: { id: string; label: string; onExecute: () => void }[] = [
       {
         id: 'notes-new',
-        label: 'New note',
+        label: t('actions.newNote'),
         onExecute: () => {
           void handleNew()
         },
@@ -159,21 +161,21 @@ export function useNotesKeyboard({
       actions.push(
         {
           id: 'notes-save',
-          label: 'Save',
+          label: t('actions.save'),
           onExecute: () => {
             void handleSave()
           },
         },
         {
           id: 'notes-delete',
-          label: 'Delete',
+          label: t('actions.delete'),
           onExecute: () => {
             void handleDelete()
           },
         },
         {
           id: 'notes-record',
-          label: recording ? 'Stop recording' : 'Record',
+          label: recording ? t('actions.stopRecording') : t('actions.record'),
           onExecute: () => {
             if (recording) handleStopRecord()
             else void handleRecord()
@@ -185,5 +187,5 @@ export function useNotesKeyboard({
     return () => {
       window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
     }
-  }, [selected, recording, editMode])
+  }, [selected, recording, editMode, t])
 }

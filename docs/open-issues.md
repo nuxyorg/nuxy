@@ -75,7 +75,7 @@ Kontrol edildi — tüm yollar zaten güncel (`src/electron/ipc/broker.ts`, `src
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
+| Topic                            | Document                                     | Notes                                            |
+| -------------------------------- | -------------------------------------------- | ------------------------------------------------ |
 | Pain points and remediation plan | [pain-points-plan.md](./pain-points-plan.md) | Phased fixes for architectural and security gaps |
-| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) | Implemented vs planned feature tracker |
+| Feature implementation status    | [DOCUMENTATION.md](./DOCUMENTATION.md)       | Implemented vs planned feature tracker           |

@@ -89,5 +89,16 @@ export function useNotesMeta({ query, notes, editMode: editModeIn }: Params): Se
     }
   }, [editMode])
 
-  return { selected, setSelected, body, setBody, editMode, setEditMode, selectedIndex, setSelectedIndex, textareaRef, filteredNotes }
+  return {
+    selected,
+    setSelected,
+    body,
+    setBody,
+    editMode,
+    setEditMode,
+    selectedIndex,
+    setSelectedIndex,
+    textareaRef,
+    filteredNotes,
+  }
 }

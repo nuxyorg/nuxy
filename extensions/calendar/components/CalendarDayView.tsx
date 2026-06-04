@@ -11,8 +11,16 @@ interface Props {
 }
 
 export function CalendarDayView({ calYear, calMonth, selectedDay, dayEvents, listIdx }: Props) {
-  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, ListItemActions, EmptyState, IconBell } =
-    window.UI || {}
+  const {
+    List,
+    ListItem,
+    ListItemBody,
+    ListItemText,
+    ListItemMeta,
+    ListItemActions,
+    EmptyState,
+    IconBell,
+  } = window.UI || {}
 
   const dayLabel = new Date(calYear, calMonth, selectedDay).toLocaleDateString(undefined, {
     weekday: 'long',

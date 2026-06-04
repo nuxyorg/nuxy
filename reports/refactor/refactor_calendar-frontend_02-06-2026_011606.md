@@ -8,22 +8,22 @@
 
 ## 1. Executive Summary
 
-| Metric | Value |
-|---|---|
-| Total lines | 1,016 |
-| Exported components | 1 (`CalendarApp`) |
-| Internal render functions | 1 (`renderMonthGrid`) |
-| Module-level utility functions | 8 |
-| `useState` calls | 16 |
-| `useEffect` calls | 8 (9 including lines with `useEffect`) |
-| `useMemo` calls | 3 |
-| `useRef` calls | 2 |
-| IPC call sites | 8 |
-| Inline `style={{}}` objects | 22 |
-| Confirmed bugs | 2 |
-| Code duplications with `calendar-utils.ts` | 4 functions |
-| **Risk level** | **MEDIUM** |
-| **Estimated refactor effort** | **3-5 days (solo)** |
+| Metric                                     | Value                                  |
+| ------------------------------------------ | -------------------------------------- |
+| Total lines                                | 1,016                                  |
+| Exported components                        | 1 (`CalendarApp`)                      |
+| Internal render functions                  | 1 (`renderMonthGrid`)                  |
+| Module-level utility functions             | 8                                      |
+| `useState` calls                           | 16                                     |
+| `useEffect` calls                          | 8 (9 including lines with `useEffect`) |
+| `useMemo` calls                            | 3                                      |
+| `useRef` calls                             | 2                                      |
+| IPC call sites                             | 8                                      |
+| Inline `style={{}}` objects                | 22                                     |
+| Confirmed bugs                             | 2                                      |
+| Code duplications with `calendar-utils.ts` | 4 functions                            |
+| **Risk level**                             | **MEDIUM**                             |
+| **Estimated refactor effort**              | **3-5 days (solo)**                    |
 
 ### Hard Constraint
 
@@ -37,47 +37,47 @@ This is the most important constraint for the refactoring plan. Sub-components, 
 
 ### 2.1 React Components
 
-| Name | Type | Lines | Line Count | Responsibility |
-|---|---|---|---|---|
-| `CalendarApp` | Default export, god component | 139–1016 | 877 | Everything: state management, data loading, keyboard routing, 4 view renders |
-| _(month grid inline)_ | Render function `renderMonthGrid()` | 601–745 | 144 | Month grid JSX + click handlers |
-| _(search list inline)_ | JSX block in `CalendarApp` | 750–802 | 52 | Search results list |
-| _(day view inline)_ | JSX block in `CalendarApp` | 808–858 | 50 | Day event list |
-| _(create view inline)_ | JSX block in `CalendarApp` | 860–950 | 90 | Create event form |
-| _(detail view inline)_ | JSX block in `CalendarApp` | 952–1013 | 61 | Edit event reminder |
+| Name                   | Type                                | Lines    | Line Count | Responsibility                                                               |
+| ---------------------- | ----------------------------------- | -------- | ---------- | ---------------------------------------------------------------------------- |
+| `CalendarApp`          | Default export, god component       | 139–1016 | 877        | Everything: state management, data loading, keyboard routing, 4 view renders |
+| _(month grid inline)_  | Render function `renderMonthGrid()` | 601–745  | 144        | Month grid JSX + click handlers                                              |
+| _(search list inline)_ | JSX block in `CalendarApp`          | 750–802  | 52         | Search results list                                                          |
+| _(day view inline)_    | JSX block in `CalendarApp`          | 808–858  | 50         | Day event list                                                               |
+| _(create view inline)_ | JSX block in `CalendarApp`          | 860–950  | 90         | Create event form                                                            |
+| _(detail view inline)_ | JSX block in `CalendarApp`          | 952–1013 | 61         | Edit event reminder                                                          |
 
 **No sub-components are extracted**. All 4 views are rendered as conditional JSX branches directly inside the god component.
 
 ### 2.2 Module-Level Utility Functions
 
-| Name | Lines | Duplicated in `calendar-utils.ts`? |
-|---|---|---|
-| `getDaysInMonth(year, month)` | 29–31 | YES — exact duplicate of `calendar-utils.ts:12` |
-| `buildGrid(year, month, weekStart)` | 33–43 | PARTIAL — returns `GridCell[]` with `monthOffset` for overflow days; `buildCalendarGrid` in utils returns `(number\|null)[]` without overflow info |
-| `shiftDays(year, month, day, delta)` | 47–55 | YES — equivalent to `navigateDays()` in utils |
-| `eventsForDay(events, year, month, day)` | 57–61 | YES — equivalent to `filterEventsByDay()` in utils |
-| `daysWithEvents(events, year, month)` | 63–70 | YES — equivalent to `getEventDays()` in utils |
-| `ipcCall(channel, payload)` | 118–124 | NO — calendar-specific wrapper |
-| `showOmniBar()` | 126–130 | NO — shell event dispatch |
-| `hideOmniBar()` | 132–136 | NO — shell event dispatch |
+| Name                                     | Lines   | Duplicated in `calendar-utils.ts`?                                                                                                                 |
+| ---------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `getDaysInMonth(year, month)`            | 29–31   | YES — exact duplicate of `calendar-utils.ts:12`                                                                                                    |
+| `buildGrid(year, month, weekStart)`      | 33–43   | PARTIAL — returns `GridCell[]` with `monthOffset` for overflow days; `buildCalendarGrid` in utils returns `(number\|null)[]` without overflow info |
+| `shiftDays(year, month, day, delta)`     | 47–55   | YES — equivalent to `navigateDays()` in utils                                                                                                      |
+| `eventsForDay(events, year, month, day)` | 57–61   | YES — equivalent to `filterEventsByDay()` in utils                                                                                                 |
+| `daysWithEvents(events, year, month)`    | 63–70   | YES — equivalent to `getEventDays()` in utils                                                                                                      |
+| `ipcCall(channel, payload)`              | 118–124 | NO — calendar-specific wrapper                                                                                                                     |
+| `showOmniBar()`                          | 126–130 | NO — shell event dispatch                                                                                                                          |
+| `hideOmniBar()`                          | 132–136 | NO — shell event dispatch                                                                                                                          |
 
 ### 2.3 Functions Defined Inside `CalendarApp`
 
-| Name | Lines | Purpose |
-|---|---|---|
-| `loadMonthEvents(year, month)` | 247–253 | IPC: fetch events for a month |
-| `loadSearchRange()` | 255–261 | IPC: fetch 6-month range for search |
-| `enterCalendarMode()` | 317–322 | Nav: omnibox → calendar/month |
-| `returnToOmnibox()` | 324–329 | Nav: calendar → omnibox |
-| `navigateBy(delta)` | 331–340 | Nav: arrow key day shift with animation trigger |
-| `enterDayView()` | 342–345 | Nav: month → day |
-| `enterCreate()` | 347–354 | Nav: → create form |
-| `enterDetail(evt)` | 356–362 | Nav: → detail view |
-| `backToMonth()` | 364–369 | Nav: day/create/detail → month |
-| `backToDay()` | 371–378 | Nav: create/detail → day |
-| `getSelectOptions(field)` | 379–381 | Lookup: options array for a select field |
-| `getSelectValue(field)` | 383–385 | Read: current value via stateRef |
-| `setSelectValue(field, val)` | 387–390 | Write: set time or reminder value |
+| Name                           | Lines   | Purpose                                         |
+| ------------------------------ | ------- | ----------------------------------------------- |
+| `loadMonthEvents(year, month)` | 247–253 | IPC: fetch events for a month                   |
+| `loadSearchRange()`            | 255–261 | IPC: fetch 6-month range for search             |
+| `enterCalendarMode()`          | 317–322 | Nav: omnibox → calendar/month                   |
+| `returnToOmnibox()`            | 324–329 | Nav: calendar → omnibox                         |
+| `navigateBy(delta)`            | 331–340 | Nav: arrow key day shift with animation trigger |
+| `enterDayView()`               | 342–345 | Nav: month → day                                |
+| `enterCreate()`                | 347–354 | Nav: → create form                              |
+| `enterDetail(evt)`             | 356–362 | Nav: → detail view                              |
+| `backToMonth()`                | 364–369 | Nav: day/create/detail → month                  |
+| `backToDay()`                  | 371–378 | Nav: create/detail → day                        |
+| `getSelectOptions(field)`      | 379–381 | Lookup: options array for a select field        |
+| `getSelectValue(field)`        | 383–385 | Read: current value via stateRef                |
+| `setSelectValue(field, val)`   | 387–390 | Write: set time or reminder value               |
 
 ---
 
@@ -85,73 +85,73 @@ This is the most important constraint for the refactoring plan. Sub-components, 
 
 ### 3.1 State Variables (16 `useState` calls)
 
-| State | Init | Lines | Concern |
-|---|---|---|---|
-| `mode` | `'omnibox'` | 158 | Core view mode |
-| `monthEnterDir` | `null` | 159 | Animation direction — transient, never reset after use |
-| `calYear` | `todayYear` | 161 | Calendar navigation |
-| `calMonth` | `todayMonth` | 162 | Calendar navigation |
-| `selectedDay` | `todayDate` | 163 | Calendar navigation |
-| `calView` | `'month'` | 164 | View routing |
-| `monthEvents` | `[]` | 166 | Remote data |
-| `searchEvents` | `[]` | 167 | Remote data |
-| `listIdx` | `-1` | 169 | List cursor |
-| `editingEvent` | `null` | 170 | Detail view subject |
-| `weekStart` | `1` | 172 | Config |
-| `defaultReminderMin` | `0` | 173 | Config — STALE CLOSURE BUG (see §5) |
-| `timeValue` | `'10'` | 176 | Create form |
-| `reminderValue` | `'0'` | 177 | Create/detail form |
-| `formFieldIdx` | `0` | 178 | Form field focus |
-| `activeSelect` | `null` | 179 | Dropdown open state |
-| `selectFocused` | `0` | 180 | Dropdown cursor |
+| State                | Init         | Lines | Concern                                                |
+| -------------------- | ------------ | ----- | ------------------------------------------------------ |
+| `mode`               | `'omnibox'`  | 158   | Core view mode                                         |
+| `monthEnterDir`      | `null`       | 159   | Animation direction — transient, never reset after use |
+| `calYear`            | `todayYear`  | 161   | Calendar navigation                                    |
+| `calMonth`           | `todayMonth` | 162   | Calendar navigation                                    |
+| `selectedDay`        | `todayDate`  | 163   | Calendar navigation                                    |
+| `calView`            | `'month'`    | 164   | View routing                                           |
+| `monthEvents`        | `[]`         | 166   | Remote data                                            |
+| `searchEvents`       | `[]`         | 167   | Remote data                                            |
+| `listIdx`            | `-1`         | 169   | List cursor                                            |
+| `editingEvent`       | `null`       | 170   | Detail view subject                                    |
+| `weekStart`          | `1`          | 172   | Config                                                 |
+| `defaultReminderMin` | `0`          | 173   | Config — STALE CLOSURE BUG (see §5)                    |
+| `timeValue`          | `'10'`       | 176   | Create form                                            |
+| `reminderValue`      | `'0'`        | 177   | Create/detail form                                     |
+| `formFieldIdx`       | `0`          | 178   | Form field focus                                       |
+| `activeSelect`       | `null`       | 179   | Dropdown open state                                    |
+| `selectFocused`      | `0`          | 180   | Dropdown cursor                                        |
 
 ### 3.2 Derived State (3 `useMemo` calls)
 
-| Derived | Dependencies | Lines |
-|---|---|---|
-| `dayEvents` | `monthEvents, calYear, calMonth, selectedDay` | 183–186 |
-| `filteredSearch` | `searchEvents, query` | 188–192 |
-| `eventDays` | `monthEvents, calYear, calMonth` | 194–197 |
+| Derived          | Dependencies                                  | Lines   |
+| ---------------- | --------------------------------------------- | ------- |
+| `dayEvents`      | `monthEvents, calYear, calMonth, selectedDay` | 183–186 |
+| `filteredSearch` | `searchEvents, query`                         | 188–192 |
+| `eventDays`      | `monthEvents, calYear, calMonth`              | 194–197 |
 
 ### 3.3 Effects (8 `useEffect` calls)
 
-| # | Deps | Purpose | Issues |
-|---|---|---|---|
-| 1 | `[]` | Load config (`weekStart`, `defaultReminderMin`) | None |
-| 2 | `[calYear, calMonth]` | Load month events | `loadMonthEvents` not stable (plain function) |
-| 3 | `[hasQuery]` | Load search range on query presence | None |
-| 4 | `[mode]` | Reset view/index on mode change | None |
-| 5 | `[]` | Inject slide animation CSS once | Direct DOM mutation, coupling |
-| 6 | `[]` | Restore last result on mount | Direct `window.core.ipc.invoke` bypass of `ipcCall` |
-| 7 | `[mode, calView, listIdx, activeSelect, formFieldIdx, selectedDay]` | Dispatch key-hints event | None |
-| 8 | `[mode, calView, listIdx, dayEvents, editingEvent, calYear, calMonth, selectedDay, timeValue, reminderValue, query, activeSelect]` | Register shell actions | **STALE CLOSURE BUG** (see §5) |
+| #   | Deps                                                                                                                               | Purpose                                         | Issues                                              |
+| --- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | --------------------------------------------------- |
+| 1   | `[]`                                                                                                                               | Load config (`weekStart`, `defaultReminderMin`) | None                                                |
+| 2   | `[calYear, calMonth]`                                                                                                              | Load month events                               | `loadMonthEvents` not stable (plain function)       |
+| 3   | `[hasQuery]`                                                                                                                       | Load search range on query presence             | None                                                |
+| 4   | `[mode]`                                                                                                                           | Reset view/index on mode change                 | None                                                |
+| 5   | `[]`                                                                                                                               | Inject slide animation CSS once                 | Direct DOM mutation, coupling                       |
+| 6   | `[]`                                                                                                                               | Restore last result on mount                    | Direct `window.core.ipc.invoke` bypass of `ipcCall` |
+| 7   | `[mode, calView, listIdx, activeSelect, formFieldIdx, selectedDay]`                                                                | Dispatch key-hints event                        | None                                                |
+| 8   | `[mode, calView, listIdx, dayEvents, editingEvent, calYear, calMonth, selectedDay, timeValue, reminderValue, query, activeSelect]` | Register shell actions                          | **STALE CLOSURE BUG** (see §5)                      |
 
 ### 3.4 Refs (2 `useRef` calls)
 
-| Name | Purpose | Issue |
-|---|---|---|
-| `stateRef` | Snapshot of all state for stale-closure-safe key handlers | 17-field bulk snapshot — brittle |
-| _(implicit in `_useToolKeyActions`)_ | Managed inside hook | None |
+| Name                                 | Purpose                                                   | Issue                            |
+| ------------------------------------ | --------------------------------------------------------- | -------------------------------- |
+| `stateRef`                           | Snapshot of all state for stale-closure-safe key handlers | 17-field bulk snapshot — brittle |
+| _(implicit in `_useToolKeyActions`)_ | Managed inside hook                                       | None                             |
 
 ---
 
 ## 4. Code Smell Analysis
 
-| Smell | Location | Severity | Description |
-|---|---|---|---|
-| **God component** | `CalendarApp` (877 lines) | HIGH | Single component owns all state, all data loading, all keyboard routing, and renders 4 distinct views. No separation of concerns. |
-| **Stale closure in action effect** | L529–598, specifically `enterCreate` | HIGH | `enterCreate` closes over `defaultReminderMin` which is NOT in the dependency array of the action `useEffect`. When config loads asynchronously, the registered "Save Event" action calls `enterCreate` with the stale initial value (`0`) until a listed dep changes. |
-| **Duplicate utility functions** | L29–70 | MEDIUM | Four module-level functions (`getDaysInMonth`, `eventsForDay`, `daysWithEvents`, `shiftDays`) are exact or near-exact duplicates of functions already in `calendar-utils.ts`. Since frontend cannot import from `calendar-utils.ts` (extension constraint), these cannot be removed — but they need a comment explaining the intentional duplication. |
-| **Duplicate JSX block** | L785–795 and L841–851 | MEDIUM | The `IconBell` rendering inside `ListItemActions` is identical in both the search-list view and the day-list view. Could be a local `EventReminderBadge` const component inside the file. |
-| **Mixed concerns in `renderMonthGrid()`** | L601–745 | MEDIUM | Combines grid computation, animation trigger logic, click handlers with navigation side-effects, and all cell styling. A 144-line render function with a nested 69-line click handler. |
-| **`setTimeout` for state coordination** | L691, L699, L768–770 | MEDIUM | Three `setTimeout(..., 0)` calls to sequence state updates across the current-month vs. next-month click paths. This is a code smell indicating missing `startTransition` or state consolidation. |
-| **`monthEnterDir` never reset** | L159, L335, L667 | LOW | `monthEnterDir` is set to `'fromTop'/'fromBottom'` before month change but never reset to `null` afterwards. The animation CSS `key` prop on the grid div forces remount, so the animation still plays, but the ref remains dirty between renders. |
-| **`todayObj` recomputed every render** | L152–156 | LOW | `todayYear`, `todayMonth`, `todayDate` are derived from `new Date()` on every render without memoization. They're used in effects and `renderMonthGrid`. Should be `useMemo(() => {...}, [])` or module-level constants. |
-| **`CREATE_SELECT_FIELDS` diverges from `calendar-create-form.ts`** | L75–76 | LOW | Frontend defines `['time', 'reminder']` but `calendar-create-form.ts` defines `CREATE_FORM_FIELDS = ['title', 'time', 'reminder']`. The `formFieldIdx` state is indexed against different arrays in different modules, making tests of key navigation and form field logic non-portable. |
-| **Bypass of `ipcCall` wrapper** | L292–294 | LOW | The "restore last result" effect calls `window.core.ipc.invoke(EXT_ID, 'getLastResult')` directly instead of using the local `ipcCall()` wrapper. The response shape is also re-typed inline (`{ success, data }`) rather than using the wrapper's error handling. |
-| **Inline error erasure** | L243, L252, L260, etc. | LOW | All `.catch(() => {})` calls silently discard errors. No user-facing error state, no logging. |
-| **17-field `stateRef` bulk snapshot** | L200–234 | LOW | The stateRef contains every piece of state to avoid stale closures in key handlers. This is a known and valid pattern for `_useToolKeyActions`, but the sheer breadth (17 fields) indicates the component has too much state for a single unit. |
-| **`window.UI` components destructured inside function** | L140–150 | LOW | Components are re-destructured on every render call rather than at module level. This is fine for correctness (components are stable window references), but adds noise and could be module-level. |
+| Smell                                                              | Location                             | Severity | Description                                                                                                                                                                                                                                                                                                                                           |
+| ------------------------------------------------------------------ | ------------------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **God component**                                                  | `CalendarApp` (877 lines)            | HIGH     | Single component owns all state, all data loading, all keyboard routing, and renders 4 distinct views. No separation of concerns.                                                                                                                                                                                                                     |
+| **Stale closure in action effect**                                 | L529–598, specifically `enterCreate` | HIGH     | `enterCreate` closes over `defaultReminderMin` which is NOT in the dependency array of the action `useEffect`. When config loads asynchronously, the registered "Save Event" action calls `enterCreate` with the stale initial value (`0`) until a listed dep changes.                                                                                |
+| **Duplicate utility functions**                                    | L29–70                               | MEDIUM   | Four module-level functions (`getDaysInMonth`, `eventsForDay`, `daysWithEvents`, `shiftDays`) are exact or near-exact duplicates of functions already in `calendar-utils.ts`. Since frontend cannot import from `calendar-utils.ts` (extension constraint), these cannot be removed — but they need a comment explaining the intentional duplication. |
+| **Duplicate JSX block**                                            | L785–795 and L841–851                | MEDIUM   | The `IconBell` rendering inside `ListItemActions` is identical in both the search-list view and the day-list view. Could be a local `EventReminderBadge` const component inside the file.                                                                                                                                                             |
+| **Mixed concerns in `renderMonthGrid()`**                          | L601–745                             | MEDIUM   | Combines grid computation, animation trigger logic, click handlers with navigation side-effects, and all cell styling. A 144-line render function with a nested 69-line click handler.                                                                                                                                                                |
+| **`setTimeout` for state coordination**                            | L691, L699, L768–770                 | MEDIUM   | Three `setTimeout(..., 0)` calls to sequence state updates across the current-month vs. next-month click paths. This is a code smell indicating missing `startTransition` or state consolidation.                                                                                                                                                     |
+| **`monthEnterDir` never reset**                                    | L159, L335, L667                     | LOW      | `monthEnterDir` is set to `'fromTop'/'fromBottom'` before month change but never reset to `null` afterwards. The animation CSS `key` prop on the grid div forces remount, so the animation still plays, but the ref remains dirty between renders.                                                                                                    |
+| **`todayObj` recomputed every render**                             | L152–156                             | LOW      | `todayYear`, `todayMonth`, `todayDate` are derived from `new Date()` on every render without memoization. They're used in effects and `renderMonthGrid`. Should be `useMemo(() => {...}, [])` or module-level constants.                                                                                                                              |
+| **`CREATE_SELECT_FIELDS` diverges from `calendar-create-form.ts`** | L75–76                               | LOW      | Frontend defines `['time', 'reminder']` but `calendar-create-form.ts` defines `CREATE_FORM_FIELDS = ['title', 'time', 'reminder']`. The `formFieldIdx` state is indexed against different arrays in different modules, making tests of key navigation and form field logic non-portable.                                                              |
+| **Bypass of `ipcCall` wrapper**                                    | L292–294                             | LOW      | The "restore last result" effect calls `window.core.ipc.invoke(EXT_ID, 'getLastResult')` directly instead of using the local `ipcCall()` wrapper. The response shape is also re-typed inline (`{ success, data }`) rather than using the wrapper's error handling.                                                                                    |
+| **Inline error erasure**                                           | L243, L252, L260, etc.               | LOW      | All `.catch(() => {})` calls silently discard errors. No user-facing error state, no logging.                                                                                                                                                                                                                                                         |
+| **17-field `stateRef` bulk snapshot**                              | L200–234                             | LOW      | The stateRef contains every piece of state to avoid stale closures in key handlers. This is a known and valid pattern for `_useToolKeyActions`, but the sheer breadth (17 fields) indicates the component has too much state for a single unit.                                                                                                       |
+| **`window.UI` components destructured inside function**            | L140–150                             | LOW      | Components are re-destructured on every render call rather than at module level. This is fine for correctness (components are stable window references), but adds noise and could be module-level.                                                                                                                                                    |
 
 ---
 
@@ -159,29 +159,29 @@ This is the most important constraint for the refactoring plan. Sub-components, 
 
 ### 5.1 Cyclomatic Complexity per Major Block
 
-| Block | if/else | Ternary | && | || | Estimated CC |
-|---|---|---|---|---|---|
-| `buildGrid` | 1 | 0 | 0 | 0 | 2 |
-| `CalendarApp` state init + refs | 0 | 2 | 0 | 3 | 5 |
-| Config load effect | 1 | 2 | 1 | 0 | 4 |
-| `_useToolKeyActions` registration | 9 | 1 | 10 | 4 | 24 |
-| Action registration `useEffect` | 5 | 2 | 5 | 1 | 13 |
-| `renderMonthGrid` | 4 | 7 | 5 | 1 | 17 |
-| Search list render branch | 1 | 1 | 3 | 0 | 5 |
-| Day view render branch | 1 | 1 | 2 | 0 | 4 |
-| Create view render branch | 2 | 2 | 4 | 0 | 8 |
-| Detail view render branch | 1 | 2 | 2 | 0 | 5 |
-| **Total file CC** | **31** | **26** | **43** | **16** | **~87** |
+| Block                             | if/else | Ternary | &&     |        |         |     | Estimated CC |
+| --------------------------------- | ------- | ------- | ------ | ------ | ------- | --- | ------------ |
+| `buildGrid`                       | 1       | 0       | 0      | 0      | 2       |
+| `CalendarApp` state init + refs   | 0       | 2       | 0      | 3      | 5       |
+| Config load effect                | 1       | 2       | 1      | 0      | 4       |
+| `_useToolKeyActions` registration | 9       | 1       | 10     | 4      | 24      |
+| Action registration `useEffect`   | 5       | 2       | 5      | 1      | 13      |
+| `renderMonthGrid`                 | 4       | 7       | 5      | 1      | 17      |
+| Search list render branch         | 1       | 1       | 3      | 0      | 5       |
+| Day view render branch            | 1       | 1       | 2      | 0      | 4       |
+| Create view render branch         | 2       | 2       | 4      | 0      | 8       |
+| Detail view render branch         | 1       | 2       | 2      | 0      | 5       |
+| **Total file CC**                 | **31**  | **26**  | **43** | **16** | **~87** |
 
 CC > 50 for a single component is the typical "needs extraction" threshold. `CalendarApp` at ~87 CC is almost entirely concentrated in the key action registration (24 CC) and month grid render (17 CC).
 
 ### 5.2 Nesting Depth
 
-| Location | Max Depth | Context |
-|---|---|---|
+| Location                                                                                       | Max Depth    | Context                              |
+| ---------------------------------------------------------------------------------------------- | ------------ | ------------------------------------ |
 | `IconBell` inside `ListItemActions` inside `ListItem` inside `List` inside search/day view JSX | **7 levels** | Line 789 — deepest point in the file |
-| Nested `onClick` handler in month grid cell | 5 levels | Lines 680–700 |
-| Action `useEffect` save callback | 5 levels | Lines 560–590 |
+| Nested `onClick` handler in month grid cell                                                    | 5 levels     | Lines 680–700                        |
+| Action `useEffect` save callback                                                               | 5 levels     | Lines 560–590                        |
 
 A nesting depth of 7 is common in JSX-heavy code but signals that inline sub-components would improve readability.
 
@@ -189,15 +189,15 @@ A nesting depth of 7 is common in JSX-heavy code but signals that inline sub-com
 
 ## 6. IPC Call Map
 
-| Call Site | Line | Channel | Trigger |
-|---|---|---|---|
-| `ipcCall('calendar:getConfig', {})` | 237 | Config load | Mount |
-| `ipcCall('calendar:list', { from, to })` | 250 | Month events | `[calYear, calMonth]` |
-| `ipcCall('calendar:list', { from, to })` | 258 | Search range | `[hasQuery]` |
-| `window.core.ipc.invoke(EXT_ID, 'getLastResult')` | 292 | Restore last | Mount — **bypasses `ipcCall` wrapper** |
-| `ipcCall('calendar:delete', { id })` | 549 | Delete event | Action execution |
-| `ipcCall('calendar:create', {...})` | 567 | Create event | Action execution |
-| `ipcCall('calendar:update', {...})` | 580 | Update reminder | Action execution |
+| Call Site                                         | Line | Channel         | Trigger                                |
+| ------------------------------------------------- | ---- | --------------- | -------------------------------------- |
+| `ipcCall('calendar:getConfig', {})`               | 237  | Config load     | Mount                                  |
+| `ipcCall('calendar:list', { from, to })`          | 250  | Month events    | `[calYear, calMonth]`                  |
+| `ipcCall('calendar:list', { from, to })`          | 258  | Search range    | `[hasQuery]`                           |
+| `window.core.ipc.invoke(EXT_ID, 'getLastResult')` | 292  | Restore last    | Mount — **bypasses `ipcCall` wrapper** |
+| `ipcCall('calendar:delete', { id })`              | 549  | Delete event    | Action execution                       |
+| `ipcCall('calendar:create', {...})`               | 567  | Create event    | Action execution                       |
+| `ipcCall('calendar:update', {...})`               | 580  | Update reminder | Action execution                       |
 
 All 7 distinct call sites (8 occurrences) operate correctly, but the `getLastResult` bypass is inconsistent.
 
@@ -221,24 +221,24 @@ window.dispatchEvent          → nuxy-shell-omni-bar-control, nuxy-key-hints-ch
 
 ### 7.2 Related Files (NOT imported — extension constraint prevents it)
 
-| File | Relation | Import Blocked? |
-|---|---|---|
-| `calendar-utils.ts` | 4 duplicate functions | YES — no relative imports |
-| `calendar-key-conditions.ts` | Key condition predicates extracted for testing | YES |
-| `calendar-create-form.ts` | Form field constants | YES |
-| `types.ts` | `CalendarEvent` interface | YES — frontend redeclares it locally |
-| `backend.ts` | IPC channels | None (runtime only) |
+| File                         | Relation                                       | Import Blocked?                      |
+| ---------------------------- | ---------------------------------------------- | ------------------------------------ |
+| `calendar-utils.ts`          | 4 duplicate functions                          | YES — no relative imports            |
+| `calendar-key-conditions.ts` | Key condition predicates extracted for testing | YES                                  |
+| `calendar-create-form.ts`    | Form field constants                           | YES                                  |
+| `types.ts`                   | `CalendarEvent` interface                      | YES — frontend redeclares it locally |
+| `backend.ts`                 | IPC channels                                   | None (runtime only)                  |
 
 ### 7.3 Cross-Extension Pattern Reuse
 
 The following patterns appear identically in `notes`, `n8n`, `ollama`, and `bitwarden` frontends:
 
-| Pattern | Extensions Using It | Status |
-|---|---|---|
-| `function ipcCall(channel, payload)` wrapper | notes, n8n, bitwarden | Each re-implements in isolation — no shared location possible |
-| `window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', ...))` | notes, ollama | Identical boilerplate |
-| `window.dispatchEvent(new CustomEvent('nuxy-register-actions', ...))` | notes, ollama | Identical boilerplate |
-| `stateRef` bulk snapshot for key handlers | notes (partial) | calendar is most extreme (17 fields) |
+| Pattern                                                                     | Extensions Using It   | Status                                                        |
+| --------------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------- |
+| `function ipcCall(channel, payload)` wrapper                                | notes, n8n, bitwarden | Each re-implements in isolation — no shared location possible |
+| `window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', ...))` | notes, ollama         | Identical boilerplate                                         |
+| `window.dispatchEvent(new CustomEvent('nuxy-register-actions', ...))`       | notes, ollama         | Identical boilerplate                                         |
+| `stateRef` bulk snapshot for key handlers                                   | notes (partial)       | calendar is most extreme (17 fields)                          |
 
 The ipc wrapper and omnibar dispatch helpers are prime candidates for a shared `ui-default` utility hook (e.g., `useShellActions`), but that work is outside the scope of this file.
 
@@ -252,6 +252,7 @@ Given the hard constraint (no relative imports), all extractions are **within-fi
 
 **Source lines:** 757–797 (search) and 831–856 (day) — two identical blocks  
 **Before:**
+
 ```tsx
 // Duplicated in BOTH search and day view:
 <ListItem key={evt.id} active={idx === listIdx} onClick={...}>
@@ -266,7 +267,9 @@ Given the hard constraint (no relative imports), all extractions are **within-fi
   )}
 </ListItem>
 ```
+
 **After (defined above `CalendarApp`):**
+
 ```tsx
 function EventListItem({ evt, idx, listIdx, onClick, dateFormat, UI }) {
   const { ListItem, ListItemBody, ListItemText, ListItemMeta, ListItemActions, IconBell } = UI
@@ -278,13 +281,16 @@ function EventListItem({ evt, idx, listIdx, onClick, dateFormat, UI }) {
       </ListItemBody>
       {evt.remindMin > 0 && IconBell && ListItemActions && (
         <ListItemActions>
-          <IconBell style={{ width:'14px', height:'14px', color:'var(--color-warning, #eab308)' }} />
+          <IconBell
+            style={{ width: '14px', height: '14px', color: 'var(--color-warning, #eab308)' }}
+          />
         </ListItemActions>
       )}
     </ListItem>
   )
 }
 ```
+
 **Savings:** Eliminates ~40 duplicate lines. Both views become a clean `.map(EventListItem)`.
 
 ### 8.2 Sub-Component: `SelectFormRow`
@@ -293,17 +299,34 @@ function EventListItem({ evt, idx, listIdx, onClick, dateFormat, UI }) {
 **Description:** The map over `CREATE_SELECT_FIELDS` renders a `<ListItem>` with `<SelectBox>`. The detail view (L970–1008) renders the same pattern for a single `reminder` field. Extract to a `SelectFormRow` component.
 
 **Before:**
+
 ```tsx
-{CREATE_SELECT_FIELDS.map((field, idx) => {
-  // 43 lines of ListItem + SelectBox JSX
-})}
+{
+  CREATE_SELECT_FIELDS.map((field, idx) => {
+    // 43 lines of ListItem + SelectBox JSX
+  })
+}
 ```
+
 **After:**
+
 ```tsx
-function SelectFormRow({ field, idx, formFieldIdx, activeSelect, value, opts, onSelect, onOpen, onClose, UI }) {
+function SelectFormRow({
+  field,
+  idx,
+  formFieldIdx,
+  activeSelect,
+  value,
+  opts,
+  onSelect,
+  onOpen,
+  onClose,
+  UI,
+}) {
   // ~25 lines, unified for both create and detail
 }
 ```
+
 **Savings:** ~60 lines of near-duplicate JSX collapsed.
 
 ### 8.3 Sub-Component: `DayViewHeader`
@@ -316,13 +339,20 @@ function ViewHeader({ label, subtitle }: { label: string; subtitle?: string }) {
   return (
     <div style={{ padding: 'var(--space-3) var(--space-4) var(--space-1)' }}>
       {subtitle && <div style={{ fontWeight: 600, fontSize: 'var(--font-md)' }}>{subtitle}</div>}
-      <div style={{ fontSize: 'var(--font-sm)', opacity: 0.55, marginTop: subtitle ? 'var(--space-1)' : 0 }}>
+      <div
+        style={{
+          fontSize: 'var(--font-sm)',
+          opacity: 0.55,
+          marginTop: subtitle ? 'var(--space-1)' : 0,
+        }}
+      >
         {label}
       </div>
     </div>
   )
 }
 ```
+
 **Savings:** ~20 lines; eliminates 3 near-identical header blocks across day, create, and detail views.
 
 ### 8.4 Custom Hook: `useCalendarData`
@@ -350,6 +380,7 @@ function useCalendarData(calYear: number, calMonth: number, hasQuery: boolean) {
   return { monthEvents, searchEvents, weekStart, defaultReminderMin, loadMonth }
 }
 ```
+
 **Savings in main component:** Removes ~40 lines of state + 3 effects from `CalendarApp`.  
 **Side benefit:** `defaultReminderMin` is now a returned value from the hook, making it easier to include correctly in the action effect dependency array, which **fixes the stale closure bug**.
 
@@ -369,12 +400,14 @@ function useCalendarNavigation(defaultReminderMin: number, setReminderValue: ...
            enterCreate, enterDetail, backToMonth, backToDay }
 }
 ```
+
 **Estimated output:** ~100 lines extracted from `CalendarApp`.
 
 ### 8.6 Fix: Memoize `today` Values
 
 **Source:** L152–156  
 **Proposal:**
+
 ```tsx
 const TODAY = useMemo(() => {
   const d = new Date()
@@ -382,6 +415,7 @@ const TODAY = useMemo(() => {
   return { year: d.getFullYear(), month: d.getMonth(), date: d.getDate() }
 }, [])
 ```
+
 This prevents `new Date()` on every render and gives a stable reference.
 
 ### 8.7 Fix: Inline `stateRef` Fields for `activeSelect` and `calView` in Escape Handler
@@ -411,17 +445,17 @@ The Escape key handler reads `stateRef.current.activeSelect` and `stateRef.curre
 
 ## 10. Risk Matrix
 
-| Refactoring Step | Risk | Mitigation | Test Coverage |
-|---|---|---|---|
-| Extract `EventListItem` inline component | LOW | Pure JSX restructure; no logic change | None (no frontend.tsx tests) |
-| Extract `SelectFormRow` inline component | LOW | Props pass-through; logic identical | None |
-| Extract `ViewHeader` inline component | LOW | Pure JSX; no state | None |
-| Extract `useCalendarData` hook | MEDIUM | Must correctly thread `loadMonth` return for action callbacks | Manual regression |
-| Extract `useCalendarNavigation` hook | MEDIUM-HIGH | 8 state vars + 10 fns; dependency cascade risk | None |
-| Fix stale closure (dep array) | LOW | Adding one dep; action effect re-runs more often (harmless) | Manual: verify default reminder in new events |
-| Fix `monthEnterDir` reset | LOW | Adds a setter call | Visual/manual test |
-| Memoize `today` | LOW | Pure computation change | None |
-| Remove duplicate utility functions | BLOCKED | Cannot import from `calendar-utils.ts` | N/A |
+| Refactoring Step                         | Risk        | Mitigation                                                    | Test Coverage                                 |
+| ---------------------------------------- | ----------- | ------------------------------------------------------------- | --------------------------------------------- |
+| Extract `EventListItem` inline component | LOW         | Pure JSX restructure; no logic change                         | None (no frontend.tsx tests)                  |
+| Extract `SelectFormRow` inline component | LOW         | Props pass-through; logic identical                           | None                                          |
+| Extract `ViewHeader` inline component    | LOW         | Pure JSX; no state                                            | None                                          |
+| Extract `useCalendarData` hook           | MEDIUM      | Must correctly thread `loadMonth` return for action callbacks | Manual regression                             |
+| Extract `useCalendarNavigation` hook     | MEDIUM-HIGH | 8 state vars + 10 fns; dependency cascade risk                | None                                          |
+| Fix stale closure (dep array)            | LOW         | Adding one dep; action effect re-runs more often (harmless)   | Manual: verify default reminder in new events |
+| Fix `monthEnterDir` reset                | LOW         | Adds a setter call                                            | Visual/manual test                            |
+| Memoize `today`                          | LOW         | Pure computation change                                       | None                                          |
+| Remove duplicate utility functions       | BLOCKED     | Cannot import from `calendar-utils.ts`                        | N/A                                           |
 
 ### Overall Risk: MEDIUM
 

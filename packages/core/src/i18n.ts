@@ -1,7 +1,21 @@
 export type PluralCategory = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other'
 export type TextDirection = 'ltr' | 'rtl'
 
-const RTL_BASES = new Set(['ar', 'arc', 'dv', 'fa', 'ha', 'he', 'ks', 'ku', 'ps', 'sd', 'ug', 'ur', 'yi'])
+const RTL_BASES = new Set([
+  'ar',
+  'arc',
+  'dv',
+  'fa',
+  'ha',
+  'he',
+  'ks',
+  'ku',
+  'ps',
+  'sd',
+  'ug',
+  'ur',
+  'yi',
+])
 
 export function getTextDirection(locale: string): TextDirection {
   const base = locale.split('-')[0].toLowerCase()

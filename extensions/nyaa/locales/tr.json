@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "name": "Nyaa Arama"
+  },
+  "search": {
+    "empty": {
+      "message": "nyaa.si'de ara",
+      "hint": "Torrent aramak için bir başlık yazın."
+    },
+    "loading": {
+      "message": "Aranıyor...",
+      "hint": "nyaa.si'den sonuçlar alınıyor"
+    },
+    "noResults": {
+      "message": "Sonuç bulunamadı.",
+      "hint": "Farklı bir arama terimi deneyin."
+    }
+  },
+  "item": {
+    "copied": "Kopyalandı!",
+    "selectPrompt": "Ayrıntıları görmek için bir sonuç seçin",
+    "selectPromptMulti": "Seçmek için öğeleri işaretleyin",
+    "magnetCopied": "Mıknatıs bağlantısı kopyalandı!",
+    "selectedCount": "{count} seçildi",
+    "multiSelectHint": "Tümünü kopyalamak veya indirmek için Ctrl+K'ya basın"
+  },
+  "details": {
+    "title": "Ayrıntılar",
+    "category": "Kategori",
+    "size": "Boyut",
+    "date": "Tarih",
+    "seeders": "Seeder",
+    "leechers": "Leecher",
+    "status": {
+      "label": "Durum",
+      "trusted": "Güvenilir",
+      "remake": "Yeniden Yapım",
+      "normal": "Normal"
+    }
+  },
+  "actions": {
+    "navigate": "Gezin",
+    "copyMagnet": "Mıknatısı Kopyala",
+    "copyMagnetLabel": "Mıknatıs Bağlantısını Kopyala",
+    "downloadTorrent": "Torrent Kaydet",
+    "downloadTorrentLabel": "Torrent Dosyasını Kaydet",
+    "checkToggle": "İşaretle / Kaldır",
+    "selectMultiple": "Çoklu Seçim",
+    "exitSelectMultiple": "Seçimi Bitir",
+    "copyAll": "Tüm Mıknatısları Kopyala",
+    "downloadAll": "Tüm Torrentleri İndir"
+  }
+}

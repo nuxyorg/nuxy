@@ -10,9 +10,19 @@ interface Params {
   activeSectionId: string
   setActiveTab: React.Dispatch<React.SetStateAction<string>>
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
+  t: (key: string, vars?: Record<string, string | number>) => string
 }
 
-export function useStoreSync({ selectedIndex, activeTab, loading, filteredExtensionsLength, activeSectionId, setActiveTab, setSelectedIndex }: Params): void {
+export function useStoreSync({
+  selectedIndex,
+  activeTab,
+  loading,
+  filteredExtensionsLength,
+  activeSectionId,
+  setActiveTab,
+  setSelectedIndex,
+  t,
+}: Params): void {
   React.useEffect(() => {
     if (activeSectionId !== activeTab) {
       setActiveTab(activeSectionId)
@@ -27,14 +37,14 @@ export function useStoreSync({ selectedIndex, activeTab, loading, filteredExtens
   // Push category label + item count to the shell footer
   React.useEffect(() => {
     const { ShortcutSep } = window.UI || {}
-    const activeLabel = TABS.find((t) => t.id === activeTab)?.label || activeTab
+    const activeLabel = t(`tabs.${activeTab}`) || activeTab
     window.dispatchEvent(
       new CustomEvent('nuxy-shell-footer-hints', {
         detail: (
           <>
             <span style={{ color: 'var(--color-primary)', fontWeight: 'bold' }}>{activeLabel}</span>
             {ShortcutSep ? <ShortcutSep /> : <span className="nuxy-shortcut-sep">/</span>}
-            <span>{filteredExtensionsLength} items</span>
+            <span>{t('list.items', { count: filteredExtensionsLength })}</span>
           </>
         ),
       })

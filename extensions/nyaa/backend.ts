@@ -1,5 +1,12 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
-import type { SearchPayload, CopyMagnetPayload, NyaaResult } from './types.ts'
+import type {
+  SearchPayload,
+  CopyMagnetPayload,
+  CopyMagnetsPayload,
+  DownloadTorrentPayload,
+  DownloadTorrentsPayload,
+  NyaaResult,
+} from './types.ts'
 import { parseNyaaHtml } from './utils/parse.ts'
 
 const BASE_URL = 'https://nyaa.si'
@@ -43,9 +50,35 @@ export function register(core: CoreContext): void {
     return results
   })
 
+  core.ipc.handle('getEnterAction', async (): Promise<string> => {
+    return (await core.settings.read<string>('enterAction')) ?? 'copyMagnet'
+  })
+
   core.ipc.handle('copyMagnet', async (payload: unknown): Promise<void> => {
     const { magnet } = payload as CopyMagnetPayload
     await core.clipboard.writeText(magnet)
     core.logger.info('Copied magnet link to clipboard')
+  })
+
+  core.ipc.handle('copyMagnets', async (payload: unknown): Promise<void> => {
+    const { magnets } = payload as CopyMagnetsPayload
+    await core.clipboard.writeText(magnets.join('\n'))
+    core.logger.info(`Copied ${magnets.length} magnet links to clipboard`)
+  })
+
+  core.ipc.handle('downloadTorrent', async (payload: unknown): Promise<void> => {
+    const { id } = payload as DownloadTorrentPayload
+    const url = `${BASE_URL}/download/${id}.torrent`
+    await core.shell.open(url)
+    core.logger.info(`Opened torrent download: ${url}`)
+  })
+
+  core.ipc.handle('downloadTorrents', async (payload: unknown): Promise<void> => {
+    const { ids } = payload as DownloadTorrentsPayload
+    for (const id of ids) {
+      const url = `${BASE_URL}/download/${id}.torrent`
+      await core.shell.open(url)
+    }
+    core.logger.info(`Opened ${ids.length} torrent downloads`)
   })
 }

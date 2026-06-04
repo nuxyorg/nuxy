@@ -61,9 +61,9 @@ describe('translate backend', () => {
     })
 
     it('calls LibreTranslate with default settings when none configured', async () => {
-      const fetchMock = vi.fn().mockResolvedValue(
-        makeSuccessResponse({ translatedText: 'Hola mundo' })
-      )
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(makeSuccessResponse({ translatedText: 'Hola mundo' }))
       vi.stubGlobal('fetch', fetchMock)
 
       const result = await handlers['translate']({ text: 'Hello world', to: 'es' })
@@ -91,9 +91,9 @@ describe('translate backend', () => {
       }))
       await register(core)
 
-      const fetchMock = vi.fn().mockResolvedValue(
-        makeSuccessResponse({ translatedText: 'Bonjour' })
-      )
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(makeSuccessResponse({ translatedText: 'Bonjour' }))
       vi.stubGlobal('fetch', fetchMock)
 
       await handlers['translate']({ text: 'Hello', to: 'fr' })
@@ -114,9 +114,9 @@ describe('translate backend', () => {
       }))
       await register(core)
 
-      const fetchMock = vi.fn().mockResolvedValue(
-        makeSuccessResponse({ translatedText: 'Merhaba' })
-      )
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(makeSuccessResponse({ translatedText: 'Merhaba' }))
       vi.stubGlobal('fetch', fetchMock)
 
       await handlers['translate']({ text: 'Hello', to: 'tr' })
@@ -127,9 +127,9 @@ describe('translate backend', () => {
     })
 
     it('does not include api_key when not configured', async () => {
-      const fetchMock = vi.fn().mockResolvedValue(
-        makeSuccessResponse({ translatedText: 'Bonjour' })
-      )
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(makeSuccessResponse({ translatedText: 'Bonjour' }))
       vi.stubGlobal('fetch', fetchMock)
 
       await handlers['translate']({ text: 'Hello', to: 'fr' })
@@ -152,9 +152,7 @@ describe('translate backend', () => {
       }))
       await register(core)
 
-      const fetchMock = vi.fn().mockResolvedValue(
-        makeSuccessResponse({ translatedText: 'Hallo' })
-      )
+      const fetchMock = vi.fn().mockResolvedValue(makeSuccessResponse({ translatedText: 'Hallo' }))
       vi.stubGlobal('fetch', fetchMock)
 
       await handlers['translate']({ text: 'Hello', from: 'en', to: 'de' })
@@ -183,18 +181,18 @@ describe('translate backend', () => {
     })
 
     it('throws when the HTTP response is not ok', async () => {
-      const fetchMock = vi.fn().mockResolvedValue(
-        makeSuccessResponse({ error: 'Invalid API key' }, false, 403)
-      )
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(makeSuccessResponse({ error: 'Invalid API key' }, false, 403))
       vi.stubGlobal('fetch', fetchMock)
 
       await expect(handlers['translate']({ text: 'Hello', to: 'fr' })).rejects.toThrow()
     })
 
     it('throws when the API returns an error field', async () => {
-      const fetchMock = vi.fn().mockResolvedValue(
-        makeSuccessResponse({ error: 'Language pair not supported' }, true, 200)
-      )
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(makeSuccessResponse({ error: 'Language pair not supported' }, true, 200))
       vi.stubGlobal('fetch', fetchMock)
 
       await expect(handlers['translate']({ text: 'Hello', to: 'xx' })).rejects.toThrow()
@@ -218,9 +216,7 @@ describe('translate backend', () => {
       }))
       await register(core)
 
-      const fetchMock = vi.fn().mockResolvedValue(
-        makeSuccessResponse({ translatedText: 'Hola' })
-      )
+      const fetchMock = vi.fn().mockResolvedValue(makeSuccessResponse({ translatedText: 'Hola' }))
       vi.stubGlobal('fetch', fetchMock)
 
       await handlers['translate']({ text: 'Hello', to: 'es' })

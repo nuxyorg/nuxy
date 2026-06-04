@@ -18,6 +18,7 @@ Calculator is a `provider`-type extension that runs silently in the background. 
 ## Extension Type
 
 ### `provider`
+
 Runs inline inside the shell — provides a result or suggestion without the user navigating away. The calculator shows the computed result directly under the query as the user types.
 
 ---
@@ -51,10 +52,10 @@ None required.
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -62,11 +63,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 All platforms supported by Nuxy.
 
@@ -84,9 +85,9 @@ const result = await core.extensions.invoke('com.nuxy.calculator', 'eval', { tex
 
 **Exposed IPC channels:**
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
-| `eval` | `{ text: string }` | `{ items: Array<{ id: string, title: string, subtitle: string, value: number }> }` | Evaluate an arithmetic expression; returns an empty `items` array if the expression is invalid or incomplete |
+| Channel | Payload            | Returns                                                                            | Description                                                                                                  |
+| ------- | ------------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `eval`  | `{ text: string }` | `{ items: Array<{ id: string, title: string, subtitle: string, value: number }> }` | Evaluate an arithmetic expression; returns an empty `items` array if the expression is invalid or incomplete |
 
 ---
 

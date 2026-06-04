@@ -3,6 +3,8 @@
   "name": "Ollama",
   "version": "1.0.0",
   "type": "tool",
+  "providerGroup": "actions",
+  "providerGroupLabel": "Tool actions",
   "icon": "ai",
   "description": "Conversational AI assistant powered by a local Ollama model.",
   "placeholder": "Ask anything",
@@ -13,7 +15,7 @@
   },
   "locales": {
     "default": "en",
-    "supported": ["en", "tr"]
+    "supported": ["en", "tr", "ja"]
   },
   "entry": {
     "backend": "backend.ts",

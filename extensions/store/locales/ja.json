@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "name": "ストア"
+  },
+  "tabs": {
+    "all": "すべての拡張機能",
+    "tool": "ツール",
+    "theme": "テーマ",
+    "iconpack": "アイコンパック",
+    "installed": "インストール済み",
+    "updates": "アップデート"
+  },
+  "list": {
+    "empty": "拡張機能が見つかりません。",
+    "items": "{count}アイテム"
+  },
+  "status": {
+    "installedVersion": "インストール済み v{version}",
+    "availableUpdate": "v{installed}（v{latest}にアップデート）",
+    "available": "v{version}"
+  },
+  "badge": {
+    "update": "アップデート",
+    "installed": "インストール済み"
+  },
+  "detail": {
+    "selectPrompt": "詳細を見るには拡張機能を選択してください",
+    "author": "作者",
+    "version": "バージョン",
+    "installedVersion": "（インストール済み: {version}）",
+    "type": "種類",
+    "description": "説明",
+    "permissions": "必要な権限",
+    "noPermissions": "権限は不要です",
+    "riskyWarning": "この拡張機能はシステムコマンドまたはファイル書き込み権限を要求します。公開者の整合性を確認してください。"
+  },
+  "actions": {
+    "install": "インストール",
+    "update": "アップデート",
+    "uninstall": "アンインストール",
+    "refresh": "ストアを更新",
+    "navigate": "リストをナビゲート",
+    "installUpdate": "インストール / アップデート",
+    "nextCategory": "次のカテゴリ",
+    "focusSidebar": "サイドバーにフォーカス",
+    "performAction": "アクションを実行"
+  },
+  "loading": {
+    "connecting": "拡張機能ストアに接続中...",
+    "installing": "{name}をインストール中...",
+    "uninstalling": "{name}をアンインストール中..."
+  },
+  "toast": {
+    "installSuccess": "{name}のインストールが完了しました！",
+    "installFailed": "インストールに失敗しました",
+    "uninstallSuccess": "{name}をアンインストールしました。",
+    "uninstallFailed": "アンインストールに失敗しました"
+  },
+  "error": {
+    "fetchFailed": "カタログの取得に失敗しました",
+    "networkError": "拡張機能取得中にネットワークエラー",
+    "installFailed": "{name}のインストールに失敗しました",
+    "uninstallFailed": "{name}のアンインストールに失敗しました",
+    "installError": "インストールエラー",
+    "uninstallError": "アンインストールエラー",
+    "requiresUiCard": "詳細ビューにはUIカードコンポーネントが必要です"
+  }
+}

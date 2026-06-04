@@ -11,12 +11,14 @@ To maintain secure, sandbox-compliant execution, all file writes and download op
 ### Affected Modules & Files
 
 #### [register.ts](file:///home/xava/Documents/nuxy/src/electron/ipc/register.ts) & [validate.ts](file:///home/xava/Documents/nuxy/src/electron/ipc/validate.ts)
+
 - Registered new kernel-level IPC channels under `id === 'kernel'`:
   - `kernel:listInstalledExtensions`: Returns list of all installed extensions, including disabled ones.
   - `kernel:installExtension`: Downloads a `.nuxyext` archive from a given URL, verifies signature/sandbox integrity, saves it to `~/.nuxy/extensions`, and invokes rescan.
   - `kernel:uninstallExtension`: Deletes an extension's folder/archive from the extensions directory and unloads it.
 
 #### [register.test.ts](file:///home/xava/Documents/nuxy/src/electron/ipc/register.test.ts) & [validate.test.ts](file:///home/xava/Documents/nuxy/src/electron/ipc/validate.test.ts)
+
 - Added comprehensive unit tests validating IPC parameter validation, security restrictions (e.g., denying uninstallation of bootstrap/system extensions), and successful install/uninstall calls.
 
 ---
@@ -39,6 +41,7 @@ extensions/store/
 ## 3. Operational Logic & Data Flow
 
 ### 1. Catalog Browsing & Version Auditing
+
 - When the Store UI is activated, the Frontend requests `getExtensions` from the Store Backend.
 - The Backend reads the `registryUrl` setting (defaulting to a central GitHub JSON index) and fetches the index via `fetch()`.
 - The Backend invokes `kernel:listInstalledExtensions` and merges the remote catalog with local installations to compute status:
@@ -47,6 +50,7 @@ extensions/store/
   - **Installed & Update Available**: Shows "Update" and "Uninstall".
 
 ### 2. Installation Sequence
+
 - User triggers "Install" or "Update" on an extension:
   1. Frontend -> Store Backend -> Kernel (`kernel:installExtension` IPC).
   2. Kernel downloads the `.nuxyext` archive into a temporary folder.
@@ -98,17 +102,17 @@ sequenceDiagram
     Kernel->>Registry: GET/Download (.nuxyext)
     Registry-->>Kernel: Archive Data (.nuxyext)
     Kernel->>FS: Write to Temp Folder (.tmp_ext)
-    
+
     Note over Kernel: Security Verification Chain
     Kernel->>Kernel: verifyDirectoryIntegrity()
     Kernel->>Kernel: scanDirectoryForNodeImports()
     Kernel->>Kernel: isRevoked() & isKeyTrusted()
-    
+
     alt Untrusted Publisher Key
         Kernel->>UI: Show Trust Dialog Prompt
         UI-->>Kernel: User Response (Approved / Blocked)
     end
-    
+
     Kernel->>FS: Move archive to ~/.nuxy/extensions/
     Kernel->>FS: Chmod extracted folder to read-only (0o555)
     Kernel->>Kernel: rescanExtensions()
@@ -122,11 +126,13 @@ sequenceDiagram
 ## 6. Verification & Test Suite
 
 ### Automated Tests
+
 - **Preload/IPC Validation Tests (`validate.test.ts`)**: Confirms validation rules block unknown channels and accept valid parameters.
 - **Kernel IPC Tests (`register.test.ts`)**: Mocks network fetches and file actions to test successful download/write routines and verification triggers.
 - **Store Backend Tests (`backend.test.ts`)**: Simulates remote JSON registries and installed arrays to verify accurate catalog merging and update check outputs.
 
 All tests compile cleanly (`tsc --noEmit`) and pass within the Vitest suite:
+
 ```bash
 pnpm -C src test -- run
 # Test Files  41 passed (41)
@@ -137,8 +143,8 @@ pnpm -C src test -- run
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Plugin system and extension isolation | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Worker thread model that the store installs into |
-| Extension access and permissions | [21-extension-access.md](./21-extension-access.md) | `kernel:installExtension` channel and permission gate |
-| Frontend rendering and UI kit | [17-frontend-extensions.md](./17-frontend-extensions.md) | How the store's dual-pane frontend mounts |
+| Topic                                 | Document                                                     | Notes                                                 |
+| ------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------- |
+| Plugin system and extension isolation | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Worker thread model that the store installs into      |
+| Extension access and permissions      | [21-extension-access.md](./21-extension-access.md)           | `kernel:installExtension` channel and permission gate |
+| Frontend rendering and UI kit         | [17-frontend-extensions.md](./17-frontend-extensions.md)     | How the store's dual-pane frontend mounts             |

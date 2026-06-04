@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "name": "Bitwarden"
+  },
+  "status": {
+    "checking": "ボルトの状態を確認中..."
+  },
+  "install": {
+    "title": "Bitwarden CLIが見つかりません",
+    "description": "Nuxy Bitwarden拡張機能は、パスワードに安全にアクセスするために{tool}（RustベースのBitwarden CLIクライアント）をバックグラウンドで使用します。続行する前にrbwをインストールしてください。",
+    "yourSystem": "お使いのシステム",
+    "pressEnter": "インストール完了後、↵を押してください。",
+    "arch": {
+      "label": "Arch Linux / CachyOS",
+      "heading": "Arch Linux / CachyOSへのインストール:",
+      "description": "リポジトリから{rbw}と{pinentry}パッケージをインストールしてください:"
+    },
+    "debian": {
+      "label": "Ubuntu / Debian",
+      "heading": "Ubuntu / Debianへのインストール:",
+      "description": "{apt}を使用して{rbw}パッケージをインストールしてください:"
+    },
+    "macos": {
+      "label": "macOS",
+      "heading": "macOSへのインストール:",
+      "description": "{homebrew}を使用して{rbw}パッケージをインストールしてください:"
+    }
+  },
+  "configure": {
+    "title": "Bitwardenアカウントに接続",
+    "description": "Bitwardenアカウントのメールアドレスを入力してください。このアドレスはローカルマシンの{rbw}設定ファイルに保存されます。",
+    "emailLabel": "Bitwardenメールアドレス:",
+    "emailPlaceholder": "example@domain.com",
+    "saving": "保存中...",
+    "hint": "↵ 保存 · Esc キャンセル",
+    "errors": {
+      "emailRequired": "有効なメールアドレスを入力してください。",
+      "emailFailed": "メールの設定に失敗しました。"
+    }
+  },
+  "lock": {
+    "title": "Bitwardenボルトがロックされています",
+    "account": "アカウント:",
+    "description": "ボルトをロック解除するには以下のボタンを押してください。パスワード入力ウィンドウ（Pinentry）がデスクトップで開きます:",
+    "waitingForPassword": "パスワード待機中...",
+    "syncing": "同期中...",
+    "hint": "↵ ロック解除 · ⌃S 同期 · ⌃R 更新",
+    "unlocking": "パスワード入力ウィンドウがデスクトップで開きました。Bitwardenマスターパスワードを入力してください。",
+    "alternativeUnlock": "また、ターミナルからもロック解除できます:",
+    "errors": {
+      "unlockFailed": "ロック解除に失敗しました。Pinentryが閉じられた可能性があります。"
+    }
+  },
+  "search": {
+    "empty": "結果が見つかりません。",
+    "placeholder": "検索したいパスワードの名前を入力してください。"
+  },
+  "actions": {
+    "previousTab": "前のタブ",
+    "recheck": "再確認",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "unlock": "ロック解除",
+    "syncVault": "ボルトを同期",
+    "refreshStatus": "状態を更新",
+    "editEmail": "メールを編集",
+    "copyPassword": "パスワードをコピー",
+    "copyUsername": "ユーザー名をコピー",
+    "copyTotp": "TOTPをコピー"
+  }
+}

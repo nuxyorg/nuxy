@@ -7,7 +7,12 @@ interface Props {
   onEmailChange: (value: string) => void
 }
 
-export function BitwardenConfigScreen({ emailInput, isConfiguring, errorMsg, onEmailChange }: Props) {
+export function BitwardenConfigScreen({
+  emailInput,
+  isConfiguring,
+  errorMsg,
+  onEmailChange,
+}: Props) {
   const { Card, Input, Alert, IconUser } = window.UI || {}
   const WizardSection = (window.UI as any)?.WizardSection
 

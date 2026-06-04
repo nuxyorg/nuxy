@@ -11,8 +11,6 @@
   },
   "copied": "Kopyalandı!",
   "errors": {
-    "notFound": "Snippet bulunamadı",
-    "saveFailed": "Snippet kaydedilemedi",
-    "copyFailed": "Snippet kopyalanamadı"
+    "notFound": "Snippet bulunamadı"
   }
 }

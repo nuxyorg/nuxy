@@ -89,6 +89,30 @@ describe('registerIpc - Store Channels', () => {
     expect(ipcMain.handle).toHaveBeenCalledWith('ext:invoke', expect.any(Function))
   })
 
+  it('listTools uses runtime registeredEntries instead of hardcoded ids', async () => {
+    const handler = mockHandlers['ext:invoke']
+    const ext: LoadedExtension = {
+      id: 'com.example.dual',
+      folderName: 'dual',
+      manifest: { id: 'com.example.dual', name: 'Dual', version: '1.0.0', type: 'provider' },
+      runtime: {
+        ipcChannels: ['eval'],
+        registeredEntries: [
+          { kind: 'tool', name: 'dual' },
+          { kind: 'provider', name: 'dual' },
+        ],
+      },
+    }
+    loadedExtensions.push(ext)
+
+    const tools = await handler(null, 'kernel', 'listTools', {})
+    const providers = await handler(null, 'kernel', 'listProviders', {})
+    expect(tools.success).toBe(true)
+    expect(providers.success).toBe(true)
+    expect(tools.data.map((e: LoadedExtension) => e.id)).toContain('com.example.dual')
+    expect(providers.data.map((e: LoadedExtension) => e.id)).toContain('com.example.dual')
+  })
+
   it('listInstalledExtensions returns all loaded extensions', async () => {
     const handler = mockHandlers['ext:invoke']
     const ext: LoadedExtension = {
@@ -108,7 +132,13 @@ describe('registerIpc - Store Channels', () => {
     const shellExt: LoadedExtension = {
       id: 'com.nuxy.shell',
       folderName: 'shell',
-      manifest: { id: 'com.nuxy.shell', name: 'Shell', version: '1.0.0', type: 'uikit', bootstrap: true },
+      manifest: {
+        id: 'com.nuxy.shell',
+        name: 'Shell',
+        version: '1.0.0',
+        type: 'uikit',
+        bootstrap: true,
+      },
     }
     loadedExtensions.push(shellExt)
 
@@ -122,17 +152,24 @@ describe('registerIpc - Store Channels', () => {
     const ext: LoadedExtension = {
       id: 'com.nuxy.uninstall-me',
       folderName: 'uninstall-me',
-      manifest: { id: 'com.nuxy.uninstall-me', name: 'Uninstall Me', version: '1.0.0', type: 'tool' },
+      manifest: {
+        id: 'com.nuxy.uninstall-me',
+        name: 'Uninstall Me',
+        version: '1.0.0',
+        type: 'tool',
+      },
     }
     loadedExtensions.push(ext)
 
     vi.mocked(fs.existsSync).mockReturnValue(true)
 
-    const result = await handler(null, 'kernel', 'uninstallExtension', { extId: 'com.nuxy.uninstall-me' })
+    const result = await handler(null, 'kernel', 'uninstallExtension', {
+      extId: 'com.nuxy.uninstall-me',
+    })
     expect(result.success).toBe(true)
     expect(fs.rmSync).toHaveBeenCalled()
     expect(rescanExtensions).not.toHaveBeenCalled() // Triggers in setTimeout
-    
+
     // Wait for the rescanExtensions setTimeout to fire
     await new Promise((resolve) => setTimeout(resolve, 150))
     expect(rescanExtensions).toHaveBeenCalled()
@@ -140,7 +177,7 @@ describe('registerIpc - Store Channels', () => {
 
   it('installExtension downloads zip, writes file, and triggers rescan', async () => {
     const handler = mockHandlers['ext:invoke']
-    
+
     // Mock the global fetch
     const mockArrayBuffer = vi.fn().mockResolvedValue(new ArrayBuffer(8))
     const mockResponse = {

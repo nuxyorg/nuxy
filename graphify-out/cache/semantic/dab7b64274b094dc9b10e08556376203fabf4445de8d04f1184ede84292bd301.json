@@ -1,1 +1,156 @@
-{"nodes": [{"id": "docs_project_analysis_02_extensions_review_document", "label": "Extensions Review Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_02_shell_extension", "label": "com.nuxy.shell Extension Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "1.1. Nuxy Shell", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_02_ai_orchestrator_extension", "label": "com.nuxy.ai-orchestrator Extension Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "2.1. AI Orchestrator", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_02_ollama_extension", "label": "com.nuxy.ollama Extension Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "2.2. Ollama", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_02_notes_extension", "label": "com.nuxy.notes Extension Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "3.1. Notlar", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_02_angrysearch_extension", "label": "com.nuxy.angrysearch Extension Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "3.4. ANGRYsearch", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_02_bitwarden_extension", "label": "com.nuxy.bitwarden Extension Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "3.5. Bitwarden", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_02_clipboard_extension", "label": "com.nuxy.clipboard Extension Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "3.6. Pano Y\u00f6neticisi", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_02_n8n_extension", "label": "com.nuxy.n8n Extension Analysis", "file_type": "document", "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "3.9. n8n", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "docs_project_analysis_02_extensions_review_document", "target": "docs_project_analysis_02_shell_extension", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "1.1", "weight": 1.0}, {"source": "docs_project_analysis_02_extensions_review_document", "target": "docs_project_analysis_02_ai_orchestrator_extension", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "2.1", "weight": 1.0}, {"source": "docs_project_analysis_02_extensions_review_document", "target": "docs_project_analysis_02_ollama_extension", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "2.2", "weight": 1.0}, {"source": "docs_project_analysis_02_extensions_review_document", "target": "docs_project_analysis_02_n8n_extension", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "3.9", "weight": 1.0}, {"source": "extensions_extension_guide_settings_schema", "target": "docs_project_analysis_02_n8n_extension", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": "docs/project-analysis/02-extensions-review.md", "source_location": "n8n needs secure secret storage \u2014 settings API is the solution", "weight": 0.75}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "docs_project_analysis_02_extensions_review_document",
+      "label": "Extensions Review Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_02_shell_extension",
+      "label": "com.nuxy.shell Extension Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "1.1. Nuxy Shell",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_02_ai_orchestrator_extension",
+      "label": "com.nuxy.ai-orchestrator Extension Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "2.1. AI Orchestrator",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_02_ollama_extension",
+      "label": "com.nuxy.ollama Extension Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "2.2. Ollama",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_02_notes_extension",
+      "label": "com.nuxy.notes Extension Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "3.1. Notlar",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_02_angrysearch_extension",
+      "label": "com.nuxy.angrysearch Extension Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "3.4. ANGRYsearch",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_02_bitwarden_extension",
+      "label": "com.nuxy.bitwarden Extension Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "3.5. Bitwarden",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_02_clipboard_extension",
+      "label": "com.nuxy.clipboard Extension Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "3.6. Pano Y\u00f6neticisi",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_02_n8n_extension",
+      "label": "com.nuxy.n8n Extension Analysis",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "3.9. n8n",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_project_analysis_02_extensions_review_document",
+      "target": "docs_project_analysis_02_shell_extension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "1.1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_02_extensions_review_document",
+      "target": "docs_project_analysis_02_ai_orchestrator_extension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "2.1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_02_extensions_review_document",
+      "target": "docs_project_analysis_02_ollama_extension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "2.2",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_02_extensions_review_document",
+      "target": "docs_project_analysis_02_n8n_extension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "3.9",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_settings_schema",
+      "target": "docs_project_analysis_02_n8n_extension",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/project-analysis/02-extensions-review.md",
+      "source_location": "n8n needs secure secret storage \u2014 settings API is the solution",
+      "weight": 0.75
+    }
+  ],
+  "hyperedges": []
+}

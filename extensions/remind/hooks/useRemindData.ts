@@ -23,7 +23,9 @@ export function useRemindData(query: string): RemindData {
   const [preview, setPreview] = React.useState<ParsedReminder | null>(null)
 
   const refreshReminders = React.useCallback(() => {
-    invoke<Reminder[]>('remind:list').then(setReminders).catch(() => {})
+    invoke<Reminder[]>('remind:list')
+      .then(setReminders)
+      .catch(() => {})
   }, [])
 
   // Load reminders on mount

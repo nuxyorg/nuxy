@@ -62,7 +62,7 @@ describe('getRowCurrentValue', () => {
     expect(getRowCurrentValue(row, settings, extValues, installed)).toBe('ocean')
   })
 
-  it('returns the correct language slot value', () => {
+  it('returns empty string for a language slot (managed externally)', () => {
     const row: AnyRow = {
       key: 'lang:0',
       label: 'First',
@@ -72,7 +72,7 @@ describe('getRowCurrentValue', () => {
       langIndex: 0,
       searchable: true,
     }
-    expect(getRowCurrentValue(row, settings, extValues, installed)).toBe('en')
+    expect(getRowCurrentValue(row, settings, extValues, installed)).toBe('')
   })
 
   it('returns empty string for an out-of-range language slot', () => {

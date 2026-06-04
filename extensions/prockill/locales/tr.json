@@ -11,7 +11,6 @@
   },
   "errors": {
     "killFailed": "İşlem sonlandırılamadı",
-    "invalidPid": "Geçersiz işlem kimliği",
-    "listFailed": "İşlem listesi alınamadı"
+    "invalidPid": "Geçersiz işlem kimliği"
   }
 }

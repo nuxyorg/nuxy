@@ -4,9 +4,10 @@ import { EXAMPLE_QUERIES } from '../utils/constants.ts'
 
 interface Props {
   loading: boolean
+  t: (key: string) => string
 }
 
-export function TimeEmptyState({ loading }: Props) {
+export function TimeEmptyState({ loading, t }: Props) {
   return React.createElement(
     React.Fragment,
     null,
@@ -25,14 +26,14 @@ export function TimeEmptyState({ loading }: Props) {
       React.createElement(
         'div',
         { className: 'tc-empty__text' },
-        loading ? 'Calculating…' : 'Type a time conversion query above'
+        loading ? t('loading.calculating') : t('empty.prompt')
       )
     ),
     !loading &&
       React.createElement(
         'div',
         { className: 'tc-hint' },
-        'Try these examples:',
+        t('hint.tryExamples'),
         React.createElement(
           'div',
           { className: 'tc-examples' },

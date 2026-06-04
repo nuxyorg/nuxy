@@ -1,1 +1,420 @@
-{"nodes": [{"id": "features_nuxy_featuretracker", "label": "Nuxy Feature Tracker", "file_type": "document", "source_file": "features.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_electron_frameless_overlay", "label": "Electron Frameless Overlay Window", "file_type": "concept", "source_file": "features.md", "source_location": "line 11", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_nuxy_ext_protocol", "label": "nuxy-ext:// Custom Protocol", "file_type": "concept", "source_file": "features.md", "source_location": "line 12", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_worker_thread_isolation", "label": "Worker Thread Isolation", "file_type": "concept", "source_file": "features.md", "source_location": "line 13", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_ipc_router", "label": "IPC Router (ext:invoke)", "file_type": "concept", "source_file": "features.md", "source_location": "line 14", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_extension_scanner", "label": "Extension Scanner", "file_type": "concept", "source_file": "features.md", "source_location": "line 15", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_unix_socket_daemon", "label": "UNIX Socket Daemon (/tmp/nuxy.sock)", "file_type": "concept", "source_file": "features.md", "source_location": "line 16", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_extension_type_tool", "label": "Tool Extension Type", "file_type": "concept", "source_file": "features.md", "source_location": "line 23", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_extension_type_provider", "label": "Provider Extension Type", "file_type": "concept", "source_file": "features.md", "source_location": "line 24", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_extension_type_orchestrator", "label": "Orchestrator Extension Type", "file_type": "concept", "source_file": "features.md", "source_location": "line 27", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_extension_type_theme", "label": "Theme Extension Type", "file_type": "concept", "source_file": "features.md", "source_location": "line 28", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_extension_type_iconpack", "label": "Icon Pack Extension Type", "file_type": "concept", "source_file": "features.md", "source_location": "line 29", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_extension_sdk", "label": "@nuxy/extension-sdk", "file_type": "concept", "source_file": "features.md", "source_location": "line 32", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_omnibar", "label": "Omnibar (Search/Command Bar)", "file_type": "concept", "source_file": "features.md", "source_location": "line 36", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_command_palette", "label": "Ctrl+K Command Palette", "file_type": "concept", "source_file": "features.md", "source_location": "line 46", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_spring_physics_animation", "label": "Spring Physics Window Animation", "file_type": "concept", "source_file": "features.md", "source_location": "line 116", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_ui_library", "label": "@nuxy/ui Component Library", "file_type": "concept", "source_file": "features.md", "source_location": "line 108", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_ext_shell", "label": "com.nuxy.shell (Shell Extension)", "file_type": "concept", "source_file": "features.md", "source_location": "line 204", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_ext_settings", "label": "com.nuxy.settings (Settings Extension)", "file_type": "concept", "source_file": "features.md", "source_location": "line 205", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_ext_clipboard", "label": "com.nuxy.clipboard (Clipboard Extension)", "file_type": "concept", "source_file": "features.md", "source_location": "line 206", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_ext_angrysearch", "label": "com.nuxy.angrysearch (File Search Extension)", "file_type": "concept", "source_file": "features.md", "source_location": "line 207", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_ext_calculator", "label": "com.nuxy.calculator (Calculator Provider)", "file_type": "concept", "source_file": "features.md", "source_location": "line 210", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "features_ext_ai_orchestrator", "label": "com.nuxy.ai-orchestrator (AI Orchestrator)", "file_type": "concept", "source_file": "features.md", "source_location": "line 212", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "features_nuxy_featuretracker", "target": "features_electron_frameless_overlay", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 11", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_nuxy_ext_protocol", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 12", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_worker_thread_isolation", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 13", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_ipc_router", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 14", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_extension_scanner", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 15", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_unix_socket_daemon", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 16", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_extension_sdk", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 32", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_omnibar", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 36", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_command_palette", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 46", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_spring_physics_animation", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 116", "weight": 1.0}, {"source": "features_nuxy_featuretracker", "target": "features_ui_library", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 108", "weight": 1.0}, {"source": "features_ext_shell", "target": "features_omnibar", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 204", "weight": 1.0}, {"source": "features_ext_shell", "target": "features_command_palette", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 204", "weight": 1.0}, {"source": "features_ext_calculator", "target": "features_extension_type_provider", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 210", "weight": 1.0}, {"source": "features_ext_ai_orchestrator", "target": "features_extension_type_orchestrator", "relation": "implements", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "features.md", "source_location": "line 212", "weight": 1.0}, {"source": "features_worker_thread_isolation", "target": "docs_10_hardware_thread_isolation", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": "features.md", "source_location": null, "weight": 0.95}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "features_nuxy_featuretracker",
+      "label": "Nuxy Feature Tracker",
+      "file_type": "document",
+      "source_file": "features.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_electron_frameless_overlay",
+      "label": "Electron Frameless Overlay Window",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_nuxy_ext_protocol",
+      "label": "nuxy-ext:// Custom Protocol",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_worker_thread_isolation",
+      "label": "Worker Thread Isolation",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_ipc_router",
+      "label": "IPC Router (ext:invoke)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_extension_scanner",
+      "label": "Extension Scanner",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 15",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_unix_socket_daemon",
+      "label": "UNIX Socket Daemon (/tmp/nuxy.sock)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 16",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_extension_type_tool",
+      "label": "Tool Extension Type",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_extension_type_provider",
+      "label": "Provider Extension Type",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 24",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_extension_type_orchestrator",
+      "label": "Orchestrator Extension Type",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_extension_type_theme",
+      "label": "Theme Extension Type",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 28",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_extension_type_iconpack",
+      "label": "Icon Pack Extension Type",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 29",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_extension_sdk",
+      "label": "@nuxy/extension-sdk",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_omnibar",
+      "label": "Omnibar (Search/Command Bar)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_command_palette",
+      "label": "Ctrl+K Command Palette",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_spring_physics_animation",
+      "label": "Spring Physics Window Animation",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 116",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_ui_library",
+      "label": "@nuxy/ui Component Library",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 108",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_ext_shell",
+      "label": "com.nuxy.shell (Shell Extension)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 204",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_ext_settings",
+      "label": "com.nuxy.settings (Settings Extension)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 205",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_ext_clipboard",
+      "label": "com.nuxy.clipboard (Clipboard Extension)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 206",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_ext_angrysearch",
+      "label": "com.nuxy.angrysearch (File Search Extension)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 207",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_ext_calculator",
+      "label": "com.nuxy.calculator (Calculator Provider)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 210",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "features_ext_ai_orchestrator",
+      "label": "com.nuxy.ai-orchestrator (AI Orchestrator)",
+      "file_type": "concept",
+      "source_file": "features.md",
+      "source_location": "line 212",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_electron_frameless_overlay",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 11",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_nuxy_ext_protocol",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 12",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_worker_thread_isolation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 13",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_ipc_router",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 14",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_extension_scanner",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 15",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_unix_socket_daemon",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 16",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_extension_sdk",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 32",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_omnibar",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 36",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_command_palette",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 46",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_spring_physics_animation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 116",
+      "weight": 1.0
+    },
+    {
+      "source": "features_nuxy_featuretracker",
+      "target": "features_ui_library",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 108",
+      "weight": 1.0
+    },
+    {
+      "source": "features_ext_shell",
+      "target": "features_omnibar",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 204",
+      "weight": 1.0
+    },
+    {
+      "source": "features_ext_shell",
+      "target": "features_command_palette",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 204",
+      "weight": 1.0
+    },
+    {
+      "source": "features_ext_calculator",
+      "target": "features_extension_type_provider",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 210",
+      "weight": 1.0
+    },
+    {
+      "source": "features_ext_ai_orchestrator",
+      "target": "features_extension_type_orchestrator",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "features.md",
+      "source_location": "line 212",
+      "weight": 1.0
+    },
+    {
+      "source": "features_worker_thread_isolation",
+      "target": "docs_10_hardware_thread_isolation",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "features.md",
+      "source_location": null,
+      "weight": 0.95
+    }
+  ],
+  "hyperedges": []
+}

@@ -224,3 +224,7 @@ export type { ConversionCardProps } from './components/ConversionCard'
 // --- Markdown ---
 export { MarkdownText } from './components/MarkdownText'
 export type { MarkdownTextProps } from './components/MarkdownText'
+
+// --- i18n ---
+export { useTranslation } from './hooks/useTranslation'
+export type { UseTranslationResult } from './hooks/useTranslation'

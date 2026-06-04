@@ -412,9 +412,9 @@ describe('bitwarden backend', () => {
       new Error('clipboard unavailable')
     )
 
-    await expect(
-      handlers['bw:copyPassword']({ id: 'abc-123', name: 'GitHub' })
-    ).rejects.toThrow('clipboard unavailable')
+    await expect(handlers['bw:copyPassword']({ id: 'abc-123', name: 'GitHub' })).rejects.toThrow(
+      'clipboard unavailable'
+    )
   })
 
   it('bw:copyUsername propagates when clipboard write fails', async () => {
@@ -422,7 +422,6 @@ describe('bitwarden backend', () => {
     const register = await freshBackend()
     const { core, handlers } = createCore(exec)
     await register(core as CoreContext)
-
     ;(core.clipboard as { writeText: ReturnType<typeof vi.fn> }).writeText.mockRejectedValueOnce(
       new Error('clipboard unavailable')
     )

@@ -21,7 +21,13 @@ function timeAgo(ts: number): string {
   return `${(diff / 1000).toFixed(1)}s`
 }
 
-export function KeyHistoryList({ filteredHistory, selectedIndex, emptyLabel, emptyHint, searchQuery }: Props) {
+export function KeyHistoryList({
+  filteredHistory,
+  selectedIndex,
+  emptyLabel,
+  emptyHint,
+  searchQuery,
+}: Props) {
   const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState } = window.UI || {}
 
   if (!List || !ListItem || !ListItemBody || !ListItemText) return null

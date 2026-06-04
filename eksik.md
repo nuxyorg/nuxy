@@ -9,11 +9,13 @@ Audit tamamlandı, testler 657/657 geçiyor. Aşağıdakiler ya düzeltilmedi ya
 ### 1. `calendar` manifest — `caller: false` yanlış
 
 `extensions/calendar/manifest.json`:
+
 ```json
 "capabilities": { "callable": true, "caller": false }
 ```
 
 `extensions/calendar/backend.ts:48` şunu çağırıyor:
+
 ```ts
 await core.extensions.invoke('kernel', 'notification:send', { ... })
 ```
@@ -47,20 +49,21 @@ Kural: "caller: true must be set in manifest when making cross-extension calls."
 
 Agentlar şu ortak pattern'ları tespit etti ama `ui-default`'a eklenmedi. Birden fazla extension'da tekrar eden her biri:
 
-| Component | Nerede tekrarlıyor | Açıklama |
-|-----------|-------------------|----------|
-| `SectionHeader` `action` prop slot | n8n (flex wrapper ile workaround yapıldı) | Sağ tarafa hizalanmış ikincil içerik alanı (ör. Refresh butonu) |
-| `ChatMessage` / `ChatList` | ollama, ai-orchestrator | Kullanıcı/asistan mesajlarını gösteren sıralı konuşma listesi |
-| `FormField` / `FieldList` | calendar (create form), settings | `formFieldIdx` + `activeSelect` + `SelectBox` pattern'ını kapsayan form satırı |
-| `WizardSection` | bitwarden (4 kez) | İkon + başlık satırı (setup ekranları için) |
-| `TabHeader` (horizontal) | bitwarden (OS sekmeleri) | `TabBar`'ın yatay `Button` satırı varyantı |
-| `PropertiesPanel` | clipboard (sağ panel) | Etiket/değer grid'i, üstte bölüm başlığı |
-| `ConversionCard` | time-calculator | Sol kaynak → ok → sağ hedef iki sütunlu karşılaştırma kartı |
-| `Chip` / `HintChip` | time-calculator (örnek ifadeler) | Salt okunur pill-shaped metin etiketi |
-| `DownloadListItem` | video-downloader | MediaPreview + progress + badge + "Aç / Klasörü Aç" ipuçları |
-| `useTwoPanelNav` polyfill | video-downloader, settings | Her iki frontend aynı no-op fallback'i tanımlıyor |
+| Component                          | Nerede tekrarlıyor                        | Açıklama                                                                       |
+| ---------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------ |
+| `SectionHeader` `action` prop slot | n8n (flex wrapper ile workaround yapıldı) | Sağ tarafa hizalanmış ikincil içerik alanı (ör. Refresh butonu)                |
+| `ChatMessage` / `ChatList`         | ollama, ai-orchestrator                   | Kullanıcı/asistan mesajlarını gösteren sıralı konuşma listesi                  |
+| `FormField` / `FieldList`          | calendar (create form), settings          | `formFieldIdx` + `activeSelect` + `SelectBox` pattern'ını kapsayan form satırı |
+| `WizardSection`                    | bitwarden (4 kez)                         | İkon + başlık satırı (setup ekranları için)                                    |
+| `TabHeader` (horizontal)           | bitwarden (OS sekmeleri)                  | `TabBar`'ın yatay `Button` satırı varyantı                                     |
+| `PropertiesPanel`                  | clipboard (sağ panel)                     | Etiket/değer grid'i, üstte bölüm başlığı                                       |
+| `ConversionCard`                   | time-calculator                           | Sol kaynak → ok → sağ hedef iki sütunlu karşılaştırma kartı                    |
+| `Chip` / `HintChip`                | time-calculator (örnek ifadeler)          | Salt okunur pill-shaped metin etiketi                                          |
+| `DownloadListItem`                 | video-downloader                          | MediaPreview + progress + badge + "Aç / Klasörü Aç" ipuçları                   |
+| `useTwoPanelNav` polyfill          | video-downloader, settings                | Her iki frontend aynı no-op fallback'i tanımlıyor                              |
 
 ### Mevcut ama kullanılmayan
+
 `CodeBlock` component `ui-default`'ta mevcut (`extensions/ui-default/src/components/Code/`) ama bitwarden'ın `<pre>` + `<code>` + Kopyala butonu pattern'ı hâlâ inline olarak yazılmış. Bitwarden frontend'i `CodeBlock` kullanacak şekilde güncellenebilir.
 
 ---

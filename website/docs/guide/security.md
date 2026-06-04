@@ -25,18 +25,18 @@ Extensions declare which `CoreContext` APIs they need in the `permissions` array
 }
 ```
 
-| Permission | Gates Access to | Sensitivity |
-|---|---|---|
-| `storage` | `core.storage.*` — sandboxed JSON files | Low |
-| `clipboard` | `core.clipboard.*` — OS clipboard read/write | High |
-| `media` | `core.media.*` — now-playing metadata | Medium |
-| `network` | Outbound HTTP/fetch | Medium |
-| `notifications` | System notifications | Low |
-| `fs` | `core.fs.*` — filesystem operations | Medium |
-| `db` | `core.db.*` — SQLite databases | Low |
-| `shell` | `core.shell.*` — run external binaries | High |
-| `settings.read` | Read another extension's settings | Low |
-| `settings.write` | Write another extension's settings | Medium |
+| Permission       | Gates Access to                              | Sensitivity |
+| ---------------- | -------------------------------------------- | ----------- |
+| `storage`        | `core.storage.*` — sandboxed JSON files      | Low         |
+| `clipboard`      | `core.clipboard.*` — OS clipboard read/write | High        |
+| `media`          | `core.media.*` — now-playing metadata        | Medium      |
+| `network`        | Outbound HTTP/fetch                          | Medium      |
+| `notifications`  | System notifications                         | Low         |
+| `fs`             | `core.fs.*` — filesystem operations          | Medium      |
+| `db`             | `core.db.*` — SQLite databases               | Low         |
+| `shell`          | `core.shell.*` — run external binaries       | High        |
+| `settings.read`  | Read another extension's settings            | Low         |
+| `settings.write` | Write another extension's settings           | Medium      |
 
 If an extension calls a `core.*` API without the corresponding permission declared, the kernel rejects it at runtime with `PERMISSION_DENIED`. The extension receives a structured error — the main process never executes the underlying Electron API.
 
@@ -78,15 +78,15 @@ The renderer runs with Electron's `contextIsolation: true`. Direct access to Nod
 
 ## Threat Model
 
-| Threat | Mitigation |
-|---|---|
-| Malicious extension reads another extension's data | Storage chroot per extension ID |
-| Malicious extension calls privileged Node APIs | Worker has no native require; all I/O via host:call |
-| Malicious extension reads clipboard without permission | Permission check at host boundary |
-| Compromised renderer injects arbitrary IPC | contextBridge exposes only typed, allowlisted channels |
-| Extension escapes its frontend asset folder | nuxy-ext:// path traversal check |
-| Extension calls another extension directly | Broker enforces caller/callable capability bits |
-| Frontend reads another extension's DOM | Separate UI bundles; future sandboxed webviews planned |
+| Threat                                                 | Mitigation                                             |
+| ------------------------------------------------------ | ------------------------------------------------------ |
+| Malicious extension reads another extension's data     | Storage chroot per extension ID                        |
+| Malicious extension calls privileged Node APIs         | Worker has no native require; all I/O via host:call    |
+| Malicious extension reads clipboard without permission | Permission check at host boundary                      |
+| Compromised renderer injects arbitrary IPC             | contextBridge exposes only typed, allowlisted channels |
+| Extension escapes its frontend asset folder            | nuxy-ext:// path traversal check                       |
+| Extension calls another extension directly             | Broker enforces caller/callable capability bits        |
+| Frontend reads another extension's DOM                 | Separate UI bundles; future sandboxed webviews planned |
 
 ## Planned Security Enhancements
 

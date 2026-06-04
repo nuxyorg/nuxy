@@ -14,12 +14,7 @@ interface ShellMeta {
   itemClass: (index: number) => string
 }
 
-export function useShellMeta({
-  activeTool,
-  tools,
-  selectedIndex,
-  themeStyles,
-}: Params): ShellMeta {
+export function useShellMeta({ activeTool, tools, selectedIndex, themeStyles }: Params): ShellMeta {
   const activeTool_ = activeTool ? tools.find((t) => t.id === activeTool) : null
   const activeToolName = activeTool_?.manifest.name ?? activeTool ?? null
   const activeToolPlaceholder =

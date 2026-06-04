@@ -1,1 +1,90 @@
-{"nodes": [{"id": "memory_project_extension_guide", "label": "Memory: Project Extension Guide", "file_type": "document", "source_file": "memory/project_extension_guide.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "memory_extension_guide_violations", "label": "Known Extension Violations (angrysearch, clipboard, settings)", "file_type": "concept", "source_file": "memory/project_extension_guide.md", "source_location": "line 13", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "memory_core_api_gaps", "label": "Core API Gaps (core.fs, core.db, core.shell)", "file_type": "concept", "source_file": "memory/project_extension_guide.md", "source_location": "line 40", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "memory_project_extension_guide", "target": "memory_extension_guide_violations", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "memory/project_extension_guide.md", "source_location": "line 13", "weight": 1.0}, {"source": "memory_project_extension_guide", "target": "memory_core_api_gaps", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "memory/project_extension_guide.md", "source_location": "line 40", "weight": 1.0}, {"source": "memory_extension_guide_violations", "target": "features_ext_angrysearch", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "memory/project_extension_guide.md", "source_location": "line 17", "weight": 1.0}, {"source": "memory_extension_guide_violations", "target": "features_ext_clipboard", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "memory/project_extension_guide.md", "source_location": "line 23", "weight": 1.0}, {"source": "memory_core_api_gaps", "target": "claude_corecontext", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "memory/project_extension_guide.md", "source_location": "line 40", "weight": 1.0}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "memory_project_extension_guide",
+      "label": "Memory: Project Extension Guide",
+      "file_type": "document",
+      "source_file": "memory/project_extension_guide.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "memory_extension_guide_violations",
+      "label": "Known Extension Violations (angrysearch, clipboard, settings)",
+      "file_type": "concept",
+      "source_file": "memory/project_extension_guide.md",
+      "source_location": "line 13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "memory_core_api_gaps",
+      "label": "Core API Gaps (core.fs, core.db, core.shell)",
+      "file_type": "concept",
+      "source_file": "memory/project_extension_guide.md",
+      "source_location": "line 40",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "memory_project_extension_guide",
+      "target": "memory_extension_guide_violations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "memory/project_extension_guide.md",
+      "source_location": "line 13",
+      "weight": 1.0
+    },
+    {
+      "source": "memory_project_extension_guide",
+      "target": "memory_core_api_gaps",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "memory/project_extension_guide.md",
+      "source_location": "line 40",
+      "weight": 1.0
+    },
+    {
+      "source": "memory_extension_guide_violations",
+      "target": "features_ext_angrysearch",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "memory/project_extension_guide.md",
+      "source_location": "line 17",
+      "weight": 1.0
+    },
+    {
+      "source": "memory_extension_guide_violations",
+      "target": "features_ext_clipboard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "memory/project_extension_guide.md",
+      "source_location": "line 23",
+      "weight": 1.0
+    },
+    {
+      "source": "memory_core_api_gaps",
+      "target": "claude_corecontext",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "memory/project_extension_guide.md",
+      "source_location": "line 40",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

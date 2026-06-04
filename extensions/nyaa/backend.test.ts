@@ -44,7 +44,7 @@ function mockFetch(ok = true, html = SAMPLE_HTML): void {
       ok,
       status: ok ? 200 : 503,
       text: vi.fn().mockResolvedValue(html),
-    }),
+    })
   )
 }
 
@@ -56,6 +56,9 @@ describe('nyaa backend', () => {
     ;({ core, handlers } = createMockCore({
       clipboard: {
         writeText: vi.fn().mockResolvedValue(undefined),
+      },
+      shell: {
+        open: vi.fn().mockResolvedValue(undefined),
       },
     }))
     mockFetch()
@@ -157,7 +160,7 @@ describe('nyaa backend', () => {
         vi.fn().mockResolvedValue({
           ok: true,
           text: vi.fn().mockResolvedValue('<html><body>No results found.</body></html>'),
-        }),
+        })
       )
       const result = await handlers.search({ query: 'empty' })
       expect(result).toEqual([])
@@ -169,6 +172,64 @@ describe('nyaa backend', () => {
       const magnet = 'magnet:?xt=urn:btih:abc123&dn=Test+Anime'
       await handlers.copyMagnet({ magnet })
       expect(core.clipboard.writeText).toHaveBeenCalledWith(magnet)
+    })
+  })
+
+  describe('copyMagnets', () => {
+    it('joins multiple magnets with newline and writes to clipboard', async () => {
+      const magnets = ['magnet:?xt=urn:btih:aaa111', 'magnet:?xt=urn:btih:bbb222']
+      await handlers.copyMagnets({ magnets })
+      expect(core.clipboard.writeText).toHaveBeenCalledWith(
+        'magnet:?xt=urn:btih:aaa111\nmagnet:?xt=urn:btih:bbb222'
+      )
+    })
+
+    it('handles a single magnet in the array', async () => {
+      const magnets = ['magnet:?xt=urn:btih:single']
+      await handlers.copyMagnets({ magnets })
+      expect(core.clipboard.writeText).toHaveBeenCalledWith('magnet:?xt=urn:btih:single')
+    })
+  })
+
+  describe('downloadTorrent', () => {
+    it('opens the correct torrent URL via shell', async () => {
+      await handlers.downloadTorrent({ id: '1234567' })
+      expect(core.shell.open).toHaveBeenCalledWith('https://nyaa.si/download/1234567.torrent')
+    })
+
+    it('opens the correct URL for any given id', async () => {
+      await handlers.downloadTorrent({ id: '9999999' })
+      expect(core.shell.open).toHaveBeenCalledWith('https://nyaa.si/download/9999999.torrent')
+    })
+  })
+
+  describe('downloadTorrents', () => {
+    it('opens shell for each id in order', async () => {
+      await handlers.downloadTorrents({ ids: ['1234567', '9999999'] })
+      expect(core.shell.open).toHaveBeenCalledTimes(2)
+      expect(core.shell.open).toHaveBeenNthCalledWith(1, 'https://nyaa.si/download/1234567.torrent')
+      expect(core.shell.open).toHaveBeenNthCalledWith(2, 'https://nyaa.si/download/9999999.torrent')
+    })
+
+    it('does nothing when ids array is empty', async () => {
+      await handlers.downloadTorrents({ ids: [] })
+      expect(core.shell.open).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('getEnterAction', () => {
+    it('returns copyMagnet by default when no setting is saved', async () => {
+      const result = await handlers.getEnterAction({})
+      expect(result).toBe('copyMagnet')
+    })
+
+    it('returns the saved enterAction setting', async () => {
+      core.settings.read = vi.fn().mockImplementation(async (key: string) => {
+        if (key === 'enterAction') return 'downloadTorrent'
+        return null
+      })
+      const result = await handlers.getEnterAction({})
+      expect(result).toBe('downloadTorrent')
     })
   })
 })

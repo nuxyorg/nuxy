@@ -2,8 +2,8 @@
 layout: home
 
 hero:
-  name: "Nuxy"
-  text: "A Launcher That Gets Out of Your Way"
+  name: 'Nuxy'
+  text: 'A Launcher That Gets Out of Your Way'
   tagline: Frameless, transparent, extension-powered. Built on Electron + React.
   actions:
     - theme: brand

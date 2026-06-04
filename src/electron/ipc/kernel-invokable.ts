@@ -41,7 +41,9 @@ export async function callKernelChannel(channel: string, payload: unknown): Prom
         fs.mkdirSync(EXTENSION_DIR, { recursive: true })
         fs.writeFileSync(tempFile, fileData)
         fs.renameSync(tempFile, path.join(EXTENSION_DIR, filename))
-        setTimeout(() => { void rescanExtensions() }, 100)
+        setTimeout(() => {
+          void rescanExtensions()
+        }, 100)
         return { success: true }
       } catch (e: any) {
         log.error(`Failed to install extension ${extId}`, e)
@@ -84,7 +86,9 @@ export async function callKernelChannel(channel: string, payload: unknown): Prom
           fs.chmodSync(zipPath, 0o755)
           fs.rmSync(zipPath, { force: true })
         }
-        setTimeout(() => { void rescanExtensions() }, 100)
+        setTimeout(() => {
+          void rescanExtensions()
+        }, 100)
         return { success: true }
       } catch (e: any) {
         log.error(`Failed to uninstall extension ${extId}`, e)

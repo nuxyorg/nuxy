@@ -70,8 +70,7 @@ export async function register(core: CoreContext): Promise<void> {
   let cachedHosts: SshHost[] = []
 
   async function loadHosts(): Promise<SshHost[]> {
-    const configPathSetting =
-      (await core.settings.read<string>('configPath')) ?? '~/.ssh/config'
+    const configPathSetting = (await core.settings.read<string>('configPath')) ?? '~/.ssh/config'
     const resolvedPath = resolveConfigPath(configPathSetting, core.fs.homedir())
 
     const exists = await core.fs.fileExists(resolvedPath)
@@ -97,37 +96,33 @@ export async function register(core: CoreContext): Promise<void> {
     return cachedHosts
   })
 
-  core.ipc.handle(
-    'ssh:connect',
-    async (payload: unknown): Promise<SshConnectResult> => {
-      const { host } = payload as SshConnectPayload
-      const sshHost = cachedHosts.find((h) => h.name === host)
+  core.ipc.handle('ssh:connect', async (payload: unknown): Promise<SshConnectResult> => {
+    const { host } = payload as SshConnectPayload
+    const sshHost = cachedHosts.find((h) => h.name === host)
 
-      if (!sshHost) {
-        throw new Error(core.i18n.t('empty.noMatch'))
-      }
-
-      const terminal =
-        (await core.settings.read<string>('terminal')) ?? 'default'
-      const connStr = buildConnectionString(sshHost)
-
-      core.logger.info(`Opening SSH connection to ${host} via ${terminal}`, { connStr })
-
-      if (terminal === 'default') {
-        await core.shell.open(`ssh://${connStr}`)
-      } else if (terminal === 'kitty') {
-        await core.shell.exec('kitty', ['ssh', connStr])
-      } else if (terminal === 'alacritty') {
-        await core.shell.exec('alacritty', ['-e', 'ssh', connStr])
-      } else if (terminal === 'gnome-terminal') {
-        await core.shell.exec('gnome-terminal', ['--', 'ssh', connStr])
-      } else if (terminal === 'konsole') {
-        await core.shell.exec('konsole', ['-e', 'ssh', connStr])
-      } else {
-        await core.shell.open(`ssh://${connStr}`)
-      }
-
-      return { launched: true }
+    if (!sshHost) {
+      throw new Error(core.i18n.t('empty.noMatch'))
     }
-  )
+
+    const terminal = (await core.settings.read<string>('terminal')) ?? 'default'
+    const connStr = buildConnectionString(sshHost)
+
+    core.logger.info(`Opening SSH connection to ${host} via ${terminal}`, { connStr })
+
+    if (terminal === 'default') {
+      await core.shell.open(`ssh://${connStr}`)
+    } else if (terminal === 'kitty') {
+      await core.shell.exec('kitty', ['ssh', connStr])
+    } else if (terminal === 'alacritty') {
+      await core.shell.exec('alacritty', ['-e', 'ssh', connStr])
+    } else if (terminal === 'gnome-terminal') {
+      await core.shell.exec('gnome-terminal', ['--', 'ssh', connStr])
+    } else if (terminal === 'konsole') {
+      await core.shell.exec('konsole', ['-e', 'ssh', connStr])
+    } else {
+      await core.shell.open(`ssh://${connStr}`)
+    }
+
+    return { launched: true }
+  })
 }

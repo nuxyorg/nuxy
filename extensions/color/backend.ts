@@ -1,12 +1,6 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
 import type { SavedColor } from './types.ts'
-import {
-  parseColorInput,
-  rgbToHsl,
-  formatHex,
-  formatRgb,
-  formatHsl,
-} from './utils/colorParse.ts'
+import { parseColorInput, rgbToHsl, formatHex, formatRgb, formatHsl } from './utils/colorParse.ts'
 
 export function register(core: CoreContext): void {
   core.registry.registerTool({ name: core.i18n.t('tool.name') })
@@ -62,7 +56,11 @@ export function register(core: CoreContext): void {
 
   core.ipc.handle('saveColor', async (payload: unknown): Promise<SavedColor[]> => {
     const { color } = payload as { color: SavedColor }
-    const newItem: SavedColor = { ...color, id: crypto.randomUUID(), savedAt: new Date().toISOString() }
+    const newItem: SavedColor = {
+      ...color,
+      id: crypto.randomUUID(),
+      savedAt: new Date().toISOString(),
+    }
     history = [newItem, ...history.filter((c) => c.hex !== newItem.hex)]
     if (history.length > 50) {
       history = history.slice(0, 50)

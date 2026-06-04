@@ -16,6 +16,8 @@ export function useKeyCapture() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      // ESC is reserved as the hold-to-exit key; don't record it
+      if (e.key === 'Escape') return
       const modifiers: string[] = []
       if (e.ctrlKey) modifiers.push('Ctrl')
       if (e.altKey) modifiers.push('Alt')

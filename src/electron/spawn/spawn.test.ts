@@ -43,6 +43,8 @@ vi.mock('@nuxy/core', () => ({
 
 vi.mock('./active-workers.js', () => ({
   activeWorkers: new Map(),
+  workerExitListeners: new Set(),
+  workerRegistryErrorListeners: new Set(),
 }))
 
 vi.mock('./migrate-data.js', () => ({
@@ -57,13 +59,22 @@ vi.mock('./host-handlers.js', () => ({
   handleHostCall: vi.fn(async () => ({ result: 'ok' })),
 }))
 
+vi.mock('../extensions/bundle-backend.js', () => ({
+  bundleExtensionBackend: vi.fn((entryPath: string) => entryPath),
+}))
+
 // ─── Imports (after mocks) ─────────────────────────────────────────────────────
 
 import { spawnExtension } from './spawn.js'
-import { activeWorkers } from './active-workers.js'
+import {
+  activeWorkers,
+  workerExitListeners,
+  workerRegistryErrorListeners,
+} from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
 import { mergeRuntimeSync } from '../extensions/registry.js'
 import { handleHostCall } from './host-handlers.js'
+import { bundleExtensionBackend } from '../extensions/bundle-backend.js'
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -87,6 +98,16 @@ describe('spawnExtension', () => {
     spawnExtension(extId, folderName, entryFile)
     expect(migrateLegacyData).toHaveBeenCalledOnce()
     expect(migrateLegacyData).toHaveBeenCalledWith(extId, folderName)
+  })
+
+  it('pre-bundles the backend entry before spawning the worker', () => {
+    spawnExtension(extId, folderName, entryFile)
+
+    expect(bundleExtensionBackend).toHaveBeenCalledOnce()
+    expect(bundleExtensionBackend).toHaveBeenCalledWith(
+      '/fake/extracted/test-extension/backend.js',
+      '/fake/extracted/test-extension'
+    )
   })
 
   // ─── 2. Worker construction ───────────────────────────────────────────────
@@ -176,6 +197,21 @@ describe('spawnExtension', () => {
     expect(mergeRuntimeSync).not.toHaveBeenCalled()
   })
 
+  it('removes worker and notifies registry error listeners on registry:error', async () => {
+    const listener = vi.fn()
+    workerRegistryErrorListeners.add(listener)
+
+    spawnExtension(extId, folderName, entryFile)
+    expect(activeWorkers.has(extId)).toBe(true)
+
+    lastWorker.emit('message', { type: 'registry:error', error: 'boom' })
+    await flush()
+
+    expect(activeWorkers.has(extId)).toBe(false)
+    expect(listener).toHaveBeenCalledWith(extId)
+    workerRegistryErrorListeners.delete(listener)
+  })
+
   // ─── 8. host:call message ─────────────────────────────────────────────────
 
   it('calls handleHostCall and posts host:reply on host:call message', async () => {
@@ -233,5 +269,18 @@ describe('spawnExtension', () => {
     lastWorker.emit('exit', 1)
 
     expect(activeWorkers.has(extId)).toBe(false)
+  })
+
+  // ─── 12. exit listeners ───────────────────────────────────────────────────
+
+  it('notifies workerExitListeners on exit', () => {
+    const listener = vi.fn()
+    workerExitListeners.add(listener)
+
+    spawnExtension(extId, folderName, entryFile)
+    lastWorker.emit('exit', 1)
+
+    expect(listener).toHaveBeenCalledWith(extId, 1)
+    workerExitListeners.delete(listener)
   })
 })

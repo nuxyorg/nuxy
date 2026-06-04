@@ -262,6 +262,17 @@ describe('config validation', () => {
     expect(cfg.theme).toBe('dark')
     expect(cfg.zoom).toBe('100%')
     expect(cfg.font).toBe('system')
+    expect(cfg.backgroundBehavior).toBe('reset-on-show')
+  })
+
+  it('applies valid backgroundBehavior resume-session', () => {
+    setupWithSettings({ backgroundBehavior: 'resume-session' })
+    expect(getConfig().backgroundBehavior).toBe('resume-session')
+  })
+
+  it('rejects invalid backgroundBehavior and keeps default', () => {
+    setupWithSettings({ backgroundBehavior: 'keep-everything' })
+    expect(getConfig().backgroundBehavior).toBe('reset-on-show')
   })
 
   it('accepts string theme, zoom, and font', () => {

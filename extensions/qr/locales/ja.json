@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "name": "QRコードジェネレーター"
+  },
+  "tool": {
+    "name": "QRコードジェネレーター"
+  },
+  "empty": {
+    "placeholder": "QRコードを生成するテキストまたはURLを入力してください"
+  },
+  "action": {
+    "copy": "テキストをコピー"
+  },
+  "label": {
+    "encoding": "エンコーディング"
+  }
+}

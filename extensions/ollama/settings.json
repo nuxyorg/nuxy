@@ -12,10 +12,10 @@
     {
       "key": "model",
       "label": "Default Model",
-      "type": "text",
+      "type": "select",
       "default": "llama3",
-      "placeholder": "llama3",
-      "description": "Model name to use for chat (e.g. llama3, mistral)"
+      "options": [],
+      "description": "Model loaded from your Ollama server (pull models with ollama pull <name>)"
     },
     {
       "key": "thinkingColor",

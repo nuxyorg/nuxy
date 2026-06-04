@@ -7,10 +7,12 @@ import { DATA_DIR, CONFIG_DIR } from './paths.js'
 const log = kernelLogger.child('NuxyConfig')
 
 export type EscAction = 'hide' | 'minimize' | 'quit' | 'none'
+export type BackgroundBehavior = 'reset-on-show' | 'resume-session'
 
 export interface NuxyConfig {
   escAction: EscAction
   blurAction: EscAction
+  backgroundBehavior: BackgroundBehavior
   windowWidth: number
   windowMaxHeight: number
   alwaysOnTop: boolean
@@ -27,6 +29,7 @@ export interface NuxyConfig {
 const DEFAULTS: NuxyConfig = {
   escAction: 'hide',
   blurAction: 'hide',
+  backgroundBehavior: 'reset-on-show',
   windowWidth: 800,
   windowMaxHeight: 600,
   alwaysOnTop: false,
@@ -56,6 +59,8 @@ function readSettingsJson(): Partial<NuxyConfig> {
       result.escAction = parsed.escAction
     if (['hide', 'minimize', 'quit', 'none'].includes(parsed.blurAction))
       result.blurAction = parsed.blurAction
+    if (['reset-on-show', 'resume-session'].includes(parsed.backgroundBehavior))
+      result.backgroundBehavior = parsed.backgroundBehavior
     if (typeof parsed.windowWidth === 'number' && parsed.windowWidth >= 200)
       result.windowWidth = parsed.windowWidth
     if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)
@@ -142,6 +147,8 @@ async function readSettingsJsonAsync(): Promise<Partial<NuxyConfig>> {
       result.escAction = parsed.escAction
     if (['hide', 'minimize', 'quit', 'none'].includes(parsed.blurAction))
       result.blurAction = parsed.blurAction
+    if (['reset-on-show', 'resume-session'].includes(parsed.backgroundBehavior))
+      result.backgroundBehavior = parsed.backgroundBehavior
     if (typeof parsed.windowWidth === 'number' && parsed.windowWidth >= 200)
       result.windowWidth = parsed.windowWidth
     if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)

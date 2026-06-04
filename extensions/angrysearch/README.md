@@ -18,6 +18,7 @@ ANGRYsearch indexes your entire filesystem into a SQLite full-text-search databa
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user activates it by selecting it from the shell, then interacts through the omnibar query and keyboard shortcuts.
 
 ---
@@ -30,17 +31,17 @@ Select **ANGRYsearch** from the tool list and start typing. Results appear once 
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate the results list |
-| `Enter` | Open the selected file with the default application |
-| `⇧ Enter` | Open the folder containing the selected file |
+| Key       | Action                                              |
+| --------- | --------------------------------------------------- |
+| `↑` `↓`   | Navigate the results list                           |
+| `Enter`   | Open the selected file with the default application |
+| `⇧ Enter` | Open the folder containing the selected file        |
 
 Additional actions available via the Nuxy action menu:
 
-| Action | Description |
-|--------|-------------|
-| Update Database | Trigger a manual re-index of the filesystem |
+| Action            | Description                                             |
+| ----------------- | ------------------------------------------------------- |
+| Update Database   | Trigger a manual re-index of the filesystem             |
 | Toggle Regex Mode | Switch between normal substring search and regex search |
 
 ### Examples
@@ -60,32 +61,32 @@ Activate Regex Mode from the action menu, then type `\.log$` to find every file 
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `scanRoot` | text | `/` | Root directory to index (e.g. `/` or `/home/user`) |
-| `ignoredRoots` | text | `/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock` | Comma-separated list of top-level directories to skip during indexing |
-| `updateIntervalHours` | select | `6` | How often the index is automatically rebuilt (1 / 3 / 6 / 12 / 24 hours) |
-| `searchLimit` | select | `500` | Maximum number of results returned per query (50 / 100 / 200 / 500 / 1000) |
+| Key                   | Type   | Default                                              | Description                                                                |
+| --------------------- | ------ | ---------------------------------------------------- | -------------------------------------------------------------------------- |
+| `scanRoot`            | text   | `/`                                                  | Root directory to index (e.g. `/` or `/home/user`)                         |
+| `ignoredRoots`        | text   | `/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock` | Comma-separated list of top-level directories to skip during indexing      |
+| `updateIntervalHours` | select | `6`                                                  | How often the index is automatically rebuilt (1 / 3 / 6 / 12 / 24 hours)   |
+| `searchLimit`         | select | `500`                                                | Maximum number of results returned per query (50 / 100 / 200 / 500 / 1000) |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Persisting the SQLite index across sessions |
-| `shell` | Opening files and folders with the system default application |
-| `fs` | Walking the filesystem during index building; reading directory entries |
-| `db` | Creating and querying the FTS4 SQLite database |
+| Permission | Used for                                                                |
+| ---------- | ----------------------------------------------------------------------- |
+| `storage`  | Persisting the SQLite index across sessions                             |
+| `shell`    | Opening files and folders with the system default application           |
+| `fs`       | Walking the filesystem during index building; reading directory entries |
+| `db`       | Creating and querying the FTS4 SQLite database                          |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -93,11 +94,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 The initial index build can take several minutes on large filesystems. Subsequent queries hit the pre-built SQLite FTS4 index and return results instantly. The database is stored at `~/.nuxy/data/com.nuxy.angrysearch/angry_database.db`.
 
@@ -110,18 +111,21 @@ The initial index build can take several minutes on large filesystems. Subsequen
 `capabilities.callable: true` — other extensions can invoke ANGRYsearch directly:
 
 ```ts
-const result = await core.extensions.invoke('com.nuxy.angrysearch', 'search', { query: 'myfile', regex: false })
+const result = await core.extensions.invoke('com.nuxy.angrysearch', 'search', {
+  query: 'myfile',
+  regex: false,
+})
 ```
 
 **Exposed IPC channels:**
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
-| `search` | `{ query: string, regex?: boolean }` | `{ items: AngrysearchItem[] }` | Search the index; requires at least 3 characters |
-| `getStatus` | — | `{ isUpdating: boolean, lastUpdate: string \| null, exists: boolean }` | Current database status |
-| `updateDatabase` | — | `boolean` | Trigger a background re-index |
-| `openFile` | `string` (full path) | `boolean` | Open a file with the system default handler |
-| `openLocation` | `string` (full path) | `boolean` | Open the directory containing the given path |
+| Channel          | Payload                              | Returns                                                                | Description                                      |
+| ---------------- | ------------------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------ |
+| `search`         | `{ query: string, regex?: boolean }` | `{ items: AngrysearchItem[] }`                                         | Search the index; requires at least 3 characters |
+| `getStatus`      | —                                    | `{ isUpdating: boolean, lastUpdate: string \| null, exists: boolean }` | Current database status                          |
+| `updateDatabase` | —                                    | `boolean`                                                              | Trigger a background re-index                    |
+| `openFile`       | `string` (full path)                 | `boolean`                                                              | Open a file with the system default handler      |
+| `openLocation`   | `string` (full path)                 | `boolean`                                                              | Open the directory containing the given path     |
 
 ---
 

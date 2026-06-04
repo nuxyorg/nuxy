@@ -1,10 +1,4 @@
-import type {
-  NuxySettings,
-  SelectOption,
-  SectionDef,
-  AnyRow,
-  StateSnapshot,
-} from '../types.ts'
+import type { NuxySettings, SelectOption, SectionDef, AnyRow, StateSnapshot } from '../types.ts'
 
 // ---------------------------------------------------------------------------
 // Static option arrays
@@ -29,6 +23,11 @@ export const ESC_ACTION_OPTIONS: SelectOption<string>[] = [
   { value: 'minimize', label: 'Minimize' },
   { value: 'quit', label: 'Quit' },
   { value: 'none', label: 'Do Nothing' },
+]
+
+export const BACKGROUND_BEHAVIOR_OPTIONS: SelectOption<string>[] = [
+  { value: 'reset-on-show', label: 'Reset launcher (default)' },
+  { value: 'resume-session', label: 'Resume where I left off' },
 ]
 
 export const WINDOW_WIDTH_OPTIONS: SelectOption<number>[] = [
@@ -109,11 +108,7 @@ export const LANGUAGE_OPTIONS: SelectOption<string>[] = [
   { value: 'vi', label: 'Vietnamese (tiếng Việt)' },
 ]
 
-export const LANGUAGE_SLOT_LABELS = [
-  'Preferred Language (1st)',
-  'Preferred Language (2nd)',
-  'Preferred Language (3rd)',
-]
+export const LANGUAGE_ADD_LABEL = 'Add Language'
 
 // ---------------------------------------------------------------------------
 // Default settings
@@ -126,6 +121,7 @@ export const DEFAULT_SETTINGS: NuxySettings = {
   font: 'system',
   escAction: 'hide',
   blurAction: 'hide',
+  backgroundBehavior: 'reset-on-show',
   windowWidth: 800,
   windowMaxHeight: 600,
   alwaysOnTop: false,
@@ -157,6 +153,11 @@ export const SECTIONS: SectionDef[] = [
     rows: () => [
       { key: 'escAction', label: 'Esc Key Action', options: ESC_ACTION_OPTIONS },
       { key: 'blurAction', label: 'Focus-Out Action', options: ESC_ACTION_OPTIONS },
+      {
+        key: 'backgroundBehavior',
+        label: 'Background behaviour',
+        options: BACKGROUND_BEHAVIOR_OPTIONS,
+      },
       { key: 'windowWidth', label: 'Window Width', options: WINDOW_WIDTH_OPTIONS },
       { key: 'windowMaxHeight', label: 'Max Height', options: WINDOW_MAX_HEIGHT_OPTIONS },
       { key: 'windowPosition', label: 'Launch Position', options: WINDOW_POSITION_OPTIONS },
@@ -187,7 +188,11 @@ export function buildFontOptions(systemFonts: string[]): SelectOption<string>[] 
   return [...FONT_OPTIONS_STATIC, ...systemFonts.map((name) => ({ value: name, label: name }))]
 }
 
-export function getRowOptions(row: AnyRow, _state: StateSnapshot): SelectOption[] {
+export function getRowOptions(row: AnyRow, state: StateSnapshot): SelectOption[] {
+  if ('isLanguage' in row && row.isLanguage) {
+    const selected = new Set(state.settings.preferredLanguages.filter(Boolean))
+    return row.options.filter((o) => !o.value || !selected.has(o.value as string))
+  }
   return row.options
 }
 
@@ -195,12 +200,17 @@ export function getRowCurrentValue(
   row: AnyRow,
   settings: NuxySettings,
   extValues: Record<string, Record<string, unknown>>,
-  installedExtensions: Array<{ id: string; manifest: { name: string; bootstrap?: boolean; type: string }; disabled?: boolean }>
+  installedExtensions: Array<{
+    id: string
+    manifest: { name: string; bootstrap?: boolean; type: string }
+    disabled?: boolean
+  }>
 ): unknown {
   const isLanguageRow = 'isLanguage' in row && row.isLanguage
   const isExtToggleRow = 'isExtToggle' in row && row.isExtToggle
-  if (isLanguageRow) return settings.preferredLanguages?.[row.langIndex] ?? ''
-  if (isExtToggleRow) return !(installedExtensions.find((e) => e.id === row.extId)?.disabled ?? false)
+  if (isLanguageRow) return ''
+  if (isExtToggleRow)
+    return !(installedExtensions.find((e) => e.id === row.extId)?.disabled ?? false)
   if (row.isExtension) return extValues[row.extId]?.[row.fieldKey] ?? row.default ?? ''
   return settings[row.key]
 }

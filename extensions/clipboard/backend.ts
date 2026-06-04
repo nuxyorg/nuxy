@@ -42,7 +42,9 @@ export function register(core: CoreContext): void {
       try {
         const storeImages = (await core.settings.read<boolean>('storeImages')) ?? true
         const currentText = await core.clipboard.readText()
-        const currentImage = storeImages ? ((await core.clipboard.readImage()) as string | null) : null
+        const currentImage = storeImages
+          ? ((await core.clipboard.readImage()) as string | null)
+          : null
 
         if (currentImage) {
           if (currentImage !== lastImage) {

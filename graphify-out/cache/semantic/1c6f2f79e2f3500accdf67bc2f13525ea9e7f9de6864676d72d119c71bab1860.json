@@ -1,1 +1,122 @@
-{"nodes": [{"id": "docs_perf_report_doc", "label": "Performance Report 2026-05-19", "file_type": "document", "source_file": "docs/performance/performance-report.md", "source_location": null, "source_url": null, "captured_at": "2026-05-19", "author": null, "contributor": null}, {"id": "docs_perf_report_scan_blocks_window", "label": "Extension Scan Blocks Window Creation Issue", "file_type": "concept", "source_file": "docs/performance/performance-report.md", "source_location": "Issue 1", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_perf_report_spring_250hz", "label": "WindowSpringController 250Hz Interval Issue", "file_type": "concept", "source_file": "docs/performance/performance-report.md", "source_location": "Issue 3", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_perf_report_four_useeffects", "label": "Four Uncoordinated useEffect IPC Calls on App Mount", "file_type": "concept", "source_file": "docs/performance/performance-report.md", "source_location": "Issue 2", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_perf_report_sync_fs_hot_path", "label": "Synchronous fs in Hot IPC Path", "file_type": "concept", "source_file": "docs/performance/performance-report.md", "source_location": "Issue 4", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "docs_perf_report_doc", "target": "docs_perf_report_scan_blocks_window", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/performance/performance-report.md", "source_location": "Issue 1", "weight": 1.0}, {"source": "docs_perf_report_doc", "target": "docs_perf_report_spring_250hz", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/performance/performance-report.md", "source_location": "Issue 3", "weight": 1.0}, {"source": "docs_perf_report_doc", "target": "docs_perf_report_four_useeffects", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/performance/performance-report.md", "source_location": "Issue 2", "weight": 1.0}, {"source": "docs_perf_report_doc", "target": "docs_perf_report_sync_fs_hot_path", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/performance/performance-report.md", "source_location": "Issue 4", "weight": 1.0}, {"source": "docs_perf_report_scan_blocks_window", "target": "docs_dead_code_report_migrate_data", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": "docs/performance/performance-report.md", "source_location": null, "weight": 0.75}, {"source": "docs_perf_report_four_useeffects", "target": "docs_perf_report_scan_blocks_window", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": "docs/performance/performance-report.md", "source_location": null, "weight": 0.75}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "docs_perf_report_doc",
+      "label": "Performance Report 2026-05-19",
+      "file_type": "document",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_perf_report_scan_blocks_window",
+      "label": "Extension Scan Blocks Window Creation Issue",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "Issue 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_perf_report_spring_250hz",
+      "label": "WindowSpringController 250Hz Interval Issue",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "Issue 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_perf_report_four_useeffects",
+      "label": "Four Uncoordinated useEffect IPC Calls on App Mount",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "Issue 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_perf_report_sync_fs_hot_path",
+      "label": "Synchronous fs in Hot IPC Path",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "Issue 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_perf_report_doc",
+      "target": "docs_perf_report_scan_blocks_window",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "Issue 1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_perf_report_doc",
+      "target": "docs_perf_report_spring_250hz",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "Issue 3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_perf_report_doc",
+      "target": "docs_perf_report_four_useeffects",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "Issue 2",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_perf_report_doc",
+      "target": "docs_perf_report_sync_fs_hot_path",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "Issue 4",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_perf_report_scan_blocks_window",
+      "target": "docs_dead_code_report_migrate_data",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "docs_perf_report_four_useeffects",
+      "target": "docs_perf_report_scan_blocks_window",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": null,
+      "weight": 0.75
+    }
+  ],
+  "hyperedges": []
+}

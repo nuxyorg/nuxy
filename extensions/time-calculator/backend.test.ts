@@ -25,9 +25,12 @@ function createCore() {
 }
 
 describe('time-calculator backend', () => {
-  it('registers as a provider', () => {
+  it('registers as a tool and provider', () => {
     const { core } = createCore()
     register(core)
+    expect(core.registry.registerTool as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({
+      name: 'time-calculator',
+    })
     expect(core.registry.registerProvider as ReturnType<typeof vi.fn>).toHaveBeenCalledWith({
       name: 'time-calculator',
     })

@@ -1,11 +1,21 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.calendar'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import type { CalendarEvent } from './types.ts'
 import { useCalendarData } from './hooks/useCalendarData.ts'
 import { useCalendarActions } from './hooks/useCalendarActions.ts'
 import { useCalendarMeta } from './hooks/useCalendarMeta.ts'
 import { useCalendarKeyboard } from './hooks/useCalendarKeyboard.ts'
-import { useCalendarAnimations, useCalendarKeyHintsSync, useCalendarLastResultRestore, useCalendarDataSync } from './hooks/useCalendarSync.ts'
+import {
+  useCalendarAnimations,
+  useCalendarKeyHintsSync,
+  useCalendarLastResultRestore,
+  useCalendarDataSync,
+} from './hooks/useCalendarSync.ts'
 import { CalendarMonthGrid } from './components/CalendarMonthGrid.tsx'
 import { CalendarSearchResults } from './components/CalendarSearchResults.tsx'
 import { CalendarDayView } from './components/CalendarDayView.tsx'
@@ -17,6 +27,7 @@ interface Props {
 }
 
 export default function CalendarApp({ query }: Props) {
+  const { t } = _useTranslation(EXT_ID)
   const todayObj = new Date()
   todayObj.setHours(0, 0, 0, 0)
   const todayYear = todayObj.getFullYear()
@@ -37,42 +48,123 @@ export default function CalendarApp({ query }: Props) {
   const [activeSelect, setActiveSelect] = React.useState<string | null>(null)
   const [selectFocused, setSelectFocused] = React.useState(0)
 
-  const { monthEvents, searchEvents, weekStart, defaultReminderMin, loadMonthEvents, loadSearchRange } =
-    useCalendarData()
+  const {
+    monthEvents,
+    searchEvents,
+    weekStart,
+    defaultReminderMin,
+    loadMonthEvents,
+    loadSearchRange,
+  } = useCalendarData()
 
   const { dayEvents, filteredSearch, eventDays } = useCalendarMeta({
-    monthEvents, searchEvents, calYear, calMonth, selectedDay, query,
+    monthEvents,
+    searchEvents,
+    calYear,
+    calMonth,
+    selectedDay,
+    query,
   })
 
-  useCalendarDataSync({ calYear, calMonth, query, todayYear, todayMonth, mode, loadMonthEvents, loadSearchRange, setCalView, setListIdx })
+  useCalendarDataSync({
+    calYear,
+    calMonth,
+    query,
+    todayYear,
+    todayMonth,
+    mode,
+    loadMonthEvents,
+    loadSearchRange,
+    setCalView,
+    setListIdx,
+  })
 
   const stateRef = React.useRef({
-    mode, query, calYear, calMonth, selectedDay, calView, dayEvents, filteredSearch,
-    listIdx, editingEvent, timeValue, reminderValue, formFieldIdx, activeSelect,
-    selectFocused, defaultReminderMin,
+    mode,
+    query,
+    calYear,
+    calMonth,
+    selectedDay,
+    calView,
+    dayEvents,
+    filteredSearch,
+    listIdx,
+    editingEvent,
+    timeValue,
+    reminderValue,
+    formFieldIdx,
+    activeSelect,
+    selectFocused,
+    defaultReminderMin,
   })
   stateRef.current = {
-    mode, query, calYear, calMonth, selectedDay, calView, dayEvents, filteredSearch,
-    listIdx, editingEvent, timeValue, reminderValue, formFieldIdx, activeSelect,
-    selectFocused, defaultReminderMin,
+    mode,
+    query,
+    calYear,
+    calMonth,
+    selectedDay,
+    calView,
+    dayEvents,
+    filteredSearch,
+    listIdx,
+    editingEvent,
+    timeValue,
+    reminderValue,
+    formFieldIdx,
+    activeSelect,
+    selectFocused,
+    defaultReminderMin,
   }
 
   const actions = useCalendarActions(stateRef, {
-    setMode, setCalYear, setCalMonth, setSelectedDay, setCalView, setListIdx,
-    setEditingEvent, setTimeValue, setReminderValue, setFormFieldIdx, setActiveSelect,
-    setMonthEnterDir, loadMonthEvents,
+    setMode,
+    setCalYear,
+    setCalMonth,
+    setSelectedDay,
+    setCalView,
+    setListIdx,
+    setEditingEvent,
+    setTimeValue,
+    setReminderValue,
+    setFormFieldIdx,
+    setActiveSelect,
+    setMonthEnterDir,
+    loadMonthEvents,
   })
 
   useCalendarAnimations()
   useCalendarKeyHintsSync({ mode, calView, listIdx, activeSelect, formFieldIdx, selectedDay })
-  useCalendarLastResultRestore({ setCalYear, setCalMonth, setSelectedDay, setTimeValue, setMode, setCalView, setFormFieldIdx, setActiveSelect })
+  useCalendarLastResultRestore({
+    setCalYear,
+    setCalMonth,
+    setSelectedDay,
+    setTimeValue,
+    setMode,
+    setCalView,
+    setFormFieldIdx,
+    setActiveSelect,
+  })
 
   useCalendarKeyboard({
     stateRef,
     actions,
     setListIdx,
     setActiveSelect,
-    registerActionsDeps: [mode, calView, listIdx, dayEvents, editingEvent, calYear, calMonth, selectedDay, timeValue, reminderValue, query, activeSelect],
+    registerActionsDeps: [
+      mode,
+      calView,
+      listIdx,
+      dayEvents,
+      editingEvent,
+      calYear,
+      calMonth,
+      selectedDay,
+      timeValue,
+      reminderValue,
+      query,
+      activeSelect,
+    ],
+    t,
   })
 
   const isSearching = mode === 'omnibox' && !!(query || '').trim()
@@ -88,8 +180,13 @@ export default function CalendarApp({ query }: Props) {
           setCalMonth(d.getMonth())
           setSelectedDay(d.getDate())
           setMode('calendar')
-          window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'hide' } }))
-          setTimeout(() => { actions.enterDayView(); actions.enterDetail(evt) }, 0)
+          window.dispatchEvent(
+            new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'hide' } })
+          )
+          setTimeout(() => {
+            actions.enterDayView()
+            actions.enterDetail(evt)
+          }, 0)
         }}
       />
     )
@@ -98,11 +195,23 @@ export default function CalendarApp({ query }: Props) {
   if (mode === 'omnibox' || calView === 'month') {
     return (
       <CalendarMonthGrid
-        calYear={calYear} calMonth={calMonth} weekStart={weekStart} selectedDay={selectedDay}
-        mode={mode} todayYear={todayYear} todayMonth={todayMonth} todayDate={todayDate}
-        eventDays={eventDays} monthEnterDir={monthEnterDir}
+        calYear={calYear}
+        calMonth={calMonth}
+        weekStart={weekStart}
+        selectedDay={selectedDay}
+        mode={mode}
+        todayYear={todayYear}
+        todayMonth={todayMonth}
+        todayDate={todayDate}
+        eventDays={eventDays}
+        monthEnterDir={monthEnterDir}
         onSelectDay={(day) => setSelectedDay(day)}
-        onNavigateToMonth={(year, month, day, dir) => { setMonthEnterDir(dir); setCalYear(year); setCalMonth(month); setSelectedDay(day) }}
+        onNavigateToMonth={(year, month, day, dir) => {
+          setMonthEnterDir(dir)
+          setCalYear(year)
+          setCalMonth(month)
+          setSelectedDay(day)
+        }}
         onEnterCalendarMode={actions.enterCalendarMode}
         onEnterDayView={actions.enterDayView}
       />
@@ -112,8 +221,11 @@ export default function CalendarApp({ query }: Props) {
   if (calView === 'day') {
     return (
       <CalendarDayView
-        calYear={calYear} calMonth={calMonth} selectedDay={selectedDay}
-        dayEvents={dayEvents} listIdx={listIdx}
+        calYear={calYear}
+        calMonth={calMonth}
+        selectedDay={selectedDay}
+        dayEvents={dayEvents}
+        listIdx={listIdx}
       />
     )
   }
@@ -121,11 +233,20 @@ export default function CalendarApp({ query }: Props) {
   if (calView === 'create') {
     return (
       <CalendarCreateForm
-        calYear={calYear} calMonth={calMonth} selectedDay={selectedDay} query={query}
-        timeValue={timeValue} reminderValue={reminderValue} formFieldIdx={formFieldIdx}
-        activeSelect={activeSelect} selectFocused={selectFocused}
-        onSetFormFieldIdx={setFormFieldIdx} onSetSelectFocused={setSelectFocused}
-        onSetActiveSelect={setActiveSelect} onSetTimeValue={setTimeValue} onSetReminderValue={setReminderValue}
+        calYear={calYear}
+        calMonth={calMonth}
+        selectedDay={selectedDay}
+        query={query}
+        timeValue={timeValue}
+        reminderValue={reminderValue}
+        formFieldIdx={formFieldIdx}
+        activeSelect={activeSelect}
+        selectFocused={selectFocused}
+        onSetFormFieldIdx={setFormFieldIdx}
+        onSetSelectFocused={setSelectFocused}
+        onSetActiveSelect={setActiveSelect}
+        onSetTimeValue={setTimeValue}
+        onSetReminderValue={setReminderValue}
       />
     )
   }
@@ -133,9 +254,12 @@ export default function CalendarApp({ query }: Props) {
   if (calView === 'detail' && editingEvent) {
     return (
       <CalendarDetailView
-        editingEvent={editingEvent} reminderValue={reminderValue}
-        activeSelect={activeSelect} selectFocused={selectFocused}
-        onSetSelectFocused={setSelectFocused} onSetActiveSelect={setActiveSelect}
+        editingEvent={editingEvent}
+        reminderValue={reminderValue}
+        activeSelect={activeSelect}
+        selectFocused={selectFocused}
+        onSetSelectFocused={setSelectFocused}
+        onSetActiveSelect={setActiveSelect}
         onSetReminderValue={setReminderValue}
       />
     )

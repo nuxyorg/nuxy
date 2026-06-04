@@ -13,12 +13,14 @@ export interface SettingsKeyboardParams {
   setSelectFocused: React.Dispatch<React.SetStateAction<number>>
   inputRefs: React.MutableRefObject<Record<string, HTMLInputElement | null>>
   actions: SettingsActions
+  t: (key: string) => string
 }
 
 export interface RightPanelAction {
   key: string
   label: string
   hint?: string
+  allowRepeat?: boolean
   handler: () => void
 }
 
@@ -31,15 +33,18 @@ export function useSettingsKeyboard({
   setSelectFocused,
   inputRefs,
   actions,
+  t,
 }: SettingsKeyboardParams): RightPanelAction[] {
-  const { updateSetting, updateLanguageSlot, toggleExtension, updateExtSetting } = actions
+  const actionsRef = React.useRef(actions)
+  actionsRef.current = actions
 
   const rightPanelActions = React.useMemo((): RightPanelAction[] => {
     const list: RightPanelAction[] = [
       {
         key: 'ArrowUp',
-        label: 'Previous setting',
+        label: t('actions.previousSetting'),
         hint: '↑↓',
+        allowRepeat: true,
         handler: () => {
           const { activeSelect } = stateRef.current
           if (activeSelect !== null) {
@@ -59,7 +64,8 @@ export function useSettingsKeyboard({
       },
       {
         key: 'ArrowDown',
-        label: 'Next setting',
+        label: t('actions.nextSetting'),
+        allowRepeat: true,
         handler: () => {
           const { activeSelect, allRows } = stateRef.current
           if (activeSelect !== null) {
@@ -84,7 +90,7 @@ export function useSettingsKeyboard({
       },
       {
         key: 'Enter',
-        label: 'Open setting',
+        label: t('actions.openSetting'),
         hint: '↵',
         handler: () => {
           const { selectedRow, activeSelect, selectFocused, allRows, extValues, settings } =
@@ -97,13 +103,13 @@ export function useSettingsKeyboard({
                 const isLang = 'isLanguage' in row && row.isLanguage
                 const isToggle = 'isExtToggle' in row && row.isExtToggle
                 if (isLang) {
-                  updateLanguageSlot(row.langIndex, opt.value as string)
+                  actionsRef.current.addLanguage(opt.value as string)
                 } else if (isToggle) {
-                  toggleExtension(row.extId, opt.value as boolean)
+                  actionsRef.current.toggleExtension(row.extId, opt.value as boolean)
                 } else if (row.isExtension) {
-                  updateExtSetting(row.extId, row.fieldKey, opt.value)
+                  actionsRef.current.updateExtSetting(row.extId, row.fieldKey, opt.value)
                 } else {
-                  updateSetting(activeSelect as keyof NuxySettings, opt.value)
+                  actionsRef.current.updateSetting(activeSelect as keyof NuxySettings, opt.value)
                 }
               }
               setActiveSelect(null)
@@ -112,12 +118,17 @@ export function useSettingsKeyboard({
             const row = allRows[selectedRow]
             if (row) {
               const isLang = 'isLanguage' in row && row.isLanguage
+              const isLangRemove = 'isLanguageRemove' in row && row.isLanguageRemove
+              if (isLangRemove) {
+                actionsRef.current.removeLanguage(row.langCode)
+                return
+              }
               if (!isLang && row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
                 inputRefs.current[row.key]?.focus()
                 inputRefs.current[row.key]?.select()
               } else if (row.options && row.options.length > 0) {
                 const currentValue = isLang
-                  ? (settings.preferredLanguages?.[row.langIndex] ?? '')
+                  ? ''
                   : row.isExtension
                     ? (extValues[row.extId]?.[row.fieldKey] ?? row.default ?? '')
                     : settings[row.key]
@@ -136,7 +147,7 @@ export function useSettingsKeyboard({
     if (activeSelect !== null) {
       list.push({
         key: 'Escape',
-        label: 'Close setting',
+        label: t('actions.closeSetting'),
         hint: 'Esc',
         handler: () => setActiveSelect(null),
       })

@@ -1,5 +1,11 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
-import type { Reminder, CreatePayload, CancelPayload, ParsePayload, ParsedReminder } from './types.ts'
+import type {
+  Reminder,
+  CreatePayload,
+  CancelPayload,
+  ParsePayload,
+  ParsedReminder,
+} from './types.ts'
 import { parseReminder } from './utils/parseReminder.ts'
 
 const STORAGE_FILE = 'reminders.json'
@@ -110,7 +116,11 @@ export function register(core: CoreContext): void {
     await saveReminders(reminders)
 
     scheduleTimer(reminder)
-    core.logger.info('Reminder created', { id: reminder.id, label: reminder.label, fireAt: reminder.fireAt })
+    core.logger.info('Reminder created', {
+      id: reminder.id,
+      label: reminder.label,
+      fireAt: reminder.fireAt,
+    })
 
     return reminder
   })

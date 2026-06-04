@@ -98,9 +98,7 @@ export default function RemindView({ query }: Props) {
   // -------------------------------------------------------------------------
 
   if (isCreating) {
-    const previewLabel = preview
-      ? `${t('action.create')}: ${preview.label || query}`
-      : query
+    const previewLabel = preview ? `${t('action.create')}: ${preview.label || query}` : query
 
     return (
       <div style={{ direction: dir }}>
@@ -140,9 +138,7 @@ export default function RemindView({ query }: Props) {
           {reminders.map((reminder: Reminder, idx: number) => {
             const remaining = reminder.fireAt - Date.now()
             const remainingLabel =
-              remaining > 0
-                ? `${t('label.in')} ${formatRemaining(remaining)}`
-                : t('label.overdue')
+              remaining > 0 ? `${t('label.in')} ${formatRemaining(remaining)}` : t('label.overdue')
 
             return (
               <ListItem key={reminder.id} active={idx === navIndex}>

@@ -9,9 +9,7 @@ interface Props {
   itemClass: (index: number) => string
   onItemClick: (item: ListItem) => void
   List?: React.ComponentType<React.HTMLAttributes<HTMLElement>>
-  ListItem?: React.ComponentType<
-    React.HTMLAttributes<HTMLElement> & { active?: boolean }
-  >
+  ListItem?: React.ComponentType<React.HTMLAttributes<HTMLElement> & { active?: boolean }>
   ListItemBody?: React.ComponentType<React.HTMLAttributes<HTMLElement>>
   ListItemText?: React.ComponentType<React.HTMLAttributes<HTMLElement>>
   ListItemActions?: React.ComponentType<React.HTMLAttributes<HTMLElement>>

@@ -12,16 +12,6 @@ const _useTranslation =
 
 const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
-const LANGUAGE_LABELS: Record<SupportedLanguage, string> = {
-  en: 'English',
-  tr: 'Turkish',
-  de: 'German',
-  fr: 'French',
-  es: 'Spanish',
-  ja: 'Japanese',
-  zh: 'Chinese',
-}
-
 interface Props {
   query: string
 }
@@ -104,46 +94,38 @@ export default function TranslateView({ query }: Props) {
 
   return (
     <div style={{ direction: dir, height: '100%', overflowY: 'auto' }}>
-      {error && Alert && (
-        <Alert variant="danger">{error}</Alert>
-      )}
+      {error && Alert && <Alert variant="danger">{error}</Alert>}
 
-      {!query.trim() && !loading && !error ? (
-        EmptyState && (
-          <EmptyState
-            message={t('empty.placeholder')}
-          />
-        )
-      ) : List && (
-        <List>
-          {loading && (
-            <ListItem key="loading">
-              <ListItemBody>
-                <ListItemText variant="muted">
-                  {t('action.translate')}...
-                </ListItemText>
-              </ListItemBody>
-            </ListItem>
-          )}
+      {!query.trim() && !loading && !error
+        ? EmptyState && <EmptyState message={t('empty.placeholder')} />
+        : List && (
+            <List>
+              {loading && (
+                <ListItem key="loading">
+                  <ListItemBody>
+                    <ListItemText variant="muted">{t('action.translate')}...</ListItemText>
+                  </ListItemBody>
+                </ListItem>
+              )}
 
-          {!loading && hasResult && (
-            <ListItem key="result" active>
-              <ListItemBody>
-                <ListItemText variant={copied ? 'success' : 'default'}>
-                  {copied ? t('action.copy') : result!.translatedText}
-                </ListItemText>
-                <ListItemMeta>
-                  {detectedLang
-                    ? t('label.detected', { lang: LANGUAGE_LABELS[detectedLang as SupportedLanguage] ?? detectedLang })
-                    : t('label.source')}
-                  {' → '}
-                  {LANGUAGE_LABELS[targetLang] ?? targetLang}
-                </ListItemMeta>
-              </ListItemBody>
-            </ListItem>
+              {!loading && hasResult && (
+                <ListItem key="result" active>
+                  <ListItemBody>
+                    <ListItemText variant={copied ? 'success' : 'default'}>
+                      {copied ? t('action.copy') : result!.translatedText}
+                    </ListItemText>
+                    <ListItemMeta>
+                      {detectedLang
+                        ? t('label.detected', { lang: t(`lang.${detectedLang}`) || detectedLang })
+                        : t('label.source')}
+                      {' → '}
+                      {t(`lang.${targetLang}`) || targetLang}
+                    </ListItemMeta>
+                  </ListItemBody>
+                </ListItem>
+              )}
+            </List>
           )}
-        </List>
-      )}
     </div>
   )
 }

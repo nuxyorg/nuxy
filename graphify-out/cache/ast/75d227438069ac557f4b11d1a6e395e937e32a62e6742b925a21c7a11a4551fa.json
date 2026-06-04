@@ -1,1 +1,231 @@
-{"nodes": [{"id": "home_xava_documents_nuxy_extensions_shell_manifest_json", "label": "manifest.json", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L1"}, {"id": "shell_manifest_id", "label": "id", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L2"}, {"id": "shell_manifest_name", "label": "name", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L3"}, {"id": "shell_manifest_version", "label": "version", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L4"}, {"id": "shell_manifest_type", "label": "type", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L5"}, {"id": "shell_manifest_icon", "label": "icon", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L6"}, {"id": "shell_manifest_bootstrap", "label": "bootstrap", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L7"}, {"id": "shell_manifest_permissions", "label": "permissions", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L8"}, {"id": "shell_manifest_capabilities", "label": "capabilities", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L9"}, {"id": "shell_manifest_capabilities_callable", "label": "callable", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L10"}, {"id": "shell_manifest_capabilities_caller", "label": "caller", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L11"}, {"id": "shell_manifest_entry", "label": "entry", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L13"}, {"id": "shell_manifest_entry_backend", "label": "backend", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L14"}, {"id": "shell_manifest_entry_frontend", "label": "frontend", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L15"}], "edges": [{"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_id", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L2", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_name", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L3", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_version", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L4", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_type", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L5", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_icon", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L6", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_bootstrap", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L7", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_permissions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L8", "weight": 1.0}, {"source": "shell_manifest_permissions", "target": "ref_storage", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L8", "weight": 1.0, "context": "import"}, {"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_capabilities", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L9", "weight": 1.0}, {"source": "shell_manifest_capabilities", "target": "shell_manifest_capabilities_callable", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L10", "weight": 1.0}, {"source": "shell_manifest_capabilities", "target": "shell_manifest_capabilities_caller", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L11", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_shell_manifest_json", "target": "shell_manifest_entry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L13", "weight": 1.0}, {"source": "shell_manifest_entry", "target": "shell_manifest_entry_backend", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L14", "weight": 1.0}, {"source": "shell_manifest_entry", "target": "shell_manifest_entry_frontend", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json", "source_location": "L15", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "label": "manifest.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "shell_manifest_id",
+      "label": "id",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "shell_manifest_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "shell_manifest_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "shell_manifest_type",
+      "label": "type",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "shell_manifest_icon",
+      "label": "icon",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "shell_manifest_bootstrap",
+      "label": "bootstrap",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "shell_manifest_permissions",
+      "label": "permissions",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "shell_manifest_capabilities",
+      "label": "capabilities",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "shell_manifest_capabilities_callable",
+      "label": "callable",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "shell_manifest_capabilities_caller",
+      "label": "caller",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "shell_manifest_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "shell_manifest_entry_backend",
+      "label": "backend",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "shell_manifest_entry_frontend",
+      "label": "frontend",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L15"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_id",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_type",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_icon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_bootstrap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_permissions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "shell_manifest_permissions",
+      "target": "ref_storage",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L8",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_capabilities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "shell_manifest_capabilities",
+      "target": "shell_manifest_capabilities_callable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "shell_manifest_capabilities",
+      "target": "shell_manifest_capabilities_caller",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_manifest_json",
+      "target": "shell_manifest_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "shell_manifest_entry",
+      "target": "shell_manifest_entry_backend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "shell_manifest_entry",
+      "target": "shell_manifest_entry_frontend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/manifest.json",
+      "source_location": "L15",
+      "weight": 1.0
+    }
+  ]
+}

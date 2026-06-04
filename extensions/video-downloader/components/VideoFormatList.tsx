@@ -29,11 +29,7 @@ export function VideoFormatList({ formats, selectedIndex, focusArea }: Props) {
           <ListItem key={f.formatId + '-' + idx} active={isActive}>
             <ListItemBody>
               <ListItemText>
-                <Text
-                  as="span"
-                  bold
-                  style={{ display: 'inline', marginRight: 'var(--space-2)' }}
-                >
+                <Text as="span" bold style={{ display: 'inline', marginRight: 'var(--space-2)' }}>
                   {f.resolution}
                 </Text>
                 {Badge && <Badge variant={badgeVariant}>{badgeText}</Badge>}

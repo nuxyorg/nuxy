@@ -19,7 +19,11 @@ export function getFirstWeekday(date: Date, weekStart: number = 1): number {
   return (day - weekStart + 7) % 7
 }
 
-export function buildCalendarGrid(year: number, month: number, weekStart: number = 1): (number | null)[] {
+export function buildCalendarGrid(
+  year: number,
+  month: number,
+  weekStart: number = 1
+): (number | null)[] {
   const daysInMonth = getDaysInMonth(year, month)
   const firstWeekday = getFirstWeekday(new Date(year, month, 1), weekStart)
   const cells: (number | null)[] = []

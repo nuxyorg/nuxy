@@ -15,6 +15,14 @@ export interface KeyAction {
   handler: () => void
   /** When true, the handler fires on every repeated keydown while the key is held. Default: false. */
   allowRepeat?: boolean
+  /**
+   * 'press' (default): fires immediately on keydown.
+   * 'hold': fires only after the key has been held for `holdMs` milliseconds.
+   * While holding, a visual progress bar fills across the omnibar.
+   */
+  trigger?: 'press' | 'hold'
+  /** Duration in milliseconds for hold trigger. Default: 600. */
+  holdMs?: number
 }
 
 export function useToolKeyActions(actions: KeyAction[]): void {
@@ -37,4 +45,10 @@ export function useToolKeyActions(actions: KeyAction[]): void {
       window.dispatchEvent(new CustomEvent('nuxy-register-key-actions', { detail: null }))
     }
   }, []) // only on mount/unmount — handlers stay fresh via actionsRef
+
+  // When labels change (e.g. after async translations load), notify shell to re-compute hints
+  const labelsKey = actions.map((a) => a.label).join('\x00')
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))
+  }, [labelsKey])
 }

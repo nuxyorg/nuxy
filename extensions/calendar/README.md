@@ -18,6 +18,7 @@ Calendar gives you a persistent event store inside Nuxy. Open it to browse a mon
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user activates it by selecting **Calendar** from the shell, then browses the interactive month grid or searches with the omnibar.
 
 ---
@@ -30,24 +31,24 @@ Select **Calendar** from the tool list. The month grid opens immediately. Type i
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↓` | Enter calendar mode (omnibox, empty query) |
-| `↓` / `↑` | Navigate search results (omnibox, non-empty query) |
-| `↑` `↓` `←` `→` | Navigate days in the month grid |
-| `Enter` | Open the selected day (month view) |
-| `↑` `↓` | Navigate events in day view |
-| `Enter` | Open event detail |
-| `S` | Return to search / omnibar |
-| `Esc` | Go back one level (day → month, create/detail → day) |
+| Key             | Action                                               |
+| --------------- | ---------------------------------------------------- |
+| `↓`             | Enter calendar mode (omnibox, empty query)           |
+| `↓` / `↑`       | Navigate search results (omnibox, non-empty query)   |
+| `↑` `↓` `←` `→` | Navigate days in the month grid                      |
+| `Enter`         | Open the selected day (month view)                   |
+| `↑` `↓`         | Navigate events in day view                          |
+| `Enter`         | Open event detail                                    |
+| `S`             | Return to search / omnibar                           |
+| `Esc`           | Go back one level (day → month, create/detail → day) |
 
 Actions available via the Nuxy action palette:
 
-| Action | Available when |
-|--------|---------------|
-| **New Event** | Month or day view |
+| Action           | Available when                                  |
+| ---------------- | ----------------------------------------------- |
+| **New Event**    | Month or day view                               |
 | **Delete Event** | An event is selected in day view or detail view |
-| **Save Event** | Create or detail view, no dropdown open |
+| **Save Event**   | Create or detail view, no dropdown open         |
 
 ### Examples
 
@@ -66,28 +67,28 @@ Type any part of an event title in the omnibar. Matching events from the next 6 
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `defaultReminderMin` | select | `0` | Default reminder offset in minutes for new events (`0`, `5`, `10`, `15`, `30`, `60`) |
-| `weekStart` | select | `1` (Monday) | First day of the week shown in the grid (`0` = Sunday, `1` = Monday) |
+| Key                  | Type   | Default      | Description                                                                          |
+| -------------------- | ------ | ------------ | ------------------------------------------------------------------------------------ |
+| `defaultReminderMin` | select | `0`          | Default reminder offset in minutes for new events (`0`, `5`, `10`, `15`, `30`, `60`) |
+| `weekStart`          | select | `1` (Monday) | First day of the week shown in the grid (`0` = Sunday, `1` = Monday)                 |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Persisting extension configuration |
-| `db` | SQLite event store (`calendar` database) |
+| Permission | Used for                                 |
+| ---------- | ---------------------------------------- |
+| `storage`  | Persisting extension configuration       |
+| `db`       | SQLite event store (`calendar` database) |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -95,11 +96,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 ---
 
@@ -119,16 +120,16 @@ const result = await core.extensions.invoke('com.nuxy.calendar', 'calendar:prepa
 
 **Exposed IPC channels:**
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
-| `calendar:list` | `{ from?: number, to?: number }` | `CalendarEvent[]` | List all events, optionally filtered by Unix ms range |
-| `calendar:create` | `{ title, datetime, notes?, remindMin? }` | `CalendarEvent` | Create a new event |
-| `calendar:update` | `{ id, title?, datetime?, notes?, remindMin? }` | `CalendarEvent` | Update an existing event |
-| `calendar:delete` | `{ id: string }` | `void` | Delete an event by ID |
-| `calendar:prepare` | `{ title, date, time? }` | `{ success, data: { title, datetime } }` | Parse a natural-language date/time into a Unix timestamp |
-| `calendar:getConfig` | `{}` | `{ defaultReminderMin, weekStart }` | Read current Calendar settings |
-| `setLastResult` | `{ title?, datetime? }` | `{ ok: true }` | Pre-populate the create form on next open (used by orchestrators) |
-| `getLastResult` | `{}` | `{ title?, datetime? } \| null` | Consume the pending pre-populated form data |
+| Channel              | Payload                                         | Returns                                  | Description                                                       |
+| -------------------- | ----------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
+| `calendar:list`      | `{ from?: number, to?: number }`                | `CalendarEvent[]`                        | List all events, optionally filtered by Unix ms range             |
+| `calendar:create`    | `{ title, datetime, notes?, remindMin? }`       | `CalendarEvent`                          | Create a new event                                                |
+| `calendar:update`    | `{ id, title?, datetime?, notes?, remindMin? }` | `CalendarEvent`                          | Update an existing event                                          |
+| `calendar:delete`    | `{ id: string }`                                | `void`                                   | Delete an event by ID                                             |
+| `calendar:prepare`   | `{ title, date, time? }`                        | `{ success, data: { title, datetime } }` | Parse a natural-language date/time into a Unix timestamp          |
+| `calendar:getConfig` | `{}`                                            | `{ defaultReminderMin, weekStart }`      | Read current Calendar settings                                    |
+| `setLastResult`      | `{ title?, datetime? }`                         | `{ ok: true }`                           | Pre-populate the create form on next open (used by orchestrators) |
+| `getLastResult`      | `{}`                                            | `{ title?, datetime? } \| null`          | Consume the pending pre-populated form data                       |
 
 ### This extension calls other extensions
 

@@ -35,7 +35,11 @@ export function createCoreProxy(
   permissions: string[] = [],
   extDir?: string,
   onRegistryEntry?: (entry: { kind: string; displayName?: string }) => void
-): { core: CoreContext; initI18n: () => Promise<void>; getSyncPayload: () => ExtensionRuntimeMeta } {
+): {
+  core: CoreContext
+  initI18n: () => Promise<void>
+  getSyncPayload: () => ExtensionRuntimeMeta
+} {
   const ipcChannels: string[] = []
   const registeredEntries: RegistryEntry[] = []
   let displayName: string | undefined
@@ -60,7 +64,13 @@ export function createCoreProxy(
       const { supported, default: defaultLocale, dir: localesDir = 'locales' } = manifest.locales
 
       // Read user's preferred languages from the global settings store
-      const globalSettings = path.join(os.homedir(), '.nuxy', 'data', 'com.nuxy.settings', 'settings.json')
+      const globalSettings = path.join(
+        os.homedir(),
+        '.nuxy',
+        'data',
+        'com.nuxy.settings',
+        'settings.json'
+      )
       let preferredLanguages: string[] = []
       try {
         const raw = await fsPromises.readFile(globalSettings, 'utf8')
@@ -114,7 +124,9 @@ export function createCoreProxy(
 
   function checkPermission(permission: string, apiName: string) {
     if (!permissions.includes(permission)) {
-      throw new Error(`Permission Denied: Extension "${extId}" lacks "${permission}" permission required for "${apiName}"`)
+      throw new Error(
+        `Permission Denied: Extension "${extId}" lacks "${permission}" permission required for "${apiName}"`
+      )
     }
   }
 
@@ -257,14 +269,22 @@ export function createCoreProxy(
     registry: {
       registerTool: (cfg) => {
         displayName = cfg.displayName as string | undefined
-        const entry: RegistryEntry = { kind: 'tool', name: cfg.name as string | undefined, displayName }
+        const entry: RegistryEntry = {
+          kind: 'tool',
+          name: cfg.name as string | undefined,
+          displayName,
+        }
         registeredEntries.push(entry)
         onRegistryEntry?.(entry)
         logger.log('info', 'Registry', 'Registered Tool: ' + cfg.name, cfg)
       },
       registerProvider: (cfg) => {
         displayName = cfg.displayName as string | undefined
-        const entry: RegistryEntry = { kind: 'provider', name: cfg.name as string | undefined, displayName }
+        const entry: RegistryEntry = {
+          kind: 'provider',
+          name: cfg.name as string | undefined,
+          displayName,
+        }
         registeredEntries.push(entry)
         onRegistryEntry?.(entry)
         logger.log('info', 'Registry', 'Registered Provider: ' + cfg.name, cfg)
@@ -309,8 +329,12 @@ export function createCoreProxy(
       },
     },
     i18n: {
-      get locale() { return i18nLocale },
-      get dir() { return i18nDir },
+      get locale() {
+        return i18nLocale
+      },
+      get dir() {
+        return i18nDir
+      },
       t: (key: string, vars?: Record<string, string | number>, count?: number): string => {
         let template: string | undefined
         if (count !== undefined) {
@@ -373,8 +397,8 @@ export function createCoreProxy(
           const dir = path.join(os.homedir(), '.nuxy', 'data', targetExtId)
           fs.mkdirSync(dir, { recursive: true })
           await fsPromises.writeFile(
-              path.join(dir, 'ext-settings.json'),
-              JSON.stringify(values, null, 2)
+            path.join(dir, 'ext-settings.json'),
+            JSON.stringify(values, null, 2)
           )
         },
         writeExtension: async (targetExtId: string, key: string, value: unknown): Promise<void> => {

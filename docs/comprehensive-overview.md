@@ -58,38 +58,38 @@ Nuxy executes third-party code from the filesystem. Extensions cannot call Node.
 
 The following table is derived from [DOCUMENTATION.md](./DOCUMENTATION.md) and cross-checked against the actual source tree. See [pain-points-plan.md](./pain-points-plan.md) for detailed gap analysis.
 
-| Feature | Status | Notes / Source File |
-|---|---|---|
-| Worker per extension | **Implemented** | `src/electron/spawn/spawn.ts` |
-| `nuxy-ext://` protocol | **Implemented** | `src/electron/protocol/resolve.ts` |
-| Storage chroot | **Implemented** | `src/electron/config/storage-path.ts` |
-| Permissions manifest gate | **Implemented** | `src/electron/config/permissions.ts` |
-| IPC channel allowlist | **Implemented** | `src/electron/extensions/registry.ts`, `src/electron/ipc/validate.ts` |
-| Registry worker sync (`registry:sync`) | **Implemented** | `src/electron/spawn/spawn.ts` → `mergeRuntimeSync` |
-| Message broker (`core.extensions.invoke`) | **Implemented** | `src/electron/ipc/broker.ts` |
-| Shell as extension (`com.nuxy.shell`) | **Implemented** | `extensions/shell/` |
-| Empty-state UX | **Implemented** | `src/renderer/App.tsx` lines 139–155 |
-| UIKit extension loading | **Implemented** | `src/renderer/App.tsx`, `listUikitExtensions` in `ipc/register.ts` |
-| Theme extensions | **Implemented** | `src/electron/themes/extension-themes.ts` |
-| Icon pack extensions | **Implemented** | `src/electron/icons/registry.ts` |
-| i18n / localisation | **Implemented** | `core.i18n`, `useTranslation` hook, locale resolution |
-| Extension settings schema | **Implemented** | `settings.json` + `core.settings.read/write` |
-| Playwright E2E | **Implemented** | `src/e2e/*.spec.ts` (12 spec files) |
-| Extension hot reload | **Partial** | `fs.watch` in dev mode only; no crash-restart in production |
-| Clipboard consent UI | **Planned** | Permission denied without declaration; no interactive prompt |
-| AI orchestrator extension | **Planned** | `type: orchestrator` exists; no built-in orchestrator shipped |
-| Orchestrator Enter path | **Planned** | Type registered; shell Enter key only opens tools today |
-| Granular `shell` permission | **Planned** | Binary allow/deny today; no `allowedCommands` filter |
-| Extension version conflict resolution | **Planned** | No version gating or `nuxyVersion` field |
+| Feature                                   | Status          | Notes / Source File                                                   |
+| ----------------------------------------- | --------------- | --------------------------------------------------------------------- |
+| Worker per extension                      | **Implemented** | `src/electron/spawn/spawn.ts`                                         |
+| `nuxy-ext://` protocol                    | **Implemented** | `src/electron/protocol/resolve.ts`                                    |
+| Storage chroot                            | **Implemented** | `src/electron/config/storage-path.ts`                                 |
+| Permissions manifest gate                 | **Implemented** | `src/electron/config/permissions.ts`                                  |
+| IPC channel allowlist                     | **Implemented** | `src/electron/extensions/registry.ts`, `src/electron/ipc/validate.ts` |
+| Registry worker sync (`registry:sync`)    | **Implemented** | `src/electron/spawn/spawn.ts` → `mergeRuntimeSync`                    |
+| Message broker (`core.extensions.invoke`) | **Implemented** | `src/electron/ipc/broker.ts`                                          |
+| Shell as extension (`com.nuxy.shell`)     | **Implemented** | `extensions/shell/`                                                   |
+| Empty-state UX                            | **Implemented** | `src/renderer/App.tsx` lines 139–155                                  |
+| UIKit extension loading                   | **Implemented** | `src/renderer/App.tsx`, `listUikitExtensions` in `ipc/register.ts`    |
+| Theme extensions                          | **Implemented** | `src/electron/themes/extension-themes.ts`                             |
+| Icon pack extensions                      | **Implemented** | `src/electron/icons/registry.ts`                                      |
+| i18n / localisation                       | **Implemented** | `core.i18n`, `useTranslation` hook, locale resolution                 |
+| Extension settings schema                 | **Implemented** | `settings.json` + `core.settings.read/write`                          |
+| Playwright E2E                            | **Implemented** | `src/e2e/*.spec.ts` (12 spec files)                                   |
+| Extension hot reload                      | **Partial**     | `fs.watch` in dev mode only; no crash-restart in production           |
+| Clipboard consent UI                      | **Planned**     | Permission denied without declaration; no interactive prompt          |
+| AI orchestrator extension                 | **Planned**     | `type: orchestrator` exists; no built-in orchestrator shipped         |
+| Orchestrator Enter path                   | **Planned**     | Type registered; shell Enter key only opens tools today               |
+| Granular `shell` permission               | **Planned**     | Binary allow/deny today; no `allowedCommands` filter                  |
+| Extension version conflict resolution     | **Planned**     | No version gating or `nuxyVersion` field                              |
 
 ### Runtime paths
 
-| Path | Purpose |
-|---|---|
-| `~/.nuxy/nuxyconfig` | User settings (key=value) |
-| `~/.nuxy/extensions/<folder>/` | Installed extensions |
-| `~/.nuxy/data/<manifest.id>/` | Extension storage (chroot-jailed) |
-| `~/.nuxy/themes/` | Runtime theme JSON files |
+| Path                           | Purpose                           |
+| ------------------------------ | --------------------------------- |
+| `~/.nuxy/nuxyconfig`           | User settings (key=value)         |
+| `~/.nuxy/extensions/<folder>/` | Installed extensions              |
+| `~/.nuxy/data/<manifest.id>/`  | Extension storage (chroot-jailed) |
+| `~/.nuxy/themes/`              | Runtime theme JSON files          |
 
 > Historical references to `~/.local/share/nuxy` or `~/.config/nuxy` in older docs are obsolete. The canonical path is `~/.nuxy/`. See [electron-fix-plan.md](./electron-fix-plan.md).
 
@@ -99,26 +99,26 @@ The following table is derived from [DOCUMENTATION.md](./DOCUMENTATION.md) and c
 
 For the full analysis, see [pain-points-plan.md](./pain-points-plan.md) and [known-bugs.md](./known-bugs.md).
 
-| ID | Description | Severity | Status | Primary File |
-|---|---|---|---|---|
-| P1 | Shell business logic still bleeds into `App.tsx` (omni bar, provider routing) | High | Largely fixed — `App.tsx` is now 158 LOC, shell moved to extension | `src/renderer/App.tsx` |
-| P2 | `core.registry.*` in workers did not sync to kernel | High | Fixed — `registry:sync` message implemented | `src/electron/spawn/spawn.ts` |
-| P3 | No message broker / `core.extensions.invoke` | High | Fixed — `broker.ts` implemented | `src/electron/ipc/broker.ts` |
-| P4 | Manifest `capabilities` ignored by kernel | High | Fixed — checked in `broker.ts` | `src/electron/ipc/broker.ts` |
-| P5 | Clipboard exposed to all workers regardless of permissions | High | Fixed — `permissions.ts` gates clipboard channels | `src/electron/config/permissions.ts` |
-| P6 | Extension IPC channels not allowlisted | Medium | Fixed — `isChannelAllowed` in registry | `src/electron/extensions/registry.ts` |
-| P7 | Worker sandbox weaker than documented (`import()` not `vm`) | Medium | Open — documented as known gap; isolation is worker-thread-level, not `isolated-vm` | `packages/extension-host/src/` |
-| P8 | Calculator uses `eval()` for math expressions | Medium | Open — unsafe; replace with `mathjs` or Pratt parser | `extensions/calculator/backend.ts` |
-| P9 | Documentation drift (`~/.local/share/nuxy`, `vm`, Shadcn) | Medium | Largely fixed — paths updated; some older docs may lag | `docs/` |
-| P10 | Extension author DX (no typed SDK template, plain JS) | Medium | Partial — `packages/ext-template/` added; JS files banned, TypeScript required | `packages/ext-template/` |
-| P11 | No empty-state UX when no extensions loaded | Medium | Fixed — `App.tsx` renders `EmptyState` when extension count is 0 | `src/renderer/App.tsx` |
-| P12 | Orchestrator / Enter fallback not wired | Medium | Open — `type: orchestrator` exists but Enter key only opens tools | `extensions/shell/frontend.tsx` |
-| P13 | Provider fan-out on every keystroke | Medium | Open — no AbortController pattern for in-flight IPC cancellation | `extensions/shell/frontend.tsx` |
-| P14 | No E2E / integration tests | Medium | Fixed — 12 Playwright spec files in `src/e2e/` | `src/e2e/` |
-| P15 | No extension lifecycle (hot reload, crash restart) | Low | Partial — dev-mode `fs.watch`; no production hot reload | `src/electron/extensions/scanner.ts` |
-| P16 | Global shortcut / daemon story incomplete | Low | Open — single-instance lock works; UNIX socket (`/tmp/nuxy.sock`) present but optional | `src/electron/bootstrap/main.ts` |
-| P17 | Toolchain / release gaps (eslint, CI, `electron-builder`) | Low | Open — no CI pipeline yet | repo root |
-| P18 | Package manager split (`pnpm` vs `bun run start`) | Low | Open — `bun run start` still in root `package.json` | `package.json` |
+| ID  | Description                                                                   | Severity | Status                                                                                 | Primary File                          |
+| --- | ----------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------- | ------------------------------------- |
+| P1  | Shell business logic still bleeds into `App.tsx` (omni bar, provider routing) | High     | Largely fixed — `App.tsx` is now 158 LOC, shell moved to extension                     | `src/renderer/App.tsx`                |
+| P2  | `core.registry.*` in workers did not sync to kernel                           | High     | Fixed — `registry:sync` message implemented                                            | `src/electron/spawn/spawn.ts`         |
+| P3  | No message broker / `core.extensions.invoke`                                  | High     | Fixed — `broker.ts` implemented                                                        | `src/electron/ipc/broker.ts`          |
+| P4  | Manifest `capabilities` ignored by kernel                                     | High     | Fixed — checked in `broker.ts`                                                         | `src/electron/ipc/broker.ts`          |
+| P5  | Clipboard exposed to all workers regardless of permissions                    | High     | Fixed — `permissions.ts` gates clipboard channels                                      | `src/electron/config/permissions.ts`  |
+| P6  | Extension IPC channels not allowlisted                                        | Medium   | Fixed — `isChannelAllowed` in registry                                                 | `src/electron/extensions/registry.ts` |
+| P7  | Worker sandbox weaker than documented (`import()` not `vm`)                   | Medium   | Open — documented as known gap; isolation is worker-thread-level, not `isolated-vm`    | `packages/extension-host/src/`        |
+| P8  | Calculator uses `eval()` for math expressions                                 | Medium   | Open — unsafe; replace with `mathjs` or Pratt parser                                   | `extensions/calculator/backend.ts`    |
+| P9  | Documentation drift (`~/.local/share/nuxy`, `vm`, Shadcn)                     | Medium   | Largely fixed — paths updated; some older docs may lag                                 | `docs/`                               |
+| P10 | Extension author DX (no typed SDK template, plain JS)                         | Medium   | Partial — `packages/ext-template/` added; JS files banned, TypeScript required         | `packages/ext-template/`              |
+| P11 | No empty-state UX when no extensions loaded                                   | Medium   | Fixed — `App.tsx` renders `EmptyState` when extension count is 0                       | `src/renderer/App.tsx`                |
+| P12 | Orchestrator / Enter fallback not wired                                       | Medium   | Open — `type: orchestrator` exists but Enter key only opens tools                      | `extensions/shell/frontend.tsx`       |
+| P13 | Provider fan-out on every keystroke                                           | Medium   | Open — no AbortController pattern for in-flight IPC cancellation                       | `extensions/shell/frontend.tsx`       |
+| P14 | No E2E / integration tests                                                    | Medium   | Fixed — 12 Playwright spec files in `src/e2e/`                                         | `src/e2e/`                            |
+| P15 | No extension lifecycle (hot reload, crash restart)                            | Low      | Partial — dev-mode `fs.watch`; no production hot reload                                | `src/electron/extensions/scanner.ts`  |
+| P16 | Global shortcut / daemon story incomplete                                     | Low      | Open — single-instance lock works; UNIX socket (`/tmp/nuxy.sock`) present but optional | `src/electron/bootstrap/main.ts`      |
+| P17 | Toolchain / release gaps (eslint, CI, `electron-builder`)                     | Low      | Open — no CI pipeline yet                                                              | repo root                             |
+| P18 | Package manager split (`pnpm` vs `bun run start`)                             | Low      | Open — `bun run start` still in root `package.json`                                    | `package.json`                        |
 
 ---
 
@@ -174,14 +174,14 @@ The phased plan below is derived from [pain-points-plan.md](./pain-points-plan.m
 
 ### Success Metrics
 
-| Metric | Current | Target (V1) |
-|---|---|---|
-| Kernel unit tests | ~19 | 30+ (broker, permissions) |
-| E2E test specs | 12 | All critical paths covered |
-| Docs path consistency | Clean | 0 stale `~/.local/share/nuxy` refs |
-| Core `App.tsx` LOC | 158 | < 200 |
-| Extensions needing core edit for new provider | No | No |
-| Cross-extension invoke with capability deny | Tested | Tested + passing |
+| Metric                                        | Current | Target (V1)                        |
+| --------------------------------------------- | ------- | ---------------------------------- |
+| Kernel unit tests                             | ~19     | 30+ (broker, permissions)          |
+| E2E test specs                                | 12      | All critical paths covered         |
+| Docs path consistency                         | Clean   | 0 stale `~/.local/share/nuxy` refs |
+| Core `App.tsx` LOC                            | 158     | < 200                              |
+| Extensions needing core edit for new provider | No      | No                                 |
+| Cross-extension invoke with capability deny   | Tested  | Tested + passing                   |
 
 ---
 
@@ -247,19 +247,19 @@ nuxy/
 
 ### Key Kernel Modules
 
-| Module | Path | Responsibility |
-|---|---|---|
-| `main.ts` | `src/electron/bootstrap/main.ts` | App lifecycle, single-instance lock, UNIX socket |
-| `scanner.ts` | `src/electron/extensions/scanner.ts` | Reads `~/.nuxy/extensions/`, validates manifests |
-| `spawn.ts` | `src/electron/spawn/spawn.ts` | Creates Worker thread, wires `host:call`/`host:reply` |
-| `broker.ts` | `src/electron/ipc/broker.ts` | Cross-extension `invokeExtension` with capability checks |
-| `registry.ts` | `src/electron/extensions/registry.ts` | In-memory extension map, channel allowlist, runtime sync |
-| `register.ts` | `src/electron/ipc/register.ts` | All `ipcMain` handlers (`listTools`, `getThemeByName`, etc.) |
-| `permissions.ts` | `src/electron/config/permissions.ts` | Maps host channels to required manifest permissions |
-| `nuxyconfig.ts` | `src/electron/config/nuxyconfig.ts` | Reads/watches `~/.nuxy/nuxyconfig`; hot-reloads on change |
-| `protocol/resolve.ts` | `src/electron/protocol/` | `nuxy-ext://` path resolution with folder escape prevention |
-| `spring.ts` | `src/electron/window/spring.ts` | Spring-physics animated window resizing |
-| `preload.ts` | `src/electron/bootstrap/preload.ts` | `contextBridge` — exposes `window.core` to renderer |
+| Module                | Path                                  | Responsibility                                               |
+| --------------------- | ------------------------------------- | ------------------------------------------------------------ |
+| `main.ts`             | `src/electron/bootstrap/main.ts`      | App lifecycle, single-instance lock, UNIX socket             |
+| `scanner.ts`          | `src/electron/extensions/scanner.ts`  | Reads `~/.nuxy/extensions/`, validates manifests             |
+| `spawn.ts`            | `src/electron/spawn/spawn.ts`         | Creates Worker thread, wires `host:call`/`host:reply`        |
+| `broker.ts`           | `src/electron/ipc/broker.ts`          | Cross-extension `invokeExtension` with capability checks     |
+| `registry.ts`         | `src/electron/extensions/registry.ts` | In-memory extension map, channel allowlist, runtime sync     |
+| `register.ts`         | `src/electron/ipc/register.ts`        | All `ipcMain` handlers (`listTools`, `getThemeByName`, etc.) |
+| `permissions.ts`      | `src/electron/config/permissions.ts`  | Maps host channels to required manifest permissions          |
+| `nuxyconfig.ts`       | `src/electron/config/nuxyconfig.ts`   | Reads/watches `~/.nuxy/nuxyconfig`; hot-reloads on change    |
+| `protocol/resolve.ts` | `src/electron/protocol/`              | `nuxy-ext://` path resolution with folder escape prevention  |
+| `spring.ts`           | `src/electron/window/spring.ts`       | Spring-physics animated window resizing                      |
+| `preload.ts`          | `src/electron/bootstrap/preload.ts`   | `contextBridge` — exposes `window.core` to renderer          |
 
 ### IPC Flow
 
@@ -294,15 +294,15 @@ Frontend structure: [FRONTEND_STRUCTURE_GUIDE.md](../extensions/FRONTEND_STRUCTU
 
 ### Extension Types
 
-| Type | User-visible | Backend worker | Frontend loaded | Purpose |
-|---|---|---|---|---|
-| `tool` | Yes | Required | Optional, on activation | Interactive tool activated directly |
-| `provider` | Yes | Required | Optional | Data provider (supplies result rows) |
-| `orchestrator` | Yes | Required | Optional | Coordinates providers; Enter fallback |
-| `helper` | No | Optional | Optional, loaded early | Utility called by other extensions |
-| `uikit` | No | No | Yes, loaded before shell | Extends `window.UI` with new components |
-| `theme` | No | No | No | JSON theme definition |
-| `iconpack` | No | No | No | JSON icon pack |
+| Type           | User-visible | Backend worker | Frontend loaded          | Purpose                                 |
+| -------------- | ------------ | -------------- | ------------------------ | --------------------------------------- |
+| `tool`         | Yes          | Required       | Optional, on activation  | Interactive tool activated directly     |
+| `provider`     | Yes          | Required       | Optional                 | Data provider (supplies result rows)    |
+| `orchestrator` | Yes          | Required       | Optional                 | Coordinates providers; Enter fallback   |
+| `helper`       | No           | Optional       | Optional, loaded early   | Utility called by other extensions      |
+| `uikit`        | No           | No             | Yes, loaded before shell | Extends `window.UI` with new components |
+| `theme`        | No           | No             | No                       | JSON theme definition                   |
+| `iconpack`     | No           | No             | No                       | JSON icon pack                          |
 
 ### Manifest Format
 
@@ -332,18 +332,18 @@ Frontend structure: [FRONTEND_STRUCTURE_GUIDE.md](../extensions/FRONTEND_STRUCTU
 
 ### Available Permissions
 
-| Permission | Grants access to |
-|---|---|
-| `storage` | `core.storage.*` (sandboxed JSON, namespaced by extension id) |
-| `clipboard` | `core.clipboard.*` |
-| `fs` | `core.fs.*` (arbitrary path I/O proxied through kernel) |
-| `db` | `core.db.*` (SQLite via kernel proxy) |
-| `shell` | `core.shell.open()`, `core.shell.exec()` |
-| `media` | `core.media.*` |
-| `network` | Outbound HTTP/fetch |
-| `notifications` | System notifications |
-| `settings.read` | Read another extension's settings |
-| `settings.write` | Write another extension's settings |
+| Permission       | Grants access to                                              |
+| ---------------- | ------------------------------------------------------------- |
+| `storage`        | `core.storage.*` (sandboxed JSON, namespaced by extension id) |
+| `clipboard`      | `core.clipboard.*`                                            |
+| `fs`             | `core.fs.*` (arbitrary path I/O proxied through kernel)       |
+| `db`             | `core.db.*` (SQLite via kernel proxy)                         |
+| `shell`          | `core.shell.open()`, `core.shell.exec()`                      |
+| `media`          | `core.media.*`                                                |
+| `network`        | Outbound HTTP/fetch                                           |
+| `notifications`  | System notifications                                          |
+| `settings.read`  | Read another extension's settings                             |
+| `settings.write` | Write another extension's settings                            |
 
 ### CoreContext API (available in backend)
 
@@ -432,20 +432,20 @@ Extensions ship locale files under `locales/<code>.json`. The kernel resolves th
 
 Plain `key=value` format. Auto-created on first run. Hot-reloaded on file change.
 
-| Key | Type | Default | Description |
-|---|---|---|---|
-| `theme` | `dark` \| `light` \| `system` \| `<name>` | `dark` | Active theme. Custom theme names match JSON files in `~/.nuxy/themes/` or theme extensions. |
-| `escAction` | `hide` \| `minimize` \| `quit` \| `none` | `hide` | What happens when Escape is pressed |
-| `blurAction` | `hide` \| `minimize` \| `quit` \| `none` | `hide` | What happens when the window loses focus |
-| `windowWidth` | integer (pixels) | 700 | Width of the launcher window |
-| `windowMaxHeight` | integer (pixels) | 500 | Maximum height before the window scrolls |
-| `windowPosition` | `center` \| `50%` \| `1/3` \| `200px` \| `"x y"` | `center` | Initial window position on the display |
-| `alwaysOnTop` | `true` \| `false` | `false` | Keep the window above all other windows |
-| `opacity` | `0.0`–`1.0` | `1.0` | Window opacity |
-| `showInTaskbar` | `true` \| `false` | `false` | Show Nuxy in the OS taskbar |
-| `showOnStartup` | `true` \| `false` | `false` | Show the window immediately on launch |
-| `zoom` | CSS zoom value (e.g. `1.2`) | — | Renderer zoom level |
-| `font` | `system` \| `monospace` \| font name | — | Global font family |
+| Key               | Type                                             | Default  | Description                                                                                 |
+| ----------------- | ------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------- |
+| `theme`           | `dark` \| `light` \| `system` \| `<name>`        | `dark`   | Active theme. Custom theme names match JSON files in `~/.nuxy/themes/` or theme extensions. |
+| `escAction`       | `hide` \| `minimize` \| `quit` \| `none`         | `hide`   | What happens when Escape is pressed                                                         |
+| `blurAction`      | `hide` \| `minimize` \| `quit` \| `none`         | `hide`   | What happens when the window loses focus                                                    |
+| `windowWidth`     | integer (pixels)                                 | 700      | Width of the launcher window                                                                |
+| `windowMaxHeight` | integer (pixels)                                 | 500      | Maximum height before the window scrolls                                                    |
+| `windowPosition`  | `center` \| `50%` \| `1/3` \| `200px` \| `"x y"` | `center` | Initial window position on the display                                                      |
+| `alwaysOnTop`     | `true` \| `false`                                | `false`  | Keep the window above all other windows                                                     |
+| `opacity`         | `0.0`–`1.0`                                      | `1.0`    | Window opacity                                                                              |
+| `showInTaskbar`   | `true` \| `false`                                | `false`  | Show Nuxy in the OS taskbar                                                                 |
+| `showOnStartup`   | `true` \| `false`                                | `false`  | Show the window immediately on launch                                                       |
+| `zoom`            | CSS zoom value (e.g. `1.2`)                      | —        | Renderer zoom level                                                                         |
+| `font`            | `system` \| `monospace` \| font name             | —        | Global font family                                                                          |
 
 ---
 
@@ -496,12 +496,12 @@ Dev extensions sync: `pnpm dev` copies `extensions/` into `~/.nuxy/extensions/`.
 
 ### Test Locations
 
-| What | Where |
-|---|---|
-| Extension backend logic | `extensions/<name>/backend.test.ts` |
-| Electron main process | `src/electron/**/*.test.ts` |
-| Playwright e2e (unit-style, no app) | `src/e2e/*.spec.ts` |
-| Playwright e2e (full app launch) | `src/e2e/*.spec.ts` using `electronApp`/`appPage` fixtures |
+| What                                | Where                                                      |
+| ----------------------------------- | ---------------------------------------------------------- |
+| Extension backend logic             | `extensions/<name>/backend.test.ts`                        |
+| Electron main process               | `src/electron/**/*.test.ts`                                |
+| Playwright e2e (unit-style, no app) | `src/e2e/*.spec.ts`                                        |
+| Playwright e2e (full app launch)    | `src/e2e/*.spec.ts` using `electronApp`/`appPage` fixtures |
 
 ### Extension Backend Test Pattern
 
@@ -553,21 +553,21 @@ test('calculator returns result', async ({ appPage }) => {
 
 ## 10. Related Documentation
 
-| Topic | Document |
-|---|---|
-| Empty shell philosophy | [00-overview.md](./00-overview.md) |
-| Architecture diagram and component breakdown | [02-architecture.md](./02-architecture.md) |
-| Canonical paths and kernel fix audit | [electron-fix-plan.md](./electron-fix-plan.md) |
-| Pain points and gap analysis | [pain-points-plan.md](./pain-points-plan.md) |
-| Open bug tracker | [known-bugs.md](./known-bugs.md) |
-| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) |
-| MVP roadmap and sprint history | [19-mvp-roadmap.md](./19-mvp-roadmap.md) |
-| Security model and isolation | [10-security.md](./10-security.md) |
-| Extension types and omni-input arbitration | [16-omni-input-system.md](./16-omni-input-system.md) |
-| Gnome Extensions style deep dive | [15-modular-plugin-system.md](./15-modular-plugin-system.md) |
-| Testing strategy | [12-testing-strategy.md](./12-testing-strategy.md) |
-| Monorepo file structure design | [structure.md](./structure.md) |
-| Extension authoring rules (mandatory) | [../extensions/EXTENSION_GUIDE.md](../extensions/EXTENSION_GUIDE.md) |
-| Manifest field reference | [../extensions/MANIFEST_GUIDE.md](../extensions/MANIFEST_GUIDE.md) |
-| Frontend structure guide | [../extensions/FRONTEND_STRUCTURE_GUIDE.md](../extensions/FRONTEND_STRUCTURE_GUIDE.md) |
-| Documentation index | [README.md](./README.md) |
+| Topic                                        | Document                                                                               |
+| -------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Empty shell philosophy                       | [00-overview.md](./00-overview.md)                                                     |
+| Architecture diagram and component breakdown | [02-architecture.md](./02-architecture.md)                                             |
+| Canonical paths and kernel fix audit         | [electron-fix-plan.md](./electron-fix-plan.md)                                         |
+| Pain points and gap analysis                 | [pain-points-plan.md](./pain-points-plan.md)                                           |
+| Open bug tracker                             | [known-bugs.md](./known-bugs.md)                                                       |
+| Feature implementation status                | [DOCUMENTATION.md](./DOCUMENTATION.md)                                                 |
+| MVP roadmap and sprint history               | [19-mvp-roadmap.md](./19-mvp-roadmap.md)                                               |
+| Security model and isolation                 | [10-security.md](./10-security.md)                                                     |
+| Extension types and omni-input arbitration   | [16-omni-input-system.md](./16-omni-input-system.md)                                   |
+| Gnome Extensions style deep dive             | [15-modular-plugin-system.md](./15-modular-plugin-system.md)                           |
+| Testing strategy                             | [12-testing-strategy.md](./12-testing-strategy.md)                                     |
+| Monorepo file structure design               | [structure.md](./structure.md)                                                         |
+| Extension authoring rules (mandatory)        | [../extensions/EXTENSION_GUIDE.md](../extensions/EXTENSION_GUIDE.md)                   |
+| Manifest field reference                     | [../extensions/MANIFEST_GUIDE.md](../extensions/MANIFEST_GUIDE.md)                     |
+| Frontend structure guide                     | [../extensions/FRONTEND_STRUCTURE_GUIDE.md](../extensions/FRONTEND_STRUCTURE_GUIDE.md) |
+| Documentation index                          | [README.md](./README.md)                                                               |

@@ -81,25 +81,25 @@ Icon pack extensions ship an `icons.json` file with SVG strings keyed by name. T
 
 ## Built-in Extensions
 
-| Extension | Type | ID |
-|---|---|---|
-| Shell | `tool` (bootstrap) | `com.nuxy.shell` |
-| Settings | `tool` | `com.nuxy.settings` |
-| Clipboard Manager | `tool` | `com.nuxy.clipboard` |
-| Calculator | `provider` | `com.nuxy.calculator` |
-| Snippets | `tool` | `com.nuxy.snippets` |
-| Notes | `tool` | `com.nuxy.notes` |
-| AI Orchestrator | `orchestrator` | `com.nuxy.ai-orchestrator` |
-| AngrySearch | `provider` | `com.nuxy.angrysearch` |
-| Ollama Chat | `tool` | `com.nuxy.ollama` |
-| Video Downloader | `tool` | `com.nuxy.video-downloader` |
-| Focusblock | `tool` | `com.nuxy.focusblock` |
-| Time Calculator | `provider` | `com.nuxy.time-calculator` |
-| Converter | `provider` | `com.nuxy.converter` |
-| Emoji Picker | `tool` | `com.nuxy.emoji-picker` |
-| Bitwarden | `tool` | `com.nuxy.bitwarden` |
-| Calendar | `tool` | `com.nuxy.calendar` |
-| n8n | `provider` | `com.nuxy.n8n` |
+| Extension         | Type               | ID                          |
+| ----------------- | ------------------ | --------------------------- |
+| Shell             | `tool` (bootstrap) | `com.nuxy.shell`            |
+| Settings          | `tool`             | `com.nuxy.settings`         |
+| Clipboard Manager | `tool`             | `com.nuxy.clipboard`        |
+| Calculator        | `provider`         | `com.nuxy.calculator`       |
+| Snippets          | `tool`             | `com.nuxy.snippets`         |
+| Notes             | `tool`             | `com.nuxy.notes`            |
+| AI Orchestrator   | `orchestrator`     | `com.nuxy.ai-orchestrator`  |
+| AngrySearch       | `provider`         | `com.nuxy.angrysearch`      |
+| Ollama Chat       | `tool`             | `com.nuxy.ollama`           |
+| Video Downloader  | `tool`             | `com.nuxy.video-downloader` |
+| Focusblock        | `tool`             | `com.nuxy.focusblock`       |
+| Time Calculator   | `provider`         | `com.nuxy.time-calculator`  |
+| Converter         | `provider`         | `com.nuxy.converter`        |
+| Emoji Picker      | `tool`             | `com.nuxy.emoji-picker`     |
+| Bitwarden         | `tool`             | `com.nuxy.bitwarden`        |
+| Calendar          | `tool`             | `com.nuxy.calendar`         |
+| n8n               | `provider`         | `com.nuxy.n8n`              |
 
 ## Next Steps
 

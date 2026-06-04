@@ -22,7 +22,12 @@ interface StoreDerivedData {
   selectedExtension: ExtensionListItem | null
 }
 
-export function useStoreDerivedData({ extensions, activeTab, query, selectedIndex }: Params): StoreDerivedData {
+export function useStoreDerivedData({
+  extensions,
+  activeTab,
+  query,
+  selectedIndex,
+}: Params): StoreDerivedData {
   const filteredExtensions = React.useMemo(
     () => filterExtensions(extensions, activeTab, query),
     [extensions, activeTab, query]

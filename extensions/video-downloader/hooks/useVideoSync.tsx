@@ -48,18 +48,26 @@ export function useVideoSync({
   ShortcutSep,
 }: Params): void {
   React.useEffect(() => {
-    if (url !== lastUrl) { setMetadata(null); setError(null) }
+    if (url !== lastUrl) {
+      setMetadata(null)
+      setError(null)
+    }
   }, [url, lastUrl])
 
   React.useEffect(() => {
     if (activeSectionId !== activeTab) {
-      if (activeSectionId === 'downloads') { setPreviousFormatTab(activeTab); setDownloadSelectedIndex(0) }
+      if (activeSectionId === 'downloads') {
+        setPreviousFormatTab(activeTab)
+        setDownloadSelectedIndex(0)
+      }
       setActiveTab(activeSectionId as TabId)
       setSelectedIndex(0)
     }
   }, [activeSectionId])
 
-  React.useEffect(() => { if (activeTab === 'downloads') void loadHistory() }, [activeTab])
+  React.useEffect(() => {
+    if (activeTab === 'downloads') void loadHistory()
+  }, [activeTab])
 
   React.useEffect(() => {
     window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))

@@ -22,8 +22,15 @@ async function updateDatabase(core: CoreContext): Promise<void> {
 
   try {
     const scanRoot = (await core.settings.read<string>('scanRoot')) ?? '/'
-    const ignoredRootsRaw = (await core.settings.read<string>('ignoredRoots')) ?? '/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock'
-    const ignoredSet = new Set(ignoredRootsRaw.split(',').map(s => s.trim()).filter(Boolean))
+    const ignoredRootsRaw =
+      (await core.settings.read<string>('ignoredRoots')) ??
+      '/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock'
+    const ignoredSet = new Set(
+      ignoredRootsRaw
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )
 
     const tempDb = core.db.open('temp_angry_database')
     tempDb.exec('PRAGMA synchronous = OFF;')
@@ -133,17 +140,20 @@ export function register(core: CoreContext): void {
   updateDatabase(core)
 
   // Periodic check tick for automatic re-indexing
-  setInterval(async () => {
-    try {
-      const updateIntervalHours = (await core.settings.read<number>('updateIntervalHours')) ?? 6
-      const intervalMs = updateIntervalHours * 60 * 60 * 1000
-      if (lastUpdate && Date.now() - lastUpdate.getTime() >= intervalMs) {
-        updateDatabase(core)
+  setInterval(
+    async () => {
+      try {
+        const updateIntervalHours = (await core.settings.read<number>('updateIntervalHours')) ?? 6
+        const intervalMs = updateIntervalHours * 60 * 60 * 1000
+        if (lastUpdate && Date.now() - lastUpdate.getTime() >= intervalMs) {
+          updateDatabase(core)
+        }
+      } catch (_e) {
+        // ignore
       }
-    } catch (_e) {
-      // ignore
-    }
-  }, 5 * 60 * 1000)
+    },
+    5 * 60 * 1000
+  )
 
   core.ipc.handle('updateDatabase', async (): Promise<boolean> => {
     if (!isUpdating) updateDatabase(core)

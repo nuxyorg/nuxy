@@ -17,19 +17,19 @@ async function resetShell(page: any) {
 
 async function openNotes(page: any) {
   await resetShell(page)
-  console.log("Waiting for shell to load tools...")
+  console.log('Waiting for shell to load tools...')
   await page.locator('[role="option"]').first().waitFor({ state: 'visible', timeout: 5000 })
-  console.log("Typing notes...")
+  console.log('Typing notes...')
   const input = page.locator('.nuxy-shell-omni-bar__input')
   await input.fill('notes')
-  console.log("Waiting for option...")
+  console.log('Waiting for option...')
   try {
     const option = page.locator('[role="option"]', { hasText: 'notes' })
     await option.first().waitFor({ state: 'visible', timeout: 5000 })
-    console.log("Found option, clicking...")
+    console.log('Found option, clicking...')
     await option.first().click()
   } catch (err) {
-    console.log("Failed to find/click notes option. HTML content:")
+    console.log('Failed to find/click notes option. HTML content:')
     console.log(await page.content())
     throw err
   }
@@ -88,10 +88,9 @@ test.describe('notes extension — keyboard navigation', () => {
   test('arrow keys navigate the note list', async ({ appPage }) => {
     await appPage.keyboard.press('Control+n')
     await appPage.keyboard.press('Control+n')
-    await appPage.waitForFunction(
-      () => document.querySelectorAll('.nuxy-list-item').length >= 3,
-      { timeout: 3000 }
-    )
+    await appPage.waitForFunction(() => document.querySelectorAll('.nuxy-list-item').length >= 3, {
+      timeout: 3000,
+    })
 
     await appPage.locator('.nuxy-shell-omni-bar__input').focus()
     await appPage.keyboard.press('ArrowDown') // selects index 0 ("New Note")
@@ -149,11 +148,17 @@ test.describe('notes extension — keyboard navigation', () => {
 
     console.log('[DEBUG] Item 0 classes:', await items.nth(0).getAttribute('class'))
     console.log('[DEBUG] Item 1 classes:', await items.nth(1).getAttribute('class'))
-    console.log('[DEBUG] Active element tag:', await appPage.evaluate(() => document.activeElement?.tagName))
-    console.log('[DEBUG] Active element classes:', await appPage.evaluate(() => document.activeElement?.className))
+    console.log(
+      '[DEBUG] Active element tag:',
+      await appPage.evaluate(() => document.activeElement?.tagName)
+    )
+    console.log(
+      '[DEBUG] Active element classes:',
+      await appPage.evaluate(() => document.activeElement?.className)
+    )
 
     await appPage.keyboard.press('Delete')
-    
+
     // Wait for the UI note list to update (only "New Note" remains)
     await expect(items).toHaveCount(1)
   })

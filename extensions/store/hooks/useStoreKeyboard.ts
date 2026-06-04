@@ -21,6 +21,7 @@ interface Params {
   handleInstall: (ext: ExtensionListItem) => Promise<void>
   handleUninstall: (ext: ExtensionListItem) => Promise<void>
   loadCatalog: () => Promise<void>
+  t: (key: string) => string
 }
 
 export function buildStoreRightPanelActions({
@@ -32,11 +33,12 @@ export function buildStoreRightPanelActions({
   handleInstall,
   handleUninstall,
   loadCatalog,
+  t,
 }: Params) {
   return [
     {
       key: 'ArrowUp',
-      label: 'Navigate list',
+      label: t('actions.navigate'),
       hint: '↑↓',
       handler: () => {
         setSelectedIndex((idx) => (idx <= 0 ? 0 : idx - 1))
@@ -44,7 +46,7 @@ export function buildStoreRightPanelActions({
     },
     {
       key: 'ArrowDown',
-      label: 'Navigate list',
+      label: t('actions.navigate'),
       handler: () => {
         setSelectedIndex((idx) => {
           const maxIdx = filteredExtensions.length - 1
@@ -54,7 +56,7 @@ export function buildStoreRightPanelActions({
     },
     {
       key: 'i',
-      label: 'Install / Update',
+      label: t('actions.installUpdate'),
       hint: 'I',
       activeOn: () => {
         const item = filteredExtensions[stateRef.current.selectedIndex]
@@ -67,7 +69,7 @@ export function buildStoreRightPanelActions({
     },
     {
       key: 'u',
-      label: 'Uninstall',
+      label: t('actions.uninstall'),
       hint: 'U',
       activeOn: () => {
         const item = filteredExtensions[stateRef.current.selectedIndex]
@@ -80,7 +82,7 @@ export function buildStoreRightPanelActions({
     },
     {
       key: 'r',
-      label: 'Refresh store',
+      label: t('actions.refresh'),
       hint: 'R',
       handler: () => {
         void loadCatalog()
@@ -88,7 +90,7 @@ export function buildStoreRightPanelActions({
     },
     {
       key: 'Enter',
-      label: 'Perform Action',
+      label: t('actions.performAction'),
       hint: '↵',
       activeOn: () => {
         const { selectedIndex } = stateRef.current
@@ -106,7 +108,7 @@ export function buildStoreRightPanelActions({
     },
     {
       key: 'Tab',
-      label: 'Next Category',
+      label: t('actions.nextCategory'),
       hint: 'Tab',
       handler: () => {
         setActiveTab((prev) => {
@@ -120,7 +122,7 @@ export function buildStoreRightPanelActions({
     },
     {
       key: 'ArrowLeft',
-      label: 'Focus Sidebar',
+      label: t('actions.focusSidebar'),
       handler: () => {
         nav.setFocusArea('left')
       },

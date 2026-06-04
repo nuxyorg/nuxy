@@ -1,7 +1,8 @@
 import type { CoreContext, LoadedExtension } from '@nuxy/extension-sdk'
 import type { StoreExtension, RegistryIndex, ExtensionListItem } from './types.ts'
 
-const DEFAULT_REGISTRY_URL = 'https://raw.githubusercontent.com/atagulalan/nuxy-assets/main/registry.json'
+const DEFAULT_REGISTRY_URL =
+  'https://raw.githubusercontent.com/atagulalan/nuxy-assets/main/registry.json'
 
 export function register(core: CoreContext): void {
   core.registry.registerTool({ name: 'store', displayName: 'Store' })
@@ -42,7 +43,10 @@ export function register(core: CoreContext): void {
       for (const remote of remoteExtensions) {
         const installed = installedMap.get(remote.id)
         const installedVersion = installed?.manifest.version
-        const isSystem = remote.id === 'com.nuxy.shell' || remote.id === 'com.nuxy.settings' || !!installed?.manifest.bootstrap
+        const isSystem =
+          remote.id === 'com.nuxy.shell' ||
+          remote.id === 'com.nuxy.settings' ||
+          !!installed?.manifest.bootstrap
 
         mergedList.push({
           ...remote,
@@ -56,7 +60,10 @@ export function register(core: CoreContext): void {
 
       // 5. Append any locally installed extensions that aren't in the remote catalog
       for (const [, local] of installedMap) {
-        const isSystem = local.id === 'com.nuxy.shell' || local.id === 'com.nuxy.settings' || !!local.manifest.bootstrap
+        const isSystem =
+          local.id === 'com.nuxy.shell' ||
+          local.id === 'com.nuxy.settings' ||
+          !!local.manifest.bootstrap
 
         mergedList.push({
           id: local.id,
@@ -83,22 +90,31 @@ export function register(core: CoreContext): void {
   })
 
   // Proxy install call to kernel
-  core.ipc.handle('installExtension', async (payload: unknown): Promise<{ success: boolean; error?: string }> => {
-    const { extId, downloadUrl } = payload as { extId: string; downloadUrl: string }
-    const result = await core.extensions.invoke('kernel', 'installExtension', { extId, downloadUrl })
-    return {
-      success: result.success,
-      error: result.error,
+  core.ipc.handle(
+    'installExtension',
+    async (payload: unknown): Promise<{ success: boolean; error?: string }> => {
+      const { extId, downloadUrl } = payload as { extId: string; downloadUrl: string }
+      const result = await core.extensions.invoke('kernel', 'installExtension', {
+        extId,
+        downloadUrl,
+      })
+      return {
+        success: result.success,
+        error: result.error,
+      }
     }
-  })
+  )
 
   // Proxy uninstall call to kernel
-  core.ipc.handle('uninstallExtension', async (payload: unknown): Promise<{ success: boolean; error?: string }> => {
-    const { extId } = payload as { extId: string }
-    const result = await core.extensions.invoke('kernel', 'uninstallExtension', { extId })
-    return {
-      success: result.success,
-      error: result.error,
+  core.ipc.handle(
+    'uninstallExtension',
+    async (payload: unknown): Promise<{ success: boolean; error?: string }> => {
+      const { extId } = payload as { extId: string }
+      const result = await core.extensions.invoke('kernel', 'uninstallExtension', { extId })
+      return {
+        success: result.success,
+        error: result.error,
+      }
     }
-  })
+  )
 }

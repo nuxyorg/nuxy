@@ -118,8 +118,8 @@ interface Window {
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Extension access and permissions | [21-extension-access.md](./21-extension-access.md) | Full API implementation status, renderer bridge, manifest rules |
-| Plugin system and CoreContext proxy | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | How CoreContext is injected via MessagePort |
-| Security model and IPC trust | [10-security.md](./10-security.md) | Why the backend must never trust IPC payloads |
+| Topic                               | Document                                                     | Notes                                                           |
+| ----------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| Extension access and permissions    | [21-extension-access.md](./21-extension-access.md)           | Full API implementation status, renderer bridge, manifest rules |
+| Plugin system and CoreContext proxy | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | How CoreContext is injected via MessagePort                     |
+| Security model and IPC trust        | [10-security.md](./10-security.md)                           | Why the backend must never trust IPC payloads                   |

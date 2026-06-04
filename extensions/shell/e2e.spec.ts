@@ -1,3 +1,5 @@
+import { readFileSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { test, expect, type Page } from '../../src/e2e/fixtures.js'
 
 async function resetShell(page: any) {
@@ -313,6 +315,14 @@ test.describe('shell omnibar', () => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await resetShell(appPage)
 
+    // Translations load asynchronously — wait for a non-empty placeholder
+    await appPage.waitForFunction(
+      () =>
+        ((document.querySelector('input') as HTMLInputElement | null)?.placeholder?.length ?? 0) >
+        0,
+      { timeout: 2000 }
+    )
+
     const placeholder = await appPage.evaluate(
       () => (document.querySelector('input') as HTMLInputElement | null)?.placeholder ?? ''
     )
@@ -582,10 +592,9 @@ test.describe('omnibox DOM stability', () => {
     await resetShell(appPage)
 
     // Wait for the tool list to stabilize in the idle (empty-query) state
-    await appPage.waitForFunction(
-      () => document.querySelectorAll('[role="option"]').length > 0,
-      { timeout: 400 }
-    )
+    await appPage.waitForFunction(() => document.querySelectorAll('[role="option"]').length > 0, {
+      timeout: 400,
+    })
 
     const initialOptionCount = await appPage.evaluate(
       () => document.querySelectorAll('[role="option"]').length
@@ -679,5 +688,55 @@ test.describe('command palette dismissal', () => {
       return document.querySelector('.nuxy-command-palette') === null
     })
     expect(isGone).toBe(true)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// i18n / locale
+// ---------------------------------------------------------------------------
+
+test.describe('i18n / locale', () => {
+  test('omnibar placeholder is translated when preferred language is Japanese', async ({
+    appPage,
+    electronApp,
+  }) => {
+    // Resolve the isolated data dir this test app uses
+    const nuxyDataDir = await electronApp.evaluate(() => process.env['NUXY_DATA_DIR'] ?? '')
+    if (!nuxyDataDir) throw new Error('NUXY_DATA_DIR not set in test environment')
+
+    const settingsFile = join(nuxyDataDir, 'com.nuxy.settings', 'settings.json')
+    const original = JSON.parse(readFileSync(settingsFile, 'utf8')) as Record<string, unknown>
+
+    try {
+      // Override preferred language to Japanese
+      writeFileSync(settingsFile, JSON.stringify({ ...original, preferredLanguages: ['ja'] }))
+
+      // Notify the renderer to reload translations
+      await appPage.evaluate(() => window.dispatchEvent(new Event('nuxy-locale-changed')))
+
+      // Wait for the Japanese placeholder to appear
+      await appPage.waitForFunction(
+        () =>
+          (document.querySelector('input') as HTMLInputElement | null)?.placeholder ===
+          '何を考えていますか？',
+        { timeout: 2000 }
+      )
+
+      const placeholder = await appPage.evaluate(
+        () => (document.querySelector('input') as HTMLInputElement | null)?.placeholder ?? ''
+      )
+      expect(placeholder).toBe('何を考えていますか？')
+    } finally {
+      // Restore original settings and locale
+      writeFileSync(settingsFile, JSON.stringify(original))
+      await appPage.evaluate(() => window.dispatchEvent(new Event('nuxy-locale-changed')))
+      // Wait for English placeholder to restore before the next test
+      await appPage.waitForFunction(
+        () =>
+          ((document.querySelector('input') as HTMLInputElement | null)?.placeholder?.length ?? 0) >
+          0,
+        { timeout: 2000 }
+      )
+    }
   })
 })

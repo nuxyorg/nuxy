@@ -1,5 +1,10 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.ollama'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import { useOllamaData } from './hooks/useOllamaData.ts'
 import { useOllamaActions } from './hooks/useOllamaActions.ts'
 import { useOllamaSync } from './hooks/useOllamaSync.ts'
@@ -12,18 +17,13 @@ interface Props {
 
 export default function OllamaApp({ query }: Props) {
   const { Alert } = window.UI || {}
+  const { t } = _useTranslation(EXT_ID)
 
-  const { messages, setMessages, models, selectedModel, setSelectedModel, thinkingColor } = useOllamaData()
+  const { messages, setMessages, models, selectedModel, setSelectedModel, thinkingColor } =
+    useOllamaData()
 
-  const {
-    loading,
-    error,
-    queuedMessage,
-    handleSend,
-    handleQueue,
-    handleAbort,
-    handleClearChat,
-  } = useOllamaActions({ query, messages, setMessages, selectedModel })
+  const { loading, error, queuedMessage, handleSend, handleQueue, handleAbort, handleClearChat } =
+    useOllamaActions({ query, messages, setMessages, selectedModel })
 
   useOllamaSync({
     query,
@@ -44,6 +44,7 @@ export default function OllamaApp({ query }: Props) {
     handleAbort,
     handleClearChat,
     setSelectedModel,
+    t,
   })
 
   return (
@@ -57,7 +58,9 @@ export default function OllamaApp({ query }: Props) {
       }}
     >
       {error && Alert && <Alert variant="danger">{error}</Alert>}
-      {queuedMessage && Alert && <Alert variant="info">Queued: {queuedMessage}</Alert>}
+      {queuedMessage && Alert && (
+        <Alert variant="info">{t('alert.queued', { message: queuedMessage })}</Alert>
+      )}
       <OllamaMessageList messages={messages} loading={loading} />
     </div>
   )

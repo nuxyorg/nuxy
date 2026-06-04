@@ -1,5 +1,11 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
-import type { Snippet, AddSnippetPayload, DeleteSnippetPayload, CopySnippetPayload, GetSnippetsPayload } from './types.ts'
+import type {
+  Snippet,
+  AddSnippetPayload,
+  DeleteSnippetPayload,
+  CopySnippetPayload,
+  GetSnippetsPayload,
+} from './types.ts'
 
 const STORAGE_KEY = 'snippets.json'
 
@@ -16,7 +22,7 @@ export function register(core: CoreContext): void {
 
   function sortByUpdatedAt(snippets: Snippet[]): Snippet[] {
     return [...snippets].sort(
-      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     )
   }
 
@@ -30,7 +36,7 @@ export function register(core: CoreContext): void {
       (s) =>
         s.title.toLowerCase().includes(q) ||
         s.content.toLowerCase().includes(q) ||
-        s.tags.some((tag) => tag.toLowerCase().includes(q)),
+        s.tags.some((tag) => tag.toLowerCase().includes(q))
     )
   })
 

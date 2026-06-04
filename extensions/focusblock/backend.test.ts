@@ -47,35 +47,49 @@ describe('focusblock backend', () => {
 
   describe('focusblock:start', () => {
     it('starts a timer with default duration of 25 minutes', async () => {
-      const status = await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({})
+      const status = await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)(
+        {}
+      )
       expect(status.active).toBe(true)
       expect(status.duration).toBe(25 * 60 * 1000)
     })
 
     it('starts a timer with the provided duration', async () => {
-      const status = await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({ duration: 45 })
+      const status = await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({
+        duration: 45,
+      })
       expect(status.active).toBe(true)
       expect(status.duration).toBe(45 * 60 * 1000)
     })
 
     it('sets the provided label', async () => {
-      const status = await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({ duration: 25, label: 'deep work' })
+      const status = await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({
+        duration: 25,
+        label: 'deep work',
+      })
       expect(status.label).toBe('deep work')
     })
 
     it('saves previous session as incomplete when starting while another is active', async () => {
-      await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({ duration: 25, label: 'first' })
-      await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({ duration: 30, label: 'second' })
+      await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({
+        duration: 25,
+        label: 'first',
+      })
+      await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({
+        duration: 30,
+        label: 'second',
+      })
       expect(core.storage.write).toHaveBeenCalledWith(
         'history.json',
-        expect.arrayContaining([
-          expect.objectContaining({ completed: false, label: 'first' }),
-        ]),
+        expect.arrayContaining([expect.objectContaining({ completed: false, label: 'first' })])
       )
     })
 
     it('returns active status immediately after starting', async () => {
-      const status = await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({ duration: 25, label: 'focus' })
+      const status = await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({
+        duration: 25,
+        label: 'focus',
+      })
       expect(status.active).toBe(true)
       expect(status.label).toBe('focus')
       expect(status.elapsed).toBe(0)
@@ -86,13 +100,14 @@ describe('focusblock backend', () => {
 
   describe('focusblock:stop', () => {
     it('saves session as incomplete and clears the timer', async () => {
-      await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({ duration: 25, label: 'work' })
+      await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({
+        duration: 25,
+        label: 'work',
+      })
       await (handlers['focusblock:stop'] as () => Promise<void>)()
       expect(core.storage.write).toHaveBeenCalledWith(
         'history.json',
-        expect.arrayContaining([
-          expect.objectContaining({ completed: false, label: 'work' }),
-        ]),
+        expect.arrayContaining([expect.objectContaining({ completed: false, label: 'work' })])
       )
       const status = handlers['focusblock:status']() as TimerStatus
       expect(status.active).toBe(false)
@@ -129,26 +144,31 @@ describe('focusblock backend', () => {
 
   describe('focusblock:getSettings', () => {
     it('returns defaultDuration from settings (null → 25)', async () => {
-      const settings = await (handlers['focusblock:getSettings'] as () => Promise<{ defaultDuration: number }>)()
+      const settings = await (
+        handlers['focusblock:getSettings'] as () => Promise<{ defaultDuration: number }>
+      )()
       expect(settings.defaultDuration).toBe(25)
     })
 
     it('returns saved defaultDuration when set', async () => {
       ;(core.settings.read as ReturnType<typeof vi.fn>).mockResolvedValueOnce(45)
-      const settings = await (handlers['focusblock:getSettings'] as () => Promise<{ defaultDuration: number }>)()
+      const settings = await (
+        handlers['focusblock:getSettings'] as () => Promise<{ defaultDuration: number }>
+      )()
       expect(settings.defaultDuration).toBe(45)
     })
   })
 
   describe('auto-complete', () => {
     it('saves a completed session to history when the timer expires', async () => {
-      await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({ duration: 1, label: 'test' })
+      await (handlers['focusblock:start'] as (p: unknown) => Promise<TimerStatus>)({
+        duration: 1,
+        label: 'test',
+      })
       await vi.advanceTimersByTimeAsync(60 * 1000)
       expect(core.storage.write).toHaveBeenCalledWith(
         'history.json',
-        expect.arrayContaining([
-          expect.objectContaining({ completed: true, label: 'test' }),
-        ]),
+        expect.arrayContaining([expect.objectContaining({ completed: true, label: 'test' })])
       )
     })
 

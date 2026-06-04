@@ -54,7 +54,9 @@ async function mockInvoke(extId: string, channel: string, payload?: unknown): Pr
       ipcLog.push({ extId, channel, payload, data: result.data, source, ts: Date.now() })
       return { success: result.success, data: result.data }
     }
-  } catch { /* server not ready yet, fall through */ }
+  } catch {
+    /* server not ready yet, fall through */
+  }
 
   // 3. File-based mocks (dev/mocks.ts)
   const fm = (fileMocks as Record<string, unknown>)[channel]

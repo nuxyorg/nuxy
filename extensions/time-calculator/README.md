@@ -18,6 +18,7 @@ Time Calculator is an inline provider that detects time conversion queries as yo
 ## Extension Type
 
 ### `provider`
+
 Runs inline inside the shell — provides a result without the user navigating away. The provider evaluates the query on every keystroke (with an 80 ms debounce) and renders a conversion card directly under the omnibar. It does **not** appear in the Nuxy tool list.
 
 ---
@@ -50,10 +51,10 @@ When an AI orchestrator calls the `convert` channel, the result is stored and su
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -61,11 +62,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 All platforms supported by Nuxy. Timezone conversion relies on the V8 `Intl.DateTimeFormat` API — no system clock tools are required.
 
@@ -87,12 +88,12 @@ const result = await core.extensions.invoke('com.nuxy.time-calculator', 'convert
 
 **Exposed IPC channels:**
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
-| `eval` | `{ text: string }` | `{ items: EvalResult[] }` | Parses the query and returns a conversion result item, or an empty array if no time expression is detected |
-| `convert` | `{ time: string, from?: string, to: string }` | `ConvertResponse` | Structured conversion between two cities/timezones; stores the result as `lastResult` for frontend display |
-| `getLastResult` | — | `ConvertResponse \| null` | Retrieves the most recent result stored by `convert`, used by the frontend on mount to display AI-driven results |
-| `setLastResult` | `ConvertResponse` | `{ ok: true }` | Allows an orchestrator to push a pre-computed result directly to the frontend |
+| Channel         | Payload                                       | Returns                   | Description                                                                                                      |
+| --------------- | --------------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `eval`          | `{ text: string }`                            | `{ items: EvalResult[] }` | Parses the query and returns a conversion result item, or an empty array if no time expression is detected       |
+| `convert`       | `{ time: string, from?: string, to: string }` | `ConvertResponse`         | Structured conversion between two cities/timezones; stores the result as `lastResult` for frontend display       |
+| `getLastResult` | —                                             | `ConvertResponse \| null` | Retrieves the most recent result stored by `convert`, used by the frontend on mount to display AI-driven results |
+| `setLastResult` | `ConvertResponse`                             | `{ ok: true }`            | Allows an orchestrator to push a pre-computed result directly to the frontend                                    |
 
 ---
 

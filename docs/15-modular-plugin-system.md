@@ -89,10 +89,10 @@ By enforcing **Hardware-Level Thread Isolation** and routing all communication t
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Omni-input arbitration and extension types | [16-omni-input-system.md](./16-omni-input-system.md) | Tool / Provider / Orchestrator roles and schema validation |
-| Frontend UI loading and shared UI kit | [17-frontend-extensions.md](./17-frontend-extensions.md) | How extension frontends mount into Nuxy's React canvas |
-| Extension access and permission status | [21-extension-access.md](./21-extension-access.md) | Implemented vs planned APIs and manifest rules |
-| Store extension | [22-store-extension.md](./22-store-extension.md) | Security chain for installing third-party extensions |
-| Security model and threat analysis | [10-security.md](./10-security.md) | Chroot jails, thread isolation, permission prompts |
+| Topic                                      | Document                                                 | Notes                                                      |
+| ------------------------------------------ | -------------------------------------------------------- | ---------------------------------------------------------- |
+| Omni-input arbitration and extension types | [16-omni-input-system.md](./16-omni-input-system.md)     | Tool / Provider / Orchestrator roles and schema validation |
+| Frontend UI loading and shared UI kit      | [17-frontend-extensions.md](./17-frontend-extensions.md) | How extension frontends mount into Nuxy's React canvas     |
+| Extension access and permission status     | [21-extension-access.md](./21-extension-access.md)       | Implemented vs planned APIs and manifest rules             |
+| Store extension                            | [22-store-extension.md](./22-store-extension.md)         | Security chain for installing third-party extensions       |
+| Security model and threat analysis         | [10-security.md](./10-security.md)                       | Chroot jails, thread isolation, permission prompts         |

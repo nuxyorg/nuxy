@@ -66,7 +66,11 @@ export function BitwardenInstallScreen({ status, activeTab, onTabChange }: Props
               cursor: 'pointer',
             }}
           >
-            {tab === 'arch' ? 'Arch Linux / CachyOS' : tab === 'debian' ? 'Ubuntu / Debian' : 'macOS'}
+            {tab === 'arch'
+              ? 'Arch Linux / CachyOS'
+              : tab === 'debian'
+                ? 'Ubuntu / Debian'
+                : 'macOS'}
             {status.os === tab && Badge && <Badge active>Sisteminiz</Badge>}
           </div>
         ))}

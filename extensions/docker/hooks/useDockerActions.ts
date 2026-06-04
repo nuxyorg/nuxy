@@ -27,8 +27,7 @@ interface DockerActions {
 export function useDockerActions({ refresh, setLogs }: Params): DockerActions {
   const handleToggle = React.useCallback(
     (container: DockerContainer): void => {
-      const channel =
-        container.state === 'running' ? 'docker:stop' : 'docker:start'
+      const channel = container.state === 'running' ? 'docker:stop' : 'docker:start'
       invoke<{ success: boolean }>(channel, { id: container.id })
         .then(() => refresh())
         .catch(() => {})

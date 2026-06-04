@@ -60,7 +60,8 @@ if (typeof window !== 'undefined') {
   const handleToggle = (e: Event) => {
     const detail = (e as CustomEvent).detail
     const active = typeof detail === 'object' && detail !== null ? detail.active : Boolean(detail)
-    const mode: string = typeof detail === 'object' && detail !== null ? (detail.mode ?? 'light') : 'light'
+    const mode: string =
+      typeof detail === 'object' && detail !== null ? (detail.mode ?? 'light') : 'light'
     const container = document.querySelector('.nuxy-shell-container')
     if (container) {
       if (active) {

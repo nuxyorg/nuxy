@@ -37,7 +37,15 @@ export default function FocusBlock({ query }: Props) {
     refreshHistory,
   })
 
-  useFocusBlockKeyboard({ active, sessions, selectedIndex, setSelectedIndex, handleStart, handleStop, t })
+  useFocusBlockKeyboard({
+    active,
+    sessions,
+    selectedIndex,
+    setSelectedIndex,
+    handleStart,
+    handleStop,
+    t,
+  })
   useFocusBlockSync(active, selectedIndex)
 
   if (active && status) {

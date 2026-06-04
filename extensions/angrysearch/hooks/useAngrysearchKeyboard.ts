@@ -12,6 +12,7 @@ interface Params {
   handleOpenLocation: (item: AngrysearchItem) => void
   triggerUpdate: () => void
   setRegexMode: React.Dispatch<React.SetStateAction<boolean>>
+  t: (key: string) => string
 }
 
 interface KeyboardResult {
@@ -25,18 +26,19 @@ export function useAngrysearchKeyboard({
   handleOpenLocation,
   triggerUpdate,
   setRegexMode,
+  t,
 }: Params): KeyboardResult {
   const selectedIndexRef = React.useRef<number>(-1)
 
   const { selectedIndex, setSelectedIndex } = _useListNavigation(items, {
     onEnter: (item: AngrysearchItem) => handleOpen(item),
-    enterLabel: 'Open file',
+    enterLabel: t('actions.openFile'),
     enterHint: 'Enter',
     extraActions: [
       {
         key: 'Enter',
         modifiers: ['shift'],
-        label: 'Open folder',
+        label: t('actions.openFolder'),
         hint: ['⇧', 'Enter'],
         handler: () => {
           const item = items[selectedIndexRef.current]
@@ -56,10 +58,10 @@ export function useAngrysearchKeyboard({
 
   React.useEffect(() => {
     const actions = [
-      { id: 'update-db', label: 'Update Database', onExecute: triggerUpdate },
+      { id: 'update-db', label: t('actions.updateDatabase'), onExecute: triggerUpdate },
       {
         id: 'toggle-regex',
-        label: 'Toggle Regex Mode',
+        label: t('actions.toggleRegex'),
         onExecute: () => setRegexMode((m: boolean) => !m),
       },
     ]

@@ -18,7 +18,11 @@ describe('applyGradientColors', () => {
   it('sets all four CSS custom properties on the element', () => {
     const props: Record<string, string> = {}
     const el = {
-      style: { setProperty: (k: string, v: string) => { props[k] = v } },
+      style: {
+        setProperty: (k: string, v: string) => {
+          props[k] = v
+        },
+      },
     } as unknown as HTMLElement
 
     applyGradientColors(el)

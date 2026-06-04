@@ -53,9 +53,18 @@ export function useCalendarDataSync({
   setCalView,
   setListIdx,
 }: UseCalendarDataSyncParams): void {
-  React.useEffect(() => { loadMonthEvents(calYear, calMonth) }, [calYear, calMonth])
-  React.useEffect(() => { if (query.trim()) loadSearchRange(todayYear, todayMonth) }, [query])
-  React.useEffect(() => { if (mode === 'omnibox') { setCalView('month'); setListIdx(-1) } }, [mode])
+  React.useEffect(() => {
+    loadMonthEvents(calYear, calMonth)
+  }, [calYear, calMonth])
+  React.useEffect(() => {
+    if (query.trim()) loadSearchRange(todayYear, todayMonth)
+  }, [query])
+  React.useEffect(() => {
+    if (mode === 'omnibox') {
+      setCalView('month')
+      setListIdx(-1)
+    }
+  }, [mode])
 }
 
 /**

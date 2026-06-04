@@ -11,3 +11,6 @@ coverage
 pnpm-lock.yaml
 *.min.js
 *.min.css
+.claude
+.claude/**
+**/.claude/**

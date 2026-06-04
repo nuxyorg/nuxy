@@ -9,7 +9,8 @@ interface Props {
 }
 
 export function EmojiLeftPanel({ allCategories, catId, onCategorySelect }: Props) {
-  const { TabBar, List, ListItem, ListItemBody, ListItemText, ItemLeading, IconStar } = window.UI || {}
+  const { TabBar, List, ListItem, ListItemBody, ListItemText, ItemLeading, IconStar } =
+    window.UI || {}
 
   if (TabBar) {
     return (

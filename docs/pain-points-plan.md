@@ -1,9 +1,11 @@
 # Pain Points & Remediation Plan
 
-**Status:** Living document (audited 2026-05-19)  
-**Scope:** Current `src/electron` kernel, `src/src` shell, `extensions/`, and alignment with architecture docs.
+**Status:** Living document (audited 2026-06-04)  
+**Scope:** Current `src/electron` kernel, `extensions/shell`, `extensions/`, and alignment with architecture docs.
 
 This document lists concrete gaps between Nuxy’s **stated architecture** (empty shell, zero-trust extensions, kernel message broker) and **what ships today**, with prioritized fixes.
+
+> **2026-06 update:** P1–P6, P8, P11–P17, and P18 are resolved in code. Remaining work: P7 Long phase (isolated-vm — `worker_threads` + esbuild is the current mitigation), P10 (extension SDK template polish), Phase 1 monorepo move (`src/` → `apps/desktop/`).
 
 ---
 
@@ -132,11 +134,11 @@ Recommended order: fix **truth in docs + agents.md** (cheap), then **capability 
 
 **Recommended solution (phased):**
 
-| Phase      | Approach                                                                      |
-| ---------- | ----------------------------------------------------------------------------- |
-| **Short**  | Document actual model; only load extensions from signed/trusted paths in prod |
-| **Medium** | Pre-bundle extension backends with esbuild (no node builtins) before spawn    |
-| **Long**   | Evaluate `isolated-vm` or separate utility process per extension              |
+| Phase      | Status   | Approach                                                                                                                                                                                                   |
+| ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Short**  | ✓ Done   | Document actual model; only load extensions from signed/trusted paths in prod                                                                                                                              |
+| **Medium** | ✓ Done   | Pre-bundle extension backends with esbuild via `bundle-backend.ts` — `platform: 'browser'` blocks static Node built-in imports at build time; scanner `detectNodeImports` is a second gate at install time |
+| **Long**   | Deferred | Evaluate `isolated-vm` or separate utility process per extension                                                                                                                                           |
 
 **Acceptance criteria:** Official extension template cannot `import('fs')` at runtime in production build.
 
@@ -219,12 +221,12 @@ Recommended order: fix **truth in docs + agents.md** (cheap), then **capability 
 
 ### P15–P18 — Lower priority
 
-| ID  | Quick recommendation                                                                  |
-| --- | ------------------------------------------------------------------------------------- |
-| P15 | `fs.watch` on `EXTENSION_DIR` + worker terminate/respawn; manifest version check      |
-| P16 | Document single-instance as MVP; add optional UNIX socket later for CLI `nuxy toggle` |
-| P17 | Add `electron-builder`, GitHub Actions `pnpm test && pnpm build`, eslint flat config  |
-| P18 | Remove or document `bun run start`; standardize on `pnpm dev`                         |
+| ID  | Status | Quick recommendation / resolution                                                                                      |
+| --- | ------ | ---------------------------------------------------------------------------------------------------------------------- |
+| P15 | ✓ Done | `extension-reload.ts` — `fs.watch` per extension folder, debounced worker restart; crash exit triggers auto-respawn    |
+| P16 | ✓ Done | Documented in `19-mvp-roadmap.md`; `main.ts` uses `requestSingleInstanceLock` + optional UNIX socket (`toggle`/`show`) |
+| P17 | ✓ Done | `.github/workflows/ci.yml` (test + typecheck + build); `.github/workflows/package.yml` (electron-builder AppImage/deb) |
+| P18 | ✓ Done | `preinstall` enforces `only-allow pnpm`; `bun run start` removed                                                       |
 
 ---
 
@@ -232,69 +234,70 @@ Recommended order: fix **truth in docs + agents.md** (cheap), then **capability 
 
 ### Phase 0 — Align reality (1–2 days)
 
-- [ ] Doc + `agents.md` path/sandbox sync (P9)
+- [x] Doc + `agents.md` path/sandbox sync (P9)
 - [ ] Add “Implemented vs planned” table to `docs/README.md`
 
 **Exit:** New contributors are not misled by docs.
 
 ### Phase 1 — Security baseline (3–5 days)
 
-- [ ] Manifest permissions model (`permissions: string[]`)
-- [ ] Gate clipboard + storage host channels (P4, P5)
-- [ ] IPC channel allowlist (P6)
-- [ ] Remove calculator `eval` (P8)
+- [x] Manifest permissions model (`permissions: string[]`)
+- [x] Gate clipboard + storage host channels (P4, P5)
+- [x] IPC channel allowlist (P6)
+- [x] Remove calculator `eval` (P8)
 
 **Exit:** Malicious extension cannot read clipboard without declaration.
 
 ### Phase 2 — Registry & broker (5–8 days)
 
-- [ ] Worker → kernel registry sync (P2)
-- [ ] `broker.ts` + `core.extensions.invoke` (P3)
-- [ ] Orchestrator Enter path in shell extension (P12)
+- [x] Worker → kernel registry sync (P2)
+- [x] `broker.ts` + `core.extensions.invoke` (P3)
+- [x] Orchestrator Enter path in shell extension (P12)
 
 **Exit:** Cross-extension call works with capability checks.
 
 ### Phase 3 — True empty shell (5–10 days)
 
-- [ ] Extract `com.nuxy.shell` extension (P1)
-- [ ] Empty state when no extensions (P11)
+- [x] Extract `com.nuxy.shell` extension (P1)
+- [x] Empty state when no extensions (P11)
 - [ ] Extension SDK template (P10)
 
 **Exit:** Core `App.tsx` < 100 lines; architecture matches manifesto.
 
 ### Phase 4 — Quality & ship (ongoing)
 
-- [ ] Playwright E2E (P14)
-- [ ] Provider cancelation (P13)
-- [ ] `electron-builder` + CI (P17)
-- [ ] Extension hot reload (P15)
+- [x] Playwright E2E (P14)
+- [x] Provider cancelation (P13)
+- [x] CI (`pnpm test`, typecheck, build) (P17)
+- [x] `electron-builder` packaging verified in release workflow
+- [x] Extension hot reload in production (P15)
 
 ---
 
 ## Success metrics
 
-| Metric                                        | Current        | Target (V1)               |
-| --------------------------------------------- | -------------- | ------------------------- |
-| Kernel unit tests                             | 19             | 30+ (broker, permissions) |
-| E2E tests                                     | 0              | ≥ 3 critical paths        |
-| Docs path consistency                         | ~20 stale refs | 0 stale refs              |
-| Core `App.tsx` LOC                            | ~540           | < 100                     |
-| Extensions needing core edit for new provider | Yes            | No                        |
-| Cross-extension invoke with capability deny   | N/A            | Tested + passing          |
+| Metric                                        | Current          | Target (V1)          |
+| --------------------------------------------- | ---------------- | -------------------- |
+| Unit test cases (src/ + extensions/)          | ~2345            | 30+ ✓                |
+| E2E spec files                                | 11               | ≥ 3 critical paths ✓ |
+| Docs path consistency                         | 0 stale refs     | 0 stale refs ✓       |
+| Core `App.tsx` LOC                            | 169              | < 100 (in progress)  |
+| Extensions needing core edit for new provider | No               | No ✓                 |
+| Cross-extension invoke with capability deny   | Tested + passing | Tested + passing ✓   |
 
 ---
 
 ## Related documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Canonical paths & kernel fixes | [electron-fix-plan.md](./electron-fix-plan.md) | Completed remediation phases and manual test checklist |
-| MVP scope | [19-mvp-roadmap.md](./19-mvp-roadmap.md) | Sprint-by-sprint minimal scope |
-| Security target state | [10-security.md](./10-security.md) | P4, P5, P6, P7 coverage — threat model and consent flow |
-| Extension types & omni input | [16-omni-input-system.md](./16-omni-input-system.md) | P12 — orchestrator Enter path |
-| Testing strategy | [12-testing-strategy.md](./12-testing-strategy.md) | P14 — Playwright E2E gap |
-| Open bugs and resolved items | [open-issues.md](./open-issues.md) | Runtime issues tracking alongside pain points |
-| Agent rules (update after Phase 0) | [../agents.md](../agents.md) | Sandbox and path model for AI agents |
+| Topic                              | Document                                             | Notes                                                   |
+| ---------------------------------- | ---------------------------------------------------- | ------------------------------------------------------- |
+| Canonical paths & kernel fixes     | [electron-fix-plan.md](./electron-fix-plan.md)       | Completed remediation phases and manual test checklist  |
+| MVP scope                          | [19-mvp-roadmap.md](./19-mvp-roadmap.md)             | Sprint-by-sprint minimal scope                          |
+| Security target state              | [10-security.md](./10-security.md)                   | P4, P5, P6, P7 coverage — threat model and consent flow |
+| Extension types & omni input       | [16-omni-input-system.md](./16-omni-input-system.md) | P12 — orchestrator Enter path                           |
+| Testing strategy                   | [12-testing-strategy.md](./12-testing-strategy.md)   | P14 — Playwright E2E gap                                |
+| Open bugs and resolved items       | [open-issues.md](./open-issues.md)                   | Runtime issues tracking alongside pain points           |
+| Agent rules (update after Phase 0) | [../agents.md](../agents.md)                         | Sandbox and path model for AI agents                    |
 
 ---
 

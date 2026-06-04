@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "name": "設定"
+  },
+  "nav": {
+    "general": "一般",
+    "window": "ウィンドウ",
+    "language": "言語",
+    "extensions": "拡張機能"
+  },
+  "general": {
+    "theme": "テーマ",
+    "iconPack": "アイコンパック",
+    "zoom": "ズーム",
+    "font": "フォント"
+  },
+  "window": {
+    "escAction": "Escキーの動作",
+    "blurAction": "フォーカスアウトの動作",
+    "windowWidth": "ウィンドウ幅",
+    "windowMaxHeight": "最大高さ",
+    "windowPosition": "起動位置",
+    "opacity": "不透明度",
+    "backgroundBehavior": "バックグラウンド動作",
+    "alwaysOnTop": "常に最前面",
+    "showInTaskbar": "タスクバーに表示",
+    "showOnStartup": "起動時に表示"
+  },
+  "language": {
+    "addLanguage": "言語を追加",
+    "addPlaceholder": "言語を検索…",
+    "hint": "言語は順番に試されます — 最初に追加された言語が最も優先されます。"
+  },
+  "font": {
+    "systemDefault": "システムデフォルト",
+    "monospace": "等幅"
+  },
+  "escAction": {
+    "hide": "非表示",
+    "minimize": "最小化",
+    "quit": "終了",
+    "none": "何もしない"
+  },
+  "windowPosition": {
+    "topCenter": "上部中央",
+    "leftCenter": "左中央",
+    "screenCenter": "画面中央",
+    "rightCenter": "右中央",
+    "bottomCenter": "下部中央",
+    "topLeft": "左上",
+    "topRight": "右上",
+    "bottomLeft": "左下",
+    "bottomRight": "右下",
+    "upperCenterDefault": "上部中央（デフォルト）"
+  },
+  "backgroundBehavior": {
+    "reset-on-show": "ランチャーをリセット（デフォルト）",
+    "resume-session": "中断したところから再開"
+  },
+  "bool": {
+    "yes": "はい",
+    "no": "いいえ"
+  },
+  "selectBox": {
+    "none": "（なし）",
+    "placeholder": "—"
+  },
+  "actions": {
+    "previousSetting": "前の設定",
+    "nextSetting": "次の設定",
+    "openSetting": "設定を開く",
+    "closeSetting": "設定を閉じる"
+  }
+}

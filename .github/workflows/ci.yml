@@ -28,3 +28,7 @@ jobs:
       - run: pnpm -C src typecheck
 
       - run: pnpm -C src build
+
+      - name: Verify electron-builder packaging (main)
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        run: pnpm -C src package

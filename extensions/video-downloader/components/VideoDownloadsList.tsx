@@ -48,9 +48,7 @@ export function VideoDownloadsList({ combinedList, downloadSelectedIndex }: Prop
 
       <ScrollArea style={{ flex: 1 }}>
         {combinedList.length === 0 ? (
-          EmptyState && (
-            <EmptyState message="No downloads yet. Search for a video to start." />
-          )
+          EmptyState && <EmptyState message="No downloads yet. Search for a video to start." />
         ) : (
           <List>
             {combinedList.map((item, idx) => {

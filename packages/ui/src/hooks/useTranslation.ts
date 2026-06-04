@@ -28,6 +28,7 @@ interface TranslationState {
   translations: Translations
   locale: string
   dir: 'ltr' | 'rtl'
+  loaded: boolean
 }
 
 export interface UseTranslationResult {
@@ -55,17 +56,20 @@ export function useTranslation(extId: string): UseTranslationResult {
     translations: {},
     locale: 'en',
     dir: 'ltr',
+    loaded: false,
   })
 
   const fetchTranslations = useCallback(async () => {
     try {
       const res = (await window.core?.ipc?.invoke('kernel', 'getExtensionTranslations', {
         extId,
-      })) as {
-        success: boolean
-        data?: { locale: string; dir: 'ltr' | 'rtl'; translations: Translations }
-      } | undefined
-      if (res?.success && res.data) setState(res.data)
+      })) as
+        | {
+            success: boolean
+            data?: { locale: string; dir: 'ltr' | 'rtl'; translations: Translations }
+          }
+        | undefined
+      if (res?.success && res.data) setState({ ...res.data, loaded: true })
     } catch {}
   }, [extId])
 
@@ -78,6 +82,7 @@ export function useTranslation(extId: string): UseTranslationResult {
 
   const t = useCallback(
     (key: string, vars?: Vars, count?: number): string => {
+      if (!state.loaded) return ''
       let template: string | undefined
       if (count !== undefined) {
         template = selectPlural(state.translations, key, count, state.locale)

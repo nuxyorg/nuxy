@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useToolKeyActions, KeyAction } from './useToolKeyActions'
+import { useTranslation } from './useTranslation'
 
 export interface UseListNavigationOptions<T> {
   onEnter?: (item: T, index: number) => void
@@ -19,9 +20,18 @@ export function useListNavigation<T>(
   items: T[],
   options: UseListNavigationOptions<T> = {}
 ): UseListNavigationResult<T> {
+  const { t } = useTranslation('com.nuxy.shell')
+  const tr = useCallback(
+    (key: string, fallback: string) => {
+      const val = t(key)
+      return val === '' || val === key ? fallback : val
+    },
+    [t]
+  )
+
   const {
     onEnter,
-    enterLabel = 'Select',
+    enterLabel = tr('keyboard.select', 'Select'),
     enterHint = 'Enter',
     loop = false,
     extraActions = [],
@@ -50,7 +60,13 @@ export function useListNavigation<T>(
   }, [items, onEnter, selectedIndex])
 
   const navActions: KeyAction[] = [
-    { key: 'ArrowUp', label: 'Navigate', hint: '↑↓', handler: moveUp, allowRepeat: true },
+    {
+      key: 'ArrowUp',
+      label: tr('keyboard.navigate', 'Navigate'),
+      hint: '↑↓',
+      handler: moveUp,
+      allowRepeat: true,
+    },
     { key: 'ArrowDown', label: '', handler: moveDown, allowRepeat: true },
     ...(onEnter
       ? [{ key: 'Enter', label: enterLabel, hint: enterHint, handler: handleEnter }]

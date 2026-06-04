@@ -36,9 +36,35 @@ export function getFileIconType(ext: string): FileIconType {
   if (ext === 'pdf') return 'pdf'
   if (
     [
-      'js', 'ts', 'jsx', 'tsx', 'py', 'rb', 'go', 'rs', 'java', 'c', 'cpp', 'h', 'cs', 'php',
-      'html', 'css', 'json', 'yaml', 'yml', 'sh', 'bash', 'fish', 'zsh', 'toml', 'xml',
-      'vue', 'svelte', 'kt', 'swift',
+      'js',
+      'ts',
+      'jsx',
+      'tsx',
+      'py',
+      'rb',
+      'go',
+      'rs',
+      'java',
+      'c',
+      'cpp',
+      'h',
+      'cs',
+      'php',
+      'html',
+      'css',
+      'json',
+      'yaml',
+      'yml',
+      'sh',
+      'bash',
+      'fish',
+      'zsh',
+      'toml',
+      'xml',
+      'vue',
+      'svelte',
+      'kt',
+      'swift',
     ].includes(ext)
   )
     return 'code'

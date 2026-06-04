@@ -42,11 +42,9 @@ test.describe('omnibar input', () => {
     await appPage.keyboard.type('zzznomatch')
     // Wait briefly for any palette to potentially appear, then assert it either
     // does not exist or contains no visible options.
-    await appPage
-      .waitForSelector('.nuxy-command-palette', { timeout: 400 })
-      .catch(() => {
-        // Palette never appeared — that is acceptable
-      })
+    await appPage.waitForSelector('.nuxy-command-palette', { timeout: 400 }).catch(() => {
+      // Palette never appeared — that is acceptable
+    })
     const palette = appPage.locator('.nuxy-command-palette')
     const paletteVisible = await palette.isVisible().catch(() => false)
     if (paletteVisible) {
@@ -90,14 +88,20 @@ test.describe('extension selection', () => {
     // First selection
     await appPage.keyboard.type('calculator')
     await appPage.waitForSelector('[role="option"]', { timeout: 400 })
-    await appPage.locator('[role="option"]', { hasText: /calculator/i }).first().click()
+    await appPage
+      .locator('[role="option"]', { hasText: /calculator/i })
+      .first()
+      .click()
     await appPage.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 400 })
 
     // Reset and select again
     await resetShell(appPage)
     await appPage.keyboard.type('calculator')
     await appPage.waitForSelector('[role="option"]', { timeout: 400 })
-    await appPage.locator('[role="option"]', { hasText: /calculator/i }).first().click()
+    await appPage
+      .locator('[role="option"]', { hasText: /calculator/i })
+      .first()
+      .click()
     await appPage.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 400 })
 
     // App is still alive and tool wrapper is visible
@@ -114,7 +118,10 @@ test.describe('shell reset', () => {
     await resetShell(appPage)
     await appPage.keyboard.type('calculator')
     await appPage.waitForSelector('[role="option"]', { timeout: 400 })
-    await appPage.locator('[role="option"]', { hasText: /calculator/i }).first().click()
+    await appPage
+      .locator('[role="option"]', { hasText: /calculator/i })
+      .first()
+      .click()
     await appPage.waitForSelector('.nuxy-shell-omni-bar__tool-name', { timeout: 400 })
   })
 
@@ -141,6 +148,17 @@ test.describe('shell reset', () => {
     expect(value).toBe('')
   })
 
+  test('window focus without shell reset preserves omnibar input (resume-session path)', async ({
+    appPage,
+  }) => {
+    await appPage.locator('.nuxy-shell-omni-bar__input').focus()
+    await appPage.keyboard.type('calculator')
+    await appPage.evaluate(() => {
+      window.dispatchEvent(new Event('focus'))
+    })
+    await expect(appPage.locator('.nuxy-shell-omni-bar__input')).toHaveValue('calculator')
+  })
+
   test('nuxy-shell-reset event hides the command palette', async ({ appPage }) => {
     // Clear the active tool first, then open the palette by typing
     await appPage.evaluate(() => {
@@ -158,10 +176,9 @@ test.describe('shell reset', () => {
     await appPage.evaluate(() => {
       window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
     })
-    await appPage.waitForFunction(
-      () => document.querySelector('.nuxy-command-palette') === null,
-      { timeout: 400 }
-    )
+    await appPage.waitForFunction(() => document.querySelector('.nuxy-command-palette') === null, {
+      timeout: 400,
+    })
     await expect(appPage.locator('.nuxy-command-palette')).toHaveCount(0)
   })
 })

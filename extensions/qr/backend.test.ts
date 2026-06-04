@@ -25,7 +25,8 @@ describe('qr backend', () => {
   })
 
   afterEach(() => {
-    vi.restoreAllMocks()
+    vi.clearAllMocks()
+    vi.mocked(QRCode.toDataURL).mockResolvedValue('data:image/png;base64,FAKE')
   })
 
   it('registers a tool', () => {
@@ -56,10 +57,7 @@ describe('qr backend', () => {
 
     it('uses default size 256 when settings returns null', async () => {
       await handlers['qr:generate']({ text: 'test' })
-      expect(QRCode.toDataURL).toHaveBeenCalledWith(
-        'test',
-        expect.objectContaining({ width: 256 })
-      )
+      expect(QRCode.toDataURL).toHaveBeenCalledWith('test', expect.objectContaining({ width: 256 }))
     })
 
     it('uses size from settings when available', async () => {
@@ -74,18 +72,12 @@ describe('qr backend', () => {
       await register(core)
 
       await handlers['qr:generate']({ text: 'test' })
-      expect(QRCode.toDataURL).toHaveBeenCalledWith(
-        'test',
-        expect.objectContaining({ width: 512 })
-      )
+      expect(QRCode.toDataURL).toHaveBeenCalledWith('test', expect.objectContaining({ width: 512 }))
     })
 
     it('uses payload size over settings size', async () => {
       await handlers['qr:generate']({ text: 'test', size: 128 })
-      expect(QRCode.toDataURL).toHaveBeenCalledWith(
-        'test',
-        expect.objectContaining({ width: 128 })
-      )
+      expect(QRCode.toDataURL).toHaveBeenCalledWith('test', expect.objectContaining({ width: 128 }))
     })
 
     it('uses default error correction M when settings returns null', async () => {

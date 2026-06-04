@@ -8,32 +8,32 @@ Every extension must have a `manifest.json` file at its root. This file is the s
 
 ## Top-Level Fields
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `id` | `string` | Yes | Unique reverse-DNS identifier. Convention: `com.<domain>.<name>`. Must be globally unique. |
-| `name` | `string` | Yes | Human-readable display name shown in the launcher tool list. |
-| `version` | `string` | Yes | Semantic version string (e.g. `"1.0.0"`). |
-| `type` | `string` | Yes | Extension type. See [Extension Types](#extension-types) below. |
-| `icon` | `string` | No | Name of the Lucide icon representing the tool in the tool list. |
-| `bootstrap` | `boolean` | No | If `true`, this extension's frontend is loaded at app startup and excluded from `listTools`. Used by the shell extension. |
-| `placeholder` | `string` | No | Custom placeholder text for the omnibar when this tool is active. Falls back to `"Search <name>"` if omitted. |
-| `permissions` | `string[]` | No | Host APIs the extension needs access to. See [Permissions](#permissions). |
-| `capabilities` | `object` | No | Cross-extension invocation rights. See [Capabilities](#capabilities). |
-| `priority` | `number` | No | Load order for `uikit` extensions. Lower loads first (default: `100`). |
-| `locales` | `object` | No | Internationalisation config. See [Locales](#locales). |
-| `entry` | `object` | Yes | Relative paths to entry files. See [Entry Points](#entry-points). |
+| Field          | Type       | Required | Description                                                                                                               |
+| -------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | `string`   | Yes      | Unique reverse-DNS identifier. Convention: `com.<domain>.<name>`. Must be globally unique.                                |
+| `name`         | `string`   | Yes      | Human-readable display name shown in the launcher tool list.                                                              |
+| `version`      | `string`   | Yes      | Semantic version string (e.g. `"1.0.0"`).                                                                                 |
+| `type`         | `string`   | Yes      | Extension type. See [Extension Types](#extension-types) below.                                                            |
+| `icon`         | `string`   | No       | Name of the Lucide icon representing the tool in the tool list.                                                           |
+| `bootstrap`    | `boolean`  | No       | If `true`, this extension's frontend is loaded at app startup and excluded from `listTools`. Used by the shell extension. |
+| `placeholder`  | `string`   | No       | Custom placeholder text for the omnibar when this tool is active. Falls back to `"Search <name>"` if omitted.             |
+| `permissions`  | `string[]` | No       | Host APIs the extension needs access to. See [Permissions](#permissions).                                                 |
+| `capabilities` | `object`   | No       | Cross-extension invocation rights. See [Capabilities](#capabilities).                                                     |
+| `priority`     | `number`   | No       | Load order for `uikit` extensions. Lower loads first (default: `100`).                                                    |
+| `locales`      | `object`   | No       | Internationalisation config. See [Locales](#locales).                                                                     |
+| `entry`        | `object`   | Yes      | Relative paths to entry files. See [Entry Points](#entry-points).                                                         |
 
 ## Extension Types
 
-| Value | User visible | Backend worker | Frontend | Role |
-|---|---|---|---|---|
-| `tool` | Yes | Required | Optional | Interactive feature activated by the user |
-| `provider` | Yes | Required | Optional | Real-time omnibar result provider |
-| `orchestrator` | Yes | Required | Optional | Fallback handler for unmatched Enter (typically AI) |
-| `helper` | No | Optional | Optional | Background utility called by other extensions |
-| `uikit` | No | No | Yes, loaded early | Extends `window.UI` with new React components |
-| `theme` | No | No | No | JSON CSS variable theme definition |
-| `iconpack` | No | No | No | JSON SVG icon pack |
+| Value          | User visible | Backend worker | Frontend          | Role                                                |
+| -------------- | ------------ | -------------- | ----------------- | --------------------------------------------------- |
+| `tool`         | Yes          | Required       | Optional          | Interactive feature activated by the user           |
+| `provider`     | Yes          | Required       | Optional          | Real-time omnibar result provider                   |
+| `orchestrator` | Yes          | Required       | Optional          | Fallback handler for unmatched Enter (typically AI) |
+| `helper`       | No           | Optional       | Optional          | Background utility called by other extensions       |
+| `uikit`        | No           | No             | Yes, loaded early | Extends `window.UI` with new React components       |
+| `theme`        | No           | No             | No                | JSON CSS variable theme definition                  |
+| `iconpack`     | No           | No             | No                | JSON SVG icon pack                                  |
 
 ::: warning Helper vs Tool
 A `helper` extension must **not** call `core.registry.registerTool`. Helpers are invisible to users and only exist to serve other extensions. If you want users to activate your extension, use `type: "tool"`.
@@ -43,20 +43,21 @@ A `helper` extension must **not** call `core.registry.registerTool`. Helpers are
 
 Declare every `core.*` API you use. Undeclared calls are rejected at runtime with `PERMISSION_DENIED`.
 
-| Value | Gates access to |
-|---|---|
-| `storage` | `core.storage.*` — sandboxed JSON files under `~/.nuxy/data/<id>/` |
-| `clipboard` | `core.clipboard.*` — OS clipboard read/write/image |
-| `media` | `core.media.*` — now-playing metadata |
-| `network` | Outbound HTTP/fetch requests |
-| `notifications` | System desktop notifications |
-| `fs` | `core.fs.*` — general filesystem operations |
-| `db` | `core.db.*` — SQLite database access |
-| `shell` | `core.shell.*` — run external binaries or open URLs |
-| `settings.read` | Read another extension's `ext-settings.json` |
-| `settings.write` | Write another extension's `ext-settings.json` |
+| Value            | Gates access to                                                    |
+| ---------------- | ------------------------------------------------------------------ |
+| `storage`        | `core.storage.*` — sandboxed JSON files under `~/.nuxy/data/<id>/` |
+| `clipboard`      | `core.clipboard.*` — OS clipboard read/write/image                 |
+| `media`          | `core.media.*` — now-playing metadata                              |
+| `network`        | Outbound HTTP/fetch requests                                       |
+| `notifications`  | System desktop notifications                                       |
+| `fs`             | `core.fs.*` — general filesystem operations                        |
+| `db`             | `core.db.*` — SQLite database access                               |
+| `shell`          | `core.shell.*` — run external binaries or open URLs                |
+| `settings.read`  | Read another extension's `ext-settings.json`                       |
+| `settings.write` | Write another extension's `ext-settings.json`                      |
 
 Example:
+
 ```json
 {
   "permissions": ["storage", "clipboard", "network"]
@@ -67,10 +68,10 @@ Example:
 
 Controls cross-extension invocation rights:
 
-| Field | Type | Default | Description |
-|---|---|---|---|
-| `callable` | `boolean` | `false` | Other extensions may invoke this one via `core.extensions.invoke` |
-| `caller` | `boolean` | `false` | This extension may call other extensions via `core.extensions.invoke` |
+| Field      | Type      | Default | Description                                                           |
+| ---------- | --------- | ------- | --------------------------------------------------------------------- |
+| `callable` | `boolean` | `false` | Other extensions may invoke this one via `core.extensions.invoke`     |
+| `caller`   | `boolean` | `false` | This extension may call other extensions via `core.extensions.invoke` |
 
 ```json
 {
@@ -89,14 +90,14 @@ AI orchestrators must declare `"caller": true` to get access to `core.extensions
 
 The `entry` object maps entry point names to relative file paths within the extension folder.
 
-| Field | Required for types | Description |
-|---|---|---|
-| `entry.backend` | `tool`, `provider`, `orchestrator`, `helper` | Backend TypeScript module — must export `register(core: CoreContext)` |
-| `entry.frontend` | Optional for all | Frontend TSX component — default export is the React component |
-| `entry.preload` | Optional | Runs in the Electron preload context at startup (clipboard watchers, early setup) |
-| `entry.settings` | Optional | Path to `settings.json` — declares user-configurable fields rendered by the Settings extension |
-| `entry.theme` | `theme` | Path to `theme.json` — CSS custom property value map |
-| `entry.icons` | `iconpack` | Path to `icons.json` — `{ version, name, icons: { [name]: svgString } }` |
+| Field            | Required for types                           | Description                                                                                    |
+| ---------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `entry.backend`  | `tool`, `provider`, `orchestrator`, `helper` | Backend TypeScript module — must export `register(core: CoreContext)`                          |
+| `entry.frontend` | Optional for all                             | Frontend TSX component — default export is the React component                                 |
+| `entry.preload`  | Optional                                     | Runs in the Electron preload context at startup (clipboard watchers, early setup)              |
+| `entry.settings` | Optional                                     | Path to `settings.json` — declares user-configurable fields rendered by the Settings extension |
+| `entry.theme`    | `theme`                                      | Path to `theme.json` — CSS custom property value map                                           |
+| `entry.icons`    | `iconpack`                                   | Path to `icons.json` — `{ version, name, icons: { [name]: svgString } }`                       |
 
 ```json
 {
@@ -113,11 +114,11 @@ The `entry` object maps entry point names to relative file paths within the exte
 
 Enable internationalisation by declaring a `locales` block:
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `default` | `string` | Yes | BCP 47 code of the extension's built-in language (e.g. `"en"`) |
-| `supported` | `string[]` | Yes | All BCP 47 codes the extension ships translations for |
-| `dir` | `string` | No | Subdirectory containing locale JSON files. Defaults to `"locales"` |
+| Field       | Type       | Required | Description                                                        |
+| ----------- | ---------- | -------- | ------------------------------------------------------------------ |
+| `default`   | `string`   | Yes      | BCP 47 code of the extension's built-in language (e.g. `"en"`)     |
+| `supported` | `string[]` | Yes      | All BCP 47 codes the extension ships translations for              |
+| `dir`       | `string`   | No       | Subdirectory containing locale JSON files. Defaults to `"locales"` |
 
 ```json
 {
@@ -134,14 +135,14 @@ Each entry in `supported` must have a corresponding file at `locales/<code>.json
 
 When `entry.settings` is declared, the Settings extension reads the schema and renders a UI automatically. Available field types:
 
-| Type | Description |
-|---|---|
-| `text` | Free-text string input |
-| `select` | Dropdown from a static `options` list |
-| `toggle` | Boolean on/off switch |
+| Type       | Description                                    |
+| ---------- | ---------------------------------------------- |
+| `text`     | Free-text string input                         |
+| `select`   | Dropdown from a static `options` list          |
+| `toggle`   | Boolean on/off switch                          |
 | `location` | Folder picker (resolves `~` to home directory) |
-| `color` | Color picker |
-| `list` | Multi-value string list |
+| `color`    | Color picker                                   |
+| `list`     | Multi-value string list                        |
 
 ```json
 {

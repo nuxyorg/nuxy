@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { smoothScrollIntoViewIfNeeded } from '../../utils/scroll'
 import './index.css'
 
 export interface SelectOption {
@@ -31,6 +32,7 @@ export function SelectBox({
   searchable = false,
 }: SelectBoxProps) {
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const optionsRef = useRef<HTMLDivElement>(null)
   const searchRef = useRef<HTMLInputElement>(null)
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 })
   const [searchQuery, setSearchQuery] = useState('')
@@ -76,6 +78,17 @@ export function SelectBox({
     }
   }, [open, searchable])
 
+  const filteredOptions =
+    searchable && searchQuery.trim()
+      ? options.filter(
+          (o) =>
+            o.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            o.value.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : options
+
+  const activeFocusedIndex = searchable ? internalFocused : focusedIndex
+
   useLayoutEffect(() => {
     if (open && triggerRef.current) {
       const r = triggerRef.current.getBoundingClientRect()
@@ -90,16 +103,14 @@ export function SelectBox({
     }
   }, [open])
 
-  const filteredOptions =
-    searchable && searchQuery.trim()
-      ? options.filter(
-          (o) =>
-            o.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            o.value.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      : options
+  useLayoutEffect(() => {
+    if (!open || !optionsRef.current) return
+    const focusedEl = optionsRef.current.querySelector(
+      '.nuxy-select-box__option--focused'
+    ) as HTMLElement | null
+    if (focusedEl) smoothScrollIntoViewIfNeeded(focusedEl)
+  }, [open, activeFocusedIndex, filteredOptions.length])
 
-  const activeFocusedIndex = searchable ? internalFocused : focusedIndex
   const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder
 
   const handleTriggerClick = (e: React.MouseEvent) => {
@@ -175,7 +186,7 @@ export function SelectBox({
                 />
               </div>
             )}
-            <div className="nuxy-select-box__options">
+            <div ref={optionsRef} className="nuxy-select-box__options">
               {filteredOptions.length === 0 ? (
                 <div className="nuxy-select-box__no-results">No results</div>
               ) : (

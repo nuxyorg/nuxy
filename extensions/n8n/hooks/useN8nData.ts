@@ -46,5 +46,16 @@ export function useN8nData(): N8nData {
       .catch(() => {})
   }, [])
 
-  return { configured, setConfigured, status, setStatus, workflows, setWorkflows, baseUrl, setBaseUrl, apiKey, setApiKey }
+  return {
+    configured,
+    setConfigured,
+    status,
+    setStatus,
+    workflows,
+    setWorkflows,
+    baseUrl,
+    setBaseUrl,
+    apiKey,
+    setApiKey,
+  }
 }

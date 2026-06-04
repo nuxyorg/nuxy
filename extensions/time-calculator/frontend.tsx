@@ -1,5 +1,10 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.time-calculator'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import type { TimeResultMeta } from './types.ts'
 import { injectStyles } from './utils/styles.ts'
 import { useTimeCalculatorData } from './hooks/useTimeCalculatorData.ts'
@@ -12,6 +17,7 @@ interface Props {
 
 export default function TimeCalculatorView({ query }: Props) {
   injectStyles()
+  const { t } = _useTranslation(EXT_ID)
 
   const { result, loading, fromAI } = useTimeCalculatorData(query)
   const meta: TimeResultMeta | null = (result?.meta as TimeResultMeta) ?? null
@@ -23,7 +29,7 @@ export default function TimeCalculatorView({ query }: Props) {
     React.createElement(
       'div',
       { className: 'tc-header', style: { display: 'flex', alignItems: 'center', gap: 8 } },
-      'Calculator',
+      t('header.calculator'),
       fromAI &&
         React.createElement(
           'span',
@@ -40,13 +46,13 @@ export default function TimeCalculatorView({ query }: Props) {
               textTransform: 'uppercase',
             },
           },
-          'AI'
+          t('header.ai')
         )
     ),
 
     meta
       ? React.createElement(TimeCard, { meta })
-      : React.createElement(TimeEmptyState, { loading })
+      : React.createElement(TimeEmptyState, { loading, t })
   )
 }
 

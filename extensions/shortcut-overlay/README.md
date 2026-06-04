@@ -18,6 +18,7 @@ Shortcut Overlay is a frontend-only helper that injects a dismissible overlay in
 ## Extension Type
 
 ### `helper`
+
 Invisible to the user in the tool list. Runs in the background and responds to the `nuxy-register-actions` event dispatched by the shell. The overlay appears only when the registered action is explicitly triggered.
 
 ---
@@ -30,32 +31,32 @@ The overlay is not accessible from the Nuxy tool list. It registers the action `
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `Esc` | Dismiss the overlay |
+| Key                | Action              |
+| ------------------ | ------------------- |
+| `Esc`              | Dismiss the overlay |
 | Click outside card | Dismiss the overlay |
 
 ### Shortcuts displayed inside the overlay
 
 The overlay itself shows the following reference shortcuts:
 
-| Key | Description |
-|-----|-------------|
-| `Esc` | Close / Hide |
-| `↑ ↓` | Navigate list |
-| `↵` | Select item |
-| `⌫` | Go back / Clear |
+| Key      | Description     |
+| -------- | --------------- |
+| `Esc`    | Close / Hide    |
+| `↑ ↓`    | Navigate list   |
+| `↵`      | Select item     |
+| `⌫`      | Go back / Clear |
 | `Ctrl+K` | Command palette |
 
 ---
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 All platforms supported by Nuxy. No native system tools required.
 

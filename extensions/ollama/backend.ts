@@ -16,7 +16,11 @@ const DEFAULT_HOST = 'http://localhost:11434'
 const DEFAULT_THINKING_COLOR = 'light'
 
 export async function register(core: CoreContext): Promise<void> {
-  const config: OllamaConfig = { model: DEFAULT_MODEL, host: DEFAULT_HOST, thinkingColor: DEFAULT_THINKING_COLOR }
+  const config: OllamaConfig = {
+    model: DEFAULT_MODEL,
+    host: DEFAULT_HOST,
+    thinkingColor: DEFAULT_THINKING_COLOR,
+  }
 
   const savedHost = await core.settings.read<string>('host')
   const savedModel = await core.settings.read<string>('model')
@@ -40,7 +44,9 @@ export async function register(core: CoreContext): Promise<void> {
         model: config.model,
         messages,
         stream: false,
-        ...(config.temperature !== undefined ? { options: { temperature: config.temperature } } : {}),
+        ...(config.temperature !== undefined
+          ? { options: { temperature: config.temperature } }
+          : {}),
       }),
     })
 
@@ -54,6 +60,34 @@ export async function register(core: CoreContext): Promise<void> {
   }
 
   core.registry.registerTool({ name: 'ollama' })
+  core.registry.registerProvider({ name: 'ollama' })
+
+  core.ipc.handle(
+    'openWithQuery',
+    async (payload: unknown): Promise<{ toolId: string; query: string }> => {
+      const { text } = payload as { text: string }
+      return { toolId: 'com.nuxy.ollama', query: text }
+    }
+  )
+
+  core.ipc.handle('eval', async (payload: unknown): Promise<{ items: unknown[] }> => {
+    const text = (payload as { text?: string } | null | undefined)?.text ?? ''
+    if (!text.trim()) return { items: [] }
+
+    return {
+      items: [
+        {
+          id: 'com.nuxy.ollama',
+          title: 'Ask Ollama',
+          subtitle: `ollama — "${text}"`,
+          execute: {
+            channel: 'openWithQuery',
+            payload: { text },
+          },
+        },
+      ],
+    }
+  })
 
   core.ipc.handle('chat', async (payload: unknown): Promise<ChatResult> => {
     return chat(payload as ChatPayload)
@@ -86,7 +120,8 @@ export async function register(core: CoreContext): Promise<void> {
   })
 
   core.ipc.handle('configure', async (payload: unknown): Promise<void> => {
-    const { model, host, thinkingColor, systemPrompt, temperature } = (payload as ConfigurePayload) ?? {}
+    const { model, host, thinkingColor, systemPrompt, temperature } =
+      (payload as ConfigurePayload) ?? {}
     if (model !== undefined) {
       config.model = model
       await core.settings.write('model', model)

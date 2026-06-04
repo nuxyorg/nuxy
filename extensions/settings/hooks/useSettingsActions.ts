@@ -14,7 +14,8 @@ export interface SettingsActionsParams {
 export interface SettingsActions {
   applySettings: (s: NuxySettings) => void
   updateSetting: (key: keyof NuxySettings, value: unknown) => void
-  updateLanguageSlot: (langIndex: number, value: string) => void
+  addLanguage: (code: string) => void
+  removeLanguage: (code: string) => void
   updateExtSetting: (extId: string, key: string, value: unknown) => void
   toggleExtension: (extId: string, enabled: boolean) => void
   /** Route a SelectBox onSelect to the correct update function for any row type. */
@@ -64,34 +65,32 @@ export function useSettingsActions({
     setActiveSelect(null)
 
     window.dispatchEvent(new CustomEvent('nuxy-settings-updated', { detail: next }))
-    if (key === 'preferredLanguages') {
-      window.dispatchEvent(new CustomEvent('nuxy-locale-changed'))
-    }
 
     if (!window.core?.ipc?.invoke) return
     window.core.ipc
       .invoke(EXT_ID, 'saveSettings', next)
       .then(() => {
+        if (key === 'preferredLanguages') {
+          window.dispatchEvent(new CustomEvent('nuxy-locale-changed'))
+        }
         window.core.ipc.invoke('kernel', 'applyWindowSettings', next).catch(() => {})
       })
       .catch(() => {})
   }
 
-  const updateLanguageSlot = (langIndex: number, value: string): void => {
-    const langs = [...(settings.preferredLanguages || [])]
-    if (value === '') {
-      langs.splice(langIndex, 1)
-    } else {
-      langs[langIndex] = value
-    }
-    // Deduplicate while preserving order
-    const seen = new Set<string>()
-    const cleaned = langs.filter((l) => {
-      if (!l || seen.has(l)) return false
-      seen.add(l)
-      return true
-    })
-    updateSetting('preferredLanguages', cleaned)
+  const addLanguage = (code: string): void => {
+    if (!code) return
+    const current = (settings.preferredLanguages || []).filter(Boolean)
+    if (current.includes(code)) return
+    updateSetting('preferredLanguages', [...current, code])
+  }
+
+  const removeLanguage = (code: string): void => {
+    const current = (settings.preferredLanguages || []).filter(Boolean)
+    updateSetting(
+      'preferredLanguages',
+      current.filter((l) => l !== code)
+    )
   }
 
   const updateExtSetting = (extId: string, key: string, value: unknown): void => {
@@ -113,7 +112,7 @@ export function useSettingsActions({
   const handleRowSelect = (row: AnyRow, value: unknown): void => {
     const isLang = 'isLanguage' in row && row.isLanguage
     const isToggle = 'isExtToggle' in row && row.isExtToggle
-    if (isLang) updateLanguageSlot(row.langIndex, value as string)
+    if (isLang) addLanguage(value as string)
     else if (isToggle) toggleExtension(row.extId, value as boolean)
     else if (row.isExtension) updateExtSetting(row.extId, row.fieldKey, value)
     else updateSetting(row.key as keyof NuxySettings, value)
@@ -135,7 +134,8 @@ export function useSettingsActions({
   return {
     applySettings,
     updateSetting,
-    updateLanguageSlot,
+    addLanguage,
+    removeLanguage,
     updateExtSetting,
     toggleExtension,
     handleRowSelect,

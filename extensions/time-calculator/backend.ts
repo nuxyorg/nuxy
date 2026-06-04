@@ -124,7 +124,15 @@ const CITY_TO_TZ: Record<string, string> = {
 // Pre-sorted longest-first so findTimezone matches multi-word cities before shorter aliases
 const CITY_KEYS_SORTED = Object.keys(CITY_TO_TZ).sort((a, b) => b.length - a.length)
 
-const LOCAL_ALIASES = new Set(['local', 'local time', 'here', 'my time', 'my timezone', 'current', 'system'])
+const LOCAL_ALIASES = new Set([
+  'local',
+  'local time',
+  'here',
+  'my time',
+  'my timezone',
+  'current',
+  'system',
+])
 
 /**
  * Finds a timezone string from a city/alias name within the query text.
@@ -260,6 +268,7 @@ function formatTime12h(hours: number, minutes: number): string {
 // ─── Main register function ────────────────────────────────────────────────────
 
 export function register(core: CoreContext): void {
+  core.registry.registerTool({ name: 'time-calculator' })
   core.registry.registerProvider({
     name: 'time-calculator',
   })

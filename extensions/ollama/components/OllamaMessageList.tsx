@@ -33,7 +33,8 @@ export function OllamaMessageList({ messages, loading }: Props) {
       onScroll={() => {
         const el = scrollContainerRef.current
         if (!el) return
-        isAtBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < SCROLL_BOTTOM_THRESHOLD
+        isAtBottomRef.current =
+          el.scrollHeight - el.scrollTop - el.clientHeight < SCROLL_BOTTOM_THRESHOLD
       }}
       style={{
         flex: 1,
@@ -70,7 +71,9 @@ export function OllamaMessageList({ messages, loading }: Props) {
             }}
           >
             {msg.role === 'assistant' && MarkdownText ? (
-              <MarkdownText>{msg.content || (loading && i === messages.length - 1 ? '…' : '')}</MarkdownText>
+              <MarkdownText>
+                {msg.content || (loading && i === messages.length - 1 ? '…' : '')}
+              </MarkdownText>
             ) : (
               msg.content || (loading && i === messages.length - 1 ? '…' : '')
             )}

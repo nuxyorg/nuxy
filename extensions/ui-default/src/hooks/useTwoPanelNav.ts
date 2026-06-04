@@ -1,5 +1,6 @@
 import { useState, useMemo, useRef, useCallback } from 'react'
 import { useToolKeyActions, KeyAction } from './useToolKeyActions'
+import { useTranslation } from './useTranslation'
 
 // Keys whose handlers are merged (left-panel vs right-panel) rather than
 // appended as duplicates. ArrowLeft/Right are included so callers can
@@ -78,6 +79,15 @@ export function useTwoPanelNav({
   onFocusRight,
   rightPanelActions = [],
 }: UseTwoPanelNavOptions): UseTwoPanelNavResult {
+  const { t } = useTranslation('com.nuxy.shell')
+  const tr = useCallback(
+    (key: string, fallback: string) => {
+      const val = t(key)
+      return val === '' || val === key ? fallback : val
+    },
+    [t]
+  )
+
   const [focusArea, setFocusArea] = useState<TwoPanelFocusArea>(initialFocusArea)
   const [activeSectionId, setActiveSectionId] = useState<string>(sections[0]?.id ?? '')
 
@@ -173,7 +183,7 @@ export function useTwoPanelNav({
   useToolKeyActions([
     {
       key: 'ArrowLeft',
-      label: 'Focus tabs',
+      label: tr('keyboard.focusTabs', 'Focus tabs'),
       handler: () => {
         const { focusArea, selectOpen, rightPanelActions } = stateRef.current
         if (focusArea !== 'right' || selectOpen) return
@@ -192,7 +202,7 @@ export function useTwoPanelNav({
     },
     {
       key: 'ArrowRight',
-      label: 'Focus content',
+      label: tr('keyboard.focusContent', 'Focus content'),
       handler: () => {
         const { focusArea, activeSectionId, onFocusRight } = stateRef.current
         if (focusArea === 'left') {
@@ -211,8 +221,9 @@ export function useTwoPanelNav({
     },
     {
       key: 'ArrowUp',
-      label: 'Previous',
+      label: tr('keyboard.previous', 'Previous'),
       hint: '↑↓',
+      allowRepeat: true,
       handler: () => {
         const { focusArea } = stateRef.current
         if (focusArea === 'left') moveSectionUp()
@@ -229,7 +240,8 @@ export function useTwoPanelNav({
     },
     {
       key: 'ArrowDown',
-      label: 'Next',
+      label: tr('keyboard.next', 'Next'),
+      allowRepeat: true,
       handler: () => {
         const { focusArea } = stateRef.current
         if (focusArea === 'left') moveSectionDown()
@@ -246,7 +258,7 @@ export function useTwoPanelNav({
     },
     {
       key: 'Enter',
-      label: 'Select / confirm',
+      label: tr('keyboard.selectConfirm', 'Select / confirm'),
       hint: '↵',
       handler: () => {
         const { focusArea, activeSectionId, onFocusRight } = stateRef.current

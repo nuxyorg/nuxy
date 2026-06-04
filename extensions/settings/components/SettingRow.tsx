@@ -43,25 +43,43 @@ export function SettingRow({
   onExtInputChange,
   onExtInputBlur,
 }: SettingRowProps) {
-  const { ListItem, ListItemBody, ListItemText, ListItemActions, SelectBox, Input } = window.UI || {}
+  const { ListItem, ListItemBody, ListItemText, ListItemActions, SelectBox, Input } =
+    window.UI || {}
   if (!ListItem) return null
 
   const isLanguageRow = 'isLanguage' in row && row.isLanguage
+  const isLanguageRemoveRow = 'isLanguageRemove' in row && row.isLanguageRemove
   const isExtToggleRow = 'isExtToggle' in row && row.isExtToggle
   const isSelectType =
-    isLanguageRow || isExtToggleRow || !row.isExtension || row.type === 'select' || row.type === 'toggle'
+    isLanguageRow ||
+    isExtToggleRow ||
+    !row.isExtension ||
+    row.type === 'select' ||
+    row.type === 'toggle'
+
+  const isActive =
+    focusArea === 'right' &&
+    globalIdx === selectedRow &&
+    activeSelect === null &&
+    sectionId === activeSectionId
+
+  if (isLanguageRemoveRow) {
+    return (
+      <ListItem key={row.key} active={isActive} onClick={onItemClick}>
+        {ListItemBody && (
+          <ListItemBody>{ListItemText && <ListItemText>{row.label}</ListItemText>}</ListItemBody>
+        )}
+        {ListItemActions && (
+          <ListItemActions>
+            <span style={{ fontSize: '0.75em', opacity: 0.35 }}>↵ remove</span>
+          </ListItemActions>
+        )}
+      </ListItem>
+    )
+  }
 
   return (
-    <ListItem
-      key={row.key}
-      active={
-        focusArea === 'right' &&
-        globalIdx === selectedRow &&
-        activeSelect === null &&
-        sectionId === activeSectionId
-      }
-      onClick={onItemClick}
-    >
+    <ListItem key={row.key} active={isActive} onClick={onItemClick}>
       {ListItemBody && (
         <ListItemBody>
           {ListItemText && <ListItemText>{row.label}</ListItemText>}
@@ -101,7 +119,9 @@ export function SettingRow({
                 value={String(value)}
                 placeholder={('placeholder' in row ? row.placeholder : '') || ''}
                 style={{ width: row.type === 'color' ? '2.5em' : '10em' }}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onExtInputChange(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  onExtInputChange(e.target.value)
+                }
                 onBlur={(e: React.FocusEvent<HTMLInputElement>) => onExtInputBlur(e.target.value)}
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                   if (e.key === 'Enter' || e.key === 'Escape') {

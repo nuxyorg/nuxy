@@ -118,8 +118,8 @@ Although the React component renders in the main DOM, it is still securely restr
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Plugin system and backend isolation | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Worker thread loading and CoreContext injection |
-| Omni-input arbitration and canvas zones | [16-omni-input-system.md](./16-omni-input-system.md) | Provider vs Tool rendering zones |
-| Extension access and renderer APIs | [21-extension-access.md](./21-extension-access.md) | Full `window.core` API reference and implementation status |
+| Topic                                   | Document                                                     | Notes                                                      |
+| --------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| Plugin system and backend isolation     | [15-modular-plugin-system.md](./15-modular-plugin-system.md) | Worker thread loading and CoreContext injection            |
+| Omni-input arbitration and canvas zones | [16-omni-input-system.md](./16-omni-input-system.md)         | Provider vs Tool rendering zones                           |
+| Extension access and renderer APIs      | [21-extension-access.md](./21-extension-access.md)           | Full `window.core` API reference and implementation status |

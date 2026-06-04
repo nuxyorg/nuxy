@@ -4,6 +4,7 @@ import type { NuxySettings, SelectOption, ExtSettingsInfo } from '../types.ts'
 import { DEFAULT_SETTINGS } from '../utils/settingsOptions.ts'
 
 const EXT_ID = 'com.nuxy.settings'
+const OLLAMA_EXT_ID = 'com.nuxy.ollama'
 
 export interface InstalledExtension {
   id: string
@@ -21,6 +22,7 @@ export interface SettingsData {
   extValues: Record<string, Record<string, unknown>>
   setExtValues: React.Dispatch<React.SetStateAction<Record<string, Record<string, unknown>>>>
   installedExtensions: InstalledExtension[]
+  ollamaModelOptions: SelectOption[]
 }
 
 export function useSettingsData(): SettingsData {
@@ -31,6 +33,7 @@ export function useSettingsData(): SettingsData {
   const [extSchemas, setExtSchemas] = React.useState<ExtSettingsInfo[]>([])
   const [extValues, setExtValues] = React.useState<Record<string, Record<string, unknown>>>({})
   const [installedExtensions, setInstalledExtensions] = React.useState<InstalledExtension[]>([])
+  const [ollamaModelOptions, setOllamaModelOptions] = React.useState<SelectOption[]>([])
 
   // Load themes
   React.useEffect(() => {
@@ -112,6 +115,17 @@ export function useSettingsData(): SettingsData {
         const r = res as { success: boolean; data?: ExtSettingsInfo[] }
         if (r?.success && Array.isArray(r.data) && r.data.length > 0) {
           setExtSchemas(r.data)
+          if (r.data.some((info: ExtSettingsInfo) => info.extId === OLLAMA_EXT_ID)) {
+            window.core.ipc
+              .invoke(OLLAMA_EXT_ID, 'models', {})
+              .then((mRes) => {
+                const mr = mRes as { success: boolean; data?: string[] }
+                if (mr?.success && Array.isArray(mr.data) && mr.data.length > 0) {
+                  setOllamaModelOptions(mr.data.map((name) => ({ value: name, label: name })))
+                }
+              })
+              .catch(() => {})
+          }
           r.data.forEach((info: ExtSettingsInfo) => {
             window.core.ipc
               .invoke(EXT_ID, 'getExtensionSettingValues', info.extId)
@@ -138,5 +152,6 @@ export function useSettingsData(): SettingsData {
     extValues,
     setExtValues,
     installedExtensions,
+    ollamaModelOptions,
   }
 }

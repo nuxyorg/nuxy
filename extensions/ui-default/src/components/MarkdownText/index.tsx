@@ -101,13 +101,16 @@ function parseInline(text: string): React.ReactNode[] {
 }
 
 function parseTableRow(row: string): string[] {
-  return row.split('|').slice(1, -1).map((c) => c.trim())
+  return row
+    .split('|')
+    .slice(1, -1)
+    .map((c) => c.trim())
 }
 
 function parseListBlock(
   lines: string[],
   start: number,
-  baseIndent: number,
+  baseIndent: number
 ): { items: ListItem[]; end: number } {
   const items: ListItem[] = []
   let i = start
@@ -292,7 +295,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
 
     if (block.type === 'code') {
       elements.push(
-        <CodeBlock key={elements.length} code={block.code} language={block.lang} showCopy />,
+        <CodeBlock key={elements.length} code={block.code} language={block.lang} showCopy />
       )
       continue
     }
@@ -302,7 +305,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
       elements.push(
         <Tag key={elements.length} className={`nuxy-md-h${block.level}`}>
           {parseInline(block.text)}
-        </Tag>,
+        </Tag>
       )
       continue
     }
@@ -311,7 +314,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
       elements.push(
         <blockquote key={elements.length} className="nuxy-md-blockquote">
           {parseInline(block.text)}
-        </blockquote>,
+        </blockquote>
       )
       continue
     }
@@ -339,7 +342,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
               </TableRow>
             ))}
           </tbody>
-        </Table>,
+        </Table>
       )
       continue
     }
@@ -348,7 +351,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
       elements.push(
         <ul key={elements.length} className="nuxy-md-ul">
           {renderListItems(block.items)}
-        </ul>,
+        </ul>
       )
       continue
     }
@@ -357,7 +360,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
       elements.push(
         <ol key={elements.length} className="nuxy-md-ol">
           {renderListItems(block.items)}
-        </ol>,
+        </ol>
       )
       continue
     }
@@ -372,7 +375,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
       elements.push(
         <p key={elements.length} className="nuxy-md-p">
           {inlineNodes}
-        </p>,
+        </p>
       )
     }
   }

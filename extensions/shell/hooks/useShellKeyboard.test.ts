@@ -8,7 +8,7 @@ vi.hoisted(() => {
 import { useShellKeyboard } from './useShellKeyboard.ts'
 import type { ListItem } from '../types.ts'
 
-const makeItem = (id: string, title: string): ListItem => ({ id, title } as ListItem)
+const makeItem = (id: string, title: string): ListItem => ({ id, title }) as ListItem
 
 const makeEvent = (key: string): { key: string; preventDefault: ReturnType<typeof vi.fn> } => ({
   key,

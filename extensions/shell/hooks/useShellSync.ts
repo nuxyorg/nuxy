@@ -9,8 +9,11 @@ interface Params {
   cfgRef: React.MutableRefObject<ShellConfig | null>
   hasDragged: React.MutableRefObject<boolean>
   activeTool: string | null
-  listResults: unknown[]
-  parseCoordinate: (val: string | null | undefined, displayLength: number, winLength: number) => number
+  parseCoordinate: (
+    val: string | null | undefined,
+    displayLength: number,
+    winLength: number
+  ) => number
   setPosition: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>
   setQuery: React.Dispatch<React.SetStateAction<string>>
   setSavedQuery: React.Dispatch<React.SetStateAction<string>>
@@ -40,7 +43,6 @@ export function useShellSync({
   cfgRef,
   hasDragged,
   activeTool,
-  listResults,
   parseCoordinate,
   setPosition,
   setQuery,
@@ -245,23 +247,32 @@ export function useShellSync({
     return () => window.removeEventListener('nuxy-shell-omni-bar-control', handleOmniBarControl)
   }, [])
 
-  // Clamp position within viewport after list changes or tool activation
+  // Clamp position when the shell panel resizes (content/tool changes), not on every list update
   React.useLayoutEffect(() => {
-    if (!containerRef.current) return
-    const zoom = getZoom()
-    const dw = window.innerWidth / zoom
-    const dh = window.innerHeight / zoom
-    const winWidth = containerRef.current.offsetWidth
-    const winHeight = containerRef.current.offsetHeight
-    const maxX = Math.max(0, dw - winWidth)
-    const maxY = Math.max(0, dh - winHeight)
+    const el = containerRef.current
+    if (!el) return
 
-    setPosition((prev) => {
-      const clampedX = Math.max(0, Math.min(prev.x, maxX))
-      const clampedY = Math.max(0, Math.min(prev.y, maxY))
-      if (clampedX !== prev.x || clampedY !== prev.y) return { x: clampedX, y: clampedY }
-      return prev
-    })
+    const clampToViewport = () => {
+      const zoom = getZoom()
+      const dw = window.innerWidth / zoom
+      const dh = window.innerHeight / zoom
+      const winWidth = el.offsetWidth
+      const winHeight = el.offsetHeight
+      const maxX = Math.max(0, dw - winWidth)
+      const maxY = Math.max(0, dh - winHeight)
+
+      setPosition((prev) => {
+        const clampedX = Math.max(0, Math.min(prev.x, maxX))
+        const clampedY = Math.max(0, Math.min(prev.y, maxY))
+        if (clampedX !== prev.x || clampedY !== prev.y) return { x: clampedX, y: clampedY }
+        return prev
+      })
+    }
+
+    clampToViewport()
+    const observer = new ResizeObserver(clampToViewport)
+    observer.observe(el)
+    return () => observer.disconnect()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listResults, activeTool])
+  }, [activeTool])
 }

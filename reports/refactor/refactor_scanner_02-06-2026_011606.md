@@ -8,17 +8,17 @@
 
 ## 1. Executive Summary
 
-| Attribute | Value |
-|---|---|
-| Total lines | 553 |
-| Exported functions | 5 |
-| Private functions | 3 |
-| Nested helper functions | 2 (`walk` inside `scanDirectoryForNodeImports`, `watchRecursive` inside `startExtensionWatcher`) |
-| Import count | 16 statements |
-| Top-level `import.meta.env.DEV` branches | 2 (env-coupled logic) |
-| Security criticality | **HIGH** — validates cryptographic integrity, manages trusted keys, spawns Worker threads |
-| Risk level for refactor | **MEDIUM-HIGH** — the security pipeline in `scanExtensions` has no integration tests covering the full 4-step verification flow, only individual unit tests for `detectNodeImports` and happy-path directory scanning |
-| Estimated effort | 3–5 dev-days (test hardening first, then extractions) |
+| Attribute                                | Value                                                                                                                                                                                                                 |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Total lines                              | 553                                                                                                                                                                                                                   |
+| Exported functions                       | 5                                                                                                                                                                                                                     |
+| Private functions                        | 3                                                                                                                                                                                                                     |
+| Nested helper functions                  | 2 (`walk` inside `scanDirectoryForNodeImports`, `watchRecursive` inside `startExtensionWatcher`)                                                                                                                      |
+| Import count                             | 16 statements                                                                                                                                                                                                         |
+| Top-level `import.meta.env.DEV` branches | 2 (env-coupled logic)                                                                                                                                                                                                 |
+| Security criticality                     | **HIGH** — validates cryptographic integrity, manages trusted keys, spawns Worker threads                                                                                                                             |
+| Risk level for refactor                  | **MEDIUM-HIGH** — the security pipeline in `scanExtensions` has no integration tests covering the full 4-step verification flow, only individual unit tests for `detectNodeImports` and happy-path directory scanning |
+| Estimated effort                         | 3–5 dev-days (test hardening first, then extractions)                                                                                                                                                                 |
 
 The file is the security gateway for all third-party code execution in Nuxy. Its primary risk as a refactoring target is not code complexity per se — it is that the security pipeline (`verifyDirectoryIntegrity` → `isRevoked` → `isKeyTrusted` → `makeDirectoryReadOnly`) has no test coverage for its negative branches (revoked extension, untrusted key, integrity mismatch). Any extraction that changes how these branches interact introduces regression risk with no test safety net.
 
@@ -28,26 +28,26 @@ A secondary structural problem is that `scanExtensions()` performs two conceptua
 
 ## 2. Full Function Inventory
 
-| # | Function name | Exported | Lines (start–end) | Line count | Complexity notes |
-|---|---|---|---|---|---|
-| 1 | `detectNodeImports` | yes | 56–98 | 43 | 3 regex loops; CC ≈ 7 |
-| 2 | `scanDirectoryForNodeImports` | yes | 100–148 | 49 | Recursive `walk` nested inside; CC ≈ 19 |
-| 3 | `rescanExtensions` | yes | 153–161 | 9 | CC ≈ 1 — thin orchestrator |
-| 4 | `clearWatchers` | no | 163–170 | 8 | CC ≈ 2 |
-| 5 | `startExtensionWatcher` | no | 172–216 | 45 | `watchRecursive` nested inside; CC ≈ 10 |
-| 6 | `promptTrustPublisherKey` | no | 218–237 | 20 | Dialog / env guard; CC ≈ 3 |
-| 7 | `scanExtensions` | yes | 239–553 | **315** | 6 logical phases; CC ≈ 79 |
+| #   | Function name                 | Exported | Lines (start–end) | Line count | Complexity notes                        |
+| --- | ----------------------------- | -------- | ----------------- | ---------- | --------------------------------------- |
+| 1   | `detectNodeImports`           | yes      | 56–98             | 43         | 3 regex loops; CC ≈ 7                   |
+| 2   | `scanDirectoryForNodeImports` | yes      | 100–148           | 49         | Recursive `walk` nested inside; CC ≈ 19 |
+| 3   | `rescanExtensions`            | yes      | 153–161           | 9          | CC ≈ 1 — thin orchestrator              |
+| 4   | `clearWatchers`               | no       | 163–170           | 8          | CC ≈ 2                                  |
+| 5   | `startExtensionWatcher`       | no       | 172–216           | 45         | `watchRecursive` nested inside; CC ≈ 10 |
+| 6   | `promptTrustPublisherKey`     | no       | 218–237           | 20         | Dialog / env guard; CC ≈ 3              |
+| 7   | `scanExtensions`              | yes      | 239–553           | **315**    | 6 logical phases; CC ≈ 79               |
 
 **Total callable logic lines** (excluding blank lines and comments): ~380
 
 ### Module-level declarations (not functions)
 
-| Name | Lines | Purpose |
-|---|---|---|
-| `ALLOWED_PERMISSIONS` | 38–49 | Allowlist set for manifest permission strings |
-| `BUILTIN_LIST` | 51–54 | Set of all Node built-in module names + `node:` prefixed variants |
-| `watchDebounce` | 150 | Debounce timer handle for file watcher |
-| `activeWatchers` | 151 | Set of active `fs.FSWatcher` instances |
+| Name                  | Lines | Purpose                                                           |
+| --------------------- | ----- | ----------------------------------------------------------------- |
+| `ALLOWED_PERMISSIONS` | 38–49 | Allowlist set for manifest permission strings                     |
+| `BUILTIN_LIST`        | 51–54 | Set of all Node built-in module names + `node:` prefixed variants |
+| `watchDebounce`       | 150   | Debounce timer handle for file watcher                            |
+| `activeWatchers`      | 151   | Set of active `fs.FSWatcher` instances                            |
 
 ---
 
@@ -55,16 +55,16 @@ A secondary structural problem is that `scanExtensions()` performs two conceptua
 
 The chain sits inside the Phase B registration loop of `scanExtensions`, operating on `manifest.type`. There are 6 explicit branches plus 2 implicit fall-through conditions, giving effectively 8 logical paths:
 
-| Branch # | Condition | Action |
-|---|---|---|
-| 1 | `manifest.type === 'theme' && manifest.entry?.theme` | Load `ThemeDefinition` JSON from `entry.theme`, call `registerExtensionTheme(def)`. No worker spawned. |
-| 2 | `manifest.type === 'iconpack' && manifest.entry?.icons` | Load `IconPackDefinition` JSON from `entry.icons`, call `registerIconPack(def)`. No worker spawned. |
-| 3 | `manifest.type === 'uikit'` | Validate `entry.frontend` presence (warn if missing). No worker spawned. |
-| 4 | `manifest.type === 'helper'` | If `entry.backend` exists: call `spawnExtension()`. Otherwise: log as frontend-only. |
-| 5 | `manifest.entry?.backend` (catch-all for `tool` / `provider` / `orchestrator`) | Call `spawnExtension()`. |
-| 6 | `manifest.type !== 'theme' && manifest.type !== 'iconpack'` (else) | Warn: "no backend entry — skipping worker." |
-| 7 | Implicit: `type === 'theme'` but `!entry?.theme` | Falls through to branch 5 or 6 depending on backend. |
-| 8 | Implicit: `type === 'iconpack'` but `!entry?.icons` | Falls through to branch 5 or 6 depending on backend. |
+| Branch # | Condition                                                                      | Action                                                                                                 |
+| -------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| 1        | `manifest.type === 'theme' && manifest.entry?.theme`                           | Load `ThemeDefinition` JSON from `entry.theme`, call `registerExtensionTheme(def)`. No worker spawned. |
+| 2        | `manifest.type === 'iconpack' && manifest.entry?.icons`                        | Load `IconPackDefinition` JSON from `entry.icons`, call `registerIconPack(def)`. No worker spawned.    |
+| 3        | `manifest.type === 'uikit'`                                                    | Validate `entry.frontend` presence (warn if missing). No worker spawned.                               |
+| 4        | `manifest.type === 'helper'`                                                   | If `entry.backend` exists: call `spawnExtension()`. Otherwise: log as frontend-only.                   |
+| 5        | `manifest.entry?.backend` (catch-all for `tool` / `provider` / `orchestrator`) | Call `spawnExtension()`.                                                                               |
+| 6        | `manifest.type !== 'theme' && manifest.type !== 'iconpack'` (else)             | Warn: "no backend entry — skipping worker."                                                            |
+| 7        | Implicit: `type === 'theme'` but `!entry?.theme`                               | Falls through to branch 5 or 6 depending on backend.                                                   |
+| 8        | Implicit: `type === 'iconpack'` but `!entry?.icons`                            | Falls through to branch 5 or 6 depending on backend.                                                   |
 
 **Observation**: Branch 7 and 8 are accidental fall-throughs caused by using `&&` to guard both `type` and `entry` field simultaneously. A `theme` extension with no `entry.theme` would silently fall to branch 5/6. This is a latent bug: it should be: check type first, then check required entry field, otherwise throw.
 
@@ -75,6 +75,7 @@ The chain sits inside the Phase B registration loop of `scanExtensions`, operati
 The function runs 6 sequential phases. No early return except the trust-rejection abort at line 352.
 
 ### Phase 1 — Initialization (lines 239–270, ~32 lines)
+
 1. Clear registries (`clearRegistry`, `clearExtensionThemes`, `clearIconRegistry`).
 2. Await `updateRevocationList()` (fails silently).
 3. Load `stateCache` (HMAC-verified JSON from disk).
@@ -82,7 +83,9 @@ The function runs 6 sequential phases. No early return except the trust-rejectio
 5. Conditional: in production, call `seedBundledExtensions()` and ensure `EXTENSION_DIR` exists.
 
 ### Phase 2 — Extraction / Verification Loop (lines 271–388, ~118 lines)
+
 Iterates over every item in `EXTENSION_DIR`:
+
 1. Stat each item; skip if not `.nuxyext` file or directory.
 2. Derive `folderName` by stripping `.nuxyext` suffix.
 3. If `.nuxyext`, compute SHA-256 hash of the zip file.
@@ -97,13 +100,17 @@ Iterates over every item in `EXTENSION_DIR`:
 12. Update `newStateCache`, add to `activeFolders`.
 
 ### Phase 3 — Stale Cleanup (lines 390–401, ~12 lines)
+
 Reads `EXTRACTED_DIR`, removes any directory not in `activeFolders` (including leftover `.tmp_` dirs).
 
 ### Phase 4 — Cache Persistence (lines 403–404, 2 lines)
+
 Calls `saveStateCache(newStateCache)` — writes HMAC-signed JSON.
 
 ### Phase 5 — Registration Scan (lines 406–548, ~143 lines)
+
 Iterates over `EXTRACTED_DIR` (now cleaned):
+
 1. Skip hidden/temp folders (`.startsWith('.')`).
 2. Skip non-directories.
 3. Skip items with no `manifest.json`.
@@ -118,21 +125,22 @@ Iterates over `EXTRACTED_DIR` (now cleaned):
 12. Call `registerExtension(loaded)`.
 
 ### Phase 6 — Finalization (lines 550–553, 4 lines)
+
 Log scan completion. Call `startExtensionWatcher()` (dev mode only).
 
 ---
 
 ## 5. Complexity Metrics
 
-| Function | Decision points (if/else/for/while/catch/&&/||) | Cyclomatic Complexity (CC = D+1) | Max nesting depth (approx) |
-|---|---|---|---|
-| `detectNodeImports` | 6 | 7 | 3 |
-| `scanDirectoryForNodeImports` | 18 | 19 | 4 |
-| `rescanExtensions` | 1 | 2 | 1 |
-| `clearWatchers` | 2 | 3 | 2 |
-| `startExtensionWatcher` | 9 | 10 | 4 |
-| `promptTrustPublisherKey` | 2 | 3 | 2 |
-| `scanExtensions` | **78** | **79** | **7** |
+| Function                      | Decision points (if/else/for/while/catch/&&/ |        | )     | Cyclomatic Complexity (CC = D+1) | Max nesting depth (approx) |
+| ----------------------------- | -------------------------------------------- | ------ | ----- | -------------------------------- | -------------------------- |
+| `detectNodeImports`           | 6                                            | 7      | 3     |
+| `scanDirectoryForNodeImports` | 18                                           | 19     | 4     |
+| `rescanExtensions`            | 1                                            | 2      | 1     |
+| `clearWatchers`               | 2                                            | 3      | 2     |
+| `startExtensionWatcher`       | 9                                            | 10     | 4     |
+| `promptTrustPublisherKey`     | 2                                            | 3      | 2     |
+| `scanExtensions`              | **78**                                       | **79** | **7** |
 
 The raw CC of 79 for `scanExtensions` is extremely high. Industry guidance flags functions above CC=10 for review and above CC=25 for mandatory refactoring. At CC=79 with max nesting depth 7 (measured by leading-spaces / 2), the function is effectively untestable in isolation and extremely difficult to reason about in a security audit.
 
@@ -184,6 +192,7 @@ The Node import scanner uses three regexes on comment-stripped source. Comment s
 ### `restoreWritable` Lambda
 
 Defined inline twice:
+
 - `scanner.ts` lines 364–371 (inside the extraction loop)
 - `register.ts` lines 249–256 (inside the `uninstallExtension` IPC handler)
 
@@ -200,6 +209,7 @@ Both implementations are byte-identical. This utility belongs in a shared securi
 **Returns**: `{ folderName, zipHash }` on success, `null` on any security failure, or a special sentinel `{ aborted: true }` when a rescan was scheduled.
 
 **BEFORE sketch** (current state in scanExtensions):
+
 ```typescript
 for (const itemName of items) {
   const itemPath = path.join(EXTENSION_DIR, itemName)
@@ -214,11 +224,12 @@ for (const itemName of items) {
 ```
 
 **AFTER sketch**:
+
 ```typescript
 for (const itemName of items) {
   const result = await verifyAndExtractItem(itemName, stateCache, newStateCache)
   if (!result) continue
-  if ('aborted' in result) return  // trust-prompt triggered rescan
+  if ('aborted' in result) return // trust-prompt triggered rescan
   activeFolders.add(result.folderName)
 }
 ```
@@ -232,6 +243,7 @@ for (const itemName of items) {
 **What it would contain**: The inner body of Phase 5's registration loop (lines 426–547): manifest parse, permission validation, Node import scan, `extId` resolution, `LoadedExtension` construction, settings schema load, locale validation, `registerExtension` call.
 
 **BEFORE sketch**:
+
 ```typescript
 for (const folderName of extractedItems) {
   // guards...
@@ -246,6 +258,7 @@ for (const folderName of extractedItems) {
 ```
 
 **AFTER sketch**:
+
 ```typescript
 for (const folderName of extractedItems) {
   if (folderName.startsWith('.')) continue
@@ -268,6 +281,7 @@ for (const folderName of extractedItems) {
 **What it would contain**: Convert the 8-branch chain (lines 460–508) into a typed handler map.
 
 **BEFORE sketch** (current):
+
 ```typescript
 if (manifest.type === 'theme' && manifest.entry?.theme) {
   // theme handler
@@ -285,8 +299,14 @@ if (manifest.type === 'theme' && manifest.entry?.theme) {
 ```
 
 **AFTER sketch**:
+
 ```typescript
-type TypeHandler = (extId: string, folderName: string, manifest: ExtensionManifest, itemPath: string) => void
+type TypeHandler = (
+  extId: string,
+  folderName: string,
+  manifest: ExtensionManifest,
+  itemPath: string
+) => void
 
 const TYPE_HANDLERS: Partial<Record<string, TypeHandler>> = {
   theme: handleThemeExtension,
@@ -295,7 +315,12 @@ const TYPE_HANDLERS: Partial<Record<string, TypeHandler>> = {
   helper: handleHelperExtension,
 }
 
-function dispatchExtensionType(extId: string, folderName: string, manifest: ExtensionManifest, itemPath: string): void {
+function dispatchExtensionType(
+  extId: string,
+  folderName: string,
+  manifest: ExtensionManifest,
+  itemPath: string
+): void {
   const handler = TYPE_HANDLERS[manifest.type ?? '']
   if (handler) {
     handler(extId, folderName, manifest, itemPath)
@@ -319,6 +344,7 @@ function dispatchExtensionType(extId: string, folderName: string, manifest: Exte
 **BEFORE**: Identical inline lambdas in `scanner.ts:364` and `register.ts:249`.
 
 **AFTER**:
+
 ```typescript
 // src/electron/security/fs-utils.ts
 export function restoreWritable(p: string): void {
@@ -356,30 +382,30 @@ This guard must wrap every `path.join(itemPath, manifest.entry.X)` call in Phase
 
 ## 9. Test Coverage Gap Analysis
 
-| Scenario | Currently tested? | Risk |
-|---|---|---|
-| `detectNodeImports` — ES import, require, dynamic import | YES (6 unit tests) | Low |
-| `scanDirectoryForNodeImports` (full walk) | NO | Medium |
-| `rescanExtensions` | NO | Low (thin wrapper) |
-| `startExtensionWatcher` | NO | Low (dev-only) |
-| `promptTrustPublisherKey` — trust path | NO (bypassed in test env) | High |
-| `promptTrustPublisherKey` — reject path | NO | High |
-| Phase 2: `verifyDirectoryIntegrity` failure path | NO | **Critical** |
-| Phase 2: `isRevoked` = true path | NO | **Critical** |
-| Phase 2: `isKeyTrusted` = false, user approves | NO | **Critical** |
-| Phase 2: `isKeyTrusted` = false, user rejects | NO | **Critical** |
-| Phase 2: stale cache used (cache hit) | NO | High |
-| Phase 2: zip extraction (AdmZip path) | NO | High |
-| Phase 5: permission validation failure | NO | High |
-| Phase 5: Node import scan violation | NO | High |
-| Phase 5: `theme` type loading | NO | Medium |
-| Phase 5: `iconpack` type loading | NO | Medium |
-| Phase 5: `helper` type with/without backend | NO | Medium |
-| Phase 5: locale file validation | NO | Low |
-| Stale folder cleanup | YES (2 test cases) | Low |
-| `.tmp_` folder ignored in registration | YES (1 test case) | Low |
-| Path traversal in `entry.*` fields | NO | **Critical** |
-| `manifest.id = "kernel"` injection | NO | High |
+| Scenario                                                 | Currently tested?         | Risk               |
+| -------------------------------------------------------- | ------------------------- | ------------------ |
+| `detectNodeImports` — ES import, require, dynamic import | YES (6 unit tests)        | Low                |
+| `scanDirectoryForNodeImports` (full walk)                | NO                        | Medium             |
+| `rescanExtensions`                                       | NO                        | Low (thin wrapper) |
+| `startExtensionWatcher`                                  | NO                        | Low (dev-only)     |
+| `promptTrustPublisherKey` — trust path                   | NO (bypassed in test env) | High               |
+| `promptTrustPublisherKey` — reject path                  | NO                        | High               |
+| Phase 2: `verifyDirectoryIntegrity` failure path         | NO                        | **Critical**       |
+| Phase 2: `isRevoked` = true path                         | NO                        | **Critical**       |
+| Phase 2: `isKeyTrusted` = false, user approves           | NO                        | **Critical**       |
+| Phase 2: `isKeyTrusted` = false, user rejects            | NO                        | **Critical**       |
+| Phase 2: stale cache used (cache hit)                    | NO                        | High               |
+| Phase 2: zip extraction (AdmZip path)                    | NO                        | High               |
+| Phase 5: permission validation failure                   | NO                        | High               |
+| Phase 5: Node import scan violation                      | NO                        | High               |
+| Phase 5: `theme` type loading                            | NO                        | Medium             |
+| Phase 5: `iconpack` type loading                         | NO                        | Medium             |
+| Phase 5: `helper` type with/without backend              | NO                        | Medium             |
+| Phase 5: locale file validation                          | NO                        | Low                |
+| Stale folder cleanup                                     | YES (2 test cases)        | Low                |
+| `.tmp_` folder ignored in registration                   | YES (1 test case)         | Low                |
+| Path traversal in `entry.*` fields                       | NO                        | **Critical**       |
+| `manifest.id = "kernel"` injection                       | NO                        | High               |
 
 **Summary**: Of ~20 meaningful test scenarios, only 4 are currently covered (all in the happy-path directory scan group). The 6 most security-critical scenarios have zero coverage.
 
@@ -387,17 +413,17 @@ This guard must wrap every `path.join(itemPath, manifest.entry.X)` call in Phase
 
 ## 10. Risk Matrix
 
-| Risk | Likelihood | Impact | Priority |
-|---|---|---|---|
-| Path traversal via `entry.*` manifest fields | Medium (signed extension could still exploit) | Critical (arbitrary Worker load) | **P0** |
-| Missing tests for security pipeline negative paths | High (no test = unknown regression) | Critical (silent security bypass) | **P0** |
-| `manifest.id = "kernel"` injection | Low (requires compromised signing key) | High (IPC routing confusion) | **P1** |
-| Accidental fall-through in type dispatch (theme/iconpack without entry) | Low | Medium (wrong handler invoked) | **P1** |
-| `restoreWritable` duplication diverging | Low | Medium (inconsistent permissions) | **P2** |
-| `scanExtensions` CC=79 — future changes introduce undetected bugs | Certain (long-term) | High | **P2** |
-| Regex-based Node import scan bypass (obfuscated imports) | Low | High | **P2** |
-| State cache secret co-located with cache file | Low | Medium | **P3** |
-| 100ms trust-rescan timeout fragility | Very Low | Low | **P3** |
+| Risk                                                                    | Likelihood                                    | Impact                            | Priority |
+| ----------------------------------------------------------------------- | --------------------------------------------- | --------------------------------- | -------- |
+| Path traversal via `entry.*` manifest fields                            | Medium (signed extension could still exploit) | Critical (arbitrary Worker load)  | **P0**   |
+| Missing tests for security pipeline negative paths                      | High (no test = unknown regression)           | Critical (silent security bypass) | **P0**   |
+| `manifest.id = "kernel"` injection                                      | Low (requires compromised signing key)        | High (IPC routing confusion)      | **P1**   |
+| Accidental fall-through in type dispatch (theme/iconpack without entry) | Low                                           | Medium (wrong handler invoked)    | **P1**   |
+| `restoreWritable` duplication diverging                                 | Low                                           | Medium (inconsistent permissions) | **P2**   |
+| `scanExtensions` CC=79 — future changes introduce undetected bugs       | Certain (long-term)                           | High                              | **P2**   |
+| Regex-based Node import scan bypass (obfuscated imports)                | Low                                           | High                              | **P2**   |
+| State cache secret co-located with cache file                           | Low                                           | Medium                            | **P3**   |
+| 100ms trust-rescan timeout fragility                                    | Very Low                                      | Low                               | **P3**   |
 
 ---
 
@@ -406,6 +432,7 @@ This guard must wrap every `path.join(itemPath, manifest.entry.X)` call in Phase
 ### Phase 0 — Safety (Do First, No Source Changes to scanner.ts)
 
 **Step 0.1** — Write integration tests for the security pipeline negative paths BEFORE any refactoring. These tests must pass before and after all refactoring steps:
+
 - `verifyDirectoryIntegrity` returns `success: false` → extension is skipped, temp cleaned up
 - `isRevoked` returns `true` → extension is skipped, temp cleaned up
 - `isKeyTrusted` returns `false`, user approves → `addTrustedKey` called, rescan scheduled
@@ -413,14 +440,17 @@ This guard must wrap every `path.join(itemPath, manifest.entry.X)` call in Phase
 - Stale cache (hash mismatch) → re-extraction triggered
 
 **Step 0.2** — Write tests for manifest validation failures:
+
 - `permissions` not an array → caught, extension skipped
 - Invalid permission string → caught, extension skipped
 - `scanDirectoryForNodeImports` finds violation → caught, extension skipped
 
 **Step 0.3** — Write path traversal tests:
+
 - `entry.backend = "../../evil.js"` → should be blocked (currently it is NOT — this test will FAIL, revealing the bug)
 
 **Step 0.4** — Add `manifest.id` validation tests:
+
 - `id = "kernel"` or `id = ""` → should be blocked or normalized
 
 ---
@@ -638,4 +668,4 @@ This guard must wrap every `path.join(itemPath, manifest.entry.X)` call in Phase
 
 ---
 
-*Report generated by analysis-only pass. No source files were modified. All code sketches in this report are illustrative pseudocode, not production-ready implementations.*
+_Report generated by analysis-only pass. No source files were modified. All code sketches in this report are illustrative pseudocode, not production-ready implementations._

@@ -18,17 +18,18 @@ Ocean Theme replaces Nuxy's active visual theme with a deep-sea inspired palette
 ## Extension Type
 
 ### `theme`
+
 Supplies a set of CSS custom-property values that replace the active visual theme. Activated by setting `theme = ocean` in `~/.nuxy/nuxyconfig`.
 
 ---
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 All platforms supported by Nuxy.
 

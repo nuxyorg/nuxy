@@ -22,6 +22,7 @@
   "dependencies": {
     "adm-zip": "^0.5.17",
     "dbus-next": "^0.10.2",
+    "esbuild": "^0.25.0",
     "typescript": "^5.9.0"
   },
   "devDependencies": {

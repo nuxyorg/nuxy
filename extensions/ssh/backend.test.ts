@@ -85,12 +85,16 @@ describe('ssh backend', () => {
       const { core, handlers } = createCore()
       await register(core)
 
-      const hosts = await (handlers['ssh:list'] as () => Promise<Array<{
-        name: string
-        hostname: string
-        user?: string
-        port?: number
-      }>>)()
+      const hosts = await (
+        handlers['ssh:list'] as () => Promise<
+          Array<{
+            name: string
+            hostname: string
+            user?: string
+            port?: number
+          }>
+        >
+      )()
 
       const webserver = hosts.find((h) => h.name === 'webserver')
       expect(webserver?.hostname).toBe('192.168.1.10')
@@ -108,10 +112,14 @@ describe('ssh backend', () => {
       const { core, handlers } = createCore()
       await register(core)
 
-      const hosts = await (handlers['ssh:list'] as () => Promise<Array<{
-        name: string
-        identityFile?: string
-      }>>)()
+      const hosts = await (
+        handlers['ssh:list'] as () => Promise<
+          Array<{
+            name: string
+            identityFile?: string
+          }>
+        >
+      )()
 
       const jump = hosts.find((h) => h.name === 'jump')
       expect(jump?.identityFile).toBe('~/.ssh/jump_rsa')
@@ -153,9 +161,7 @@ describe('ssh backend', () => {
   describe('ssh:refresh', () => {
     it('re-reads config and returns updated host list', async () => {
       const register = await freshBackend()
-      const mockReadFile = vi.fn()
-        .mockResolvedValueOnce(SAMPLE_CONFIG)
-        .mockResolvedValueOnce(`
+      const mockReadFile = vi.fn().mockResolvedValueOnce(SAMPLE_CONFIG).mockResolvedValueOnce(`
 Host newhost
     HostName 1.2.3.4
 `)
@@ -182,9 +188,7 @@ Host newhost
 
       await (handlers['ssh:connect'] as (p: unknown) => Promise<unknown>)({ host: 'webserver' })
 
-      expect(core.shell.open).toHaveBeenCalledWith(
-        expect.stringContaining('ssh://')
-      )
+      expect(core.shell.open).toHaveBeenCalledWith(expect.stringContaining('ssh://'))
     })
 
     it('builds connection string with user and port', async () => {
@@ -250,7 +254,10 @@ Host myserver
 
       await (handlers['ssh:connect'] as (p: unknown) => Promise<unknown>)({ host: 'db' })
 
-      expect(core.shell.exec).toHaveBeenCalledWith('alacritty', expect.arrayContaining(['-e', 'ssh']))
+      expect(core.shell.exec).toHaveBeenCalledWith(
+        'alacritty',
+        expect.arrayContaining(['-e', 'ssh'])
+      )
     })
 
     it('uses gnome-terminal when configured', async () => {

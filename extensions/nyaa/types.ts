@@ -17,3 +17,15 @@ export interface SearchPayload {
 export interface CopyMagnetPayload {
   magnet: string
 }
+
+export interface CopyMagnetsPayload {
+  magnets: string[]
+}
+
+export interface DownloadTorrentPayload {
+  id: string
+}
+
+export interface DownloadTorrentsPayload {
+  ids: string[]
+}

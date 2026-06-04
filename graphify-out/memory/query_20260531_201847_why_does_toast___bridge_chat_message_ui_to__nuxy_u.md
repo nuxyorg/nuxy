@@ -1,9 +1,9 @@
 ---
-type: "query"
-date: "2026-05-31T20:18:47.125410+00:00"
-question: "Why does Toast() bridge Chat Message UI to @nuxy/ui Components? (high betweenness 0.083)"
-contributor: "graphify"
-source_nodes: ["Toast()", "Toaster()", "index.tsx", "store.ts"]
+type: 'query'
+date: '2026-05-31T20:18:47.125410+00:00'
+question: 'Why does Toast() bridge Chat Message UI to @nuxy/ui Components? (high betweenness 0.083)'
+contributor: 'graphify'
+source_nodes: ['Toast()', 'Toaster()', 'index.tsx', 'store.ts']
 ---
 
 # Q: Why does Toast() bridge Chat Message UI to @nuxy/ui Components? (high betweenness 0.083)

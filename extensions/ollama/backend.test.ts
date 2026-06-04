@@ -64,12 +64,53 @@ afterEach(() => {
 })
 
 describe('ollama backend', () => {
-  it('registers as a tool', async () => {
+  it('registers as a tool and provider', async () => {
     const { core } = createCore()
     await register(core)
     expect(core.registry.registerTool).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'ollama' })
     )
+    expect(core.registry.registerProvider).toHaveBeenCalledWith({ name: 'ollama' })
+  })
+
+  describe('eval handler', () => {
+    it('returns empty items for blank query', async () => {
+      const { core, handlers } = createCore()
+      await register(core)
+      const result = await (handlers['eval'] as (p: unknown) => Promise<{ items: unknown[] }>)({
+        text: '',
+      })
+      expect(result).toEqual({ items: [] })
+    })
+
+    it('returns Ask Ollama item with execute action', async () => {
+      const { core, handlers } = createCore()
+      await register(core)
+      const result = await (handlers['eval'] as (p: unknown) => Promise<{ items: unknown[] }>)({
+        text: 'explain quantum computing',
+      })
+      expect(result.items).toHaveLength(1)
+      expect(result.items[0]).toMatchObject({
+        id: 'com.nuxy.ollama',
+        title: 'Ask Ollama',
+        subtitle: 'ollama — "explain quantum computing"',
+        execute: {
+          channel: 'openWithQuery',
+          payload: { text: 'explain quantum computing' },
+        },
+      })
+    })
+  })
+
+  describe('openWithQuery handler', () => {
+    it('returns tool id and query for shell navigation', async () => {
+      const { core, handlers } = createCore()
+      await register(core)
+      const result = await (handlers['openWithQuery'] as (p: unknown) => Promise<unknown>)({
+        text: 'hello',
+      })
+      expect(result).toEqual({ toolId: 'com.nuxy.ollama', query: 'hello' })
+    })
   })
 
   describe('chat handler', () => {
@@ -205,14 +246,22 @@ describe('ollama backend', () => {
       })
       await register(core)
       const result = await (handlers['getConfig'] as () => Promise<unknown>)()
-      expect(result).toEqual({ host: 'http://remote:11434', model: 'mistral', thinkingColor: 'light' })
+      expect(result).toEqual({
+        host: 'http://remote:11434',
+        model: 'mistral',
+        thinkingColor: 'light',
+      })
     })
 
     it('returns defaults when no settings exist', async () => {
       const { core, handlers } = createCore()
       await register(core)
       const result = await (handlers['getConfig'] as () => Promise<unknown>)()
-      expect(result).toEqual({ host: 'http://localhost:11434', model: 'llama3', thinkingColor: 'light' })
+      expect(result).toEqual({
+        host: 'http://localhost:11434',
+        model: 'llama3',
+        thinkingColor: 'light',
+      })
     })
   })
 

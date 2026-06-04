@@ -18,6 +18,7 @@ Settings is the built-in configuration tool for Nuxy. It exposes a two-panel int
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user selects **Settings** from the shell and navigates the option list with the keyboard or mouse.
 
 ---
@@ -30,11 +31,11 @@ Select **Settings** from the tool list. The panel opens with the **General** sec
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
+| Key     | Action                                                                           |
+| ------- | -------------------------------------------------------------------------------- |
 | `↑` `↓` | Move between settings rows (or between dropdown options when a dropdown is open) |
-| `Enter` | Open the dropdown for the selected row, or confirm the focused option |
-| `Esc` | Close an open dropdown without changing the value |
+| `Enter` | Open the dropdown for the selected row, or confirm the focused option            |
+| `Esc`   | Close an open dropdown without changing the value                                |
 
 ### Examples
 
@@ -61,53 +62,53 @@ The Settings tool manages the following Nuxy-wide options (stored in `settings.j
 
 **General**
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `theme` | select | `dark` | Active visual theme |
-| `iconPack` | select | *(none)* | Active icon pack extension |
-| `zoom` | select | `100%` | Renderer zoom level: 75% – 150% |
-| `font` | select | `system` | UI font family; lists installed system fonts |
+| Key        | Type   | Default  | Description                                  |
+| ---------- | ------ | -------- | -------------------------------------------- |
+| `theme`    | select | `dark`   | Active visual theme                          |
+| `iconPack` | select | _(none)_ | Active icon pack extension                   |
+| `zoom`     | select | `100%`   | Renderer zoom level: 75% – 150%              |
+| `font`     | select | `system` | UI font family; lists installed system fonts |
 
 **Window**
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `escAction` | select | `hide` | What pressing Esc does: `hide`, `minimize`, `quit`, or `none` |
-| `blurAction` | select | `hide` | What losing focus does: same options as `escAction` |
-| `windowWidth` | select | `800` | Window width in pixels (600 – 1200) |
-| `windowMaxHeight` | select | `600` | Maximum window height in pixels (400 – 800) |
-| `windowPosition` | select | `Upper Center` | Where the window appears on screen at launch |
-| `opacity` | select | `1` | Window opacity: 70% – 100% |
-| `alwaysOnTop` | select | `false` | Keep the window above all other windows |
-| `showInTaskbar` | select | `false` | Show Nuxy in the system taskbar / dock |
-| `showOnStartup` | select | `false` | Open Nuxy automatically at login |
+| Key               | Type   | Default        | Description                                                   |
+| ----------------- | ------ | -------------- | ------------------------------------------------------------- |
+| `escAction`       | select | `hide`         | What pressing Esc does: `hide`, `minimize`, `quit`, or `none` |
+| `blurAction`      | select | `hide`         | What losing focus does: same options as `escAction`           |
+| `windowWidth`     | select | `800`          | Window width in pixels (600 – 1200)                           |
+| `windowMaxHeight` | select | `600`          | Maximum window height in pixels (400 – 800)                   |
+| `windowPosition`  | select | `Upper Center` | Where the window appears on screen at launch                  |
+| `opacity`         | select | `1`            | Window opacity: 70% – 100%                                    |
+| `alwaysOnTop`     | select | `false`        | Keep the window above all other windows                       |
+| `showInTaskbar`   | select | `false`        | Show Nuxy in the system taskbar / dock                        |
+| `showOnStartup`   | select | `false`        | Open Nuxy automatically at login                              |
 
 **Language**
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `preferredLanguages[0]` | select | *(none)* | First preferred locale for extension i18n |
-| `preferredLanguages[1]` | select | *(none)* | Second preferred locale (fallback) |
-| `preferredLanguages[2]` | select | *(none)* | Third preferred locale (fallback) |
+| Key                     | Type   | Default  | Description                               |
+| ----------------------- | ------ | -------- | ----------------------------------------- |
+| `preferredLanguages[0]` | select | _(none)_ | First preferred locale for extension i18n |
+| `preferredLanguages[1]` | select | _(none)_ | Second preferred locale (fallback)        |
+| `preferredLanguages[2]` | select | _(none)_ | Third preferred locale (fallback)         |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Reading and writing the global `settings.json` file |
-| `settings.read` | Reading per-extension setting values for display |
-| `settings.write` | Persisting per-extension setting changes |
+| Permission       | Used for                                            |
+| ---------------- | --------------------------------------------------- |
+| `storage`        | Reading and writing the global `settings.json` file |
+| `settings.read`  | Reading per-extension setting values for display    |
+| `settings.write` | Persisting per-extension setting changes            |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -115,11 +116,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 ---
 

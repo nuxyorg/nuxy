@@ -10,6 +10,7 @@ interface CommandPaletteProps {
   onClose: () => void
   containerRef: React.RefObject<HTMLDivElement | null>
   position: Position
+  t?: (key: string) => string
 }
 
 export default function CommandPalette({
@@ -17,6 +18,7 @@ export default function CommandPalette({
   onClose,
   containerRef,
   position,
+  t = (key: string) => key,
 }: CommandPaletteProps) {
   const [query, setQuery] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -133,16 +135,14 @@ export default function CommandPalette({
             <button type="button" className="nuxy-command-palette__back" onClick={goBack}>
               ←
             </button>
-            <span className="nuxy-command-palette__breadcrumb-path">
-              {pathLabels.join(' › ')}
-            </span>
+            <span className="nuxy-command-palette__breadcrumb-path">{pathLabels.join(' › ')}</span>
           </div>
         )}
         <div className="nuxy-command-palette__input-wrapper">
           <input
             autoFocus
             className="nuxy-command-palette__input"
-            placeholder="Search commands..."
+            placeholder={t('commandPalette.searchPlaceholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -150,7 +150,7 @@ export default function CommandPalette({
         <div className="nuxy-command-palette__list">
           {filteredActions.length === 0 ? (
             <div style={{ padding: '12px 16px', color: 'var(--syntax-comment)' }}>
-              No actions available.
+              {t('commandPalette.noActions')}
             </div>
           ) : (
             filteredActions.map((action, idx) => (
@@ -163,7 +163,9 @@ export default function CommandPalette({
                 {action.children ? (
                   <span className="nuxy-command-palette__submenu-arrow">›</span>
                 ) : (
-                  <span className="nuxy-command-palette__shortcut">Enter</span>
+                  <span className="nuxy-command-palette__shortcut">
+                    {t('commandPalette.enterShortcut')}
+                  </span>
                 )}
               </div>
             ))

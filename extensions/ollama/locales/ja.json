@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "name": "Ollama"
+  },
+  "empty": {
+    "message": "Ollamaに何でも聞いてください。",
+    "hint": "オムニバーに入力してEnterを押してください。"
+  },
+  "actions": {
+    "send": "送信",
+    "queue": "キュー",
+    "stop": "停止",
+    "clearHistory": "チャット履歴をクリア",
+    "models": "モデル"
+  },
+  "hints": {
+    "model": "モデル: {name}"
+  },
+  "alert": {
+    "queued": "キュー追加: {message}"
+  },
+  "settings": {
+    "host": {
+      "label": "Ollamaホスト",
+      "placeholder": "http://localhost:11434",
+      "description": "Ollamaサーバーが動作しているURL"
+    },
+    "model": {
+      "label": "デフォルトモデル",
+      "placeholder": "llama3",
+      "description": "チャットに使用するモデル名（例: llama3、mistral）"
+    },
+    "thinkingColor": {
+      "label": "思考インジケーター",
+      "description": "Ollamaが応答を生成中に表示されるボーダーエフェクト",
+      "options": {
+        "light": "ライト",
+        "rainbow": "レインボー",
+        "bit": "ビット",
+        "off": "オフ"
+      }
+    }
+  }
+}

@@ -95,8 +95,8 @@ test('App boots and renders Launcher', async () => {
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Testing gaps and E2E roadmap | [pain-points-plan.md](./pain-points-plan.md) | P14 covers missing Playwright tests and integration gaps |
-| Open manual test items | [open-issues.md](./open-issues.md) | Runtime checklist items not yet automated |
-| Kernel audit test results | [electron-fix-plan.md](./electron-fix-plan.md) | Automated test checklist and manual runtime items |
+| Topic                        | Document                                       | Notes                                                    |
+| ---------------------------- | ---------------------------------------------- | -------------------------------------------------------- |
+| Testing gaps and E2E roadmap | [pain-points-plan.md](./pain-points-plan.md)   | P14 covers missing Playwright tests and integration gaps |
+| Open manual test items       | [open-issues.md](./open-issues.md)             | Runtime checklist items not yet automated                |
+| Kernel audit test results    | [electron-fix-plan.md](./electron-fix-plan.md) | Automated test checklist and manual runtime items        |

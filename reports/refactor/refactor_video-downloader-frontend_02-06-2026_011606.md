@@ -9,22 +9,22 @@
 
 ## 1. Executive Summary
 
-| Metric | Value |
-|---|---|
-| Total lines | 931 |
-| React components defined | 1 (monolithic `VideoDownloader`) |
-| JSX consts (should be components) | 4 (`fullScreenDownloadsView`, `metaCard`, `formatList`, `left`/`right` layout pieces) |
-| `useState` calls | 10 |
-| `useEffect` calls | 7 |
-| `useMemo` calls | 3 |
-| `useCallback` calls | 0 |
-| `useRef` calls | 3 |
-| IPC channels called | 6 (`ytdlp:status`, `ytdlp:getFormats`, `ytdlp:download`, `ytdlp:cancel`, `ytdlp:history`, `ytdlp:open`) |
-| Confirmed stale-closure eslint-disable | Yes — `rightPanelActions` useMemo, line 546 |
-| Frontend unit tests | **None** (only backend.test.ts + e2e.spec.ts) |
-| E2E tests | 14 scenarios in `e2e.spec.ts` |
-| **Risk level** | **HIGH** — no unit tests for any frontend logic |
-| **Estimated refactor effort** | 3–4 developer-days (including writing tests first) |
+| Metric                                 | Value                                                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Total lines                            | 931                                                                                                     |
+| React components defined               | 1 (monolithic `VideoDownloader`)                                                                        |
+| JSX consts (should be components)      | 4 (`fullScreenDownloadsView`, `metaCard`, `formatList`, `left`/`right` layout pieces)                   |
+| `useState` calls                       | 10                                                                                                      |
+| `useEffect` calls                      | 7                                                                                                       |
+| `useMemo` calls                        | 3                                                                                                       |
+| `useCallback` calls                    | 0                                                                                                       |
+| `useRef` calls                         | 3                                                                                                       |
+| IPC channels called                    | 6 (`ytdlp:status`, `ytdlp:getFormats`, `ytdlp:download`, `ytdlp:cancel`, `ytdlp:history`, `ytdlp:open`) |
+| Confirmed stale-closure eslint-disable | Yes — `rightPanelActions` useMemo, line 546                                                             |
+| Frontend unit tests                    | **None** (only backend.test.ts + e2e.spec.ts)                                                           |
+| E2E tests                              | 14 scenarios in `e2e.spec.ts`                                                                           |
+| **Risk level**                         | **HIGH** — no unit tests for any frontend logic                                                         |
+| **Estimated refactor effort**          | 3–4 developer-days (including writing tests first)                                                      |
 
 The file is a 931-line single-component monolith. All state, all IPC calls, all keyboard handling, all layout variants, and all format-filtering logic live inside one `VideoDownloader` function. This creates very high cognitive load and a fragile coupling between orthogonal concerns. The stale-closure workaround (`stateRef`) is a symptom of the root problem: too many responsibilities in one render scope.
 
@@ -34,60 +34,60 @@ The file is a 931-line single-component monolith. All state, all IPC calls, all 
 
 ### 2.1 React Components
 
-| Name | Lines | Declared as | Issue |
-|---|---|---|---|
+| Name              | Lines               | Declared as               | Issue                           |
+| ----------------- | ------------------- | ------------------------- | ------------------------------- |
 | `VideoDownloader` | 141–931 (790 lines) | `export default function` | Monolith — all concerns coupled |
 
 ### 2.2 JSX Constants (should be components)
 
-| Name | Lines | Line count | Declared as |
-|---|---|---|---|
-| `fullScreenDownloadsView` | 681–758 | 78 lines | `const` inside render |
-| `metaCard` | 809–822 | 14 lines | `const` inside render |
-| `formatList` | 825–882 | 58 lines | `const` inside render |
-| `left` (TabBar panel) | 885–894 | 10 lines | `const` inside render |
-| `right` (ScrollArea panel) | 896–910 | 15 lines | `const` inside render |
+| Name                       | Lines   | Line count | Declared as           |
+| -------------------------- | ------- | ---------- | --------------------- |
+| `fullScreenDownloadsView`  | 681–758 | 78 lines   | `const` inside render |
+| `metaCard`                 | 809–822 | 14 lines   | `const` inside render |
+| `formatList`               | 825–882 | 58 lines   | `const` inside render |
+| `left` (TabBar panel)      | 885–894 | 10 lines   | `const` inside render |
+| `right` (ScrollArea panel) | 896–910 | 15 lines   | `const` inside render |
 
 **Total JSX-const surface**: ~175 lines of render-time JSX that cannot be independently tested.
 
 ### 2.3 Pure Utility Functions (module-level, good)
 
-| Name | Lines | Purpose |
-|---|---|---|
-| `ipc<T>` | 42–50 | Typed IPC wrapper |
-| `fmtSize` | 52–56 | Byte formatting |
-| `fmtDuration` | 58–66 | Seconds → hh:mm:ss |
-| `truncate` | 68–70 | String truncation |
-| `getVideoAndAudioFormats` | 72–93 | Format filter + sort |
-| `getRecommendedFormats` | 95–125 | Build recommended preset list |
+| Name                      | Lines  | Purpose                       |
+| ------------------------- | ------ | ----------------------------- |
+| `ipc<T>`                  | 42–50  | Typed IPC wrapper             |
+| `fmtSize`                 | 52–56  | Byte formatting               |
+| `fmtDuration`             | 58–66  | Seconds → hh:mm:ss            |
+| `truncate`                | 68–70  | String truncation             |
+| `getVideoAndAudioFormats` | 72–93  | Format filter + sort          |
+| `getRecommendedFormats`   | 95–125 | Build recommended preset list |
 
 These are well-isolated and already independently testable. `truncate` is defined but never called in this file (potential dead code).
 
 ### 2.4 Async Handler Functions (defined inside component, closure-heavy)
 
-| Name | Lines | Reads stateRef | Sets state |
-|---|---|---|---|
-| `loadHistory` | 200–207 | No | `setHistory` |
-| `getFormats` | 334–351 | `stateRef.current.url` | `setError`, `setMetadata`, `setLastUrl`, `setLoading`, `setActiveTab`, `setSelectedIndex` |
-| `startDownload` | 353–396 | `stateRef.current.*` (4 fields) | `setJobs`, `setPreviousFormatTab`, `setActiveTab`, `setDownloadSelectedIndex` |
-| `cancelJob` | 398–402 | No | `setJobs` |
+| Name            | Lines   | Reads stateRef                  | Sets state                                                                                |
+| --------------- | ------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
+| `loadHistory`   | 200–207 | No                              | `setHistory`                                                                              |
+| `getFormats`    | 334–351 | `stateRef.current.url`          | `setError`, `setMetadata`, `setLastUrl`, `setLoading`, `setActiveTab`, `setSelectedIndex` |
+| `startDownload` | 353–396 | `stateRef.current.*` (4 fields) | `setJobs`, `setPreviousFormatTab`, `setActiveTab`, `setDownloadSelectedIndex`             |
+| `cancelJob`     | 398–402 | No                              | `setJobs`                                                                                 |
 
 ### 2.5 State Inventory
 
-| State variable | Initial value | Used in |
-|---|---|---|
-| `ytdlpInstalled` | `null` | early-return guard |
-| `metadata` | `null` | format filtering, metaCard |
-| `activeTab` | `'recommended'` | tab switching, downloads view |
-| `loading` | `false` | loading state guard |
-| `error` | `null` | error state guard |
-| `jobs` | `[]` | downloads list, poll trigger |
-| `lastUrl` | `''` | URL change detection |
-| `selectedIndex` | `0` | format list cursor |
-| `jobSelectedIndex` | `0` | jobs cursor (partially used — see smell §4.3) |
-| `history` | `[]` | combined list |
-| `downloadSelectedIndex` | `0` | downloads view cursor |
-| `previousFormatTab` | `'recommended'` | Escape-key back-navigation |
+| State variable          | Initial value   | Used in                                       |
+| ----------------------- | --------------- | --------------------------------------------- |
+| `ytdlpInstalled`        | `null`          | early-return guard                            |
+| `metadata`              | `null`          | format filtering, metaCard                    |
+| `activeTab`             | `'recommended'` | tab switching, downloads view                 |
+| `loading`               | `false`         | loading state guard                           |
+| `error`                 | `null`          | error state guard                             |
+| `jobs`                  | `[]`            | downloads list, poll trigger                  |
+| `lastUrl`               | `''`            | URL change detection                          |
+| `selectedIndex`         | `0`             | format list cursor                            |
+| `jobSelectedIndex`      | `0`             | jobs cursor (partially used — see smell §4.3) |
+| `history`               | `[]`            | combined list                                 |
+| `downloadSelectedIndex` | `0`             | downloads view cursor                         |
+| `previousFormatTab`     | `'recommended'` | Escape-key back-navigation                    |
 
 ---
 
@@ -114,15 +114,24 @@ const rightPanelActions = useMemo(
 )
 ```
 
-**The problem**: `rightPanelActions` is a stable array object (memoized with `[]` deps) passed to `_useTwoPanelNav`. The handlers inside it would normally close over the state values at the time of their creation — all `null`/`0`/`[]` initial values — making every handler completely broken after any state update. 
+**The problem**: `rightPanelActions` is a stable array object (memoized with `[]` deps) passed to `_useTwoPanelNav`. The handlers inside it would normally close over the state values at the time of their creation — all `null`/`0`/`[]` initial values — making every handler completely broken after any state update.
 
 **The workaround**: A `stateRef` ref object is created (lines 185–198) and kept in sync via a synchronous assignment at line 319–332 on every render:
 
 ```tsx
 stateRef.current = {
-  metadata, url: lastUrl || url, loading, selectedIndex,
-  filteredFormats, jobs, jobSelectedIndex, activeTab,
-  history, downloadSelectedIndex, previousFormatTab, combinedList,
+  metadata,
+  url: lastUrl || url,
+  loading,
+  selectedIndex,
+  filteredFormats,
+  jobs,
+  jobSelectedIndex,
+  activeTab,
+  history,
+  downloadSelectedIndex,
+  previousFormatTab,
+  combinedList,
 }
 ```
 
@@ -131,6 +140,7 @@ This is a valid React pattern, but its necessity here exposes that `rightPanelAc
 **Why it was done this way**: `_useTwoPanelNav` presumably needs a stable action array reference. Re-creating the array on every render would either cause infinite re-renders (if the hook uses the array as a dep) or require the hook to be redesigned. The stateRef pattern is the least-invasive fix.
 
 **Correct fix options** (see §6):
+
 1. Wrap each handler in `useCallback` with all actual deps, accepting a new stable reference per meaningful state change.
 2. Extract a `useKeyboardHandlers` custom hook that owns the stateRef internally, hiding it from `VideoDownloader`.
 3. If `_useTwoPanelNav` accepts a `getState` function instead of an array, pass a stable getter and avoid the problem entirely.
@@ -157,7 +167,8 @@ if (activeTab === 'downloads') {
 
 **The real reason**: The downloads view closes over `combinedList`, `downloadSelectedIndex`, `Badge`, `MediaPreview`, `EmptyState`, `List`, etc., all of which live in the component scope. As a standalone component, these would need to be passed as props or obtained via context.
 
-**Impact**: 
+**Impact**:
+
 - Cannot be unit-tested in isolation.
 - Any bug in the downloads list rendering requires testing the full `VideoDownloader` component.
 - The `combinedList` computation (lines 275–316, a 42-line useMemo) is only consumed by this const — tight coupling.
@@ -174,11 +185,15 @@ Same pattern as `fullScreenDownloadsView` but smaller. `metaCard` (14 lines) and
 
 ```tsx
 const {
-  List, ListItem, ListItemBody, ... MediaPreview,  // 18 identifiers
+  List,
+  ListItem,
+  ListItemBody,
+  ...MediaPreview // 18 identifiers
 } = window.UI || {}
 ```
 
 Every one of these can be `undefined` (the `|| {}` fallback), leading to:
+
 - Null-guard chains scattered throughout: `Box && Stack && Text && List && ScrollArea ? (...) : null`
 - Repetitive `Component && <Component .../>` patterns
 - Guards that silently hide UI when `window.UI` is partially loaded
@@ -190,6 +205,7 @@ This is an architectural decision of the extension system (UI loaded via `window
 **Location**: Lines 178, 423–425, 439–441
 
 `jobSelectedIndex` is set via `setJobSelectedIndex` in the ArrowUp/ArrowDown handlers when `jobs.length > 0`, but it is **never read in any rendered JSX**. The active-state class on job list items uses `downloadSelectedIndex`, not `jobSelectedIndex`. This state either:
+
 - Was meant to be used in a jobs-in-progress list that was later folded into `fullScreenDownloadsView`, or
 - Is dead code that increments state with no visual effect, causing unnecessary re-renders.
 
@@ -224,18 +240,18 @@ useEffect(() => {
 
 ### 4.1 Cyclomatic Complexity (estimated per function)
 
-| Function / Block | Cyclomatic Complexity | Notes |
-|---|---|---|
-| `getVideoAndAudioFormats` | 5 | 2 filters + sort + regex + conditional |
-| `getRecommendedFormats` | 4 | forEach + switch-like set membership |
-| `filteredFormats` useMemo | 6 | switch with 5 cases |
-| `combinedList` useMemo | 6 | 2 loops + 3 sort conditions + null checks |
-| `rightPanelActions[Enter].handler` | 8 | 4 branches × 2 sub-conditions |
-| `rightPanelActions[Escape].handler` | 3 | 2 conditions |
-| `startDownload` | 4 | try/catch + format find + conditional |
-| `formatList` JSX const | 7 | map + 4 badge variant branches |
-| `fullScreenDownloadsView` JSX const | 6 | map + 4 status branches + null guards |
-| **`VideoDownloader` function total** | **~45** | Sum of all internal complexity |
+| Function / Block                     | Cyclomatic Complexity | Notes                                     |
+| ------------------------------------ | --------------------- | ----------------------------------------- |
+| `getVideoAndAudioFormats`            | 5                     | 2 filters + sort + regex + conditional    |
+| `getRecommendedFormats`              | 4                     | forEach + switch-like set membership      |
+| `filteredFormats` useMemo            | 6                     | switch with 5 cases                       |
+| `combinedList` useMemo               | 6                     | 2 loops + 3 sort conditions + null checks |
+| `rightPanelActions[Enter].handler`   | 8                     | 4 branches × 2 sub-conditions             |
+| `rightPanelActions[Escape].handler`  | 3                     | 2 conditions                              |
+| `startDownload`                      | 4                     | try/catch + format find + conditional     |
+| `formatList` JSX const               | 7                     | map + 4 badge variant branches            |
+| `fullScreenDownloadsView` JSX const  | 6                     | map + 4 status branches + null guards     |
+| **`VideoDownloader` function total** | **~45**               | Sum of all internal complexity            |
 
 A cyclomatic complexity of ~45 for the outer function is extremely high. The safe threshold for a single function is typically 10–15.
 
@@ -260,14 +276,14 @@ VideoDownloader
 
 ### 4.3 Hook Count Summary
 
-| Hook | Count |
-|---|---|
-| `useState` | 10 |
-| `useEffect` | 7 |
-| `useMemo` | 3 |
-| `useRef` | 3 |
-| `useCallback` | 0 |
-| **Total** | **23** |
+| Hook          | Count  |
+| ------------- | ------ |
+| `useState`    | 10     |
+| `useEffect`   | 7      |
+| `useMemo`     | 3      |
+| `useRef`      | 3      |
+| `useCallback` | 0      |
+| **Total**     | **23** |
 
 23 hooks in a single component function is well above the practical limit for maintainability (~6–8 hooks per component is a reasonable ceiling before extraction is warranted).
 
@@ -277,15 +293,15 @@ VideoDownloader
 
 All IPC calls are routed through the local `ipc<T>` wrapper (lines 42–50), which is well-designed.
 
-| Channel | Called from | Direction | Notes |
-|---|---|---|---|
-| `ytdlp:status` | init `useEffect` | → backend | Once on mount |
-| `ytdlp:queue` | init `useEffect` + poll interval | → backend | Also polled every 1s when running |
-| `ytdlp:getFormats` | `getFormats()` | → backend | On Enter with URL |
-| `ytdlp:download` | `startDownload()` | → backend | On Enter with format |
-| `ytdlp:cancel` | `cancelJob()` | → backend | On Enter in downloads view |
-| `ytdlp:history` | `loadHistory()` + effect | → backend | On mount + on tab switch to downloads |
-| `ytdlp:open` | Enter handler + Shift+Enter handler | → backend | Opens file or folder |
+| Channel            | Called from                         | Direction | Notes                                 |
+| ------------------ | ----------------------------------- | --------- | ------------------------------------- |
+| `ytdlp:status`     | init `useEffect`                    | → backend | Once on mount                         |
+| `ytdlp:queue`      | init `useEffect` + poll interval    | → backend | Also polled every 1s when running     |
+| `ytdlp:getFormats` | `getFormats()`                      | → backend | On Enter with URL                     |
+| `ytdlp:download`   | `startDownload()`                   | → backend | On Enter with format                  |
+| `ytdlp:cancel`     | `cancelJob()`                       | → backend | On Enter in downloads view            |
+| `ytdlp:history`    | `loadHistory()` + effect            | → backend | On mount + on tab switch to downloads |
+| `ytdlp:open`       | Enter handler + Shift+Enter handler | → backend | Opens file or folder                  |
 
 **Not called from frontend**: `ytdlp:configure` (settings-only channel).
 
@@ -296,6 +312,7 @@ All IPC calls are routed through the local `ipc<T>` wrapper (lines 42–50), whi
 ### 6.1 Extract `FullScreenDownloadsView` Component
 
 **BEFORE** (lines 681–762):
+
 ```tsx
 // inside VideoDownloader render body
 const fullScreenDownloadsView = Box && Stack && ... ? (
@@ -319,6 +336,7 @@ if (activeTab === 'downloads') return fullScreenDownloadsView
 ```
 
 **AFTER**:
+
 ```tsx
 // New component (can be in same file or split to DownloadsView.tsx)
 interface DownloadsViewProps {
@@ -362,6 +380,7 @@ function DownloadsView({ combinedList, selectedIndex, UI }: DownloadsViewProps) 
 ### 6.2 Extract `FormatList` Component
 
 **BEFORE** (lines 825–882, ~58 lines of inline JSX const):
+
 ```tsx
 const formatList = List && Text ? (
   filteredFormats.length === 0 ? ... : (
@@ -373,6 +392,7 @@ const formatList = List && Text ? (
 ```
 
 **AFTER**:
+
 ```tsx
 interface FormatListProps {
   formats: VideoFormat[]
@@ -382,7 +402,8 @@ interface FormatListProps {
 }
 
 function FormatList({ formats, selectedIndex, focusArea, UI }: FormatListProps) {
-  const { List, Text, Badge, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState } = UI || {}
+  const { List, Text, Badge, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState } =
+    UI || {}
   if (!List || !Text) return null
   if (formats.length === 0) return EmptyState ? <EmptyState message="No matching formats." /> : null
   return (
@@ -429,12 +450,24 @@ export function useVideoDownloaderState(url: string) {
   // getFormats, startDownload, cancelJob, loadHistory
 
   return {
-    ytdlpInstalled, metadata, activeTab, setActiveTab,
-    loading, error, jobs, filteredFormats, combinedList,
-    selectedIndex, setSelectedIndex,
-    downloadSelectedIndex, setDownloadSelectedIndex,
-    previousFormatTab, setPreviousFormatTab,
-    getFormats, startDownload, cancelJob,
+    ytdlpInstalled,
+    metadata,
+    activeTab,
+    setActiveTab,
+    loading,
+    error,
+    jobs,
+    filteredFormats,
+    combinedList,
+    selectedIndex,
+    setSelectedIndex,
+    downloadSelectedIndex,
+    setDownloadSelectedIndex,
+    previousFormatTab,
+    setPreviousFormatTab,
+    getFormats,
+    startDownload,
+    cancelJob,
   }
 }
 ```
@@ -457,7 +490,7 @@ export function useKeyboardHandlers({
 }: KeyboardHandlerOptions) {
   // stateRef lives HERE, not in VideoDownloader
   const stateRef = useRef(getState())
-  
+
   // sync on every render via useLayoutEffect
   useLayoutEffect(() => {
     stateRef.current = getState()
@@ -470,7 +503,8 @@ export function useKeyboardHandlers({
 }
 ```
 
-**Benefit**: 
+**Benefit**:
+
 - The stale-closure workaround is contained in one hook with a clear name and documented intent.
 - `VideoDownloader` no longer needs a `stateRef` at all.
 - The handler logic becomes testable by calling the hook in a test harness.
@@ -480,6 +514,7 @@ export function useKeyboardHandlers({
 ### 6.5 Extract Format Utility Functions to `utils.ts`
 
 **Candidates** (already module-level, just move the file):
+
 - `getVideoAndAudioFormats`
 - `getRecommendedFormats`
 - `fmtSize`
@@ -494,14 +529,15 @@ These are already pure functions. Moving them to a `utils.ts` file decouples the
 
 ### 7.1 Current Coverage
 
-| Test file | Scope | Frontend unit coverage |
-|---|---|---|
-| `backend.test.ts` | Backend IPC handlers | None |
-| `e2e.spec.ts` | Full Electron app, 14 scenarios | Integration only |
+| Test file         | Scope                           | Frontend unit coverage |
+| ----------------- | ------------------------------- | ---------------------- |
+| `backend.test.ts` | Backend IPC handlers            | None                   |
+| `e2e.spec.ts`     | Full Electron app, 14 scenarios | Integration only       |
 
 **Frontend unit test coverage: 0%**
 
 The e2e tests provide meaningful behavioral coverage (keyboard nav, tab switching, download flow, open-file, Shift+Enter folder, Escape back-nav), but they:
+
 - Run against a full Electron app (slow, CI-heavy)
 - Cannot test edge cases like `null` metadata, partial `window.UI`, error states
 - Cannot test the format-filtering logic (`getVideoAndAudioFormats`, `getRecommendedFormats`) with specific format arrays
@@ -570,15 +606,15 @@ FormatList.test.tsx
 
 ## 8. Risk Matrix
 
-| Refactor step | Risk | Mitigated by | Residual risk |
-|---|---|---|---|
-| Move utility fns to `utils.ts` | Low | Pure functions, no side effects | Import path update in frontend |
-| Extract `FormatList` component | Low | E2E covers format tab navigation | Minor prop interface design risk |
-| Extract `DownloadsView` component | Medium | E2E covers downloads flow end-to-end | `combinedList` sort ordering must be preserved |
-| Extract `useVideoDownloaderState` | High | Must write unit tests first | Poll timing, state ordering between effects |
-| Fix stale closure / `useKeyboardHandlers` | High | E2E covers all keyboard scenarios | Nav handler behavior regression if deps change |
-| Remove `jobSelectedIndex` dead state | Low | Confirmed no JSX reads it | None after grep verification |
-| Fix `combinedList` timestamp for active jobs | Medium | Needs new unit test to pin behavior | Sort order change could affect E2E test expectations |
+| Refactor step                                | Risk   | Mitigated by                         | Residual risk                                        |
+| -------------------------------------------- | ------ | ------------------------------------ | ---------------------------------------------------- |
+| Move utility fns to `utils.ts`               | Low    | Pure functions, no side effects      | Import path update in frontend                       |
+| Extract `FormatList` component               | Low    | E2E covers format tab navigation     | Minor prop interface design risk                     |
+| Extract `DownloadsView` component            | Medium | E2E covers downloads flow end-to-end | `combinedList` sort ordering must be preserved       |
+| Extract `useVideoDownloaderState`            | High   | Must write unit tests first          | Poll timing, state ordering between effects          |
+| Fix stale closure / `useKeyboardHandlers`    | High   | E2E covers all keyboard scenarios    | Nav handler behavior regression if deps change       |
+| Remove `jobSelectedIndex` dead state         | Low    | Confirmed no JSX reads it            | None after grep verification                         |
+| Fix `combinedList` timestamp for active jobs | Medium | Needs new unit test to pin behavior  | Sort order change could affect E2E test expectations |
 
 **Overall risk level without prior unit tests: HIGH**  
 **Overall risk level after writing Priority 1+2 tests: MEDIUM**
@@ -590,6 +626,7 @@ FormatList.test.tsx
 ### Phase 0: Freeze (No refactoring, tests only)
 
 **Step 1**: Run existing tests to establish green baseline.
+
 ```bash
 pnpm -C src test -- extensions/video-downloader/backend.test.ts
 ```
@@ -781,15 +818,15 @@ pnpm -C src test -- extensions/video-downloader/backend.test.ts
 
 ## Appendix A: File Size Projection After Refactoring
 
-| File | Current lines | Projected lines |
-|---|---|---|
-| `frontend.tsx` | 931 | ~300 (thin rendering shell) |
-| `utils.ts` | — | ~90 |
-| `useVideoDownloaderState.ts` | — | ~200 |
-| `useKeyboardHandlers.ts` | — | ~100 |
-| `frontend.utils.test.ts` | — | ~120 |
-| `useVideoDownloaderState.test.ts` | — | ~200 |
-| **Total** | **931** | **~1010** |
+| File                              | Current lines | Projected lines             |
+| --------------------------------- | ------------- | --------------------------- |
+| `frontend.tsx`                    | 931           | ~300 (thin rendering shell) |
+| `utils.ts`                        | —             | ~90                         |
+| `useVideoDownloaderState.ts`      | —             | ~200                        |
+| `useKeyboardHandlers.ts`          | —             | ~100                        |
+| `frontend.utils.test.ts`          | —             | ~120                        |
+| `useVideoDownloaderState.test.ts` | —             | ~200                        |
+| **Total**                         | **931**       | **~1010**                   |
 
 The total line count increases slightly, but each file is independently understandable, testable, and modifiable. The monolith is broken into files with single responsibilities.
 

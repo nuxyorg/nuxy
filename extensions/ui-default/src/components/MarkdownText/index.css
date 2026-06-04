@@ -42,12 +42,20 @@
   margin: 0;
 }
 
-.nuxy-md-h1 { font-size: 1.4em; }
-.nuxy-md-h2 { font-size: 1.2em; }
-.nuxy-md-h3 { font-size: 1.05em; }
+.nuxy-md-h1 {
+  font-size: 1.4em;
+}
+.nuxy-md-h2 {
+  font-size: 1.2em;
+}
+.nuxy-md-h3 {
+  font-size: 1.05em;
+}
 .nuxy-md-h4,
 .nuxy-md-h5,
-.nuxy-md-h6 { font-size: 1em; }
+.nuxy-md-h6 {
+  font-size: 1em;
+}
 
 .nuxy-md-ul,
 .nuxy-md-ol {
@@ -110,7 +118,9 @@
   text-underline-offset: 2px;
   text-decoration-color: rgba(122, 162, 247, 0.4);
   cursor: pointer;
-  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
 }
 
 .nuxy-md-link:hover {

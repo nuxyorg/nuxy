@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "search",
-  "permissions": ["network", "clipboard"],
+  "permissions": ["network", "clipboard", "shell"],
   "capabilities": {
     "callable": false,
     "caller": false
@@ -16,6 +16,6 @@
   },
   "locales": {
     "default": "en",
-    "supported": ["en"]
+    "supported": ["en", "tr", "ja"]
   }
 }

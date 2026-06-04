@@ -13,6 +13,8 @@ export interface KeyAction {
    */
   activeOn?: () => boolean
   handler: () => void
+  trigger?: 'press' | 'hold'
+  holdMs?: number
 }
 
 export function useToolKeyActions(...args: any[]): any {

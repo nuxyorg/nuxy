@@ -24,7 +24,12 @@ interface RemindActions {
   handleCancel: (id: string) => void
 }
 
-export function useRemindActions({ query, selectedIndex, reminders, refreshReminders }: Params): RemindActions {
+export function useRemindActions({
+  query,
+  selectedIndex,
+  reminders,
+  refreshReminders,
+}: Params): RemindActions {
   const handleCreate = React.useCallback(() => {
     if (!query.trim()) return
     invoke<Reminder>('remind:create', { text: query })
@@ -38,7 +43,7 @@ export function useRemindActions({ query, selectedIndex, reminders, refreshRemin
         .then(() => refreshReminders())
         .catch(() => {})
     },
-    [refreshReminders],
+    [refreshReminders]
   )
 
   return { handleCreate, handleCancel }

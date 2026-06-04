@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "name": "Nuxy シェル"
+  },
+  "omniBar": {
+    "placeholder": "何を考えていますか？",
+    "searchTool": "{toolName}を検索",
+    "ariaLabel": "検索"
+  },
+  "results": {
+    "ariaLabel": "結果"
+  },
+  "footer": {
+    "extensionsLoaded": "{count}個の拡張機能が読み込まれました",
+    "pressToRun": "押して",
+    "toRun": "実行",
+    "toActions": "アクション"
+  },
+  "loading": "読み込み中…",
+  "commandPalette": {
+    "searchPlaceholder": "コマンドを検索...",
+    "noActions": "利用可能なアクションがありません。",
+    "enterShortcut": "Enter"
+  },
+  "keyboard": {
+    "focusTabs": "タブにフォーカス",
+    "focusContent": "コンテンツにフォーカス",
+    "previous": "前へ",
+    "next": "次へ",
+    "selectConfirm": "選択 / 確定",
+    "navigate": "移動",
+    "select": "選択"
+  }
+}

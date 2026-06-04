@@ -20,9 +20,5 @@
     "remove": "Remove",
     "logs": "Logs",
     "refresh": "Refresh"
-  },
-  "status": {
-    "running": "Running",
-    "stopped": "Stopped"
   }
 }

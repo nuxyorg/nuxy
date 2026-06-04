@@ -43,7 +43,14 @@ export function ClipboardRightPanel({ item, imageDimensions }: Props) {
         height: 'calc(100% - var(--space-6))',
       }}
     >
-      <div style={{ flex: '1 1 auto', overflowY: 'auto', marginBottom: 'var(--space-4)', minHeight: 0 }}>
+      <div
+        style={{
+          flex: '1 1 auto',
+          overflowY: 'auto',
+          marginBottom: 'var(--space-4)',
+          minHeight: 0,
+        }}
+      >
         <ClipboardPreview item={item} type={type} txt={txt} />
       </div>
 
@@ -56,11 +63,23 @@ export function ClipboardRightPanel({ item, imageDimensions }: Props) {
               ...(type === 'file'
                 ? [
                     { label: 'Name', value: getFilename(txt) },
-                    { label: 'Path', value: <span style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</span> },
+                    {
+                      label: 'Path',
+                      value: <span style={{ wordBreak: 'break-all', opacity: 0.7 }}>{txt}</span>,
+                    },
                   ]
                 : []),
-              ...(type === 'image' && imageDimensions ? [{ label: 'Dimensions', value: imageDimensions }] : []),
-              ...(type === 'color' ? [{ label: 'Value', value: <span style={{ fontFamily: 'monospace' }}>{txt}</span> }] : []),
+              ...(type === 'image' && imageDimensions
+                ? [{ label: 'Dimensions', value: imageDimensions }]
+                : []),
+              ...(type === 'color'
+                ? [
+                    {
+                      label: 'Value',
+                      value: <span style={{ fontFamily: 'monospace' }}>{txt}</span>,
+                    },
+                  ]
+                : []),
               { label: 'Copied', value: new Date(item.copiedAt).toLocaleString() },
             ]}
           />
@@ -103,7 +122,14 @@ function PropertiesFallback({
       >
         Properties
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: 'var(--space-2) var(--space-4)', opacity: 0.85 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '90px 1fr',
+          gap: 'var(--space-2) var(--space-4)',
+          opacity: 0.85,
+        }}
+      >
         <div style={{ opacity: 0.5 }}>Type</div>
         <div style={{ textTransform: 'capitalize' }}>{type}</div>
 

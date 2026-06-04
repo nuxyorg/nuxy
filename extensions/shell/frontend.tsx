@@ -1,6 +1,11 @@
 const React = window.React
 const { useState, useEffect, useRef } = React
 
+const EXT_ID = 'com.nuxy.shell'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import type { ShellConfig, CommandPaletteAction, KeyAction } from './types.ts'
 
 const _imp = new Function('url', 'return import(url)')
@@ -21,7 +26,7 @@ import { useShellSync } from './hooks/useShellSync.ts'
 import { ShellResizeHandles } from './components/ShellResizeHandles.tsx'
 import { ShellOmniBar } from './components/ShellOmniBar.tsx'
 import { ShellProviderResults } from './components/ShellProviderResults.tsx'
-import { ShellListResults } from './components/ShellListResults.tsx'
+import { ShellOmnibarSections } from './components/ShellOmnibarSections.tsx'
 import { ShellShortcutBar } from './components/ShellShortcutBar.tsx'
 import { ShellToolView } from './components/ShellToolView.tsx'
 
@@ -37,13 +42,14 @@ export default function ShellView({ query: _queryProp }: Props) {
     ShortcutHint,
     ShortcutSep,
     Kbd,
-    List,
     ListItem,
     ListItemBody,
     ListItemText,
     ListItemActions,
     Toaster,
   } = window.UI || {}
+  const { t } = _useTranslation(EXT_ID)
+  console.log('usetranslation', t, t('general'))
 
   // Core UI state
   const [query, setQuery] = useState<string>('')
@@ -99,6 +105,7 @@ export default function ShellView({ query: _queryProp }: Props) {
     setProviderStates,
     recordToolUsed,
     isAnyListProviderLoading,
+    omnibarSections,
     listResults,
     cfgRef,
     setSettings,
@@ -172,7 +179,6 @@ export default function ShellView({ query: _queryProp }: Props) {
     cfgRef,
     hasDragged,
     activeTool,
-    listResults,
     parseCoordinate,
     setPosition,
     setQuery,
@@ -217,11 +223,7 @@ export default function ShellView({ query: _queryProp }: Props) {
       : activeTool
         ? `${settings?.windowMaxHeight ?? 600}px`
         : undefined,
-    maxWidth: size.width
-      ? 'none'
-      : settings?.windowWidth
-        ? `${settings.windowWidth}px`
-        : undefined,
+    maxWidth: size.width ? 'none' : settings?.windowWidth ? `${settings.windowWidth}px` : undefined,
     maxHeight: size.height ? 'none' : `${settings?.windowMaxHeight ?? 600}px`,
     opacity: settings?.opacity !== undefined ? settings.opacity : undefined,
     transition:
@@ -260,10 +262,11 @@ export default function ShellView({ query: _queryProp }: Props) {
                   selectionSourceRef.current = 'type'
                   setQuery(val)
                   setSavedQuery(val)
-                  setSelectedIndex(val.length > 0 ? 0 : -1)
+                  setSelectedIndex(-1)
                 }}
                 onKeyDown={handleKeyDown}
                 onDragMouseDown={handleDragMouseDown}
+                t={t}
               />
             </div>
 
@@ -276,13 +279,13 @@ export default function ShellView({ query: _queryProp }: Props) {
                   ResultCard={ResultCard}
                   CompareCard={CompareCard}
                 />
-                <ShellListResults
-                  listResults={listResults}
+                <ShellOmnibarSections
+                  sections={omnibarSections}
+                  savedQuery={savedQuery}
                   selectedIndex={selectedIndex}
                   isAnyListProviderLoading={isAnyListProviderLoading}
                   itemClass={itemClass}
                   onItemClick={handleItemClick}
-                  List={List}
                   ListItem={ListItem}
                   ListItemBody={ListItemBody}
                   ListItemText={ListItemText}
@@ -292,7 +295,12 @@ export default function ShellView({ query: _queryProp }: Props) {
             )}
 
             {ToolComponent && activeTool && (
-              <ShellToolView ToolComponent={ToolComponent} activeTool={activeTool} query={query} />
+              <ShellToolView
+                ToolComponent={ToolComponent}
+                activeTool={activeTool}
+                query={query}
+                t={t}
+              />
             )}
           </div>
 
@@ -309,6 +317,7 @@ export default function ShellView({ query: _queryProp }: Props) {
               ShortcutHint={ShortcutHint}
               ShortcutSep={ShortcutSep}
               Kbd={Kbd}
+              t={t}
             />
           )}
         </div>
@@ -323,6 +332,7 @@ export default function ShellView({ query: _queryProp }: Props) {
           }}
           containerRef={containerRef}
           position={position}
+          t={t}
         />
       )}
       {Toaster && <Toaster />}

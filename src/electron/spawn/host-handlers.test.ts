@@ -328,9 +328,7 @@ describe('handleHostCall', () => {
   // ---------------------------------------------------------------------------
 
   it('storage:read returns parsed JSON when file exists', async () => {
-    vi.spyOn(fsPromises, 'readFile').mockResolvedValue(
-      JSON.stringify({ hello: 'world' }) as any
-    )
+    vi.spyOn(fsPromises, 'readFile').mockResolvedValue(JSON.stringify({ hello: 'world' }) as any)
     const result = await handleHostCall('com.nuxy.test', 'storage:read', 'data.json')
     expect(result).toEqual({ result: { hello: 'world' } })
   })
@@ -468,12 +466,16 @@ describe('handleHostCall', () => {
 
   it('ipc:broadcast returns error when payload is null', async () => {
     const result = await handleHostCall('com.nuxy.test', 'ipc:broadcast', null)
-    expect(result).toEqual({ error: 'IPC_BROADCAST: payload must be { channel: string, data: unknown }' })
+    expect(result).toEqual({
+      error: 'IPC_BROADCAST: payload must be { channel: string, data: unknown }',
+    })
   })
 
   it('ipc:broadcast returns error when channel is missing', async () => {
     const result = await handleHostCall('com.nuxy.test', 'ipc:broadcast', { data: 42 })
-    expect(result).toEqual({ error: 'IPC_BROADCAST: payload must be { channel: string, data: unknown }' })
+    expect(result).toEqual({
+      error: 'IPC_BROADCAST: payload must be { channel: string, data: unknown }',
+    })
   })
 
   it('ipc:broadcast skips destroyed windows', async () => {
@@ -506,7 +508,11 @@ describe('handleHostCall', () => {
 
   it('registry:getCallableTools excludes non-tool extensions', async () => {
     ;(loadedExtensions as unknown[]).push(
-      { id: 'com.nuxy.provider', disabled: false, manifest: { type: 'provider', name: 'Provider' } },
+      {
+        id: 'com.nuxy.provider',
+        disabled: false,
+        manifest: { type: 'provider', name: 'Provider' },
+      },
       { id: 'com.nuxy.tool', disabled: false, manifest: { type: 'tool', name: 'Tool' } }
     )
     const result = await handleHostCall('com.nuxy.test', 'registry:getCallableTools', {})

@@ -34,5 +34,8 @@ export function getOptionLabel(options: SelectOption[], value: string): string {
 
 /** Returns the focused index within an options list for the current value. */
 export function getInitialFocusIndex(options: SelectOption[], value: string): number {
-  return Math.max(0, options.findIndex((o) => o.value === value))
+  return Math.max(
+    0,
+    options.findIndex((o) => o.value === value)
+  )
 }

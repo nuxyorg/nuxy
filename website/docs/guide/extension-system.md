@@ -38,15 +38,15 @@ This design means extensions cannot directly access Node.js built-ins, Electron 
 
 ## Extension Types
 
-| Type | User Visible | Backend Worker | Frontend | Purpose |
-|---|---|---|---|---|
-| `tool` | Yes | Required | Optional, loaded on activation | Interactive tool the user activates directly |
-| `provider` | Yes | Required | Optional | Real-time data provider that reacts to omnibar input |
-| `orchestrator` | Yes | Required | Optional | Fallback handler for unmatched Enter; typically an AI layer |
-| `helper` | No | Optional | Optional, loaded early | Background utility called by other extensions |
-| `uikit` | No | No | Yes, loaded before shell | Extends `window.UI` with additional React components |
-| `theme` | No | No | No | JSON file defining CSS custom property values |
-| `iconpack` | No | No | No | JSON file containing SVG icon strings |
+| Type           | User Visible | Backend Worker | Frontend                       | Purpose                                                     |
+| -------------- | ------------ | -------------- | ------------------------------ | ----------------------------------------------------------- |
+| `tool`         | Yes          | Required       | Optional, loaded on activation | Interactive tool the user activates directly                |
+| `provider`     | Yes          | Required       | Optional                       | Real-time data provider that reacts to omnibar input        |
+| `orchestrator` | Yes          | Required       | Optional                       | Fallback handler for unmatched Enter; typically an AI layer |
+| `helper`       | No           | Optional       | Optional, loaded early         | Background utility called by other extensions               |
+| `uikit`        | No           | No             | Yes, loaded before shell       | Extends `window.UI` with additional React components        |
+| `theme`        | No           | No             | No                             | JSON file defining CSS custom property values               |
+| `iconpack`     | No           | No             | No                             | JSON file containing SVG icon strings                       |
 
 ## Extension Manifest Format
 

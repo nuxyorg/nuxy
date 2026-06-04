@@ -20,6 +20,7 @@ Users get a single natural-language entry point for actions like math calculatio
 ## Extension Type
 
 ### `orchestrator`
+
 Coordinates multiple other extensions. Calls other extension backends via `core.extensions.invoke` and aggregates or routes their results.
 
 ---
@@ -35,12 +36,12 @@ Coordinates multiple other extensions. Calls other extension backends via `core.
 
 Built-in extension mappings:
 
-| Extension ID | IPC channel | Description |
-|---|---|---|
-| `com.nuxy.time-calculator` | `convert` | Timezone conversion |
-| `com.nuxy.calculator` | `eval` | Math expression evaluation |
-| `com.nuxy.calendar` | `prepare` | Reminder / event creation |
-| `com.nuxy.ollama` | `query` | General-purpose conversation |
+| Extension ID               | IPC channel | Description                  |
+| -------------------------- | ----------- | ---------------------------- |
+| `com.nuxy.time-calculator` | `convert`   | Timezone conversion          |
+| `com.nuxy.calculator`      | `eval`      | Math expression evaluation   |
+| `com.nuxy.calendar`        | `prepare`   | Reminder / event creation    |
+| `com.nuxy.ollama`          | `query`     | General-purpose conversation |
 
 ---
 
@@ -61,26 +62,26 @@ Any callable extension with a JSON schema is automatically picked up without cod
 
 ## IPC Channels
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
+| Channel | Payload            | Returns                                                                 | Description                                             |
+| ------- | ------------------ | ----------------------------------------------------------------------- | ------------------------------------------------------- |
 | `route` | `{ text: string }` | `{ ok: boolean, data: { toolCalled?: string, initialQuery?: string } }` | Manually trigger orchestration for a given query string |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `network` | HTTP calls to the local Ollama API at `http://localhost:11434` |
+| Permission | Used for                                                       |
+| ---------- | -------------------------------------------------------------- |
+| `network`  | HTTP calls to the local Ollama API at `http://localhost:11434` |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -88,11 +89,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 **Desktop environments:** Works on any DE. Requires Ollama to be running locally.
 
@@ -100,10 +101,10 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Requirements
 
-| Requirement | Minimum version | Install |
-|-------------|-----------------|---------|
-| Ollama | 0.1.x | [ollama.ai](https://ollama.ai) |
-| `functiongemma` model | latest | `ollama pull functiongemma` |
+| Requirement           | Minimum version | Install                        |
+| --------------------- | --------------- | ------------------------------ |
+| Ollama                | 0.1.x           | [ollama.ai](https://ollama.ai) |
+| `functiongemma` model | latest          | `ollama pull functiongemma`    |
 
 The extension connects to Ollama at `http://localhost:11434` by default. Ollama must be running and the `functiongemma` model must be pulled before use.
 

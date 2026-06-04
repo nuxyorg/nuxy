@@ -18,6 +18,7 @@ The n8n extension connects to a self-hosted [n8n](https://n8n.io) instance and l
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user activates it by selecting it from the shell, then interacts through the omnibar query and keyboard shortcuts.
 
 ---
@@ -30,13 +31,13 @@ Select **n8n** from the tool list. On first launch the configuration panel opens
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate the workflow list |
-| `Enter` | Select workflow and show recent executions |
-| `⌃ ,` | Toggle the connection configuration panel |
-| `⌃ Enter` | Save configuration |
-| `Esc` | Cancel / close configuration panel |
+| Key       | Action                                     |
+| --------- | ------------------------------------------ |
+| `↑` `↓`   | Navigate the workflow list                 |
+| `Enter`   | Select workflow and show recent executions |
+| `⌃ ,`     | Toggle the connection configuration panel  |
+| `⌃ Enter` | Save configuration                         |
+| `Esc`     | Cancel / close configuration panel         |
 
 ### Examples
 
@@ -58,28 +59,28 @@ With a workflow highlighted, the **Run Webhook** action in the command palette f
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `baseUrl` | text | `http://localhost:5678` | URL where the n8n server is running |
-| `apiKey` | text | `` | API key used to authenticate with the n8n REST API (`X-N8N-API-KEY` header) |
+| Key       | Type | Default                 | Description                                                                 |
+| --------- | ---- | ----------------------- | --------------------------------------------------------------------------- |
+| `baseUrl` | text | `http://localhost:5678` | URL where the n8n server is running                                         |
+| `apiKey`  | text | ``                      | API key used to authenticate with the n8n REST API (`X-N8N-API-KEY` header) |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Persisting `baseUrl` and `apiKey` across restarts |
-| `network` | Calling the n8n REST API (`/api/v1/workflows`, `/api/v1/executions`) and webhook endpoints |
+| Permission | Used for                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| `storage`  | Persisting `baseUrl` and `apiKey` across restarts                                          |
+| `network`  | Calling the n8n REST API (`/api/v1/workflows`, `/api/v1/executions`) and webhook endpoints |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -87,11 +88,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 All platforms supported by Nuxy. Requires network access to your n8n instance.
 
@@ -99,9 +100,9 @@ All platforms supported by Nuxy. Requires network access to your n8n instance.
 
 ## Requirements
 
-| Requirement | Minimum version | Install |
-|-------------|-----------------|---------|
-| n8n | 1.0 | [n8n.io/docs](https://docs.n8n.io/hosting/) |
+| Requirement | Minimum version | Install                                     |
+| ----------- | --------------- | ------------------------------------------- |
+| n8n         | 1.0             | [n8n.io/docs](https://docs.n8n.io/hosting/) |
 
 A valid n8n API key must be generated in your n8n instance under **Settings → API**.
 
@@ -109,14 +110,14 @@ A valid n8n API key must be generated in your n8n instance under **Settings → 
 
 ## IPC Channels
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
-| `n8n:configure` | `{ baseUrl: string, apiKey: string }` | `void` | Save connection settings |
-| `n8n:getConfig` | — | `{ baseUrl: string, apiKey: string }` | Read current connection settings |
-| `n8n:status` | — | `{ ok: boolean, version?: string }` | Check if n8n is reachable |
-| `n8n:listWorkflows` | — | `N8nWorkflow[]` | List all workflows |
-| `n8n:triggerWebhook` | `{ webhookPath: string, payload?: object }` | `{ status: number, body: unknown }` | POST to a webhook URL |
-| `n8n:executions` | `{ workflowId: string, limit?: number }` | `N8nExecution[]` | List recent executions for a workflow |
+| Channel              | Payload                                     | Returns                               | Description                           |
+| -------------------- | ------------------------------------------- | ------------------------------------- | ------------------------------------- |
+| `n8n:configure`      | `{ baseUrl: string, apiKey: string }`       | `void`                                | Save connection settings              |
+| `n8n:getConfig`      | —                                           | `{ baseUrl: string, apiKey: string }` | Read current connection settings      |
+| `n8n:status`         | —                                           | `{ ok: boolean, version?: string }`   | Check if n8n is reachable             |
+| `n8n:listWorkflows`  | —                                           | `N8nWorkflow[]`                       | List all workflows                    |
+| `n8n:triggerWebhook` | `{ webhookPath: string, payload?: object }` | `{ status: number, body: unknown }`   | POST to a webhook URL                 |
+| `n8n:executions`     | `{ workflowId: string, limit?: number }`    | `N8nExecution[]`                      | List recent executions for a workflow |
 
 ---
 

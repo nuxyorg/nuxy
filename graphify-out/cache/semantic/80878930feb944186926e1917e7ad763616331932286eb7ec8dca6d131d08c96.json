@@ -1,1 +1,112 @@
-{"nodes": [{"id": "docs_14_roadmap_phase1", "label": "Phase 1: Core Foundation & Tooling Setup", "file_type": "document", "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1, Phase 1", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_14_roadmap_phase2", "label": "Phase 2: Kernel & VM Sandbox", "file_type": "document", "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1, Phase 2", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_14_roadmap_phase3", "label": "Phase 3: Building First Extensions", "file_type": "document", "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1, Phase 3", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_14_roadmap_phase4", "label": "Phase 4: Dynamic UI Integration", "file_type": "document", "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1, Phase 4", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_14_roadmap_phase5", "label": "Phase 5: Hardening & Release", "file_type": "document", "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1, Phase 5", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "docs_14_roadmap_phase1", "target": "docs_14_roadmap_phase2", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1", "weight": 1.0}, {"source": "docs_14_roadmap_phase2", "target": "docs_14_roadmap_phase3", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1", "weight": 1.0}, {"source": "docs_14_roadmap_phase3", "target": "docs_14_roadmap_phase4", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1", "weight": 1.0}, {"source": "docs_14_roadmap_phase4", "target": "docs_14_roadmap_phase5", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Section 1", "weight": 1.0}, {"source": "docs_14_roadmap_phase2", "target": "docs_01_sysanalysis_v8sandbox", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": "docs/14-rebuild-roadmap.md", "source_location": "Phase 2", "weight": 1.0}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "docs_14_roadmap_phase1",
+      "label": "Phase 1: Core Foundation & Tooling Setup",
+      "file_type": "document",
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1, Phase 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_14_roadmap_phase2",
+      "label": "Phase 2: Kernel & VM Sandbox",
+      "file_type": "document",
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1, Phase 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_14_roadmap_phase3",
+      "label": "Phase 3: Building First Extensions",
+      "file_type": "document",
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1, Phase 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_14_roadmap_phase4",
+      "label": "Phase 4: Dynamic UI Integration",
+      "file_type": "document",
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1, Phase 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_14_roadmap_phase5",
+      "label": "Phase 5: Hardening & Release",
+      "file_type": "document",
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1, Phase 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_14_roadmap_phase1",
+      "target": "docs_14_roadmap_phase2",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_14_roadmap_phase2",
+      "target": "docs_14_roadmap_phase3",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_14_roadmap_phase3",
+      "target": "docs_14_roadmap_phase4",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_14_roadmap_phase4",
+      "target": "docs_14_roadmap_phase5",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Section 1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_14_roadmap_phase2",
+      "target": "docs_01_sysanalysis_v8sandbox",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/14-rebuild-roadmap.md",
+      "source_location": "Phase 2",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

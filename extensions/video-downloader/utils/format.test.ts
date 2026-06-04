@@ -138,8 +138,20 @@ describe('getRecommendedFormats', () => {
 
   it('does not add duplicate heights', () => {
     const formats: VideoFormat[] = [
-      mkFormat({ formatId: 'f1080a', vcodec: 'avc1', acodec: 'mp4a', resolution: '1920x1080', tbr: 5000 }),
-      mkFormat({ formatId: 'f1080b', vcodec: 'avc1', acodec: 'mp4a', resolution: '1920x1080', tbr: 3000 }),
+      mkFormat({
+        formatId: 'f1080a',
+        vcodec: 'avc1',
+        acodec: 'mp4a',
+        resolution: '1920x1080',
+        tbr: 5000,
+      }),
+      mkFormat({
+        formatId: 'f1080b',
+        vcodec: 'avc1',
+        acodec: 'mp4a',
+        resolution: '1920x1080',
+        tbr: 3000,
+      }),
     ]
     const result = getRecommendedFormats(formats)
     const count1080 = result.filter((f) => getResolutionHeight(f.resolution) === 1080).length

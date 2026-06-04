@@ -1,6 +1,6 @@
 # Frontend Structure Guide
 
-> Companion to `EXTENSION_GUIDE.md` §5. Prescribes *when* and *how* to split `frontend.tsx` into hooks and components. The clipboard extension (`extensions/clipboard/`) is the reference implementation.
+> Companion to `EXTENSION_GUIDE.md` §5. Prescribes _when_ and _how_ to split `frontend.tsx` into hooks and components. The clipboard extension (`extensions/clipboard/`) is the reference implementation.
 
 ---
 
@@ -81,7 +81,9 @@ export function useSelectedItemMeta({ selectedIndex, filteredItems }) {
 // hooks/useClipboardKeyboard.ts
 export function useClipboardKeyboard({ filteredItems, selectedIndex, setSelectedIndex, handlers }) {
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
-  _useToolKeyActions([/* Arrow keys, Enter */])
+  _useToolKeyActions([
+    /* Arrow keys, Enter */
+  ])
 
   React.useEffect(() => {
     // dispatch nuxy-register-actions with context-sensitive actions
@@ -108,7 +110,9 @@ export function useOmniBarSync(selectedIndex: number): void {
 
   React.useEffect(() => {
     return () => {
-      window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } }))
+      window.dispatchEvent(
+        new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } })
+      )
     }
   }, [])
 }
@@ -165,16 +169,16 @@ Extract when: the extension uses a `TwoPanel` layout and either panel is more th
 
 ## Decision guide — when to split vs. keep inline
 
-| Signal | Action |
-|---|---|
-| `frontend.tsx` > 120 lines | audit: what is not orchestration? |
-| A `useEffect` body > 10 lines | extract to a named hook |
-| Two `useEffect`s share a concept | merge into one hook |
-| An IPC call inside JSX or an effect | move to the actions hook |
-| A render branch (`type === 'image'`) > 20 lines | extract to a component |
-| A hook doing two unrelated things | split into two hooks |
-| One hook used only in one component | may stay inline |
-| A component with no state or handlers | keep it, it's a pure display component — that's fine |
+| Signal                                          | Action                                               |
+| ----------------------------------------------- | ---------------------------------------------------- |
+| `frontend.tsx` > 120 lines                      | audit: what is not orchestration?                    |
+| A `useEffect` body > 10 lines                   | extract to a named hook                              |
+| Two `useEffect`s share a concept                | merge into one hook                                  |
+| An IPC call inside JSX or an effect             | move to the actions hook                             |
+| A render branch (`type === 'image'`) > 20 lines | extract to a component                               |
+| A hook doing two unrelated things               | split into two hooks                                 |
+| One hook used only in one component             | may stay inline                                      |
+| A component with no state or handlers           | keep it, it's a pure display component — that's fine |
 
 ---
 
@@ -217,6 +221,7 @@ extensions/clipboard/
 ```
 
 `frontend.tsx` after refactor:
+
 - Owns: `selectedIndex` state, `filteredItems` memo, search-reset effect
 - Delegates everything else to the five hooks above
 - Returns a `TwoPanel` layout with the two panel components

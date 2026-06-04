@@ -9,8 +9,12 @@ function makeColor(hex = '#ff0000'): SavedColor {
     hex,
     rgb: 'rgb(255, 0, 0)',
     hsl: 'hsl(0, 100%, 50%)',
-    r: 255, g: 0, b: 0,
-    h: 0, s: 100, l: 50,
+    r: 255,
+    g: 0,
+    b: 0,
+    h: 0,
+    s: 100,
+    l: 50,
     savedAt: new Date().toISOString(),
   }
 }

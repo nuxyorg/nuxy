@@ -33,30 +33,15 @@ interface Props {
 }
 
 export default function DockerApp({ query }: Props) {
-  const {
-    List,
-    ListItem,
-    ListItemBody,
-    ListItemText,
-    EmptyState,
-    Alert,
-    SectionHeader,
-  } = window.UI || {}
+  const { List, ListItem, ListItemBody, ListItemText, EmptyState, Alert, SectionHeader } =
+    window.UI || {}
 
   const { t, dir } = _useTranslation(EXT_ID)
 
   const [view, setView] = useState<View>('containers')
 
-  const {
-    containers,
-    images,
-    loading,
-    error,
-    logs,
-    logsContainerId,
-    refresh,
-    setLogs,
-  } = useDockerData(view)
+  const { containers, images, loading, error, logs, logsContainerId, refresh, setLogs } =
+    useDockerData(view)
 
   const { handleToggle, handleRestart, handleRemove, handleLogs } = useDockerActions({
     refresh,
@@ -80,9 +65,7 @@ export default function DockerApp({ query }: Props) {
     if (!query.trim()) return images
     const q = query.trim().toLowerCase()
     return images.filter(
-      (img) =>
-        img.repository.toLowerCase().includes(q) ||
-        img.tag.toLowerCase().includes(q)
+      (img) => img.repository.toLowerCase().includes(q) || img.tag.toLowerCase().includes(q)
     )
   }, [images, query])
 
@@ -173,44 +156,32 @@ export default function DockerApp({ query }: Props) {
       EmptyState ? (
         <EmptyState message={loading ? '…' : t('empty.noContainers')} />
       ) : null
-    ) : (
-      List ? (
-        <List>
-          {filteredContainers.map((c, idx) => (
-            <ContainerItem
-              key={c.id}
-              container={c}
-              active={idx === selectedIndex}
-              t={t}
-            />
-          ))}
-        </List>
-      ) : null
-    )
+    ) : List ? (
+      <List>
+        {filteredContainers.map((c, idx) => (
+          <ContainerItem key={c.id} container={c} active={idx === selectedIndex} t={t} />
+        ))}
+      </List>
+    ) : null
 
   const imageList =
     filteredImages.length === 0 ? (
       EmptyState ? (
         <EmptyState message={loading ? '…' : t('empty.noImages')} />
       ) : null
-    ) : (
-      List ? (
-        <List>
-          {filteredImages.map((img, idx) =>
-            ListItem && ListItemBody && ListItemText ? (
-              <ListItem key={img.id} active={idx === selectedIndex}>
-                <ListItemBody>
-                  <ListItemText
-                    title={`${img.repository}:${img.tag}`}
-                    subtitle={img.size}
-                  />
-                </ListItemBody>
-              </ListItem>
-            ) : null
-          )}
-        </List>
-      ) : null
-    )
+    ) : List ? (
+      <List>
+        {filteredImages.map((img, idx) =>
+          ListItem && ListItemBody && ListItemText ? (
+            <ListItem key={img.id} active={idx === selectedIndex}>
+              <ListItemBody>
+                <ListItemText title={`${img.repository}:${img.tag}`} subtitle={img.size} />
+              </ListItemBody>
+            </ListItem>
+          ) : null
+        )}
+      </List>
+    ) : null
 
   const logsPanel =
     logs !== null ? (
@@ -251,9 +222,7 @@ export default function DockerApp({ query }: Props) {
   return (
     <div style={{ direction: dir, height: '100%', display: 'flex', flexDirection: 'column' }}>
       {SectionHeader ? (
-        <SectionHeader
-          title={view === 'containers' ? t('tab.containers') : t('tab.images')}
-        />
+        <SectionHeader title={view === 'containers' ? t('tab.containers') : t('tab.images')} />
       ) : null}
 
       {error && Alert ? (

@@ -36,3 +36,14 @@ export interface CopyResultPayload {
 }
 
 export type UnitSystem = 'metric' | 'imperial' | 'both'
+
+export interface ConverterResultItem {
+  id: string
+  title: string
+  subtitle: string
+  value: string
+}
+
+export interface EvalResult {
+  items: ConverterResultItem[]
+}

@@ -61,6 +61,7 @@ test.describe('kernel IPC channels via window.core.ipc.invoke', () => {
     expect(typeof result.data.windowMaxHeight).toBe('number')
     expect(typeof result.data.alwaysOnTop).toBe('boolean')
     expect(typeof result.data.opacity).toBe('number')
+    expect(result.data.backgroundBehavior).toBe('reset-on-show')
   })
 
   test('getTheme returns theme with name and vars', async ({ appPage }) => {

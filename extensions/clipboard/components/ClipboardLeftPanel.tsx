@@ -45,7 +45,10 @@ export function ClipboardLeftPanel({
               <ListItemBody>
                 <ListItemText variant={isCopied ? 'success' : 'default'}>
                   {item.pinned && IconPin && (
-                    <IconPin size="14" style={{ marginRight: 'var(--space-2)', verticalAlign: 'middle' }} />
+                    <IconPin
+                      size="14"
+                      style={{ marginRight: 'var(--space-2)', verticalAlign: 'middle' }}
+                    />
                   )}
                   {label}
                 </ListItemText>

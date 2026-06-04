@@ -1,5 +1,37 @@
 @keyframes nuxy-omni-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes nuxy-hold-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.nuxy-hold-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: var(--z-1, 1);
+}
+
+.nuxy-hold-progress__bar {
+  width: 100%;
+  height: 100%;
+  background: var(--color-accent, var(--syntax-operator));
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: nuxy-hold-fill var(--nuxy-hold-ms, 600ms) linear forwards;
+  border-radius: 0 2px 2px 0;
 }
 
 @keyframes nuxy-slide-fade-in {
@@ -54,7 +86,9 @@
   display: block;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 
   /* Inherited gradient variables for canvas and shadow glow */
   --gradient-color-1: var(--gradient-1, #c3e4f5);
@@ -79,7 +113,7 @@
 }
 
 .nuxy-shell-container--gradient-active {
-  box-shadow: 
+  box-shadow:
     0 25px 50px -12px rgba(0, 0, 0, 0.6),
     0 0 30px -4px var(--gradient-color-2, rgba(110, 195, 244, 0.3));
 
@@ -102,7 +136,9 @@
 }
 
 @keyframes nuxy-rainbow-spin {
-  to { --nuxy-rainbow-angle: 360deg; }
+  to {
+    --nuxy-rainbow-angle: 360deg;
+  }
 }
 
 .nuxy-shell-container--gradient-rainbow {
@@ -129,7 +165,9 @@
 }
 
 @keyframes nuxy-bit-spin {
-  to { --nuxy-bit-angle: 360deg; }
+  to {
+    --nuxy-bit-angle: 360deg;
+  }
 }
 
 .nuxy-shell-container--gradient-bit {
@@ -454,7 +492,9 @@
   padding: 0 4px;
   line-height: 1;
   border-radius: var(--radius-sm);
-  transition: color 150ms, background-color 150ms;
+  transition:
+    color 150ms,
+    background-color 150ms;
 }
 
 .nuxy-command-palette__back:hover {
@@ -491,6 +531,31 @@
   animation: nuxy-shimmer 1.6s infinite linear;
 }
 
+/* List sections (tools/providers in omnibar) — ListItem supplies row padding */
+.nuxy-shell-results-list .nuxy-provider-section {
+  border-top: none;
+  padding: 0;
+  gap: 0;
+}
+
+.nuxy-shell-results-list .nuxy-provider-section + .nuxy-provider-section {
+  border-top: 1px solid var(--syntax-comment);
+}
+
+.nuxy-shell-results-list .nuxy-provider-section__header {
+  padding: 0 var(--space-5);
+  margin-bottom: 2px;
+}
+
+.nuxy-shell-results-list > .nuxy-provider-section:first-child .nuxy-provider-section__header,
+.nuxy-shell-results-list
+  .nuxy-provider-section
+  + .nuxy-provider-section
+  .nuxy-provider-section__header {
+  padding-top: 12px;
+}
+
+/* Result/compare provider blocks (ShellProviderResults) */
 .nuxy-provider-section {
   border-top: 1px solid var(--syntax-comment);
   padding: 12px var(--space-5);
@@ -527,9 +592,10 @@
   border-radius: var(--radius-md);
   padding: 12px 16px;
   cursor: pointer;
-  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -582,8 +648,9 @@
   align-items: stretch;
   min-height: 70px;
   overflow: hidden;
-  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 
@@ -645,6 +712,10 @@
   gap: 8px;
   border-top: 1px solid var(--syntax-comment);
   padding: 12px var(--space-5);
+}
+
+.nuxy-shell-results-list.nuxy-skeleton-list {
+  padding: var(--space-2) var(--space-5);
 }
 
 .nuxy-skeleton-list-item {

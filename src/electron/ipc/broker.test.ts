@@ -9,7 +9,8 @@ vi.mock('./worker-invoke.js', () => ({
 
 vi.mock('./kernel-invokable.js', () => ({
   callKernelChannel: vi.fn(async (channel: string) => {
-    if (channel === 'listInstalledExtensions') return { success: true, data: [{ id: 'com.nuxy.test' }] }
+    if (channel === 'listInstalledExtensions')
+      return { success: true, data: [{ id: 'com.nuxy.test' }] }
     return { success: false, error: `Unknown kernel channel: ${channel}`, code: 'UNKNOWN_CHANNEL' }
   }),
 }))

@@ -1,5 +1,10 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.angrysearch'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import type { AngrysearchItem } from './types.ts'
 import { useAngrysearchData } from './hooks/useAngrysearchData.ts'
 import { useAngrysearchActions } from './hooks/useAngrysearchActions.ts'
@@ -13,6 +18,7 @@ interface Props {
 
 export default function AngrysearchView({ query }: Props) {
   const { List, EmptyState } = window.UI || {}
+  const { t } = _useTranslation(EXT_ID)
 
   const [regexMode, setRegexMode] = React.useState<boolean>(false)
 
@@ -25,16 +31,17 @@ export default function AngrysearchView({ query }: Props) {
     handleOpenLocation,
     triggerUpdate,
     setRegexMode,
+    t,
   })
 
-  useAngrysearchSync({ regexMode, status })
+  useAngrysearchSync({ regexMode, status, t })
 
   return (
     <List>
       {items.length === 0 ? (
         <EmptyState
-          message={query.length < 3 ? 'Type to search...' : 'No matches.'}
-          hint={query.length < 3 ? 'Enter at least 3 characters.' : 'Try a different search.'}
+          message={query.length < 3 ? t('empty.typeToSearch') : t('empty.noMatches')}
+          hint={query.length < 3 ? t('empty.typeHint') : t('empty.noMatchesHint')}
         />
       ) : (
         items.map((item: AngrysearchItem, idx: number) => (

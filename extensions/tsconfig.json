@@ -23,7 +23,9 @@
       "react-dom/*": ["../src/node_modules/@types/react-dom/*"],
       "vitest": ["../src/node_modules/vitest/dist/index.d.ts"],
       "vitest/*": ["../src/node_modules/vitest/dist/*"],
-      "@playwright/test": ["../node_modules/.pnpm/@playwright+test@1.60.0/node_modules/@playwright/test/index.d.ts"]
+      "@playwright/test": [
+        "../node_modules/.pnpm/@playwright+test@1.60.0/node_modules/@playwright/test/index.d.ts"
+      ]
     }
   },
   "include": ["./**/*.ts", "./**/*.tsx", "./global.d.ts"],

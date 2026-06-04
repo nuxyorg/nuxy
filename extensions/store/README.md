@@ -18,6 +18,7 @@ Store is the built-in extension marketplace for Nuxy. It fetches a remote regist
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. Select **Store** from the shell to open the extension browser. The omnibar search filters results across name, ID, description, and author in real time.
 
 ---
@@ -30,16 +31,16 @@ Select **Store** from the tool list. The extension catalog loads automatically f
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate extension list |
+| Key     | Action                                                                                    |
+| ------- | ----------------------------------------------------------------------------------------- |
+| `↑` `↓` | Navigate extension list                                                                   |
 | `Enter` | Install selected extension (or uninstall if already installed and not a system extension) |
-| `I` | Install / update selected extension |
-| `U` | Uninstall selected extension |
-| `R` | Refresh the extension catalog |
-| `Tab` | Cycle to the next category tab |
-| `←` | Focus the category sidebar |
-| `Esc` | Return to the tool list |
+| `I`     | Install / update selected extension                                                       |
+| `U`     | Uninstall selected extension                                                              |
+| `R`     | Refresh the extension catalog                                                             |
+| `Tab`   | Cycle to the next category tab                                                            |
+| `←`     | Focus the category sidebar                                                                |
+| `Esc`   | Return to the tool list                                                                   |
 
 ### Examples
 
@@ -58,27 +59,27 @@ Switch to the **Installed** tab, select the extension you want to remove, and pr
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
+| Key           | Type | Default                                                                       | Description                                                                                      |
+| ------------- | ---- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | `registryUrl` | text | `https://raw.githubusercontent.com/atagulalan/nuxy-assets/main/registry.json` | URL of the remote registry JSON file. Change this to point to a self-hosted or private registry. |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Reading the configured registry URL from extension settings |
-| `network` | Fetching the remote extension registry index and downloading extension packages |
+| Permission | Used for                                                                        |
+| ---------- | ------------------------------------------------------------------------------- |
+| `storage`  | Reading the configured registry URL from extension settings                     |
+| `network`  | Fetching the remote extension registry index and downloading extension packages |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -86,11 +87,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 Requires internet access to fetch the registry and download extension packages. Locally installed extensions that are not listed in the remote registry still appear under the **Installed** tab.
 

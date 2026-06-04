@@ -22,6 +22,18 @@ export default function KeyboardDebugView({ query }: Props) {
   const { history, lastKey, clearHistory } = useKeyCapture()
   const [selectedIndex, setSelectedIndex] = useState(-1)
 
+  // Disable omnibox while keyboard-debug is active so all keystrokes are captured
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'hide' } })
+    )
+    return () => {
+      window.dispatchEvent(
+        new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } })
+      )
+    }
+  }, [])
+
   const filteredHistory = useMemo(() => {
     if (!query.trim()) return history
     const q = query.toLowerCase()
@@ -29,7 +41,7 @@ export default function KeyboardDebugView({ query }: Props) {
       (e: KeyEvent) =>
         e.key.toLowerCase().includes(q) ||
         e.code.toLowerCase().includes(q) ||
-        e.modifiers.some((m) => m.toLowerCase().includes(q)),
+        e.modifiers.some((m) => m.toLowerCase().includes(q))
     )
   }, [history, query])
 
@@ -37,7 +49,13 @@ export default function KeyboardDebugView({ query }: Props) {
     setSelectedIndex(-1)
   }, [query])
 
-  useKeyDebugKeyboard({ history: filteredHistory, selectedIndex, setSelectedIndex, clearHistory })
+  useKeyDebugKeyboard({
+    history: filteredHistory,
+    selectedIndex,
+    setSelectedIndex,
+    clearHistory,
+    t,
+  })
 
   const leftPanel = (
     <KeyHistoryList
@@ -58,7 +76,9 @@ export default function KeyboardDebugView({ query }: Props) {
   )
 
   return (
-    <div style={{ direction: dir, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{ direction: dir, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}
+    >
       {TwoPanel ? (
         <TwoPanel left={leftPanel} right={rightPanel} style={{ flex: 1, minHeight: 0 }} />
       ) : (
@@ -73,7 +93,14 @@ export default function KeyboardDebugView({ query }: Props) {
           >
             {leftPanel}
           </div>
-          <div style={{ flex: '1 1 50%', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div
+            style={{
+              flex: '1 1 50%',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+            }}
+          >
             {rightPanel}
           </div>
         </div>

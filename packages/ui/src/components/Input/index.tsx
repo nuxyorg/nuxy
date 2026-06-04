@@ -1,6 +1,9 @@
 import React from 'react'
 
-export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>, React.RefAttributes<HTMLInputElement> {
+export interface InputProps
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
+    React.RefAttributes<HTMLInputElement> {
   size?: 'sm' | 'md' | 'lg'
 }
 

@@ -35,7 +35,14 @@ export function ClipboardPreview({ item, type, txt }: Props) {
 
   if (type === 'color') {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', height: 'calc(100% - var(--space-5))' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 'var(--space-3)',
+          height: 'calc(100% - var(--space-5))',
+        }}
+      >
         <div
           style={{
             flex: 1,
@@ -45,7 +52,15 @@ export function ClipboardPreview({ item, type, txt }: Props) {
             minHeight: '80px',
           }}
         />
-        <div style={{ fontFamily: 'monospace', fontSize: 'var(--font-body)', textAlign: 'center', opacity: 0.85, padding: 'var(--space-1)' }}>
+        <div
+          style={{
+            fontFamily: 'monospace',
+            fontSize: 'var(--font-body)',
+            textAlign: 'center',
+            opacity: 0.85,
+            padding: 'var(--space-1)',
+          }}
+        >
           {txt}
         </div>
       </div>

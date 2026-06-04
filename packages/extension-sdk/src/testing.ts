@@ -6,9 +6,7 @@ import type { CoreContext } from '@nuxy/core'
  *
  * @param overrides Optional overrides for specific nested properties.
  */
-export function createMockCore(
-  overrides?: any
-): {
+export function createMockCore(overrides?: any): {
   core: CoreContext
   handlers: Record<string, (payload?: any) => Promise<any> | any>
 } {

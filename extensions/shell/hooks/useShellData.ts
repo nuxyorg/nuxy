@@ -8,7 +8,7 @@ import type {
   ProviderState,
   ListItem,
 } from '../types.ts'
-import { buildListResults } from '../utils/listResults.ts'
+import { buildOmnibarSections, type OmnibarSection } from '../utils/listResults.ts'
 
 interface UseShellInitParams {
   cfgRef: React.MutableRefObject<ShellConfig | null>
@@ -59,6 +59,7 @@ interface ShellData {
   recentToolIds: string[]
   recordToolUsed: (toolId: string) => void
   isAnyListProviderLoading: boolean
+  omnibarSections: OmnibarSection[]
   listResults: ListItem[]
   cfgRef: React.MutableRefObject<ShellConfig | null>
   setSettings: React.Dispatch<React.SetStateAction<ShellConfig>>
@@ -113,9 +114,9 @@ export function useShellData({ activeTool, savedQuery, queryGeneration, deps }: 
 
   const { recentToolIds, recordToolUsed } = useToolHistory(SHELL_EXT_ID)
 
-  const listResults = React.useMemo<ListItem[]>(
-    () => buildListResults(tools, savedQuery, providerStates, recentToolIds),
-    [tools, savedQuery, providerStates, recentToolIds]
+  const { sections: omnibarSections, flatItems: listResults } = React.useMemo(
+    () => buildOmnibarSections(tools, savedQuery, providerStates, recentToolIds, providers),
+    [tools, savedQuery, providerStates, recentToolIds, providers]
   )
 
   return {
@@ -130,6 +131,7 @@ export function useShellData({ activeTool, savedQuery, queryGeneration, deps }: 
     recentToolIds,
     recordToolUsed,
     isAnyListProviderLoading,
+    omnibarSections,
     listResults,
     cfgRef,
     setSettings,

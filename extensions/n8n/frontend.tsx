@@ -1,5 +1,10 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.n8n'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import type { N8nWorkflow, N8nExecution } from './types.ts'
 import { useN8nData } from './hooks/useN8nData.ts'
 import { useN8nActions } from './hooks/useN8nActions.ts'
@@ -14,17 +19,23 @@ interface Props {
 
 export default function N8nApp({ query }: Props) {
   const { Alert } = window.UI || {}
+  const { t } = _useTranslation(EXT_ID)
 
   const [showConfig, setShowConfig] = React.useState<boolean>(false)
   const [selected, setSelected] = React.useState<N8nWorkflow | null>(null)
   const [executions, setExecutions] = React.useState<N8nExecution[]>([])
 
   const {
-    configured, setConfigured,
-    status, setStatus,
-    workflows, setWorkflows,
-    baseUrl, setBaseUrl,
-    apiKey, setApiKey,
+    configured,
+    setConfigured,
+    status,
+    setStatus,
+    workflows,
+    setWorkflows,
+    baseUrl,
+    setBaseUrl,
+    apiKey,
+    setApiKey,
   } = useN8nData()
 
   const filteredWorkflows = React.useMemo(() => {
@@ -33,16 +44,18 @@ export default function N8nApp({ query }: Props) {
     return workflows.filter((wf) => wf.name.toLowerCase().includes(q))
   }, [workflows, query])
 
-  const { handleSaveConfig, handleRefresh, handleSelectWorkflow, handleRunWebhook } = useN8nActions({
-    baseUrl,
-    apiKey,
-    setConfigured,
-    setShowConfig,
-    setStatus,
-    setWorkflows,
-    setSelected,
-    setExecutions,
-  })
+  const { handleSaveConfig, handleRefresh, handleSelectWorkflow, handleRunWebhook } = useN8nActions(
+    {
+      baseUrl,
+      apiKey,
+      setConfigured,
+      setShowConfig,
+      setStatus,
+      setWorkflows,
+      setSelected,
+      setExecutions,
+    }
+  )
 
   const { selectedIndex } = useN8nKeyboard({
     filteredWorkflows,
@@ -53,6 +66,7 @@ export default function N8nApp({ query }: Props) {
     handleRefresh,
     handleSelectWorkflow,
     handleRunWebhook,
+    t,
   })
 
   if (showConfig || !configured) {
@@ -68,16 +82,14 @@ export default function N8nApp({ query }: Props) {
 
   return (
     <>
-      {status && !status.ok && Alert && <Alert variant="danger">n8n unreachable</Alert>}
+      {status && !status.ok && Alert && <Alert variant="danger">{t('status.unreachable')}</Alert>}
       <N8nWorkflowList
         workflows={filteredWorkflows}
         selectedIndex={selectedIndex}
         query={query}
         onSelect={(wf) => void handleSelectWorkflow(wf)}
       />
-      {selected && (
-        <N8nExecutionList selected={selected} executions={executions} />
-      )}
+      {selected && <N8nExecutionList selected={selected} executions={executions} />}
     </>
   )
 }

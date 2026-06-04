@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "name": "Nyaa検索"
+  },
+  "search": {
+    "empty": {
+      "message": "nyaa.siを検索",
+      "hint": "タイトルを入力してトレントを検索してください。"
+    },
+    "loading": {
+      "message": "検索中...",
+      "hint": "nyaa.siから結果を取得中"
+    },
+    "noResults": {
+      "message": "結果なし。",
+      "hint": "別の検索語をお試しください。"
+    }
+  },
+  "item": {
+    "copied": "コピーしました！",
+    "selectPrompt": "詳細を表示するには結果を選択してください",
+    "selectPromptMulti": "項目にチェックを入れて選択してください",
+    "magnetCopied": "マグネットリンクをコピーしました！",
+    "selectedCount": "{count}件選択中",
+    "multiSelectHint": "Ctrl+Kで一括コピーまたはダウンロード"
+  },
+  "details": {
+    "title": "詳細",
+    "category": "カテゴリ",
+    "size": "サイズ",
+    "date": "日付",
+    "seeders": "シーダー",
+    "leechers": "リーチャー",
+    "status": {
+      "label": "状態",
+      "trusted": "信頼済み",
+      "remake": "リメイク",
+      "normal": "通常"
+    }
+  },
+  "actions": {
+    "navigate": "ナビゲート",
+    "copyMagnet": "マグネットをコピー",
+    "copyMagnetLabel": "マグネットリンクをコピー",
+    "downloadTorrent": "トレント保存",
+    "downloadTorrentLabel": "トレントファイルを保存",
+    "checkToggle": "チェック / 解除",
+    "selectMultiple": "複数選択",
+    "exitSelectMultiple": "選択を終了",
+    "copyAll": "全マグネットをコピー",
+    "downloadAll": "全トレントをダウンロード"
+  }
+}

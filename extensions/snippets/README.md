@@ -18,6 +18,7 @@ Snippets is a personal text-snippet manager built into Nuxy. Users can store fre
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user selects **Snippets** from the shell and then types into the omnibar to filter their saved snippets in real time.
 
 ---
@@ -30,13 +31,13 @@ Select **Snippets** from the tool list. The list of saved snippets appears immed
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate snippet list |
-| `Enter` | Copy selected snippet to clipboard |
-| `N` | Save current clipboard contents as a new snippet |
-| `D` | Delete the selected snippet |
-| `Esc` | Return to the tool list |
+| Key     | Action                                           |
+| ------- | ------------------------------------------------ |
+| `↑` `↓` | Navigate snippet list                            |
+| `Enter` | Copy selected snippet to clipboard               |
+| `N`     | Save current clipboard contents as a new snippet |
+| `D`     | Delete the selected snippet                      |
+| `Esc`   | Return to the tool list                          |
 
 ### Examples
 
@@ -55,28 +56,28 @@ Type `docker` in the omnibar to narrow the list to only snippets whose title, co
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `closeAfterCopy` | toggle | `true` | Hide the Nuxy window after copying a snippet |
-| `defaultTags` | list | `[]` | Default tags applied to newly created snippets |
+| Key              | Type   | Default | Description                                    |
+| ---------------- | ------ | ------- | ---------------------------------------------- |
+| `closeAfterCopy` | toggle | `true`  | Hide the Nuxy window after copying a snippet   |
+| `defaultTags`    | list   | `[]`    | Default tags applied to newly created snippets |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Persisting snippets to `snippets.json` in extension storage |
+| Permission  | Used for                                                                               |
+| ----------- | -------------------------------------------------------------------------------------- |
+| `storage`   | Persisting snippets to `snippets.json` in extension storage                            |
 | `clipboard` | Reading clipboard text when saving a new snippet; writing snippet content when copying |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -84,11 +85,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 ---
 
@@ -104,13 +105,13 @@ const result = await core.extensions.invoke('com.nuxy.snippets', 'getSnippets', 
 
 **Exposed IPC channels:**
 
-| Channel | Payload | Returns | Description |
-|---------|---------|---------|-------------|
-| `getSnippets` | `{ query?: string }` | `Snippet[]` | List all snippets, optionally filtered by query string (matches title, content, tags) |
-| `addSnippet` | `{ title: string, content: string, tags?: string[] }` | `Snippet` | Create and persist a new snippet |
-| `deleteSnippet` | `{ id: string }` | `Snippet[]` | Delete a snippet by ID; returns the updated list |
-| `copySnippet` | `{ id: string }` | `{ copied: true }` | Write the snippet's content to the clipboard |
-| `saveClipboardAsSnippet` | `{}` | `Snippet` | Read the current clipboard and save it as a new snippet |
+| Channel                  | Payload                                               | Returns            | Description                                                                           |
+| ------------------------ | ----------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------- |
+| `getSnippets`            | `{ query?: string }`                                  | `Snippet[]`        | List all snippets, optionally filtered by query string (matches title, content, tags) |
+| `addSnippet`             | `{ title: string, content: string, tags?: string[] }` | `Snippet`          | Create and persist a new snippet                                                      |
+| `deleteSnippet`          | `{ id: string }`                                      | `Snippet[]`        | Delete a snippet by ID; returns the updated list                                      |
+| `copySnippet`            | `{ id: string }`                                      | `{ copied: true }` | Write the snippet's content to the clipboard                                          |
+| `saveClipboardAsSnippet` | `{}`                                                  | `Snippet`          | Read the current clipboard and save it as a new snippet                               |
 
 ---
 

@@ -20,7 +20,12 @@ export interface OllamaActions {
   handleClearChat: () => void
 }
 
-export function useOllamaActions({ query, messages, setMessages, selectedModel }: Params): OllamaActions {
+export function useOllamaActions({
+  query,
+  messages,
+  setMessages,
+  selectedModel,
+}: Params): OllamaActions {
   const [loading, setLoading] = React.useState<boolean>(false)
   const [error, setError] = React.useState<string | null>(null)
   const [queuedMessage, setQueuedMessage] = React.useState<string | null>(null)
@@ -43,7 +48,9 @@ export function useOllamaActions({ query, messages, setMessages, selectedModel }
     if (!text || loading) return
 
     if (!overrideText) {
-      window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } }))
+      window.dispatchEvent(
+        new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } })
+      )
     }
 
     const controller = new AbortController()
@@ -107,7 +114,10 @@ export function useOllamaActions({ query, messages, setMessages, selectedModel }
         }
       }
 
-      const finalMessages: ChatMessage[] = [...next, { role: 'assistant', content: assistantContent }]
+      const finalMessages: ChatMessage[] = [
+        ...next,
+        { role: 'assistant', content: assistantContent },
+      ]
       setMessages(finalMessages)
       ipcCall('history:save', { messages: finalMessages }).catch(() => {})
     } catch (err) {
@@ -139,7 +149,9 @@ export function useOllamaActions({ query, messages, setMessages, selectedModel }
   function handleQueue(text: string): void {
     queueRef.current = text
     setQueuedMessage(text)
-    window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } }))
+    window.dispatchEvent(
+      new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'clear' } })
+    )
   }
 
   function handleAbort(): void {

@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { isPreloadsLoaded, onPreloadsLoaded, createMainWindow, getMainWindow, onRendererReady } from './manager.js'
+import {
+  isPreloadsLoaded,
+  onPreloadsLoaded,
+  createMainWindow,
+  getMainWindow,
+  onRendererReady,
+} from './manager.js'
 import { getConfig } from '../config/nuxyconfig.js'
 
 const onceHandlers: Record<string, () => void> = {}

@@ -4,6 +4,7 @@
   "empty.history": "No saved colors",
   "empty.history.hint": "Type a color and press S to save",
   "empty.hint": "Type a hex, rgb(), or hsl() value",
+  "action.navigate": "Navigate",
   "action.copy": "Copy",
   "action.save": "Save",
   "action.delete": "Delete",

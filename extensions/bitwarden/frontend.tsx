@@ -1,5 +1,10 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.bitwarden'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import type { BitwardenItem } from './types.ts'
 import type { UseListNavigationOptions, UseListNavigationResult } from '@nuxy/ui'
 
@@ -28,6 +33,7 @@ interface Props {
 }
 
 export default function BitwardenView({ query }: Props) {
+  const { t } = _useTranslation(EXT_ID)
   const [activeTab, setActiveTab] = React.useState<string>('arch')
   const [editingEmail, setEditingEmail] = React.useState<boolean>(false)
 
@@ -49,15 +55,15 @@ export default function BitwardenView({ query }: Props) {
     handleSync,
   } = useBitwardenActions({ refreshStatus, emailInput, setEmailInput, setEditingEmail })
 
-  const { selectedIndex, setSelectedIndex } = (_useListNavigation(results, {
+  const { selectedIndex, setSelectedIndex } = _useListNavigation(results, {
     onEnter: (item: BitwardenItem) => copyPassword(item),
-    enterLabel: 'Şifreyi Kopyala',
+    enterLabel: t('actions.copyPassword'),
     enterHint: 'Enter',
     extraActions: [
       {
         key: 'Enter',
         modifiers: ['shift'],
-        label: 'Kullanıcı Adını Kopyala',
+        label: t('actions.copyUsername'),
         hint: ['⇧', 'Enter'],
         activeOn: () => (selectedIndex as number) >= 0,
         handler: () => {
@@ -68,7 +74,7 @@ export default function BitwardenView({ query }: Props) {
       {
         key: 'Enter',
         modifiers: ['ctrl'],
-        label: 'TOTP Kopyala',
+        label: t('actions.copyTotp'),
         hint: ['Ctrl', 'Enter'],
         activeOn: () => (selectedIndex as number) >= 0,
         handler: () => {
@@ -77,7 +83,7 @@ export default function BitwardenView({ query }: Props) {
         },
       },
     ],
-  }) as UseListNavigationResult<BitwardenItem>)
+  }) as UseListNavigationResult<BitwardenItem>
 
   useBitwardenKeyboard({
     status,
@@ -98,6 +104,7 @@ export default function BitwardenView({ query }: Props) {
     handleSync,
     setEmailInput,
     setEditingEmail,
+    t,
   })
 
   useBitwardenSync({
@@ -117,13 +124,15 @@ export default function BitwardenView({ query }: Props) {
   if (status === null) {
     return (
       <div style={{ padding: 'var(--space-5)', fontSize: 'var(--font-sm)', opacity: 0.85 }}>
-        Kasa durumu kontrol ediliyor...
+        {t('status.checking')}
       </div>
     )
   }
 
   if (isInstallScreen) {
-    return <BitwardenInstallScreen status={status} activeTab={activeTab} onTabChange={setActiveTab} />
+    return (
+      <BitwardenInstallScreen status={status} activeTab={activeTab} onTabChange={setActiveTab} />
+    )
   }
 
   if (isConfigScreen) {

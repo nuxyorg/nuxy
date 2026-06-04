@@ -9,6 +9,7 @@ interface Params {
   handleAbort: () => void
   handleClearChat: () => void
   setSelectedModel: (model: string) => void
+  t: (key: string) => string
 }
 
 export function useOllamaKeyboard({
@@ -20,13 +21,14 @@ export function useOllamaKeyboard({
   handleAbort,
   handleClearChat,
   setSelectedModel,
+  t,
 }: Params): void {
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
   _useToolKeyActions([
     {
       key: 'Enter',
-      label: loading && query.trim().length > 0 ? 'Queue' : 'Send',
+      label: loading && query.trim().length > 0 ? t('actions.queue') : t('actions.send'),
       hint: '↵',
       activeOn: () => query.trim().length > 0,
       handler: () => {
@@ -41,7 +43,7 @@ export function useOllamaKeyboard({
     },
     {
       key: 'Escape',
-      label: 'Stop',
+      label: t('actions.stop'),
       hint: 'Esc',
       activeOn: () => loading,
       handler: () => {
@@ -59,14 +61,14 @@ export function useOllamaKeyboard({
     }[] = [
       {
         id: 'ollama-clear-chat',
-        label: 'Clear Chat History',
+        label: t('actions.clearHistory'),
         onExecute: handleClearChat,
       },
     ]
     if (models.length > 0) {
       actions.push({
         id: 'ollama-models',
-        label: 'Models',
+        label: t('actions.models'),
         children: models.map((m) => ({
           id: `ollama-select-model-${m}`,
           label: m,
@@ -78,5 +80,5 @@ export function useOllamaKeyboard({
     return () => {
       window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
     }
-  }, [models])
+  }, [models, t])
 }

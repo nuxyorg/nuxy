@@ -1,1 +1,112 @@
-{"nodes": [{"id": "docs_ui_cleanup_report_doc", "label": "UI Cleanup Report 2026-05-19", "file_type": "document", "source_file": "docs/ui/ui-cleanup-report.md", "source_location": null, "source_url": null, "captured_at": "2026-05-19", "author": null, "contributor": null}, {"id": "docs_ui_cleanup_report_transition_all", "label": "transition:all Performance Issue in CSS", "file_type": "concept", "source_file": "docs/ui/ui-cleanup-report.md", "source_location": "Issue 1", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_ui_cleanup_report_accessibility", "label": "Accessibility Gaps (ARIA roles, keyboard semantics)", "file_type": "concept", "source_file": "docs/ui/ui-cleanup-report.md", "source_location": "Issues 3-5", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_ui_cleanup_report_theme_tokens", "label": "ThemeTokens Type Contract Gap", "file_type": "concept", "source_file": "docs/ui/ui-cleanup-report.md", "source_location": "Issue 7", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_ui_cleanup_report_reduced_motion", "label": "prefers-reduced-motion Missing Support", "file_type": "concept", "source_file": "docs/ui/ui-cleanup-report.md", "source_location": "Issue 6", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "docs_ui_cleanup_report_doc", "target": "docs_ui_cleanup_report_transition_all", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/ui/ui-cleanup-report.md", "source_location": "Issue 1", "weight": 1.0}, {"source": "docs_ui_cleanup_report_doc", "target": "docs_ui_cleanup_report_accessibility", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/ui/ui-cleanup-report.md", "source_location": "Issues 3-5", "weight": 1.0}, {"source": "docs_ui_cleanup_report_doc", "target": "docs_ui_cleanup_report_theme_tokens", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/ui/ui-cleanup-report.md", "source_location": "Issue 7", "weight": 1.0}, {"source": "docs_ui_cleanup_report_doc", "target": "docs_ui_cleanup_report_reduced_motion", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/ui/ui-cleanup-report.md", "source_location": "Issue 6", "weight": 1.0}, {"source": "docs_ui_cleanup_report_theme_tokens", "target": "docs_hardcoded_px_report_design_tokens", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "docs/ui/ui-cleanup-report.md", "source_location": null, "weight": 0.85}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "docs_ui_cleanup_report_doc",
+      "label": "UI Cleanup Report 2026-05-19",
+      "file_type": "document",
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_ui_cleanup_report_transition_all",
+      "label": "transition:all Performance Issue in CSS",
+      "file_type": "concept",
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "Issue 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_ui_cleanup_report_accessibility",
+      "label": "Accessibility Gaps (ARIA roles, keyboard semantics)",
+      "file_type": "concept",
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "Issues 3-5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_ui_cleanup_report_theme_tokens",
+      "label": "ThemeTokens Type Contract Gap",
+      "file_type": "concept",
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "Issue 7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_ui_cleanup_report_reduced_motion",
+      "label": "prefers-reduced-motion Missing Support",
+      "file_type": "concept",
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "Issue 6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_ui_cleanup_report_doc",
+      "target": "docs_ui_cleanup_report_transition_all",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "Issue 1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ui_cleanup_report_doc",
+      "target": "docs_ui_cleanup_report_accessibility",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "Issues 3-5",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ui_cleanup_report_doc",
+      "target": "docs_ui_cleanup_report_theme_tokens",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "Issue 7",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ui_cleanup_report_doc",
+      "target": "docs_ui_cleanup_report_reduced_motion",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "Issue 6",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ui_cleanup_report_theme_tokens",
+      "target": "docs_hardcoded_px_report_design_tokens",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": null,
+      "weight": 0.85
+    }
+  ],
+  "hyperedges": []
+}

@@ -49,7 +49,7 @@ export default defineConfig({
 
         const shouldSync = (filePath: string) => {
           const parts = path.relative(sourceDir, filePath).split(path.sep)
-          return !parts.some(part => skipDirs.has(part))
+          return !parts.some((part) => skipDirs.has(part))
         }
 
         const getExtensionId = (extDir: string, fallback: string): string => {
@@ -114,7 +114,10 @@ export default defineConfig({
           return parts[0] || null
         }
 
-        const watchRecursive = (dir: string, callback: (event: string, filepath: string) => void) => {
+        const watchRecursive = (
+          dir: string,
+          callback: (event: string, filepath: string) => void
+        ) => {
           try {
             fs.watch(dir, { recursive: false }, (event, filename) => {
               if (filename) callback(event, path.join(dir, filename))
@@ -137,7 +140,9 @@ export default defineConfig({
 
         try {
           syncAllExtensions()
-          console.log(`[symlink-extensions] Packaged and synced extensions from ${sourceDir} -> ${targetDir}`)
+          console.log(
+            `[symlink-extensions] Packaged and synced extensions from ${sourceDir} -> ${targetDir}`
+          )
 
           if (fs.existsSync(extDestDir)) {
             const stat = fs.lstatSync(extDestDir)
@@ -153,7 +158,9 @@ export default defineConfig({
             } else {
               fs.rmSync(extDestDir, { recursive: true, force: true })
               fs.symlinkSync(targetDir, extDestDir, 'dir')
-              console.log(`[symlink-extensions] Replaced dir with symlink: ${extDestDir} -> ${targetDir}`)
+              console.log(
+                `[symlink-extensions] Replaced dir with symlink: ${extDestDir} -> ${targetDir}`
+              )
             }
           } else {
             fs.mkdirSync(path.dirname(extDestDir), { recursive: true })
@@ -203,7 +210,7 @@ export default defineConfig({
                   'packages/extension-host/src/index.ts'
                 ),
               },
-              external: ['typescript', 'dbus-next', 'electron'],
+              external: ['typescript', 'dbus-next', 'electron', 'esbuild'],
             },
           },
         },

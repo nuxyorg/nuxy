@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "name": "翻訳"
+  },
+  "tool": {
+    "name": "翻訳"
+  },
+  "empty": {
+    "placeholder": "翻訳するテキストを入力してください"
+  },
+  "action": {
+    "copy": "コピー",
+    "translate": "翻訳"
+  },
+  "label": {
+    "source": "ソース",
+    "detected": "検出済み: {lang}"
+  },
+  "error": {
+    "failed": "翻訳に失敗しました: {message}"
+  },
+  "lang": {
+    "en": "英語",
+    "tr": "トルコ語",
+    "de": "ドイツ語",
+    "fr": "フランス語",
+    "es": "スペイン語",
+    "ja": "日本語",
+    "zh": "中国語"
+  }
+}

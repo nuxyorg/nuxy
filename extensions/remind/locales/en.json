@@ -15,7 +15,6 @@
   "label": {
     "in": "in",
     "overdue": "overdue",
-    "fired": "fired",
     "unnamed": "Reminder"
   },
   "notification": {

@@ -18,17 +18,18 @@ Cursor Trail is a purely visual helper that runs in the renderer. It injects a f
 ## Extension Type
 
 ### `helper`
+
 Invisible to the user. Runs in the background as a passive visual layer on top of the shell UI. Never appears in the tool list.
 
 ---
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 The canvas overlay uses standard browser APIs (`requestAnimationFrame`, `mousemove`) and has no platform-specific dependencies.
 

@@ -1,1 +1,164 @@
-{"nodes": [{"id": "docs_project_analysis_03_future_evolution_document", "label": "Future Evolution Roadmap", "file_type": "document", "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": null, "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_03_extension_marketplace", "label": "Extension Marketplace (Future)", "file_type": "concept", "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 1. Nuxy Eklenti Ma\u011fazas\u0131", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_03_isolated_vm", "label": "isolated-vm Integration (Future)", "file_type": "concept", "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 2. Geli\u015fmi\u015f G\u00fcvenlik", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_03_worker_hibernation", "label": "Worker Hibernation / Lazy Loading (Future)", "file_type": "concept", "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 3. Ak\u0131ll\u0131 Kaynak Y\u00f6netimi", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_03_webgpu_slm", "label": "WebGPU Embedded SLM (Future)", "file_type": "concept", "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 4. Yerel K\u00fc\u00e7\u00fck Dil Modelleri", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_03_multi_agent_orchestration", "label": "Multi-Agent Chained Workflow (Future)", "file_type": "concept", "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 4. \u00c7oklu Ajan", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_project_analysis_03_mobile_companion", "label": "Nuxy Companion Mobile App (Future)", "file_type": "concept", "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 5. \u00c7apraz Platform Entegrasyonu", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "docs_project_analysis_03_future_evolution_document", "target": "docs_project_analysis_03_extension_marketplace", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 1", "weight": 1.0}, {"source": "docs_project_analysis_03_future_evolution_document", "target": "docs_project_analysis_03_isolated_vm", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 2", "weight": 1.0}, {"source": "docs_project_analysis_03_future_evolution_document", "target": "docs_project_analysis_03_worker_hibernation", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 3", "weight": 1.0}, {"source": "docs_project_analysis_03_future_evolution_document", "target": "docs_project_analysis_03_webgpu_slm", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 4", "weight": 1.0}, {"source": "docs_project_analysis_03_future_evolution_document", "target": "docs_project_analysis_03_multi_agent_orchestration", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 4", "weight": 1.0}, {"source": "docs_project_analysis_03_future_evolution_document", "target": "docs_project_analysis_03_mobile_companion", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "## 5", "weight": 1.0}, {"source": "docs_project_analysis_03_isolated_vm", "target": "docs_project_analysis_01_zero_trust_permission_model", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "isolated-vm is a stronger sandbox evolving the zero-trust model", "weight": 0.85}, {"source": "docs_project_analysis_03_worker_hibernation", "target": "docs_architecture_refactor_plan_scanner_lifecycle", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.65, "source_file": "docs/project-analysis/03-future-evolution.md", "source_location": "Worker lifecycle management relates to scanner lifecycle overload", "weight": 0.65}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "docs_project_analysis_03_future_evolution_document",
+      "label": "Future Evolution Roadmap",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_03_extension_marketplace",
+      "label": "Extension Marketplace (Future)",
+      "file_type": "concept",
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 1. Nuxy Eklenti Ma\u011fazas\u0131",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_03_isolated_vm",
+      "label": "isolated-vm Integration (Future)",
+      "file_type": "concept",
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 2. Geli\u015fmi\u015f G\u00fcvenlik",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_03_worker_hibernation",
+      "label": "Worker Hibernation / Lazy Loading (Future)",
+      "file_type": "concept",
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 3. Ak\u0131ll\u0131 Kaynak Y\u00f6netimi",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_03_webgpu_slm",
+      "label": "WebGPU Embedded SLM (Future)",
+      "file_type": "concept",
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 4. Yerel K\u00fc\u00e7\u00fck Dil Modelleri",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_03_multi_agent_orchestration",
+      "label": "Multi-Agent Chained Workflow (Future)",
+      "file_type": "concept",
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 4. \u00c7oklu Ajan",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_project_analysis_03_mobile_companion",
+      "label": "Nuxy Companion Mobile App (Future)",
+      "file_type": "concept",
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 5. \u00c7apraz Platform Entegrasyonu",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_project_analysis_03_future_evolution_document",
+      "target": "docs_project_analysis_03_extension_marketplace",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_03_future_evolution_document",
+      "target": "docs_project_analysis_03_isolated_vm",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 2",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_03_future_evolution_document",
+      "target": "docs_project_analysis_03_worker_hibernation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_03_future_evolution_document",
+      "target": "docs_project_analysis_03_webgpu_slm",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 4",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_03_future_evolution_document",
+      "target": "docs_project_analysis_03_multi_agent_orchestration",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 4",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_03_future_evolution_document",
+      "target": "docs_project_analysis_03_mobile_companion",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "## 5",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_project_analysis_03_isolated_vm",
+      "target": "docs_project_analysis_01_zero_trust_permission_model",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "isolated-vm is a stronger sandbox evolving the zero-trust model",
+      "weight": 0.85
+    },
+    {
+      "source": "docs_project_analysis_03_worker_hibernation",
+      "target": "docs_architecture_refactor_plan_scanner_lifecycle",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "docs/project-analysis/03-future-evolution.md",
+      "source_location": "Worker lifecycle management relates to scanner lifecycle overload",
+      "weight": 0.65
+    }
+  ],
+  "hyperedges": []
+}

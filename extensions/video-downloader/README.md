@@ -18,6 +18,7 @@ Video Downloader lets you paste any video URL into the Nuxy omnibar, inspect all
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user activates it by selecting **Video Downloader** from the shell, then pastes a video URL into the omnibar and presses `Enter` to fetch formats.
 
 ---
@@ -30,14 +31,14 @@ Select **Video Downloader** from the tool list. Paste a video URL (e.g. a YouTub
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate the format list or the Downloads & History list |
-| `Enter` | Fetch formats (when URL is entered) / Start download (when a format is selected) / Open video file (in Downloads tab) / Cancel running download (in Downloads tab) |
-| `⇧ Enter` | Open the containing folder of a completed download (in Downloads tab) |
-| `Tab` | Cycle to the next format tab (Recommended → Video & Audio → Audio Only → Video Only → All Streams → Downloads) |
-| `←` | Move focus to the left tab panel |
-| `Esc` | Return to the format tabs from the Downloads view |
+| Key       | Action                                                                                                                                                             |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `↑` `↓`   | Navigate the format list or the Downloads & History list                                                                                                           |
+| `Enter`   | Fetch formats (when URL is entered) / Start download (when a format is selected) / Open video file (in Downloads tab) / Cancel running download (in Downloads tab) |
+| `⇧ Enter` | Open the containing folder of a completed download (in Downloads tab)                                                                                              |
+| `Tab`     | Cycle to the next format tab (Recommended → Video & Audio → Audio Only → Video Only → All Streams → Downloads)                                                     |
+| `←`       | Move focus to the left tab panel                                                                                                                                   |
+| `Esc`     | Return to the format tabs from the Downloads view                                                                                                                  |
 
 ### Examples
 
@@ -59,31 +60,31 @@ Navigate to the **Downloads** tab, highlight the completed item, and press `Ente
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `downloadPath` | location | `~/Downloads` | Folder where downloaded videos are saved |
-| `format` | select | `mp4` | Preferred container format: `mp4`, `webm`, `mkv`, or `best` |
-| `audioOnly` | toggle | `false` | Download the audio track only |
-| `subtitles` | toggle | `false` | Download subtitles alongside the video |
+| Key            | Type     | Default       | Description                                                 |
+| -------------- | -------- | ------------- | ----------------------------------------------------------- |
+| `downloadPath` | location | `~/Downloads` | Folder where downloaded videos are saved                    |
+| `format`       | select   | `mp4`         | Preferred container format: `mp4`, `webm`, `mkv`, or `best` |
+| `audioOnly`    | toggle   | `false`       | Download the audio track only                               |
+| `subtitles`    | toggle   | `false`       | Download subtitles alongside the video                      |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Persisting download history (`history.json`) and the configured output directory (`config.json`) |
-| `shell` | Spawning `yt-dlp` to fetch metadata and stream download progress |
-| `fs` | Resolving the home directory to build the default output path |
+| Permission | Used for                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| `storage`  | Persisting download history (`history.json`) and the configured output directory (`config.json`) |
+| `shell`    | Spawning `yt-dlp` to fetch metadata and stream download progress                                 |
+| `fs`       | Resolving the home directory to build the default output path                                    |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -91,11 +92,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 Requires `yt-dlp` to be available on `$PATH`. `ffmpeg` is needed for format merging (e.g. best video + best audio streams).
 
@@ -103,10 +104,10 @@ Requires `yt-dlp` to be available on `$PATH`. `ffmpeg` is needed for format merg
 
 ## Requirements
 
-| Requirement | Minimum version | Install |
-|-------------|-----------------|---------|
-| `yt-dlp` | latest | `pip install yt-dlp` / `brew install yt-dlp` / `pacman -S yt-dlp` |
-| `ffmpeg` | 4.x | `sudo apt install ffmpeg` / `brew install ffmpeg` / `pacman -S ffmpeg` |
+| Requirement | Minimum version | Install                                                                |
+| ----------- | --------------- | ---------------------------------------------------------------------- |
+| `yt-dlp`    | latest          | `pip install yt-dlp` / `brew install yt-dlp` / `pacman -S yt-dlp`      |
+| `ffmpeg`    | 4.x             | `sudo apt install ffmpeg` / `brew install ffmpeg` / `pacman -S ffmpeg` |
 
 If `yt-dlp` is not found on startup, the extension logs a warning and the frontend shows installation instructions with commands for pip, Homebrew, and pacman.
 

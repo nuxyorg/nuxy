@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "name": "n8n"
+  },
+  "config": {
+    "sectionHeader": "n8nの設定",
+    "baseUrlLabel": "ベースURL",
+    "baseUrlPlaceholder": "http://localhost:5678",
+    "apiKeyLabel": "APIキー",
+    "apiKeyPlaceholder": "n8n_api_…"
+  },
+  "workflows": {
+    "sectionHeader": "ワークフロー",
+    "status": {
+      "active": "アクティブ",
+      "inactive": "非アクティブ"
+    },
+    "empty": "ワークフローが見つかりません。",
+    "emptySearch": "一致するワークフローがありません。"
+  },
+  "executions": {
+    "sectionHeaderPrefix": "実行:",
+    "empty": "実行が見つかりません。"
+  },
+  "status": {
+    "unreachable": "n8nに接続できません"
+  },
+  "actions": {
+    "configure": "設定",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "showWorkflows": "ワークフローを表示",
+    "configureConnection": "接続を設定",
+    "refreshWorkflows": "ワークフローを更新",
+    "runWebhookPrefix": "Webhookを実行:",
+    "select": "選択"
+  }
+}

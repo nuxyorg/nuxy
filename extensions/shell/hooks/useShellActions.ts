@@ -48,18 +48,20 @@ export function useShellActions({
     recordToolUsed(toolId)
     const dynamicImport = new Function('url', 'return import(url)')
     dynamicImport(`nuxy-ext://${toolId}/frontend.js`)
-      .then(
-        (module: { default: React.ComponentType<{ query: string; extensionId?: string }> }) => {
-          setToolComponent(() => module.default)
-        }
-      )
+      .then((module: { default: React.ComponentType<{ query: string; extensionId?: string }> }) => {
+        setToolComponent(() => module.default)
+      })
       .catch(() => {})
   }
 
   const handleItemClick = async (item: ListItem): Promise<void> => {
     if (item.execute) {
       try {
-        const res = await window.core.ipc.invoke(item.id, item.execute.channel, item.execute.payload)
+        const res = await window.core.ipc.invoke(
+          item.id,
+          item.execute.channel,
+          item.execute.payload
+        )
         const r = res as { success: boolean; data?: { toolId?: string; query?: string } } | null
         if (r?.success && r.data?.toolId) {
           openTool(r.data.toolId, r.data.query || '')
@@ -76,9 +78,13 @@ export function useShellActions({
     if (!savedQuery.trim() || orchestrators.length === 0) return
     try {
       const res = await window.core.ipc.invoke(orchestrators[0].id, 'route', { text: savedQuery })
-      const r = res as { ok: boolean; data?: { toolCalled?: string; initialQuery?: string } } | null
-      if (r?.ok && r.data?.toolCalled) {
-        openTool(r.data.toolCalled, r.data.initialQuery)
+      const r = res as {
+        success?: boolean
+        data?: { ok?: boolean; data?: { toolCalled?: string; initialQuery?: string } }
+      } | null
+      const route = r?.success ? r.data : null
+      if (route?.ok && route.data?.toolCalled) {
+        openTool(route.data.toolCalled, route.data.initialQuery ?? '')
       }
     } catch {
       // silently ignore orchestrator route failures

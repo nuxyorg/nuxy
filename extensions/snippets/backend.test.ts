@@ -27,9 +27,7 @@ describe('snippets backend', () => {
   describe('getSnippets', () => {
     it('returns empty array when storage is null', async () => {
       ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValueOnce(null)
-      const result = await (handlers['getSnippets'] as (p: unknown) => Promise<Snippet[]>)(
-        {}
-      )
+      const result = await (handlers['getSnippets'] as (p: unknown) => Promise<Snippet[]>)({})
       expect(result).toEqual([])
     })
 
@@ -61,9 +59,7 @@ describe('snippets backend', () => {
         },
       ]
       ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValueOnce(items)
-      const result = await (handlers['getSnippets'] as (p: unknown) => Promise<Snippet[]>)(
-        {}
-      )
+      const result = await (handlers['getSnippets'] as (p: unknown) => Promise<Snippet[]>)({})
       expect(result[0].id).toBe('c')
       expect(result[1].id).toBe('b')
       expect(result[2].id).toBe('a')
@@ -146,10 +142,11 @@ describe('snippets backend', () => {
         expect.arrayContaining([
           expect.objectContaining({ id: newSnippet.id }),
           expect.objectContaining({ id: 'old-id' }),
-        ]),
+        ])
       )
       // new item should be first in the written array
-      const writtenList = (core.storage.write as ReturnType<typeof vi.fn>).mock.calls[0][1] as Snippet[]
+      const writtenList = (core.storage.write as ReturnType<typeof vi.fn>).mock
+        .calls[0][1] as Snippet[]
       expect(writtenList[0].id).toBe(newSnippet.id)
       expect(writtenList[1].id).toBe('old-id')
     })
@@ -183,7 +180,7 @@ describe('snippets backend', () => {
       expect(result[0].id).toBe('keep')
       expect(core.storage.write).toHaveBeenCalledWith(
         'snippets.json',
-        expect.arrayContaining([expect.objectContaining({ id: 'keep' })]),
+        expect.arrayContaining([expect.objectContaining({ id: 'keep' })])
       )
       const written = (core.storage.write as ReturnType<typeof vi.fn>).mock.calls[0][1] as Snippet[]
       expect(written.find((s) => s.id === 'del')).toBeUndefined()
@@ -224,9 +221,9 @@ describe('snippets backend', () => {
         },
       ]
       ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValueOnce(items)
-      const result = await (
-        handlers['copySnippet'] as (p: unknown) => Promise<{ copied: true }>
-      )({ id: 'abc' })
+      const result = await (handlers['copySnippet'] as (p: unknown) => Promise<{ copied: true }>)({
+        id: 'abc',
+      })
       expect(core.clipboard.writeText).toHaveBeenCalledWith('console.log("hello")')
       expect(result).toEqual({ copied: true })
     })
@@ -236,7 +233,7 @@ describe('snippets backend', () => {
       await expect(
         (handlers['copySnippet'] as (p: unknown) => Promise<{ copied: true }>)({
           id: 'missing',
-        }),
+        })
       ).rejects.toThrow()
     })
   })

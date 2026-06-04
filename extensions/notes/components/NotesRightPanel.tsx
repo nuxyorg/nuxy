@@ -129,9 +129,6 @@ export function NotesRightPanel({
   }
 
   return (
-    <EmptyState
-      message="Select a note or create a new one."
-      hint="Use ⌃N to create a new note."
-    />
+    <EmptyState message="Select a note or create a new one." hint="Use ⌃N to create a new note." />
   )
 }

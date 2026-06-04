@@ -19,6 +19,8 @@ const KERNEL_CHANNELS = new Set([
   'listInstalledExtensions',
   'installExtension',
   'uninstallExtension',
+  'getExtensionTranslations',
+  'setExtensionEnabled',
 ])
 
 export function validateExtInvokeArgs(

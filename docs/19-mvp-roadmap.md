@@ -23,7 +23,10 @@ To reach a **Minimum Viable Product (MVP)** within 2-3 weeks, we must drasticall
 
 1. **Scaffold**: Initialize Vite + React + Electron + Tailwind + Shadcn.
 2. **Window Manager**: Implement the frameless, transparent window that pauses Chromium rendering when blurred/hidden.
-3. **Single Instance Daemon**: Do **not** use Electron's `globalShortcut`. Instead, use `app.requestSingleInstanceLock()` and a UNIX Socket (`/tmp/nuxy.sock`). When the OS shortcut runs `nuxy` a second time, the first instance intercepts it and calls `window.show()`.
+3. **Single Instance Daemon**: Do **not** use Electron's `globalShortcut`. Use `app.requestSingleInstanceLock()` so a second launch focuses the existing process. **Optional CLI control:** while Nuxy is running, the kernel listens on `$TMPDIR/nuxy.sock` (e.g. `/tmp/nuxy.sock`). Send a line-terminated command from any terminal or script:
+   - `toggle` — show/hide the launcher window
+   - `show` — show and focus the window  
+     Example: `echo toggle | nc -U /tmp/nuxy.sock` (or use repo `nuxy.sh`). This complements single-instance lock; it does not replace it.
 4. **OmniBar UI**: Build the central Input component in React. If nothing is typed, it displays: _"Nuxy MVP: Ready"_.
 
 ---
@@ -74,8 +77,8 @@ Once the MVP is stable, you begin adding the "Pro" features iteratively:
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Gap analysis between design and reality | [pain-points-plan.md](./pain-points-plan.md) | Phased remediation plan aligned with MVP phases |
-| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) | Implemented vs planned tracker |
-| Full rebuild phases | [14-rebuild-roadmap.md](./14-rebuild-roadmap.md) | Longer-term execution plan beyond the MVP |
+| Topic                                   | Document                                         | Notes                                           |
+| --------------------------------------- | ------------------------------------------------ | ----------------------------------------------- |
+| Gap analysis between design and reality | [pain-points-plan.md](./pain-points-plan.md)     | Phased remediation plan aligned with MVP phases |
+| Feature implementation status           | [DOCUMENTATION.md](./DOCUMENTATION.md)           | Implemented vs planned tracker                  |
+| Full rebuild phases                     | [14-rebuild-roadmap.md](./14-rebuild-roadmap.md) | Longer-term execution plan beyond the MVP       |

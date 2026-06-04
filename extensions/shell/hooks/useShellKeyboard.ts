@@ -49,7 +49,11 @@ export function useShellKeyboard({
     // If inside a tool, global useKeyboard in hooks.tsx handles forwarding — skip here
     if (activeTool) return
 
-    if (e.key === 'Enter' && (selectedIndex < 0 || !listResults[selectedIndex]) && savedQuery.trim()) {
+    if (
+      e.key === 'Enter' &&
+      (selectedIndex < 0 || !listResults[selectedIndex]) &&
+      savedQuery.trim()
+    ) {
       void tryOrchestratorRoute()
     }
     if (listResults.length === 0) return

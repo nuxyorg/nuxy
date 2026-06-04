@@ -10,13 +10,20 @@ interface Params {
   selectedIndex: number
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
   clearHistory: () => void
+  t: (key: string) => string
 }
 
-export function useKeyDebugKeyboard({ history, selectedIndex, setSelectedIndex, clearHistory }: Params): void {
+export function useKeyDebugKeyboard({
+  history,
+  selectedIndex,
+  setSelectedIndex,
+  clearHistory,
+  t,
+}: Params): void {
   _useToolKeyActions([
     {
       key: 'ArrowUp',
-      label: 'Navigate',
+      label: t('actions.navigate'),
       hint: '↑↓',
       handler: () => {
         if (history.length === 0) return
@@ -33,10 +40,23 @@ export function useKeyDebugKeyboard({ history, selectedIndex, setSelectedIndex, 
     },
     {
       key: 'c',
-      label: 'Clear',
+      label: t('actions.clear'),
       hint: 'C',
       activeOn: () => history.length > 0,
       handler: clearHistory,
+    },
+    {
+      key: 'Escape',
+      label: t('actions.exit'),
+      hint: 'Esc',
+      trigger: 'hold',
+      holdMs: 600,
+      handler: () => {
+        window.dispatchEvent(
+          new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } })
+        )
+        window.core?.window?.esc?.()
+      },
     },
   ])
 

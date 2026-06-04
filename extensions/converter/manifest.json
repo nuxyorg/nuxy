@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "convert",
+  "providerType": "result",
   "permissions": ["clipboard"],
   "capabilities": {
     "callable": false,
@@ -16,6 +17,6 @@
   },
   "locales": {
     "default": "en",
-    "supported": ["en", "tr"]
+    "supported": ["en", "tr", "ja"]
   }
 }

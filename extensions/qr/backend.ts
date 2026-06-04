@@ -1,7 +1,12 @@
 import type { CoreContext } from '@nuxy/extension-sdk'
 import QRCode from 'qrcode'
 
-import type { QrGeneratePayload, QrGenerateResult, QrCopyTextPayload, QrCopyTextResult } from './types.ts'
+import type {
+  QrGeneratePayload,
+  QrGenerateResult,
+  QrCopyTextPayload,
+  QrCopyTextResult,
+} from './types.ts'
 
 export async function register(core: CoreContext): Promise<void> {
   core.registry.registerTool({ name: core.i18n.t('tool.name') })

@@ -22,7 +22,12 @@ interface Actions {
   handleDelete: (id: string, e?: { stopPropagation: () => void }) => void
 }
 
-export function useClipboardActions({ filteredItems, searchQuery, setItems, setSelectedIndex }: Params): Actions {
+export function useClipboardActions({
+  filteredItems,
+  searchQuery,
+  setItems,
+  setSelectedIndex,
+}: Params): Actions {
   const [copiedId, setCopiedId] = React.useState<string | null>(null)
 
   function ipcMutate(channel: string, payload: string): Promise<ClipboardItem[]> {

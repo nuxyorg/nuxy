@@ -176,7 +176,15 @@ const CATEGORIES: Record<UnitCategory, CategoryDef> = {
       m2: {
         symbol: 'm²',
         label: 'Square Meters',
-        aliases: ['m²', 'sqm', 'sq m', 'square meter', 'square meters', 'square metre', 'square metres'],
+        aliases: [
+          'm²',
+          'sqm',
+          'sq m',
+          'square meter',
+          'square meters',
+          'square metre',
+          'square metres',
+        ],
         system: 'metric',
         toBase: (v) => v,
         fromBase: (v) => v,

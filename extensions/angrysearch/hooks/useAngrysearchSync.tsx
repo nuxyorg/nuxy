@@ -5,9 +5,10 @@ import type { DbStatus } from '../types.ts'
 interface Params {
   regexMode: boolean
   status: DbStatus | null
+  t: (key: string) => string
 }
 
-export function useAngrysearchSync({ regexMode, status }: Params): void {
+export function useAngrysearchSync({ regexMode, status, t }: Params): void {
   const { ShortcutSep } = window.UI || {}
 
   React.useEffect(() => {
@@ -16,17 +17,17 @@ export function useAngrysearchSync({ regexMode, status }: Params): void {
         detail: (
           <>
             <span style={{ color: regexMode ? 'var(--color-danger)' : 'var(--text-muted)' }}>
-              {regexMode ? 'Regex Mode' : 'Normal Mode'}
+              {regexMode ? t('mode.regex') : t('mode.normal')}
             </span>
             {ShortcutSep ? <ShortcutSep /> : <span className="nuxy-shortcut-sep">/</span>}
             <span>
               {status === null
-                ? 'Loading...'
+                ? t('db.loading')
                 : status.isUpdating
-                  ? 'Updating DB...'
+                  ? t('db.updating')
                   : status.exists
-                    ? 'DB Ready'
-                    : 'DB Missing'}
+                    ? t('db.ready')
+                    : t('db.missing')}
             </span>
           </>
         ),

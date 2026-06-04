@@ -21,11 +21,7 @@ function createCore(settingsRegistryUrl: string | null = null): {
 }
 
 /** Minimal LoadedExtension shape the kernel returns */
-function makeLoadedExt(
-  id: string,
-  version: string,
-  overrides: Record<string, unknown> = {}
-) {
+function makeLoadedExt(id: string, version: string, overrides: Record<string, unknown> = {}) {
   return {
     id,
     folderName: id.split('.').pop(),
@@ -78,7 +74,10 @@ describe('Store Extension Backend', () => {
       const { core } = createCore()
       register(core)
       expect(core.registry.registerTool).toHaveBeenCalledOnce()
-      expect(core.registry.registerTool).toHaveBeenCalledWith({ name: 'store', displayName: 'Store' })
+      expect(core.registry.registerTool).toHaveBeenCalledWith({
+        name: 'store',
+        displayName: 'Store',
+      })
     })
 
     it('registers all expected IPC handlers', () => {
@@ -125,7 +124,12 @@ describe('Store Extension Backend', () => {
 
       vi.stubGlobal(
         'fetch',
-        mockFetch(makeRegistry([makeRemoteExt('com.nuxy.alpha', '1.0.0'), makeRemoteExt('com.nuxy.beta', '2.0.0')]))
+        mockFetch(
+          makeRegistry([
+            makeRemoteExt('com.nuxy.alpha', '1.0.0'),
+            makeRemoteExt('com.nuxy.beta', '2.0.0'),
+          ])
+        )
       )
       vi.mocked(core.extensions.invoke).mockResolvedValue({
         success: true,
@@ -195,7 +199,10 @@ describe('Store Extension Backend', () => {
       const { core, handlers } = createCore()
       register(core)
 
-      vi.stubGlobal('fetch', mockFetch(makeRegistry([makeRemoteExt('com.nuxy.remote-only', '1.0.0')])))
+      vi.stubGlobal(
+        'fetch',
+        mockFetch(makeRegistry([makeRemoteExt('com.nuxy.remote-only', '1.0.0')]))
+      )
       vi.mocked(core.extensions.invoke).mockResolvedValue({ success: true, data: [] })
 
       const result = (await handlers['getExtensions']!()) as ExtensionListItem[]
@@ -285,7 +292,10 @@ describe('Store Extension Backend', () => {
       const { core, handlers } = createCore()
       register(core)
 
-      vi.stubGlobal('fetch', mockFetch(makeRegistry([makeRemoteExt('com.nuxy.bootstrapped', '1.0.0')])))
+      vi.stubGlobal(
+        'fetch',
+        mockFetch(makeRegistry([makeRemoteExt('com.nuxy.bootstrapped', '1.0.0')]))
+      )
       vi.mocked(core.extensions.invoke).mockResolvedValue({
         success: true,
         data: [makeLoadedExt('com.nuxy.bootstrapped', '1.0.0', { bootstrap: true })],
@@ -381,7 +391,10 @@ describe('Store Extension Backend', () => {
       const { core, handlers } = createCore()
       register(core)
 
-      vi.stubGlobal('fetch', mockFetch(makeRegistry([makeRemoteExt('com.nuxy.tool', '1.0.0')]), false))
+      vi.stubGlobal(
+        'fetch',
+        mockFetch(makeRegistry([makeRemoteExt('com.nuxy.tool', '1.0.0')]), false)
+      )
       vi.mocked(core.extensions.invoke).mockResolvedValue({
         success: true,
         data: [makeLoadedExt('com.local.installed', '1.0.0')],

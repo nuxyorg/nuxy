@@ -19,7 +19,10 @@
   "item": {
     "copied": "Copied!",
     "selectPrompt": "Select a result to view details",
-    "magnetCopied": "Magnet copied!"
+    "selectPromptMulti": "Check items to select them",
+    "magnetCopied": "Magnet copied!",
+    "selectedCount": "{count} selected",
+    "multiSelectHint": "Open Ctrl+K to copy or download all"
   },
   "details": {
     "title": "Details",
@@ -38,6 +41,13 @@
   "actions": {
     "navigate": "Navigate",
     "copyMagnet": "Copy Magnet",
-    "copyMagnetLabel": "Copy Magnet Link"
+    "copyMagnetLabel": "Copy Magnet Link",
+    "downloadTorrent": "Save Torrent",
+    "downloadTorrentLabel": "Save Torrent File",
+    "checkToggle": "Check / Uncheck",
+    "selectMultiple": "Select Multiple",
+    "exitSelectMultiple": "Exit Selection",
+    "copyAll": "Copy All Magnets",
+    "downloadAll": "Download All Torrents"
   }
 }

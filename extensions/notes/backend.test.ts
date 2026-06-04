@@ -303,10 +303,7 @@ describe('notes backend', () => {
         'openaiApiKey',
         'sk-abc'
       )
-      expect(core.settings.write as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
-        'language',
-        'fr'
-      )
+      expect(core.settings.write as ReturnType<typeof vi.fn>).toHaveBeenCalledWith('language', 'fr')
     })
   })
 })

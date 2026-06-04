@@ -10,6 +10,7 @@ const DEFAULT: NuxySettings = {
   // Window behaviour (formerly nuxyconfig)
   escAction: 'hide',
   blurAction: 'hide',
+  backgroundBehavior: 'reset-on-show',
   windowWidth: 800,
   windowMaxHeight: 600,
   alwaysOnTop: false,

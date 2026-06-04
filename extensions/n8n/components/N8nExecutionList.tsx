@@ -8,15 +8,25 @@ interface Props {
 }
 
 export function N8nExecutionList({ selected, executions }: Props) {
-  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, Badge, EmptyState, SectionHeader } =
-    window.UI || {}
+  const {
+    List,
+    ListItem,
+    ListItemBody,
+    ListItemText,
+    ListItemMeta,
+    Badge,
+    EmptyState,
+    SectionHeader,
+  } = window.UI || {}
 
   return (
     <>
       {SectionHeader && <SectionHeader label={`Executions: ${selected.name}`} />}
       <List>
         {executions.length === 0 ? (
-          EmptyState ? <EmptyState message="No executions found." /> : null
+          EmptyState ? (
+            <EmptyState message="No executions found." />
+          ) : null
         ) : (
           executions.map((ex) => (
             <ListItem key={ex.id}>

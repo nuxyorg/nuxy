@@ -52,6 +52,7 @@ Every extension starts with `manifest.json`. This file defines the extension's i
 ```
 
 Key fields:
+
 - `id` — unique reverse-DNS identifier; use your own domain, not `com.nuxy`
 - `type: "tool"` — this extension will appear in the tool list
 - `permissions: ["storage"]` — we will save greetings to storage
@@ -73,8 +74,8 @@ export interface Greeting {
 }
 
 export interface IpcChannels extends IpcChannelMap {
-  greet:      { input: { name: string }; output: Greeting  }
-  getHistory: { input: void;             output: Greeting[] }
+  greet: { input: { name: string }; output: Greeting }
+  getHistory: { input: void; output: Greeting[] }
 }
 ```
 
@@ -149,7 +150,7 @@ describe('hello-world backend', () => {
   })
 
   it('greet returns a greeting and saves to storage', async () => {
-    const result = await handlers['greet']({ name: 'World' }) as Greeting
+    const result = (await handlers['greet']({ name: 'World' })) as Greeting
     expect(result.name).toBe('World')
     expect(result.message).toContain('World')
     expect(core.storage.write).toHaveBeenCalled()
@@ -183,8 +184,7 @@ import type { Greeting, IpcChannels } from './types.ts'
 const EXT_ID = 'com.example.hello-world'
 
 const _useListNavigation =
-  (window.UI || {}).useListNavigation ||
-  (() => ({ selectedIndex: -1, setSelectedIndex: () => {} }))
+  (window.UI || {}).useListNavigation || (() => ({ selectedIndex: -1, setSelectedIndex: () => {} }))
 
 interface Props {
   query: string
@@ -204,7 +204,9 @@ export default function HelloWorldView({ query }: Props) {
 
   // Load history on mount
   useEffect(() => {
-    invoke('getHistory').then(setHistory).catch(() => {})
+    invoke('getHistory')
+      .then(setHistory)
+      .catch(() => {})
   }, [])
 
   // Greet when query changes (non-empty)
@@ -228,7 +230,10 @@ export default function HelloWorldView({ query }: Props) {
 
   if (history.length === 0) {
     return EmptyState ? (
-      <EmptyState title="No greetings yet" description="Type a name in the search bar to greet someone." />
+      <EmptyState
+        title="No greetings yet"
+        description="Type a name in the search bar to greet someone."
+      />
     ) : null
   }
 

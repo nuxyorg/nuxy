@@ -37,9 +37,7 @@ export function ShellProviderResults({
   ResultCard,
   CompareCard,
 }: Props) {
-  const resultIds = Object.keys(providerStates).filter(
-    (id) => providerStates[id].type === 'result'
-  )
+  const resultIds = Object.keys(providerStates).filter((id) => providerStates[id].type === 'result')
   const compareIds = Object.keys(providerStates).filter(
     (id) => providerStates[id].type === 'compare'
   )

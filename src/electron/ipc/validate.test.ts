@@ -61,7 +61,9 @@ describe('validateExtInvokeArgs', () => {
   })
 
   it('allows kernel installExtension', () => {
-    const r = validateExtInvokeArgs('kernel', 'installExtension', { downloadUrl: 'https://example.com' })
+    const r = validateExtInvokeArgs('kernel', 'installExtension', {
+      downloadUrl: 'https://example.com',
+    })
     expect(r.ok).toBe(true)
     if (r.ok) expect(r.channel).toBe('installExtension')
   })

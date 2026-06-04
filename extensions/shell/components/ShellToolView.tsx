@@ -4,9 +4,10 @@ interface Props {
   ToolComponent: React.ComponentType<{ query: string; extensionId?: string }>
   activeTool: string
   query: string
+  t: (key: string) => string
 }
 
-export function ShellToolView({ ToolComponent, activeTool, query }: Props) {
+export function ShellToolView({ ToolComponent, activeTool, query, t }: Props) {
   return (
     <React.Suspense
       fallback={
@@ -22,7 +23,7 @@ export function ShellToolView({ ToolComponent, activeTool, query }: Props) {
             fontSize: 'var(--font-sm)',
           }}
         >
-          Loading…
+          {t('loading')}
         </div>
       }
     >

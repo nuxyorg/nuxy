@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "name": "動画ダウンローダー"
+  },
+  "empty": {
+    "noDownloads": "ダウンロードがまだありません。動画を検索して開始してください。",
+    "pasteUrl": "検索バーに動画URLを貼り付けてEnterを押してください。",
+    "noFormats": "このカテゴリに一致する形式がありません。"
+  },
+  "loading": {
+    "fetchingFormats": "動画の詳細と形式を取得中…",
+    "generic": "読み込み中…"
+  },
+  "tabs": {
+    "recommended": "おすすめ",
+    "video_audio": "動画 & 音声",
+    "audio_only": "音声のみ",
+    "video_only": "動画のみ",
+    "all": "すべてのストリーム",
+    "downloads": "ダウンロード"
+  },
+  "formats": {
+    "bestQuality": "最高品質",
+    "highestVideoAudio": "最高品質の動画 & 音声をマージ",
+    "highestAudio": "最高品質の音声",
+    "audioOnly": "音声のみ",
+    "resolution": "{height}p解像度",
+    "videoAudio": "動画 + 音声"
+  },
+  "badges": {
+    "audio": "音声",
+    "silent": "サイレント",
+    "error": "エラー",
+    "downloading": "ダウンロード中 ({progress}%)"
+  },
+  "downloads": {
+    "title": "ダウンロード & 履歴",
+    "savedTo": "保存先: {path}",
+    "unknownVideo": "不明な動画",
+    "unknownResolution": "不明"
+  },
+  "actions": {
+    "download": "ダウンロード / 開く",
+    "openFolder": "フォルダを開く",
+    "nextTab": "次のタブ",
+    "backToFormats": "形式に戻る",
+    "navigate": "ナビゲート",
+    "openVideo": "[↵] 動画を開く",
+    "openFolderHint": "[⇧↵] フォルダを開く"
+  },
+  "toast": {
+    "downloadQueued": "ダウンロードをキューに追加しました！",
+    "downloadFailed": "ダウンロードの開始に失敗しました",
+    "downloadCancelled": "ダウンロードをキャンセルしました"
+  },
+  "install": {
+    "notInstalled": "yt-dlpがインストールされていません。",
+    "viaPip": "pipでインストール",
+    "viaBrew": "brewでインストール",
+    "viaPacman": "pacmanでインストール"
+  },
+  "footer": {
+    "formats": "{count}形式"
+  },
+  "commandPalette": {
+    "viewDownloads": "ダウンロード & 履歴を表示",
+    "filterRecommended": "フィルター: おすすめ",
+    "filterVideoAudio": "フィルター: 動画 & 音声",
+    "filterAudioOnly": "フィルター: 音声のみ",
+    "filterVideoOnly": "フィルター: 動画のみ",
+    "filterAllStreams": "フィルター: すべてのストリーム"
+  },
+  "settings": {
+    "downloadPath": {
+      "label": "ダウンロード先",
+      "placeholder": "~/Downloads",
+      "description": "ダウンロードした動画を保存するフォルダ"
+    },
+    "format": {
+      "label": "優先形式",
+      "options": {
+        "mp4": "MP4",
+        "webm": "WebM",
+        "mkv": "MKV",
+        "best": "最高品質"
+      }
+    },
+    "audioOnly": {
+      "label": "音声のみ"
+    },
+    "subtitles": {
+      "label": "字幕をダウンロード"
+    }
+  }
+}

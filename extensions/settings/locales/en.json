@@ -5,7 +5,8 @@
   "nav": {
     "general": "General",
     "window": "Window",
-    "language": "Language"
+    "language": "Language",
+    "extensions": "Extensions"
   },
   "general": {
     "theme": "Theme",
@@ -20,14 +21,15 @@
     "windowMaxHeight": "Max Height",
     "windowPosition": "Launch Position",
     "opacity": "Opacity",
+    "backgroundBehavior": "Background Behaviour",
     "alwaysOnTop": "Always on Top",
     "showInTaskbar": "Show in Taskbar",
     "showOnStartup": "Show on Startup"
   },
   "language": {
-    "slot1": "Preferred Language (1st)",
-    "slot2": "Preferred Language (2nd)",
-    "slot3": "Preferred Language (3rd)"
+    "addLanguage": "Add Language",
+    "addPlaceholder": "Search languages…",
+    "hint": "Languages are tried in order — first added takes highest priority."
   },
   "font": {
     "systemDefault": "System Default",
@@ -50,6 +52,10 @@
     "bottomLeft": "Bottom Left",
     "bottomRight": "Bottom Right",
     "upperCenterDefault": "Upper Center (default)"
+  },
+  "backgroundBehavior": {
+    "reset-on-show": "Reset launcher (default)",
+    "resume-session": "Resume where I left off"
   },
   "bool": {
     "yes": "Yes",

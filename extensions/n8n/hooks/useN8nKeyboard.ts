@@ -17,6 +17,7 @@ interface Params {
   handleRefresh: () => Promise<void>
   handleSelectWorkflow: (wf: N8nWorkflow) => Promise<void>
   handleRunWebhook: (wf: N8nWorkflow) => Promise<void>
+  t: (key: string) => string
 }
 
 interface N8nKeyboardResult {
@@ -32,12 +33,13 @@ export function useN8nKeyboard({
   handleRefresh,
   handleSelectWorkflow,
   handleRunWebhook,
+  t,
 }: Params): N8nKeyboardResult {
   const { selectedIndex } = _useListNavigation(filteredWorkflows, {
     onEnter: (wf: N8nWorkflow) => {
       void handleSelectWorkflow(wf)
     },
-    enterLabel: 'Select',
+    enterLabel: t('actions.select'),
     enterHint: 'Enter',
   })
 
@@ -45,14 +47,14 @@ export function useN8nKeyboard({
     {
       key: ',',
       modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Configure',
+      label: t('actions.configure'),
       hint: '⌃,',
       handler: () => setShowConfig((v) => !v),
     },
     {
       key: 'Enter',
       modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Save',
+      label: t('actions.save'),
       hint: '⌃↵',
       activeOn: () => showConfig || !configured,
       handler: () => {
@@ -61,7 +63,7 @@ export function useN8nKeyboard({
     },
     {
       key: 'Escape',
-      label: 'Cancel',
+      label: t('actions.cancel'),
       activeOn: () => showConfig,
       handler: () => setShowConfig(false),
     },
@@ -71,14 +73,14 @@ export function useN8nKeyboard({
     const actions: { id: string; label: string; onExecute: () => void }[] = [
       {
         id: 'n8n-configure',
-        label: showConfig ? 'Show Workflows' : 'Configure Connection',
+        label: showConfig ? t('actions.showWorkflows') : t('actions.configureConnection'),
         onExecute: () => setShowConfig((v) => !v),
       },
     ]
     if (!showConfig && configured) {
       actions.push({
         id: 'n8n-refresh',
-        label: 'Refresh Workflows',
+        label: t('actions.refreshWorkflows'),
         onExecute: () => {
           void handleRefresh()
         },
@@ -88,7 +90,7 @@ export function useN8nKeyboard({
     if (activeWorkflow) {
       actions.push({
         id: 'n8n-run-webhook',
-        label: `Run Webhook: ${activeWorkflow.name}`,
+        label: `${t('actions.runWebhookPrefix')} ${activeWorkflow.name}`,
         onExecute: () => {
           void handleRunWebhook(activeWorkflow)
         },
@@ -98,7 +100,7 @@ export function useN8nKeyboard({
     return () => {
       window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
     }
-  }, [showConfig, configured, selectedIndex, filteredWorkflows])
+  }, [showConfig, configured, selectedIndex, filteredWorkflows, t])
 
   React.useEffect(() => {
     window.dispatchEvent(new CustomEvent('nuxy-key-hints-changed'))

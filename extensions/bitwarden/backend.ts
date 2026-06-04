@@ -159,21 +159,30 @@ export async function register(core: CoreContext): Promise<void> {
     const password = await fetchPassword(core, payload as BitwardenItem)
     await core.clipboard.writeText(password)
     const delaySec = (await core.settings.read<number>('clipboardClearDelaySec')) ?? 30
-    if (delaySec > 0) setTimeout(async () => { await core.clipboard.writeText('') }, delaySec * 1000)
+    if (delaySec > 0)
+      setTimeout(async () => {
+        await core.clipboard.writeText('')
+      }, delaySec * 1000)
   })
 
   core.ipc.handle('bw:copyUsername', async (payload: unknown): Promise<void> => {
     const item = payload as BitwardenItem
     await core.clipboard.writeText(item.username ?? '')
     const delaySec = (await core.settings.read<number>('clipboardClearDelaySec')) ?? 30
-    if (delaySec > 0) setTimeout(async () => { await core.clipboard.writeText('') }, delaySec * 1000)
+    if (delaySec > 0)
+      setTimeout(async () => {
+        await core.clipboard.writeText('')
+      }, delaySec * 1000)
   })
 
   core.ipc.handle('bw:copyTotp', async (payload: unknown): Promise<void> => {
     const { code } = payload as CopyTotpPayload
     await core.clipboard.writeText(code)
     const delaySec = (await core.settings.read<number>('clipboardClearDelaySec')) ?? 30
-    if (delaySec > 0) setTimeout(async () => { await core.clipboard.writeText('') }, delaySec * 1000)
+    if (delaySec > 0)
+      setTimeout(async () => {
+        await core.clipboard.writeText('')
+      }, delaySec * 1000)
   })
 
   core.ipc.handle('bw:copyText', async (payload: unknown): Promise<void> => {

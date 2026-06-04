@@ -10,6 +10,7 @@ const DEFAULT_SETTINGS: NuxySettings = {
   font: 'system',
   escAction: 'hide',
   blurAction: 'hide',
+  backgroundBehavior: 'reset-on-show',
   windowWidth: 800,
   windowMaxHeight: 600,
   alwaysOnTop: false,
@@ -319,9 +320,9 @@ describe('settings backend', () => {
       })
       register(core)
       await expect(
-        (
-          handlers['getExtensionSettingValues'] as (p: unknown) => Promise<Record<string, unknown>>
-        )('com.nuxy.test')
+        (handlers['getExtensionSettingValues'] as (p: unknown) => Promise<Record<string, unknown>>)(
+          'com.nuxy.test'
+        )
       ).rejects.toThrow('settings read error')
     })
 

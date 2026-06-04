@@ -53,39 +53,41 @@ export default function SnippetsView({ query }: Props) {
 
   return (
     <div style={{ direction: dir, height: '100%', overflowY: 'auto' }}>
-      {snippets.length === 0 ? (
-        EmptyState && (
-          <EmptyState
-            message={Boolean(query) ? t('noResults') : t('empty')}
-            hint={Boolean(query) ? t('noResultsHint') : t('emptyHint')}
-          />
-        )
-      ) : (
-        List && (
-          <List>
-            {snippets.map((snippet: Snippet, idx: number) => {
-              const isCopied = copiedId === snippet.id
-              const isActive = idx === selectedIndex
-              const meta = [
-                snippet.tags.length > 0 ? snippet.tags.join(', ') : null,
-                timeAgo(snippet.updatedAt),
-              ]
-                .filter(Boolean)
-                .join(' · ')
-              return (
-                <ListItem key={snippet.id} active={isActive} onClick={() => setSelectedIndex(idx)}>
-                  <ListItemBody>
-                    <ListItemText variant={isCopied ? 'success' : 'default'}>
-                      {isCopied ? t('copied') : snippet.title}
-                    </ListItemText>
-                    <ListItemMeta>{meta}</ListItemMeta>
-                  </ListItemBody>
-                </ListItem>
-              )
-            })}
-          </List>
-        )
-      )}
+      {snippets.length === 0
+        ? EmptyState && (
+            <EmptyState
+              message={Boolean(query) ? t('noResults') : t('empty')}
+              hint={Boolean(query) ? t('noResultsHint') : t('emptyHint')}
+            />
+          )
+        : List && (
+            <List>
+              {snippets.map((snippet: Snippet, idx: number) => {
+                const isCopied = copiedId === snippet.id
+                const isActive = idx === selectedIndex
+                const meta = [
+                  snippet.tags.length > 0 ? snippet.tags.join(', ') : null,
+                  timeAgo(snippet.updatedAt),
+                ]
+                  .filter(Boolean)
+                  .join(' · ')
+                return (
+                  <ListItem
+                    key={snippet.id}
+                    active={isActive}
+                    onClick={() => setSelectedIndex(idx)}
+                  >
+                    <ListItemBody>
+                      <ListItemText variant={isCopied ? 'success' : 'default'}>
+                        {isCopied ? t('copied') : snippet.title}
+                      </ListItemText>
+                      <ListItemMeta>{meta}</ListItemMeta>
+                    </ListItemBody>
+                  </ListItem>
+                )
+              })}
+            </List>
+          )}
     </div>
   )
 }

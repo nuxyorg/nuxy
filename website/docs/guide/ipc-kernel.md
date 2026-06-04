@@ -39,15 +39,15 @@ The main process:
 
 Some channels are handled directly in the main process without going to a worker. Use `extId: 'kernel'` (or `'core'`) to call them:
 
-| Channel | Returns |
-|---|---|
-| `listTools` | All extensions with `type === 'tool'` (excludes `bootstrap` extensions) |
-| `listProviders` | All extensions with `type === 'provider'` |
-| `listOrchestrators` | All extensions with `type === 'orchestrator'` |
-| `getConfig` | Current `NuxyConfig` (parsed `nuxyconfig`) |
-| `getTheme` | Active theme definition (CSS variable map) |
-| `getThemeByName` | Theme definition for a named theme |
-| `getExtensionTranslations` | Translation strings for a given extension ID |
+| Channel                    | Returns                                                                 |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `listTools`                | All extensions with `type === 'tool'` (excludes `bootstrap` extensions) |
+| `listProviders`            | All extensions with `type === 'provider'`                               |
+| `listOrchestrators`        | All extensions with `type === 'orchestrator'`                           |
+| `getConfig`                | Current `NuxyConfig` (parsed `nuxyconfig`)                              |
+| `getTheme`                 | Active theme definition (CSS variable map)                              |
+| `getThemeByName`           | Theme definition for a named theme                                      |
+| `getExtensionTranslations` | Translation strings for a given extension ID                            |
 
 ```javascript
 // From extension frontend — call a kernel built-in
@@ -138,7 +138,10 @@ contextBridge.exposeInMainWorld('core', {
     hide: () => ipcRenderer.send('window:hide'),
     esc: () => ipcRenderer.send('window:esc'),
     center: () => ipcRenderer.send('window:center'),
-    onShow: (cb) => { ipcRenderer.on('window-show', cb); return () => ipcRenderer.off('window-show', cb) },
+    onShow: (cb) => {
+      ipcRenderer.on('window-show', cb)
+      return () => ipcRenderer.off('window-show', cb)
+    },
   },
   themes: { list: () => ipcRenderer.invoke('themes:list') },
   icons: {

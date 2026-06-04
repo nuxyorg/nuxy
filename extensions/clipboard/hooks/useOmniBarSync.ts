@@ -9,7 +9,9 @@ export function useOmniBarSync(selectedIndex: number): void {
 
   React.useEffect(() => {
     return () => {
-      window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } }))
+      window.dispatchEvent(
+        new CustomEvent('nuxy-shell-omni-bar-control', { detail: { action: 'show' } })
+      )
     }
   }, [])
 }

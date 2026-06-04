@@ -16,11 +16,7 @@ vi.mock('../config/paths.js', () => {
   }
 })
 
-import {
-  generateDeveloperKeys,
-  computeDirectoryIntegrity,
-  signDirectory,
-} from './sign-tool.js'
+import { generateDeveloperKeys, computeDirectoryIntegrity, signDirectory } from './sign-tool.js'
 import {
   getTrustedKeys,
   isKeyTrusted,

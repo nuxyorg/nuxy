@@ -58,8 +58,8 @@ This roadmap transitions the theoretical analysis into an actionable execution p
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| MVP sprint plan | [19-mvp-roadmap.md](./19-mvp-roadmap.md) | Reduced scope to prove the paradigm in 2–3 weeks |
-| Concrete remediation priorities | [pain-points-plan.md](./pain-points-plan.md) | Phased fix plan aligned with roadmap phases |
-| Kernel audit and completed phases | [electron-fix-plan.md](./electron-fix-plan.md) | What has already been built and verified |
+| Topic                             | Document                                       | Notes                                            |
+| --------------------------------- | ---------------------------------------------- | ------------------------------------------------ |
+| MVP sprint plan                   | [19-mvp-roadmap.md](./19-mvp-roadmap.md)       | Reduced scope to prove the paradigm in 2–3 weeks |
+| Concrete remediation priorities   | [pain-points-plan.md](./pain-points-plan.md)   | Phased fix plan aligned with roadmap phases      |
+| Kernel audit and completed phases | [electron-fix-plan.md](./electron-fix-plan.md) | What has already been built and verified         |

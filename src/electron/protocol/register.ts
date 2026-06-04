@@ -37,7 +37,7 @@ export function registerProtocols() {
               'Content-Type': 'application/javascript',
               'Access-Control-Allow-Origin': '*',
               'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-              'Pragma': 'no-cache',
+              Pragma: 'no-cache',
             },
           })
         }
@@ -76,7 +76,7 @@ export function registerProtocols() {
                 'Content-Type': 'application/javascript',
                 'Access-Control-Allow-Origin': '*',
                 'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-                'Pragma': 'no-cache',
+                Pragma: 'no-cache',
               },
             })
           }

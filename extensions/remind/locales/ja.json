@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "name": "リマインダー"
+  },
+  "tool": {
+    "name": "リマインダー"
+  },
+  "empty": {
+    "noReminders": "アクティブなリマインダーがありません"
+  },
+  "action": {
+    "create": "リマインド",
+    "cancel": "キャンセル"
+  },
+  "label": {
+    "in": "後",
+    "overdue": "期限切れ",
+    "unnamed": "リマインダー"
+  },
+  "notification": {
+    "title": "リマインダー",
+    "defaultBody": "リマインダーの時刻になりました"
+  },
+  "error": {
+    "invalidFormat": "リマインダーの時間を解析できませんでした。例: 20m 会議、2h 昼食、14:30 スタンドアップ"
+  }
+}

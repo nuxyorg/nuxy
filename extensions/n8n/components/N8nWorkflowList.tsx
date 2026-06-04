@@ -10,8 +10,17 @@ interface Props {
 }
 
 export function N8nWorkflowList({ workflows, selectedIndex, query, onSelect }: Props) {
-  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, ListItemActions, Badge, EmptyState, SectionHeader } =
-    window.UI || {}
+  const {
+    List,
+    ListItem,
+    ListItemBody,
+    ListItemText,
+    ListItemMeta,
+    ListItemActions,
+    Badge,
+    EmptyState,
+    SectionHeader,
+  } = window.UI || {}
 
   return (
     <>
@@ -23,11 +32,7 @@ export function N8nWorkflowList({ workflows, selectedIndex, query, onSelect }: P
           ) : null
         ) : (
           workflows.map((wf, idx) => (
-            <ListItem
-              key={wf.id}
-              active={idx === selectedIndex}
-              onClick={() => onSelect(wf)}
-            >
+            <ListItem key={wf.id} active={idx === selectedIndex} onClick={() => onSelect(wf)}>
               <ListItemBody>
                 <ListItemText>{wf.name}</ListItemText>
                 <ListItemMeta>{wf.active ? 'active' : 'inactive'}</ListItemMeta>

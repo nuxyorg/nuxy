@@ -54,10 +54,7 @@ export function useVideoMeta({
     [metadata, activeTab]
   )
 
-  const combinedList = React.useMemo(
-    () => buildCombinedList(jobs, history),
-    [jobs, history]
-  )
+  const combinedList = React.useMemo(() => buildCombinedList(jobs, history), [jobs, history])
 
   const stateRef = React.useRef<VideoStateSnapshot>({
     metadata,

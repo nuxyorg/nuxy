@@ -18,6 +18,7 @@ Unit Converter parses a plain-text expression typed in the omnibar and returns a
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user activates it by selecting **Unit Converter** from the shell, then types a conversion expression directly in the omnibar.
 
 ---
@@ -30,9 +31,9 @@ Select **Unit Converter** from the tool list and type a value with a unit direct
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate result list |
+| Key     | Action                            |
+| ------- | --------------------------------- |
+| `↑` `↓` | Navigate result list              |
 | `Enter` | Copy selected result to clipboard |
 
 ### Examples
@@ -57,27 +58,27 @@ Type `1.5 GB` → shows the equivalent in MB, TB, GiB, MiB, and bytes.
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `unitSystem` | select | `both` | Which unit systems to show in results: `both`, `metric`, or `imperial` |
-| `precision` | select | `2` | Number of decimal places in results: `0`, `2`, or `4` |
+| Key          | Type   | Default | Description                                                            |
+| ------------ | ------ | ------- | ---------------------------------------------------------------------- |
+| `unitSystem` | select | `both`  | Which unit systems to show in results: `both`, `metric`, or `imperial` |
+| `precision`  | select | `2`     | Number of decimal places in results: `0`, `2`, or `4`                  |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
+| Permission  | Used for                                                                  |
+| ----------- | ------------------------------------------------------------------------- |
 | `clipboard` | Writing the selected conversion result to the system clipboard on `Enter` |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -85,11 +86,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 ---
 

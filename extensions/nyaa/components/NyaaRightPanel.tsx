@@ -5,6 +5,9 @@ import type { NyaaResult } from '../types.ts'
 interface Props {
   item: NyaaResult | null
   copiedId: string | null
+  multiSelectMode: boolean
+  checkedCount: number
+  t: (key: string) => string
 }
 
 function formatDate(iso: string): string {
@@ -20,14 +23,44 @@ function formatDate(iso: string): string {
   }
 }
 
-function statusLabel(status: NyaaResult['status']): string {
-  if (status === 'success') return 'Trusted'
-  if (status === 'danger') return 'Remake'
-  return 'Normal'
-}
-
-export function NyaaRightPanel({ item, copiedId }: Props) {
+export function NyaaRightPanel({ item, copiedId, multiSelectMode, checkedCount, t }: Props) {
   const PropertiesPanel = (window.UI as any)?.PropertiesPanel
+
+  // Multi-select mode: show selection summary
+  if (multiSelectMode) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 'var(--space-3)',
+          padding: 'var(--space-5)',
+          textAlign: 'center',
+        }}
+      >
+        <div
+          style={{
+            fontSize: 'var(--font-lg, 1.25rem)',
+            fontWeight: 700,
+            color: checkedCount > 0 ? 'var(--color-accent, var(--color-primary))' : 'inherit',
+            opacity: checkedCount > 0 ? 1 : 0.4,
+          }}
+        >
+          {checkedCount > 0
+            ? t('item.selectedCount').replace('{count}', String(checkedCount))
+            : t('item.selectPromptMulti')}
+        </div>
+        {checkedCount > 0 && (
+          <div style={{ fontSize: 'var(--font-xs)', opacity: 0.5 }}>
+            {t('item.multiSelectHint')}
+          </div>
+        )}
+      </div>
+    )
+  }
 
   if (!item) {
     return (
@@ -41,20 +74,27 @@ export function NyaaRightPanel({ item, copiedId }: Props) {
           fontSize: 'var(--font-sm)',
         }}
       >
-        Select a result to view details
+        {t('item.selectPrompt')}
       </div>
     )
   }
 
   const isCopied = copiedId === item.id
 
+  const statusValue =
+    item.status === 'success'
+      ? t('details.status.trusted')
+      : item.status === 'danger'
+        ? t('details.status.remake')
+        : t('details.status.normal')
+
   const rows = [
-    { label: 'Category', value: item.category },
-    { label: 'Size', value: item.size },
-    { label: 'Date', value: formatDate(item.date) },
-    { label: 'Seeders', value: String(item.seeds) },
-    { label: 'Leechers', value: String(item.leeches) },
-    { label: 'Status', value: statusLabel(item.status) },
+    { label: t('details.category'), value: item.category },
+    { label: t('details.size'), value: item.size },
+    { label: t('details.date'), value: formatDate(item.date) },
+    { label: t('details.seeders'), value: String(item.seeds) },
+    { label: t('details.leechers'), value: String(item.leeches) },
+    { label: t('details.status.label'), value: statusValue },
   ]
 
   return (
@@ -77,11 +117,11 @@ export function NyaaRightPanel({ item, copiedId }: Props) {
           color: isCopied ? 'var(--color-success)' : 'inherit',
         }}
       >
-        {isCopied ? 'Magnet copied!' : item.title}
+        {isCopied ? t('item.magnetCopied') : item.title}
       </div>
 
       {PropertiesPanel ? (
-        <PropertiesPanel title="Details" rows={rows} />
+        <PropertiesPanel title={t('details.title')} rows={rows} />
       ) : (
         <div
           style={{

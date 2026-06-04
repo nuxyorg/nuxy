@@ -52,8 +52,8 @@ To enforce modular boundaries, Nuxy should be structured as a workspace (e.g. us
 
 ## Related Documents
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| Architecture topology | [02-architecture.md](./02-architecture.md) | Kernel, worker threads, and React canvas roles |
-| Kernel audit and canonical paths | [electron-fix-plan.md](./electron-fix-plan.md) | `~/.nuxy/` layout and completed remediation |
-| Feature implementation status | [DOCUMENTATION.md](./DOCUMENTATION.md) | Implemented vs planned tracker with canonical path table |
+| Topic                            | Document                                       | Notes                                                    |
+| -------------------------------- | ---------------------------------------------- | -------------------------------------------------------- |
+| Architecture topology            | [02-architecture.md](./02-architecture.md)     | Kernel, worker threads, and React canvas roles           |
+| Kernel audit and canonical paths | [electron-fix-plan.md](./electron-fix-plan.md) | `~/.nuxy/` layout and completed remediation              |
+| Feature implementation status    | [DOCUMENTATION.md](./DOCUMENTATION.md)         | Implemented vs planned tracker with canonical path table |

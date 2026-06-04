@@ -11,6 +11,7 @@ import type {
   Position,
   Size,
 } from './types.ts'
+import { getZoom } from './utils/zoom.ts'
 
 export function useShellInit({
   cfgRef,
@@ -165,46 +166,51 @@ export function useProviders({
       setProviderStates({})
       return
     }
-    const generation = ++queryGeneration.current
     if (savedQuery.trim().length === 0) {
       setProviderStates({})
       return
     }
 
-    const initialStates: Record<string, ProviderState> = {}
-    providers.forEach((provider) => {
-      const type = (provider.manifest?.providerType as ProviderState['type']) || 'list'
-      const name = provider.manifest?.name || provider.id
-      initialStates[provider.id] = { loading: true, items: [], type, name }
-    })
-    setProviderStates(initialStates)
+    const generation = ++queryGeneration.current
 
-    providers.forEach((provider) => {
-      const type = (provider.manifest?.providerType as ProviderState['type']) || 'list'
-      const name = provider.manifest?.name || provider.id
-      window.core?.ipc
-        ?.invoke(provider.id, 'eval', { text: savedQuery })
-        .then((res: unknown) => {
-          if (generation !== queryGeneration.current) return
-          const r = res as { success: boolean; data?: { items?: ProviderState['items'] } } | null
-          setProviderStates((prev) => ({
-            ...prev,
-            [provider.id]: {
-              loading: false,
-              items: r?.success && r.data?.items ? r.data.items : [],
-              type,
-              name,
-            },
-          }))
-        })
-        .catch((_e: unknown) => {
-          if (generation !== queryGeneration.current) return
-          setProviderStates((prev) => ({
-            ...prev,
-            [provider.id]: { loading: false, items: [], type, name },
-          }))
-        })
-    })
+    const timer = setTimeout(() => {
+      const initialStates: Record<string, ProviderState> = {}
+      providers.forEach((provider) => {
+        const type = (provider.manifest?.providerType as ProviderState['type']) || 'list'
+        const name = provider.manifest?.name || provider.id
+        initialStates[provider.id] = { loading: true, items: [], type, name }
+      })
+      setProviderStates(initialStates)
+
+      providers.forEach((provider) => {
+        const type = (provider.manifest?.providerType as ProviderState['type']) || 'list'
+        const name = provider.manifest?.name || provider.id
+        window.core?.ipc
+          ?.invoke(provider.id, 'eval', { text: savedQuery })
+          .then((res: unknown) => {
+            if (generation !== queryGeneration.current) return
+            const r = res as { success: boolean; data?: { items?: ProviderState['items'] } } | null
+            setProviderStates((prev) => ({
+              ...prev,
+              [provider.id]: {
+                loading: false,
+                items: r?.success && r.data?.items ? r.data.items : [],
+                type,
+                name,
+              },
+            }))
+          })
+          .catch((_e: unknown) => {
+            if (generation !== queryGeneration.current) return
+            setProviderStates((prev) => ({
+              ...prev,
+              [provider.id]: { loading: false, items: [], type, name },
+            }))
+          })
+      })
+    }, 50)
+
+    return () => clearTimeout(timer)
   }, [savedQuery, activeTool, providers])
 
   const isAnyListProviderLoading = useMemo(() => {
@@ -283,6 +289,45 @@ export function useKeyboard({
   toolActionsRef: React.MutableRefObject<KeyAction[]>
 }): void {
   useEffect(() => {
+    // --- Hold progress helpers ---
+    let holdTimer: ReturnType<typeof setTimeout> | null = null
+    let holdOverlay: HTMLElement | null = null
+
+    const clearHold = () => {
+      if (holdTimer !== null) {
+        clearTimeout(holdTimer)
+        holdTimer = null
+      }
+      if (holdOverlay) {
+        holdOverlay.remove()
+        holdOverlay = null
+      }
+    }
+
+    const startHold = (action: KeyAction, e: KeyboardEvent) => {
+      if (holdTimer !== null) return // already running
+      const ms = action.holdMs ?? 600
+
+      // Inject progress overlay into omnibar
+      const omniBar = document.querySelector('.nuxy-shell-omni-bar')
+      if (omniBar) {
+        holdOverlay = document.createElement('div')
+        holdOverlay.className = 'nuxy-hold-progress'
+        const bar = document.createElement('div')
+        bar.className = 'nuxy-hold-progress__bar'
+        bar.style.setProperty('--nuxy-hold-ms', `${ms}ms`)
+        holdOverlay.appendChild(bar)
+        omniBar.appendChild(holdOverlay)
+      }
+
+      holdTimer = setTimeout(() => {
+        holdTimer = null
+        clearHold()
+        action.handler()
+        e.preventDefault()
+      }, ms)
+    }
+
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
@@ -307,11 +352,17 @@ export function useKeyboard({
               return true
             })
             if (matched) {
-              matched.handler()
-              e.preventDefault()
+              if (matched.trigger === 'hold') {
+                if (!e.repeat) startHold(matched, e)
+                e.preventDefault()
+              } else {
+                matched.handler()
+                e.preventDefault()
+              }
               return
             }
           }
+          clearHold()
           setActiveTool(null)
           setToolComponent(null)
           setQuery('')
@@ -320,6 +371,7 @@ export function useKeyboard({
           setShowOmniBar(true)
           setTimeout(() => inputRef.current?.focus(), 50)
         } else {
+          clearHold()
           setQuery('')
           setSavedQuery('')
           setSelectedIndex(-1)
@@ -350,6 +402,11 @@ export function useKeyboard({
             return true
           })
           if (matched) {
+            if (matched.trigger === 'hold') {
+              if (!e.repeat) startHold(matched, e)
+              e.preventDefault()
+              return
+            }
             matched.handler()
             e.preventDefault()
             return
@@ -377,8 +434,23 @@ export function useKeyboard({
         }
       }
     }
+
+    const handleGlobalKeyUp = (e: KeyboardEvent) => {
+      // If the held key is released before the timer fires, cancel
+      if (holdTimer !== null) {
+        const actions = keyActionsGetterRef?.current?.()
+        const held = actions?.find((a) => a.trigger === 'hold' && matchesAction(a, e))
+        if (held) clearHold()
+      }
+    }
+
     window.addEventListener('keydown', handleGlobalKeyDown)
-    return () => window.removeEventListener('keydown', handleGlobalKeyDown)
+    window.addEventListener('keyup', handleGlobalKeyUp)
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown)
+      window.removeEventListener('keyup', handleGlobalKeyUp)
+      clearHold()
+    }
   }, [activeTool, showCommandPalette])
 }
 
@@ -392,21 +464,19 @@ export function useDragResize(containerRef: React.RefObject<HTMLDivElement | nul
   handleDragMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void
   handleResizeMouseDown: (e: React.MouseEvent<HTMLDivElement>, direction: string) => void
 } {
-  const [position, setPosition] = useState<Position>({
-    x: Math.round((window.innerWidth - 800) / 2),
-    y: Math.round(window.innerHeight * 0.15),
+  const [position, setPosition] = useState<Position>(() => {
+    const zoom = getZoom()
+    const dw = window.innerWidth / zoom
+    const dh = window.innerHeight / zoom
+    return {
+      x: Math.round((dw - 800) / 2),
+      y: Math.round(dh * 0.15),
+    }
   })
   const [size, setSize] = useState<Size>({ width: null, height: null })
   const hasDragged = useRef<boolean>(false)
   const isDragging = useRef<boolean>(false)
   const [isDraggingState, setIsDraggingState] = useState<boolean>(false)
-
-  const getZoom = (): number => {
-    const z = document.documentElement.style.zoom
-    if (!z) return 1
-    if (z.endsWith('%')) return parseFloat(z) / 100
-    return parseFloat(z) || 1
-  }
 
   const handleDragMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.button !== 0) return

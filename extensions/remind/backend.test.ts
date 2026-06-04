@@ -59,7 +59,9 @@ describe('remind backend', () => {
   // -------------------------------------------------------------------------
 
   it('registers a tool named "remind"', () => {
-    expect(core.registry.registerTool).toHaveBeenCalledWith(expect.objectContaining({ name: 'remind' }))
+    expect(core.registry.registerTool).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'remind' })
+    )
   })
 
   it('registers all four IPC channels', () => {
@@ -75,27 +77,39 @@ describe('remind backend', () => {
 
   describe('remind:parse', () => {
     it('parses a relative minute token', async () => {
-      const result = (await getHandler(handlers, 'remind:parse')({ text: '20m meeting' })) as ParsedReminder
+      const result = (await getHandler(
+        handlers,
+        'remind:parse'
+      )({ text: '20m meeting' })) as ParsedReminder
       expect(result).not.toBeNull()
       expect(result.label).toBe('meeting')
       expect(result.delayMs).toBe(20 * 60_000)
     })
 
     it('parses a relative second token', async () => {
-      const result = (await getHandler(handlers, 'remind:parse')({ text: '30s quick ping' })) as ParsedReminder
+      const result = (await getHandler(
+        handlers,
+        'remind:parse'
+      )({ text: '30s quick ping' })) as ParsedReminder
       expect(result).not.toBeNull()
       expect(result.delayMs).toBe(30_000)
       expect(result.label).toBe('quick ping')
     })
 
     it('parses a relative hour token', async () => {
-      const result = (await getHandler(handlers, 'remind:parse')({ text: '2h lunch' })) as ParsedReminder
+      const result = (await getHandler(
+        handlers,
+        'remind:parse'
+      )({ text: '2h lunch' })) as ParsedReminder
       expect(result).not.toBeNull()
       expect(result.delayMs).toBe(2 * 3_600_000)
     })
 
     it('parses a relative day token', async () => {
-      const result = (await getHandler(handlers, 'remind:parse')({ text: '1d review' })) as ParsedReminder
+      const result = (await getHandler(
+        handlers,
+        'remind:parse'
+      )({ text: '1d review' })) as ParsedReminder
       expect(result).not.toBeNull()
       expect(result.delayMs).toBe(86_400_000)
     })
@@ -117,7 +131,10 @@ describe('remind backend', () => {
 
   describe('remind:create', () => {
     it('creates and returns a Reminder with correct fields', async () => {
-      const reminder = (await getHandler(handlers, 'remind:create')({ text: '5m standup' })) as Reminder
+      const reminder = (await getHandler(
+        handlers,
+        'remind:create'
+      )({ text: '5m standup' })) as Reminder
       expect(reminder.id).toBeTruthy()
       expect(reminder.label).toBe('standup')
       expect(reminder.fired).toBe(false)
@@ -129,7 +146,7 @@ describe('remind backend', () => {
       await getHandler(handlers, 'remind:create')({ text: '10m call' })
       expect(core.storage.write).toHaveBeenCalledWith(
         'reminders.json',
-        expect.arrayContaining([expect.objectContaining({ label: 'call', fired: false })]),
+        expect.arrayContaining([expect.objectContaining({ label: 'call', fired: false })])
       )
     })
 
@@ -140,7 +157,7 @@ describe('remind backend', () => {
       // Advance past the delay
       await vi.advanceTimersByTimeAsync(60_000)
       expect(core.notifications.send).toHaveBeenCalledWith(
-        expect.objectContaining({ body: 'test notification' }),
+        expect.objectContaining({ body: 'test notification' })
       )
     })
 
@@ -193,25 +210,35 @@ describe('remind backend', () => {
 
   describe('remind:cancel', () => {
     it('marks the reminder as fired and removes it from the active list', async () => {
-      const reminder = (await getHandler(handlers, 'remind:create')({ text: '30m work' })) as Reminder
+      const reminder = (await getHandler(
+        handlers,
+        'remind:create'
+      )({ text: '30m work' })) as Reminder
 
       // Reset write mock so we can inspect the cancel write clearly
       vi.mocked(core.storage.write).mockClear()
 
       // Mock read to return the reminder that was just "saved"
-      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue([{ ...reminder, fired: false }])
+      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue([
+        { ...reminder, fired: false },
+      ])
 
       await getHandler(handlers, 'remind:cancel')({ id: reminder.id })
 
       expect(core.storage.write).toHaveBeenCalledWith(
         'reminders.json',
-        expect.arrayContaining([expect.objectContaining({ id: reminder.id, fired: true })]),
+        expect.arrayContaining([expect.objectContaining({ id: reminder.id, fired: true })])
       )
     })
 
     it('does not fire a notification after cancellation', async () => {
-      const reminder = (await getHandler(handlers, 'remind:create')({ text: '1m cancelled' })) as Reminder
-      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue([{ ...reminder, fired: false }])
+      const reminder = (await getHandler(
+        handlers,
+        'remind:create'
+      )({ text: '1m cancelled' })) as Reminder
+      ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue([
+        { ...reminder, fired: false },
+      ])
 
       await getHandler(handlers, 'remind:cancel')({ id: reminder.id })
 
@@ -224,7 +251,9 @@ describe('remind backend', () => {
 
     it('resolves without error when the id does not exist', async () => {
       ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue([])
-      await expect(getHandler(handlers, 'remind:cancel')({ id: 'nonexistent' })).resolves.toBeUndefined()
+      await expect(
+        getHandler(handlers, 'remind:cancel')({ id: 'nonexistent' })
+      ).resolves.toBeUndefined()
     })
   })
 
@@ -236,7 +265,13 @@ describe('remind backend', () => {
     it('re-schedules unfired reminders loaded from storage', async () => {
       const future = Date.now() + 5 * 60_000
       const storedReminders: Reminder[] = [
-        { id: 'r1', label: 'standing meeting', fireAt: future, createdAt: Date.now() - 1000, fired: false },
+        {
+          id: 'r1',
+          label: 'standing meeting',
+          fireAt: future,
+          createdAt: Date.now() - 1000,
+          fired: false,
+        },
       ]
       ;(core.storage.read as ReturnType<typeof vi.fn>).mockResolvedValue(storedReminders)
 
@@ -255,7 +290,7 @@ describe('remind backend', () => {
       await vi.advanceTimersByTimeAsync(5 * 60_000 + 100)
 
       expect(result2.core.notifications.send).toHaveBeenCalledWith(
-        expect.objectContaining({ body: 'standing meeting' }),
+        expect.objectContaining({ body: 'standing meeting' })
       )
     })
   })

@@ -17,20 +17,17 @@ interface SshActions {
 export function useSshActions({ refresh }: Params): SshActions {
   const [connecting, setConnecting] = React.useState<boolean>(false)
 
-  const handleConnect = React.useCallback(
-    (host: SshHost): void => {
-      if (!window.core?.ipc?.invoke) return
-      setConnecting(true)
-      window.core.ipc
-        .invoke(EXT_ID, 'ssh:connect', { host: host.name })
-        .then(() => {
-          window.core?.window?.hide?.()
-        })
-        .catch(() => {})
-        .finally(() => setConnecting(false))
-    },
-    []
-  )
+  const handleConnect = React.useCallback((host: SshHost): void => {
+    if (!window.core?.ipc?.invoke) return
+    setConnecting(true)
+    window.core.ipc
+      .invoke(EXT_ID, 'ssh:connect', { host: host.name })
+      .then(() => {
+        window.core?.window?.hide?.()
+      })
+      .catch(() => {})
+      .finally(() => setConnecting(false))
+  }, [])
 
   const handleRefresh = React.useCallback((): void => {
     refresh()

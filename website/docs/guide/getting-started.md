@@ -50,13 +50,13 @@ You should see the omnibar. Try typing a math expression like `2 + 2` — the Ca
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|---|---|
-| `Escape` | Hide the launcher (configurable — can minimize or quit instead) |
-| `Tab` / `Shift+Tab` | Cycle through available tools |
-| `Enter` | Activate the selected result or tool |
-| `Arrow Up / Down` | Navigate the results list |
-| `Ctrl+,` | Open Settings (when the Settings extension is active) |
+| Shortcut            | Action                                                          |
+| ------------------- | --------------------------------------------------------------- |
+| `Escape`            | Hide the launcher (configurable — can minimize or quit instead) |
+| `Tab` / `Shift+Tab` | Cycle through available tools                                   |
+| `Enter`             | Activate the selected result or tool                            |
+| `Arrow Up / Down`   | Navigate the results list                                       |
+| `Ctrl+,`            | Open Settings (when the Settings extension is active)           |
 
 The exact shortcuts available depend on the active tool. Each tool registers its shortcuts via `useToolKeyActions`, and the shell's footer bar shows contextual hints.
 

@@ -27,6 +27,7 @@ interface Params {
   setActiveSelect: React.Dispatch<React.SetStateAction<string | null>>
   // Deps for the register-actions effect — mirrors the original dependency array
   registerActionsDeps: readonly unknown[]
+  t: (key: string) => string
 }
 
 export function useCalendarKeyboard({
@@ -35,6 +36,7 @@ export function useCalendarKeyboard({
   setListIdx,
   setActiveSelect,
   registerActionsDeps,
+  t,
 }: Params): void {
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
@@ -42,7 +44,7 @@ export function useCalendarKeyboard({
     // omnibox: ↓ enters calendar (empty query only)
     {
       key: 'ArrowDown',
-      label: 'Enter calendar',
+      label: t('actions.enterCalendar'),
       hint: '↓',
       activeOn: () => stateRef.current.mode === 'omnibox' && !stateRef.current.query.trim(),
       handler: actions.enterCalendarMode,
@@ -51,15 +53,14 @@ export function useCalendarKeyboard({
     // omnibox search: list navigation down
     {
       key: 'ArrowDown',
-      label: 'Next',
+      label: t('actions.next'),
       hint: '↓',
       activeOn: () => stateRef.current.mode === 'omnibox' && !!stateRef.current.query.trim(),
-      handler: () =>
-        setListIdx((i) => Math.min(stateRef.current.filteredSearch.length - 1, i + 1)),
+      handler: () => setListIdx((i) => Math.min(stateRef.current.filteredSearch.length - 1, i + 1)),
     },
     {
       key: 'ArrowUp',
-      label: 'Prev',
+      label: t('actions.prev'),
       hint: '↑',
       activeOn: () =>
         stateRef.current.mode === 'omnibox' &&
@@ -71,7 +72,7 @@ export function useCalendarKeyboard({
     // calendar: s returns to omnibox (month/day only — create/detail uses s for save)
     {
       key: 's',
-      label: 'Search',
+      label: t('actions.search'),
       hint: 'S',
       activeOn: () => {
         const s = stateRef.current
@@ -83,7 +84,7 @@ export function useCalendarKeyboard({
     // calendar month: arrow navigation
     {
       key: 'ArrowLeft',
-      label: 'Navigate',
+      label: t('actions.navigate'),
       hint: '↑↓←→',
       activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
       handler: () => actions.navigateBy(-1),
@@ -108,7 +109,7 @@ export function useCalendarKeyboard({
     },
     {
       key: 'Enter',
-      label: 'Open',
+      label: t('actions.open'),
       hint: '↵',
       activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'month',
       handler: actions.enterDayView,
@@ -117,7 +118,7 @@ export function useCalendarKeyboard({
     // calendar day: list navigation
     {
       key: 'ArrowUp',
-      label: 'Navigate',
+      label: t('actions.navigate'),
       hint: '↑↓',
       activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'day',
       handler: () => setListIdx((i) => Math.max(-1, i - 1)),
@@ -126,12 +127,11 @@ export function useCalendarKeyboard({
       key: 'ArrowDown',
       label: '',
       activeOn: () => stateRef.current.mode === 'calendar' && stateRef.current.calView === 'day',
-      handler: () =>
-        setListIdx((i) => Math.min(stateRef.current.dayEvents.length - 1, i + 1)),
+      handler: () => setListIdx((i) => Math.min(stateRef.current.dayEvents.length - 1, i + 1)),
     },
     {
       key: 'Enter',
-      label: 'Open',
+      label: t('actions.open'),
       hint: '↵',
       activeOn: () => {
         const s = stateRef.current
@@ -151,7 +151,7 @@ export function useCalendarKeyboard({
     // Escape: go back
     {
       key: 'Escape',
-      label: 'Back',
+      label: t('actions.back'),
       hint: 'Esc',
       activeOn: () => {
         const s = stateRef.current
@@ -196,7 +196,7 @@ export function useCalendarKeyboard({
       if (calView === 'month' || calView === 'day') {
         registeredActions.push({
           id: 'calendar-new',
-          label: 'New Event',
+          label: t('actions.newEvent'),
           onExecute: () => actions.enterCreate(defaultReminderMin),
         })
       }
@@ -206,7 +206,7 @@ export function useCalendarKeyboard({
       ) {
         registeredActions.push({
           id: 'calendar-delete',
-          label: 'Delete Event',
+          label: t('actions.deleteEvent'),
           onExecute: () => {
             const id = calView === 'day' ? dayEvents[listIdx]?.id : editingEvent?.id
             if (!id) return
@@ -217,7 +217,7 @@ export function useCalendarKeyboard({
       if ((calView === 'create' || calView === 'detail') && activeSelect === null) {
         registeredActions.push({
           id: 'calendar-save',
-          label: 'Save Event',
+          label: t('actions.saveEvent'),
           onExecute: () => {
             if (calView === 'create') {
               actions.createEvent(query, calYear, calMonth, selectedDay, timeValue, reminderValue)

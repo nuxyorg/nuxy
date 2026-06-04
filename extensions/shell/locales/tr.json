@@ -21,5 +21,14 @@
     "searchPlaceholder": "Komut ara...",
     "noActions": "Kullanılabilir işlem yok.",
     "enterShortcut": "Enter"
+  },
+  "keyboard": {
+    "focusTabs": "Sekmelere odaklan",
+    "focusContent": "İçeriğe odaklan",
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "selectConfirm": "Seç / onayla",
+    "navigate": "Gezin",
+    "select": "Seç"
   }
 }

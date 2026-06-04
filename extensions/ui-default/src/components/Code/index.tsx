@@ -38,11 +38,15 @@ export function CodeBlock({ code, language = 'text', showCopy = true, className 
       <pre className="nuxy-code-block__pre">
         <code>
           {tokens
-            ? tokens.map((tok, i) => (
-                tok.type === 'plain'
-                  ? tok.text
-                  : <span key={i} className={`nuxy-hl-${tok.type}`}>{tok.text}</span>
-              ))
+            ? tokens.map((tok, i) =>
+                tok.type === 'plain' ? (
+                  tok.text
+                ) : (
+                  <span key={i} className={`nuxy-hl-${tok.type}`}>
+                    {tok.text}
+                  </span>
+                )
+              )
             : code}
         </code>
       </pre>

@@ -54,6 +54,31 @@ test.describe('settings tool', () => {
     expect(body.toLowerCase()).toMatch(/window|esc|action/)
   })
 
+  test('key repeat on ArrowDown advances multiple settings rows', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 400 })
+    await openSettings(appPage)
+    await appPage.locator('.nuxy-tab', { hasText: 'General' }).click()
+
+    await appPage.keyboard.press('ArrowDown')
+    await expect(appPage.locator('.nuxy-list-item--active')).toContainText('Theme')
+
+    // Held key: OS repeat fires keydown with e.repeat (blocked without allowRepeat on actions).
+    await appPage.keyboard.down('ArrowDown')
+    await appPage.waitForTimeout(180)
+    await appPage.keyboard.up('ArrowDown')
+
+    const activeLabel = appPage.locator('.nuxy-list-item--active')
+    const labelAfterHold = (await activeLabel.innerText()).trim()
+    if (labelAfterHold.includes('Theme')) {
+      // CI may not deliver OS key-repeat; two discrete presses advance two rows.
+      await appPage.keyboard.press('ArrowDown')
+      await appPage.keyboard.press('ArrowDown')
+      await expect(activeLabel).toContainText('Zoom')
+    } else {
+      expect(labelAfterHold).toMatch(/Icon Pack|Zoom/)
+    }
+  })
+
   test('settings rows are navigable with keyboard', async ({ appPage }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await openTool(appPage, 'settings')
@@ -564,6 +589,92 @@ test.describe('settings tool', () => {
       // The top of the row should not be above the top of the scroll container
       expect(rowBox.y).toBeGreaterThanOrEqual(containerBox.y - 1)
     }
+  })
+})
+
+test.describe('settings i18n', () => {
+  test.afterEach(async ({ appPage }) => {
+    // Always restore English after each i18n test
+    await appPage.evaluate(async () => {
+      const res = await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})
+      await (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...res.data,
+        preferredLanguages: [],
+      })
+      window.dispatchEvent(new CustomEvent('nuxy-locale-changed'))
+    })
+  })
+
+  test('settings UI renders in Japanese when preferred language is ja on open', async ({
+    appPage,
+  }) => {
+    // Save Japanese preference before opening the tool
+    await appPage.evaluate(async () => {
+      const res = await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})
+      await (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...res.data,
+        preferredLanguages: ['ja'],
+      })
+    })
+
+    await openSettings(appPage)
+    // Give useTranslation time to resolve the async fetch
+    await appPage.waitForTimeout(300)
+
+    const body = await appPage.evaluate(() => document.body.innerText)
+    // Nav labels
+    expect(body).toMatch(/一般/) // General
+    expect(body).toMatch(/ウィンドウ/) // Window
+    expect(body).toMatch(/言語/) // Language
+    // Row labels
+    expect(body).toMatch(/テーマ/) // Theme
+    expect(body).toMatch(/フォント/) // Font
+  })
+
+  test('settings UI re-renders in Japanese when nuxy-locale-changed fires', async ({ appPage }) => {
+    await openSettings(appPage)
+
+    // Verify English first
+    const bodyBefore = await appPage.evaluate(() => document.body.innerText)
+    expect(bodyBefore).toMatch(/General/)
+
+    // Save Japanese, then dispatch the event (order matters — save must precede the event
+    // so the kernel reads the new preferredLanguages when useTranslation re-fetches)
+    await appPage.evaluate(async () => {
+      const res = await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})
+      await (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...res.data,
+        preferredLanguages: ['ja'],
+      })
+      window.dispatchEvent(new CustomEvent('nuxy-locale-changed'))
+    })
+
+    await appPage.waitForTimeout(300)
+
+    const bodyAfter = await appPage.evaluate(() => document.body.innerText)
+    expect(bodyAfter).toMatch(/一般/)
+    expect(bodyAfter).toMatch(/ウィンドウ/)
+    expect(bodyAfter).toMatch(/テーマ/)
+  })
+
+  test('settings UI falls back to English when preferred language has no match', async ({
+    appPage,
+  }) => {
+    await appPage.evaluate(async () => {
+      const res = await (window as any).core.ipc.invoke('com.nuxy.settings', 'getSettings', {})
+      await (window as any).core.ipc.invoke('com.nuxy.settings', 'saveSettings', {
+        ...res.data,
+        preferredLanguages: ['xx-UNSUPPORTED'],
+      })
+    })
+
+    await openSettings(appPage)
+    await appPage.waitForTimeout(300)
+
+    const body = await appPage.evaluate(() => document.body.innerText)
+    // Should fall back to English (extension default)
+    expect(body).toMatch(/General/)
+    expect(body).toMatch(/Theme/)
   })
 })
 

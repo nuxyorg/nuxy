@@ -9,8 +9,7 @@ import { useColorKeyboard } from './hooks/useColorKeyboard.ts'
 import { ColorPreview } from './components/ColorPreview.tsx'
 
 const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({ t: (k: string) => k, dir: 'ltr' as const }))
+  (window.UI || {}).useTranslation || (() => ({ t: (k: string) => k, dir: 'ltr' as const }))
 
 interface Props {
   query: string
@@ -70,6 +69,7 @@ export default function ColorView({ query }: Props) {
     currentColor,
     handlers: { handleSave, handleDelete, handleCopy },
     getFormatted,
+    t,
   })
 
   const activeColor = selectedIndex >= 0 ? items[selectedIndex] : currentColor
@@ -82,7 +82,11 @@ export default function ColorView({ query }: Props) {
         ) : null
       ) : (
         items.map((item, idx) => (
-          <ListItem key={item.id} active={idx === selectedIndex} onClick={() => setSelectedIndex(idx)}>
+          <ListItem
+            key={item.id}
+            active={idx === selectedIndex}
+            onClick={() => setSelectedIndex(idx)}
+          >
             <ListItemBody>
               <div
                 style={{
@@ -110,7 +114,9 @@ export default function ColorView({ query }: Props) {
   ) : null
 
   return (
-    <div style={{ direction: dir, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{ direction: dir, flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}
+    >
       {TwoPanel ? (
         <TwoPanel left={leftPanel} right={rightPanel} style={{ flex: 1, minHeight: 0 }} />
       ) : (

@@ -49,7 +49,17 @@ describe('contextBridge.exposeInMainWorld', () => {
 
   it('window object has all 9 methods: ready, resize, hide, esc, center, dragStart, dragMove, dragEnd, onShow', () => {
     const { window } = getExposedCore()
-    for (const method of ['ready', 'resize', 'hide', 'esc', 'center', 'dragStart', 'dragMove', 'dragEnd', 'onShow']) {
+    for (const method of [
+      'ready',
+      'resize',
+      'hide',
+      'esc',
+      'center',
+      'dragStart',
+      'dragMove',
+      'dragEnd',
+      'onShow',
+    ]) {
       expect(typeof window[method]).toBe('function')
     }
   })

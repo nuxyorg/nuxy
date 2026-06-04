@@ -13,7 +13,8 @@ interface Props {
 }
 
 export function AngrysearchListItem({ item, isActive }: Props) {
-  const { ListItem, ListItemBody, ListItemText, ListItemMeta, IconFolder, IconFile } = window.UI || {}
+  const { ListItem, ListItemBody, ListItemText, ListItemMeta, IconFolder, IconFile } =
+    window.UI || {}
 
   return (
     <ListItem active={isActive}>

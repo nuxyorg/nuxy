@@ -7,6 +7,7 @@ Bu dosya, `var(--token)` yerine doğrudan `rgba()` veya `#hex` yazılmış tüm 
 ## `extensions/ui-default/src/components/`
 
 ### `Tag/index.css`
+
 - **:7–8** — `rgba(255,255,255,.07)`, `rgba(255,255,255,.1)` (default tag bg/border)
 - **:45–46** — `rgba(42,192,255,.12)`, `rgba(42,192,255,.25)` (cyan variant)
 - **:50–51** — `rgba(204,255,45,.1)`, `rgba(204,255,45,.2)` (green variant)
@@ -14,11 +15,13 @@ Bu dosya, `var(--token)` yerine doğrudan `rgba()` veya `#hex` yazılmış tüm 
 - **:60–61** — `rgba(255,29,100,.1)`, `rgba(255,29,100,.2)` (red variant)
 
 ### `Code/index.css`
+
 - **:7–8** — `rgba(255,255,255,.07)`, `rgba(255,255,255,.1)`
 - **:16–17** — `rgba(0,0,0,.3)`, `rgba(255,255,255,.08)`
 - **:27–28** — `rgba(255,255,255,.06)`, `rgba(255,255,255,.02)`
 
 ### `MarkdownText/index.css`
+
 - **:72** — `rgba(255,255,255,.1)` (hr border)
 - **:79** — `rgba(255,255,255,.15)` (blockquote border)
 - **:81** — `rgba(255,255,255,.03)` (blockquote bg)
@@ -26,6 +29,7 @@ Bu dosya, `var(--token)` yerine doğrudan `rgba()` veya `#hex` yazılmış tüm 
 - **:111** — `rgba(122,162,247,.4)` (link underline)
 
 ### `Modal/index.css`
+
 - **:4** — `rgba(0,0,0,.7)` (backdrop)
 - **:25** — `rgba(255,255,255,.08)` (border)
 - **:28–29** — `rgba(0,0,0,.5)`, `rgba(0,0,0,.4)` (box-shadow)
@@ -35,29 +39,34 @@ Bu dosya, `var(--token)` yerine doğrudan `rgba()` veya `#hex` yazılmış tüm 
 - **:105** — `rgba(255,255,255,.01)` (footer bg)
 
 ### `Divider/index.css`
+
 - **:3** — `rgba(255,255,255,.08)` (horizontal)
 - **:10** — `rgba(255,255,255,.08)` (vertical)
 - **:30** — `rgba(255,255,255,.08)` (label variant bg)
 
 ### `Tabs/index.css`
+
 - **:9** — `rgba(255,255,255,.08)` (tab list border-bottom)
 - **:75** — `rgba(255,255,255,.08)` (border)
 - **:89–90** — `rgba(255,255,255,.05)`, `rgba(255,255,255,.15)` (hover)
 - **:96, :160** — `#000` (active tab text)
 
 ### `IconButton/index.css`
+
 - **:33** — `rgba(255,255,255,.07)` (ghost hover)
 - **:37** — `rgba(255,255,255,.12)` (ghost active)
 - **:41** — `rgba(255,255,255,.05)` (subtle variant)
 - **:46** — `rgba(255,29,100,.1)` (destructive variant)
 
 ### `Card/index.css`
+
 - **:5** — `rgba(0,0,0,.25)` (box-shadow)
 - **:21** — `rgba(255,255,255,.01)` (header bg)
 - **:26** — `rgba(255,255,255,.05)` (header border-bottom)
 - **:36–37** — `rgba(255,255,255,.05)`, `rgba(255,255,255,.01)` (footer)
 
 ### `ProgressBar/index.css`
+
 - **:18** — `rgba(255,255,255,.08)` (track)
 - **:84, :96** — `rgba(255,255,255,.06)` (shimmer gradient)
 - **:127** — `rgba(255,255,255,.03)`
@@ -67,6 +76,7 @@ Bu dosya, `var(--token)` yerine doğrudan `rgba()` veya `#hex` yazılmış tüm 
 - **:149** — `rgba(204,255,45,.04)` (success variant bg)
 
 ### `CircularProgress/index.css`
+
 - **:13** — `rgba(255,255,255,.08)` (track stroke)
 - **:51, :53** — `rgba(255,29,100,.2)`, `rgba(255,29,100,.02)` (error state)
 - **:86** — `rgba(255,255,255,.08)` (separator border)
@@ -76,12 +86,14 @@ Bu dosya, `var(--token)` yerine doğrudan `rgba()` veya `#hex` yazılmış tüm 
 - **:102** — `rgba(204,255,45,.1)` (success variant)
 
 ### `SelectBox/index.css`
+
 - **:55** — `rgba(255,255,255,.08)` (dropdown border)
 - **:58–59** — `rgba(0,0,0,.25)`, `rgba(0,0,0,.55)` (dropdown shadow)
 - **:69** — `rgba(255,255,255,.06)` (search border-bottom)
 - **:117** — `rgba(255,255,255,.07)` (item hover)
 
 ### `Table/index.css`
+
 - **:4** — `rgba(255,255,255,.08)` (table border)
 - **:21–22** — `rgba(255,255,255,.08)`, `rgba(255,255,255,.01)` (header)
 - **:29** — `rgba(255,255,255,.06)` (row border)
@@ -89,6 +101,7 @@ Bu dosya, `var(--token)` yerine doğrudan `rgba()` veya `#hex` yazılmış tüm 
 - **:88, :90** — `rgba(255,255,255,.06)`, `rgba(255,255,255,.02)` (expanded row)
 
 ### `DropdownMenu/index.css`
+
 - **:13** — `rgba(255,255,255,.08)` (border)
 - **:15** — `rgba(0,0,0,.3)` (shadow)
 - **:65** — `rgba(255,255,255,.06)` (item hover)
@@ -96,38 +109,48 @@ Bu dosya, `var(--token)` yerine doğrudan `rgba()` veya `#hex` yazılmış tüm 
 - **:86** — `rgba(255,255,255,.06)` (group label bg)
 
 ### `Collapsible/index.css`
+
 - **:53** — `rgba(255,255,255,.06)` (content border-top)
 
 ### `Tooltip/index.css`
+
 - **:22** — `rgba(255,255,255,.08)` (border)
 
 ### `Alert/index.css`
+
 - **:9–10** — `rgba(220,50,50,.08)`, `rgba(220,50,50,.2)` (error)
 - **:15–16** — `rgba(234,179,8,.08)`, `rgba(234,179,8,.2)` (warning)
 - **:21–22** — `rgba(59,130,246,.08)`, `rgba(59,130,246,.2)` (info)
 - **:27–28** — `rgba(34,197,94,.08)`, `rgba(34,197,94,.2)` (success)
 
 ### `Avatar/index.css`
+
 - **:90** — `rgba(255,255,255,.1)` (overlay)
 
 ### `FileInput/index.css`
+
 - **:27** — `rgba(42,192,255,.04)` (drag-over bg)
 - **:32** — `rgba(255,255,255,.1)` (drag-over border)
 - **:70** — `rgba(255,255,255,.04)` (file item bg)
 
 ### `NumberInput/index.css`
+
 - **:36** — `rgba(255,255,255,.05)` (button hover)
 
 ### `PinInput/index.css`
+
 - **:28** — `rgba(255,255,255,.2)` (focused border)
 
 ### `Checkbox/index.css`
+
 - **:40** — `stroke: #000` (checkmark)
 
 ### `Toaster/index.css`
+
 - **:19** — `rgba(0,0,0,.2)` (shadow)
 
 ### `Icon/index.tsx`
+
 - **:80** — `color: '#e55'` (error icon fallback, inline TS)
 
 ---

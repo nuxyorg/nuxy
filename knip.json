@@ -1,0 +1,41 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["scripts/*.{js,mjs,cjs}", "scratch/*.{js,cjs}"],
+      "project": ["scripts/*.{js,mjs,cjs}", "scratch/*.{js,cjs}"]
+    },
+    "src": {
+      "entry": ["electron/bootstrap/main.ts", "renderer/main.tsx"],
+      "project": ["**/*.{ts,tsx}"]
+    },
+    "packages/core": {
+      "entry": "src/index.ts",
+      "project": ["src/**/*.ts"]
+    },
+    "packages/ui": {
+      "entry": "src/index.tsx",
+      "project": ["src/**/*.{ts,tsx}"]
+    },
+    "packages/extension-host": {
+      "entry": "src/index.ts",
+      "project": ["src/**/*.ts"]
+    },
+    "packages/extension-sdk": {
+      "entry": "src/index.ts",
+      "project": ["src/**/*.ts"]
+    },
+    "packages/ext-devserver": {
+      "entry": ["index.html", "vite.config.ts"],
+      "project": ["src/**/*.{ts,tsx}", "vite.config.ts"]
+    },
+    "packages/ext-template": {
+      "entry": ["backend.ts", "frontend.tsx"],
+      "project": ["**/*.{ts,tsx}"]
+    },
+    "extensions/*": {
+      "entry": ["backend.ts", "frontend.tsx", "backend.js", "frontend.js", "entry.ts"],
+      "project": ["**/*.{ts,tsx,js,jsx}"]
+    }
+  }
+}

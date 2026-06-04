@@ -1,0 +1,16 @@
+{
+  "meta": { "name": "プロセスキラー", "direction": "ltr" },
+  "empty": "プロセスが見つかりません",
+  "emptyHint": "プロセス名で検索",
+  "noResults": "一致するプロセスがありません",
+  "noResultsHint": "別の検索をお試しください",
+  "actions": {
+    "kill": "終了",
+    "forceKill": "強制終了",
+    "refresh": "更新"
+  },
+  "errors": {
+    "killFailed": "プロセスの終了に失敗しました",
+    "invalidPid": "無効なプロセスID"
+  }
+}

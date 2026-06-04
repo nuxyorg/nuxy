@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react' // React used by classic JSX
-import { ipcLog, runtimeMocks, setMock, clearMock, type LogEntry, type MockSource } from './mock-core'
+import {
+  ipcLog,
+  runtimeMocks,
+  setMock,
+  clearMock,
+  type LogEntry,
+  type MockSource,
+} from './mock-core'
 
 const SOURCE_BADGE: Record<MockSource, { label: string; color: string; bg: string }> = {
-  ui:      { label: 'ui',      color: '#60b4ff', bg: 'rgba(80,160,255,0.15)' },
+  ui: { label: 'ui', color: '#60b4ff', bg: 'rgba(80,160,255,0.15)' },
   backend: { label: 'backend', color: '#7be07b', bg: 'rgba(80,200,80,0.12)' },
-  file:    { label: 'file',    color: '#f0b860', bg: 'rgba(240,184,80,0.12)' },
-  null:    { label: 'null',    color: '#ff7070', bg: 'rgba(255,80,80,0.1)' },
+  file: { label: 'file', color: '#f0b860', bg: 'rgba(240,184,80,0.12)' },
+  null: { label: 'null', color: '#ff7070', bg: 'rgba(255,80,80,0.1)' },
 }
 
 const S = {
@@ -58,23 +65,24 @@ const S = {
     width: '100%',
   } as React.CSSProperties,
 
-  btn: (variant: 'apply' | 'clear' | 'add') => ({
-    padding: '2px 8px',
-    borderRadius: '3px',
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '10px',
-    fontFamily: 'inherit',
-    fontWeight: 600,
-    background:
-      variant === 'apply' ? 'rgba(80,160,255,0.2)' :
-      variant === 'clear' ? 'rgba(255,80,80,0.15)' :
-      'rgba(255,255,255,0.08)',
-    color:
-      variant === 'apply' ? '#60b4ff' :
-      variant === 'clear' ? '#ff7070' :
-      'rgba(255,255,255,0.6)',
-  }) as React.CSSProperties,
+  btn: (variant: 'apply' | 'clear' | 'add') =>
+    ({
+      padding: '2px 8px',
+      borderRadius: '3px',
+      border: 'none',
+      cursor: 'pointer',
+      fontSize: '10px',
+      fontFamily: 'inherit',
+      fontWeight: 600,
+      background:
+        variant === 'apply'
+          ? 'rgba(80,160,255,0.2)'
+          : variant === 'clear'
+            ? 'rgba(255,80,80,0.15)'
+            : 'rgba(255,255,255,0.08)',
+      color:
+        variant === 'apply' ? '#60b4ff' : variant === 'clear' ? '#ff7070' : 'rgba(255,255,255,0.6)',
+    }) as React.CSSProperties,
 
   addRow: {
     display: 'flex',
@@ -108,8 +116,8 @@ function MockRow({ channel, lastEntry, onRemove }: MockRowProps) {
   const initialJson = isActive
     ? JSON.stringify(runtimeMocks[channel], null, 2)
     : lastEntry !== undefined
-    ? JSON.stringify(lastEntry.data, null, 2)
-    : ''
+      ? JSON.stringify(lastEntry.data, null, 2)
+      : ''
 
   const [draft, setDraft] = useState(initialJson)
   const [error, setError] = useState('')
@@ -147,42 +155,71 @@ function MockRow({ channel, lastEntry, onRemove }: MockRowProps) {
             <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px' }}>
               {new Date(lastEntry.ts).toLocaleTimeString()}
             </span>
-            {(() => { const b = SOURCE_BADGE[lastEntry.source]; return (
-              <span style={{ fontSize: '10px', color: b.color, background: b.bg, padding: '1px 5px', borderRadius: '3px' }}>
-                {b.label}
-              </span>
-            )})()}
+            {(() => {
+              const b = SOURCE_BADGE[lastEntry.source]
+              return (
+                <span
+                  style={{
+                    fontSize: '10px',
+                    color: b.color,
+                    background: b.bg,
+                    padding: '1px 5px',
+                    borderRadius: '3px',
+                  }}
+                >
+                  {b.label}
+                </span>
+              )
+            })()}
           </>
         )}
         {applied && (
-          <span style={{ color: '#60b4ff', fontSize: '10px', background: 'rgba(80,160,255,0.1)', padding: '1px 5px', borderRadius: '3px' }}>
+          <span
+            style={{
+              color: '#60b4ff',
+              fontSize: '10px',
+              background: 'rgba(80,160,255,0.1)',
+              padding: '1px 5px',
+              borderRadius: '3px',
+            }}
+          >
             active
           </span>
         )}
         <span style={{ flex: 1 }} />
-        <button style={S.btn('clear')} onClick={handleClear}>remove</button>
-        <button
-          style={{ ...S.btn('apply'), opacity: hasChanges ? 1 : 0.4 }}
-          onClick={apply}
-        >
+        <button style={S.btn('clear')} onClick={handleClear}>
+          remove
+        </button>
+        <button style={{ ...S.btn('apply'), opacity: hasChanges ? 1 : 0.4 }} onClick={apply}>
           apply
         </button>
       </div>
       <textarea
         style={{
           ...S.textarea,
-          borderColor: error ? 'rgba(255,80,80,0.4)' : applied ? 'rgba(80,160,255,0.25)' : 'rgba(255,255,255,0.1)',
+          borderColor: error
+            ? 'rgba(255,80,80,0.4)'
+            : applied
+              ? 'rgba(80,160,255,0.25)'
+              : 'rgba(255,255,255,0.1)',
         }}
         value={draft}
-        onChange={(e) => { setDraft(e.target.value); setError('') }}
-        onKeyDown={(e) => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') apply() }}
+        onChange={(e) => {
+          setDraft(e.target.value)
+          setError('')
+        }}
+        onKeyDown={(e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') apply()
+        }}
         spellCheck={false}
         rows={Math.min(8, Math.max(2, draft.split('\n').length))}
       />
       {error && <div style={{ color: '#ff7070', fontSize: '10px', marginTop: '3px' }}>{error}</div>}
-      {!error && <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px', marginTop: '3px' }}>
-        Ctrl+Enter to apply
-      </div>}
+      {!error && (
+        <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px', marginTop: '3px' }}>
+          Ctrl+Enter to apply
+        </div>
+      )}
     </div>
   )
 }
@@ -227,7 +264,16 @@ export default function MockPanel() {
         <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>
           {open ? '▼' : '▶'} Mocks
           {activeCount > 0 && (
-            <span style={{ marginLeft: '8px', color: '#60b4ff', fontSize: '10px', background: 'rgba(80,160,255,0.12)', padding: '1px 6px', borderRadius: '10px' }}>
+            <span
+              style={{
+                marginLeft: '8px',
+                color: '#60b4ff',
+                fontSize: '10px',
+                background: 'rgba(80,160,255,0.12)',
+                padding: '1px 6px',
+                borderRadius: '10px',
+              }}
+            >
               {activeCount} active
             </span>
           )}
@@ -240,7 +286,9 @@ export default function MockPanel() {
       {open && (
         <>
           {channels.length === 0 && (
-            <div style={{ padding: '16px 12px', color: 'rgba(255,255,255,0.2)', textAlign: 'center' }}>
+            <div
+              style={{ padding: '16px 12px', color: 'rgba(255,255,255,0.2)', textAlign: 'center' }}
+            >
               No IPC calls yet — interact with the extension above.
             </div>
           )}
@@ -263,7 +311,9 @@ export default function MockPanel() {
               onChange={(e) => setNewChannel(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addChannel()}
             />
-            <button style={S.btn('add')} onClick={addChannel}>+ add</button>
+            <button style={S.btn('add')} onClick={addChannel}>
+              + add
+            </button>
           </div>
         </>
       )}

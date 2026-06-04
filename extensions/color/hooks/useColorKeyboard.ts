@@ -15,6 +15,7 @@ interface Params {
   currentColor: SavedColor | null
   handlers: Handlers
   getFormatted: (color: SavedColor) => string
+  t: (key: string) => string
 }
 
 export function useColorKeyboard({
@@ -24,6 +25,7 @@ export function useColorKeyboard({
   currentColor,
   handlers,
   getFormatted,
+  t,
 }: Params): void {
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
@@ -35,7 +37,7 @@ export function useColorKeyboard({
   _useToolKeyActions([
     {
       key: 'ArrowUp',
-      label: 'Navigate',
+      label: t('action.navigate'),
       hint: '↑↓',
       handler: () => {
         setSelectedIndex((i) => Math.max(-1, i - 1))
@@ -50,19 +52,24 @@ export function useColorKeyboard({
     },
     {
       key: 'Enter',
-      label: 'Copy',
+      label: t('action.copy'),
       hint: '↵',
       activeOn: () => ref.current.selectedIndex >= 0 || ref.current.currentColor !== null,
       handler: () => {
-        const { selectedIndex: si, items: its, currentColor: cc, handlers: h, getFormatted: gf } =
-          ref.current
+        const {
+          selectedIndex: si,
+          items: its,
+          currentColor: cc,
+          handlers: h,
+          getFormatted: gf,
+        } = ref.current
         const active = si >= 0 ? its[si] : cc
         if (active) h.handleCopy(gf(active))
       },
     },
     {
       key: 's',
-      label: 'Save',
+      label: t('action.save'),
       hint: 'S',
       activeOn: () => ref.current.currentColor !== null && ref.current.selectedIndex < 0,
       handler: () => {
@@ -72,7 +79,7 @@ export function useColorKeyboard({
     },
     {
       key: 'd',
-      label: 'Delete',
+      label: t('action.delete'),
       hint: 'D',
       activeOn: () => ref.current.selectedIndex >= 0,
       handler: () => {

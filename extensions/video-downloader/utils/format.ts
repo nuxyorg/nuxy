@@ -1,6 +1,12 @@
 import type { VideoFormat, DownloadJobPublic, HistoryItem } from '../types.ts'
 
-export type TabId = 'recommended' | 'video_audio' | 'audio_only' | 'video_only' | 'all' | 'downloads'
+export type TabId =
+  | 'recommended'
+  | 'video_audio'
+  | 'audio_only'
+  | 'video_only'
+  | 'all'
+  | 'downloads'
 
 export interface CombinedListItem {
   jobId: string
@@ -116,7 +122,10 @@ export function filterFormats(formats: VideoFormat[], tab: TabId): VideoFormat[]
   }
 }
 
-export function buildCombinedList(jobs: DownloadJobPublic[], history: HistoryItem[]): CombinedListItem[] {
+export function buildCombinedList(
+  jobs: DownloadJobPublic[],
+  history: HistoryItem[]
+): CombinedListItem[] {
   const list: CombinedListItem[] = []
   for (const job of jobs) {
     list.push({

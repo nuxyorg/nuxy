@@ -1,1 +1,119 @@
-{"nodes": [{"id": "home_xava_documents_nuxy_extensions_calculator_package_json", "label": "package.json", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L1"}, {"id": "calculator_package_name", "label": "name", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L2"}, {"id": "calculator_package_private", "label": "private", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L3"}, {"id": "calculator_package_type", "label": "type", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L4"}, {"id": "calculator_package_version", "label": "version", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L5"}, {"id": "calculator_package_dependencies", "label": "dependencies", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L6"}, {"id": "calculator_package_dependencies_nuxy_extension_sdk", "label": "@nuxy/extension-sdk", "file_type": "code", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L7"}], "edges": [{"source": "home_xava_documents_nuxy_extensions_calculator_package_json", "target": "calculator_package_name", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L2", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_calculator_package_json", "target": "calculator_package_private", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L3", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_calculator_package_json", "target": "calculator_package_type", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L4", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_calculator_package_json", "target": "calculator_package_version", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L5", "weight": 1.0}, {"source": "home_xava_documents_nuxy_extensions_calculator_package_json", "target": "calculator_package_dependencies", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L6", "weight": 1.0}, {"source": "calculator_package_dependencies", "target": "calculator_package_dependencies_nuxy_extension_sdk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L7", "weight": 1.0}, {"source": "calculator_package_dependencies_nuxy_extension_sdk", "target": "nuxy_extension_sdk", "relation": "imports", "confidence": "EXTRACTED", "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json", "source_location": "L7", "weight": 1.0, "context": "import"}]}
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_calculator_package_json",
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "calculator_package_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "calculator_package_private",
+      "label": "private",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "calculator_package_type",
+      "label": "type",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "calculator_package_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "calculator_package_dependencies",
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "calculator_package_dependencies_nuxy_extension_sdk",
+      "label": "@nuxy/extension-sdk",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L7"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_calculator_package_json",
+      "target": "calculator_package_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_calculator_package_json",
+      "target": "calculator_package_private",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_calculator_package_json",
+      "target": "calculator_package_type",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_calculator_package_json",
+      "target": "calculator_package_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_calculator_package_json",
+      "target": "calculator_package_dependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "calculator_package_dependencies",
+      "target": "calculator_package_dependencies_nuxy_extension_sdk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "calculator_package_dependencies_nuxy_extension_sdk",
+      "target": "nuxy_extension_sdk",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/package.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "context": "import"
+    }
+  ]
+}

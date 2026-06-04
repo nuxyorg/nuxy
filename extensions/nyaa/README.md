@@ -33,9 +33,9 @@ Select **Nyaa Search** from the tool list and type a title into the omnibar. Res
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate results |
+| Key     | Action                     |
+| ------- | -------------------------- |
+| `↑` `↓` | Navigate results           |
 | `Enter` | Copy magnet link and close |
 
 ### Examples
@@ -55,28 +55,28 @@ Change Category to **Audio** in Settings, then search for a soundtrack title.
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `category` | select | `1_2` (Anime - English) | Nyaa category filter |
-| `filter` | select | `0` (No Filter) | Removes remakes or limits to trusted uploaders |
-| `sortBy` | select | `seeders` | Result sort order: Seeders, Newest, Size, or Downloads |
+| Key        | Type   | Default                 | Description                                            |
+| ---------- | ------ | ----------------------- | ------------------------------------------------------ |
+| `category` | select | `1_2` (Anime - English) | Nyaa category filter                                   |
+| `filter`   | select | `0` (No Filter)         | Removes remakes or limits to trusted uploaders         |
+| `sortBy`   | select | `seeders`               | Result sort order: Seeders, Newest, Size, or Downloads |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `network` | Fetching search results from nyaa.si |
-| `clipboard` | Writing the selected magnet link |
+| Permission  | Used for                             |
+| ----------- | ------------------------------------ |
+| `network`   | Fetching search results from nyaa.si |
+| `clipboard` | Writing the selected magnet link     |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
 
 ---
 

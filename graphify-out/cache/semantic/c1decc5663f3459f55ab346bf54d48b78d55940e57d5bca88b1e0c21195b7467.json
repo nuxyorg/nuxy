@@ -1,1 +1,345 @@
-{"nodes": [{"id": "docs_architecture_refactor_plan_document", "label": "Architecture Refactor Plan", "file_type": "document", "source_file": "docs/architecture/refactor-plan.md", "source_location": null, "source_url": null, "captured_at": "2026-05-19", "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_validation_split", "label": "Validation Split (Finding 1)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 1", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_register_god_handler", "label": "register.ts God-Handler (Finding 2)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 2", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_nuxyconfig_god_module", "label": "nuxyconfig.ts God-Module (Finding 3)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 3", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_nowplaying_indirection", "label": "NowPlaying Type Double Re-export (Finding 4)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 4", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_untyped_worker_protocol", "label": "Untyped Worker Message Protocol (Finding 5)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 5", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_renderer_any_cast", "label": "Renderer (window as any).core Bypass (Finding 6)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 6", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_scanner_lifecycle", "label": "Scanner Lifecycle Overload (Finding 7)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 7", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_protocol_transpilation", "label": "Runtime TypeScript Transpilation in Protocol Handler (Finding 11)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 11", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_silent_load_failure", "label": "Silent Extension Load Failure (Finding 14)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 14", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_registration_race", "label": "Extension Registration Race Condition (Finding 13)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 13", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_msgid_weak", "label": "Weak msgId Generation (Finding 10)", "file_type": "rationale", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 10", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_kernel_router", "label": "Proposed kernel-router.ts", "file_type": "concept", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 1 Proposed Fix", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_architecture_refactor_plan_worker_protocol_type", "label": "WorkerToHostMessage / HostToWorkerMessage Discriminated Union", "file_type": "concept", "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 5 Proposed Fix", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_validation_split", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 1", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_register_god_handler", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 2", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_nuxyconfig_god_module", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 3", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_untyped_worker_protocol", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 5", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_renderer_any_cast", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 6", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_scanner_lifecycle", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 7", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_protocol_transpilation", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 11", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_silent_load_failure", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 14", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_registration_race", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 13", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_architecture_refactor_plan_msgid_weak", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 10", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_validation_split", "target": "docs_architecture_refactor_plan_kernel_router", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 1 Proposed Fix", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_untyped_worker_protocol", "target": "docs_architecture_refactor_plan_worker_protocol_type", "relation": "rationale_for", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 5 Proposed Fix", "weight": 1.0}, {"source": "docs_architecture_refactor_plan_renderer_any_cast", "target": "docs_types_type_safety_report_window_any_apptsx", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 6 vs Issue 1 \u2014 both identify (window as any).core in App.tsx", "weight": 0.95}, {"source": "docs_architecture_refactor_plan_untyped_worker_protocol", "target": "docs_types_type_safety_report_worker_msg_untyped", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.95, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Finding 5 vs Issue 8 \u2014 both identify untyped worker messages", "weight": 0.95}, {"source": "docs_architecture_refactor_plan_nuxyconfig_god_module", "target": "docs_architecture_refactor_plan_register_god_handler", "relation": "semantically_similar_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Both are god-module anti-patterns in different files", "weight": 0.85}, {"source": "docs_architecture_refactor_plan_protocol_transpilation", "target": "extensions_extension_guide_file_structure", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Refactor plan recommends pre-transpiled .js; EXTENSION_GUIDE says .ts/.tsx", "weight": 0.75}, {"source": "docs_architecture_refactor_plan_document", "target": "docs_types_type_safety_report_document", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "docs/architecture/refactor-plan.md", "source_location": "Both are static analysis audit documents from 2026-05-19", "weight": 0.85}], "hyperedges": [{"id": "type_safety_triad", "label": "Type Safety Problem Triad: renderer, worker protocol, CoreContext", "nodes": ["docs_architecture_refactor_plan_renderer_any_cast", "docs_architecture_refactor_plan_untyped_worker_protocol", "docs_types_type_safety_report_corecontext_unknown"], "relation": "participate_in", "confidence": "INFERRED", "confidence_score": 0.85, "source_file": "docs/architecture/refactor-plan.md"}]}
+{
+  "nodes": [
+    {
+      "id": "docs_architecture_refactor_plan_document",
+      "label": "Architecture Refactor Plan",
+      "file_type": "document",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_validation_split",
+      "label": "Validation Split (Finding 1)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_register_god_handler",
+      "label": "register.ts God-Handler (Finding 2)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_nuxyconfig_god_module",
+      "label": "nuxyconfig.ts God-Module (Finding 3)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_nowplaying_indirection",
+      "label": "NowPlaying Type Double Re-export (Finding 4)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_untyped_worker_protocol",
+      "label": "Untyped Worker Message Protocol (Finding 5)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_renderer_any_cast",
+      "label": "Renderer (window as any).core Bypass (Finding 6)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_scanner_lifecycle",
+      "label": "Scanner Lifecycle Overload (Finding 7)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_protocol_transpilation",
+      "label": "Runtime TypeScript Transpilation in Protocol Handler (Finding 11)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_silent_load_failure",
+      "label": "Silent Extension Load Failure (Finding 14)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_registration_race",
+      "label": "Extension Registration Race Condition (Finding 13)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 13",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_msgid_weak",
+      "label": "Weak msgId Generation (Finding 10)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_kernel_router",
+      "label": "Proposed kernel-router.ts",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 1 Proposed Fix",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_refactor_plan_worker_protocol_type",
+      "label": "WorkerToHostMessage / HostToWorkerMessage Discriminated Union",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 5 Proposed Fix",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_validation_split",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 1",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_register_god_handler",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 2",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_nuxyconfig_god_module",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_untyped_worker_protocol",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 5",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_renderer_any_cast",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 6",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_scanner_lifecycle",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 7",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_protocol_transpilation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 11",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_silent_load_failure",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 14",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_registration_race",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 13",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_architecture_refactor_plan_msgid_weak",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 10",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_validation_split",
+      "target": "docs_architecture_refactor_plan_kernel_router",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 1 Proposed Fix",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_untyped_worker_protocol",
+      "target": "docs_architecture_refactor_plan_worker_protocol_type",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 5 Proposed Fix",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_refactor_plan_renderer_any_cast",
+      "target": "docs_types_type_safety_report_window_any_apptsx",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 6 vs Issue 1 \u2014 both identify (window as any).core in App.tsx",
+      "weight": 0.95
+    },
+    {
+      "source": "docs_architecture_refactor_plan_untyped_worker_protocol",
+      "target": "docs_types_type_safety_report_worker_msg_untyped",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Finding 5 vs Issue 8 \u2014 both identify untyped worker messages",
+      "weight": 0.95
+    },
+    {
+      "source": "docs_architecture_refactor_plan_nuxyconfig_god_module",
+      "target": "docs_architecture_refactor_plan_register_god_handler",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Both are god-module anti-patterns in different files",
+      "weight": 0.85
+    },
+    {
+      "source": "docs_architecture_refactor_plan_protocol_transpilation",
+      "target": "extensions_extension_guide_file_structure",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Refactor plan recommends pre-transpiled .js; EXTENSION_GUIDE says .ts/.tsx",
+      "weight": 0.75
+    },
+    {
+      "source": "docs_architecture_refactor_plan_document",
+      "target": "docs_types_type_safety_report_document",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "Both are static analysis audit documents from 2026-05-19",
+      "weight": 0.85
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "type_safety_triad",
+      "label": "Type Safety Problem Triad: renderer, worker protocol, CoreContext",
+      "nodes": [
+        "docs_architecture_refactor_plan_renderer_any_cast",
+        "docs_architecture_refactor_plan_untyped_worker_protocol",
+        "docs_types_type_safety_report_corecontext_unknown"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/architecture/refactor-plan.md"
+    }
+  ]
+}

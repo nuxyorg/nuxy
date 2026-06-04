@@ -170,13 +170,13 @@ A `helper` extension provides utility services to other extensions. Helpers are 
 
 **Key differences from `tool`:**
 
-| | `tool` | `helper` |
-| --- | --- | --- |
-| Appears in tool list | Yes | No |
-| User activates directly | Yes | No |
-| Backend (worker) | Required | Optional |
-| Frontend | Optional | Optional — self-attaches or responds to events |
-| Called by other extensions | Via `capabilities.callable` | Via `capabilities.callable` or events |
+|                            | `tool`                      | `helper`                                       |
+| -------------------------- | --------------------------- | ---------------------------------------------- |
+| Appears in tool list       | Yes                         | No                                             |
+| User activates directly    | Yes                         | No                                             |
+| Backend (worker)           | Required                    | Optional                                       |
+| Frontend                   | Optional                    | Optional — self-attaches or responds to events |
+| Called by other extensions | Via `capabilities.callable` | Via `capabilities.callable` or events          |
 
 **Rules for `helper` extensions:**
 
@@ -442,7 +442,7 @@ All IPC handlers must return a value (or `undefined`). The kernel wraps them in 
 
 ## 5. Frontend Rules
 
-> For detailed guidance on *when* and *how* to split `frontend.tsx` into hooks and components, see [`FRONTEND_STRUCTURE_GUIDE.md`](FRONTEND_STRUCTURE_GUIDE.md).
+> For detailed guidance on _when_ and _how_ to split `frontend.tsx` into hooks and components, see [`FRONTEND_STRUCTURE_GUIDE.md`](FRONTEND_STRUCTURE_GUIDE.md).
 
 ### 5.1 TSX format
 
@@ -473,6 +473,7 @@ export default function MyView({ query }: Props) {
 ```
 
 **Rules for submodule files (`components/`, `hooks/`, `utils/`):**
+
 - Every `.tsx` file in `components/` must start with `const React = window.React` — the same as `frontend.tsx`.
 - Hook files in `hooks/` are plain `.ts` files that call `React.useState`, `React.useEffect`, etc. via the `React` reference passed in, or destructured from `window.React` at the top.
 - `utils/` files are pure `.ts` with no React or UI kit dependencies.
@@ -745,7 +746,7 @@ Communicate with the shell via `window.dispatchEvent(new CustomEvent(...))` for 
 | `nuxy-register-actions`       | Register command palette actions (`detail: Action[]`)                                                                                                               |
 | `nuxy-settings-updated`       | Notify that settings changed (`detail: settingsObj`)                                                                                                                |
 | `nuxy-key-hints-changed`      | Ask the shell to re-evaluate which key-action hints are active (no detail needed). Dispatch this whenever the state that drives your `activeOn` predicates changes. |
-| `nuxy-locale-changed`         | Emitted by the settings extension when the user changes `preferredLanguages`. `useTranslation` listens to this automatically — no manual handling required.          |
+| `nuxy-locale-changed`         | Emitted by the settings extension when the user changes `preferredLanguages`. `useTranslation` listens to this automatically — no manual handling required.         |
 
 Do not dispatch or listen for arbitrary custom events not listed here.
 
@@ -778,11 +779,11 @@ extensions/
 }
 ```
 
-| Field | Required | Description |
-|---|---|---|
-| `default` | Yes | BCP 47 fallback locale when no preferred language matches. |
-| `supported` | Yes | All BCP 47 locale codes the extension ships. Scanner warns if a file is missing. |
-| `dir` | No | Subdirectory with locale files. Defaults to `"locales"`. |
+| Field       | Required | Description                                                                      |
+| ----------- | -------- | -------------------------------------------------------------------------------- |
+| `default`   | Yes      | BCP 47 fallback locale when no preferred language matches.                       |
+| `supported` | Yes      | All BCP 47 locale codes the extension ships. Scanner warns if a file is missing. |
+| `dir`       | No       | Subdirectory with locale files. Defaults to `"locales"`.                         |
 
 ### 6.3 Translation file format
 
@@ -804,18 +805,19 @@ extensions/
 }
 ```
 
-| Feature | Syntax | Notes |
-|---|---|---|
-| Simple key | `"hello": "Merhaba"` | Accessed as `t('hello')` |
-| Nested key | `{ "a": { "b": "val" } }` | Accessed as `t('a.b')` |
-| Interpolation | `"Hi {name}!"` | `t('key', { name: 'Ali' })` → `"Hi Ali!"` |
-| Plurals | `{ "one": "…", "other": "…" }` | `t('items', { count: 3 }, 3)` |
-| `meta.name` | Translated extension name | Overrides the display name in the tool list |
-| `meta.direction` | `"ltr"` / `"rtl"` | Informational; direction is auto-detected from the locale |
+| Feature          | Syntax                         | Notes                                                     |
+| ---------------- | ------------------------------ | --------------------------------------------------------- |
+| Simple key       | `"hello": "Merhaba"`           | Accessed as `t('hello')`                                  |
+| Nested key       | `{ "a": { "b": "val" } }`      | Accessed as `t('a.b')`                                    |
+| Interpolation    | `"Hi {name}!"`                 | `t('key', { name: 'Ali' })` → `"Hi Ali!"`                 |
+| Plurals          | `{ "one": "…", "other": "…" }` | `t('items', { count: 3 }, 3)`                             |
+| `meta.name`      | Translated extension name      | Overrides the display name in the tool list               |
+| `meta.direction` | `"ltr"` / `"rtl"`              | Informational; direction is auto-detected from the locale |
 
 **Rules:**
+
 - The `meta` key is reserved and ignored by the translation lookup.
-- Plural keys must be an object whose *all* keys are CLDR plural categories (`zero`, `one`, `two`, `few`, `many`, `other`). Any mixed object is treated as a nested group.
+- Plural keys must be an object whose _all_ keys are CLDR plural categories (`zero`, `one`, `two`, `few`, `many`, `other`). Any mixed object is treated as a nested group.
 - Unresolved `{placeholder}` values are left as-is (not stripped).
 - Missing keys return the key string itself; a `silly`-level warning is logged in the backend.
 
@@ -845,7 +847,7 @@ import type { CoreContext } from '@nuxy/extension-sdk'
 export function register(core: CoreContext): void {
   core.ipc.handle('getSomething', async () => {
     const label = core.i18n.t('section.label')
-    const msg   = core.i18n.t('greeting', { name: 'World' })
+    const msg = core.i18n.t('greeting', { name: 'World' })
     const count = core.i18n.t('items', { count: 5 }, 5)
     core.logger.info(`locale=${core.i18n.locale}, dir=${core.i18n.dir}`)
     return { label, msg, count }
@@ -864,11 +866,13 @@ const React = window.React
 const { useState } = React
 
 const EXT_ID = 'com.nuxy.my-extension'
-const _useTranslation = (window.UI || {}).useTranslation || (() => ({
-  t: (key: string) => key,
-  locale: 'en',
-  dir: 'ltr' as const,
-}))
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({
+    t: (key: string) => key,
+    locale: 'en',
+    dir: 'ltr' as const,
+  }))
 
 export default function MyView({ query }: { query: string }) {
   const { List, ListItem, ListItemText, EmptyState } = window.UI || {}
@@ -885,6 +889,7 @@ export default function MyView({ query }: { query: string }) {
 ```
 
 **Rules:**
+
 - Always define a safe fallback for `useTranslation` in case the UI kit version doesn't include it yet.
 - Pass `dir` to the root container's `style.direction` for RTL language support.
 - `useTranslation` returns `{ t, locale, dir }`. Do not call `window.core.ipc.invoke('kernel', 'getExtensionTranslations', ...)` directly — use the hook instead.
@@ -894,9 +899,7 @@ export default function MyView({ query }: { query: string }) {
 When `dir === 'rtl'`, logical CSS properties (`margin-inline-start`, `padding-inline-end`, etc.) are preferred over physical ones (`margin-left`, `padding-right`). The `direction` CSS property should be set on the extension root element:
 
 ```tsx
-<div style={{ direction: dir }}>
-  {/* all child elements inherit RTL automatically */}
-</div>
+<div style={{ direction: dir }}>{/* all child elements inherit RTL automatically */}</div>
 ```
 
 ---
@@ -982,9 +985,9 @@ export interface MyItem {
 }
 
 export interface IpcChannels extends IpcChannelMap {
-  getItems:   { input: void;              output: MyItem[] }
-  createItem: { input: { title: string }; output: MyItem  }
-  deleteItem: { input: string;            output: void    }
+  getItems: { input: void; output: MyItem[] }
+  createItem: { input: { title: string }; output: MyItem }
+  deleteItem: { input: string; output: void }
 }
 ```
 
@@ -1011,7 +1014,7 @@ export default function MyView({ query }: Props) {
   }
 
   useEffect(() => {
-    invoke('getItems')   // return type is MyItem[] — no cast needed
+    invoke('getItems') // return type is MyItem[] — no cast needed
       .then(setItems)
       .catch(() => {})
   }, [])
@@ -1414,8 +1417,9 @@ Use `core.i18n` — the kernel resolves the locale and loads the file before `re
 ```tsx
 // BANNED — use the hook instead
 useEffect(() => {
-  window.core.ipc.invoke('kernel', 'getExtensionTranslations', { extId: EXT_ID })
-    .then(res => setTranslations(res.data.translations))
+  window.core.ipc
+    .invoke('kernel', 'getExtensionTranslations', { extId: EXT_ID })
+    .then((res) => setTranslations(res.data.translations))
 }, [])
 ```
 
@@ -1425,12 +1429,12 @@ Use `const { t } = useTranslation(EXT_ID)` from `window.UI`.
 
 ## See Also
 
-| Topic | Document | Notes |
-| ----- | -------- | ----- |
-| CoreContext API reference | [docs/21-extension-access.md](../docs/21-extension-access.md) | Full list of implemented and planned host APIs, renderer bridge, and manifest rules |
-| Security model | [docs/10-security.md](../docs/10-security.md) | Thread isolation, chroot jails, and permission prompt design |
-| Plugin system deep dive | [docs/15-modular-plugin-system.md](../docs/15-modular-plugin-system.md) | Extension loading sequence and CoreContext proxy internals |
-| Feature implementation status | [docs/DOCUMENTATION.md](../docs/DOCUMENTATION.md) | Implemented vs planned features tracker |
+| Topic                         | Document                                                                | Notes                                                                               |
+| ----------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| CoreContext API reference     | [docs/21-extension-access.md](../docs/21-extension-access.md)           | Full list of implemented and planned host APIs, renderer bridge, and manifest rules |
+| Security model                | [docs/10-security.md](../docs/10-security.md)                           | Thread isolation, chroot jails, and permission prompt design                        |
+| Plugin system deep dive       | [docs/15-modular-plugin-system.md](../docs/15-modular-plugin-system.md) | Extension loading sequence and CoreContext proxy internals                          |
+| Feature implementation status | [docs/DOCUMENTATION.md](../docs/DOCUMENTATION.md)                       | Implemented vs planned features tracker                                             |
 
 ---
 

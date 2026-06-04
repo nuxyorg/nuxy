@@ -6,7 +6,8 @@ import { setExtensionEnabled } from '../extensions/disabled.js'
 import fs from 'fs'
 import path from 'path'
 import { EXTENSION_DIR, EXTRACTED_DIR, DATA_DIR } from '../config/paths.js'
-import { getDisplayName, isBootstrapExtension, getExtensionById } from '../extensions/registry.js'
+import { getExtensionById, getDisplayName, getPreferredLocale } from '../extensions/registry.js'
+import { listExtensionsByKind } from './list-by-type.js'
 import { getOrCreateSpring } from '../window/spring.js'
 import { kernelLogger, resolveLocale, flattenTranslations, getTextDirection } from '@nuxy/core'
 import type { IpcResult } from '@nuxy/core'
@@ -26,22 +27,6 @@ const MIN_CONTENT_HEIGHT = 48
 
 let dragOffset: { x: number; y: number } | null = null
 
-function listByType(type: 'tool' | 'provider' | 'orchestrator'): typeof loadedExtensions {
-  return loadedExtensions
-    .filter((ext) => {
-      if (ext.disabled) return false
-      if (isBootstrapExtension(ext)) return false
-      if (ext.id === 'com.nuxy.time-calculator' || ext.id === 'com.nuxy.notes') {
-        return type === 'tool' || type === 'provider'
-      }
-return ext.manifest.type === type
-    })
-    .map((ext) => ({
-      ...ext,
-      manifest: { ...ext.manifest, name: getDisplayName(ext) },
-    }))
-}
-
 function listUikitExtensions(): typeof loadedExtensions {
   return loadedExtensions
     .filter(
@@ -51,6 +36,54 @@ function listUikitExtensions(): typeof loadedExtensions {
         ext.manifest.entry?.frontend
     )
     .sort((a, b) => (a.manifest.priority ?? 100) - (b.manifest.priority ?? 100))
+}
+
+function translateSettingsSchema(ext: any, resolvedLocale: string): any {
+  if (!ext.settingsSchema) return undefined
+
+  const localesConfig = ext.manifest.locales
+  if (!localesConfig) return ext.settingsSchema
+
+  const { supported, default: defaultLocale, dir: localesDir = 'locales' } = localesConfig
+  const extFolder = path.join(EXTRACTED_DIR, ext.folderName)
+
+  const tryLoadTranslations = (locale: string): any => {
+    try {
+      const filePath = path.join(extFolder, localesDir, `${locale}.json`)
+      if (fs.existsSync(filePath)) {
+        const raw = fs.readFileSync(filePath, 'utf8')
+        return JSON.parse(raw)
+      }
+    } catch {}
+    return null
+  }
+
+  const translations = tryLoadTranslations(resolvedLocale) ?? tryLoadTranslations(defaultLocale)
+  if (!translations || !translations.settings) return ext.settingsSchema
+
+  const fields = ext.settingsSchema.fields.map((field: any) => {
+    const tField = translations.settings[field.key]
+    if (!tField) return field
+
+    const updatedField = { ...field }
+    if (typeof tField === 'object' && tField !== null) {
+      if (tField.label) updatedField.label = tField.label
+      if (tField.description) updatedField.description = tField.description
+      if (tField.placeholder) updatedField.placeholder = tField.placeholder
+      if (tField.options && Array.isArray(updatedField.options)) {
+        updatedField.options = updatedField.options.map((opt: any) => {
+          const optValStr = String(opt.value)
+          const optLabel = tField.options[optValStr] ?? opt.label
+          return { ...opt, label: optLabel }
+        })
+      }
+    } else if (typeof tField === 'string') {
+      updatedField.label = tField
+    }
+    return updatedField
+  })
+
+  return { ...ext.settingsSchema, fields }
 }
 
 export function registerIpc() {
@@ -67,15 +100,15 @@ export function registerIpc() {
 
       if (id === 'kernel') {
         if (ch === 'listTools') {
-          return { success: true, data: listByType('tool') }
+          return { success: true, data: listExtensionsByKind('tool') }
         }
 
         if (ch === 'listProviders') {
-          return { success: true, data: listByType('provider') }
+          return { success: true, data: listExtensionsByKind('provider') }
         }
 
         if (ch === 'listOrchestrators') {
-          return { success: true, data: listByType('orchestrator') }
+          return { success: true, data: listExtensionsByKind('orchestrator') }
         }
 
         if (ch === 'listUikitExtensions') {
@@ -142,12 +175,13 @@ export function registerIpc() {
         }
 
         if (ch === 'getExtensionSettingsSchemas') {
+          const resolvedLocale = getPreferredLocale()
           const schemas = loadedExtensions
             .filter((ext) => ext.settingsSchema)
             .map((ext) => ({
               extId: ext.id,
-              name: ext.manifest.name,
-              schema: ext.settingsSchema!,
+              name: getDisplayName(ext),
+              schema: translateSettingsSchema(ext, resolvedLocale)!,
             }))
           return { success: true, data: schemas }
         }
@@ -164,7 +198,11 @@ export function registerIpc() {
             return { success: true, data: { locale: 'en', dir: 'ltr', translations: {} } }
           }
 
-          const { supported, default: defaultLocale, dir: localesDir = 'locales' } = ext.manifest.locales
+          const {
+            supported,
+            default: defaultLocale,
+            dir: localesDir = 'locales',
+          } = ext.manifest.locales
 
           // Read user's preferred languages from global settings
           const settingsFile = path.join(DATA_DIR, 'com.nuxy.settings', 'settings.json')
@@ -182,7 +220,10 @@ export function registerIpc() {
           const extFolder = path.join(EXTRACTED_DIR, ext.folderName)
           const tryLoad = (locale: string): Record<string, string> | null => {
             try {
-              const raw = fs.readFileSync(path.join(extFolder, localesDir, `${locale}.json`), 'utf8')
+              const raw = fs.readFileSync(
+                path.join(extFolder, localesDir, `${locale}.json`),
+                'utf8'
+              )
               return flattenTranslations(JSON.parse(raw))
             } catch {
               return null
@@ -221,7 +262,14 @@ export function registerIpc() {
           }
         }
         if (ch === 'listInstalledExtensions') {
-          return { success: true, data: loadedExtensions }
+          const mapped = loadedExtensions.map((ext) => ({
+            ...ext,
+            manifest: {
+              ...ext.manifest,
+              name: getDisplayName(ext),
+            },
+          }))
+          return { success: true, data: mapped }
         }
 
         if (ch === 'uninstallExtension') {
@@ -238,7 +286,11 @@ export function registerIpc() {
             return { success: false, error: 'Extension not found', code: 'NOT_FOUND' }
           }
           if (ext.manifest.bootstrap) {
-            return { success: false, error: 'Cannot uninstall bootstrap extension', code: 'FORBIDDEN' }
+            return {
+              success: false,
+              error: 'Cannot uninstall bootstrap extension',
+              code: 'FORBIDDEN',
+            }
           }
 
           const dirPath = path.join(EXTENSION_DIR, ext.folderName)
@@ -285,7 +337,11 @@ export function registerIpc() {
           }
           const ext = loadedExtensions.find((e) => e.id === extId)
           if (ext?.manifest.bootstrap) {
-            return { success: false, error: 'Cannot disable bootstrap extension', code: 'FORBIDDEN' }
+            return {
+              success: false,
+              error: 'Cannot disable bootstrap extension',
+              code: 'FORBIDDEN',
+            }
           }
           setExtensionEnabled(extId, enabled)
           setTimeout(() => {
@@ -298,14 +354,23 @@ export function registerIpc() {
           const args = pl as { extId?: string; downloadUrl?: string } | undefined
           const extId = args?.extId
           const downloadUrl = args?.downloadUrl
-          if (!extId || typeof extId !== 'string' || !downloadUrl || typeof downloadUrl !== 'string') {
+          if (
+            !extId ||
+            typeof extId !== 'string' ||
+            !downloadUrl ||
+            typeof downloadUrl !== 'string'
+          ) {
             return { success: false, error: 'Missing extId or downloadUrl', code: 'INVALID_ARGS' }
           }
 
           try {
             const response = await fetch(downloadUrl)
             if (!response.ok) {
-              return { success: false, error: `Failed to download: ${response.statusText}`, code: 'DOWNLOAD_FAILED' }
+              return {
+                success: false,
+                error: `Failed to download: ${response.statusText}`,
+                code: 'DOWNLOAD_FAILED',
+              }
             }
             const buffer = await response.arrayBuffer()
             const fileData = Buffer.from(buffer)

@@ -9,23 +9,23 @@
 
 ## 1. Executive Summary
 
-| Attribute | Value |
-|-----------|-------|
-| File size | 506 lines |
-| Exported components | 1 (`NotesApp`) |
-| Total functions / closures defined | 12 |
-| `useState` calls | 8 |
-| `useEffect` calls | 7 |
-| `useMemo` calls | 2 |
-| `useRef` calls | 3 |
-| IPC channels invoked | 5 (`notes:list`, `notes:create`, `notes:update`, `notes:delete`, `notes:transcribe`, `notes:getConfig`) |
-| Keyboard actions registered | 7 |
-| Confirmed debug log | Line 276 — `console.log('[DEBUG] Delete key action triggered...')` |
-| Risk level | **Medium** |
-| Estimated refactor effort | 3–5 focused hours (non-breaking if extraction is interface-compatible) |
-| Test coverage (backend) | Excellent — 9 `describe` blocks covering all IPC channels |
-| Test coverage (frontend) | **Zero unit tests** — only Playwright e2e (`e2e.spec.ts`) covering keyboard flows |
-| Breaking change risk | Low for internal extractions; Medium if `IpcResponse` wrapper changes |
+| Attribute                          | Value                                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| File size                          | 506 lines                                                                                               |
+| Exported components                | 1 (`NotesApp`)                                                                                          |
+| Total functions / closures defined | 12                                                                                                      |
+| `useState` calls                   | 8                                                                                                       |
+| `useEffect` calls                  | 7                                                                                                       |
+| `useMemo` calls                    | 2                                                                                                       |
+| `useRef` calls                     | 3                                                                                                       |
+| IPC channels invoked               | 5 (`notes:list`, `notes:create`, `notes:update`, `notes:delete`, `notes:transcribe`, `notes:getConfig`) |
+| Keyboard actions registered        | 7                                                                                                       |
+| Confirmed debug log                | Line 276 — `console.log('[DEBUG] Delete key action triggered...')`                                      |
+| Risk level                         | **Medium**                                                                                              |
+| Estimated refactor effort          | 3–5 focused hours (non-breaking if extraction is interface-compatible)                                  |
+| Test coverage (backend)            | Excellent — 9 `describe` blocks covering all IPC channels                                               |
+| Test coverage (frontend)           | **Zero unit tests** — only Playwright e2e (`e2e.spec.ts`) covering keyboard flows                       |
+| Breaking change risk               | Low for internal extractions; Medium if `IpcResponse` wrapper changes                                   |
 
 ### Risk Classification Rationale
 
@@ -37,33 +37,33 @@ The file is a single 506-line monolithic component with **no frontend unit tests
 
 These can be applied immediately, independently of any larger refactor, with zero risk:
 
-| # | Item | Location | Action | Risk |
-|---|------|----------|--------|------|
-| QW-1 | **Debug log** | Line 276 | Remove `console.log('[DEBUG] Delete key action triggered...')` inside the `Delete` key action handler | None |
-| QW-2 | **`notes:getConfig` fires on every `selected` change** | Lines 103–109 | The second `useEffect` has `[selected]` in its dependency array but only reads config (font size). This causes a redundant IPC call on every note selection. Change dependency to `[]` (mount-only) since config is not note-specific | Very Low |
-| QW-3 | **Duplicated filter logic in `handleSave`** | Lines 181–189 | `handleSave` manually re-implements the `filteredNotes` filter inline after saving. This duplicates the `useMemo` logic. It should recompute from the new `list` using the same derived logic (or use `useMemo` after `setNotes`) | Low |
-| QW-4 | **`invoke` defined inside render** | Lines 79–84 | The `invoke` helper is defined as an arrow function inside the component body on every render. It should be either extracted as a module-level factory (parameterized by `EXT_ID`) or wrapped in `useCallback` | Low |
-| QW-5 | **Inline `<style>` tag in JSX** | Lines 494–497 | The CSS for hiding the left panel in edit mode is rendered inline on every render cycle. This should be a static CSS string outside the component or moved to a stylesheet | Very Low |
-| QW-6 | **`e2e.spec.ts` debug logs** | Lines 20–35, 150–153 | `console.log` statements in e2e helper functions (`openNotes`) and the Delete test body are leftover debug artifacts. Not source file changes, but clean-up recommended | None |
+| #    | Item                                                   | Location             | Action                                                                                                                                                                                                                                | Risk     |
+| ---- | ------------------------------------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| QW-1 | **Debug log**                                          | Line 276             | Remove `console.log('[DEBUG] Delete key action triggered...')` inside the `Delete` key action handler                                                                                                                                 | None     |
+| QW-2 | **`notes:getConfig` fires on every `selected` change** | Lines 103–109        | The second `useEffect` has `[selected]` in its dependency array but only reads config (font size). This causes a redundant IPC call on every note selection. Change dependency to `[]` (mount-only) since config is not note-specific | Very Low |
+| QW-3 | **Duplicated filter logic in `handleSave`**            | Lines 181–189        | `handleSave` manually re-implements the `filteredNotes` filter inline after saving. This duplicates the `useMemo` logic. It should recompute from the new `list` using the same derived logic (or use `useMemo` after `setNotes`)     | Low      |
+| QW-4 | **`invoke` defined inside render**                     | Lines 79–84          | The `invoke` helper is defined as an arrow function inside the component body on every render. It should be either extracted as a module-level factory (parameterized by `EXT_ID`) or wrapped in `useCallback`                        | Low      |
+| QW-5 | **Inline `<style>` tag in JSX**                        | Lines 494–497        | The CSS for hiding the left panel in edit mode is rendered inline on every render cycle. This should be a static CSS string outside the component or moved to a stylesheet                                                            | Very Low |
+| QW-6 | **`e2e.spec.ts` debug logs**                           | Lines 20–35, 150–153 | `console.log` statements in e2e helper functions (`openNotes`) and the Delete test body are leftover debug artifacts. Not source file changes, but clean-up recommended                                                               | None     |
 
 ---
 
 ## 3. Component / Function Inventory Table
 
-| Name | Type | Lines | Line Count | Description |
-|------|------|--------|-----------|-------------|
-| `ErrorBoundary` | Class component | 8–27 | 20 | Renders error fallback for `MarkdownText`; reused pattern (identical in other extensions) |
-| `deriveTitle` | Pure function | 41–49 | 9 | Derives a title from note body (first non-empty line, max 40 chars). **Duplicated** — also exists in `backend.ts` (lines 68–79) |
-| `NotesApp` | Function component | 51–506 | 456 | Monolith: renders TwoPanel layout, manages all state, all event handlers, all keyboard logic, all IPC calls |
-| `handleNew` | Async handler (inside `NotesApp`) | 163–171 | 9 | Creates a new note via IPC then re-fetches list |
-| `handleSave` | Async handler (inside `NotesApp`) | 173–197 | 25 | Saves current note body, derives title, re-fetches list, updates selectedIndex |
-| `handleDelete` | Async handler (inside `NotesApp`) | 199–210 | 12 | Deletes selected note, resets state, re-fetches list |
-| `handleRecord` | Async handler (inside `NotesApp`) | 212–241 | 30 | Accesses microphone, starts `MediaRecorder`, auto-stops after 10 s, transcribes via IPC |
-| `handleStopRecord` | Sync handler (inside `NotesApp`) | 243–247 | 5 | Stops active `MediaRecorder` |
-| `keyActions` (useMemo) | Derived value | 250–350 | 101 | Defines 7 keyboard shortcut descriptors passed to `_useToolKeyActions` |
-| `leftPanel` | JSX variable | 401–432 | 32 | Note list with `SectionHeader`, "New Note" item, and `filteredNotes` mapping |
-| `rightPanel` | JSX variable | 436–490 | 55 | Conditional: edit textarea, markdown preview, or empty state |
-| Root render | JSX return | 492–505 | 14 | Wraps panels in `TwoPanel` with class-toggle and inline style |
+| Name                   | Type                              | Lines   | Line Count | Description                                                                                                                     |
+| ---------------------- | --------------------------------- | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `ErrorBoundary`        | Class component                   | 8–27    | 20         | Renders error fallback for `MarkdownText`; reused pattern (identical in other extensions)                                       |
+| `deriveTitle`          | Pure function                     | 41–49   | 9          | Derives a title from note body (first non-empty line, max 40 chars). **Duplicated** — also exists in `backend.ts` (lines 68–79) |
+| `NotesApp`             | Function component                | 51–506  | 456        | Monolith: renders TwoPanel layout, manages all state, all event handlers, all keyboard logic, all IPC calls                     |
+| `handleNew`            | Async handler (inside `NotesApp`) | 163–171 | 9          | Creates a new note via IPC then re-fetches list                                                                                 |
+| `handleSave`           | Async handler (inside `NotesApp`) | 173–197 | 25         | Saves current note body, derives title, re-fetches list, updates selectedIndex                                                  |
+| `handleDelete`         | Async handler (inside `NotesApp`) | 199–210 | 12         | Deletes selected note, resets state, re-fetches list                                                                            |
+| `handleRecord`         | Async handler (inside `NotesApp`) | 212–241 | 30         | Accesses microphone, starts `MediaRecorder`, auto-stops after 10 s, transcribes via IPC                                         |
+| `handleStopRecord`     | Sync handler (inside `NotesApp`)  | 243–247 | 5          | Stops active `MediaRecorder`                                                                                                    |
+| `keyActions` (useMemo) | Derived value                     | 250–350 | 101        | Defines 7 keyboard shortcut descriptors passed to `_useToolKeyActions`                                                          |
+| `leftPanel`            | JSX variable                      | 401–432 | 32         | Note list with `SectionHeader`, "New Note" item, and `filteredNotes` mapping                                                    |
+| `rightPanel`           | JSX variable                      | 436–490 | 55         | Conditional: edit textarea, markdown preview, or empty state                                                                    |
+| Root render            | JSX return                        | 492–505 | 14         | Wraps panels in `TwoPanel` with class-toggle and inline style                                                                   |
 
 **Total inside `NotesApp`**: ~456 lines for a single function component — the primary problem.
 
@@ -71,20 +71,20 @@ These can be applied immediately, independently of any larger refactor, with zer
 
 ## 4. Code Smell Analysis Table
 
-| Smell | Location | Severity | Description |
-|-------|----------|----------|-------------|
-| God Component | `NotesApp` (all 456 lines) | High | Single component owns state, IPC calls, MediaRecorder lifecycle, keyboard registration, command palette registration, layout — violates Single Responsibility |
-| Debug log in production | Line 276 | High | `console.log('[DEBUG]...')` shipped in source; leaks internal state to browser console |
-| Logic duplication (`filteredNotes`) | Lines 87–93 vs 181–189 | Medium | Filter predicate appears twice: once in `useMemo`, once inlined in `handleSave` |
-| Logic duplication (`deriveTitle`) | `frontend.tsx:41–49` vs `backend.ts:68–79` | Medium | Identical function in two files; a types/utils package should own it |
-| `invoke` defined inside render | Lines 79–84 | Medium | New function reference on every render; not memoized; silently closes over `EXT_ID` constant but looks like it could have hidden coupling |
-| Config fetched on selection change | Lines 103–109 (`[selected]` dep) | Medium | Fires an IPC round-trip on every note selection even though font size config is not per-note |
-| Inline `<style>` tag | Lines 494–497 | Low | Dynamic CSS injection on every render cycle; should be static |
-| 101-line `useMemo` for keyboard actions | Lines 250–350 | Medium | Keyboard shortcut descriptors embedded directly in the component make the file much harder to scan; they belong in a separate `useNotesKeyActions` hook |
-| `keyActions` captures `body` but `body` is never used by any key handler | Line 350 | Low | `body` is in the `useMemo` dependency array but no keyAction actually reads it; dead dependency causes unnecessary re-memos |
-| `useEffect` for `nuxy-key-hints-changed` fires on every `selectedIndex` change | Lines 397–399 | Low | This event is cheap to fire, but it fires whenever `selectedIndex` changes (e.g., arrow navigation), which may exceed what the shell actually needs |
-| No `useCallback` on async handlers | Lines 163–247 | Low | `handleNew`, `handleSave`, `handleDelete`, `handleRecord`, `handleStopRecord` are recreated on every render; they are captured in `useMemo(keyActions)` and `useEffect` dependency arrays |
-| `MediaRecorder` auto-stop timeout not cleared | Line 237 | Low | `setTimeout` for 10-second auto-stop is never cancelled if user manually stops or component unmounts; potential state update on unmounted component |
+| Smell                                                                          | Location                                   | Severity | Description                                                                                                                                                                               |
+| ------------------------------------------------------------------------------ | ------------------------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| God Component                                                                  | `NotesApp` (all 456 lines)                 | High     | Single component owns state, IPC calls, MediaRecorder lifecycle, keyboard registration, command palette registration, layout — violates Single Responsibility                             |
+| Debug log in production                                                        | Line 276                                   | High     | `console.log('[DEBUG]...')` shipped in source; leaks internal state to browser console                                                                                                    |
+| Logic duplication (`filteredNotes`)                                            | Lines 87–93 vs 181–189                     | Medium   | Filter predicate appears twice: once in `useMemo`, once inlined in `handleSave`                                                                                                           |
+| Logic duplication (`deriveTitle`)                                              | `frontend.tsx:41–49` vs `backend.ts:68–79` | Medium   | Identical function in two files; a types/utils package should own it                                                                                                                      |
+| `invoke` defined inside render                                                 | Lines 79–84                                | Medium   | New function reference on every render; not memoized; silently closes over `EXT_ID` constant but looks like it could have hidden coupling                                                 |
+| Config fetched on selection change                                             | Lines 103–109 (`[selected]` dep)           | Medium   | Fires an IPC round-trip on every note selection even though font size config is not per-note                                                                                              |
+| Inline `<style>` tag                                                           | Lines 494–497                              | Low      | Dynamic CSS injection on every render cycle; should be static                                                                                                                             |
+| 101-line `useMemo` for keyboard actions                                        | Lines 250–350                              | Medium   | Keyboard shortcut descriptors embedded directly in the component make the file much harder to scan; they belong in a separate `useNotesKeyActions` hook                                   |
+| `keyActions` captures `body` but `body` is never used by any key handler       | Line 350                                   | Low      | `body` is in the `useMemo` dependency array but no keyAction actually reads it; dead dependency causes unnecessary re-memos                                                               |
+| `useEffect` for `nuxy-key-hints-changed` fires on every `selectedIndex` change | Lines 397–399                              | Low      | This event is cheap to fire, but it fires whenever `selectedIndex` changes (e.g., arrow navigation), which may exceed what the shell actually needs                                       |
+| No `useCallback` on async handlers                                             | Lines 163–247                              | Low      | `handleNew`, `handleSave`, `handleDelete`, `handleRecord`, `handleStopRecord` are recreated on every render; they are captured in `useMemo(keyActions)` and `useEffect` dependency arrays |
+| `MediaRecorder` auto-stop timeout not cleared                                  | Line 237                                   | Low      | `setTimeout` for 10-second auto-stop is never cancelled if user manually stops or component unmounts; potential state update on unmounted component                                       |
 
 ---
 
@@ -92,33 +92,33 @@ These can be applied immediately, independently of any larger refactor, with zer
 
 ### Cyclomatic Complexity (approximate, counting branch points)
 
-| Function | Branches | Complexity (CC) | Assessment |
-|----------|----------|-----------------|------------|
-| `deriveTitle` | 2 | 3 | Fine |
-| `handleNew` | 0 | 1 | Fine |
-| `handleSave` | 3 | 4 | Acceptable |
-| `handleDelete` | 1 | 2 | Fine |
-| `handleRecord` (inner `onstop`) | 3 | 4 | Acceptable |
-| `handleRecord` (outer) | 2 | 3 | Fine |
-| `keyActions[Delete].activeOn` | 2 | 3 | Fine |
-| `keyActions[Enter].handler` | 2 | 3 | Fine |
-| `keyActions[Escape].handler` | 2 | 3 | Fine |
-| `keyActions[ArrowUp].handler` | 1 | 2 | Fine |
-| `keyActions[ArrowDown].handler` | 3 | 4 | Acceptable |
-| `useEffect(query/notes/filteredNotes)` | 3 | 4 | Acceptable |
-| `useEffect(selectedIndex/filteredNotes)` | 3 | 4 | Acceptable |
-| `rightPanel` JSX conditional | 2 | 3 | Fine |
-| **`NotesApp` as a whole** | **~25** | **~26** | **High — exceeds recommended 10** |
+| Function                                 | Branches | Complexity (CC) | Assessment                        |
+| ---------------------------------------- | -------- | --------------- | --------------------------------- |
+| `deriveTitle`                            | 2        | 3               | Fine                              |
+| `handleNew`                              | 0        | 1               | Fine                              |
+| `handleSave`                             | 3        | 4               | Acceptable                        |
+| `handleDelete`                           | 1        | 2               | Fine                              |
+| `handleRecord` (inner `onstop`)          | 3        | 4               | Acceptable                        |
+| `handleRecord` (outer)                   | 2        | 3               | Fine                              |
+| `keyActions[Delete].activeOn`            | 2        | 3               | Fine                              |
+| `keyActions[Enter].handler`              | 2        | 3               | Fine                              |
+| `keyActions[Escape].handler`             | 2        | 3               | Fine                              |
+| `keyActions[ArrowUp].handler`            | 1        | 2               | Fine                              |
+| `keyActions[ArrowDown].handler`          | 3        | 4               | Acceptable                        |
+| `useEffect(query/notes/filteredNotes)`   | 3        | 4               | Acceptable                        |
+| `useEffect(selectedIndex/filteredNotes)` | 3        | 4               | Acceptable                        |
+| `rightPanel` JSX conditional             | 2        | 3               | Fine                              |
+| **`NotesApp` as a whole**                | **~25**  | **~26**         | **High — exceeds recommended 10** |
 
 ### Nesting Depth
 
-| Location | Max nesting depth |
-|----------|------------------|
-| `handleRecord` (onstop async) | 5 (function → recorder.onstop → try → catch → finally) |
-| `keyActions[ArrowDown].handler` | 4 (useMemo → handler → setSelectedIndex → if/if) |
-| `useEffect(query handler)` | 4 (effect → if → if → setSelectedIndex) |
-| `rightPanel` JSX (edit branch) | 5 (div → Editor) |
-| `leftPanel` filteredNotes map | 4 (List → conditional → map → ListItem → ListItemBody) |
+| Location                        | Max nesting depth                                      |
+| ------------------------------- | ------------------------------------------------------ |
+| `handleRecord` (onstop async)   | 5 (function → recorder.onstop → try → catch → finally) |
+| `keyActions[ArrowDown].handler` | 4 (useMemo → handler → setSelectedIndex → if/if)       |
+| `useEffect(query handler)`      | 4 (effect → if → if → setSelectedIndex)                |
+| `rightPanel` JSX (edit branch)  | 5 (div → Editor)                                       |
+| `leftPanel` filteredNotes map   | 4 (List → conditional → map → ListItem → ListItemBody) |
 
 Maximum nesting depth: **5 levels**. Not alarming in isolation, but combined with the overall length it degrades readability significantly.
 
@@ -132,6 +132,7 @@ Maximum nesting depth: **5 levels**. Not alarming in isolation, but combined wit
 **Proposal**: Extract them into a `useNotesIpc` hook file.
 
 **BEFORE** (in `NotesApp` body):
+
 ```tsx
 const invoke = <T = unknown,>(channel: string, payload?: unknown): Promise<T> =>
   window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
@@ -149,6 +150,7 @@ async function handleNew(): Promise<void> {
 ```
 
 **AFTER** (`extensions/notes/useNotesIpc.ts`):
+
 ```tsx
 import type { Note } from './types.ts'
 
@@ -171,10 +173,12 @@ function invoke<T>(channel: string, payload?: unknown): Promise<T> {
 export function useNotesIpc() {
   const listNotes = () => invoke<Note[]>('notes:list', {})
   const createNote = (title: string, body: string) => invoke<Note>('notes:create', { title, body })
-  const updateNote = (id: string, title: string, body: string) => invoke<Note>('notes:update', { id, title, body })
+  const updateNote = (id: string, title: string, body: string) =>
+    invoke<Note>('notes:update', { id, title, body })
   const deleteNote = (id: string) => invoke<void>('notes:delete', { id })
   const getConfig = () => invoke<{ fontSize: string }>('notes:getConfig', {})
-  const transcribe = (audioBuffer: number[]) => invoke<{ transcript: string }>('notes:transcribe', { audioBuffer })
+  const transcribe = (audioBuffer: number[]) =>
+    invoke<{ transcript: string }>('notes:transcribe', { audioBuffer })
 
   return { listNotes, createNote, updateNote, deleteNote, getConfig, transcribe }
 }
@@ -190,6 +194,7 @@ export function useNotesIpc() {
 **Proposal**: Extract to `NoteList.tsx`.
 
 **BEFORE** (inline JSX variable in `NotesApp`):
+
 ```tsx
 const leftPanel = (
   <>
@@ -213,6 +218,7 @@ const leftPanel = (
 ```
 
 **AFTER** (`extensions/notes/NoteList.tsx`):
+
 ```tsx
 interface NoteListProps {
   notes: Note[]
@@ -222,7 +228,8 @@ interface NoteListProps {
 }
 
 export function NoteList({ notes, selectedIndex, query, onSelectIndex }: NoteListProps) {
-  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState, SectionHeader } = window.UI || {}
+  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState, SectionHeader } =
+    window.UI || {}
   return (
     <>
       {SectionHeader && <SectionHeader label="Notes" />}
@@ -231,10 +238,17 @@ export function NoteList({ notes, selectedIndex, query, onSelectIndex }: NoteLis
           ...
         </ListItem>
         {notes.length === 0 ? (
-          <EmptyState message={query ? 'No matching notes.' : 'No notes yet.'} hint="Use ⌃N to create a new note." />
+          <EmptyState
+            message={query ? 'No matching notes.' : 'No notes yet.'}
+            hint="Use ⌃N to create a new note."
+          />
         ) : (
           notes.map((note, idx) => (
-            <ListItem key={note.id} active={idx + 1 === selectedIndex} onClick={() => onSelectIndex(idx + 1)}>
+            <ListItem
+              key={note.id}
+              active={idx + 1 === selectedIndex}
+              onClick={() => onSelectIndex(idx + 1)}
+            >
               <ListItemBody>
                 <ListItemText>{note.title}</ListItemText>
                 <ListItemMeta>{note.body.slice(0, 60)}</ListItemMeta>
@@ -258,6 +272,7 @@ export function NoteList({ notes, selectedIndex, query, onSelectIndex }: NoteLis
 **Proposal**: Extract to `NoteEditor.tsx`.
 
 **BEFORE** (inline ternary in `NotesApp`):
+
 ```tsx
 const rightPanel = editMode && selected ? (
   <div style={{ ... }}>
@@ -274,6 +289,7 @@ const rightPanel = editMode && selected ? (
 ```
 
 **AFTER** (`extensions/notes/NoteEditor.tsx`):
+
 ```tsx
 interface NoteEditorProps {
   selected: Note | null
@@ -285,17 +301,47 @@ interface NoteEditorProps {
   onBodyChange: (body: string) => void
 }
 
-export function NoteEditor({ selected, body, editMode, transcribing, fontSize, textareaRef, onBodyChange }: NoteEditorProps) {
+export function NoteEditor({
+  selected,
+  body,
+  editMode,
+  transcribing,
+  fontSize,
+  textareaRef,
+  onBodyChange,
+}: NoteEditorProps) {
   const { Textarea, MarkdownText, EmptyState } = window.UI || {}
   const Editor = Textarea || 'textarea'
 
   if (editMode && selected) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 'var(--space-2)', gap: 'var(--space-2)' }}>
-        <Editor ref={textareaRef} className="nuxy-textarea" value={body}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          padding: 'var(--space-2)',
+          gap: 'var(--space-2)',
+        }}
+      >
+        <Editor
+          ref={textareaRef}
+          className="nuxy-textarea"
+          value={body}
           onChange={(e) => onBodyChange(e.target.value)}
           placeholder={transcribing ? 'Transcribing…' : 'Start writing…'}
-          style={{ flex: 1, resize: 'none', width: '100%', height: '100%', border: 'none', background: 'transparent', color: 'var(--text, #ffffff)', outline: 'none', padding: 'var(--space-4, 12px)', fontSize }}
+          style={{
+            flex: 1,
+            resize: 'none',
+            width: '100%',
+            height: '100%',
+            border: 'none',
+            background: 'transparent',
+            color: 'var(--text, #ffffff)',
+            outline: 'none',
+            padding: 'var(--space-4, 12px)',
+            fontSize,
+          }}
         />
       </div>
     )
@@ -303,16 +349,43 @@ export function NoteEditor({ selected, body, editMode, transcribing, fontSize, t
 
   if (selected) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: 'var(--space-4, 12px)', overflowY: 'auto', color: 'var(--text, #ffffff)', gap: 'var(--space-2)' }}>
-        <div style={{ fontSize: '1.2em', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '8px' }}>{selected.title}</div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          padding: 'var(--space-4, 12px)',
+          overflowY: 'auto',
+          color: 'var(--text, #ffffff)',
+          gap: 'var(--space-2)',
+        }}
+      >
+        <div
+          style={{
+            fontSize: '1.2em',
+            fontWeight: 'bold',
+            borderBottom: '1px solid rgba(255,255,255,0.08)',
+            paddingBottom: '8px',
+          }}
+        >
+          {selected.title}
+        </div>
         <div style={{ flex: 1, whiteSpace: 'pre-wrap', opacity: 0.8, fontSize, lineHeight: '1.5' }}>
-          {MarkdownText ? <ErrorBoundary><MarkdownText>{selected.body}</MarkdownText></ErrorBoundary> : selected.body}
+          {MarkdownText ? (
+            <ErrorBoundary>
+              <MarkdownText>{selected.body}</MarkdownText>
+            </ErrorBoundary>
+          ) : (
+            selected.body
+          )}
         </div>
       </div>
     )
   }
 
-  return <EmptyState message="Select a note or create a new one." hint="Use ⌃N to create a new note." />
+  return (
+    <EmptyState message="Select a note or create a new one." hint="Use ⌃N to create a new note." />
+  )
 }
 ```
 
@@ -326,16 +399,28 @@ export function NoteEditor({ selected, body, editMode, transcribing, fontSize, t
 **Proposal**: Extract to `useNotesKeyActions.ts`.
 
 **BEFORE** (inside `NotesApp`):
+
 ```tsx
-const keyActions = useMemo(() => [
-  { key: 'n', modifiers: ['ctrl'], label: 'New Note', handler: () => { void handleNew() } },
-  // ... 6 more entries, 101 lines total
-], [editMode, selectedIndex, filteredNotes, selected, body])
+const keyActions = useMemo(
+  () => [
+    {
+      key: 'n',
+      modifiers: ['ctrl'],
+      label: 'New Note',
+      handler: () => {
+        void handleNew()
+      },
+    },
+    // ... 6 more entries, 101 lines total
+  ],
+  [editMode, selectedIndex, filteredNotes, selected, body]
+)
 
 _useToolKeyActions(keyActions)
 ```
 
 **AFTER** (`extensions/notes/useNotesKeyActions.ts`):
+
 ```tsx
 interface NotesKeyActionsOptions {
   editMode: boolean
@@ -352,9 +437,12 @@ interface NotesKeyActionsOptions {
 
 export function useNotesKeyActions(opts: NotesKeyActionsOptions) {
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
-  const keyActions = useMemo(() => [
-    // same 7 entries, now with clean external references
-  ], [opts.editMode, opts.selectedIndex, opts.filteredNotes, opts.selected])
+  const keyActions = useMemo(
+    () => [
+      // same 7 entries, now with clean external references
+    ],
+    [opts.editMode, opts.selectedIndex, opts.filteredNotes, opts.selected]
+  )
   _useToolKeyActions(keyActions)
 }
 ```
@@ -371,17 +459,23 @@ export function useNotesKeyActions(opts: NotesKeyActionsOptions) {
 **Proposal**: Extract to `useVoiceRecorder.ts`.
 
 **BEFORE** (inside `NotesApp`):
+
 ```tsx
 const [recording, setRecording] = useState<boolean>(false)
 const [transcribing, setTranscribing] = useState<boolean>(false)
 const mediaRef = useRef<MediaRecorder | null>(null)
 const chunksRef = useRef<Blob[]>([])
 
-async function handleRecord(): Promise<void> { /* 30 lines */ }
-function handleStopRecord(): void { /* 5 lines */ }
+async function handleRecord(): Promise<void> {
+  /* 30 lines */
+}
+function handleStopRecord(): void {
+  /* 5 lines */
+}
 ```
 
 **AFTER** (`extensions/notes/useVoiceRecorder.ts`):
+
 ```tsx
 interface UseVoiceRecorderOptions {
   onTranscript: (text: string) => void
@@ -389,7 +483,11 @@ interface UseVoiceRecorderOptions {
   maxDurationMs?: number
 }
 
-export function useVoiceRecorder({ onTranscript, transcribeAudio, maxDurationMs = 10000 }: UseVoiceRecorderOptions) {
+export function useVoiceRecorder({
+  onTranscript,
+  transcribeAudio,
+  maxDurationMs = 10000,
+}: UseVoiceRecorderOptions) {
   const [recording, setRecording] = useState(false)
   const [transcribing, setTranscribing] = useState(false)
   const mediaRef = useRef<MediaRecorder | null>(null)
@@ -404,8 +502,12 @@ export function useVoiceRecorder({ onTranscript, transcribeAudio, maxDurationMs 
     }
   }, [])
 
-  const start = async () => { /* ... */ }
-  const stop = () => { /* ... */ }
+  const start = async () => {
+    /* ... */
+  }
+  const stop = () => {
+    /* ... */
+  }
 
   return { recording, transcribing, start, stop }
 }
@@ -424,7 +526,10 @@ export function useVoiceRecorder({ onTranscript, transcribeAudio, maxDurationMs 
 ```ts
 // extensions/notes/utils.ts
 export function deriveTitle(body: string): string {
-  const lines = body.split('\n').map((l) => l.trim()).filter(Boolean)
+  const lines = body
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
   if (lines.length === 0) return 'New Note'
   const firstLine = lines[0]
   return firstLine.length > 40 ? firstLine.slice(0, 40) + '...' : firstLine
@@ -445,15 +550,15 @@ export function deriveTitle(body: string): string {
 
 These patterns appear identically in `notes/frontend.tsx`, `n8n/frontend.tsx`, `bitwarden/frontend.tsx`, and `clipboard/frontend.tsx`. They are candidates for `@nuxy/ui` or `@nuxy/extension-sdk` promotion:
 
-| Pattern | Notes | N8n | Bitwarden | Clipboard | Suggested Extraction |
-|---------|-------|-----|-----------|-----------|---------------------|
-| `invoke` IPC helper | Lines 79–84 | Lines 17–22 | Lines 21–26 | Inline calls | `@nuxy/extension-sdk` → `createIpcInvoker(extId)` |
-| `_useToolKeyActions` guard | Line 29 | Line 11 | Line 18 | Line 182 | `@nuxy/ui` → export with no-op default |
-| `nuxy-register-actions` dispatch | Lines 354–395 | Lines 179–182 | Lines 309–312 | Lines 403–406 | `@nuxy/ui` → `useCommandPalette(actions, deps)` |
-| `nuxy-key-hints-changed` dispatch | Lines 397–399 | Lines 187–189 | Lines 316–318 | Lines 234 | `@nuxy/ui` → `useKeyHints(deps)` |
-| `nuxy-shell-omni-bar-control` dispatch | Lines 125, 307, 321 | Not present | Not present | Lines 232, 240 | `@nuxy/ui` → `useOmnibarControl()` returning `{ show, hide, clear }` |
-| `ErrorBoundary` class | Lines 8–27 | Not found | Not found | Not found | `@nuxy/ui` or `extensions/shared` |
-| `IpcResponse<T>` interface | Lines 35–39 | Lines 18–21 (inline) | Lines 21–26 (inline) | Implicit | `@nuxy/core` → export as type |
+| Pattern                                | Notes               | N8n                  | Bitwarden            | Clipboard      | Suggested Extraction                                                 |
+| -------------------------------------- | ------------------- | -------------------- | -------------------- | -------------- | -------------------------------------------------------------------- |
+| `invoke` IPC helper                    | Lines 79–84         | Lines 17–22          | Lines 21–26          | Inline calls   | `@nuxy/extension-sdk` → `createIpcInvoker(extId)`                    |
+| `_useToolKeyActions` guard             | Line 29             | Line 11              | Line 18              | Line 182       | `@nuxy/ui` → export with no-op default                               |
+| `nuxy-register-actions` dispatch       | Lines 354–395       | Lines 179–182        | Lines 309–312        | Lines 403–406  | `@nuxy/ui` → `useCommandPalette(actions, deps)`                      |
+| `nuxy-key-hints-changed` dispatch      | Lines 397–399       | Lines 187–189        | Lines 316–318        | Lines 234      | `@nuxy/ui` → `useKeyHints(deps)`                                     |
+| `nuxy-shell-omni-bar-control` dispatch | Lines 125, 307, 321 | Not present          | Not present          | Lines 232, 240 | `@nuxy/ui` → `useOmnibarControl()` returning `{ show, hide, clear }` |
+| `ErrorBoundary` class                  | Lines 8–27          | Not found            | Not found            | Not found      | `@nuxy/ui` or `extensions/shared`                                    |
+| `IpcResponse<T>` interface             | Lines 35–39         | Lines 18–21 (inline) | Lines 21–26 (inline) | Implicit       | `@nuxy/core` → export as type                                        |
 
 Promoting even 3 of these 7 patterns would reduce per-extension boilerplate by ~40–60 lines each and enforce consistency.
 
@@ -461,26 +566,27 @@ Promoting even 3 of these 7 patterns would reduce per-extension boilerplate by ~
 
 ## 8. Risk Matrix
 
-| Change | Impact | Effort | Risk | Priority |
-|--------|--------|--------|------|----------|
-| Remove `console.log('[DEBUG]')` (L276) | None | Trivial | None | P0 — do immediately |
-| Fix `notes:getConfig` dep array (`[]`) | Minor: loads config once | 1 min | None | P0 |
-| Remove `body` from `keyActions` dep array | Minor: fewer re-memos | 1 min | None | P0 |
-| Add `clearTimeout` for MediaRecorder auto-stop | Bug fix | 5 min | None | P0 |
-| Extract `deriveTitle` to `utils.ts` | DRY | 10 min | Very Low (import path change) | P1 |
-| Extract `useNotesIpc` hook | Decouples IPC | 30 min | Low (pure extraction) | P1 |
-| Extract `NoteList` component | Pure display extraction | 20 min | Low | P1 |
-| Extract `NoteEditor` component | Pure display extraction | 20 min | Low | P1 |
-| Extract `useNotesKeyActions` hook | Logic extraction | 30 min | Medium (many closures captured) | P2 |
-| Extract `useVoiceRecorder` hook | Complex state + refs | 45 min | Medium (MediaRecorder lifecycle) | P2 |
-| Extract `ErrorBoundary` to shared | Cross-extension concern | 15 min | Low (import path change) | P2 |
-| Promote `invoke` to SDK | Monorepo change | 1–2 h | Medium (needs SDK PR, version bump) | P3 |
-| Promote `useCommandPalette` to UI lib | Monorepo change | 1–2 h | Medium | P3 |
-| Add frontend unit tests | Coverage improvement | 2–3 h | None | P3 (pre-refactor: P1!) |
+| Change                                         | Impact                   | Effort  | Risk                                | Priority               |
+| ---------------------------------------------- | ------------------------ | ------- | ----------------------------------- | ---------------------- |
+| Remove `console.log('[DEBUG]')` (L276)         | None                     | Trivial | None                                | P0 — do immediately    |
+| Fix `notes:getConfig` dep array (`[]`)         | Minor: loads config once | 1 min   | None                                | P0                     |
+| Remove `body` from `keyActions` dep array      | Minor: fewer re-memos    | 1 min   | None                                | P0                     |
+| Add `clearTimeout` for MediaRecorder auto-stop | Bug fix                  | 5 min   | None                                | P0                     |
+| Extract `deriveTitle` to `utils.ts`            | DRY                      | 10 min  | Very Low (import path change)       | P1                     |
+| Extract `useNotesIpc` hook                     | Decouples IPC            | 30 min  | Low (pure extraction)               | P1                     |
+| Extract `NoteList` component                   | Pure display extraction  | 20 min  | Low                                 | P1                     |
+| Extract `NoteEditor` component                 | Pure display extraction  | 20 min  | Low                                 | P1                     |
+| Extract `useNotesKeyActions` hook              | Logic extraction         | 30 min  | Medium (many closures captured)     | P2                     |
+| Extract `useVoiceRecorder` hook                | Complex state + refs     | 45 min  | Medium (MediaRecorder lifecycle)    | P2                     |
+| Extract `ErrorBoundary` to shared              | Cross-extension concern  | 15 min  | Low (import path change)            | P2                     |
+| Promote `invoke` to SDK                        | Monorepo change          | 1–2 h   | Medium (needs SDK PR, version bump) | P3                     |
+| Promote `useCommandPalette` to UI lib          | Monorepo change          | 1–2 h   | Medium                              | P3                     |
+| Add frontend unit tests                        | Coverage improvement     | 2–3 h   | None                                | P3 (pre-refactor: P1!) |
 
 ### Test Coverage Gap (Critical Observation)
 
 `NotesApp` has **zero unit tests**. The only coverage is via Playwright e2e in `e2e.spec.ts`. Before executing P1/P2 extractions, strongly consider adding vitest unit tests using `jsdom` for the extracted hooks/components, because:
+
 - Extractions could silently change behavior (e.g., `body` dep removal, config dep fix)
 - e2e tests are slow (~seconds/test) vs unit tests (~milliseconds)
 - The backend test suite is excellent (9 describe blocks, 11 tests) — the frontend deserves equivalent coverage
@@ -666,16 +772,16 @@ After each step: run `pnpm -C src test` and manually verify the e2e suite does n
 
 ## Appendix: File Line Budget After Full Refactor
 
-| File | Before | After (estimated) |
-|------|--------|------------------|
-| `frontend.tsx` (NotesApp) | 506 | ~120 |
-| `useNotesIpc.ts` | — | ~55 |
-| `NoteList.tsx` | — | ~50 |
-| `NoteEditor.tsx` | — | ~70 |
-| `useNotesKeyActions.ts` | — | ~120 |
-| `useVoiceRecorder.ts` | — | ~60 |
-| `utils.ts` | — | ~15 |
-| `frontend.test.tsx` | — | ~150 |
-| **Total** | **506** | **~640 across 8 files** |
+| File                      | Before  | After (estimated)       |
+| ------------------------- | ------- | ----------------------- |
+| `frontend.tsx` (NotesApp) | 506     | ~120                    |
+| `useNotesIpc.ts`          | —       | ~55                     |
+| `NoteList.tsx`            | —       | ~50                     |
+| `NoteEditor.tsx`          | —       | ~70                     |
+| `useNotesKeyActions.ts`   | —       | ~120                    |
+| `useVoiceRecorder.ts`     | —       | ~60                     |
+| `utils.ts`                | —       | ~15                     |
+| `frontend.test.tsx`       | —       | ~150                    |
+| **Total**                 | **506** | **~640 across 8 files** |
 
 The total line count increases because tests are added and each file has proper imports/exports/interfaces, but each individual file becomes well under 150 lines — the threshold for comfortable readability.

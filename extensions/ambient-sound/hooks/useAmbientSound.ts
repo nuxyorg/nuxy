@@ -30,7 +30,10 @@ export function useAmbientSound(): void {
         source.buffer = buffer
         const gain = ctx.createGain()
         gain.gain.setValueAtTime(volume, ctx.currentTime)
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + (style === 'click' ? 0.02 : 0.01))
+        gain.gain.exponentialRampToValueAtTime(
+          0.0001,
+          ctx.currentTime + (style === 'click' ? 0.02 : 0.01)
+        )
         source.connect(gain)
         gain.connect(ctx.destination)
         source.start()
@@ -50,7 +53,8 @@ export function useAmbientSound(): void {
     }
 
     function loadSettings(): void {
-      ;(window as any).core?.ipc?.invoke(EXT_ID, 'getSettings', {})
+      ;(window as any).core?.ipc
+        ?.invoke(EXT_ID, 'getSettings', {})
         .then((res: any) => {
           if (res?.success && res?.data) settingsRef.current = res.data
         })

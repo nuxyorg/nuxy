@@ -27,8 +27,14 @@ if (fs.existsSync(extDir)) {
 }
 
 const id = `com.nuxy.${name}`
-const displayName = name.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ')
-const componentName = name.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join('')
+const displayName = name
+  .split('-')
+  .map((w) => w[0].toUpperCase() + w.slice(1))
+  .join(' ')
+const componentName = name
+  .split('-')
+  .map((w) => w[0].toUpperCase() + w.slice(1))
+  .join('')
 
 for (const dir of ['locales', 'components', 'hooks', 'utils', 'dev']) {
   fs.mkdirSync(path.join(extDir, dir), { recursive: true })
@@ -197,17 +203,9 @@ export default {
 }
 `,
 
-  'locales/en.json': JSON.stringify(
-    { meta: { name: displayName, direction: 'ltr' } },
-    null,
-    2
-  ),
+  'locales/en.json': JSON.stringify({ meta: { name: displayName, direction: 'ltr' } }, null, 2),
 
-  'locales/tr.json': JSON.stringify(
-    { meta: { name: displayName, direction: 'ltr' } },
-    null,
-    2
-  ),
+  'locales/tr.json': JSON.stringify({ meta: { name: displayName, direction: 'ltr' } }, null, 2),
 }
 
 for (const [file, content] of Object.entries(files)) {

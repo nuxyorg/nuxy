@@ -10,7 +10,13 @@ interface Props {
   emptyHint: string
 }
 
-export function ProcessList({ processes, selectedIndex, onSelect, emptyMessage, emptyHint }: Props) {
+export function ProcessList({
+  processes,
+  selectedIndex,
+  onSelect,
+  emptyMessage,
+  emptyHint,
+}: Props) {
   const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, EmptyState } = window.UI || {}
 
   if (processes.length === 0) {
@@ -22,11 +28,7 @@ export function ProcessList({ processes, selectedIndex, onSelect, emptyMessage, 
   return (
     <List>
       {processes.map((proc, idx) => (
-        <ListItem
-          key={proc.pid}
-          active={idx === selectedIndex}
-          onClick={() => onSelect(idx)}
-        >
+        <ListItem key={proc.pid} active={idx === selectedIndex} onClick={() => onSelect(idx)}>
           <ListItemBody>
             <ListItemText>{proc.name}</ListItemText>
             <ListItemMeta>

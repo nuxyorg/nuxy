@@ -101,7 +101,9 @@ describe('Runtime Permission Enforcement', () => {
   const registerIpcHandler = vi.fn()
 
   it('should allow clipboard calls when clipboard permission is present', async () => {
-    const { core } = createCoreProxy(callHost, logger as any, registerIpcHandler, 'test-ext', ['clipboard'])
+    const { core } = createCoreProxy(callHost, logger as any, registerIpcHandler, 'test-ext', [
+      'clipboard',
+    ])
     await expect(core.clipboard.readText()).resolves.toBeNull()
   })
 
@@ -111,7 +113,9 @@ describe('Runtime Permission Enforcement', () => {
   })
 
   it('should allow fs calls when fs permission is present', async () => {
-    const { core } = createCoreProxy(callHost, logger as any, registerIpcHandler, 'test-ext', ['fs'])
+    const { core } = createCoreProxy(callHost, logger as any, registerIpcHandler, 'test-ext', [
+      'fs',
+    ])
     await expect(core.fs.fileExists('foo')).resolves.toBeNull()
   })
 
@@ -121,7 +125,9 @@ describe('Runtime Permission Enforcement', () => {
   })
 
   it('should allow db open when db permission is present', () => {
-    const { core } = createCoreProxy(callHost, logger as any, registerIpcHandler, 'test-ext', ['db'])
+    const { core } = createCoreProxy(callHost, logger as any, registerIpcHandler, 'test-ext', [
+      'db',
+    ])
     const db = core.db.open('foo')
     expect(db).toBeDefined()
   })
@@ -229,4 +235,3 @@ describe('scanExtensions directory scanning', () => {
     )
   })
 })
-

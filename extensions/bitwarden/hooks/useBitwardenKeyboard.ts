@@ -24,6 +24,7 @@ interface Params {
   handleSync: () => void
   setEmailInput: React.Dispatch<React.SetStateAction<string>>
   setEditingEmail: React.Dispatch<React.SetStateAction<boolean>>
+  t: (key: string) => string
 }
 
 export function useBitwardenKeyboard({
@@ -45,13 +46,14 @@ export function useBitwardenKeyboard({
   handleSync,
   setEmailInput,
   setEditingEmail,
+  t,
 }: Params): void {
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
   _useToolKeyActions([
     {
       key: 'ArrowLeft',
-      label: 'Önceki Sekme',
+      label: t('actions.previousTab'),
       hint: '←→',
       activeOn: () => isInstallScreen,
       handler: () => {
@@ -70,28 +72,28 @@ export function useBitwardenKeyboard({
     },
     {
       key: 'Enter',
-      label: 'Yeniden Denetle',
+      label: t('actions.recheck'),
       hint: '↵',
       activeOn: () => isInstallScreen,
       handler: refreshStatus,
     },
     {
       key: 'Enter',
-      label: 'Kaydet',
+      label: t('actions.save'),
       hint: '↵',
       activeOn: () => isConfigScreen && !isConfiguring,
       handler: handleSaveEmail,
     },
     {
       key: 'Escape',
-      label: 'İptal',
+      label: t('actions.cancel'),
       hint: 'Esc',
       activeOn: () => isConfigScreen && editingEmail,
       handler: () => setEditingEmail(false),
     },
     {
       key: 'Enter',
-      label: 'Kilit Aç',
+      label: t('actions.unlock'),
       hint: '↵',
       activeOn: () => isLockScreen && !isUnlocking && !isSyncing,
       handler: handleUnlock,
@@ -104,17 +106,17 @@ export function useBitwardenKeyboard({
       actions.push(
         {
           id: 'bw-sync',
-          label: 'Kasa Eşitle',
+          label: t('actions.syncVault'),
           onExecute: handleSync,
         },
         {
           id: 'bw-refresh',
-          label: 'Durumu Yenile',
+          label: t('actions.refreshStatus'),
           onExecute: refreshStatus,
         },
         {
           id: 'bw-edit-email',
-          label: 'E-postayı Düzenle',
+          label: t('actions.editEmail'),
           onExecute: () => {
             setEmailInput(status?.email || '')
             setEditingEmail(true)

@@ -131,5 +131,13 @@ export function useNotesActions({
     }
   }
 
-  return { recording, transcribing, handleNew, handleSave, handleDelete, handleRecord, handleStopRecord }
+  return {
+    recording,
+    transcribing,
+    handleNew,
+    handleSave,
+    handleDelete,
+    handleRecord,
+    handleStopRecord,
+  }
 }

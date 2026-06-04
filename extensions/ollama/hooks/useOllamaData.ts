@@ -22,7 +22,9 @@ export function useOllamaData(): OllamaData {
 
   React.useEffect(() => {
     Promise.all([
-      ipcCall<{ host: string; model: string; thinkingColor?: string }>('getConfig').catch(() => null),
+      ipcCall<{ host: string; model: string; thinkingColor?: string }>('getConfig').catch(
+        () => null
+      ),
       ipcCall<ChatMessage[]>('history:load').catch(() => [] as ChatMessage[]),
       ipcCall<string[]>('models', {}).catch(() => [] as string[]),
     ]).then(([cfg, history, modelList]) => {
@@ -40,5 +42,14 @@ export function useOllamaData(): OllamaData {
     })
   }, [])
 
-  return { messages, setMessages, models, setModels, selectedModel, setSelectedModel, thinkingColor, setThinkingColor }
+  return {
+    messages,
+    setMessages,
+    models,
+    setModels,
+    selectedModel,
+    setSelectedModel,
+    thinkingColor,
+    setThinkingColor,
+  }
 }

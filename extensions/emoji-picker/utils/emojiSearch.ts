@@ -53,7 +53,8 @@ export function buildVisibleEmojis(allCategories: EmojiCategory[]): {
 export function buildAllCategories(
   emojiCategories: EmojiCategory[],
   emojiMap: Map<string, EmojiEntry>,
-  favorites: string[]
+  favorites: string[],
+  favoritesLabel = 'Favorites'
 ): EmojiCategory[] {
   const favEmojis = favorites
     .map((e) => emojiMap.get(e) || { e, n: e, k: '' })
@@ -61,7 +62,7 @@ export function buildAllCategories(
 
   const cats = [...emojiCategories]
   if (favEmojis.length > 0) {
-    cats.unshift({ id: 'favorites', label: 'Favorites', icon: null, emojis: favEmojis })
+    cats.unshift({ id: 'favorites', label: favoritesLabel, icon: null, emojis: favEmojis })
   }
   return cats
 }

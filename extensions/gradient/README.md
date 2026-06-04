@@ -18,6 +18,7 @@ Gradient is a visual helper extension that injects a WebGL-powered animated grad
 ## Extension Type
 
 ### `helper`
+
 Invisible to the user. Runs in the background or responds to events dispatched by other extensions. Never appears in the tool list.
 
 ---
@@ -34,9 +35,11 @@ window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: true }))
 window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', { detail: false }))
 
 // Activate with a specific visual mode
-window.dispatchEvent(new CustomEvent('nuxy-gradient-toggle', {
-  detail: { active: true, mode: 'rainbow' }  // modes: 'light' | 'rainbow' | 'bit'
-}))
+window.dispatchEvent(
+  new CustomEvent('nuxy-gradient-toggle', {
+    detail: { active: true, mode: 'rainbow' }, // modes: 'light' | 'rainbow' | 'bit'
+  })
+)
 ```
 
 When activated, the shell container receives the CSS class `nuxy-shell-container--gradient-active` (or `--gradient-rainbow` / `--gradient-bit` for alternate modes). When deactivated the class is removed and the WebGL animation pauses after a 500 ms fade delay.
@@ -56,11 +59,11 @@ The gradient colors are sourced from CSS custom properties set on the canvas ele
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 Requires a GPU that supports WebGL. The extension silently does nothing if WebGL is unavailable.
 

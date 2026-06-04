@@ -12,6 +12,7 @@ interface Props {
   onQueryChange: (value: string) => void
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
   onDragMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void
+  t: (key: string, vars?: Record<string, string | number>) => string
 }
 
 export function ShellOmniBar({
@@ -26,6 +27,7 @@ export function ShellOmniBar({
   onQueryChange,
   onKeyDown,
   onDragMouseDown,
+  t,
 }: Props) {
   return (
     <div
@@ -58,13 +60,13 @@ export function ShellOmniBar({
         onChange={(e) => onQueryChange(e.target.value)}
         onKeyDown={onKeyDown}
         className="nuxy-shell-omni-bar__input"
-        aria-label="Search"
+        aria-label={t('omniBar.ariaLabel')}
         placeholder={
           activeToolPlaceholder
             ? activeToolPlaceholder
             : activeToolName
-              ? `Search ${activeToolName}`
-              : 'What do you have in mind?'
+              ? t('omniBar.searchTool', { toolName: activeToolName })
+              : t('omniBar.placeholder')
         }
       />
       {(omniBarPortal != null || isLoading) && (

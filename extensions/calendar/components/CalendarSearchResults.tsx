@@ -9,8 +9,16 @@ interface Props {
 }
 
 export function CalendarSearchResults({ filteredSearch, listIdx, onSelectEvent }: Props) {
-  const { List, ListItem, ListItemBody, ListItemText, ListItemMeta, ListItemActions, EmptyState, IconBell } =
-    window.UI || {}
+  const {
+    List,
+    ListItem,
+    ListItemBody,
+    ListItemText,
+    ListItemMeta,
+    ListItemActions,
+    EmptyState,
+    IconBell,
+  } = window.UI || {}
 
   return (
     <div style={{ height: '100%' }}>
@@ -19,11 +27,7 @@ export function CalendarSearchResults({ filteredSearch, listIdx, onSelectEvent }
         : List && (
             <List>
               {filteredSearch.map((evt, idx) => (
-                <ListItem
-                  key={evt.id}
-                  active={idx === listIdx}
-                  onClick={() => onSelectEvent(evt)}
-                >
+                <ListItem key={evt.id} active={idx === listIdx} onClick={() => onSelectEvent(evt)}>
                   <ListItemBody>
                     <ListItemText>{evt.title}</ListItemText>
                     <ListItemMeta>

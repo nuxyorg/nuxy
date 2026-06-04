@@ -1,6 +1,11 @@
 const React = window.React
 
-import { TIME_OPTIONS, REMINDER_OPTIONS, getOptionLabel, getInitialFocusIndex } from '../utils/eventOptions.ts'
+import {
+  TIME_OPTIONS,
+  REMINDER_OPTIONS,
+  getOptionLabel,
+  getInitialFocusIndex,
+} from '../utils/eventOptions.ts'
 
 // Only the select fields are keyboard-navigable (title comes from the omnibar query)
 const CREATE_SELECT_FIELDS = ['time', 'reminder'] as const
@@ -76,9 +81,7 @@ export function CalendarCreateForm({
             <ListItemBody>
               <ListItemText>Title</ListItemText>
               <ListItemMeta>
-                {query.trim() || (
-                  <span style={{ opacity: 0.4 }}>Type in search bar…</span>
-                )}
+                {query.trim() || <span style={{ opacity: 0.4 }}>Type in search bar…</span>}
               </ListItemMeta>
             </ListItemBody>
           </ListItem>

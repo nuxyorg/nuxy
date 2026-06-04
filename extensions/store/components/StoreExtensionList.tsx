@@ -10,6 +10,7 @@ interface Props {
   onSelect: (idx: number) => void
   onItemSelected: (idx: number) => void
   setFocusArea: (area: 'left' | 'right') => void
+  t: (key: string) => string
 }
 
 export function StoreExtensionList({
@@ -20,6 +21,7 @@ export function StoreExtensionList({
   onSelect,
   onItemSelected,
   setFocusArea,
+  t,
 }: Props) {
   const {
     List,
@@ -34,7 +36,9 @@ export function StoreExtensionList({
   } = window.UI || {}
 
   return (
-    <ScrollArea style={{ flex: 1, borderRight: '1px solid var(--border-color, rgba(255,255,255,0.1))' }}>
+    <ScrollArea
+      style={{ flex: 1, borderRight: '1px solid var(--border-color, rgba(255,255,255,0.1))' }}
+    >
       {error && Alert && (
         <Alert variant="danger" style={{ margin: 'var(--space-2)' }}>
           {error}
@@ -42,16 +46,14 @@ export function StoreExtensionList({
       )}
 
       {extensions.length === 0 ? (
-        <EmptyState message="No extensions found." />
+        <EmptyState message={t('list.empty')} />
       ) : (
         List && (
           <List>
             {extensions.map((ext, idx) => {
               const isActive = focusArea === 'right' && idx === selectedIndex
-              const statusText = ext.installed
-                ? ext.canUpdate
-                  ? `v${ext.installedVersion} (Update to v${ext.version})`
-                  : `Installed v${ext.version}`
+              const versionText = ext.canUpdate
+                ? `v${ext.installedVersion} → v${ext.version}`
                 : `v${ext.version}`
 
               return (
@@ -66,14 +68,27 @@ export function StoreExtensionList({
                     }}
                   >
                     <ListItemBody>
-                      <ListItemText style={{ fontWeight: 'bold' }}>{ext.name}</ListItemText>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)' }}>
+                        <ListItemText style={{ fontWeight: 'bold' }}>{ext.name}</ListItemText>
+                        {ext.installed && !ext.canUpdate && Badge && (
+                          <Badge
+                            variant="success"
+                            style={{ fontSize: '0.65em', padding: '1px 5px' }}
+                          >
+                            {t('badge.installed')}
+                          </Badge>
+                        )}
+                      </div>
                       <span style={{ fontSize: '0.75em', opacity: 0.6 }}>{ext.description}</span>
                     </ListItemBody>
                     {ListItemMeta && (
-                      <ListItemMeta style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-                        <span style={{ fontSize: '0.8em', opacity: 0.5 }}>{statusText}</span>
-                        {ext.canUpdate && Badge && <Badge variant="warning">Update</Badge>}
-                        {ext.installed && !ext.canUpdate && Badge && <Badge variant="success">Installed</Badge>}
+                      <ListItemMeta
+                        style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}
+                      >
+                        <span style={{ fontSize: '0.8em', opacity: 0.5 }}>{versionText}</span>
+                        {ext.canUpdate && Badge && (
+                          <Badge variant="warning">{t('badge.update')}</Badge>
+                        )}
                       </ListItemMeta>
                     )}
                   </ListItem>

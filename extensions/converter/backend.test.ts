@@ -4,12 +4,13 @@ import { register } from './backend.ts'
 import type { ConversionResult } from './types.ts'
 
 describe('converter backend', () => {
-  it('registers a tool with name converter', () => {
+  it('registers a tool and provider with name converter', () => {
     const { core } = createMockCore({
       i18n: { locale: 'en', dir: 'ltr', t: vi.fn((key: string) => key) },
     })
     register(core)
     expect(core.registry.registerTool).toHaveBeenCalledWith({ name: 'converter' })
+    expect(core.registry.registerProvider).toHaveBeenCalledWith({ name: 'converter' })
   })
 
   describe('convert handler', () => {
@@ -77,13 +78,11 @@ describe('converter backend', () => {
     })
 
     it('filters to metric units only when unitSystem is "metric"', async () => {
-      ;(core.settings.read as ReturnType<typeof vi.fn>).mockImplementation(
-        async (key: string) => {
-          if (key === 'unitSystem') return 'metric'
-          if (key === 'precision') return '2'
-          return null
-        }
-      )
+      ;(core.settings.read as ReturnType<typeof vi.fn>).mockImplementation(async (key: string) => {
+        if (key === 'unitSystem') return 'metric'
+        if (key === 'precision') return '2'
+        return null
+      })
 
       const result = (await handlers['convert']({ query: '100 km' })) as ConversionResult[]
       expect(result.length).toBeGreaterThan(0)
@@ -95,13 +94,11 @@ describe('converter backend', () => {
     })
 
     it('returns integer results when precision is "0"', async () => {
-      ;(core.settings.read as ReturnType<typeof vi.fn>).mockImplementation(
-        async (key: string) => {
-          if (key === 'unitSystem') return 'both'
-          if (key === 'precision') return '0'
-          return null
-        }
-      )
+      ;(core.settings.read as ReturnType<typeof vi.fn>).mockImplementation(async (key: string) => {
+        if (key === 'unitSystem') return 'both'
+        if (key === 'precision') return '0'
+        return null
+      })
 
       const result = (await handlers['convert']({ query: '100 km to mi' })) as ConversionResult[]
       expect(result).toHaveLength(1)
@@ -114,6 +111,47 @@ describe('converter backend', () => {
       expect(result).toHaveLength(1)
       expect(result[0].fromValue).toBe(1.5)
       expect(result[0].toValue).toBeCloseTo(1500, 2)
+    })
+  })
+
+  describe('eval handler', () => {
+    let handlers: ReturnType<typeof createMockCore>['handlers']
+
+    beforeEach(() => {
+      const mock = createMockCore({
+        i18n: { locale: 'en', dir: 'ltr', t: vi.fn((key: string) => key) },
+      })
+      register(mock.core)
+      handlers = mock.handlers
+    })
+
+    it('returns empty items for blank query', async () => {
+      const res = await handlers['eval']({ text: '' })
+      expect(res).toEqual({ items: [] })
+    })
+
+    it('returns empty items for unparseable query', async () => {
+      const res = await handlers['eval']({ text: 'not a conversion' })
+      expect(res).toEqual({ items: [] })
+    })
+
+    it('returns one result item for targeted conversion', async () => {
+      const res = await handlers['eval']({ text: '100 km to mi' })
+      expect(res.items).toHaveLength(1)
+      expect(res.items[0]).toMatchObject({
+        id: 'conv-km-mi',
+        title: '100 km = 62.14 mi',
+        subtitle: 'Unit Converter',
+        value: '62.14 mi',
+      })
+    })
+
+    it('returns multiple result items when no target unit', async () => {
+      const res = await handlers['eval']({ text: '100 km' })
+      expect(res.items.length).toBeGreaterThan(1)
+      res.items.forEach((item: { subtitle: string }) => {
+        expect(item.subtitle).toBe('Unit Converter')
+      })
     })
   })
 

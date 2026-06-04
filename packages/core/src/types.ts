@@ -1,4 +1,11 @@
-export type ExtensionType = 'tool' | 'provider' | 'orchestrator' | 'helper' | 'theme' | 'iconpack' | 'uikit'
+export type ExtensionType =
+  | 'tool'
+  | 'provider'
+  | 'orchestrator'
+  | 'helper'
+  | 'theme'
+  | 'iconpack'
+  | 'uikit'
 
 export type ExtensionPermission =
   | 'storage'
@@ -12,7 +19,14 @@ export type ExtensionPermission =
   | 'settings.read'
   | 'settings.write'
 
-export type ExtensionSettingType = 'text' | 'select' | 'color' | 'location' | 'list' | 'toggle' | 'language-list'
+export type ExtensionSettingType =
+  | 'text'
+  | 'select'
+  | 'color'
+  | 'location'
+  | 'list'
+  | 'toggle'
+  | 'language-list'
 
 export interface ExtensionSettingField {
   key: string

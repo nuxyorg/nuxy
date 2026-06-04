@@ -54,7 +54,9 @@ test.describe('shell gradient border and glow', () => {
     await appPage.waitForSelector('input', { timeout: 400 })
   })
 
-  test('shell gradient canvas is hidden by default and visible when gradient tool is active', async ({ appPage }) => {
+  test('shell gradient canvas is hidden by default and visible when gradient tool is active', async ({
+    appPage,
+  }) => {
     // 1. Reset shell (no tool active)
     await resetShell(appPage)
 
@@ -159,7 +161,9 @@ test.describe('ollama thinking gradient activation', () => {
     await installOllamaMock(appPage, electronApp)
   })
 
-  test('opening ollama and submitting query triggers shell gradient border/glow during thinking state', async ({ appPage }) => {
+  test('opening ollama and submitting query triggers shell gradient border/glow during thinking state', async ({
+    appPage,
+  }) => {
     // 1. Reset shell and open Ollama
     await resetShell(appPage)
     await appPage.keyboard.type('ollama')

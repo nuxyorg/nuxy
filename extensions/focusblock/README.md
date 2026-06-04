@@ -18,6 +18,7 @@ Focus Block is a keyboard-driven focus timer built around the Pomodoro technique
 ## Extension Type
 
 ### `tool`
+
 Appears in the Nuxy tool list. The user activates it by selecting it from the shell, then interacts through the omnibar query and keyboard shortcuts.
 
 ---
@@ -30,11 +31,11 @@ Select **Focus Block** from the tool list. The extension opens immediately and s
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
+| Key     | Action                                      |
+| ------- | ------------------------------------------- |
 | `Enter` | Start a new timer (or stop the running one) |
-| `S` | Stop the running timer |
-| `↑` `↓` | Navigate the session history list |
+| `S`     | Stop the running timer                      |
+| `↑` `↓` | Navigate the session history list           |
 
 ### Examples
 
@@ -56,27 +57,27 @@ Press `S` or `Enter` while a timer is running to stop it. The session is saved w
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `defaultDuration` | select | `25` | Default focus block duration when none is specified in the query. Options: 15, 20, 25, 30, 45, 60 minutes. |
-| `breakDuration` | select | `5` | Suggested break duration shown after a focus block completes. Options: 5, 10, 15 minutes. |
+| Key               | Type   | Default | Description                                                                                                |
+| ----------------- | ------ | ------- | ---------------------------------------------------------------------------------------------------------- |
+| `defaultDuration` | select | `25`    | Default focus block duration when none is specified in the query. Options: 15, 20, 25, 30, 45, 60 minutes. |
+| `breakDuration`   | select | `5`     | Suggested break duration shown after a focus block completes. Options: 5, 10, 15 minutes.                  |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
-| `storage` | Persisting session history (up to 20 entries) across restarts |
+| Permission | Used for                                                      |
+| ---------- | ------------------------------------------------------------- |
+| `storage`  | Persisting session history (up to 20 entries) across restarts |
 
 ---
 
 ## Localization
 
-| Locale | Language |
-|--------|----------|
-| `en` | English (default) |
-| `tr` | Turkish |
+| Locale | Language          |
+| ------ | ----------------- |
+| `en`   | English (default) |
+| `tr`   | Turkish           |
 
 To add a new locale, create `locales/<code>.json` and add the code to `locales.supported` in `manifest.json`.
 
@@ -84,11 +85,11 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 All platforms supported by Nuxy.
 

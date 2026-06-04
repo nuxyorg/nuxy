@@ -44,5 +44,12 @@ export function useCalendarData(): CalendarDataResult {
       .catch(() => {})
   }
 
-  return { monthEvents, searchEvents, weekStart, defaultReminderMin, loadMonthEvents, loadSearchRange }
+  return {
+    monthEvents,
+    searchEvents,
+    weekStart,
+    defaultReminderMin,
+    loadMonthEvents,
+    loadSearchRange,
+  }
 }

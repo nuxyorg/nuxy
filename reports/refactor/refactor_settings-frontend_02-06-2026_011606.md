@@ -9,26 +9,27 @@
 
 ## 1. Executive Summary
 
-| Metric | Value |
-|---|---|
-| Total lines | 768 |
-| Exported components | 1 (`SettingsView`) |
-| Internal functions | 4 (`buildFontFamilyMap`, `buildFontOptions`, `applyTheme`, `applySettings`) |
-| `useState` calls | 9 |
-| `useMemo` calls | 9 |
-| `useRef` calls | 5 |
-| `useEffect` calls | 1 (but it contains 5 distinct async IPC branches) |
-| `useCallback` calls | 0 |
-| Module-level constants | 11 (options arrays + `LANGUAGE_SLOT_LABELS` + `DEFAULT_SETTINGS` + `SECTIONS`) |
-| `window.core` call-sites | 12 |
-| IPC `.invoke(...)` call-sites | 8 |
-| Row type discriminations (`isLanguage`/`isExtension`) | 22 (across 6 distinct code sites) |
-| Estimated cyclomatic complexity (SettingsView render) | ~18–22 |
-| Maximum JSX nesting depth | 11 levels |
+| Metric                                                | Value                                                                          |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Total lines                                           | 768                                                                            |
+| Exported components                                   | 1 (`SettingsView`)                                                             |
+| Internal functions                                    | 4 (`buildFontFamilyMap`, `buildFontOptions`, `applyTheme`, `applySettings`)    |
+| `useState` calls                                      | 9                                                                              |
+| `useMemo` calls                                       | 9                                                                              |
+| `useRef` calls                                        | 5                                                                              |
+| `useEffect` calls                                     | 1 (but it contains 5 distinct async IPC branches)                              |
+| `useCallback` calls                                   | 0                                                                              |
+| Module-level constants                                | 11 (options arrays + `LANGUAGE_SLOT_LABELS` + `DEFAULT_SETTINGS` + `SECTIONS`) |
+| `window.core` call-sites                              | 12                                                                             |
+| IPC `.invoke(...)` call-sites                         | 8                                                                              |
+| Row type discriminations (`isLanguage`/`isExtension`) | 22 (across 6 distinct code sites)                                              |
+| Estimated cyclomatic complexity (SettingsView render) | ~18–22                                                                         |
+| Maximum JSX nesting depth                             | 11 levels                                                                      |
 
 **Risk Level**: MEDIUM — the component owns all settings read/write state and is covered by a thorough e2e suite. Extracting sub-components is low-risk; extracting the IPC layer into a hook is medium-risk (must not break the `stateRef` snapshot pattern).
 
 **Estimated Refactoring Effort**:
+
 - Phase 1 (constants + helpers to own file): 0.5 day
 - Phase 2 (`useSettings` hook): 1 day
 - Phase 3 (SettingRow renderer component): 0.5 day
@@ -42,34 +43,38 @@
 All 13 core settings grouped by their logical section and 3 language slots:
 
 ### Section: General (4 settings)
-| Key | Label | Control | Notes |
-|---|---|---|---|
-| `theme` | Theme | SelectBox | Dynamic options from `window.core.themes.list()` |
-| `iconPack` | Icon Pack | SelectBox | Dynamic options from `window.core.icons.listPacks()` |
-| `zoom` | Zoom | SelectBox | 6 fixed options |
-| `font` | Font | SelectBox (searchable) | 2 static + N system fonts from IPC |
+
+| Key        | Label     | Control                | Notes                                                |
+| ---------- | --------- | ---------------------- | ---------------------------------------------------- |
+| `theme`    | Theme     | SelectBox              | Dynamic options from `window.core.themes.list()`     |
+| `iconPack` | Icon Pack | SelectBox              | Dynamic options from `window.core.icons.listPacks()` |
+| `zoom`     | Zoom      | SelectBox              | 6 fixed options                                      |
+| `font`     | Font      | SelectBox (searchable) | 2 static + N system fonts from IPC                   |
 
 ### Section: Window (9 settings)
-| Key | Label | Control | Notes |
-|---|---|---|---|
-| `escAction` | Esc Key Action | SelectBox | 4 options (shared with blurAction) |
-| `blurAction` | Focus-Out Action | SelectBox | 4 options (same `ESC_ACTION_OPTIONS` array) |
-| `windowWidth` | Window Width | SelectBox | 6 options |
-| `windowMaxHeight` | Max Height | SelectBox | 5 options |
-| `windowPosition` | Launch Position | SelectBox | 10 options |
-| `opacity` | Opacity | SelectBox | 4 options |
-| `alwaysOnTop` | Always on Top | SelectBox | BOOL_OPTIONS |
-| `showInTaskbar` | Show in Taskbar | SelectBox | BOOL_OPTIONS |
-| `showOnStartup` | Show on Startup | SelectBox | BOOL_OPTIONS |
+
+| Key               | Label            | Control   | Notes                                       |
+| ----------------- | ---------------- | --------- | ------------------------------------------- |
+| `escAction`       | Esc Key Action   | SelectBox | 4 options (shared with blurAction)          |
+| `blurAction`      | Focus-Out Action | SelectBox | 4 options (same `ESC_ACTION_OPTIONS` array) |
+| `windowWidth`     | Window Width     | SelectBox | 6 options                                   |
+| `windowMaxHeight` | Max Height       | SelectBox | 5 options                                   |
+| `windowPosition`  | Launch Position  | SelectBox | 10 options                                  |
+| `opacity`         | Opacity          | SelectBox | 4 options                                   |
+| `alwaysOnTop`     | Always on Top    | SelectBox | BOOL_OPTIONS                                |
+| `showInTaskbar`   | Show in Taskbar  | SelectBox | BOOL_OPTIONS                                |
+| `showOnStartup`   | Show on Startup  | SelectBox | BOOL_OPTIONS                                |
 
 ### Section: Language (3 virtual rows)
-| Key | Label | Control | Notes |
-|---|---|---|---|
+
+| Key      | Label                    | Control                | Notes      |
+| -------- | ------------------------ | ---------------------- | ---------- |
 | `lang:0` | Preferred Language (1st) | SelectBox (searchable) | 35 options |
 | `lang:1` | Preferred Language (2nd) | SelectBox (searchable) | 35 options |
 | `lang:2` | Preferred Language (3rd) | SelectBox (searchable) | 35 options |
 
 ### Dynamic sections: Extension Settings (N sections, N rows each)
+
 - One section per installed extension that publishes a `settings.json` schema
 - Each field maps to either: `SelectBox` (select/toggle type) or `Input` (text/color/number type)
 - Values stored per `extId` in `extValues` state, saved via `saveExtensionSettingValues` IPC
@@ -78,17 +83,17 @@ All 13 core settings grouped by their logical section and 3 language slots:
 
 ## 3. Component / Function Inventory Table
 
-| Name | Kind | Lines | LOC | Responsibility |
-|---|---|---|---|---|
-| `SettingsView` | React component (default export) | 206–768 | 563 | All state, all IPC, full render tree |
-| `buildFontFamilyMap` | Pure function | 146–155 | 10 | Maps font name → CSS font-family string |
-| `buildFontOptions` | Pure function | 157–159 | 3 | Builds `SelectOption[]` for font picker |
-| `applyTheme` (inside SettingsView) | Inner function | 479–495 | 17 | Fetches and applies theme CSS vars |
-| `applySettings` (inside SettingsView) | Inner function | 497–501 | 5 | Applies zoom/font/theme to DOM |
-| `updateSetting` (inside SettingsView) | Inner function | 503–521 | 19 | Updates setting state + persists via IPC |
-| `updateLanguageSlot` (inside SettingsView) | Inner function | 523–538 | 16 | Deduplicates language list + calls updateSetting |
-| `updateExtSetting` (inside SettingsView) | Inner function | 540–548 | 9 | Updates ext value state + persists via IPC |
-| `_useTwoPanelNav` (module-level shim) | Hook shim | 24–35 | 12 | Fallback when `window.UI.useTwoPanelNav` absent |
+| Name                                       | Kind                             | Lines   | LOC | Responsibility                                   |
+| ------------------------------------------ | -------------------------------- | ------- | --- | ------------------------------------------------ |
+| `SettingsView`                             | React component (default export) | 206–768 | 563 | All state, all IPC, full render tree             |
+| `buildFontFamilyMap`                       | Pure function                    | 146–155 | 10  | Maps font name → CSS font-family string          |
+| `buildFontOptions`                         | Pure function                    | 157–159 | 3   | Builds `SelectOption[]` for font picker          |
+| `applyTheme` (inside SettingsView)         | Inner function                   | 479–495 | 17  | Fetches and applies theme CSS vars               |
+| `applySettings` (inside SettingsView)      | Inner function                   | 497–501 | 5   | Applies zoom/font/theme to DOM                   |
+| `updateSetting` (inside SettingsView)      | Inner function                   | 503–521 | 19  | Updates setting state + persists via IPC         |
+| `updateLanguageSlot` (inside SettingsView) | Inner function                   | 523–538 | 16  | Deduplicates language list + calls updateSetting |
+| `updateExtSetting` (inside SettingsView)   | Inner function                   | 540–548 | 9   | Updates ext value state + persists via IPC       |
+| `_useTwoPanelNav` (module-level shim)      | Hook shim                        | 24–35   | 12  | Fallback when `window.UI.useTwoPanelNav` absent  |
 
 **Observation**: All 5 inner functions plus 9 `useMemo` blocks and 9 `useState` declarations live inside the single `SettingsView` function body. There are no sub-components at all — the 563-line component renders everything inline.
 
@@ -96,36 +101,36 @@ All 13 core settings grouped by their logical section and 3 language slots:
 
 ## 4. Code Smell Analysis Table
 
-| Smell | Location(s) | Severity | Description |
-|---|---|---|---|
-| God Component | `SettingsView` (entire file) | HIGH | Single component owns all data fetching, all state, keyboard navigation, and the complete render tree. |
-| Row type discrimination repeated 6× | Lines 406, 409, 420, 427, 654–661, 698–705 | HIGH | `isLanguage`/`isExtension` switch-on-type logic is duplicated across the `rightPanelActions` useMemo, the `Enter` handler, the render loop's value getter, the isSelectType check, and the SelectBox `onSelect` callback. |
-| Inline handler functions in JSX | Lines 674–680, 699–715, 721–752 | HIGH | `onClick`, `onSelect`, `onClose`, `onOpen`, `onChange`, `onBlur`, `onKeyDown` all defined inline per row inside `.map()`. Creates new function objects on every render. |
-| Monolithic `useEffect` | Lines 550–618 | HIGH | Five independent async operations (themes, iconPacks, systemFonts, getSettings, getExtensionSettingsSchemas + per-ext value loads) in a single `useEffect` with `[]` dep array. Hard to test, hard to retry individually. |
-| `stateRef` snapshot anti-pattern | Lines 333–342 | MEDIUM | A `stateRef` is manually kept in sync on every render to work around stale closure issues in `useMemo`-defined keyboard handlers. A custom hook or `useReducer` would eliminate this pattern cleanly. |
-| 11-level JSX nesting | Lines 637–763 | MEDIUM | `ScrollArea > Fragment > SectionHeader + List > ListItem > ListItemBody > ListItemText / ListItemActions > SelectBox / Input`. Deeply nested JSX kills readability and makes extraction mechanically obvious. |
-| Duplicated `DEFAULT_SETTINGS` object | `frontend.tsx:161` and `backend.ts:4` | MEDIUM | The same default values are defined in both the backend and the frontend. A single source of truth in `types.ts` or a shared constants file would eliminate the risk of drift. |
-| Module-level constants bloat | Lines 41–144 | LOW | 11 constant arrays (options, labels) totalling ~100 lines live at module scope in the same file as the component. They are logically distinct and belong in a `constants.ts` sibling file. |
-| Missing `useCallback` | `updateSetting`, `updateLanguageSlot`, `updateExtSetting` | LOW | Three frequently-called mutation functions are re-created on every render. They should be `useCallback`-wrapped or extracted into a hook. |
-| Implicit `window.UI` destructuring | Lines 207–219 | LOW | All 11 UI components are destructured from `window.UI` inside the component body on every render, producing 11 variables whose stability is not guaranteed. A module-level getter would be cleaner. |
-| `inputRefs` indentation inconsistency | Line 236 | LOW | Missing 2-space indent (minor formatting regression). |
+| Smell                                 | Location(s)                                               | Severity | Description                                                                                                                                                                                                               |
+| ------------------------------------- | --------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| God Component                         | `SettingsView` (entire file)                              | HIGH     | Single component owns all data fetching, all state, keyboard navigation, and the complete render tree.                                                                                                                    |
+| Row type discrimination repeated 6×   | Lines 406, 409, 420, 427, 654–661, 698–705                | HIGH     | `isLanguage`/`isExtension` switch-on-type logic is duplicated across the `rightPanelActions` useMemo, the `Enter` handler, the render loop's value getter, the isSelectType check, and the SelectBox `onSelect` callback. |
+| Inline handler functions in JSX       | Lines 674–680, 699–715, 721–752                           | HIGH     | `onClick`, `onSelect`, `onClose`, `onOpen`, `onChange`, `onBlur`, `onKeyDown` all defined inline per row inside `.map()`. Creates new function objects on every render.                                                   |
+| Monolithic `useEffect`                | Lines 550–618                                             | HIGH     | Five independent async operations (themes, iconPacks, systemFonts, getSettings, getExtensionSettingsSchemas + per-ext value loads) in a single `useEffect` with `[]` dep array. Hard to test, hard to retry individually. |
+| `stateRef` snapshot anti-pattern      | Lines 333–342                                             | MEDIUM   | A `stateRef` is manually kept in sync on every render to work around stale closure issues in `useMemo`-defined keyboard handlers. A custom hook or `useReducer` would eliminate this pattern cleanly.                     |
+| 11-level JSX nesting                  | Lines 637–763                                             | MEDIUM   | `ScrollArea > Fragment > SectionHeader + List > ListItem > ListItemBody > ListItemText / ListItemActions > SelectBox / Input`. Deeply nested JSX kills readability and makes extraction mechanically obvious.             |
+| Duplicated `DEFAULT_SETTINGS` object  | `frontend.tsx:161` and `backend.ts:4`                     | MEDIUM   | The same default values are defined in both the backend and the frontend. A single source of truth in `types.ts` or a shared constants file would eliminate the risk of drift.                                            |
+| Module-level constants bloat          | Lines 41–144                                              | LOW      | 11 constant arrays (options, labels) totalling ~100 lines live at module scope in the same file as the component. They are logically distinct and belong in a `constants.ts` sibling file.                                |
+| Missing `useCallback`                 | `updateSetting`, `updateLanguageSlot`, `updateExtSetting` | LOW      | Three frequently-called mutation functions are re-created on every render. They should be `useCallback`-wrapped or extracted into a hook.                                                                                 |
+| Implicit `window.UI` destructuring    | Lines 207–219                                             | LOW      | All 11 UI components are destructured from `window.UI` inside the component body on every render, producing 11 variables whose stability is not guaranteed. A module-level getter would be cleaner.                       |
+| `inputRefs` indentation inconsistency | Line 236                                                  | LOW      | Missing 2-space indent (minor formatting regression).                                                                                                                                                                     |
 
 ---
 
 ## 5. Complexity Metrics Table
 
-| Scope | Estimated Cyclomatic Complexity | Max Nesting Depth | Notes |
-|---|---|---|---|
-| `SettingsView` (full) | 22 | 11 (JSX) | Includes all inner functions |
-| `rightPanelActions` useMemo (Enter handler) | 8 | 5 | isLang × isExtension × type checks |
-| `rightPanelActions` useMemo (ArrowDown handler) | 4 | 3 | activeSelect branch + row check |
-| `updateSetting` | 4 | 3 | key-specific dispatches |
-| `updateLanguageSlot` | 3 | 2 | splice/dedup |
-| `applyTheme` | 3 | 3 | optional chain guards |
-| Row render (inside `.map()`) | 7 | 6 | isLanguageRow × isExtension × type |
-| `useEffect` (init) | 6 | 4 | 5 async branches, per-ext inner loop |
-| `extSections` useMemo | 2 | 2 | map + field.type check |
-| `sectionsToRender` useMemo | 2 | 2 | base + lang + ext concat |
+| Scope                                           | Estimated Cyclomatic Complexity | Max Nesting Depth | Notes                                |
+| ----------------------------------------------- | ------------------------------- | ----------------- | ------------------------------------ |
+| `SettingsView` (full)                           | 22                              | 11 (JSX)          | Includes all inner functions         |
+| `rightPanelActions` useMemo (Enter handler)     | 8                               | 5                 | isLang × isExtension × type checks   |
+| `rightPanelActions` useMemo (ArrowDown handler) | 4                               | 3                 | activeSelect branch + row check      |
+| `updateSetting`                                 | 4                               | 3                 | key-specific dispatches              |
+| `updateLanguageSlot`                            | 3                               | 2                 | splice/dedup                         |
+| `applyTheme`                                    | 3                               | 3                 | optional chain guards                |
+| Row render (inside `.map()`)                    | 7                               | 6                 | isLanguageRow × isExtension × type   |
+| `useEffect` (init)                              | 6                               | 4                 | 5 async branches, per-ext inner loop |
+| `extSections` useMemo                           | 2                               | 2                 | map + field.type check               |
+| `sectionsToRender` useMemo                      | 2                               | 2                 | base + lang + ext concat             |
 
 The Enter keyboard handler alone has complexity 8, which exceeds the conventional limit of 5 for a single function. Combined with the render method's complexity, this component scores well above safe thresholds.
 
@@ -135,18 +140,18 @@ The Enter keyboard handler alone has complexity 8, which exceeds the conventiona
 
 All calls to `window.core` APIs discovered in the file:
 
-| # | Location | Target | Channel | Direction | Purpose |
-|---|---|---|---|---|---|
-| 1 | `applyTheme()` L481 | `kernel` | `getThemeByName` | read | Fetch CSS vars for selected theme |
-| 2 | `updateSetting()` L515 | `com.nuxy.settings` | `saveSettings` | write | Persist full settings object |
-| 3 | `updateSetting()` L518 | `kernel` | `applyWindowSettings` | write | Apply window config to Electron |
-| 4 | `updateExtSetting()` L545 | `com.nuxy.settings` | `saveExtensionSettingValues` | write | Persist ext field values |
-| 5 | `useEffect` L553 | `window.core.themes` | `list()` | read | Load available theme names |
-| 6 | `useEffect` L563 | `window.core.icons` | `listPacks()` | read | Load available icon packs |
-| 7 | `useEffect` L573 | `kernel` | `listSystemFonts` | read | Load system font list |
-| 8 | `useEffect` L583 | `com.nuxy.settings` | `getSettings` | read | Load persisted settings on mount |
-| 9 | `useEffect` L594 | `kernel` | `getExtensionSettingsSchemas` | read | Load ext schema definitions |
-| 10 | `useEffect` L601 | `com.nuxy.settings` | `getExtensionSettingValues` | read | Load values per ext (one call per ext) |
+| #   | Location                  | Target               | Channel                       | Direction | Purpose                                |
+| --- | ------------------------- | -------------------- | ----------------------------- | --------- | -------------------------------------- |
+| 1   | `applyTheme()` L481       | `kernel`             | `getThemeByName`              | read      | Fetch CSS vars for selected theme      |
+| 2   | `updateSetting()` L515    | `com.nuxy.settings`  | `saveSettings`                | write     | Persist full settings object           |
+| 3   | `updateSetting()` L518    | `kernel`             | `applyWindowSettings`         | write     | Apply window config to Electron        |
+| 4   | `updateExtSetting()` L545 | `com.nuxy.settings`  | `saveExtensionSettingValues`  | write     | Persist ext field values               |
+| 5   | `useEffect` L553          | `window.core.themes` | `list()`                      | read      | Load available theme names             |
+| 6   | `useEffect` L563          | `window.core.icons`  | `listPacks()`                 | read      | Load available icon packs              |
+| 7   | `useEffect` L573          | `kernel`             | `listSystemFonts`             | read      | Load system font list                  |
+| 8   | `useEffect` L583          | `com.nuxy.settings`  | `getSettings`                 | read      | Load persisted settings on mount       |
+| 9   | `useEffect` L594          | `kernel`             | `getExtensionSettingsSchemas` | read      | Load ext schema definitions            |
+| 10  | `useEffect` L601          | `com.nuxy.settings`  | `getExtensionSettingValues`   | read      | Load values per ext (one call per ext) |
 
 **Note**: Calls 5–10 all fire inside a single `useEffect`. Call 10 fires N times (once per discovered extension) inside a loop within that same effect.
 
@@ -363,8 +368,7 @@ export function getRowCurrentValue(
 ): unknown {
   if ('isLanguage' in row && row.isLanguage)
     return settings.preferredLanguages?.[row.langIndex] ?? ''
-  if (row.isExtension)
-    return extValues[row.extId]?.[row.fieldKey] ?? row.default ?? ''
+  if (row.isExtension) return extValues[row.extId]?.[row.fieldKey] ?? row.default ?? ''
   return settings[row.key]
 }
 
@@ -377,7 +381,7 @@ export function isSelectTypeRow(row: AnyRow): boolean {
 export function handleRowSelectCallback(
   row: AnyRow,
   value: unknown,
-  callbacks: { updateSetting, updateLanguageSlot, updateExtSetting }
+  callbacks: { updateSetting; updateLanguageSlot; updateExtSetting }
 ): void {
   if ('isLanguage' in row && row.isLanguage) {
     callbacks.updateLanguageSlot(row.langIndex, value as string)
@@ -401,9 +405,15 @@ export function handleRowSelectCallback(
 // BEFORE: one useEffect([]) with 5+ async branches
 
 // AFTER (inside useSettings hook):
-useEffect(() => { /* fetch themes */ }, [])
-useEffect(() => { /* fetch iconPacks */ }, [])
-useEffect(() => { /* fetch systemFonts */ }, [])
+useEffect(() => {
+  /* fetch themes */
+}, [])
+useEffect(() => {
+  /* fetch iconPacks */
+}, [])
+useEffect(() => {
+  /* fetch systemFonts */
+}, [])
 useEffect(() => {
   /* fetch getSettings, then getExtensionSettingsSchemas, then per-ext values */
 }, [])
@@ -415,27 +425,27 @@ The settings + extension schemas must stay in one effect since ext-value loading
 
 ## 8. Risk Matrix
 
-| Extraction | Risk | Why Safe / Why Risky | Mitigation |
-|---|---|---|---|
-| Constants to `constants.ts` | NONE | No logic change, pure file move | Run `pnpm -C src test` to confirm no import breakage |
-| `buildFontFamilyMap` / `buildFontOptions` to `constants.ts` | NONE | Already pure functions | Same |
-| Row discrimination to `row-utils.ts` | NONE | Pure functions, fully testable | Add unit tests before extracting |
-| `SettingRow` component | LOW | No state, receives all props; risk is prop count explosion | Use a `callbacks` object to reduce prop surface |
-| `SettingsSection` component | LOW | Composes `SettingRow`; same as above | Memoize with `React.memo` keyed on section id |
-| `useSettings` hook | MEDIUM | Must preserve `applySettings` side-effect timing; must not break stateRef pattern | Extract after unit tests for `updateSetting` exist; validate with e2e |
-| Splitting `useEffect` | MEDIUM | Order matters for `applySettings` call (settings must load before applying) | Load settings in its own effect, add an `isLoaded` ref to gate `applySettings` |
-| Changing keyboard handler shape | HIGH | e2e tests assert exact keyboard nav sequences; the `rightPanelActions` shape is consumed by `useTwoPanelNav` | Do NOT change the `actions` array shape or key names; only reorganise how the handler body dispatches |
-| Moving `DEFAULT_SETTINGS` to shared file | LOW | Backend and frontend both define it; unifying removes drift risk | Must ensure the shared file is importable from both Worker context and renderer context |
+| Extraction                                                  | Risk   | Why Safe / Why Risky                                                                                         | Mitigation                                                                                            |
+| ----------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Constants to `constants.ts`                                 | NONE   | No logic change, pure file move                                                                              | Run `pnpm -C src test` to confirm no import breakage                                                  |
+| `buildFontFamilyMap` / `buildFontOptions` to `constants.ts` | NONE   | Already pure functions                                                                                       | Same                                                                                                  |
+| Row discrimination to `row-utils.ts`                        | NONE   | Pure functions, fully testable                                                                               | Add unit tests before extracting                                                                      |
+| `SettingRow` component                                      | LOW    | No state, receives all props; risk is prop count explosion                                                   | Use a `callbacks` object to reduce prop surface                                                       |
+| `SettingsSection` component                                 | LOW    | Composes `SettingRow`; same as above                                                                         | Memoize with `React.memo` keyed on section id                                                         |
+| `useSettings` hook                                          | MEDIUM | Must preserve `applySettings` side-effect timing; must not break stateRef pattern                            | Extract after unit tests for `updateSetting` exist; validate with e2e                                 |
+| Splitting `useEffect`                                       | MEDIUM | Order matters for `applySettings` call (settings must load before applying)                                  | Load settings in its own effect, add an `isLoaded` ref to gate `applySettings`                        |
+| Changing keyboard handler shape                             | HIGH   | e2e tests assert exact keyboard nav sequences; the `rightPanelActions` shape is consumed by `useTwoPanelNav` | Do NOT change the `actions` array shape or key names; only reorganise how the handler body dispatches |
+| Moving `DEFAULT_SETTINGS` to shared file                    | LOW    | Backend and frontend both define it; unifying removes drift risk                                             | Must ensure the shared file is importable from both Worker context and renderer context               |
 
 ### Settings That Require Special Care During Refactoring
 
-| Setting | Why Risky |
-|---|---|
+| Setting              | Why Risky                                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `preferredLanguages` | Triggers `nuxy-locale-changed` custom event in addition to normal save; dedup logic in `updateLanguageSlot` must not be broken |
-| `theme` | Triggers `applyTheme()` which calls `getThemeByName` IPC and patches CSS variables on `document.documentElement` |
-| `font` | Writes to `document.body.style.fontFamily` using the `fontFamilyMap` lookup |
-| `zoom` | Writes to `document.documentElement.style.zoom` immediately on change |
-| Any setting | All settings trigger `applyWindowSettings` kernel IPC call after save |
+| `theme`              | Triggers `applyTheme()` which calls `getThemeByName` IPC and patches CSS variables on `document.documentElement`               |
+| `font`               | Writes to `document.body.style.fontFamily` using the `fontFamilyMap` lookup                                                    |
+| `zoom`               | Writes to `document.documentElement.style.zoom` immediately on change                                                          |
+| Any setting          | All settings trigger `applyWindowSettings` kernel IPC call after save                                                          |
 
 ---
 
@@ -444,6 +454,7 @@ The settings + extension schemas must stay in one effect since ext-value loading
 ### Phase 1: Safe Groundwork (0.5 day, zero behavioral change)
 
 **Step 1.1** — Extract all module-level constants and pure functions to `extensions/settings/constants.ts`:
+
 - Move: `ZOOM_OPTIONS`, `FONT_OPTIONS_STATIC`, `ESC_ACTION_OPTIONS`, `WINDOW_WIDTH_OPTIONS`, `WINDOW_MAX_HEIGHT_OPTIONS`, `WINDOW_POSITION_OPTIONS`, `OPACITY_OPTIONS`, `BOOL_OPTIONS`, `LANGUAGE_OPTIONS`, `LANGUAGE_SLOT_LABELS`, `DEFAULT_SETTINGS`, `SECTIONS`, `buildFontFamilyMap`, `buildFontOptions`
 - Import them in `frontend.tsx`
 - Remove duplicate `DEFAULT_SETTINGS` from `backend.ts` by importing from `constants.ts`
@@ -457,6 +468,7 @@ The settings + extension schemas must stay in one effect since ext-value loading
 ### Phase 2: Row Discrimination Helpers (0.5 day)
 
 **Step 2.1** — Create `extensions/settings/row-utils.ts` with:
+
 - `getRowCurrentValue(row, settings, extValues): unknown`
 - `isSelectTypeRow(row): boolean`
 - `handleRowSelectCallback(row, value, callbacks): void`
@@ -476,9 +488,10 @@ The settings + extension schemas must stay in one effect since ext-value loading
 **Step 3.1** — Create `extensions/settings/useSettings.ts`.
 
 **Step 3.2** — Move these items into the hook:
+
 - All 6 data `useState` declarations (`themes`, `iconPacks`, `systemFonts`, `settings`, `extSchemas`, `extValues`)
 - `applyTheme` inner function
-- `applySettings` inner function  
+- `applySettings` inner function
 - `updateSetting` inner function
 - `updateLanguageSlot` inner function
 - `updateExtSetting` inner function
@@ -498,15 +511,18 @@ The settings + extension schemas must stay in one effect since ext-value loading
 ### Phase 4: Sub-Components (1 day)
 
 **Step 4.1** — Create `extensions/settings/SettingRow.tsx`:
+
 - Props: row, globalIdx, isActive, currentValue, activeSelect, selectFocused, callbacks object, nav ref
 - Internals: calls `isSelectTypeRow`, `handleRowSelectCallback` from `row-utils.ts`
 - Export as `React.memo(SettingRow)`
 
 **Step 4.2** — Create `extensions/settings/SettingsSection.tsx`:
+
 - Props: section, sectionOffset, sectionRef, and all row-level props passed through
 - Renders `SectionHeader` + `List` + `section.resolvedRows.map(SettingRow)`
 
 **Step 4.3** — Replace the `sectionsToRender.map()` block in `SettingsView` (lines 638–763) with:
+
 ```tsx
 {sectionsToRender.map((section) => (
   <SettingsSection key={section.id} section={section} ... />

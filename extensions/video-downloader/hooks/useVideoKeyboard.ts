@@ -23,6 +23,7 @@ interface Params {
   actions: Actions
   goToSection: (id: string) => void
   setFocusArea: (area: 'left' | 'right') => void
+  t: (key: string) => string
 }
 
 export function useVideoKeyboard({
@@ -36,13 +37,14 @@ export function useVideoKeyboard({
   actions,
   goToSection,
   setFocusArea,
+  t,
 }: Params): void {
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
   _useToolKeyActions([
     {
       key: 'ArrowUp',
-      label: 'Navigate',
+      label: t('actions.navigate'),
       hint: '↑↓',
       handler: () => {
         const { activeTab, metadata: meta, jobs } = stateRef.current
@@ -57,7 +59,7 @@ export function useVideoKeyboard({
     },
     {
       key: 'ArrowDown',
-      label: 'Navigate',
+      label: t('actions.navigate'),
       handler: () => {
         const { activeTab, filteredFormats, combinedList, jobs } = stateRef.current
         if (activeTab === 'downloads') {
@@ -70,7 +72,7 @@ export function useVideoKeyboard({
     },
     {
       key: 'Enter',
-      label: 'Download / Open',
+      label: t('actions.download'),
       hint: '↵',
       handler: () => {
         const {
@@ -107,7 +109,7 @@ export function useVideoKeyboard({
     {
       key: 'Enter',
       modifiers: ['shift'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
-      label: 'Open Folder',
+      label: t('actions.openFolder'),
       hint: '⇧↵',
       activeOn: () => {
         const { activeTab, combinedList, downloadSelectedIndex } = stateRef.current
@@ -125,11 +127,11 @@ export function useVideoKeyboard({
     },
     {
       key: 'Tab',
-      label: 'Next tab',
+      label: t('actions.nextTab'),
       hint: 'Tab',
       handler: () => {
         setActiveTab((prev) => {
-          const idx = TABS.findIndex((t) => t.id === prev)
+          const idx = TABS.findIndex((tab) => tab.id === prev)
           const nextTab = TABS[(idx + 1) % TABS.length].id as TabId
           goToSection(nextTab)
           return nextTab
@@ -140,7 +142,7 @@ export function useVideoKeyboard({
     },
     {
       key: 'Escape',
-      label: 'Back to formats',
+      label: t('actions.backToFormats'),
       hint: 'Esc',
       activeOn: () => {
         const { activeTab, jobs } = stateRef.current
@@ -174,7 +176,7 @@ export function useVideoKeyboard({
     const paletteActions = [
       {
         id: 'ytdlp-view-downloads',
-        label: 'View Downloads & History',
+        label: t('commandPalette.viewDownloads'),
         onExecute: () => {
           const { activeTab } = stateRef.current
           if (activeTab !== 'downloads') {
@@ -191,28 +193,43 @@ export function useVideoKeyboard({
       paletteActions.push(
         {
           id: 'ytdlp-filter-rec',
-          label: 'Filter: Recommended',
-          onExecute: () => { goToSection('recommended'); setSelectedIndex(0) },
+          label: t('commandPalette.filterRecommended'),
+          onExecute: () => {
+            goToSection('recommended')
+            setSelectedIndex(0)
+          },
         },
         {
           id: 'ytdlp-filter-va',
-          label: 'Filter: Video & Audio',
-          onExecute: () => { goToSection('video_audio'); setSelectedIndex(0) },
+          label: t('commandPalette.filterVideoAudio'),
+          onExecute: () => {
+            goToSection('video_audio')
+            setSelectedIndex(0)
+          },
         },
         {
           id: 'ytdlp-filter-audio',
-          label: 'Filter: Audio Only',
-          onExecute: () => { goToSection('audio_only'); setSelectedIndex(0) },
+          label: t('commandPalette.filterAudioOnly'),
+          onExecute: () => {
+            goToSection('audio_only')
+            setSelectedIndex(0)
+          },
         },
         {
           id: 'ytdlp-filter-video',
-          label: 'Filter: Video Only',
-          onExecute: () => { goToSection('video_only'); setSelectedIndex(0) },
+          label: t('commandPalette.filterVideoOnly'),
+          onExecute: () => {
+            goToSection('video_only')
+            setSelectedIndex(0)
+          },
         },
         {
           id: 'ytdlp-filter-all',
-          label: 'Filter: All Streams',
-          onExecute: () => { goToSection('all'); setSelectedIndex(0) },
+          label: t('commandPalette.filterAllStreams'),
+          onExecute: () => {
+            goToSection('all')
+            setSelectedIndex(0)
+          },
         }
       )
     }
@@ -221,5 +238,5 @@ export function useVideoKeyboard({
     return () => {
       window.dispatchEvent(new CustomEvent('nuxy-register-actions', { detail: [] }))
     }
-  }, [metadata])
+  }, [metadata, t])
 }

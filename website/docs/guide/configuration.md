@@ -10,31 +10,31 @@ Nuxy is configured via a plain key=value file at `~/.nuxy/nuxyconfig`. The file 
 
 ### Theme
 
-| Key | Values | Default | Description |
-|---|---|---|---|
+| Key     | Values                                          | Default  | Description                                                                                                                                       |
+| ------- | ----------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `theme` | `dark` \| `light` \| `system` \| `<theme-name>` | `system` | Active UI theme. `system` follows OS dark/light preference. Custom theme extensions (e.g. `ocean`, `glassmorphism`) are available once installed. |
 
 ### Window Behavior
 
-| Key | Values | Default | Description |
-|---|---|---|---|
-| `escAction` | `hide` \| `minimize` \| `quit` \| `none` | `hide` | What happens when Escape is pressed. |
-| `blurAction` | `hide` \| `minimize` \| `quit` \| `none` | `hide` | What happens when the launcher loses focus. |
-| `alwaysOnTop` | `true` \| `false` | `false` | Keep the launcher window above all other windows. |
-| `showInTaskbar` | `true` \| `false` | `false` | Show the launcher in the OS taskbar / dock. |
-| `showOnStartup` | `true` \| `false` | `false` | Show the launcher window immediately on startup. |
+| Key             | Values                                   | Default | Description                                       |
+| --------------- | ---------------------------------------- | ------- | ------------------------------------------------- |
+| `escAction`     | `hide` \| `minimize` \| `quit` \| `none` | `hide`  | What happens when Escape is pressed.              |
+| `blurAction`    | `hide` \| `minimize` \| `quit` \| `none` | `hide`  | What happens when the launcher loses focus.       |
+| `alwaysOnTop`   | `true` \| `false`                        | `false` | Keep the launcher window above all other windows. |
+| `showInTaskbar` | `true` \| `false`                        | `false` | Show the launcher in the OS taskbar / dock.       |
+| `showOnStartup` | `true` \| `false`                        | `false` | Show the launcher window immediately on startup.  |
 
 ### Window Size
 
-| Key | Values | Default | Description |
-|---|---|---|---|
-| `windowWidth` | integer (pixels) | `680` | Width of the launcher window in pixels. |
-| `windowMaxHeight` | integer (pixels) | `480` | Maximum height before the window scrolls internally. |
+| Key               | Values           | Default | Description                                          |
+| ----------------- | ---------------- | ------- | ---------------------------------------------------- |
+| `windowWidth`     | integer (pixels) | `680`   | Width of the launcher window in pixels.              |
+| `windowMaxHeight` | integer (pixels) | `480`   | Maximum height before the window scrolls internally. |
 
 ### Window Position
 
-| Key | Values | Default | Description |
-|---|---|---|---|
+| Key              | Values                                           | Default  | Description                             |
+| ---------------- | ------------------------------------------------ | -------- | --------------------------------------- |
 | `windowPosition` | `center` \| `50%` \| `1/3` \| `200px` \| `"x y"` | `center` | Initial window position on the display. |
 
 Position values:
@@ -47,9 +47,9 @@ Position values:
 
 ### Appearance
 
-| Key | Values | Default | Description |
-|---|---|---|---|
-| `opacity` | `0.0`–`1.0` | `1.0` | Window opacity (0 = fully transparent, 1 = fully opaque). |
+| Key       | Values      | Default | Description                                               |
+| --------- | ----------- | ------- | --------------------------------------------------------- |
+| `opacity` | `0.0`–`1.0` | `1.0`   | Window opacity (0 = fully transparent, 1 = fully opaque). |
 
 ## Example Configuration
 

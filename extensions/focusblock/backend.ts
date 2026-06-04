@@ -13,7 +13,15 @@ export function register(core: CoreContext): void {
 
   function computeStatus(): TimerStatus {
     if (!activeTimer) {
-      return { active: false, startedAt: 0, duration: 0, remaining: 0, elapsed: 0, percent: 0, label: '' }
+      return {
+        active: false,
+        startedAt: 0,
+        duration: 0,
+        remaining: 0,
+        elapsed: 0,
+        percent: 0,
+        label: '',
+      }
     }
     const now = Date.now()
     const elapsed = Math.min(now - activeTimer.startedAt, activeTimer.duration)

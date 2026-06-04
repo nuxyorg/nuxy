@@ -1,5 +1,10 @@
 const React = window.React
 
+const EXT_ID = 'com.nuxy.emoji-picker'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import { useEmojiData } from './hooks/useEmojiData.ts'
 import { useEmojiActions } from './hooks/useEmojiActions.ts'
 import { useEmojiDerivedData } from './hooks/useEmojiDerivedData.ts'
@@ -28,11 +33,18 @@ const _useTwoPanelNav =
 
 export default function EmojiPicker({ query, extensionId }: Props) {
   const { TwoPanel } = window.UI || {}
+  const { t } = _useTranslation(EXT_ID)
 
   const { emojiCategories, emojiMap, favorites, setFavorites } = useEmojiData(extensionId)
   const { copyEmoji, toggleFavorite } = useEmojiActions({ setFavorites })
   const { allCategories, searchResults, visibleEmojis, categoryIndices, navSections } =
-    useEmojiDerivedData({ emojiCategories, emojiMap, favorites, query })
+    useEmojiDerivedData({
+      emojiCategories,
+      emojiMap,
+      favorites,
+      query,
+      favoritesLabel: t('categories.favorites'),
+    })
 
   const [selectedIdx, setSelectedIdx] = React.useState<number>(0)
   const navRef = React.useRef<TwoPanelNav | null>(null)
@@ -55,6 +67,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
           searchResults,
           navRef,
           handlers: { copyEmoji, toggleFavorite },
+          t,
         }),
       })
     : null
@@ -94,6 +107,7 @@ export default function EmojiPicker({ query, extensionId }: Props) {
       isFav={(emoji) => favorites.includes(emoji)}
       onScroll={scrollSync.handleScroll}
       rightPanelRef={scrollSync.rightPanelRef}
+      t={t}
     />
   )
 

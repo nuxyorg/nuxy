@@ -31,12 +31,12 @@ Select **Color Picker** from the tool list, then type a color value in the omnib
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` `↓` | Navigate history list |
+| Key     | Action                                                               |
+| ------- | -------------------------------------------------------------------- |
+| `↑` `↓` | Navigate history list                                                |
 | `Enter` | Copy active color (query or selected history item) in default format |
-| `S` | Save the current query color to history |
-| `D` | Delete selected history item |
+| `S`     | Save the current query color to history                              |
+| `D`     | Delete selected history item                                         |
 
 ### Examples
 
@@ -55,18 +55,18 @@ Type `hsl(217, 91%, 60%)`, press `S` to save it. Next time you open Color Picker
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `copyFormat` | select | `hex` | Which format `Enter` copies: `hex`, `rgb`, or `hsl` |
+| Key          | Type   | Default | Description                                         |
+| ------------ | ------ | ------- | --------------------------------------------------- |
+| `copyFormat` | select | `hex`   | Which format `Enter` copies: `hex`, `rgb`, or `hsl` |
 
 ---
 
 ## Permissions
 
-| Permission | Used for |
-|------------|----------|
+| Permission  | Used for                                               |
+| ----------- | ------------------------------------------------------ |
 | `clipboard` | Writing the copied color value to the system clipboard |
-| `storage` | Persisting the saved color history across sessions |
+| `storage`   | Persisting the saved color history across sessions     |
 
 ---
 

@@ -1,1 +1,70 @@
-{"nodes": [{"id": "docs_dep_report_doc", "label": "Dependency Audit Report 2026-05-19", "file_type": "document", "source_file": "docs/cleanup/dependency-report.md", "source_location": null, "source_url": null, "captured_at": "2026-05-19", "author": null, "contributor": null}, {"id": "docs_dep_report_ts6_nonexistent", "label": "TypeScript 6 Non-Existent Version Issue (High)", "file_type": "concept", "source_file": "docs/cleanup/dependency-report.md", "source_location": "Finding 3", "source_url": null, "captured_at": null, "author": null, "contributor": null}, {"id": "docs_dep_report_ts_runtime_dep", "label": "TypeScript Runtime Dependency in Protocol Transpiler", "file_type": "concept", "source_file": "docs/cleanup/dependency-report.md", "source_location": "Finding 6", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [{"source": "docs_dep_report_doc", "target": "docs_dep_report_ts6_nonexistent", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/cleanup/dependency-report.md", "source_location": "Finding 3", "weight": 1.0}, {"source": "docs_dep_report_doc", "target": "docs_dep_report_ts_runtime_dep", "relation": "references", "confidence": "EXTRACTED", "confidence_score": 1.0, "source_file": "docs/cleanup/dependency-report.md", "source_location": "Finding 6", "weight": 1.0}, {"source": "docs_dep_report_ts_runtime_dep", "target": "docs_dep_report_ts6_nonexistent", "relation": "conceptually_related_to", "confidence": "INFERRED", "confidence_score": 0.75, "source_file": "docs/cleanup/dependency-report.md", "source_location": null, "weight": 0.75}], "hyperedges": []}
+{
+  "nodes": [
+    {
+      "id": "docs_dep_report_doc",
+      "label": "Dependency Audit Report 2026-05-19",
+      "file_type": "document",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dep_report_ts6_nonexistent",
+      "label": "TypeScript 6 Non-Existent Version Issue (High)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "Finding 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_dep_report_ts_runtime_dep",
+      "label": "TypeScript Runtime Dependency in Protocol Transpiler",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "Finding 6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_dep_report_doc",
+      "target": "docs_dep_report_ts6_nonexistent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "Finding 3",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dep_report_doc",
+      "target": "docs_dep_report_ts_runtime_dep",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "Finding 6",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_dep_report_ts_runtime_dep",
+      "target": "docs_dep_report_ts6_nonexistent",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": null,
+      "weight": 0.75
+    }
+  ],
+  "hyperedges": []
+}

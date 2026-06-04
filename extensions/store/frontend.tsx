@@ -1,6 +1,11 @@
 const React = window.React
 const { useState, useRef } = React
 
+const EXT_ID = 'com.nuxy.store'
+const _useTranslation =
+  (window.UI || {}).useTranslation ||
+  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+
 import { useStoreData } from './hooks/useStoreData.ts'
 import { useStoreActions } from './hooks/useStoreActions.ts'
 import { useStoreDerivedData } from './hooks/useStoreDerivedData.ts'
@@ -40,6 +45,7 @@ const _useTwoPanelNav =
 export default function StoreView({ query }: { query: string }) {
   const { TwoPanel, TabBar, Box } = window.UI || {}
   const LoadingState = (window.UI as any)?.LoadingState ?? null
+  const { t } = _useTranslation(EXT_ID)
 
   const { extensions, loading, error, setLoading, setError, loadCatalog } = useStoreData()
   const [activeTab, setActiveTab] = useState<string>('all')
@@ -49,18 +55,25 @@ export default function StoreView({ query }: { query: string }) {
   stateRef.current = { selectedIndex }
   const navRef = useRef<Nav | null>(null)
 
-  const { filteredExtensions, navSections, selectedExtension } = useStoreDerivedData({
+  const {
+    filteredExtensions,
+    navSections: rawNavSections,
+    selectedExtension,
+  } = useStoreDerivedData({
     extensions,
     activeTab,
     query,
     selectedIndex,
   })
 
+  const navSections = rawNavSections.map((s) => ({ ...s, label: t(`tabs.${s.id}`) || s.label }))
+
   const { handleInstall, handleUninstall } = useStoreActions({
     loading,
     setLoading,
     setError,
     loadCatalog,
+    t,
   })
 
   const rightPanelActions = buildStoreRightPanelActions({
@@ -68,16 +81,23 @@ export default function StoreView({ query }: { query: string }) {
     setSelectedIndex,
     setActiveTab,
     stateRef,
-    nav: { setFocusArea: (a) => navRef.current?.setFocusArea(a), goToSection: (id) => navRef.current?.goToSection(id) },
+    nav: {
+      setFocusArea: (a) => navRef.current?.setFocusArea(a),
+      goToSection: (id) => navRef.current?.goToSection(id),
+    },
     handleInstall,
     handleUninstall,
     loadCatalog,
+    t,
   })
 
   const nav = _useTwoPanelNav({
     sections: navSections,
     initialFocusArea: 'right',
-    onSectionChange: (id: string) => { setActiveTab(id); setSelectedIndex(-1) },
+    onSectionChange: (id: string) => {
+      setActiveTab(id)
+      setSelectedIndex(-1)
+    },
     onFocusRight: () => setSelectedIndex(0),
     rightPanelActions,
   })
@@ -87,13 +107,24 @@ export default function StoreView({ query }: { query: string }) {
   const focusArea = nav.focusArea ?? 'right'
   const activeSectionId = nav.activeSectionId ?? 'all'
 
-  useStoreSync({ selectedIndex, activeTab, loading, filteredExtensionsLength: filteredExtensions.length, activeSectionId, setActiveTab, setSelectedIndex })
+  useStoreSync({
+    selectedIndex,
+    activeTab,
+    loading,
+    filteredExtensionsLength: filteredExtensions.length,
+    activeSectionId,
+    setActiveTab,
+    setSelectedIndex,
+    t,
+  })
 
   if (loading && extensions.length === 0) {
     return LoadingState ? (
-      <LoadingState message="Connecting to extension store..." />
+      <LoadingState message={t('loading.connecting')} />
     ) : (
-      <div style={{ padding: 'var(--space-4)', textAlign: 'center', opacity: 0.7 }}>Loading...</div>
+      <div style={{ padding: 'var(--space-4)', textAlign: 'center', opacity: 0.7 }}>
+        {t('loading.connecting')}
+      </div>
     )
   }
 
@@ -104,7 +135,12 @@ export default function StoreView({ query }: { query: string }) {
   }
 
   const left = TabBar ? (
-    <TabBar tabs={navSections} active={activeTab} orientation="vertical" onChange={handleTabChange} />
+    <TabBar
+      tabs={navSections}
+      active={activeTab}
+      orientation="vertical"
+      onChange={handleTabChange}
+    />
   ) : null
 
   const right = (
@@ -117,12 +153,14 @@ export default function StoreView({ query }: { query: string }) {
         onSelect={setSelectedIndex}
         onItemSelected={nav.onItemSelected}
         setFocusArea={nav.setFocusArea}
+        t={t}
       />
-      <Box style={{ width: '320px', padding: 'var(--space-3)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+      <Box style={{ width: '320px', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
         <StoreExtensionDetail
           extension={selectedExtension}
           onInstall={(ext) => void handleInstall(ext)}
           onUninstall={(ext) => void handleUninstall(ext)}
+          t={t}
         />
       </Box>
     </Box>

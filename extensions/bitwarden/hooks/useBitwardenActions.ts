@@ -25,7 +25,12 @@ interface Actions {
   handleSync: () => void
 }
 
-export function useBitwardenActions({ refreshStatus, emailInput, setEmailInput, setEditingEmail }: Params): Actions {
+export function useBitwardenActions({
+  refreshStatus,
+  emailInput,
+  setEmailInput,
+  setEditingEmail,
+}: Params): Actions {
   const [copiedId, setCopiedId] = React.useState<string | null>(null)
   const [isConfiguring, setIsConfiguring] = React.useState<boolean>(false)
   const [isUnlocking, setIsUnlocking] = React.useState<boolean>(false)

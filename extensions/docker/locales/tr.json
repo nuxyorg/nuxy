@@ -20,9 +20,5 @@
     "remove": "Kaldır",
     "logs": "Günlükler",
     "refresh": "Yenile"
-  },
-  "status": {
-    "running": "Çalışıyor",
-    "stopped": "Durdu"
   }
 }

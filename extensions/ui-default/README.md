@@ -18,6 +18,7 @@ Default UIKit is the foundational component library for the Nuxy renderer. It bu
 ## Extension Type
 
 ### `uikit`
+
 Overrides or extends `window.UI` components before the shell boots. There is no backend worker. The compiled `frontend.js` bundle is evaluated by the renderer at startup; it assigns all exported components and hooks to `window.UI`. Extensions access them as `(window.UI || {}).ComponentName`.
 
 **Priority:** `0` — loaded first among all uikit extensions.
@@ -26,11 +27,11 @@ Overrides or extends `window.UI` components before the shell boots. There is no 
 
 ## Platform & Environment
 
-| Platform | Supported | Notes |
-|----------|-----------|-------|
-| Linux (X11) | Yes | |
-| Linux (Wayland) | Yes | |
-| macOS | Yes | |
+| Platform        | Supported | Notes |
+| --------------- | --------- | ----- |
+| Linux (X11)     | Yes       |       |
+| Linux (Wayland) | Yes       |       |
+| macOS           | Yes       |       |
 
 All platforms supported by Nuxy.
 
@@ -41,30 +42,39 @@ All platforms supported by Nuxy.
 All exports are available on `window.UI` at runtime.
 
 ### Layout & Structure
+
 `Card` `CardHeader` `CardBody` `CardFooter` `Stack` `Box` `Grid` `GridItem` `TwoPanel` `Divider` `ScrollArea` `SectionHeader`
 
 ### Lists & Items
+
 `List` `ListItem` `ListItemBody` `ListItemText` `ListItemMeta` `ListItemActions` `ItemLeading`
 
 ### Form & Input
+
 `Input` `Textarea` `Button` `IconButton` `Checkbox` `Switch` `RadioGroup` `Slider` `NumberInput` `SearchInput` `FileInput` `PinInput` `SelectBox`
 
 ### Navigation & Overlays
+
 `TabBar` `Tabs` `Pagination` `Stepper` `Modal` `AlertDialog` `DropdownMenu` `DropdownItem` `DropdownDivider` `DropdownHeader`
 
 ### Display & Labeling
+
 `Badge` `Kbd` `Tag` `Chip` `Label` `HelperText` `Tooltip` `CopyButton` `Code` `CodeBlock` `Avatar` `AvatarGroup` `Breadcrumb` `Heading` `Text` `Link`
 
 ### Feedback & Status
+
 `Alert` `Toaster` `toast` `ProgressBar` `Spinner` `Skeleton` `LoadingState` `Callout` `CircularProgress` `ErrorState` `Banner`
 
 ### Icons
+
 `IconFile` `IconImageFile` `IconCode` `IconDocument` `IconPdf` `IconArchive` `IconGlobe` `IconPin` `IconCalendar` `IconClock` `IconCopy` `IconCheck` `IconTrash` `IconEdit` `IconDownload` `IconUpload` `IconRefresh` `IconClose` `IconPlus` `IconMinus` `IconArrowLeft` `IconArrowRight` `IconChevronDown` `IconChevronUp` `IconMic` `IconLock` `IconUnlock` `IconEye` `IconEyeOff` `IconWarning` `IconInfo` `IconSend` `IconFilter` `IconTag` `IconUser` `IconZap` `IconVideo` `IconWorkflow` `IconSmile` `IconFolder` `IconBell` `IconStar` `IconStop`
 
 ### Hooks
+
 `useToolKeyActions` `useListNavigation` `useTwoPanelNav`
 
 ### Specialised
+
 `ShortcutBar` `ShortcutHint` `ShortcutSep` `EmptyState` `MediaPreview` `ConversionCard` `ChatMessage` `ChatList` `WizardSection` `PropertiesPanel` `MarkdownText`  
 Primitives: `VisuallyHidden` `AspectRatio` `Portal` `DataList` `Stat` `Table` `TableRow` `TableCell`
 

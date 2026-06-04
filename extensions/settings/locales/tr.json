@@ -5,7 +5,8 @@
   "nav": {
     "general": "Genel",
     "window": "Pencere",
-    "language": "Dil"
+    "language": "Dil",
+    "extensions": "Uzantılar"
   },
   "general": {
     "theme": "Tema",
@@ -20,14 +21,15 @@
     "windowMaxHeight": "Maks. Yükseklik",
     "windowPosition": "Başlangıç Konumu",
     "opacity": "Saydamlık",
+    "backgroundBehavior": "Arka Plan Davranışı",
     "alwaysOnTop": "Her Zaman Üstte",
     "showInTaskbar": "Görev Çubuğunda Göster",
     "showOnStartup": "Başlangıçta Göster"
   },
   "language": {
-    "slot1": "Tercih Edilen Dil (1.)",
-    "slot2": "Tercih Edilen Dil (2.)",
-    "slot3": "Tercih Edilen Dil (3.)"
+    "addLanguage": "Dil Ekle",
+    "addPlaceholder": "Dil ara…",
+    "hint": "Diller sırayla denenir — ilk eklenen en yüksek önceliğe sahiptir."
   },
   "font": {
     "systemDefault": "Sistem Varsayılanı",
@@ -50,6 +52,10 @@
     "bottomLeft": "Sol Alt",
     "bottomRight": "Sağ Alt",
     "upperCenterDefault": "Üst Orta (varsayılan)"
+  },
+  "backgroundBehavior": {
+    "reset-on-show": "Başlatıcıyı sıfırla (varsayılan)",
+    "resume-session": "Kaldığım yerden devam et"
   },
   "bool": {
     "yes": "Evet",

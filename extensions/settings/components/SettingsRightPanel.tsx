@@ -20,6 +20,7 @@ export interface SettingsRightPanelProps {
   inputRefs: React.MutableRefObject<Record<string, HTMLInputElement | null>>
   rightPanelRef: React.MutableRefObject<HTMLDivElement | null>
   stateRef: React.MutableRefObject<StateSnapshot>
+  languageHintText: string
   onItemSelect: (row: AnyRow, value: unknown) => void
   onSelectOpen: (rowKey: string, globalIdx: number, focusedIdx: number) => void
   onSelectClose: () => void
@@ -43,6 +44,7 @@ export function SettingsRightPanel({
   inputRefs,
   rightPanelRef,
   stateRef,
+  languageHintText,
   onItemSelect,
   onSelectOpen,
   onSelectClose,
@@ -71,9 +73,12 @@ export function SettingsRightPanel({
               <List>
                 {section.resolvedRows.map((row: AnyRow, i: number) => {
                   const globalIdx = sectionOffset + i
-                  const isLanguageRow = 'isLanguage' in row && row.isLanguage
-                  const isExtToggleRow = 'isExtToggle' in row && row.isExtToggle
-                  const currentValue = getRowCurrentValue(row, settings, extValues, installedExtensions)
+                  const currentValue = getRowCurrentValue(
+                    row,
+                    settings,
+                    extValues,
+                    installedExtensions
+                  )
                   const options = getRowOptions(row, stateRef.current)
 
                   return (
@@ -101,6 +106,11 @@ export function SettingsRightPanel({
                   )
                 })}
               </List>
+            )}
+            {section.id === 'language' && (
+              <div style={{ padding: '2px 12px 10px', fontSize: '0.75em', opacity: 0.45 }}>
+                {languageHintText}
+              </div>
             )}
           </React.Fragment>
         )

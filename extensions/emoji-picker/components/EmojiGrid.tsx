@@ -18,6 +18,7 @@ interface Props {
   isFav: (emoji: string) => boolean
   onScroll: () => void
   rightPanelRef: React.MutableRefObject<HTMLDivElement | null>
+  t: (key: string, vars?: Record<string, string | number>, count?: number) => string
 }
 
 export function EmojiGrid({
@@ -34,6 +35,7 @@ export function EmojiGrid({
   isFav,
   onScroll,
   rightPanelRef,
+  t,
 }: Props) {
   const { Grid, GridItem, SectionHeader } = window.UI || {}
 
@@ -45,7 +47,7 @@ export function EmojiGrid({
         key={em.e + idx}
         ref={(el: HTMLElement | null) => (categoryRefs.current[idx] = el)}
         active={focusArea === 'right' && idx === selectedIdx}
-        title={`${em.n}${fav ? ' (favorite)' : ''}`}
+        title={`${em.n}${fav ? t('tooltip.favorite') : ''}`}
         onClick={() => onCopyEmoji(em.e)}
         onContextMenu={(e: React.MouseEvent) => {
           e.preventDefault()
@@ -86,7 +88,7 @@ export function EmojiGrid({
             letterSpacing: '0.01em',
           }}
         >
-          {searchResults.length} emoji{searchResults.length !== 1 ? 's' : ''} found
+          {t('search.resultsCount', { count: searchResults.length }, searchResults.length)}
         </div>
       )}
 
@@ -103,9 +105,7 @@ export function EmojiGrid({
             padding: '0 var(--space-5)',
           }}
         >
-          {catId === 'favorites' && !searchResults
-            ? 'No favorites yet — press Ctrl+F on an emoji to add it.'
-            : 'No results.'}
+          {catId === 'favorites' && !searchResults ? t('empty.noFavorites') : t('empty.noResults')}
         </div>
       ) : Grid ? (
         searchResults ? (
@@ -141,7 +141,9 @@ export function EmojiGrid({
                       </div>
                     )}
                     <Grid cols={COLS} gap={2}>
-                      {cat.emojis.map((em: EmojiEntry, i: number) => renderEmoji(em, sectionStart + i))}
+                      {cat.emojis.map((em: EmojiEntry, i: number) =>
+                        renderEmoji(em, sectionStart + i)
+                      )}
                     </Grid>
                   </div>
                 )

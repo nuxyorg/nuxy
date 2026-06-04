@@ -2,8 +2,13 @@ import { Worker } from 'worker_threads'
 import path from 'path'
 import { pathToFileURL } from 'url'
 import { EXTRACTED_DIR } from '../config/paths.js'
+import { bundleExtensionBackend } from '../extensions/bundle-backend.js'
 import { kernelLogger } from '@nuxy/core'
-import { activeWorkers } from './active-workers.js'
+import {
+  activeWorkers,
+  workerExitListeners,
+  workerRegistryErrorListeners,
+} from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
 import { mergeRuntimeSync } from '../extensions/registry.js'
 import { handleHostCall } from './host-handlers.js'
@@ -22,9 +27,12 @@ export function spawnExtension(
   entryFile: string,
   permissions: string[] = []
 ): Worker {
-  const absolutePath = path.join(EXTRACTED_DIR, folderName, entryFile)
+  const entryPath = path.join(EXTRACTED_DIR, folderName, entryFile)
   const extDir = path.join(EXTRACTED_DIR, folderName)
-  log.info(`Spawning worker for extension "${extId}" (folder: ${folderName}) → ${absolutePath}`)
+  const bundledPath = bundleExtensionBackend(entryPath, extDir)
+  log.info(
+    `Spawning worker for extension "${extId}" (folder: ${folderName}) → ${entryPath} (bundled: ${bundledPath})`
+  )
 
   migrateLegacyData(extId, folderName)
 
@@ -33,7 +41,7 @@ export function spawnExtension(
   const worker = new Worker(hostScript, {
     workerData: {
       extId,
-      absolutePath: pathToFileURL(absolutePath).href,
+      absolutePath: pathToFileURL(bundledPath).href,
       extDir,
       logLevel,
       permissions,
@@ -55,6 +63,13 @@ export function spawnExtension(
     if (msg.type === 'registry:error') {
       log.error(`Extension "${extId}" failed to load: ${msg.error}`)
       activeWorkers.delete(extId)
+      for (const listener of workerRegistryErrorListeners) {
+        try {
+          listener(extId)
+        } catch (err) {
+          log.error(`Registry error listener failed for "${extId}"`, err)
+        }
+      }
       return
     }
 
@@ -79,6 +94,13 @@ export function spawnExtension(
     }
     for (const [key, val] of activeWorkers.entries()) {
       if (val === worker) activeWorkers.delete(key)
+    }
+    for (const listener of workerExitListeners) {
+      try {
+        listener(extId, code)
+      } catch (err) {
+        log.error(`Worker exit listener failed for "${extId}"`, err)
+      }
     }
   })
 

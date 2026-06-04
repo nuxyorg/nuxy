@@ -66,7 +66,6 @@ async function whisperTranscribe(
   return data.text ?? ''
 }
 
-
 export async function register(core: CoreContext): Promise<void> {
   extDataDir = `${core.fs.homedir()}/.nuxy/data/com.nuxy.notes`
   await core.fs.mkdir(extDataDir, { recursive: true })
@@ -77,24 +76,27 @@ export async function register(core: CoreContext): Promise<void> {
   core.registry.registerTool({ name: 'notes' })
   core.registry.registerProvider({ name: 'notes' })
 
-  core.ipc.handle('notes:create_from_provider', async (payload: unknown): Promise<{ toolId: string; query: string }> => {
-    const { text } = payload as { text: string }
-    const title = deriveTitle(text)
-    const now = Date.now()
-    const note: Note = {
-      id: crypto.randomUUID(),
-      title,
-      body: text,
-      createdAt: now,
-      updatedAt: now,
+  core.ipc.handle(
+    'notes:create_from_provider',
+    async (payload: unknown): Promise<{ toolId: string; query: string }> => {
+      const { text } = payload as { text: string }
+      const title = deriveTitle(text)
+      const now = Date.now()
+      const note: Note = {
+        id: crypto.randomUUID(),
+        title,
+        body: text,
+        createdAt: now,
+        updatedAt: now,
+      }
+      await writeNote(core, note)
+      upsertFts(note)
+      return {
+        toolId: 'com.nuxy.notes',
+        query: `select:${note.id}`,
+      }
     }
-    await writeNote(core, note)
-    upsertFts(note)
-    return {
-      toolId: 'com.nuxy.notes',
-      query: `select:${note.id}`,
-    }
-  })
+  )
 
   core.ipc.handle('eval', async (payload: unknown): Promise<{ items: unknown[] }> => {
     const text = (payload as { text?: string } | null | undefined)?.text ?? ''
@@ -202,12 +204,15 @@ export async function register(core: CoreContext): Promise<void> {
     )
   })
 
-  core.ipc.handle('notes:getConfig', async (): Promise<{ openaiApiKey: string; language: string; fontSize: string }> => {
-    const openaiApiKey = (await core.settings.read<string>('openaiApiKey')) ?? ''
-    const language = (await core.settings.read<string>('language')) ?? 'en'
-    const fontSize = (await core.settings.read<string>('fontSize')) ?? '14px'
-    return { openaiApiKey, language, fontSize }
-  })
+  core.ipc.handle(
+    'notes:getConfig',
+    async (): Promise<{ openaiApiKey: string; language: string; fontSize: string }> => {
+      const openaiApiKey = (await core.settings.read<string>('openaiApiKey')) ?? ''
+      const language = (await core.settings.read<string>('language')) ?? 'en'
+      const fontSize = (await core.settings.read<string>('fontSize')) ?? '14px'
+      return { openaiApiKey, language, fontSize }
+    }
+  )
 
   core.ipc.handle('notes:transcribe', async (payload: unknown): Promise<TranscribeResult> => {
     const { audioBuffer, language } = payload as NotesTranscribePayload
