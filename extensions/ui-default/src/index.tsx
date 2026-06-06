@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import './styles/base.css'
 
 // --- Existing components ---

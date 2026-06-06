@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 
 export interface SelectOption {

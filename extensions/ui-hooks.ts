@@ -1,3 +1,14 @@
+export const _useListNavigation: (items: unknown[], opts?: unknown) => {
+  selectedIndex: number
+  setSelectedIndex: (n: number) => void
+  selectedItem: unknown
+} =
+  (window.UI as any)?.useListNavigation ??
+  (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
+
+export const _useToolKeyActions: (actions: unknown[]) => void =
+  (window.UI as any)?.useToolKeyActions ?? (() => {})
+
 export const _useTranslation: (extId: string) => {
   t: (key: string) => string
   locale: string

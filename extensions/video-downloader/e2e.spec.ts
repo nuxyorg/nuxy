@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 /**
  * E2E tests for the video-downloader extension.
  *

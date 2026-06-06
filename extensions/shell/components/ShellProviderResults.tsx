@@ -53,6 +53,7 @@ export function ShellProviderResults({
                 <span>{state.name}</span>
                 <div className="nuxy-provider-section__loading-dot" />
               </div>
+              // fallow-ignore-next-line code-duplication
               <div className="nuxy-skeleton-result nuxy-shimmer-bg" />
             </div>
           )

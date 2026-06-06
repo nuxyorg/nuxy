@@ -6,11 +6,7 @@ import { useTranslateActions } from './hooks/useTranslateActions.ts'
 
 const EXT_ID = 'com.nuxy.translate'
 
-const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
-
-const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
+import { _useTranslation, _useToolKeyActions } from '../ui-hooks.ts'
 
 interface Props {
   query: string

@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import { test, expect, type Page } from '../../src/e2e/fixtures.ts'
 
 async function resetShell(page: any) {

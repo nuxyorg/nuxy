@@ -6,14 +6,7 @@ import { useQrData } from './hooks/useQrData.ts'
 
 const EXT_ID = 'com.nuxy.qr'
 
-const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
-const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({
-    t: (key: string) => key,
-    locale: 'en',
-    dir: 'ltr' as const,
-  }))
+import { _useToolKeyActions, _useTranslation } from '../ui-hooks.ts'
 
 interface Props {
   query: string

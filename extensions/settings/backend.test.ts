@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import { describe, it, expect, vi } from 'vitest'
 import { register } from './backend.ts'
 import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'

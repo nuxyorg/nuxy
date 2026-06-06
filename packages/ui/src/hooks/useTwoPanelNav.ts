@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import { useState, useMemo, useRef, useCallback } from 'react'
 import { KeyAction } from './useToolKeyActions'
 

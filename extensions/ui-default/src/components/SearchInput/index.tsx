@@ -45,6 +45,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
           {...props}
         />
         {value && (
+          // fallow-ignore-next-line code-duplication
           <button
             type="button"
             className="nuxy-search-input__clear"

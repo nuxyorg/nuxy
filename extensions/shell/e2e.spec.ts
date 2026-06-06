@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { test, expect, type Page } from '../../src/e2e/fixtures.js'

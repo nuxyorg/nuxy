@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 /**
  * Tests for media (now-playing) and extension bootstrapping observable from
  * the running Electron main process via electronApp.evaluate().

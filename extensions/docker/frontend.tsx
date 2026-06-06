@@ -8,23 +8,7 @@ import { ContainerItem } from './components/ContainerItem.tsx'
 
 const EXT_ID = 'com.nuxy.docker'
 
-const _useListNavigation =
-  (window.UI || {}).useListNavigation ||
-  (() => ({
-    selectedIndex: -1,
-    setSelectedIndex: (_: unknown) => {},
-    selectedItem: null,
-  }))
-
-const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
-
-const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({
-    t: (key: string) => key,
-    locale: 'en',
-    dir: 'ltr' as const,
-  }))
+import { _useListNavigation, _useToolKeyActions, _useTranslation } from '../ui-hooks.ts'
 
 type View = 'containers' | 'images'
 

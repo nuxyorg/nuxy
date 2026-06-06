@@ -6,13 +6,7 @@ import { useSshActions } from './hooks/useSshActions.ts'
 
 const EXT_ID = 'com.nuxy.ssh'
 
-const _useListNavigation =
-  (window.UI || {}).useListNavigation ||
-  (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
-
-const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
+import { _useListNavigation, _useTranslation } from '../ui-hooks.ts'
 
 interface Props {
   query: string

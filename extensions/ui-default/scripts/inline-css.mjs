@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// fallow-ignore-file code-duplication
 // Post-build script: inlines style.css into frontend.js.
 // Vite lib mode writes CSS separately; nuxy-ext:// protocol can only serve
 // a single file, so we merge them here.

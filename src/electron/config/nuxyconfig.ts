@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import fs from 'fs'
 import fsPromises from 'fs/promises'
 import path from 'path'

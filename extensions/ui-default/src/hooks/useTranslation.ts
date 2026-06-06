@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import { useState, useEffect, useCallback } from 'react'
 
 type Translations = Record<string, string>

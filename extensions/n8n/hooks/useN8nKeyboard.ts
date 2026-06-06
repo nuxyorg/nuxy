@@ -2,11 +2,7 @@ const React = window.React
 
 import type { N8nWorkflow } from '../types.ts'
 
-const _useListNavigation =
-  (window.UI || {}).useListNavigation ||
-  (() => ({ selectedIndex: -1, setSelectedIndex: () => {}, selectedItem: null }))
-
-const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
+import { _useListNavigation, _useToolKeyActions } from '../../ui-hooks.ts'
 
 interface Params {
   filteredWorkflows: N8nWorkflow[]

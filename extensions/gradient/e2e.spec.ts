@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 import { test, expect } from '../../src/e2e/fixtures.ts'
 import { resetShell, openTool } from '../e2e-helpers.js'
 

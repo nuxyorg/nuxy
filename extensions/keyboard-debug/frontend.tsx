@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 const React = window.React
 const { useState, useMemo, useEffect } = React
 

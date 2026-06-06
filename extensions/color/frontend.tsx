@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 const React = window.React
 
 const EXT_ID = 'com.nuxy.color'

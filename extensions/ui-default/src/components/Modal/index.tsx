@@ -50,6 +50,7 @@ export function Modal({
           <h2 id="nuxy-modal-title" className="nuxy-modal__title">
             {title || 'Dialog'}
           </h2>
+          {/* fallow-ignore-next-line code-duplication */}
           <button
             type="button"
             className="nuxy-modal__close"

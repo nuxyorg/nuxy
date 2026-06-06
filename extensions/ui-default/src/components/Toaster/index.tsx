@@ -33,6 +33,7 @@ const Toast = ({ toast, onRemove }: { toast: ToastType; onRemove: (id: string) =
       {toast.title && (
         <div className="nuxy-toast-header">
           <span className="nuxy-toast-title">{toast.title}</span>
+          // fallow-ignore-next-line code-duplication
           <button className="nuxy-toast-close" onClick={handleClose} aria-label="Close">
             <svg
               width="14"

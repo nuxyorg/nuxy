@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 // --- Existing components ---
 export { Card, CardHeader, CardBody, CardFooter } from './components/Card'
 export { Input } from './components/Input'

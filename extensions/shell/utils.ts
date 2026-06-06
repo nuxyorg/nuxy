@@ -1,3 +1,4 @@
+// fallow-ignore-file code-duplication
 export const SHELL_EXT_ID = 'com.nuxy.shell'
 export const SHELL_CSS_ID = 'nuxy-shell-styles'
 

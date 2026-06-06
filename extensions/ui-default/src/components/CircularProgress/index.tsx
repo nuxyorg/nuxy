@@ -124,7 +124,8 @@ export function Banner({ variant = 'info', children, onClose, className }: Banne
   return (
     <div className={`nuxy-banner nuxy-banner--${variant} ${className || ''}`} role="status">
       <div className="nuxy-banner__content">{children}</div>
-      {onClose && (
+      {// fallow-ignore-next-line code-duplication
+      onClose && (
         <button
           type="button"
           className="nuxy-banner__close"

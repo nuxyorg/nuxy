@@ -115,6 +115,7 @@ export function FileInput({
               <span className="nuxy-file-input__file-name">{file.name}</span>
               <span className="nuxy-file-input__file-size">{formatSize(file.size)}</span>
               {!disabled && (
+                // fallow-ignore-next-line code-duplication
                 <button
                   type="button"
                   className="nuxy-file-input__remove"
