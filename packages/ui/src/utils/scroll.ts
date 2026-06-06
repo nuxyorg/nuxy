@@ -1,4 +1,3 @@
-// fallow-ignore-file unused-file
 let scrollAnimationId: number | null = null
 let currentTargetTop: number | null = null
 let currentContainer: HTMLElement | null = null

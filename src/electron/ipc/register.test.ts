@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { registerIpc } from './register.js'
 import { ipcMain } from 'electron'
-import { loadedExtensions, rescanExtensions } from '../extensions/scanner.js'
+import { loadedExtensions } from '../extensions/scanner.js'
+import { invokeRescan } from '../extensions/rescan-hook.js'
 import type { LoadedExtension } from '@nuxy/core'
 import fs from 'fs'
 import path from 'path'
@@ -30,6 +31,10 @@ vi.mock('electron', () => ({
 vi.mock('../extensions/scanner.js', () => ({
   loadedExtensions: [],
   rescanExtensions: vi.fn(async () => {}),
+}))
+
+vi.mock('../extensions/rescan-hook.js', () => ({
+  invokeRescan: vi.fn(async () => {}),
 }))
 
 vi.mock('../extensions/registry.js', () => ({
@@ -168,11 +173,11 @@ describe('registerIpc - Store Channels', () => {
     })
     expect(result.success).toBe(true)
     expect(fs.rmSync).toHaveBeenCalled()
-    expect(rescanExtensions).not.toHaveBeenCalled() // Triggers in setTimeout
+    expect(invokeRescan).not.toHaveBeenCalled() // Triggers in setTimeout
 
-    // Wait for the rescanExtensions setTimeout to fire
+    // Wait for the invokeRescan setTimeout to fire
     await new Promise((resolve) => setTimeout(resolve, 150))
-    expect(rescanExtensions).toHaveBeenCalled()
+    expect(invokeRescan).toHaveBeenCalled()
   })
 
   it('installExtension downloads zip, writes file, and triggers rescan', async () => {
@@ -197,7 +202,7 @@ describe('registerIpc - Store Channels', () => {
     expect(fs.renameSync).toHaveBeenCalled()
 
     await new Promise((resolve) => setTimeout(resolve, 150))
-    expect(rescanExtensions).toHaveBeenCalled()
+    expect(invokeRescan).toHaveBeenCalled()
 
     globalFetch.mockRestore()
   })

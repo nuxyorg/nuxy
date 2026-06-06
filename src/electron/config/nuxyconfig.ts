@@ -46,34 +46,35 @@ const DEFAULTS: NuxyConfig = {
 /** Path to the settings.json written by the settings extension. */
 const SETTINGS_JSON_PATH = path.join(DATA_DIR, 'com.nuxy.settings', 'settings.json')
 
+function parseSettingsFields(parsed: Record<string, unknown>): Partial<NuxyConfig> {
+  const result: Partial<NuxyConfig> = {}
+  if (['hide', 'minimize', 'quit', 'none'].includes(parsed.escAction as string))
+    result.escAction = parsed.escAction as EscAction
+  if (['hide', 'minimize', 'quit', 'none'].includes(parsed.blurAction as string))
+    result.blurAction = parsed.blurAction as EscAction
+  if (['reset-on-show', 'resume-session'].includes(parsed.backgroundBehavior as string))
+    result.backgroundBehavior = parsed.backgroundBehavior as BackgroundBehavior
+  if (typeof parsed.windowWidth === 'number' && parsed.windowWidth >= 200)
+    result.windowWidth = parsed.windowWidth
+  if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)
+    result.windowMaxHeight = parsed.windowMaxHeight
+  if (typeof parsed.alwaysOnTop === 'boolean') result.alwaysOnTop = parsed.alwaysOnTop
+  if (typeof parsed.opacity === 'number')
+    result.opacity = Math.min(1, Math.max(0, parsed.opacity))
+  if (typeof parsed.showInTaskbar === 'boolean') result.showInTaskbar = parsed.showInTaskbar
+  if (typeof parsed.showOnStartup === 'boolean') result.showOnStartup = parsed.showOnStartup
+  if (typeof parsed.windowPosition === 'string') result.windowPosition = parsed.windowPosition
+  if (typeof parsed.theme === 'string') result.theme = parsed.theme
+  if (typeof parsed.zoom === 'string') result.zoom = parsed.zoom
+  if (typeof parsed.font === 'string') result.font = parsed.font
+  return result
+}
+
 function readSettingsJson(): Partial<NuxyConfig> {
   try {
     if (!fs.existsSync(SETTINGS_JSON_PATH)) return {}
     const raw = fs.readFileSync(SETTINGS_JSON_PATH, 'utf-8')
-    const parsed = JSON.parse(raw)
-    const result: Partial<NuxyConfig> = {}
-
-    if (['hide', 'minimize', 'quit', 'none'].includes(parsed.escAction))
-      result.escAction = parsed.escAction
-    if (['hide', 'minimize', 'quit', 'none'].includes(parsed.blurAction))
-      result.blurAction = parsed.blurAction
-    if (['reset-on-show', 'resume-session'].includes(parsed.backgroundBehavior))
-      result.backgroundBehavior = parsed.backgroundBehavior
-    if (typeof parsed.windowWidth === 'number' && parsed.windowWidth >= 200)
-      result.windowWidth = parsed.windowWidth
-    if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)
-      result.windowMaxHeight = parsed.windowMaxHeight
-    if (typeof parsed.alwaysOnTop === 'boolean') result.alwaysOnTop = parsed.alwaysOnTop
-    if (typeof parsed.opacity === 'number')
-      result.opacity = Math.min(1, Math.max(0, parsed.opacity))
-    if (typeof parsed.showInTaskbar === 'boolean') result.showInTaskbar = parsed.showInTaskbar
-    if (typeof parsed.showOnStartup === 'boolean') result.showOnStartup = parsed.showOnStartup
-    if (typeof parsed.windowPosition === 'string') result.windowPosition = parsed.windowPosition
-    if (typeof parsed.theme === 'string') result.theme = parsed.theme
-    if (typeof parsed.zoom === 'string') result.zoom = parsed.zoom
-    if (typeof parsed.font === 'string') result.font = parsed.font
-
-    return result
+    return parseSettingsFields(JSON.parse(raw))
   } catch (err) {
     log.warn('Failed to read settings.json — using defaults.', err)
     return {}
@@ -135,38 +136,12 @@ export function reloadConfig(): NuxyConfig {
 
 async function readSettingsJsonAsync(): Promise<Partial<NuxyConfig>> {
   try {
-    let raw: string
-    try {
-      raw = await fsPromises.readFile(SETTINGS_JSON_PATH, 'utf-8')
-    } catch {
-      return {}
-    }
-    const parsed = JSON.parse(raw)
-    const result: Partial<NuxyConfig> = {}
-
-    if (['hide', 'minimize', 'quit', 'none'].includes(parsed.escAction))
-      result.escAction = parsed.escAction
-    if (['hide', 'minimize', 'quit', 'none'].includes(parsed.blurAction))
-      result.blurAction = parsed.blurAction
-    if (['reset-on-show', 'resume-session'].includes(parsed.backgroundBehavior))
-      result.backgroundBehavior = parsed.backgroundBehavior
-    if (typeof parsed.windowWidth === 'number' && parsed.windowWidth >= 200)
-      result.windowWidth = parsed.windowWidth
-    if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)
-      result.windowMaxHeight = parsed.windowMaxHeight
-    if (typeof parsed.alwaysOnTop === 'boolean') result.alwaysOnTop = parsed.alwaysOnTop
-    if (typeof parsed.opacity === 'number')
-      result.opacity = Math.min(1, Math.max(0, parsed.opacity))
-    if (typeof parsed.showInTaskbar === 'boolean') result.showInTaskbar = parsed.showInTaskbar
-    if (typeof parsed.showOnStartup === 'boolean') result.showOnStartup = parsed.showOnStartup
-    if (typeof parsed.windowPosition === 'string') result.windowPosition = parsed.windowPosition
-    if (typeof parsed.theme === 'string') result.theme = parsed.theme
-    if (typeof parsed.zoom === 'string') result.zoom = parsed.zoom
-    if (typeof parsed.font === 'string') result.font = parsed.font
-
-    return result
+    const raw = await fsPromises.readFile(SETTINGS_JSON_PATH, 'utf-8')
+    return parseSettingsFields(JSON.parse(raw))
   } catch (err) {
-    log.warn('Failed to read settings.json — using defaults.', err)
+    if ((err as NodeJS.ErrnoException).code !== 'ENOENT') {
+      log.warn('Failed to read settings.json — using defaults.', err)
+    }
     return {}
   }
 }

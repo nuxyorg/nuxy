@@ -45,8 +45,6 @@ export function useTranslation(extId: string): UseTranslationResult {
     loaded: false,
   })
 
-  console.log('uu', state)
-
   const fetchTranslations = useCallback(async () => {
     try {
       const res = (await window.core?.ipc?.invoke('kernel', 'getExtensionTranslations', {
@@ -57,11 +55,8 @@ export function useTranslation(extId: string): UseTranslationResult {
             data?: { locale: string; dir: 'ltr' | 'rtl'; translations: Translations }
           }
         | undefined
-      console.log('[useTranslation] IPC res:', res)
       if (res?.success && res.data) setState({ ...res.data, loaded: true })
-    } catch (e) {
-      console.error('[useTranslation] fetchTranslations error:', e)
-    }
+    } catch {}
   }, [extId])
 
   useEffect(() => {
@@ -73,7 +68,6 @@ export function useTranslation(extId: string): UseTranslationResult {
 
   const t = useCallback(
     (key: string, vars?: Vars, count?: number): string => {
-      console.log('[t] key:', key, '| locale:', state.locale, '| loaded:', state.loaded)
       if (!state.loaded) return ''
       let template: string | undefined
       if (count !== undefined) {
