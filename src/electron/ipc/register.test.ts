@@ -1,13 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { registerIpc } from './register.js'
 import { ipcMain } from 'electron'
-import { loadedExtensions } from '../extensions/scanner.js'
 import { invokeRescan } from '../extensions/rescan-hook.js'
 import type { LoadedExtension } from '@nuxy/core'
 import fs from 'fs'
 import path from 'path'
 
 const mockHandlers: Record<string, Function> = {}
+
+// Shared mutable array used by both scanner and registry mocks so that
+// extension-ops.ts (importing from registry) and kernel-channels.ts
+// (importing from scanner) read the same test fixtures.
+const loadedExtensions: LoadedExtension[] = vi.hoisted(() => [])
 
 vi.mock('electron', () => ({
   ipcMain: {
@@ -29,7 +33,7 @@ vi.mock('electron', () => ({
 }))
 
 vi.mock('../extensions/scanner.js', () => ({
-  loadedExtensions: [],
+  loadedExtensions,
   rescanExtensions: vi.fn(async () => {}),
 }))
 
@@ -38,8 +42,9 @@ vi.mock('../extensions/rescan-hook.js', () => ({
 }))
 
 vi.mock('../extensions/registry.js', () => ({
-  getDisplayName: vi.fn((ext) => ext.manifest.name),
-  isBootstrapExtension: vi.fn((ext) => ext.manifest.bootstrap === true),
+  loadedExtensions,
+  getDisplayName: vi.fn((ext: LoadedExtension) => ext.manifest.name),
+  isBootstrapExtension: vi.fn((ext: LoadedExtension) => ext.manifest.bootstrap === true),
 }))
 
 vi.mock('../config/nuxyconfig.js', () => ({

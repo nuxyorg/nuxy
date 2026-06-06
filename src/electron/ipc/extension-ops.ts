@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { loadedExtensions } from '../extensions/scanner.js'
+import { loadedExtensions } from '../extensions/registry.js'
 import { invokeRescan } from '../extensions/rescan-hook.js'
 import { EXTENSION_DIR } from '../config/paths.js'
 import { kernelLogger } from '@nuxy/core'

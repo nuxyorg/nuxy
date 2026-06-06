@@ -156,7 +156,7 @@ function scanDirectoryForNodeImports(dir: string): { file: string; imports: stri
   return violations
 }
 
-export async function rescanExtensions(): Promise<void> {
+async function rescanExtensions(): Promise<void> {
   clearExtensionWatchers()
   for (const [, worker] of activeWorkers) {
     await worker.terminate()
