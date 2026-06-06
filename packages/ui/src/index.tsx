@@ -229,3 +229,6 @@ export type { LoadingStateProps } from './components/LoadingState'
 // --- i18n ---
 export { useTranslation } from './hooks/useTranslation'
 export type { UseTranslationResult } from './hooks/useTranslation'
+
+// --- Scroll Utilities ---
+export { smoothScrollIntoViewIfNeeded } from './utils/scroll'

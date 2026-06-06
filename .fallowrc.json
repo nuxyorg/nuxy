@@ -1,0 +1,29 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+  "publicPackages": ["@nuxy/ui"],
+  "dynamicallyLoaded": [
+    "extensions/**",
+    "src/electron/spawn/worker/**",
+    "src/electron/bootstrap/main.ts",
+    "src/electron/protocol/register.ts"
+  ],
+  "ignoreDependencies": [
+    "@nuxy/extension-host",
+    "@nuxy/extension-sdk",
+    "@nuxy/ui",
+    "~ext",
+    "react"
+  ],
+  "ignorePatterns": [
+    "website/**",
+    ".claude/**",
+    "docs/**",
+    "dist/**",
+    "dist-electron/**",
+    "scratch/**",
+    "scratch.js",
+    "scratch.cjs",
+    "packages/ext-template/**",
+    "src/verify-ext-settings.mjs"
+  ]
+}

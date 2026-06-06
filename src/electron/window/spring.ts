@@ -17,7 +17,7 @@ const DEFAULTS: SpringConfig = {
   intervalMs: 16,
 }
 
-export const CRITICAL_DAMPING: Partial<SpringConfig> = {
+const CRITICAL_DAMPING: Partial<SpringConfig> = {
   stiffness: 0.14,
   damping: 0.88,
 }

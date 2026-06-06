@@ -2,7 +2,7 @@ import { kernelLogger } from '@nuxy/core'
 import type { MediaPlatform, NowPlaying } from './types.js'
 import { createPlatformMediaProvider } from './platforms/index.js'
 
-export type { NowPlaying, MediaPlatform, MediaPlatformProvider } from './types.js'
+export type { NowPlaying, MediaPlatform } from './types.js'
 
 const log = kernelLogger.child('Media')
 

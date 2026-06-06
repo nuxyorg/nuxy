@@ -11,7 +11,7 @@ const BUILTIN_MODULES = new Set([
   ...module.builtinModules.map((name) => `node:${name}`),
 ])
 
-export function isNodeBuiltin(importPath: string): boolean {
+function isNodeBuiltin(importPath: string): boolean {
   const base = importPath.split('/')[0]
   return BUILTIN_MODULES.has(importPath) || BUILTIN_MODULES.has(base)
 }

@@ -1,4 +1,5 @@
-import { loadedExtensions, rescanExtensions } from '../extensions/scanner.js'
+import { loadedExtensions } from '../extensions/registry.js'
+import { invokeRescan } from '../extensions/rescan-hook.js'
 import fs from 'fs'
 import path from 'path'
 import { EXTENSION_DIR } from '../config/paths.js'
@@ -42,7 +43,7 @@ export async function callKernelChannel(channel: string, payload: unknown): Prom
         fs.writeFileSync(tempFile, fileData)
         fs.renameSync(tempFile, path.join(EXTENSION_DIR, filename))
         setTimeout(() => {
-          void rescanExtensions()
+          void invokeRescan()
         }, 100)
         return { success: true }
       } catch (e: any) {
@@ -87,7 +88,7 @@ export async function callKernelChannel(channel: string, payload: unknown): Prom
           fs.rmSync(zipPath, { force: true })
         }
         setTimeout(() => {
-          void rescanExtensions()
+          void invokeRescan()
         }, 100)
         return { success: true }
       } catch (e: any) {

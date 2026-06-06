@@ -100,7 +100,8 @@ export default function SettingsView({ query: _query }: Props) {
     initialFocusArea: 'right',
     onSectionChange: (id: string) => {
       const el = sectionRefs.current[id]
-      if (el && rightPanelRef.current) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      const { smoothScrollIntoViewIfNeeded } = window.UI || {}
+      if (el && smoothScrollIntoViewIfNeeded) smoothScrollIntoViewIfNeeded(el)
     },
     onFocusRight: (id: string) => {
       const startIdx = navRef.current?.sectionStartIndex[id] ?? 0

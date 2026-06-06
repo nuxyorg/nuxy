@@ -208,7 +208,7 @@ export function scheduleWorkerRestart(extId: string, delayMs = 500): void {
   )
 }
 
-export function scheduleFolderReload(folderName: string, delayMs = 500): void {
+function scheduleFolderReload(folderName: string, delayMs = 500): void {
   const existing = folderReloadTimers.get(folderName)
   if (existing) clearTimeout(existing)
   folderReloadTimers.set(

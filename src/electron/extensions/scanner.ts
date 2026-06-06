@@ -13,6 +13,7 @@ import {
   clearExtensionWatchers,
 } from './extension-reload.js'
 import { getMainWindow } from '../window/manager.js'
+import { setRescanFn } from './rescan-hook.js'
 import { registerExtension, clearRegistry } from './registry.js'
 import { seedBundledExtensions } from './seed-bundled.js'
 import { registerExtensionTheme, clearExtensionThemes } from '../themes/extension-themes.js'
@@ -43,7 +44,7 @@ export { loadedExtensions } from './registry.js'
 
 const log = kernelLogger.child('Scanner')
 
-export const ALLOWED_PERMISSIONS = new Set([
+const ALLOWED_PERMISSIONS = new Set([
   'storage',
   'clipboard',
   'network',
@@ -105,7 +106,7 @@ export function detectNodeImports(code: string): string[] {
   return [...new Set(found)]
 }
 
-export function scanDirectoryForNodeImports(dir: string): { file: string; imports: string[] }[] {
+function scanDirectoryForNodeImports(dir: string): { file: string; imports: string[] }[] {
   const violations: { file: string; imports: string[] }[] = []
 
   function walk(currentDir: string) {
@@ -164,6 +165,8 @@ export async function rescanExtensions(): Promise<void> {
   await scanExtensions()
   getMainWindow()?.webContents.reload()
 }
+
+setRescanFn(rescanExtensions)
 
 function startExtensionWatcher(): void {
   startExtensionDirectoryWatcher(import.meta.env.DEV, () => {

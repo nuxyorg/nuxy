@@ -88,7 +88,9 @@ export function useEmojiScrollSync({
   // Scroll focused emoji into view when navigating right panel
   React.useEffect(() => {
     if (focusArea === 'right' && categoryRefs.current[selectedIdx]) {
-      categoryRefs.current[selectedIdx]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      const el = categoryRefs.current[selectedIdx]
+      const { smoothScrollIntoViewIfNeeded } = window.UI || {}
+      if (el && smoothScrollIntoViewIfNeeded) smoothScrollIntoViewIfNeeded(el)
     }
   }, [selectedIdx, focusArea])
 

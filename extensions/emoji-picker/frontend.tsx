@@ -56,7 +56,8 @@ export default function EmojiPicker({ query, extensionId }: Props) {
         onSectionChange: (id: string) => {
           scrollSync.startProgrammaticScroll()
           const el = scrollSync.sectionRefs.current[id]
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          const { smoothScrollIntoViewIfNeeded } = window.UI || {}
+          if (el && smoothScrollIntoViewIfNeeded) smoothScrollIntoViewIfNeeded(el)
         },
         onFocusRight: (id: string) => setSelectedIdx(categoryIndices[id] ?? 0),
         rightPanelActions: buildRightPanelActions({

@@ -57,7 +57,7 @@ export function isBootstrapExtension(ext: LoadedExtension): boolean {
   return ext.manifest.bootstrap === true
 }
 
-export function getBootstrapExtension(): LoadedExtension | undefined {
+function getBootstrapExtension(): LoadedExtension | undefined {
   return loadedExtensions.find(isBootstrapExtension)
 }
 

@@ -9,7 +9,7 @@ import { applyConfigToWindow, positionWindowOnDisplay } from '../window/runtime.
 import { registerProtocols } from '../protocol/register.js'
 import { registerIpc } from '../ipc/register.js'
 import { scanExtensions } from '../extensions/scanner.js'
-import { reloadConfig } from '../config/nuxyconfig.js'
+import { reloadConfig, setSettingsReloadCallback } from '../config/nuxyconfig.js'
 import { kernelLogger } from '@nuxy/core'
 import { platformId, getNowPlaying } from '../media/index.js'
 
@@ -76,6 +76,11 @@ if (!gotTheLock) {
       win.focus()
       win.webContents.send('window:show')
     }
+  })
+
+  setSettingsReloadCallback(async () => {
+    const win = getMainWindow() ?? BrowserWindow.getAllWindows()[0]
+    if (win && !win.isDestroyed()) applyConfigToWindow(win)
   })
 
   app.whenReady().then(async () => {

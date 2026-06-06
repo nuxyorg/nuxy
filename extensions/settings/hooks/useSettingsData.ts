@@ -99,47 +99,56 @@ export function useSettingsData(): SettingsData {
   React.useEffect(() => {
     if (!window.core?.ipc?.invoke) return
 
-    window.core.ipc
-      .invoke('kernel', 'listInstalledExtensions', {})
-      .then((res) => {
-        const r = res as { success: boolean; data?: unknown[] }
-        if (r?.success && Array.isArray(r.data)) {
-          setInstalledExtensions(r.data as InstalledExtension[])
-        }
-      })
-      .catch(() => {})
-
-    window.core.ipc
-      .invoke('kernel', 'getExtensionSettingsSchemas', {})
-      .then((res) => {
-        const r = res as { success: boolean; data?: ExtSettingsInfo[] }
-        if (r?.success && Array.isArray(r.data) && r.data.length > 0) {
-          setExtSchemas(r.data)
-          if (r.data.some((info: ExtSettingsInfo) => info.extId === OLLAMA_EXT_ID)) {
-            window.core.ipc
-              .invoke(OLLAMA_EXT_ID, 'models', {})
-              .then((mRes) => {
-                const mr = mRes as { success: boolean; data?: string[] }
-                if (mr?.success && Array.isArray(mr.data) && mr.data.length > 0) {
-                  setOllamaModelOptions(mr.data.map((name) => ({ value: name, label: name })))
-                }
-              })
-              .catch(() => {})
+    const fetchExtData = () => {
+      window.core.ipc
+        .invoke('kernel', 'listInstalledExtensions', {})
+        .then((res) => {
+          const r = res as { success: boolean; data?: unknown[] }
+          if (r?.success && Array.isArray(r.data)) {
+            setInstalledExtensions(r.data as InstalledExtension[])
           }
-          r.data.forEach((info: ExtSettingsInfo) => {
-            window.core.ipc
-              .invoke(EXT_ID, 'getExtensionSettingValues', info.extId)
-              .then((vRes) => {
-                const vr = vRes as { success: boolean; data?: Record<string, unknown> }
-                if (vr?.success && vr.data) {
-                  setExtValues((prev) => ({ ...prev, [info.extId]: vr.data! }))
-                }
-              })
-              .catch(() => {})
-          })
-        }
-      })
-      .catch(() => {})
+        })
+        .catch(() => {})
+
+      window.core.ipc
+        .invoke('kernel', 'getExtensionSettingsSchemas', {})
+        .then((res) => {
+          const r = res as { success: boolean; data?: ExtSettingsInfo[] }
+          if (r?.success && Array.isArray(r.data) && r.data.length > 0) {
+            setExtSchemas(r.data)
+            if (r.data.some((info: ExtSettingsInfo) => info.extId === OLLAMA_EXT_ID)) {
+              window.core.ipc
+                .invoke(OLLAMA_EXT_ID, 'models', {})
+                .then((mRes) => {
+                  const mr = mRes as { success: boolean; data?: string[] }
+                  if (mr?.success && Array.isArray(mr.data) && mr.data.length > 0) {
+                    setOllamaModelOptions(mr.data.map((name) => ({ value: name, label: name })))
+                  }
+                })
+                .catch(() => {})
+            }
+            r.data.forEach((info: ExtSettingsInfo) => {
+              window.core.ipc
+                .invoke(EXT_ID, 'getExtensionSettingValues', info.extId)
+                .then((vRes) => {
+                  const vr = vRes as { success: boolean; data?: Record<string, unknown> }
+                  if (vr?.success && vr.data) {
+                    setExtValues((prev) => ({ ...prev, [info.extId]: vr.data! }))
+                  }
+                })
+                .catch(() => {})
+            })
+          }
+        })
+        .catch(() => {})
+    }
+
+    fetchExtData()
+
+    window.addEventListener('nuxy-locale-changed', fetchExtData)
+    return () => {
+      window.removeEventListener('nuxy-locale-changed', fetchExtData)
+    }
   }, [])
 
   return {

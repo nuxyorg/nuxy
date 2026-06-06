@@ -2,6 +2,7 @@ packages:
   - 'packages/*'
   - 'extensions/*'
   - 'src'
+  - 'website'
 allowBuilds:
   electron: true
   esbuild: true

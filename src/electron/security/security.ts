@@ -180,7 +180,7 @@ export function isRevoked(
 /**
  * Cryptographically verifies a signature with a public key and target hash.
  */
-export function verifySignature(
+function verifySignature(
   signature: string,
   publicKey: string,
   integrityHash: string

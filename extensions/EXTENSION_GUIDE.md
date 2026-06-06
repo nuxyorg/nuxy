@@ -750,6 +750,23 @@ Communicate with the shell via `window.dispatchEvent(new CustomEvent(...))` for 
 
 Do not dispatch or listen for arbitrary custom events not listed here.
 
+### 5.12 Scroll viewports — never use native `scrollIntoView`
+
+Never use the native browser `el.scrollIntoView()` directly in extension views or hooks. Calling native `scrollIntoView` on deep elements causes side-effects that scroll the main window viewport/shell, breaking the fixed dual-pane layout.
+
+Instead, use the custom `smoothScrollIntoViewIfNeeded` utility from `window.UI`:
+
+```tsx
+// WRONG — native scrollIntoView scrolls the entire browser window/outer layout
+el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+// CORRECT — scrolls only the local parent scrollable container smoothly
+const { smoothScrollIntoViewIfNeeded } = window.UI || {}
+if (el && smoothScrollIntoViewIfNeeded) {
+  smoothScrollIntoViewIfNeeded(el)
+}
+```
+
 ---
 
 ## 6. Localisation (i18n)

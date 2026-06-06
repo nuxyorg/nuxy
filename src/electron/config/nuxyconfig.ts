@@ -42,8 +42,6 @@ const DEFAULTS: NuxyConfig = {
   extensions: {},
 }
 
-export { CONFIG_DIR } from './paths.js'
-export { DEFAULT_DARK_THEME, DEFAULT_LIGHT_THEME } from '../themes/install.js'
 
 /** Path to the settings.json written by the settings extension. */
 const SETTINGS_JSON_PATH = path.join(DATA_DIR, 'com.nuxy.settings', 'settings.json')
@@ -84,8 +82,14 @@ function readSettingsJson(): Partial<NuxyConfig> {
 
 let _config: NuxyConfig | null = null
 let isWatching = false
+let _onSettingsReloaded: (() => Promise<void>) | null = null
 
-export function loadConfig(): NuxyConfig {
+/** Register a callback invoked after settings.json changes and config reloads. */
+export function setSettingsReloadCallback(cb: () => Promise<void>): void {
+  _onSettingsReloaded = cb
+}
+
+function loadConfig(): NuxyConfig {
   if (_config) return _config
 
   if (!fs.existsSync(CONFIG_DIR)) {
@@ -104,10 +108,7 @@ export function loadConfig(): NuxyConfig {
           void (async () => {
             try {
               await reloadConfigAsync()
-              const { applyConfigToWindow } = await import('../window/runtime.js')
-              const { getMainWindow } = await import('../window/manager.js')
-              const win = getMainWindow()
-              if (win) applyConfigToWindow(win)
+              await _onSettingsReloaded?.()
             } catch (e) {
               log.error('Failed to reload config on settings.json change:', e)
             }
@@ -170,7 +171,7 @@ async function readSettingsJsonAsync(): Promise<Partial<NuxyConfig>> {
   }
 }
 
-export async function reloadConfigAsync(): Promise<NuxyConfig> {
+async function reloadConfigAsync(): Promise<NuxyConfig> {
   const fromSettings = await readSettingsJsonAsync()
   _config = { ...DEFAULTS, ...fromSettings, extensions: {} }
   log.info('Config reloaded from settings.json', _config)

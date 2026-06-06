@@ -31,7 +31,7 @@ function smoothScrollTo(container: HTMLElement, target: number) {
 function getScrollParent(node: HTMLElement | null): HTMLElement | null {
   if (!node || node === document.body) return null
   const style = window.getComputedStyle(node)
-  if (/(auto|scroll)/.test(style.overflowY) && node.scrollHeight > node.clientHeight) {
+  if (/(auto|scroll|overlay)/.test(style.overflowY) && node.scrollHeight > node.clientHeight) {
     return node
   }
   return getScrollParent(node.parentElement)

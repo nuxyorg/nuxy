@@ -132,18 +132,19 @@ test.describe('settings tool', () => {
     },
     { name: 'escAction', label: 'Esc Key Action', index: 4, getExpectedCount: async () => 4 },
     { name: 'blurAction', label: 'Focus-Out Action', index: 5, getExpectedCount: async () => 4 },
-    { name: 'windowWidth', label: 'Window Width', index: 6, getExpectedCount: async () => 6 },
-    { name: 'windowMaxHeight', label: 'Max Height', index: 7, getExpectedCount: async () => 5 },
+    { name: 'backgroundBehavior', label: 'Background Behaviour', index: 6, getExpectedCount: async () => 2 },
+    { name: 'windowWidth', label: 'Window Width', index: 7, getExpectedCount: async () => 6 },
+    { name: 'windowMaxHeight', label: 'Max Height', index: 8, getExpectedCount: async () => 5 },
     {
       name: 'windowPosition',
       label: 'Launch Position',
-      index: 8,
+      index: 9,
       getExpectedCount: async () => 10,
     },
-    { name: 'opacity', label: 'Opacity', index: 9, getExpectedCount: async () => 4 },
-    { name: 'alwaysOnTop', label: 'Always on Top', index: 10, getExpectedCount: async () => 2 },
-    { name: 'showInTaskbar', label: 'Show in Taskbar', index: 11, getExpectedCount: async () => 2 },
-    { name: 'showOnStartup', label: 'Show on Startup', index: 12, getExpectedCount: async () => 2 },
+    { name: 'opacity', label: 'Opacity', index: 10, getExpectedCount: async () => 4 },
+    { name: 'alwaysOnTop', label: 'Always on Top', index: 11, getExpectedCount: async () => 2 },
+    { name: 'showInTaskbar', label: 'Show in Taskbar', index: 12, getExpectedCount: async () => 2 },
+    { name: 'showOnStartup', label: 'Show on Startup', index: 13, getExpectedCount: async () => 2 },
   ]
 
   for (const row of settingRows) {
@@ -523,7 +524,7 @@ test.describe('settings tool', () => {
     await openSettings(appPage)
 
     // Locate the "Font" row and click its SelectBox trigger
-    const row = appPage.locator('.nuxy-list-item', { hasText: 'Font' })
+    const row = appPage.locator('.nuxy-list-item', { hasText: 'Font' }).first()
     const trigger = row.locator('.nuxy-select-box__trigger')
     await trigger.click()
 
@@ -560,7 +561,7 @@ test.describe('settings tool', () => {
     test.setTimeout(15000)
     await openSettings(appPage)
 
-    const row = appPage.locator('.nuxy-list-item', { hasText: 'Theme' })
+    const row = appPage.locator('.nuxy-list-item', { hasText: 'Theme' }).first()
     const scrollContainer = appPage.locator('.nuxy-shell-tool-wrapper')
 
     // 1. Scroll all the way to the bottom of General section to ensure page scrolls
