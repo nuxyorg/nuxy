@@ -7,13 +7,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 All commands run from the repo root. `pnpm` is required (enforced by `preinstall`).
 
 ```bash
-pnpm dev          # Start Electron app in dev mode (hot-reload, copies extensions)
-pnpm build        # Run tests then build renderer + Electron main
+pnpm dev          # Build ui-default once, then start Electron + ui-default watcher in parallel
+pnpm build        # Build ui-default, run tests, then build renderer + Electron main
 pnpm package      # Build + package distributable via electron-builder
 pnpm test         # Run vitest unit tests (from src/)
 pnpm format       # Format all files with Prettier
 pnpm format:check # Check formatting without writing
 ```
+
+> **Note**: `extensions/ui-default/frontend.js` is a build artifact (gitignored). Run `pnpm -C extensions/ui-default build` manually to rebuild it, or use `pnpm dev` which handles this automatically.
 
 Run from `src/` directly for more granular control:
 
