@@ -99,6 +99,23 @@ Single-page React app. `App.tsx` dynamically imports `nuxy-ext://com.nuxy.shell/
 - `core.ipc.invoke(extId, channel, payload)` → routes through `ext:invoke` IPC
 - `core.window.*` → resize, hide, esc, drag, center, onShow
 
+### `@nuxy/ui` — two-layer component system
+
+`packages/ui/src/` and `extensions/ui-default/src/` are **not duplicates**. They form a deliberate two-layer design:
+
+- **`packages/ui/src/components/`** — compile-time proxy stubs. Each component reads from `window.UI` at runtime and renders nothing if the runtime implementation is absent:
+  ```ts
+  const Impl = (window.UI as any)?.Button ?? (() => null)
+  return <Impl {...props} />
+  ```
+  This layer provides TypeScript types and import aliases (`@nuxy/ui`) without shipping CSS or real DOM.
+
+- **`extensions/ui-default/src/components/`** — real CSS-styled implementations. Built into `extensions/ui-default/frontend.js`, which sets `window.UI = { Button, Card, … }` at runtime. This layer owns the visual design; swapping it (or shipping an alternative uikit extension) changes the entire UI without touching any consumer code.
+
+**Critical rule**: never add actual rendering logic or CSS to `packages/ui/src/`. It must stay as thin proxy stubs. All styling belongs in `extensions/ui-default/src/` (or a replacement uikit extension).
+
+`extensions/ui-default/frontend.js` is a **build artifact** (gitignored). Run `pnpm -C extensions/ui-default build` to regenerate it; `pnpm dev` does this automatically before starting the watchers.
+
 ### Extension system
 
 > **Extension authoring rules**: See [`extensions/EXTENSION_GUIDE.md`](extensions/EXTENSION_GUIDE.md) for the full mandatory ruleset. AI agents must read and follow that document when writing or reviewing any extension.
