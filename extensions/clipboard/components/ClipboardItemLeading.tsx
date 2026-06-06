@@ -40,8 +40,8 @@ export function ClipboardItemLeading({ item, type }: Props) {
   }
 
   if (type === 'url') {
-    const { IconGlobe } = window.UI || {}
-    return <ItemLeading>{IconGlobe && <IconGlobe />}</ItemLeading>
+    const { Icon } = window.UI || {}
+    return <ItemLeading>{Icon && <Icon name="Globe" />}</ItemLeading>
   }
 
   return null

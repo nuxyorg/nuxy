@@ -438,3 +438,65 @@ export function IconStop(props: IconProps) {
     </svg>
   )
 }
+
+export type IconName =
+  | 'Archive' | 'ArrowLeft' | 'ArrowRight' | 'Bell' | 'Calendar'
+  | 'Check' | 'ChevronDown' | 'ChevronUp' | 'Clock' | 'Close'
+  | 'Code' | 'Copy' | 'Document' | 'Download' | 'Edit'
+  | 'Eye' | 'EyeOff' | 'File' | 'Filter' | 'Folder'
+  | 'Globe' | 'ImageFile' | 'Info' | 'Lock' | 'Mic'
+  | 'Minus' | 'Pdf' | 'Pin' | 'Plus' | 'Refresh'
+  | 'Send' | 'Smile' | 'Star' | 'Stop' | 'Tag'
+  | 'Trash' | 'Unlock' | 'Upload' | 'User' | 'Video'
+  | 'Warning' | 'Workflow' | 'Zap'
+
+const ICON_MAP: Record<string, React.FC<IconProps>> = {
+  Archive: IconArchive,
+  ArrowLeft: IconArrowLeft,
+  ArrowRight: IconArrowRight,
+  Bell: IconBell,
+  Calendar: IconCalendar,
+  Check: IconCheck,
+  ChevronDown: IconChevronDown,
+  ChevronUp: IconChevronUp,
+  Clock: IconClock,
+  Close: IconClose,
+  Code: IconCode,
+  Copy: IconCopy,
+  Document: IconDocument,
+  Download: IconDownload,
+  Edit: IconEdit,
+  Eye: IconEye,
+  EyeOff: IconEyeOff,
+  File: IconFile,
+  Filter: IconFilter,
+  Folder: IconFolder,
+  Globe: IconGlobe,
+  ImageFile: IconImageFile,
+  Info: IconInfo,
+  Lock: IconLock,
+  Mic: IconMic,
+  Minus: IconMinus,
+  Pdf: IconPdf,
+  Pin: IconPin,
+  Plus: IconPlus,
+  Refresh: IconRefresh,
+  Send: IconSend,
+  Smile: IconSmile,
+  Star: IconStar,
+  Stop: IconStop,
+  Tag: IconTag,
+  Trash: IconTrash,
+  Unlock: IconUnlock,
+  Upload: IconUpload,
+  User: IconUser,
+  Video: IconVideo,
+  Warning: IconWarning,
+  Workflow: IconWorkflow,
+  Zap: IconZap,
+}
+
+export function Icon({ name, ...props }: IconProps & { name: string }): React.ReactElement | null {
+  const Impl = ICON_MAP[name]
+  return Impl ? <Impl {...props} /> : null
+}

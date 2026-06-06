@@ -41,7 +41,7 @@ export function EmojiGrid({
 
   const renderEmoji = (em: EmojiEntry, idx: number) => {
     const fav = isFav(em.e)
-    const { IconStar } = window.UI || {}
+    const { Icon } = window.UI || {}
     return (
       <GridItem
         key={em.e + idx}
@@ -55,8 +55,9 @@ export function EmojiGrid({
         }}
       >
         {em.e}
-        {fav && IconStar && (
-          <IconStar
+        {fav && Icon && (
+          <Icon
+            name="Star"
             style={{
               position: 'absolute',
               top: 'var(--space-0)',

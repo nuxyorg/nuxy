@@ -13,7 +13,7 @@ export function BitwardenConfigScreen({
   errorMsg,
   onEmailChange,
 }: Props) {
-  const { Card, Input, Alert, IconUser } = window.UI || {}
+  const { Card, Input, Alert, Icon } = window.UI || {}
   const WizardSection = (window.UI as any)?.WizardSection
 
   return (
@@ -28,10 +28,10 @@ export function BitwardenConfigScreen({
       }}
     >
       {WizardSection ? (
-        <WizardSection icon={IconUser && <IconUser />} title="Bitwarden Hesabınızı Bağlayın" />
+        <WizardSection icon={Icon && <Icon name="User" />} title="Bitwarden Hesabınızı Bağlayın" />
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-          {IconUser && <IconUser style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
+          {Icon && <Icon name="User" style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
           <h2 style={{ margin: 0, fontSize: 'var(--font-lg)', fontWeight: 'var(--font-semibold)' }}>
             Bitwarden Hesabınızı Bağlayın
           </h2>

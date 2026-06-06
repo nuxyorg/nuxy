@@ -8,9 +8,9 @@ Nuxy is an **Empty Shell** Kernel. It acts as an operating system for productivi
 
 ## 2. Core Modules
 
-- **Kernel (`electron/main/`)**: The main process with OS access. Acts as the filesystem firewall and schema validator. Routes messages via a Kernel Message Broker.
+- **Kernel (`src/electron/`)**: The main process with OS access. Acts as the filesystem firewall and schema validator. Routes messages via a Kernel Message Broker.
 - **Isolated Threads (`worker_threads`)**: Dedicated Node.js environments for extension backends. Ensures strict memory and execution isolation.
-- **React Canvas (`src/`)**: A blank frontend shell that dynamically loads and renders extension UIs via the `nuxy-ext://` protocol.
+- **React Canvas (`src/renderer/`)**: A blank frontend shell that dynamically loads and renders extension UIs via the `nuxy-ext://` protocol.
 - **Reference**: [`02-architecture.md`](./02-architecture.md), [`04-modules.md`](./04-modules.md)
 
 ## 3. Data Flow
@@ -21,7 +21,7 @@ Nuxy is an **Empty Shell** Kernel. It acts as an operating system for productivi
 
 ## 4. API Design (CoreContext)
 
-Extensions are injected with a restricted `CoreContext` proxy over `MessagePort`.
+Extensions are injected with a restricted `CoreContext` proxy over `worker_threads` IPC (`parentPort`).
 
 - **`storage`**: Chroot-jailed filesystem access.
 - **`ipc`**: Communication with the extension's UI.

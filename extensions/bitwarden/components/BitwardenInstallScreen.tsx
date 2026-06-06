@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function BitwardenInstallScreen({ status, activeTab, onTabChange }: Props) {
-  const { Badge, Card, IconLock, CodeBlock } = window.UI || {}
+  const { Badge, Card, Icon, CodeBlock } = window.UI || {}
   const WizardSection = (window.UI as any)?.WizardSection
 
   return (
@@ -25,10 +25,10 @@ export function BitwardenInstallScreen({ status, activeTab, onTabChange }: Props
       }}
     >
       {WizardSection ? (
-        <WizardSection icon={IconLock && <IconLock />} title="Bitwarden CLI Bulunamadı" />
+        <WizardSection icon={Icon && <Icon name="Lock" />} title="Bitwarden CLI Bulunamadı" />
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-          {IconLock && <IconLock style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
+          {Icon && <Icon name="Lock" style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
           <h2 style={{ margin: 0, fontSize: 'var(--font-lg)', fontWeight: 'var(--font-semibold)' }}>
             Bitwarden CLI Bulunamadı
           </h2>

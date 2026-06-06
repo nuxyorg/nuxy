@@ -34,11 +34,11 @@ Define the extension's metadata and required permissions.
 
 ## Step 3: The Sandboxed Backend
 
-Create `src/backend.ts`. This code will be executed by Nuxy's V8 VM Sandbox.
+Create `src/backend.ts`. This code will be executed in Nuxy's isolated worker thread.
 
 ```typescript
 // Imports must be types only, or bundled by your bundler.
-// You cannot require('fs') at runtime in the VM.
+// You cannot import raw Node built-ins like 'fs' directly.
 import type { CoreContext } from '@nuxy/core'
 
 export function register(core: CoreContext) {

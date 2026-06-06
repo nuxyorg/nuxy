@@ -17,8 +17,9 @@ export function TimeEmptyState({ loading, t }: Props) {
       React.createElement(
         'div',
         { className: 'tc-empty__icon' },
-        (window.UI as any)?.IconClock
-          ? React.createElement((window.UI || {}).IconClock!, {
+        (window.UI as any)?.Icon
+          ? React.createElement((window.UI as any).Icon, {
+              name: 'Clock',
               style: { width: '32px', height: '32px' },
             })
           : null

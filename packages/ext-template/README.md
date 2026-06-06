@@ -18,6 +18,10 @@ Declare host privileges in `manifest.json`:
 
 Undeclared host APIs (clipboard, media, etc.) are denied by the kernel.
 
+## Bootstrap Extensions
+
+Extensions with `"bootstrap": true` in `manifest.json` act as the shell UI. These extensions are loaded directly by the React canvas and typically only need a `frontend` entry (no `backend` required). The default shell of Nuxy is implemented as a bootstrap extension in `extensions/shell/`.
+
 ## Development
 
 From repo root, `pnpm dev` syncs `extensions/` into `~/.nuxy/extensions/` automatically.

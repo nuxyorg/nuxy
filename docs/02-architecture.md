@@ -2,7 +2,7 @@
 
 ## 1. High-Level Architectural Paradigm
 
-Nuxy is an **Extension Loader Engine**. It does not contain application logic. It scans a specific OS directory, bootstraps the code found there into strictly isolated V8 Threads, and acts as the secure middleman (Message Broker) between Extensions and the OS.
+Nuxy is an **Extension Loader Engine**. It does not contain application logic. It scans a specific OS directory, bootstraps the code found there into strictly isolated worker threads, and acts as the secure middleman (Message Broker) between Extensions and the OS.
 
 ### 1.1 The Architecture Topology (Mermaid Diagram)
 
@@ -42,7 +42,7 @@ graph TD
 
 ## 2. Core Components Breakdown
 
-### 2.1 The Kernel (`/electron/main/`)
+### 2.1 The Kernel (`src/electron/`)
 
 The Kernel is the ultimate authority. It runs in the main Node.js process and has full OS access. It intercepts all requests from the isolated workers.
 
@@ -54,7 +54,7 @@ The Kernel is the ultimate authority. It runs in the main Node.js process and ha
 To prevent malicious code from accessing the host or other extensions, the Backend logic of an extension does **not** run in the shared Node.js process.
 Each extension gets its own dedicated Worker. Memory is fundamentally physically separated. An extension cannot access another extension's variables.
 
-### 2.3 The React Canvas (`/src/`)
+### 2.3 The React Canvas (`src/renderer/`)
 
 The React frontend is literally a blank `div`. It listens to the Kernel via IPC. When the Kernel announces "I loaded extension X", the React frontend uses a dynamic `import('nuxy-ext://X/frontend.js')` to fetch the UI code.
 Because the frontend also runs in Chromium with `contextIsolation: true` and `sandbox: true`, malicious UI code cannot breach the OS.

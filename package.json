@@ -19,7 +19,8 @@
     "deadcode": "knip",
     "create-ext": "node scripts/create-ext.mjs",
     "dev-ext": "node scripts/dev-ext.mjs",
-    "doctor": "node scripts/doctor.mjs"
+    "doctor": "node scripts/doctor.mjs",
+    "react-doctor": "npx react-doctor@latest"
   },
   "keywords": [],
   "author": "",
@@ -42,6 +43,7 @@
     "globals": "^17.6.0",
     "knip": "^6.15.0",
     "prettier": "^3.8.3",
+    "react-doctor": "^0.4.0",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.60.1"
   },

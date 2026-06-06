@@ -19,7 +19,7 @@ export function CalendarDayView({ calYear, calMonth, selectedDay, dayEvents, lis
     ListItemMeta,
     ListItemActions,
     EmptyState,
-    IconBell,
+    Icon,
   } = window.UI || {}
 
   const dayLabel = new Date(calYear, calMonth, selectedDay).toLocaleDateString(undefined, {
@@ -54,9 +54,10 @@ export function CalendarDayView({ calYear, calMonth, selectedDay, dayEvents, lis
                       })}
                     </ListItemMeta>
                   </ListItemBody>
-                  {evt.remindMin > 0 && IconBell && ListItemActions && (
+                  {evt.remindMin > 0 && Icon && ListItemActions && (
                     <ListItemActions>
-                      <IconBell
+                      <Icon
+                        name="Bell"
                         style={{
                           width: '14px',
                           height: '14px',

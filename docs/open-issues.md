@@ -52,9 +52,9 @@ Worker oluşturulurken `worker.setMaxListeners(100)` eklendi. `worker-invoke.ts`
 
 `docs/14-rebuild-roadmap.md:21`'deki `electron/core/ipc.ts` referansı `src/electron/ipc/register.ts` olarak güncellendi.
 
-### 7. `docs/restructure-plan.md` — checklist güncel değil
+### 7. ~~docs/restructure-plan.md — checklist güncel değil~~ ✅ Çözüldü
 
-Phase 0'ın `dist-electron/` maddesi işaretlendi. Phase 1 (`src/` → `apps/desktop/`) hâlâ pending.
+`docs/restructure-plan.md` güncellendi; Phase 1 renderer rename check edildi ve folder yapısı `src/renderer/` olarak revize edildi.
 
 ### 8. `docs/DOCUMENTATION.md` — 5 eski dosya yolu
 

@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function BitwardenLockScreen({ status, isUnlocking, isSyncing, unlockError }: Props) {
-  const { Card, Alert, IconLock, CodeBlock } = window.UI || {}
+  const { Card, Alert, Icon, CodeBlock } = window.UI || {}
   const WizardSection = (window.UI as any)?.WizardSection
 
   return (
@@ -26,10 +26,10 @@ export function BitwardenLockScreen({ status, isUnlocking, isSyncing, unlockErro
       }}
     >
       {WizardSection ? (
-        <WizardSection icon={IconLock && <IconLock />} title="Bitwarden Kasanız Kilitli" />
+        <WizardSection icon={Icon && <Icon name="Lock" />} title="Bitwarden Kasanız Kilitli" />
       ) : (
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-          {IconLock && <IconLock style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
+          {Icon && <Icon name="Lock" style={{ width: 'var(--icon-md)', height: 'var(--icon-md)' }} />}
           <h2 style={{ margin: 0, fontSize: 'var(--font-lg)', fontWeight: 'var(--font-semibold)' }}>
             Bitwarden Kasanız Kilitli
           </h2>

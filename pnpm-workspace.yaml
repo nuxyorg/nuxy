@@ -6,4 +6,5 @@ packages:
 allowBuilds:
   electron: true
   esbuild: true
+  msgpackr-extract: set this to true or false
   usocket: true

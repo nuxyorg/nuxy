@@ -50,8 +50,9 @@ export function TimeCard({ meta }: Props) {
     ),
 
     // Arrow
-    (window.UI as any)?.IconArrowRight
-      ? React.createElement((window.UI || {}).IconArrowRight, {
+    (window.UI as any)?.Icon
+      ? React.createElement((window.UI as any).Icon, {
+          name: 'ArrowRight',
           className: 'tc-arrow',
           style: { width: '20px', height: '20px' },
         })

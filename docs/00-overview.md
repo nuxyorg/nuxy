@@ -25,7 +25,7 @@ Extensions are pre-compiled bundles (Frontend React + Backend Node.js) created b
 
 ### Tenet C: Zero-Trust Security
 
-Because Nuxy executes third-party code from the filesystem, it implements draconian security measures. Extensions cannot run raw `require('fs')`. They are injected with a restricted `CoreContext` API that limits them to their own sandboxed data directories.
+Because Nuxy executes third-party code from the filesystem, it implements draconian security measures. Extensions cannot import raw Node built-ins (`fs`, `child_process`) or Electron APIs. They are isolated inside a `worker_threads` Worker and only have access to the `CoreContext` proxy injected by the kernel, limiting them to their own sandboxed data directories.
 
 ---
 

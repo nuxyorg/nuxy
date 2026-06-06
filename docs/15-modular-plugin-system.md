@@ -11,12 +11,12 @@ Nuxy treats every extension as potentially hostile. They must be isolated.
 1. **User Starts Nuxy**: The Electron app boots. The React frontend is a blank `div`.
 2. **Directory Scan**: The Kernel watches `~/.nuxy/extensions/`.
 3. **Detection**: It finds `com.nuxy.currency`.
-4. **Thread Spawning**: The Kernel spawns a dedicated **Node.js Web Worker** (`worker_threads`). It does not use `require()`. It passes the extension's code into this isolated thread.
-5. **Context Injection**: Inside the Worker, the code has no access to `fs` or `http`. The Kernel provides a proxy `CoreContext` over a `MessagePort`.
+4. **Thread Spawning**: The Kernel spawns a dedicated **worker thread** (`worker_threads`). It does not use `require()`. It passes the extension's code into this isolated thread.
+5. **Context Injection**: Inside the Worker, the code has no access to `fs` or `http`. The Kernel provides a proxy `CoreContext` over worker_threads `parentPort`.
 6. **Schema Registration**: The extension registers its Input/Output schema by sending an IPC message back to the Kernel.
 7. **UI Mounting**: The Kernel tells the React frontend to load the UI via dynamic `import()`. The imported React UI utilizes Nuxy's globally shared `@nuxy/ui` components (Shadcn) to render native-looking HTML elements onto the screen.
 
-## 3. The Core Context (MessagePort Proxy)
+## 3. The Core Context (Worker ParentPort Proxy)
 
 The `CoreContext` the extension sees is actually just a facade that serializes requests and sends them to the Kernel.
 

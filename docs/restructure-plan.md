@@ -1,7 +1,7 @@
 # Nuxy — Current Structure Tree & Restructure Plan
 
 > Generated: 2026-05-19  
-> Status: **Phases 2 & 3 complete** — kernel domain folders and `@nuxy/extension-host` package in place; Phase 1 (`src/` → `apps/desktop/`) still pending  
+> Status: **Phases 2 & 3 complete** — kernel domain folders and `@nuxy/extension-host` package in place; Phase 1 renderer rename is complete (`src/src/` → `src/renderer/`), but relocating desktop app package (`src/` → `apps/desktop/`) is still pending  
 > Related: [structure.md](./structure.md), [02-architecture.md](./02-architecture.md), [electron-fix-plan.md](./electron-fix-plan.md)
 
 ---
@@ -76,7 +76,7 @@ nuxy/                                    # monorepo root (pnpm workspace)
 │   │   │   └── globals.d.ts
 │   │   └── *.test.ts                    # colocated unit tests (4 files)
 │   │
-│   ├── src/                             # Renderer (React) — confusing double `src/`
+│   ├── renderer/                        # Renderer (React)
 │   │   ├── main.tsx
 │   │   ├── App.tsx                      # OmniBar shell, dynamic ext UI
 │   │   ├── index.css
@@ -138,7 +138,7 @@ nuxy/                                    # monorepo root (pnpm workspace)
 
 | Area                | Issue                                                                           | Impact                                                                       |
 | ------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| **Naming**          | `src/src/` for the React app                                                    | Confusing imports, hard to explain to contributors                           |
+| **Naming**          | ~~`src/src/` for the React app~~ (Resolved to `src/renderer/`)                   | Confusing imports, hard to explain to contributors                           |
 | **Monorepo**        | `pnpm-workspace.yaml` lists `apps/*` but folder does not exist                  | Workspace contract lies; `src/` is a pseudo-app at wrong level               |
 | **Kernel flatness** | 20+ files directly under `electron/`                                            | Hard to navigate as kernel grows; no domain boundaries                       |
 | **Duplicated API**  | `extension-host.ts` builds `core` inline; `packages/core` defines `CoreContext` | Drift risk — host already has `clipboard` not in `CoreContext` type          |
@@ -290,7 +290,7 @@ Rules:
 | `src/electron/paths.ts`                 | `apps/desktop/electron/config/paths.ts`                   |
 | `src/electron/storage-path.ts`          | `apps/desktop/electron/config/storage-path.ts`            |
 | `src/electron/themes/index.ts`          | `apps/desktop/electron/themes/install.ts`                 |
-| `src/src/*`                             | `apps/desktop/renderer/*`                                 |
+| `src/renderer/*`                        | `apps/desktop/renderer/*`                                 |
 | `src/themes/*`                          | `apps/desktop/assets/themes/*`                            |
 | `extensions/*/backend.js`               | `extensions/*/src/backend.ts` → build → `dist/backend.js` |
 
@@ -397,7 +397,7 @@ Actions:
 ### Phase 1 — Rename & relocate app (`src/` → `apps/desktop/`)
 
 - [ ] Create `apps/desktop/` and move `src/package.json`, vite, vitest, tsconfig, index.html.
-- [ ] Rename `src/src/` → `renderer/`.
+- [x] Rename `src/src/` → `renderer/`.
 - [ ] Move `src/themes/` → `assets/themes/`.
 - [ ] Update `pnpm-workspace.yaml`: remove bare `src`, ensure `apps/*` works.
 - [ ] Fix import paths in vite/electron config.

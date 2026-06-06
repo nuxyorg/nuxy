@@ -13,14 +13,14 @@ This roadmap transitions the theoretical analysis into an actionable execution p
 - Establish `tsconfig.json`, `eslint`, and `prettier`.
 - **Actionable Guide**: [01. Setup](./implementation/01-setup.md)
 
-### Phase 2: The Kernel & VM Sandbox
+### Phase 2: The Kernel & Worker Isolation
 
 **Goal**: Build the secure `CoreContext`, routing mechanism, and directory scanner.
 
 - Implement the `WindowManager` to handle invisible daemon status.
 - Build the IPC router (`src/electron/ipc/register.ts`).
 - Implement the `ExtensionScanner` to watch `~/.nuxy/extensions/`.
-- Implement the Node `vm` sandbox to securely execute third-party backend code.
+- Implement worker-thread-based isolation to execute third-party backend code.
 - **Actionable Guide**: [02. Core Infrastructure](./implementation/02-core-infrastructure.md)
 
 ### Phase 3: Building the First Extensions (Separate Repositories)

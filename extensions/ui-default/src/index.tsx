@@ -39,52 +39,8 @@ export { Toaster, toast } from './components/Toaster'
 export type { ToastOptions } from './components/Toaster'
 export { Alert } from './components/Alert'
 export type { AlertProps } from './components/Alert'
-export {
-  IconFile,
-  IconImageFile,
-  IconCode,
-  IconDocument,
-  IconPdf,
-  IconArchive,
-  IconGlobe,
-  IconPin,
-  IconCalendar,
-  IconClock,
-  IconCopy,
-  IconCheck,
-  IconTrash,
-  IconEdit,
-  IconDownload,
-  IconUpload,
-  IconRefresh,
-  IconClose,
-  IconPlus,
-  IconMinus,
-  IconArrowLeft,
-  IconArrowRight,
-  IconChevronDown,
-  IconChevronUp,
-  IconMic,
-  IconLock,
-  IconUnlock,
-  IconEye,
-  IconEyeOff,
-  IconWarning,
-  IconInfo,
-  IconSend,
-  IconFilter,
-  IconTag,
-  IconUser,
-  IconZap,
-  IconVideo,
-  IconWorkflow,
-  IconSmile,
-  IconFolder,
-  IconBell,
-  IconStar,
-  IconStop,
-} from './components/Icon'
-export type { IconProps } from './components/Icon'
+export { Icon } from './components/Icon'
+export type { IconProps, IconName } from './components/Icon'
 
 // --- Form & Input (Grup A) ---
 export { Textarea } from './components/Textarea'

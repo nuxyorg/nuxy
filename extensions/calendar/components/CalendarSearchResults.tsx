@@ -17,7 +17,7 @@ export function CalendarSearchResults({ filteredSearch, listIdx, onSelectEvent }
     ListItemMeta,
     ListItemActions,
     EmptyState,
-    IconBell,
+    Icon,
   } = window.UI || {}
 
   return (
@@ -39,9 +39,10 @@ export function CalendarSearchResults({ filteredSearch, listIdx, onSelectEvent }
                       })}
                     </ListItemMeta>
                   </ListItemBody>
-                  {evt.remindMin > 0 && IconBell && ListItemActions && (
+                  {evt.remindMin > 0 && Icon && ListItemActions && (
                     <ListItemActions>
-                      <IconBell
+                      <Icon
+                        name="Bell"
                         style={{
                           width: '14px',
                           height: '14px',
