@@ -39,6 +39,36 @@ function createCore({
   return { core, handlers }
 }
 
+function makeTwoCallFetch(
+  toolName: string,
+  toolArgs: Record<string, unknown>,
+  finalContent: string
+): () => Promise<unknown> {
+  let callCount = 0
+  return () => {
+    callCount++
+    if (callCount === 1) {
+      return Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            message: {
+              role: 'assistant',
+              content: '',
+              tool_calls: [{ function: { name: toolName, arguments: toolArgs } }],
+            },
+          }),
+        text: () => Promise.resolve(''),
+      })
+    }
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({ message: { role: 'assistant', content: finalContent } }),
+      text: () => Promise.resolve(''),
+    })
+  }
+}
+
 afterEach(() => {
   vi.restoreAllMocks()
 })
@@ -111,30 +141,8 @@ describe('ai-orchestrator backend', () => {
     })
 
     it('sends structured tool response in the second Ollama call', async () => {
-      let callCount = 0
       const { core, handlers } = createCore({
-        fetchImpl: () => {
-          callCount++
-          if (callCount === 1) {
-            return Promise.resolve({
-              ok: true,
-              json: () =>
-                Promise.resolve({
-                  message: {
-                    role: 'assistant',
-                    content: '',
-                    tool_calls: [{ function: { name: 'calculator', arguments: { text: '2+2' } } }],
-                  },
-                }),
-              text: () => Promise.resolve(''),
-            })
-          }
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({ message: { role: 'assistant', content: 'Result: 4' } }),
-            text: () => Promise.resolve(''),
-          })
-        },
+        fetchImpl: makeTwoCallFetch('calculator', { text: '2+2' }, 'Result: 4'),
       })
       core.extensions.invoke.mockResolvedValue({ result: 4 })
       register(core as unknown as CoreContext)
@@ -208,31 +216,8 @@ describe('ai-orchestrator backend', () => {
     })
 
     it('invokes extension when model returns a tool_call', async () => {
-      let callCount = 0
       const { core, handlers } = createCore({
-        fetchImpl: () => {
-          callCount++
-          if (callCount === 1) {
-            return Promise.resolve({
-              ok: true,
-              json: () =>
-                Promise.resolve({
-                  message: {
-                    role: 'assistant',
-                    content: '',
-                    tool_calls: [{ function: { name: 'calculator', arguments: { text: '2+2' } } }],
-                  },
-                }),
-              text: () => Promise.resolve(''),
-            })
-          }
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({ message: { role: 'assistant', content: 'The answer is 4.' } }),
-            text: () => Promise.resolve(''),
-          })
-        },
+        fetchImpl: makeTwoCallFetch('calculator', { text: '2+2' }, 'The answer is 4.'),
       })
       register(core as unknown as CoreContext)
       await handlers.route({ text: '2+2' })
@@ -242,40 +227,12 @@ describe('ai-orchestrator backend', () => {
     })
 
     it('invokes time-calculator on the "convert" channel per TOOL_CHANNEL_MAP', async () => {
-      let callCount = 0
       const { core, handlers } = createCore({
-        fetchImpl: () => {
-          callCount++
-          if (callCount === 1) {
-            return Promise.resolve({
-              ok: true,
-              json: () =>
-                Promise.resolve({
-                  message: {
-                    role: 'assistant',
-                    content: '',
-                    tool_calls: [
-                      {
-                        function: {
-                          name: 'time_calculator',
-                          arguments: { time: '3pm', to: 'london' },
-                        },
-                      },
-                    ],
-                  },
-                }),
-              text: () => Promise.resolve(''),
-            })
-          }
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                message: { role: 'assistant', content: '3pm here is 8pm in London.' },
-              }),
-            text: () => Promise.resolve(''),
-          })
-        },
+        fetchImpl: makeTwoCallFetch(
+          'time_calculator',
+          { time: '3pm', to: 'london' },
+          '3pm here is 8pm in London.'
+        ),
       })
       register(core as unknown as CoreContext)
       await handlers.route({ text: '3pm in london' })
@@ -286,43 +243,12 @@ describe('ai-orchestrator backend', () => {
     })
 
     it('invokes calendar on the "prepare" channel per TOOL_CHANNEL_MAP and returns toolCalled/initialQuery', async () => {
-      let callCount = 0
       const { core, handlers } = createCore({
-        fetchImpl: () => {
-          callCount++
-          if (callCount === 1) {
-            return Promise.resolve({
-              ok: true,
-              json: () =>
-                Promise.resolve({
-                  message: {
-                    role: 'assistant',
-                    content: '',
-                    tool_calls: [
-                      {
-                        function: {
-                          name: 'calendar',
-                          arguments: {
-                            title: 'recebin doğumgününü kutlayacağım',
-                            date: '2026-12-21',
-                          },
-                        },
-                      },
-                    ],
-                  },
-                }),
-              text: () => Promise.resolve(''),
-            })
-          }
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({
-                message: { role: 'assistant', content: 'Reminder set.' },
-              }),
-            text: () => Promise.resolve(''),
-          })
-        },
+        fetchImpl: makeTwoCallFetch(
+          'calendar',
+          { title: 'recebin doğumgününü kutlayacağım', date: '2026-12-21' },
+          'Reminder set.'
+        ),
       })
       register(core as unknown as CoreContext)
       const res = await handlers.route({ text: '21 aralıkta recebin doğumgününü kutlayacağım' })
@@ -340,31 +266,9 @@ describe('ai-orchestrator backend', () => {
     })
 
     it('calls setLastResult on the extension after a successful tool invocation', async () => {
-      let callCount = 0
       const toolResult = { result: 4, display: '4' }
       const { core, handlers } = createCore({
-        fetchImpl: () => {
-          callCount++
-          if (callCount === 1) {
-            return Promise.resolve({
-              ok: true,
-              json: () =>
-                Promise.resolve({
-                  message: {
-                    role: 'assistant',
-                    content: '',
-                    tool_calls: [{ function: { name: 'calculator', arguments: { text: '2+2' } } }],
-                  },
-                }),
-              text: () => Promise.resolve(''),
-            })
-          }
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve({ message: { role: 'assistant', content: 'Result: 4' } }),
-            text: () => Promise.resolve(''),
-          })
-        },
+        fetchImpl: makeTwoCallFetch('calculator', { text: '2+2' }, 'Result: 4'),
       })
       core.extensions.invoke.mockResolvedValueOnce(toolResult).mockResolvedValueOnce(undefined)
       register(core as unknown as CoreContext)
@@ -377,31 +281,8 @@ describe('ai-orchestrator backend', () => {
     })
 
     it('does not call setLastResult when tool invocation returns an error', async () => {
-      let callCount = 0
       const { core, handlers } = createCore({
-        fetchImpl: () => {
-          callCount++
-          if (callCount === 1) {
-            return Promise.resolve({
-              ok: true,
-              json: () =>
-                Promise.resolve({
-                  message: {
-                    role: 'assistant',
-                    content: '',
-                    tool_calls: [{ function: { name: 'calculator', arguments: { text: 'bad' } } }],
-                  },
-                }),
-              text: () => Promise.resolve(''),
-            })
-          }
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({ message: { role: 'assistant', content: 'Error occurred.' } }),
-            text: () => Promise.resolve(''),
-          })
-        },
+        fetchImpl: makeTwoCallFetch('calculator', { text: 'bad' }, 'Error occurred.'),
       })
       core.extensions.invoke.mockResolvedValue({ error: 'bad expression' })
       register(core as unknown as CoreContext)
@@ -442,31 +323,8 @@ describe('ai-orchestrator backend', () => {
     })
 
     it('does NOT invoke Ollama when a tool_call was made', async () => {
-      let callCount = 0
       const { core, handlers } = createCore({
-        fetchImpl: () => {
-          callCount++
-          if (callCount === 1) {
-            return Promise.resolve({
-              ok: true,
-              json: () =>
-                Promise.resolve({
-                  message: {
-                    role: 'assistant',
-                    content: '',
-                    tool_calls: [{ function: { name: 'calculator', arguments: { text: '2+2' } } }],
-                  },
-                }),
-              text: () => Promise.resolve(''),
-            })
-          }
-          return Promise.resolve({
-            ok: true,
-            json: () =>
-              Promise.resolve({ message: { role: 'assistant', content: 'Result is 4.' } }),
-            text: () => Promise.resolve(''),
-          })
-        },
+        fetchImpl: makeTwoCallFetch('calculator', { text: '2+2' }, 'Result is 4.'),
       })
       core.extensions.invoke.mockResolvedValue({ result: 4, display: '4' })
       register(core as unknown as CoreContext)
