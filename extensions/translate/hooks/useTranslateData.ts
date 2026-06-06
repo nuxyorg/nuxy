@@ -1,8 +1,7 @@
 const React = window.React
 
 import type { TranslateResult, SupportedLanguage } from '../types.ts'
-
-const EXT_ID = 'com.nuxy.translate'
+import { ipc } from '../utils/ipc.ts'
 
 export const TARGET_LANGUAGES: SupportedLanguage[] = ['en', 'tr', 'de', 'fr', 'es', 'ja', 'zh']
 
@@ -17,14 +16,6 @@ export interface TranslateData {
   setTargetLang: React.Dispatch<React.SetStateAction<SupportedLanguage>>
   targetLanguages: SupportedLanguage[]
   invoke: <T = unknown>(channel: string, payload?: unknown) => Promise<T>
-}
-
-function makeInvoker<T = unknown>(channel: string, payload?: unknown): Promise<T> {
-  return window.core.ipc.invoke(EXT_ID, channel, payload).then((res) => {
-    const r = res as { success: boolean; data?: T; error?: string } | null
-    if (!r?.success) throw new Error(r?.error ?? 'IPC call failed')
-    return r.data as T
-  })
 }
 
 export function useTranslateData(): TranslateData {
@@ -43,6 +34,6 @@ export function useTranslateData(): TranslateData {
     targetLang,
     setTargetLang,
     targetLanguages: TARGET_LANGUAGES,
-    invoke: makeInvoker,
+    invoke: ipc,
   }
 }

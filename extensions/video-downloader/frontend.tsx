@@ -1,10 +1,8 @@
 const React = window.React
 
 const EXT_ID = 'com.nuxy.video-downloader'
-const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
 
+import { _useTranslation, _useTwoPanelNav } from '../ui-hooks.ts'
 import type { VideoMetadata } from './types.ts'
 import type { TabId } from './utils/format.ts'
 import { TABS } from './utils/format.ts'
@@ -23,19 +21,6 @@ interface NavSection {
   label: string
   itemCount: number
 }
-
-const _useTwoPanelNav =
-  (window.UI || {}).useTwoPanelNav ||
-  (({ sections }: { sections: NavSection[] }) => ({
-    focusArea: 'right' as const,
-    setFocusArea: () => {},
-    activeSectionId: sections[0]?.id ?? '',
-    goToSection: () => {},
-    sectionStartIndex: {} as Record<string, number>,
-    getSectionIdForIndex: () => sections[0]?.id ?? '',
-    onItemSelected: () => {},
-    setActiveSection: () => {},
-  }))
 
 interface Props {
   query: string

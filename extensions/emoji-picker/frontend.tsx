@@ -1,10 +1,8 @@
 const React = window.React
 
 const EXT_ID = 'com.nuxy.emoji-picker'
-const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
 
+import { _useTranslation } from '../ui-hooks.ts'
 import { useEmojiData } from './hooks/useEmojiData.ts'
 import { useEmojiActions } from './hooks/useEmojiActions.ts'
 import { useEmojiDerivedData } from './hooks/useEmojiDerivedData.ts'

@@ -1,28 +1,7 @@
 import { test, expect } from '../../src/e2e/fixtures.ts'
+import { resetShell, openTool } from '../e2e-helpers.js'
 
-async function resetShell(page: any) {
-  await page.evaluate(() => {
-    window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
-  })
-  await page.waitForFunction(
-    () => {
-      const toolName = document.querySelector('.nuxy-shell-omni-bar__tool-name')
-      const input = document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null
-      return toolName === null && (input?.value ?? '') === ''
-    },
-    { timeout: 400 }
-  )
-  await page.locator('.nuxy-shell-omni-bar__input').focus()
-}
-
-async function openGradient(page: any) {
-  await resetShell(page)
-  await page.keyboard.type('gradient')
-  const option = page.locator('[role="option"]', { hasText: 'gradient' })
-  await option.first().click()
-  await page.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 400 })
-  await page.locator('.nuxy-shell-omni-bar__input').focus()
-}
+const openGradient = (page: any) => openTool(page, 'gradient')
 
 test.describe('gradient extension', () => {
   test.beforeEach(async ({ appPage }) => {

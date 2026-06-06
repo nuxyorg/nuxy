@@ -1,30 +1,15 @@
 const React = window.React
 
 const EXT_ID = 'com.nuxy.settings'
-const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
 
 import type { UseTwoPanelNavResult } from '@nuxy/ui'
+import { _useTranslation, _useTwoPanelNav } from '../ui-hooks.ts'
 import { useSettingsData } from './hooks/useSettingsData.ts'
 import { useSettingsMeta } from './hooks/useSettingsMeta.ts'
 import { useSettingsActions } from './hooks/useSettingsActions.ts'
 import { useSettingsKeyboard } from './hooks/useSettingsKeyboard.ts'
 import { SettingsLeftPanel } from './components/SettingsLeftPanel.tsx'
 import { SettingsRightPanel } from './components/SettingsRightPanel.tsx'
-
-const _useTwoPanelNav =
-  (window.UI || {}).useTwoPanelNav ||
-  (({ sections }: { sections: Array<{ id: string }> }) => ({
-    focusArea: 'right' as const,
-    setFocusArea: () => {},
-    activeSectionId: sections[0]?.id ?? '',
-    goToSection: () => {},
-    sectionStartIndex: {} as Record<string, number>,
-    getSectionIdForIndex: () => sections[0]?.id ?? '',
-    onItemSelected: () => {},
-    setActiveSection: () => {},
-  }))
 
 interface Props {
   query: string

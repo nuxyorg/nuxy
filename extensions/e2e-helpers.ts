@@ -13,3 +13,12 @@ export async function resetShell(page: any) {
   )
   await page.locator('input').focus()
 }
+
+export async function openTool(page: any, name: string) {
+  await resetShell(page)
+  await page.keyboard.type(name)
+  const option = page.locator('[role="option"]', { hasText: name })
+  await option.first().click()
+  await page.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 400 })
+  await page.locator('input').focus()
+}

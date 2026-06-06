@@ -2,10 +2,8 @@ const React = window.React
 const { useState, useRef } = React
 
 const EXT_ID = 'com.nuxy.store'
-const _useTranslation =
-  (window.UI || {}).useTranslation ||
-  (() => ({ t: (key: string) => key, locale: 'en', dir: 'ltr' as const }))
 
+import { _useTranslation, _useTwoPanelNav } from '../ui-hooks.ts'
 import { useStoreData } from './hooks/useStoreData.ts'
 import { useStoreActions } from './hooks/useStoreActions.ts'
 import { useStoreDerivedData } from './hooks/useStoreDerivedData.ts'
@@ -28,19 +26,6 @@ interface Nav {
   onItemSelected: (idx: number) => void
   setActiveSection: (id: string) => void
 }
-
-const _useTwoPanelNav =
-  (window.UI || {}).useTwoPanelNav ||
-  (({ sections }: { sections: NavSection[] }) => ({
-    focusArea: 'right' as const,
-    setFocusArea: () => {},
-    activeSectionId: sections[0]?.id ?? '',
-    goToSection: () => {},
-    sectionStartIndex: {} as Record<string, number>,
-    getSectionIdForIndex: () => sections[0]?.id ?? '',
-    onItemSelected: () => {},
-    setActiveSection: () => {},
-  }))
 
 export default function StoreView({ query }: { query: string }) {
   const { TwoPanel, TabBar, Box } = window.UI || {}
