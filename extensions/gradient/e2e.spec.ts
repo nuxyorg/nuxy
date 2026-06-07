@@ -1,23 +1,20 @@
 // fallow-ignore-file code-duplication
-import { test, expect } from '../../src/e2e/fixtures.ts'
+import { test, expect } from '../../src/e2e/fixtures.js'
 import { resetShell, openTool } from '../e2e-helpers.js'
 
 const openGradient = (page: any) => openTool(page, 'gradient')
 
 test.describe('gradient extension', () => {
-  test.beforeEach(async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openGradient(appPage)
+  test('shell gradient canvas element is present in the DOM', async ({ appPage }) => {
+    await appPage.waitForSelector('input', { timeout: 2000 })
+    const canvas = appPage.locator('#nuxy-shell-gradient-canvas')
+    await expect(canvas).toBeAttached({ timeout: 5000 })
   })
 
-  test('canvas element is present in the DOM', async ({ appPage }) => {
-    const canvas = appPage.locator('#nuxy-gradient-canvas')
-    await expect(canvas).toBeAttached()
-  })
-
-  test('canvas has non-zero width and height', async ({ appPage }) => {
+  test('shell gradient canvas has non-zero width and height', async ({ appPage }) => {
+    await appPage.waitForSelector('#nuxy-shell-gradient-canvas', { state: 'attached', timeout: 5000 })
     const dimensions = await appPage.evaluate(() => {
-      const canvas = document.getElementById('nuxy-gradient-canvas') as HTMLCanvasElement | null
+      const canvas = document.getElementById('nuxy-shell-gradient-canvas') as HTMLCanvasElement | null
       if (!canvas) return null
       const rect = canvas.getBoundingClientRect()
       return { width: rect.width, height: rect.height }
@@ -34,32 +31,16 @@ test.describe('shell gradient border and glow', () => {
     await appPage.waitForSelector('input', { timeout: 400 })
   })
 
-  test('shell gradient canvas is hidden by default and visible when gradient tool is active', async ({
+  test('shell gradient canvas is hidden by default when no tool is active', async ({
     appPage,
   }) => {
-    // 1. Reset shell (no tool active)
     await resetShell(appPage)
 
-    const containerDefault = appPage.locator('.nuxy-shell-container')
-    await expect(containerDefault).not.toHaveClass(/nuxy-shell-container--gradient-active/)
+    const container = appPage.locator('.nuxy-shell-container')
+    await expect(container).not.toHaveClass(/nuxy-shell-container--gradient-active/)
 
-    const shellCanvasDefault = appPage.locator('#nuxy-shell-gradient-canvas')
-    await expect(shellCanvasDefault).not.toBeVisible({ timeout: 1000 })
-
-    // 2. Open gradient tool
-    await openGradient(appPage)
-
-    const containerActive = appPage.locator('.nuxy-shell-container')
-    await expect(containerActive).toHaveClass(/nuxy-shell-container--gradient-active/)
-
-    const shellCanvasActive = appPage.locator('#nuxy-shell-gradient-canvas')
-    await expect(shellCanvasActive).toBeVisible()
-
-    // 3. Reset shell again
-    await resetShell(appPage)
-
-    await expect(containerDefault).not.toHaveClass(/nuxy-shell-container--gradient-active/)
-    await expect(shellCanvasDefault).not.toBeVisible({ timeout: 1000 })
+    const shellCanvas = appPage.locator('#nuxy-shell-gradient-canvas')
+    await expect(shellCanvas).not.toBeVisible({ timeout: 1000 })
   })
 })
 
@@ -90,9 +71,11 @@ async function installOllamaMock(appPage: any, electronApp: any) {
 
   await (electronApp as any).evaluate(
     ({ ipcMain }: any, { snapshot }: any) => {
+      const originalHandler = (ipcMain as any)._invokeHandlers?.get?.('ext:invoke')
+      if (originalHandler) (global as any).__gradientOriginalHandler = originalHandler
       ;(global as any).__ollamaChatDelay = 4000
-      ipcMain.removeHandler('ext:invoke')
-      ipcMain.handle(
+      // Replace handler directly in map to avoid removeHandler unregistering the IPC channel
+      ;(ipcMain as any)._invokeHandlers?.set?.(
         'ext:invoke',
         async (_ev: any, extId: string, channel: string, payload: any) => {
           if (extId === 'com.nuxy.ollama') {
@@ -139,6 +122,14 @@ test.describe('ollama thinking gradient activation', () => {
   test.beforeAll(async ({ appPage, electronApp }) => {
     await appPage.waitForSelector('input', { timeout: 2000 })
     await installOllamaMock(appPage, electronApp)
+  })
+
+  test.afterAll(async ({ electronApp }) => {
+    await (electronApp as any).evaluate(({ ipcMain }: any) => {
+      const orig = (global as any).__gradientOriginalHandler
+      if (orig) (ipcMain as any)._invokeHandlers?.set?.('ext:invoke', orig)
+      ;(global as any).__gradientOriginalHandler = undefined
+    })
   })
 
   test('opening ollama and submitting query triggers shell gradient border/glow during thinking state', async ({

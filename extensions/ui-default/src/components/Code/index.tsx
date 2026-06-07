@@ -42,7 +42,7 @@ export function CodeBlock({ code, language = 'text', showCopy = true, className 
                 tok.type === 'plain' ? (
                   tok.text
                 ) : (
-                  <span key={i} className={`nuxy-hl-${tok.type}`}>
+                  <span key={`${tok.type}-${i}`} className={`nuxy-hl-${tok.type}`}>
                     {tok.text}
                   </span>
                 )

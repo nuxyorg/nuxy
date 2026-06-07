@@ -21,6 +21,7 @@ export function Breadcrumb({ items, separator = '/', className }: BreadcrumbProp
           const isLast = idx === items.length - 1
 
           return (
+            // eslint-disable-next-line react-doctor/no-array-index-as-key
             <li key={idx} className="nuxy-breadcrumb__item">
               {idx > 0 && (
                 <span className="nuxy-breadcrumb__sep" aria-hidden="true">
@@ -36,19 +37,13 @@ export function Breadcrumb({ items, separator = '/', className }: BreadcrumbProp
                   {item.label}
                 </a>
               ) : (
-                <span
+                <button
+                  type="button"
                   className="nuxy-breadcrumb__link"
-                  role="button"
-                  tabIndex={0}
                   onClick={item.onClick}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      item.onClick?.(e as unknown as React.MouseEvent)
-                    }
-                  }}
                 >
                   {item.label}
-                </span>
+                </button>
               )}
             </li>
           )

@@ -1,4 +1,4 @@
-import { test, expect } from '../../src/e2e/fixtures.ts'
+import { test, expect } from '../../src/e2e/fixtures.js'
 
 async function resetShell(page: any) {
   await page.evaluate(() => {
@@ -17,23 +17,13 @@ async function resetShell(page: any) {
 
 async function openNotes(page: any) {
   await resetShell(page)
-  console.log('Waiting for shell to load tools...')
   await page.locator('[role="option"]').first().waitFor({ state: 'visible', timeout: 5000 })
-  console.log('Typing notes...')
   const input = page.locator('.nuxy-shell-omni-bar__input')
   await input.fill('notes')
-  console.log('Waiting for option...')
-  try {
-    const option = page.locator('[role="option"]', { hasText: 'notes' })
-    await option.first().waitFor({ state: 'visible', timeout: 5000 })
-    console.log('Found option, clicking...')
-    await option.first().click()
-  } catch (err) {
-    console.log('Failed to find/click notes option. HTML content:')
-    console.log(await page.content())
-    throw err
-  }
-  await page.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 2000 })
+  const option = page.locator('[role="option"]', { hasText: 'notes' })
+  await option.first().waitFor({ state: 'visible', timeout: 2000 })
+  await option.first().click()
+  await page.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 5000 })
   await page.locator('.nuxy-shell-omni-bar__input').focus()
 }
 
@@ -101,7 +91,12 @@ test.describe('notes extension — keyboard navigation', () => {
 
   test('Enter on selected note opens it in the right panel', async ({ appPage }) => {
     await appPage.keyboard.press('Control+n')
-    await appPage.waitForSelector('.nuxy-list-item', { timeout: 2000 })
+    // Ctrl+N enters editMode=true (textarea visible, left panel hidden)
+    await appPage.waitForSelector('.nuxy-textarea', { timeout: 2000 })
+
+    // Exit edit mode so the list becomes navigable
+    await appPage.keyboard.press('Escape')
+    await appPage.waitForSelector('.nuxy-textarea', { state: 'detached', timeout: 2000 })
 
     await appPage.locator('.nuxy-shell-omni-bar__input').focus()
     await appPage.keyboard.press('ArrowDown') // selects index 0 ("New Note")
@@ -120,13 +115,15 @@ test.describe('notes extension — keyboard navigation', () => {
     await textarea.fill('Test Title\nTest body content')
 
     await appPage.keyboard.press('Control+s')
-    await appPage.evaluate(() => new Promise((r) => setTimeout(r, 200)))
 
-    const result = await appPage.evaluate(async () => {
-      const res = await (window as any).core.ipc.invoke('com.nuxy.notes', 'notes:list', {})
-      return res?.data
-    })
-    expect(result.some((n: any) => n.title === 'Test Title')).toBe(true)
+    // Poll until the saved note appears in the backend
+    await expect(async () => {
+      const result = await appPage.evaluate(async () => {
+        const res = await (window as any).core.ipc.invoke('com.nuxy.notes', 'notes:list', {})
+        return res?.data
+      })
+      expect(result.some((n: any) => n.title === 'Test Title')).toBe(true)
+    }).toPass({ timeout: 2000 })
   })
 
   test('Delete key deletes the selected note', async ({ appPage }) => {
@@ -146,17 +143,6 @@ test.describe('notes extension — keyboard navigation', () => {
     const items = appPage.locator('.nuxy-list-item')
     await expect(items).toHaveCount(2)
 
-    console.log('[DEBUG] Item 0 classes:', await items.nth(0).getAttribute('class'))
-    console.log('[DEBUG] Item 1 classes:', await items.nth(1).getAttribute('class'))
-    console.log(
-      '[DEBUG] Active element tag:',
-      await appPage.evaluate(() => document.activeElement?.tagName)
-    )
-    console.log(
-      '[DEBUG] Active element classes:',
-      await appPage.evaluate(() => document.activeElement?.className)
-    )
-
     await appPage.keyboard.press('Delete')
 
     // Wait for the UI note list to update (only "New Note" remains)
@@ -164,21 +150,14 @@ test.describe('notes extension — keyboard navigation', () => {
   })
 
   test('Delete key is inactive when no note is selected', async ({ appPage }) => {
-    await appPage.keyboard.press('Control+n')
-    await appPage.waitForSelector('.nuxy-list-item', { timeout: 2000 })
-
-    // Exit edit mode first
-    await appPage.keyboard.press('Escape')
-
+    // beforeEach deleted all notes — selectedIndex starts at -1, nothing is selected
     const countBefore = await appPage.evaluate(async () => {
       const res = await (window as any).core.ipc.invoke('com.nuxy.notes', 'notes:list', {})
       return res?.data?.length ?? 0
     })
+    expect(countBefore).toBe(0)
 
-    // Focus omnibar so selection is reset to -1 (no note is selected in left list)
-    await appPage.locator('.nuxy-shell-omni-bar__input').focus()
     await appPage.keyboard.press('Delete')
-    await appPage.evaluate(() => new Promise((r) => setTimeout(r, 100)))
 
     const countAfter = await appPage.evaluate(async () => {
       const res = await (window as any).core.ipc.invoke('com.nuxy.notes', 'notes:list', {})
@@ -191,13 +170,13 @@ test.describe('notes extension — keyboard navigation', () => {
     // Start with empty notes, no note selected
     await appPage.locator('.nuxy-shell-omni-bar__input').focus()
     await appPage.keyboard.press('Control+s')
-    await appPage.evaluate(() => new Promise((r) => setTimeout(r, 100)))
 
     const emptyState = appPage.locator('.nuxy-two-panel__right .nuxy-empty-state')
     await expect(emptyState).toBeVisible()
   })
 
   test('query prop filters notes list', async ({ appPage }) => {
+    // Create notes while Notes is already open (beforeEach opened it)
     await appPage.evaluate(async () => {
       await (window as any).core.ipc.invoke('com.nuxy.notes', 'notes:create', {
         title: 'Alpha Note',
@@ -209,18 +188,33 @@ test.describe('notes extension — keyboard navigation', () => {
       })
     })
 
-    await appPage.evaluate(() => {
-      window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
-    })
+    // Re-open Notes to pick up the newly created notes (fresh mount re-fetches list)
+    await resetShell(appPage)
+    await appPage.keyboard.type('note')
+    const toolOption = appPage.locator('[role="option"]', { hasText: /notes/i })
+    await toolOption.first().waitFor({ state: 'visible', timeout: 2000 })
+    await toolOption.first().click()
+    await appPage.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 2000 })
+
+    // Wait for 3 items: New Note + Alpha Note + Beta Note
+    await appPage.waitForFunction(
+      () => document.querySelectorAll('.nuxy-list-item').length >= 3,
+      undefined,
+      { timeout: 2000 }
+    )
+
+    // Type 'alpha' in the omnibar while Notes is active — Notes uses query prop to filter
     await appPage.locator('.nuxy-shell-omni-bar__input').focus()
     await appPage.keyboard.type('alpha')
 
-    const option = appPage.locator('[role="option"]', { hasText: 'notes' })
-    await option.first().click()
-    await appPage.waitForSelector('.nuxy-list-item', { timeout: 2000 })
+    // Notes should filter to show only Alpha Note (+ New Note header)
+    await appPage.waitForFunction(
+      () => document.querySelectorAll('.nuxy-list-item').length === 2,
+      undefined,
+      { timeout: 2000 }
+    )
 
     const items = appPage.locator('.nuxy-list-item')
-    // index 0 is "New Note", index 1 is Alpha Note
     await expect(items).toHaveCount(2)
     await expect(items.nth(1)).toContainText('Alpha Note')
   })
@@ -237,6 +231,7 @@ test.describe('notes extension — keyboard navigation', () => {
 
   test('saves note via provider click', async ({ appPage }) => {
     await resetShell(appPage)
+
     const input = appPage.locator('.nuxy-shell-omni-bar__input')
     await input.fill('something222')
     const option = appPage.locator('[role="option"]', { hasText: 'Save as note' })

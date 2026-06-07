@@ -75,12 +75,12 @@ export function registerWindowChannels(): void {
   })
 
   ipcMain.on('window:preloads-loaded', () => {
-    log.info(`[FLASH-DEBUG] window:preloads-loaded received at ${Date.now()}`)
+    // log.info(`[FLASH-DEBUG] window:preloads-loaded received at ${Date.now()}`)
     onPreloadsLoaded()
   })
 
   ipcMain.on('window:ready', () => {
-    log.info(`[FLASH-DEBUG] window:ready received at ${Date.now()}`)
+    // log.info(`[FLASH-DEBUG] window:ready received at ${Date.now()}`)
     onRendererReady()
   })
 }

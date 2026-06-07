@@ -1,9 +1,9 @@
 import type { ExtensionRuntimeMeta, LoadedExtension } from '@nuxy/core'
 import fs from 'fs'
 import path from 'path'
-import { app } from 'electron'
+import electron from 'electron'
 import { DATA_DIR, EXTRACTED_DIR } from '../config/paths.js'
-import { resolveLocale } from '@nuxy/core'
+import { resolveLocale } from '../../../packages/core/src/i18n.js'
 
 const byId = new Map<string, LoadedExtension>()
 const folderToId = new Map<string, string>()
@@ -24,7 +24,10 @@ export function getPreferredLocale(): string {
 
   let appLocale = 'en'
   try {
-    appLocale = app.getLocale()
+    const app = typeof electron === 'object' && electron ? (electron as any).app : null
+    if (app) {
+      appLocale = app.getLocale()
+    }
   } catch {}
 
   const candidates = [...preferredLanguages, appLocale].filter(Boolean)

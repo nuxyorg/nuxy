@@ -14,10 +14,20 @@ export interface FileInputProps {
   id?: string
 }
 
+const EMPTY_FILES: File[] = []
+
+function formatSize(bytes: number): string {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
+}
+
 export function FileInput({
   onChange,
   onRemove,
-  value = [],
+  value = EMPTY_FILES,
   multiple = false,
   accept,
   disabled = false,
@@ -55,16 +65,9 @@ export function FileInput({
     onRemove?.(idx) ?? onChange?.(value.filter((_, i) => i !== idx))
   }
 
-  const formatSize = (bytes: number) => {
-    if (bytes === 0) return '0 B'
-    const k = 1024
-    const sizes = ['B', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
-  }
-
   return (
     <div className={`nuxy-file-input ${className || ''}`}>
+      {/* eslint-disable-next-line react-doctor/prefer-tag-over-role */}
       <div
         className={[
           'nuxy-file-input__zone',
@@ -73,15 +76,25 @@ export function FileInput({
         ]
           .filter(Boolean)
           .join(' ')}
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-label={label}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !disabled && inputRef.current?.click()}
+        onKeyDown={(e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
+            e.preventDefault()
+            inputRef.current?.click()
+          }
+        }}
       >
         <input
           ref={inputRef}
           id={id}
           type="file"
+          aria-label={label}
           className="nuxy-file-input__native"
           multiple={multiple}
           accept={accept}
@@ -111,7 +124,7 @@ export function FileInput({
       {value.length > 0 && (
         <div className="nuxy-file-input__files">
           {value.map((file, idx) => (
-            <div key={idx} className="nuxy-file-input__file">
+            <div key={`${file.name}-${file.lastModified}`} className="nuxy-file-input__file">
               <span className="nuxy-file-input__file-name">{file.name}</span>
               <span className="nuxy-file-input__file-size">{formatSize(file.size)}</span>
               {!disabled && (

@@ -34,14 +34,10 @@ function bundleCachePath(extDir: string, entryPath: string): string {
 /**
  * Pre-bundle an extension backend for worker execution.
  *
- * Uses `platform: 'browser'` (not `node`) so esbuild cannot resolve Node built-ins
- * at build time. Static `import 'fs'` / `require('fs')` fail the bundle step;
- * scanner `detectNodeImports` is a second gate at install time.
- *
- * Note: variable dynamic imports (`import(variable)`) are not blocked — workers
- * still run in Node. Full isolation would need `isolated-vm` (see pain-points P7).
+ * Uses `platform: 'node'` to resolve dependencies from node_modules.
+ * Node built-ins are blocked via an esbuild plugin to ensure sandbox safety.
  */
-export function bundleExtensionBackend(entryPath: string, extDir: string): string {
+export async function bundleExtensionBackend(entryPath: string, extDir: string): Promise<string> {
   if (!fs.existsSync(entryPath)) {
     throw new Error(`Extension backend entry not found: ${entryPath}`)
   }
@@ -55,19 +51,46 @@ export function bundleExtensionBackend(entryPath: string, extDir: string): strin
 
   const repoRoot = repoRootFromHere()
   try {
-    esbuild.buildSync({
+    await esbuild.build({
       entryPoints: [entryPath],
       bundle: true,
-      platform: 'browser',
+      platform: 'node',
       format: 'esm',
       outfile,
-      packages: 'bundle',
+      // electron is provided by the host process — keep it external.
+      // Everything else (npm deps) is bundled from the extension's own node_modules.
+      external: ['electron', ...BUILTIN_MODULES],
       logLevel: 'warning',
       alias: {
         '@nuxy/extension-sdk': path.join(repoRoot, 'packages/extension-sdk/src/index.ts'),
         '@nuxy/core': path.join(repoRoot, 'packages/core/src/index.ts'),
       },
       loader: { '.ts': 'ts', '.tsx': 'tsx' },
+      // Resolve npm deps from the extension's own node_modules first.
+      nodePaths: [path.join(extDir, 'node_modules')],
+      plugins: [
+        {
+          // Block Node built-in imports (fs, path, child_process, …) with a hard
+          // build error. This preserves the sandbox guarantee that was previously
+          // achieved via platform:'browser', while still letting platform:'node'
+          // resolve third-party npm packages correctly.
+          name: 'block-node-builtins',
+          setup(build) {
+            build.onResolve({ filter: /.*/ }, (args) => {
+              if (isNodeBuiltin(args.path)) {
+                return {
+                  errors: [
+                    {
+                      text: `Extension sandbox: Node built-in "${args.path}" is not allowed`,
+                    },
+                  ],
+                }
+              }
+              return undefined
+            })
+          },
+        },
+      ],
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)

@@ -49,7 +49,6 @@ export default function ShellView({ query: _queryProp }: Props) {
     Toaster,
   } = window.UI || {}
   const { t } = _useTranslation(EXT_ID)
-  console.log('usetranslation', t, t('general'))
 
   // Core UI state
   const [query, setQuery] = useState<string>('')

@@ -55,6 +55,7 @@ export function SelectBox({
     return () => document.removeEventListener('keydown', handleKeyCapture, true)
   }, [open])
 
+  // eslint-disable-next-line react-doctor/no-derived-useState
   const [prevOpen, setPrevOpen] = useState(open)
   if (open !== prevOpen) {
     setPrevOpen(open)
@@ -168,6 +169,7 @@ export function SelectBox({
       {open &&
         options.length > 0 &&
         createPortal(
+          // eslint-disable-next-line react-doctor/no-role-as-html-tag
           <div
             className="nuxy-select-box__dropdown"
             style={{ top: dropdownPos.top, left: dropdownPos.left, transform: 'translateX(-100%)' }}
@@ -178,6 +180,7 @@ export function SelectBox({
                 <input
                   ref={searchRef}
                   className="nuxy-select-box__search"
+                  aria-label="Search options"
                   placeholder="Search…"
                   value={searchQuery}
                   tabIndex={-1}
@@ -195,6 +198,7 @@ export function SelectBox({
                   const isFocused = i === activeFocusedIndex
                   const isSelected = option.value === value
                   return (
+                    // eslint-disable-next-line react-doctor/interactive-supports-focus
                     <div
                       key={option.value}
                       role="option"

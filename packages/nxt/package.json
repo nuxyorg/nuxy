@@ -1,0 +1,18 @@
+{
+  "name": "@nuxy/nxt",
+  "version": "0.1.0",
+  "description": "Nuxy Extension Tooling — package, install, and publish .nuxyext extensions",
+  "type": "module",
+  "bin": {
+    "nxt": "./bin/nxt.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "commander": "^13.1.0",
+    "esbuild": "^0.25.0",
+    "picocolors": "^1.1.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

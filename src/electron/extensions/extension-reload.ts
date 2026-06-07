@@ -434,6 +434,6 @@ function registerExtensionByType(
   if (type === 'uikit') return
 
   if (entry?.backend) {
-    spawnExtension(extId, folderName, entry.backend, manifest.permissions ?? [])
+    void spawnExtension(extId, folderName, entry.backend, manifest.permissions ?? [])
   }
 }

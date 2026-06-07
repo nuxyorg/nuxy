@@ -34,6 +34,7 @@ const KEY_ICONS: Record<string, string> = {
 function KbdChar({ ch }: { ch: string }) {
   const icon = KEY_ICONS[ch]
   if (icon) {
+    // eslint-disable-next-line react-doctor/no-danger
     return <span className="nuxy-kbd-icon" dangerouslySetInnerHTML={{ __html: icon }} />
   }
   return <>{ch}</>
@@ -41,8 +42,10 @@ function KbdChar({ ch }: { ch: string }) {
 
 export function Kbd({ children, className, ...props }: KbdProps) {
   const content =
+    // eslint-disable-next-line react-doctor/no-polymorphic-children
     typeof children === 'string'
-      ? [...children].map((ch, i) => <KbdChar key={i} ch={ch} />)
+      ? // eslint-disable-next-line react-doctor/no-array-index-as-key
+        [...children].map((ch, i) => <KbdChar key={i} ch={ch} />)
       : children
   return (
     <kbd className={`nuxy-kbd ${className || ''}`} {...props}>

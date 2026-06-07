@@ -70,6 +70,7 @@ export function DataList({ items, className }: DataListProps) {
   return (
     <div className={`nuxy-data-list ${className || ''}`}>
       {items.map((item, idx) => (
+        // eslint-disable-next-line react-doctor/no-array-index-as-key
         <div key={idx} className="nuxy-data-list__item">
           <span className="nuxy-data-list__label">{item.label}</span>
           <span className="nuxy-data-list__value">{item.value}</span>

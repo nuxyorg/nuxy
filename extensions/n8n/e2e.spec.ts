@@ -1,4 +1,4 @@
-import { test, expect } from '../../src/e2e/fixtures.ts'
+import { test, expect } from '../../src/e2e/fixtures.js'
 import { openTool } from '../e2e-helpers.js'
 
 const openN8n = (page: any) => openTool(page, 'n8n')

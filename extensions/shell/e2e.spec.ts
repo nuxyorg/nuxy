@@ -70,17 +70,19 @@ test.describe('shell search', () => {
     expect(body.toLowerCase()).toMatch(/emoji/)
   })
 
-  test('typing calculator query shows calculator result', async ({ appPage }) => {
+  test('typing math expression shows calculator result', async ({ appPage }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('calc')
-    await appPage.waitForFunction(() => document.body.innerText.toLowerCase().includes('calc'), {
-      timeout: 400,
-    })
+    await appPage.keyboard.type('2+2')
+    await appPage.waitForFunction(
+      () => document.body.innerText.includes('= 4'),
+      undefined,
+      { timeout: 2000 }
+    )
 
     const body = await appPage.evaluate(() => document.body.innerText)
-    expect(body.toLowerCase()).toMatch(/calc/)
+    expect(body).toMatch(/= 4/)
   })
 
   test('escape clears active search', async ({ appPage }) => {
@@ -148,24 +150,29 @@ test.describe('extension interactions', () => {
     expect(body.toLowerCase()).toMatch(/heart|❤/)
   })
 
-  test('opens time calculator via keyboard navigation', async ({ appPage }) => {
+  test('opens translate tool via keyboard navigation', async ({ appPage }) => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('time')
-    await appPage.waitForSelector('[role="option"]', { timeout: 400 })
+    await appPage.keyboard.type('trans')
+    await appPage.waitForSelector('[role="option"]', { timeout: 2000 })
     await appPage.keyboard.press('ArrowDown')
-    await appPage.waitForFunction(() => document.querySelector('[aria-selected="true"]') !== null, {
-      timeout: 400,
-    })
+    await appPage.waitForFunction(
+      () => document.querySelector('[aria-selected="true"]') !== null,
+      undefined,
+      { timeout: 2000 }
+    )
     await appPage.keyboard.press('Enter')
     await appPage.waitForFunction(
       () => document.querySelector('.nuxy-shell-omni-bar__tool-name') !== null,
-      { timeout: 400 }
+      undefined,
+      { timeout: 2000 }
     )
 
-    const body = await appPage.evaluate(() => document.body.innerText)
-    expect(body.toLowerCase()).toMatch(/time|clock|calc/)
+    const toolName = await appPage.evaluate(
+      () => document.querySelector('.nuxy-shell-omni-bar__tool-name')?.textContent ?? ''
+    )
+    expect(toolName.toLowerCase()).toMatch(/trans/)
   })
 })
 
@@ -417,10 +424,11 @@ test.describe('command palette (Ctrl+K)', () => {
 // ---------------------------------------------------------------------------
 
 test.describe('command palette rendering', () => {
-  test('Ctrl+K shows the command palette overlay', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+  test.beforeEach(async ({ appPage }) => {
     await openCommandPalette(appPage)
+  })
 
+  test('Ctrl+K shows the command palette overlay', async ({ appPage }) => {
     const paletteVisible = await appPage.evaluate(() => {
       return document.querySelector('.nuxy-command-palette') !== null
     })
@@ -428,9 +436,6 @@ test.describe('command palette rendering', () => {
   })
 
   test('command palette has its own input field', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openCommandPalette(appPage)
-
     const hasInput = await appPage.evaluate(() => {
       return document.querySelector('.nuxy-command-palette__input') !== null
     })
@@ -438,9 +443,6 @@ test.describe('command palette rendering', () => {
   })
 
   test('command palette input has "Search commands..." placeholder', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openCommandPalette(appPage)
-
     const placeholder = await appPage.evaluate(() => {
       const el = document.querySelector('.nuxy-command-palette__input') as HTMLInputElement | null
       return el?.placeholder ?? ''
@@ -449,9 +451,6 @@ test.describe('command palette rendering', () => {
   })
 
   test('command palette shows a list of actions', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openCommandPalette(appPage)
-
     const itemCount = await appPage.evaluate(() => {
       return document.querySelectorAll('.nuxy-command-palette__item').length
     })
@@ -459,9 +458,6 @@ test.describe('command palette rendering', () => {
   })
 
   test('first item is active by default', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openCommandPalette(appPage)
-
     const hasActiveItem = await appPage.evaluate(() => {
       return document.querySelector('.nuxy-command-palette__item--active') !== null
     })
@@ -470,10 +466,11 @@ test.describe('command palette rendering', () => {
 })
 
 test.describe('command palette navigation', () => {
-  test('ArrowDown moves selection to next item', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+  test.beforeEach(async ({ appPage }) => {
     await openCommandPalette(appPage)
+  })
 
+  test('ArrowDown moves selection to next item', async ({ appPage }) => {
     await appPage.keyboard.press('ArrowDown')
     await appPage.waitForFunction(
       () => {
@@ -491,9 +488,6 @@ test.describe('command palette navigation', () => {
   })
 
   test('ArrowUp moves selection back', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openCommandPalette(appPage)
-
     await appPage.keyboard.press('ArrowDown')
     await appPage.waitForFunction(
       () => {
@@ -526,10 +520,11 @@ test.describe('command palette navigation', () => {
 })
 
 test.describe('command palette filtering', () => {
-  test('typing filters actions by label', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+  test.beforeEach(async ({ appPage }) => {
     await openCommandPalette(appPage)
+  })
 
+  test('typing filters actions by label', async ({ appPage }) => {
     const totalBefore = await appPage.evaluate(
       () => document.querySelectorAll('.nuxy-command-palette__item').length
     )
@@ -552,9 +547,6 @@ test.describe('command palette filtering', () => {
   })
 
   test('"No actions available" shows when nothing matches', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openCommandPalette(appPage)
-
     await appPage.keyboard.type('xyzxyzxyz_no_match_possible')
     await appPage.waitForFunction(
       () => /no actions|no commands|no results|xyzxyz/i.test(document.body.innerText),
@@ -624,10 +616,11 @@ test.describe('omnibox DOM stability', () => {
 })
 
 test.describe('command palette dismissal', () => {
-  test('Escape closes the command palette', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+  test.beforeEach(async ({ appPage }) => {
     await openCommandPalette(appPage)
+  })
 
+  test('Escape closes the command palette', async ({ appPage }) => {
     await appPage.keyboard.press('Escape')
     await appPage.waitForFunction(() => document.querySelector('.nuxy-command-palette') === null, {
       timeout: 400,
@@ -640,9 +633,6 @@ test.describe('command palette dismissal', () => {
   })
 
   test('clicking the backdrop closes the command palette', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openCommandPalette(appPage)
-
     const backdrop = await appPage.$('.nuxy-command-palette-backdrop')
     if (backdrop) {
       const box = await backdrop.boundingBox()
@@ -662,9 +652,6 @@ test.describe('command palette dismissal', () => {
   })
 
   test('Ctrl+K again closes the command palette', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openCommandPalette(appPage)
-
     await appPage.keyboard.press('Escape')
     await appPage.waitForFunction(() => document.querySelector('.nuxy-command-palette') === null, {
       timeout: 400,
@@ -694,6 +681,13 @@ test.describe('i18n / locale', () => {
     const original = JSON.parse(readFileSync(settingsFile, 'utf8')) as Record<string, unknown>
 
     try {
+      // Reset shell in case a previous test left a tool active (which changes the placeholder)
+      await appPage.evaluate(() => window.dispatchEvent(new CustomEvent('nuxy-shell-reset')))
+      await appPage.waitForFunction(
+        () => document.querySelector('.nuxy-shell-omni-bar__tool-name') === null,
+        { timeout: 2000 }
+      )
+
       // Override preferred language to Japanese
       writeFileSync(settingsFile, JSON.stringify({ ...original, preferredLanguages: ['ja'] }))
 
@@ -705,7 +699,8 @@ test.describe('i18n / locale', () => {
         () =>
           (document.querySelector('input') as HTMLInputElement | null)?.placeholder ===
           '何を考えていますか？',
-        { timeout: 2000 }
+        undefined,
+        { timeout: 5000 }
       )
 
       const placeholder = await appPage.evaluate(

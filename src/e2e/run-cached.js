@@ -184,7 +184,11 @@ async function run() {
   if (filters.length > 0) {
     filteredSpecs = specFiles.filter((spec) => {
       return filters.some((filter) => {
-        return spec.name.includes(filter) || spec.relativePath.includes(filter)
+        return (
+          spec.name.includes(filter) ||
+          spec.relativePath.includes(filter) ||
+          spec.type === filter
+        )
       })
     })
   }

@@ -22,7 +22,7 @@ export function Stepper({ steps, current, className }: StepperProps) {
 
         return (
           <div
-            key={idx}
+            key={step.title}
             className={[
               'nuxy-step',
               isActive ? 'nuxy-step--active' : '',

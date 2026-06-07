@@ -16,7 +16,7 @@ export function getMainWindow(): BrowserWindow | null {
 }
 
 export function onRendererReady(): void {
-  log.info(`[FLASH-DEBUG] onRendererReady. readyToShowFired=${readyToShowFired}`)
+  // log.info(`[FLASH-DEBUG] onRendererReady. readyToShowFired=${readyToShowFired}`)
   rendererReady = true
   checkAndShow()
 }
@@ -24,7 +24,7 @@ export function onRendererReady(): void {
 function checkAndShow() {
   if (readyToShowFired && rendererReady && mainWindow && !mainWindow.isDestroyed()) {
     if (showOnStartup && !mainWindow.isVisible()) {
-      log.info(`[FLASH-DEBUG] Showing window (ready-to-show and renderer ready) at ${Date.now()}`)
+      // log.info(`[FLASH-DEBUG] Showing window (ready-to-show and renderer ready) at ${Date.now()}`)
       positionWindowOnDisplay(mainWindow)
       mainWindow.show()
       mainWindow.webContents.send('window:show')
@@ -68,7 +68,7 @@ export function createMainWindow() {
   applyConfigToWindow(mainWindow)
 
   mainWindow.once('ready-to-show', () => {
-    log.info(`[FLASH-DEBUG] ready-to-show fired at ${Date.now()}`)
+    // log.info(`[FLASH-DEBUG] ready-to-show fired at ${Date.now()}`)
     readyToShowFired = true
     checkAndShow()
   })

@@ -43,8 +43,10 @@ async function queryPlayer(busName: string): Promise<NowPlaying | null> {
   const bus = await getSessionBus()
   const obj = await bus.getProxyObject(busName, PLAYER_PATH)
   const props = obj.getInterface(PROPS_IFACE)
-  const playbackStatus = await props.Get(PLAYER_IFACE, 'PlaybackStatus')
-  const metadata = await props.Get(PLAYER_IFACE, 'Metadata')
+  const [playbackStatus, metadata] = await Promise.all([
+    props.Get(PLAYER_IFACE, 'PlaybackStatus'),
+    props.Get(PLAYER_IFACE, 'Metadata'),
+  ])
   return parseMprisPlayer(busName, metadata, playbackStatus)
 }
 

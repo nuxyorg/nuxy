@@ -15,10 +15,11 @@ export default function App() {
   useEffect(() => {
     const core = window.core
 
+    // eslint-disable-next-line react-doctor/no-eval
     const dynamicImport = new Function('url', 'return import(url)')
 
     void (async () => {
-      console.log(`[FLASH-DEBUG] App.tsx async init start at ${Date.now()}`)
+      // console.log(`[FLASH-DEBUG] App.tsx async init start at ${Date.now()}`)
       try {
         // 1. Fetch config first to know the custom theme name, zoom, and font
         const configRes = await core?.ipc?.invoke('kernel', 'getConfig', {}).catch(() => null)
@@ -80,8 +81,10 @@ export default function App() {
         //    the updated window.UI when their own frontends load.
         const uikitExts = uikitRes as IpcResult<Array<{ id: string }>> | undefined
         if (uikitExts?.success && Array.isArray(uikitExts.data)) {
+          // eslint-disable-next-line react-doctor/async-await-in-loop
           for (const ext of uikitExts.data) {
             try {
+              // eslint-disable-next-line react-doctor/async-await-in-loop
               await dynamicImport(`nuxy-ext://${ext.id}/frontend.js`)
             } catch (err) {
               console.warn(`[UIKit] Failed to load uikit extension "${ext.id}":`, err)
@@ -90,12 +93,12 @@ export default function App() {
         }
 
         // 3. Load the shell bootstrap — window.UI is now fully resolved.
-        console.log(`[FLASH-DEBUG] loading shell at ${Date.now()}`)
+        // console.log(`[FLASH-DEBUG] loading shell at ${Date.now()}`)
         try {
           const mod = (await dynamicImport(`nuxy-ext://${BOOTSTRAP_ID}/frontend.js`)) as {
             default: React.ComponentType<{ query?: string }>
           }
-          console.log(`[FLASH-DEBUG] shell loaded, setShellComponent at ${Date.now()}`)
+          // console.log(`[FLASH-DEBUG] shell loaded, setShellComponent at ${Date.now()}`)
           setShellComponent(() => mod.default)
           setLoadError(null)
         } catch (err) {
@@ -107,7 +110,7 @@ export default function App() {
       } finally {
         requestAnimationFrame(() => {
           setTimeout(() => {
-            console.log(`[FLASH-DEBUG] sending window:ready at ${Date.now()}`)
+            // console.log(`[FLASH-DEBUG] sending window:ready at ${Date.now()}`)
             window.core?.window?.ready()
           }, 50)
         })

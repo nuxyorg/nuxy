@@ -4,6 +4,11 @@ import os from 'os'
 import path from 'path'
 import type { CoreContext } from '@nuxy/core'
 
+function getTargetExtDir(targetExtId: string): string {
+  const baseDir = process.env.NUXY_DATA_DIR || path.join(os.homedir(), '.nuxy', 'data')
+  return path.join(baseDir, targetExtId)
+}
+
 export function buildSettingsApi(
   extId: string,
   dataDir: string,
@@ -34,7 +39,7 @@ export function buildSettingsApi(
 
   if (permissions.includes('settings.read')) {
     baseApi.readAllExtension = async (targetExtId: string): Promise<Record<string, unknown>> => {
-      const p = path.join(os.homedir(), '.nuxy', 'data', targetExtId, 'ext-settings.json')
+      const p = path.join(getTargetExtDir(targetExtId), 'ext-settings.json')
       try {
         const content = await fsPromises.readFile(p, 'utf8')
         return JSON.parse(content) as Record<string, unknown>
@@ -46,7 +51,7 @@ export function buildSettingsApi(
       targetExtId: string,
       key: string
     ): Promise<T | null> => {
-      const p = path.join(os.homedir(), '.nuxy', 'data', targetExtId, 'ext-settings.json')
+      const p = path.join(getTargetExtDir(targetExtId), 'ext-settings.json')
       try {
         const content = await fsPromises.readFile(p, 'utf8')
         const data = JSON.parse(content) as Record<string, unknown>
@@ -62,7 +67,7 @@ export function buildSettingsApi(
       targetExtId: string,
       values: Record<string, unknown>
     ): Promise<void> => {
-      const dir = path.join(os.homedir(), '.nuxy', 'data', targetExtId)
+      const dir = getTargetExtDir(targetExtId)
       fs.mkdirSync(dir, { recursive: true })
       await fsPromises.writeFile(path.join(dir, 'ext-settings.json'), JSON.stringify(values, null, 2))
     }
@@ -71,7 +76,7 @@ export function buildSettingsApi(
       key: string,
       value: unknown
     ): Promise<void> => {
-      const dir = path.join(os.homedir(), '.nuxy', 'data', targetExtId)
+      const dir = getTargetExtDir(targetExtId)
       const p = path.join(dir, 'ext-settings.json')
       let data: Record<string, unknown> = {}
       try {

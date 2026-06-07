@@ -94,14 +94,14 @@ describe('spawnExtension', () => {
 
   // ─── 1. migrateLegacyData ─────────────────────────────────────────────────
 
-  it('calls migrateLegacyData with extId and folderName', () => {
-    spawnExtension(extId, folderName, entryFile)
+  it('calls migrateLegacyData with extId and folderName', async () => {
+    await spawnExtension(extId, folderName, entryFile)
     expect(migrateLegacyData).toHaveBeenCalledOnce()
     expect(migrateLegacyData).toHaveBeenCalledWith(extId, folderName)
   })
 
-  it('pre-bundles the backend entry before spawning the worker', () => {
-    spawnExtension(extId, folderName, entryFile)
+  it('pre-bundles the backend entry before spawning the worker', async () => {
+    await spawnExtension(extId, folderName, entryFile)
 
     expect(bundleExtensionBackend).toHaveBeenCalledOnce()
     expect(bundleExtensionBackend).toHaveBeenCalledWith(
@@ -112,8 +112,8 @@ describe('spawnExtension', () => {
 
   // ─── 2. Worker construction ───────────────────────────────────────────────
 
-  it('creates a Worker with a script path ending in extension-host.js and correct workerData', () => {
-    spawnExtension(extId, folderName, entryFile, permissions)
+  it('creates a Worker with a script path ending in extension-host.js and correct workerData', async () => {
+    await spawnExtension(extId, folderName, entryFile, permissions)
 
     expect(lastWorker.script).toMatch(/extension-host\.js$/)
 
@@ -132,23 +132,23 @@ describe('spawnExtension', () => {
 
   // ─── 3. Registers worker in activeWorkers ─────────────────────────────────
 
-  it('registers the worker in activeWorkers under extId', () => {
-    spawnExtension(extId, folderName, entryFile)
+  it('registers the worker in activeWorkers under extId', async () => {
+    await spawnExtension(extId, folderName, entryFile)
     expect(activeWorkers.has(extId)).toBe(true)
     expect(activeWorkers.get(extId)).toBe(lastWorker)
   })
 
   // ─── 4. Returns the worker ────────────────────────────────────────────────
 
-  it('returns the worker instance', () => {
-    const returned = spawnExtension(extId, folderName, entryFile)
+  it('returns the worker instance', async () => {
+    const returned = await spawnExtension(extId, folderName, entryFile)
     expect(returned).toBe(lastWorker)
   })
 
   // ─── 5. absolutePath is derived from EXTRACTED_DIR ────────────────────────
 
-  it('builds absolutePath from EXTRACTED_DIR, folderName and entryFile', () => {
-    spawnExtension(extId, folderName, entryFile)
+  it('builds absolutePath from EXTRACTED_DIR, folderName and entryFile', async () => {
+    await spawnExtension(extId, folderName, entryFile)
     const { absolutePath } = lastWorker.options.workerData
     // pathToFileURL('/fake/extracted/test-extension/backend.js').href
     expect(absolutePath).toBe('file:///fake/extracted/test-extension/backend.js')
@@ -157,7 +157,7 @@ describe('spawnExtension', () => {
   // ─── 6. registry:sync message ─────────────────────────────────────────────
 
   it('calls mergeRuntimeSync when a registry:sync message is received', async () => {
-    spawnExtension(extId, folderName, entryFile)
+    await spawnExtension(extId, folderName, entryFile)
 
     lastWorker.emit('message', {
       type: 'registry:sync',
@@ -174,7 +174,7 @@ describe('spawnExtension', () => {
   })
 
   it('defaults ipcChannels to [] when missing in registry:sync', async () => {
-    spawnExtension(extId, folderName, entryFile)
+    await spawnExtension(extId, folderName, entryFile)
 
     lastWorker.emit('message', { type: 'registry:sync', displayName: 'X' })
     await flush()
@@ -188,7 +188,7 @@ describe('spawnExtension', () => {
   // ─── 7. registry:error message ────────────────────────────────────────────
 
   it('does not crash on registry:error message', async () => {
-    spawnExtension(extId, folderName, entryFile)
+    await spawnExtension(extId, folderName, entryFile)
     expect(() =>
       lastWorker.emit('message', { type: 'registry:error', error: 'boom' })
     ).not.toThrow()
@@ -201,7 +201,7 @@ describe('spawnExtension', () => {
     const listener = vi.fn()
     workerRegistryErrorListeners.add(listener)
 
-    spawnExtension(extId, folderName, entryFile)
+    await spawnExtension(extId, folderName, entryFile)
     expect(activeWorkers.has(extId)).toBe(true)
 
     lastWorker.emit('message', { type: 'registry:error', error: 'boom' })
@@ -215,7 +215,7 @@ describe('spawnExtension', () => {
   // ─── 8. host:call message ─────────────────────────────────────────────────
 
   it('calls handleHostCall and posts host:reply on host:call message', async () => {
-    spawnExtension(extId, folderName, entryFile)
+    await spawnExtension(extId, folderName, entryFile)
 
     lastWorker.emit('message', {
       type: 'host:call',
@@ -239,7 +239,7 @@ describe('spawnExtension', () => {
   // ─── 9. null message → no crash ───────────────────────────────────────────
 
   it('does nothing and does not crash on a null message', async () => {
-    spawnExtension(extId, folderName, entryFile)
+    await spawnExtension(extId, folderName, entryFile)
 
     expect(() => lastWorker.emit('message', null)).not.toThrow()
     await flush()
@@ -251,8 +251,8 @@ describe('spawnExtension', () => {
 
   // ─── 10. exit code 0 → removes worker ────────────────────────────────────
 
-  it('removes worker from activeWorkers on exit with code 0', () => {
-    spawnExtension(extId, folderName, entryFile)
+  it('removes worker from activeWorkers on exit with code 0', async () => {
+    await spawnExtension(extId, folderName, entryFile)
     expect(activeWorkers.has(extId)).toBe(true)
 
     lastWorker.emit('exit', 0)
@@ -262,8 +262,8 @@ describe('spawnExtension', () => {
 
   // ─── 11. exit non-zero → still removes worker ─────────────────────────────
 
-  it('removes worker from activeWorkers on exit with non-zero code', () => {
-    spawnExtension(extId, folderName, entryFile)
+  it('removes worker from activeWorkers on exit with non-zero code', async () => {
+    await spawnExtension(extId, folderName, entryFile)
     expect(activeWorkers.has(extId)).toBe(true)
 
     lastWorker.emit('exit', 1)
@@ -273,11 +273,11 @@ describe('spawnExtension', () => {
 
   // ─── 12. exit listeners ───────────────────────────────────────────────────
 
-  it('notifies workerExitListeners on exit', () => {
+  it('notifies workerExitListeners on exit', async () => {
     const listener = vi.fn()
     workerExitListeners.add(listener)
 
-    spawnExtension(extId, folderName, entryFile)
+    await spawnExtension(extId, folderName, entryFile)
     lastWorker.emit('exit', 1)
 
     expect(listener).toHaveBeenCalledWith(extId, 1)

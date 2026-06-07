@@ -5,18 +5,22 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
 import os from 'os'
-import AdmZip from 'adm-zip'
+import { execFile } from 'child_process'
+import { promisify } from 'util'
 
-import { signDirectory, generateDeveloperKeys } from './electron/security/sign-tool.js'
+const execFileAsync = promisify(execFile)
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const repoRoot = path.resolve(__dirname, '..')
+const repoRoot  = path.resolve(__dirname, '..')
+
+/** Absolute path to the nxt CLI binary (repo-local, no global PATH dependency) */
+const nxtBin = path.resolve(repoRoot, 'packages/nxt/bin/nxt.js')
 
 const workspaceAliases = {
-  '@nuxy/core': path.resolve(repoRoot, 'packages/core/src/index.ts'),
-  '@nuxy/ui': path.resolve(repoRoot, 'packages/ui/src/index.tsx'),
+  '@nuxy/core':           path.resolve(repoRoot, 'packages/core/src/index.ts'),
+  '@nuxy/ui':             path.resolve(repoRoot, 'packages/ui/src/index.tsx'),
   '@nuxy/extension-host': path.resolve(repoRoot, 'packages/extension-host/src/index.ts'),
-  '@nuxy/extension-sdk': path.resolve(repoRoot, 'packages/extension-sdk/src/index.ts'),
+  '@nuxy/extension-sdk':  path.resolve(repoRoot, 'packages/extension-sdk/src/index.ts'),
 }
 
 export default defineConfig({
@@ -25,172 +29,104 @@ export default defineConfig({
   },
   plugins: [
     {
-      name: 'symlink-extensions',
-      configureServer(server) {
-        const sourceDir = path.resolve(repoRoot, 'extensions')
-        const targetDir = path.resolve(repoRoot, 'dist/extensions')
-        const extDestDir = path.resolve(os.homedir(), '.nuxy/extensions')
-        const skipDirs = new Set(['node_modules', '.git'])
+      /**
+       * nxt-extensions — replaces the old symlink-extensions plugin.
+       *
+       * On dev startup:
+       *   1. Converts ~/.nuxy/extensions from a symlink (legacy) to a real directory.
+       *   2. Runs `nxt package && nxt install` for every extension folder.
+       *   3. Watches extensions/ for changes and re-packages on edit.
+       *
+       * No manual zipping, signing, or symlinking — `nxt` handles everything.
+       */
+      name: 'nxt-extensions',
+      async configureServer(_server) {
+        const extensionsDir = path.resolve(repoRoot, 'extensions')
+        const nuxyExtDir    = path.join(os.homedir(), '.nuxy', 'extensions')
+        const skipDirs      = new Set(['node_modules', '.git'])
 
-        const keysPath = path.resolve(repoRoot, 'dist/developer-keys.json')
-        let keys: { privateKey: string; publicKey: string }
-        try {
-          if (fs.existsSync(keysPath)) {
-            keys = JSON.parse(fs.readFileSync(keysPath, 'utf8'))
-          } else {
-            fs.mkdirSync(path.dirname(keysPath), { recursive: true })
-            keys = generateDeveloperKeys()
-            fs.writeFileSync(keysPath, JSON.stringify(keys, null, 2))
+        // ── 1. Ensure ~/.nuxy/extensions/ is a real directory ──────────────
+        if (fs.existsSync(nuxyExtDir) && fs.lstatSync(nuxyExtDir).isSymbolicLink()) {
+          fs.unlinkSync(nuxyExtDir)
+          console.log('[nxt] Removed legacy extensions symlink → using real directory')
+        }
+        fs.mkdirSync(nuxyExtDir, { recursive: true })
+
+        // Copy loose shared files (e.g. ui-hooks.ts) from extensions/ root directly.
+        // These are shared modules imported by extension frontends; not packaged themselves.
+        for (const name of fs.readdirSync(extensionsDir)) {
+          const src = path.join(extensionsDir, name)
+          if (fs.statSync(src).isFile() && /\.(ts|tsx|js|jsx)$/.test(name)) {
+            fs.copyFileSync(src, path.join(nuxyExtDir, name))
           }
-        } catch (e) {
-          console.error('[symlink-extensions] Failed to load or generate developer keys:', e)
-          keys = generateDeveloperKeys()
         }
 
-        const shouldSync = (filePath: string) => {
-          const parts = path.relative(sourceDir, filePath).split(path.sep)
-          return !parts.some((part) => skipDirs.has(part))
-        }
-
-        const getExtensionId = (extDir: string, fallback: string): string => {
+        // ── 2. Package + install each extension (parallel) ────────────────
+        const packageAndInstall = async (extDir: string): Promise<void> => {
+          const name = path.basename(extDir)
           try {
-            const manifestPath = path.join(extDir, 'manifest.json')
-            if (fs.existsSync(manifestPath)) {
-              const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
-              return manifest.id || fallback
-            }
-          } catch {}
-          return fallback
+            await execFileAsync('node', [nxtBin, 'package'], { cwd: extDir })
+            await execFileAsync('node', [nxtBin, 'install'], { cwd: extDir })
+            console.log(`[nxt] ✔ ${name}`)
+          } catch (err: unknown) {
+            const stderr = (err as { stderr?: string }).stderr ?? ''
+            const msg = stderr.trim() || (err instanceof Error ? err.message : String(err))
+            console.error(`[nxt] ✘ ${name}: ${msg.trim()}`)
+          }
         }
 
-        const zipExtension = (srcExtDir: string, destZipPath: string) => {
-          const zip = new AdmZip()
-          const addFiles = (dir: string, zipPath: string) => {
-            const entries = fs.readdirSync(dir, { withFileTypes: true })
-            for (const entry of entries) {
-              if (skipDirs.has(entry.name)) continue
-              const fullPath = path.join(dir, entry.name)
-              const entryZipPath = zipPath ? `${zipPath}/${entry.name}` : entry.name
-              if (entry.isDirectory()) {
-                addFiles(fullPath, entryZipPath)
-              } else if (entry.isFile()) {
-                zip.addLocalFile(fullPath, zipPath)
-              }
-            }
-          }
-          addFiles(srcExtDir, '')
+        const extDirs = fs.readdirSync(extensionsDir, { withFileTypes: true })
+          .filter(e => e.isDirectory() && !skipDirs.has(e.name))
+          .map(e => path.join(extensionsDir, e.name))
+          .filter(d => fs.existsSync(path.join(d, 'manifest.json')))
 
+        await Promise.all(extDirs.map(packageAndInstall))
+
+        console.log('[nxt] All extensions packaged and installed')
+
+        // ── 3. Watch for file changes and re-package ──────────────────────
+        const pendingDebounce = new Map<string, ReturnType<typeof setTimeout>>()
+
+        const getExtFolder = (filePath: string): string | null => {
+          const rel   = path.relative(extensionsDir, filePath)
+          const parts = rel.split(path.sep)
+          // Only respond to files inside a named extension subdirectory
+          return parts.length > 1 ? parts[0] : null
+        }
+
+        const watchDir = (dir: string, cb: (fp: string) => void): void => {
           try {
-            const sigData = signDirectory(srcExtDir, keys.privateKey, keys.publicKey)
-            zip.addFile('signature.json', Buffer.from(JSON.stringify(sigData, null, 2)))
-          } catch (err) {
-            console.error(`[symlink-extensions] Failed to sign extension at ${srcExtDir}:`, err)
-          }
-
-          zip.writeZip(destZipPath)
-        }
-
-        const syncAllExtensions = () => {
-          if (fs.existsSync(targetDir)) {
-            fs.rmSync(targetDir, { recursive: true, force: true })
-          }
-          fs.mkdirSync(targetDir, { recursive: true })
-
-          const entries = fs.readdirSync(sourceDir, { withFileTypes: true })
-          for (const entry of entries) {
-            if (skipDirs.has(entry.name)) continue
-            const srcExtDir = path.join(sourceDir, entry.name)
-            if (entry.isDirectory()) {
-              const extId = getExtensionId(srcExtDir, entry.name)
-              const destZipPath = path.join(targetDir, `${extId}.nuxyext`)
-              zipExtension(srcExtDir, destZipPath)
-            }
-          }
-        }
-
-        const getExtensionFolderFromPath = (filePath: string): string | null => {
-          const relative = path.relative(sourceDir, filePath)
-          const parts = relative.split(path.sep)
-          return parts[0] || null
-        }
-
-        const watchRecursive = (
-          dir: string,
-          callback: (event: string, filepath: string) => void
-        ) => {
-          try {
-            fs.watch(dir, { recursive: false }, (event, filename) => {
-              if (filename) callback(event, path.join(dir, filename))
+            fs.watch(dir, { recursive: false }, (_, filename) => {
+              if (filename) cb(path.join(dir, filename))
             })
-          } catch (e) {
-            console.error(`[symlink-extensions] Failed to watch ${dir}:`, e)
-          }
+          } catch { /* dir may not exist or be inaccessible */ }
 
           try {
-            const items = fs.readdirSync(dir)
-            for (const item of items) {
-              const fullPath = path.join(dir, item)
+            for (const item of fs.readdirSync(dir)) {
               if (skipDirs.has(item)) continue
-              if (fs.statSync(fullPath).isDirectory()) {
-                watchRecursive(fullPath, callback)
-              }
+              const full = path.join(dir, item)
+              if (fs.statSync(full).isDirectory()) watchDir(full, cb)
             }
-          } catch (e) {}
+          } catch { /* */ }
         }
 
-        try {
-          syncAllExtensions()
-          console.log(
-            `[symlink-extensions] Packaged and synced extensions from ${sourceDir} -> ${targetDir}`
+        watchDir(extensionsDir, (filePath) => {
+          const folderName = getExtFolder(filePath)
+          if (!folderName || skipDirs.has(folderName)) return
+          const extDir = path.join(extensionsDir, folderName)
+          if (!fs.existsSync(path.join(extDir, 'manifest.json'))) return
+
+          // Debounce: wait 500 ms after the last change before re-packaging
+          const prev = pendingDebounce.get(folderName)
+          if (prev) clearTimeout(prev)
+          pendingDebounce.set(
+            folderName,
+            setTimeout(() => {
+              pendingDebounce.delete(folderName)
+              void packageAndInstall(extDir)
+            }, 500)
           )
-
-          if (fs.existsSync(extDestDir)) {
-            const stat = fs.lstatSync(extDestDir)
-            if (stat.isSymbolicLink()) {
-              const target = fs.readlinkSync(extDestDir)
-              if (target === targetDir) {
-                // Already correct symlink, but we still want to watch
-              } else {
-                fs.unlinkSync(extDestDir)
-                fs.symlinkSync(targetDir, extDestDir, 'dir')
-                console.log(`[symlink-extensions] Recreated symlink: ${extDestDir} -> ${targetDir}`)
-              }
-            } else {
-              fs.rmSync(extDestDir, { recursive: true, force: true })
-              fs.symlinkSync(targetDir, extDestDir, 'dir')
-              console.log(
-                `[symlink-extensions] Replaced dir with symlink: ${extDestDir} -> ${targetDir}`
-              )
-            }
-          } else {
-            fs.mkdirSync(path.dirname(extDestDir), { recursive: true })
-            fs.symlinkSync(targetDir, extDestDir, 'dir')
-            console.log(`[symlink-extensions] Created symlink: ${extDestDir} -> ${targetDir}`)
-          }
-
-          watchRecursive(sourceDir, (event, filepath) => {
-            if (!shouldSync(filepath)) return
-            const folderName = getExtensionFolderFromPath(filepath)
-            if (!folderName) return
-
-            const srcExtDir = path.join(sourceDir, folderName)
-            if (!fs.existsSync(srcExtDir) || !fs.statSync(srcExtDir).isDirectory()) {
-              syncAllExtensions()
-              return
-            }
-
-            const extId = getExtensionId(srcExtDir, folderName)
-            const destZipPath = path.join(targetDir, `${extId}.nuxyext`)
-            try {
-              zipExtension(srcExtDir, destZipPath)
-              console.log(`[symlink-extensions] Packaged and updated: ${extId}.nuxyext`)
-            } catch (err) {
-              console.error(`[symlink-extensions] Failed to package ${extId}:`, err)
-            }
-          })
-        } catch (e) {
-          console.error('[symlink-extensions] Error during symlink and watch setup:', e)
-        }
+        })
       },
     },
     react(),

@@ -35,6 +35,23 @@ export function resolveExtensionFile(
         }
       }
     }
+    // Fall back to shared files placed at the extensionsRoot level (e.g. ui-hooks.ts)
+    const sharedPath = path.resolve(extensionsRoot, filePath)
+    const sharedRelative = path.relative(extensionsRoot, sharedPath)
+    if (!sharedRelative.startsWith('..') && !path.isAbsolute(sharedRelative)) {
+      if (fs.existsSync(sharedPath)) {
+        return { absolutePath: sharedPath, folderName, extensionId }
+      }
+      if (filePath.endsWith('.js')) {
+        const stem = sharedPath.slice(0, -3)
+        for (const ext of ['.tsx', '.ts', '.jsx']) {
+          const alt = stem + ext
+          if (fs.existsSync(alt)) {
+            return { absolutePath: alt, folderName, extensionId }
+          }
+        }
+      }
+    }
     return null
   }
 

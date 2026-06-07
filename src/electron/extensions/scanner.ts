@@ -158,6 +158,7 @@ function scanDirectoryForNodeImports(dir: string): { file: string; imports: stri
 
 async function rescanExtensions(): Promise<void> {
   clearExtensionWatchers()
+  // eslint-disable-next-line react-doctor/async-await-in-loop
   for (const [, worker] of activeWorkers) {
     await worker.terminate()
   }
@@ -318,14 +319,14 @@ function registerExtensionByType(
     // A backend worker is spawned only when a backend entry is declared.
     if (entry?.backend) {
       log.info(`Loading helper extension: ${extId} (backend: ${entry.backend})`)
-      spawnExt(extId, folderName, entry.backend, manifest.permissions ?? [])
+      void spawnExt(extId, folderName, entry.backend, manifest.permissions ?? [])
       log.info(`Sandboxed worker started for helper: ${extId}`)
     } else {
       log.info(`Helper extension registered: ${extId} (frontend-only)`)
     }
   } else if (entry?.backend) {
     log.info(`Loading extension: ${extId} (backend: ${entry.backend})`)
-    spawnExt(extId, folderName, entry.backend, manifest.permissions ?? [])
+    void spawnExt(extId, folderName, entry.backend, manifest.permissions ?? [])
     log.info(`Sandboxed worker started for: ${extId}`)
   } else {
     log.warn(`Extension "${extId}" has no backend entry — skipping worker.`)
@@ -379,6 +380,19 @@ export async function scanExtensions(): Promise<void> {
     }
   } catch (err) {
     log.error(`Failed to initialize extracted directory ${EXTRACTED_DIR}:`, err)
+  }
+
+  // Copy shared loose files (e.g. ui-hooks.ts) from EXTENSION_DIR root to EXTRACTED_DIR.
+  // These are not packaged extensions — they're shared modules imported by extension frontends.
+  try {
+    for (const name of fs.readdirSync(EXTENSION_DIR)) {
+      const src = path.join(EXTENSION_DIR, name)
+      if (fs.statSync(src).isFile() && !name.endsWith('.nuxyext')) {
+        fs.copyFileSync(src, path.join(EXTRACTED_DIR, name))
+      }
+    }
+  } catch (err) {
+    log.warn('Failed to copy shared extension files to extracted dir:', err)
   }
 
   if (import.meta.env.DEV) {
@@ -440,7 +454,7 @@ export async function scanExtensions(): Promise<void> {
         fs.cpSync(itemPath, tempPath, { recursive: true })
       }
 
-      // Phase 3 + Phase 4: Integrity verification & security hardening
+      // eslint-disable-next-line react-doctor/async-await-in-loop
       const secResult = await verifyAndSecureExtension(folderName, tempPath, targetPath)
       if (!secResult.trusted) {
         if (secResult.reason === 'rescan-triggered') {

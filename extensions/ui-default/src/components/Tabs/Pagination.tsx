@@ -72,32 +72,36 @@ export function Pagination({
         </svg>
       </button>
 
-      {getPages().map((page, idx) => {
-        if (typeof page === 'string') {
-          return (
-            <span key={idx} className="nuxy-pagination__ellipsis">
-              {page}
-            </span>
-          )
-        }
+      {(() => {
+        let ellipsisCount = 0
+        return getPages().map((page) => {
+          if (typeof page === 'string') {
+            const side = ellipsisCount++ === 0 ? 'left' : 'right'
+            return (
+              <span key={`ellipsis-${side}`} className="nuxy-pagination__ellipsis">
+                {page}
+              </span>
+            )
+          }
 
-        return (
-          <button
-            key={idx}
-            type="button"
-            onClick={() => onChange(page)}
-            className={[
-              'nuxy-pagination__btn',
-              page === current ? 'nuxy-pagination__btn--active' : '',
-            ]
-              .filter(Boolean)
-              .join(' ')}
-            aria-current={page === current ? 'page' : undefined}
-          >
-            {page}
-          </button>
-        )
-      })}
+          return (
+            <button
+              key={page}
+              type="button"
+              onClick={() => onChange(page)}
+              className={[
+                'nuxy-pagination__btn',
+                page === current ? 'nuxy-pagination__btn--active' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              aria-current={page === current ? 'page' : undefined}
+            >
+              {page}
+            </button>
+          )
+        })
+      })()}
 
       <button
         type="button"

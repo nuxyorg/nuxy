@@ -1,21 +1,17 @@
 /**
- * Tests for the UNIX socket at /tmp/nuxy.sock.
+ * Tests for the UNIX socket.
  * The socket accepts 'toggle' and 'show' commands from external processes.
  */
 import { test, expect } from './fixtures.js'
 import fs from 'node:fs'
-import path from 'node:path'
-import os from 'node:os'
 import net from 'node:net'
 
 test.describe('UNIX socket server', () => {
-  test('socket file exists after app startup', async ({ appPage }) => {
-    const socketPath = path.join(os.tmpdir(), 'nuxy.sock')
+  test('socket file exists after app startup', async ({ socketPath, appPage }) => {
     expect(fs.existsSync(socketPath)).toBe(true)
   })
 
-  test('"show" command via socket makes window visible', async ({ appPage }) => {
-    const socketPath = path.join(os.tmpdir(), 'nuxy.sock')
+  test('"show" command via socket makes window visible', async ({ socketPath, appPage }) => {
     const result = await new Promise<boolean>((resolve) => {
       const client = net.createConnection(socketPath, () => {
         client.write('show')
@@ -28,8 +24,7 @@ test.describe('UNIX socket server', () => {
     expect(result).toBe(true)
   })
 
-  test('"show" command does not crash the app', async ({ appPage }) => {
-    const socketPath = path.join(os.tmpdir(), 'nuxy.sock')
+  test('"show" command does not crash the app', async ({ socketPath, appPage }) => {
     await new Promise<void>((resolve) => {
       const client = net.createConnection(socketPath, () => {
         client.write('show')
@@ -48,10 +43,10 @@ test.describe('UNIX socket server', () => {
   })
 
   test('"toggle" changes window visibility (hide then restore)', async ({
+    socketPath,
     electronApp,
     appPage,
   }) => {
-    const socketPath = path.join(os.tmpdir(), 'nuxy.sock')
     const sendCommand = async (cmd: string) => {
       return new Promise<boolean>((resolve) => {
         const client = net.createConnection(socketPath, () => {
@@ -86,8 +81,7 @@ test.describe('UNIX socket server', () => {
     expect(restored).toBe(before)
   })
 
-  test('unknown command is silently ignored', async ({ appPage }) => {
-    const socketPath = path.join(os.tmpdir(), 'nuxy.sock')
+  test('unknown command is silently ignored', async ({ socketPath, appPage }) => {
     await new Promise<void>((resolve) => {
       const client = net.createConnection(socketPath, () => {
         client.write('destroy_everything_lol')

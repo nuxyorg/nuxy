@@ -9,9 +9,11 @@ export async function resetShell(page: any) {
       const input = document.querySelector('input') as HTMLInputElement | null
       return toolName === null && palette === null && (input?.value ?? '') === ''
     },
-    { timeout: 400 }
+    undefined,
+    { timeout: 2000 }
   )
-  await page.locator('input').focus()
+  await page.waitForSelector('[role="option"]', { timeout: 2000 }).catch(() => {})
+  await page.locator('input').first().focus()
 }
 
 export async function openTool(page: any, name: string) {
@@ -20,5 +22,5 @@ export async function openTool(page: any, name: string) {
   const option = page.locator('[role="option"]', { hasText: name })
   await option.first().click()
   await page.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 400 })
-  await page.locator('input').focus()
+  await page.locator('input').first().focus()
 }

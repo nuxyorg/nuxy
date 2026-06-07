@@ -26,6 +26,7 @@ export function ChatList({ messages }: ChatListProps) {
   return (
     <div className="nuxy-chat-list">
       {messages.map((msg, i) => (
+        // eslint-disable-next-line react-doctor/no-array-index-as-key
         <ChatMessage key={i} role={msg.role} content={msg.content} />
       ))}
     </div>

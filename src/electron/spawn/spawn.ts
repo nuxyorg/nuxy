@@ -1,5 +1,6 @@
 import { Worker } from 'worker_threads'
 import path from 'path'
+import fs from 'fs'
 import { pathToFileURL } from 'url'
 import { EXTRACTED_DIR } from '../config/paths.js'
 import { bundleExtensionBackend } from '../extensions/bundle-backend.js'
@@ -21,15 +22,21 @@ const log = kernelLogger.child('Spawn')
 /** dist-electron/worker/extension-host.js (built from @nuxy/extension-host) */
 const hostScript = path.join(import.meta.dirname, 'worker', 'extension-host.js')
 
-export function spawnExtension(
+export async function spawnExtension(
   extId: string,
   folderName: string,
   entryFile: string,
   permissions: string[] = []
-): Worker {
-  const entryPath = path.join(EXTRACTED_DIR, folderName, entryFile)
+): Promise<Worker> {
   const extDir = path.join(EXTRACTED_DIR, folderName)
-  const bundledPath = bundleExtensionBackend(entryPath, extDir)
+  const entryPath = path.join(extDir, entryFile)
+
+  // If the packaging step pre-bundled the backend (extension had its own npm deps),
+  // use that artifact directly. Otherwise fall back to runtime bundleExtensionBackend.
+  const preBundlePath = path.join(extDir, '_backend.bundle.mjs')
+  const bundledPath = fs.existsSync(preBundlePath)
+    ? preBundlePath
+    : await bundleExtensionBackend(entryPath, extDir)
   log.info(
     `Spawning worker for extension "${extId}" (folder: ${folderName}) → ${entryPath} (bundled: ${bundledPath})`
   )
@@ -55,6 +62,7 @@ export function spawnExtension(
       mergeRuntimeSync(extId, {
         ipcChannels: msg.ipcChannels ?? [],
         displayName: msg.displayName,
+        registeredEntries: msg.registeredEntries,
       })
       log.silly(`Registry sync for "${extId}"`, msg.ipcChannels)
       return

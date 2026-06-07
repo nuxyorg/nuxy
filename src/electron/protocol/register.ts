@@ -22,10 +22,10 @@ export function registerProtocols() {
     const { absolutePath } = resolved
 
     const isScript =
-      filePath.endsWith('.js') ||
-      filePath.endsWith('.jsx') ||
-      filePath.endsWith('.ts') ||
-      filePath.endsWith('.tsx')
+      absolutePath.endsWith('.js') ||
+      absolutePath.endsWith('.jsx') ||
+      absolutePath.endsWith('.ts') ||
+      absolutePath.endsWith('.tsx')
 
     if (isScript) {
       try {
@@ -44,11 +44,11 @@ export function registerProtocols() {
 
         let code = fs.readFileSync(absolutePath, 'utf8')
         const needsJsx =
-          filePath.endsWith('.jsx') ||
-          filePath.endsWith('.tsx') ||
+          absolutePath.endsWith('.jsx') ||
+          absolutePath.endsWith('.tsx') ||
           code.includes('React.createElement') ||
           /<[a-zA-Z]+/.test(code)
-        const needsTranspile = filePath.endsWith('.ts') || filePath.endsWith('.tsx') || needsJsx
+        const needsTranspile = absolutePath.endsWith('.ts') || absolutePath.endsWith('.tsx') || needsJsx
 
         if (needsTranspile) {
           let ts: typeof import('typescript') | undefined
@@ -81,6 +81,16 @@ export function registerProtocols() {
             })
           }
         }
+
+        // Serve plain JS with application/javascript Content-Type
+        return new Response(code, {
+          headers: {
+            'Content-Type': 'application/javascript',
+            'Access-Control-Allow-Origin': '*',
+            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+            Pragma: 'no-cache',
+          },
+        })
       } catch (err) {
         log.error(`Failed to transpile ${absolutePath}`, err)
         return new Response('Internal Server Error', { status: 500 })

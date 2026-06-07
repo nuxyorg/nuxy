@@ -70,3 +70,5 @@ bun.lock
 .cache/
 .turbo/
 *.pem
+
+*.nuxyext

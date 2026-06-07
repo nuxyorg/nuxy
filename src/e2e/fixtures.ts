@@ -5,19 +5,25 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from 'node:
 import { resolve, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
+import { createRequire } from 'node:module'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const PROJECT_ROOT = resolve(__dirname, '..', '..')
 const APP_DIR = resolve(__dirname, '..')
 
 function findElectronBin(): string {
-  const bin = execSync(
-    `find "${PROJECT_ROOT}/node_modules/.pnpm" -name "electron" -path "*/dist/electron" -type f 2>/dev/null | head -1`
-  )
-    .toString()
-    .trim()
-  if (!bin) throw new Error('Could not locate electron binary in pnpm store')
-  return bin
+  try {
+    const require = createRequire(import.meta.url)
+    return require('electron')
+  } catch (e) {
+    const bin = execSync(
+      `find "${PROJECT_ROOT}/node_modules/.pnpm" -name "electron" -path "*/dist/electron" -type f 2>/dev/null | head -1`
+    )
+      .toString()
+      .trim()
+    if (!bin) throw new Error('Could not locate electron binary in pnpm store')
+    return bin
+  }
 }
 
 const ELECTRON_BIN = findElectronBin()
@@ -32,14 +38,13 @@ function createTestDataDir(baseDir: string): string {
   return baseDir
 }
 
-async function launchApp(userDataDir: string, headless: boolean): Promise<ElectronApplication> {
+async function launchApp(userDataDir: string, headless: boolean, socketPath: string): Promise<ElectronApplication> {
   // Use a unique user-data-dir so Electron's requestSingleInstanceLock
   // doesn't conflict with any running nuxy instance on the developer's machine.
   // NUXY_DATA_DIR isolates settings (escAction, blurAction) without touching extensions.
   const nuxyDataDir = createTestDataDir(resolve(userDataDir, 'nuxy-data'))
 
   // Clean up the UNIX socket to ensure we wait for a fresh socket to be created
-  const socketPath = resolve(tmpdir(), 'nuxy.sock')
   try {
     rmSync(socketPath, { force: true })
   } catch {}
@@ -61,10 +66,11 @@ async function launchApp(userDataDir: string, headless: boolean): Promise<Electr
     env: {
       ...cleanEnv,
       NODE_ENV: 'test',
-      LOG_LEVEL: 'silly',
+      LOG_LEVEL: process.env.LOG_LEVEL ?? 'warn',
       DISPLAY: process.env.DISPLAY ?? ':0',
       ELECTRON_OZONE_PLATFORM_HINT: 'x11',
       NUXY_DATA_DIR: nuxyDataDir,
+      NUXY_SOCKET_PATH: socketPath,
     },
     timeout: 3000,
   })
@@ -75,9 +81,8 @@ async function launchApp(userDataDir: string, headless: boolean): Promise<Electr
   return app
 }
 
-async function getAppPage(app: ElectronApplication): Promise<Page> {
+async function getAppPage(app: ElectronApplication, socketPath: string): Promise<Page> {
   // Wait for the UNIX socket file to be created, indicating full bootstrap
-  const socketPath = resolve(tmpdir(), 'nuxy.sock')
   const startTime = Date.now()
   while (!existsSync(socketPath) && Date.now() - startTime < 2000) {
     await new Promise<void>((r) => setTimeout(r, 10))
@@ -90,12 +95,25 @@ async function getAppPage(app: ElectronApplication): Promise<Page> {
     console.error(`[BROWSER-PAGEERROR] ${err.message}\nStack:\n${err.stack}`)
   )
   await page.waitForSelector('input', { timeout: 3000 })
+  // Wait until extension tools are registered in the kernel (proves backend workers are ready)
+  await page.waitForFunction(
+    async () => {
+      try {
+        const result = await (window as any).core?.ipc?.invoke('kernel', 'listTools', {})
+        return Array.isArray(result?.data) && result.data.length > 0
+      } catch {
+        return false
+      }
+    },
+    { timeout: 3000 }
+  )
   return page
 }
 
 type ElectronWorkerFixtures = {
   electronApp: ElectronApplication
   appPage: Page
+  socketPath: string
 }
 
 type ElectronTestFixtures = {
@@ -103,13 +121,22 @@ type ElectronTestFixtures = {
 }
 
 export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
+  socketPath: [
+    async ({}, use) => {
+      const socketName = `nuxy-test-${Math.random().toString(36).substring(2, 9)}.sock`
+      const socketPath = resolve(tmpdir(), socketName)
+      await use(socketPath)
+    },
+    { scope: 'worker' },
+  ],
+
   // scope: 'worker' — one Electron instance shared across all tests in the worker
   electronApp: [
-    async ({ headless }, use) => {
+    async ({ headless, socketPath }, use) => {
       const userDataDir = mkdtempSync(resolve(tmpdir(), 'nuxy-test-'))
       let app: ElectronApplication | undefined
       try {
-        app = await launchApp(userDataDir, headless)
+        app = await launchApp(userDataDir, headless, socketPath)
         await use(app)
       } finally {
         await app?.close().catch(() => {})
@@ -122,8 +149,8 @@ export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
   ],
 
   appPage: [
-    async ({ electronApp }, use) => {
-      const page = await getAppPage(electronApp)
+    async ({ electronApp, socketPath }, use) => {
+      const page = await getAppPage(electronApp, socketPath)
       await use(page)
     },
     { scope: 'worker' },

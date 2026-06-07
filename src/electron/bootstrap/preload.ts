@@ -33,7 +33,7 @@ contextBridge.exposeInMainWorld('core', {
 })
 
 // Dynamically load active extension preload scripts
-console.log(`[FLASH-DEBUG] preload.ts start at ${Date.now()}`)
+// console.log(`[FLASH-DEBUG] preload.ts start at ${Date.now()}`)
 ipcRenderer
   .invoke('ext:invoke', 'kernel', 'getPreloads', {})
   .then(async (res: { success: boolean; data?: Array<{ id: string; url: string }> }) => {
@@ -50,6 +50,6 @@ ipcRenderer
     console.error('[Preload] Failed to fetch extension preloads:', err)
   })
   .finally(() => {
-    console.log(`[FLASH-DEBUG] sending window:preloads-loaded at ${Date.now()}`)
+    // console.log(`[FLASH-DEBUG] sending window:preloads-loaded at ${Date.now()}`)
     ipcRenderer.send('window:preloads-loaded')
   })

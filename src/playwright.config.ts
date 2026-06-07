@@ -3,13 +3,13 @@ import { defineConfig } from '@playwright/test'
 export default defineConfig({
   testDir: '..', // monorepo root — testMatch narrows which files are picked up
   testMatch: ['src/e2e/**/*.spec.ts', 'extensions/**/e2e.spec.ts'],
-  testIgnore: ['**/.claude/**'],
+  testIgnore: ['**/.claude/**', '**/release/**'],
   timeout: 20000,
   expect: {
     timeout: 2000,
   },
   retries: 0,
-  workers: 1, // Electron tests must run serially — one app instance at a time
+  workers: process.env.PLAYWRIGHT_WORKERS ? parseInt(process.env.PLAYWRIGHT_WORKERS, 10) : 8,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
   use: {
     trace: 'retain-on-failure',

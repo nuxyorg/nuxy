@@ -107,7 +107,7 @@ if (!gotTheLock) {
 
     log.info('Kernel bootstrap complete.')
 
-    const socketPath = path.join(os.tmpdir(), 'nuxy.sock')
+    const socketPath = process.env.NUXY_SOCKET_PATH || path.join(os.tmpdir(), 'nuxy.sock')
     if (fs.existsSync(socketPath)) {
       try {
         fs.unlinkSync(socketPath)

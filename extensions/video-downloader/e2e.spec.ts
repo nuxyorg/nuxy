@@ -7,7 +7,7 @@
  *
  * Mock URL: https://www.youtube.com/watch?v=wx1UiMbCv48
  */
-import { test, expect } from '../../src/e2e/fixtures.ts'
+import { test, expect } from '../../src/e2e/fixtures.js'
 
 const MOCK_URL = 'https://www.youtube.com/watch?v=wx1UiMbCv48'
 
@@ -87,20 +87,24 @@ async function installMock(appPage: any, electronApp: any) {
   const kernelSnapshot = await appPage.evaluate(async () => {
     const inv = (extId: string, ch: string, pl?: any) =>
       (window as any).core.ipc.invoke(extId, ch, pl)
-    const [tools, providers, orchestrators, uikit, config] = await Promise.all([
+    const [tools, providers, orchestrators, uikit, config, vdTranslations] = await Promise.all([
       inv('kernel', 'listTools', {}),
       inv('kernel', 'listProviders', {}),
       inv('kernel', 'listOrchestrators', {}),
       inv('kernel', 'listUikitExtensions', {}),
       inv('kernel', 'getConfig', {}),
+      inv('kernel', 'getExtensionTranslations', { extId: 'com.nuxy.video-downloader' }),
     ])
-    return { tools, providers, orchestrators, uikit, config }
+    return { tools, providers, orchestrators, uikit, config, vdTranslations }
   })
 
   await (electronApp as any).evaluate(
     ({ ipcMain }: any, { snapshot, metadata }: any) => {
       if ((global as any).__vdMockActive) return
       ;(global as any).__vdMockActive = true
+      // Save original handler so afterAll can restore it
+      const originalHandler = (ipcMain as any)._invokeHandlers?.get?.('ext:invoke')
+      if (originalHandler) ;(global as any).__vdOriginalHandler = originalHandler
       ;(global as any).__vdDownloads = []
       ;(global as any).__vdJobs = []
       ;(global as any).__vdHistory = [
@@ -177,6 +181,10 @@ async function installMock(appPage: any, electronApp: any) {
             if (channel === 'getIcon') return { success: true, data: '<svg/>' }
             if (channel === 'listIconPacks') return { success: true, data: [] }
             if (channel === 'listSystemFonts') return { success: true, data: [] }
+            if (channel === 'getExtensionTranslations') {
+              if (payload?.extId === 'com.nuxy.video-downloader') return snapshot.vdTranslations
+              return { success: true, data: null }
+            }
           }
 
           // ── other extensions: pass-through to null ────────────────────
@@ -229,6 +237,16 @@ test.describe('video downloader — keyboard navigation', () => {
   test.beforeAll(async ({ appPage, electronApp }) => {
     await appPage.waitForSelector('input', { timeout: 2000 })
     await installMock(appPage, electronApp)
+  })
+
+  test.afterAll(async ({ electronApp }) => {
+    await (electronApp as any).evaluate(({ ipcMain }: any) => {
+      ipcMain.removeHandler('ext:invoke')
+      const orig = (global as any).__vdOriginalHandler
+      if (orig) (ipcMain as any)._invokeHandlers?.set?.('ext:invoke', orig)
+      ;(global as any).__vdMockActive = false
+      ;(global as any).__vdOriginalHandler = undefined
+    })
   })
 
   test.beforeEach(async ({ electronApp }) => {
@@ -324,9 +342,14 @@ test.describe('video downloader — keyboard navigation', () => {
 
     // selectedIndex starts at 0 → Enter downloads item 0
     await appPage.keyboard.press('Enter')
-    await appPage.waitForTimeout(300)
 
-    const downloads = await (electronApp as any).evaluate(() => (global as any).__vdDownloads ?? [])
+    // Poll main-process state until download is registered (avoids fixed delay)
+    let downloads: any[] = []
+    const deadline = Date.now() + 2000
+    while (downloads.length === 0 && Date.now() < deadline) {
+      downloads = await (electronApp as any).evaluate(() => (global as any).__vdDownloads ?? [])
+    }
+
     expect(downloads.length).toBeGreaterThan(0)
     expect(downloads[downloads.length - 1].url).toBe(MOCK_URL)
   })
@@ -341,28 +364,31 @@ test.describe('video downloader — keyboard navigation', () => {
     expect(firstTabText).toMatch(/Recommended/i)
 
     await appPage.keyboard.press('Tab')
-    await appPage.waitForTimeout(100)
+    await appPage.waitForFunction(
+      ([first]: string[]) => {
+        const tab = document.querySelector('.nuxy-tab--active')
+        return tab !== null && tab.textContent !== first
+      },
+      [firstTabText],
+      { timeout: 1000 }
+    )
     const secondTabText = await activeTab.textContent()
     expect(secondTabText).not.toBe(firstTabText)
   })
 
-  test('ArrowLeft switches focus to left tab panel', async ({ appPage }) => {
+  test('ArrowLeft moves focus to left panel (format items lose active highlight)', async ({
+    appPage,
+  }) => {
     await openVideoDownloader(appPage)
     await loadFormats(appPage)
 
-    // Start in right panel, switch to left
+    // In right panel: first item has active highlight (focusArea=right, selectedIndex=0)
+    const items = appPage.locator('.nuxy-list-item')
+    await expect(items.nth(0)).toHaveClass(/nuxy-list-item--active/)
+
+    // ArrowLeft: focusArea switches to 'left' — VideoFormatList sets active=false for all items
     await appPage.keyboard.press('ArrowLeft')
-    await appPage.waitForTimeout(100)
-
-    // ArrowDown in left panel should change the active tab
-    const activeTab = appPage.locator('.nuxy-tab--active')
-    const before = await activeTab.textContent()
-
-    await appPage.keyboard.press('ArrowDown')
-    await appPage.waitForTimeout(100)
-
-    const after = await activeTab.textContent()
-    expect(after).not.toBe(before)
+    await expect(items.nth(0)).not.toHaveClass(/nuxy-list-item--active/)
   })
 
   test('shortcut bar shows navigation hints when tool is open', async ({ appPage }) => {
@@ -382,7 +408,8 @@ test.describe('video downloader — keyboard navigation', () => {
     const bar = appPage.locator('.nuxy-shortcut-bar')
     await expect(bar).toBeVisible()
     const text = await bar.textContent()
-    expect(text).toMatch(/confirm|Select|↵/)
+    // ↵ renders as an SVG icon (no text); assert the translated Enter label instead
+    expect(text).toMatch(/Download|Open/)
   })
 
   test('transitions to full-screen downloads view upon download start', async ({
@@ -393,7 +420,6 @@ test.describe('video downloader — keyboard navigation', () => {
     await loadFormats(appPage)
 
     await appPage.keyboard.press('Enter')
-    await appPage.waitForTimeout(500)
 
     const heading = appPage.locator('.nuxy-heading', { hasText: /Downloads & History/i })
     await expect(heading).toBeVisible()
@@ -407,12 +433,12 @@ test.describe('video downloader — keyboard navigation', () => {
     await appPage.waitForSelector('.nuxy-command-palette', { timeout: 1000 })
     await appPage.keyboard.type('Downloads')
     await appPage.keyboard.press('Enter')
-    await appPage.waitForTimeout(300)
 
     const heading = appPage.locator('.nuxy-heading', { hasText: /Downloads & History/i })
     await expect(heading).toBeVisible()
 
     const items = appPage.locator('.nuxy-list-item')
+    await expect(items.first()).toBeVisible()
     await expect(items.first()).toContainText('Completed History Video')
     await expect(items.first()).toContainText('History Channel')
   })
@@ -424,15 +450,23 @@ test.describe('video downloader — keyboard navigation', () => {
     await appPage.waitForSelector('.nuxy-command-palette', { timeout: 1000 })
     await appPage.keyboard.type('Downloads')
     await appPage.keyboard.press('Enter')
-    await appPage.waitForTimeout(300)
 
+    const heading14 = appPage.locator('.nuxy-heading', { hasText: /Downloads & History/i })
+    await expect(heading14).toBeVisible()
     const items = appPage.locator('.nuxy-list-item')
+    await expect(items.first()).toBeVisible()
     await expect(items.first()).toHaveClass(/nuxy-list-item--active/)
 
     await appPage.keyboard.press('Enter')
-    await appPage.waitForTimeout(300)
 
-    const opened = await (electronApp as any).evaluate(() => (global as any).__vdLastOpened)
+    // Poll until main process records the open call
+    let opened: any = null
+    const deadline = Date.now() + 2000
+    while (opened === null && Date.now() < deadline) {
+      opened = await (electronApp as any).evaluate(() => (global as any).__vdLastOpened)
+      // no sleep — electronApp.evaluate IPC overhead provides natural poll delay
+    }
+
     expect(opened).toEqual({ path: '/path/to/video.mp4' })
   })
 
@@ -446,12 +480,21 @@ test.describe('video downloader — keyboard navigation', () => {
     await appPage.waitForSelector('.nuxy-command-palette', { timeout: 1000 })
     await appPage.keyboard.type('Downloads')
     await appPage.keyboard.press('Enter')
-    await appPage.waitForTimeout(300)
+
+    const heading = appPage.locator('.nuxy-heading', { hasText: /Downloads & History/i })
+    await expect(heading).toBeVisible()
+    await expect(appPage.locator('.nuxy-list-item').first()).toBeVisible()
 
     await appPage.keyboard.press('Shift+Enter')
-    await appPage.waitForTimeout(300)
 
-    const opened = await (electronApp as any).evaluate(() => (global as any).__vdLastOpened)
+    // Poll until main process records the open call
+    let opened: any = null
+    const deadline = Date.now() + 2000
+    while (opened === null && Date.now() < deadline) {
+      opened = await (electronApp as any).evaluate(() => (global as any).__vdLastOpened)
+      // no sleep — electronApp.evaluate IPC overhead provides natural poll delay
+    }
+
     expect(opened).toEqual({ path: '/path/to/video.mp4', isFolder: true })
   })
 
@@ -464,14 +507,13 @@ test.describe('video downloader — keyboard navigation', () => {
     await appPage.waitForSelector('.nuxy-command-palette', { timeout: 1000 })
     await appPage.keyboard.type('Downloads')
     await appPage.keyboard.press('Enter')
-    await appPage.waitForTimeout(300)
 
     await expect(
       appPage.locator('.nuxy-heading', { hasText: /Downloads & History/i })
     ).toBeVisible()
+    await expect(appPage.locator('.nuxy-list-item').first()).toBeVisible()
 
     await appPage.keyboard.press('Escape')
-    await appPage.waitForTimeout(300)
 
     const card = appPage.locator('.nuxy-card__body')
     await expect(card).toBeVisible()

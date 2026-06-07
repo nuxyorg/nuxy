@@ -148,18 +148,27 @@ function parseListBlock(
   return { items, end: i }
 }
 
-function renderListItems(items: ListItem[]): React.ReactNode[] {
-  return items.map((item, idx) => (
-    <li key={idx} className="nuxy-md-li">
-      {parseInline(item.text)}
-      {item.children &&
-        (item.children.ordered ? (
-          <ol className="nuxy-md-ol">{renderListItems(item.children.items)}</ol>
-        ) : (
-          <ul className="nuxy-md-ul">{renderListItems(item.children.items)}</ul>
-        ))}
-    </li>
-  ))
+function ListItems({ items }: { items: ListItem[] }): React.ReactElement {
+  return (
+    <>
+      {items.map((item, idx) => (
+        // eslint-disable-next-line react-doctor/no-array-index-as-key
+        <li key={idx} className="nuxy-md-li">
+          {parseInline(item.text)}
+          {item.children &&
+            (item.children.ordered ? (
+              <ol className="nuxy-md-ol">
+                <ListItems items={item.children.items} />
+              </ol>
+            ) : (
+              <ul className="nuxy-md-ul">
+                <ListItems items={item.children.items} />
+              </ul>
+            ))}
+        </li>
+      ))}
+    </>
+  )
 }
 
 function parseBlocks(text: string): Block[] {
@@ -325,7 +334,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
           <thead>
             <TableRow>
               {block.headers.map((h, idx) => (
-                <TableCell key={idx} header style={{ textAlign: block.aligns[idx] }}>
+                <TableCell key={h || idx} header style={{ textAlign: block.aligns[idx] }}>
                   {parseInline(h)}
                 </TableCell>
               ))}
@@ -350,7 +359,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
     if (block.type === 'ul') {
       elements.push(
         <ul key={elements.length} className="nuxy-md-ul">
-          {renderListItems(block.items)}
+          <ListItems items={block.items} />
         </ul>
       )
       continue
@@ -359,7 +368,7 @@ export function MarkdownText({ children, className }: MarkdownTextProps) {
     if (block.type === 'ol') {
       elements.push(
         <ol key={elements.length} className="nuxy-md-ol">
-          {renderListItems(block.items)}
+          <ListItems items={block.items} />
         </ol>
       )
       continue

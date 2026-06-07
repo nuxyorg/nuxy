@@ -8,7 +8,9 @@ interface Params {
   filteredWorkflows: N8nWorkflow[]
   showConfig: boolean
   configured: boolean
+  configDismissed: boolean
   setShowConfig: React.Dispatch<React.SetStateAction<boolean>>
+  setConfigDismissed: React.Dispatch<React.SetStateAction<boolean>>
   handleSaveConfig: () => Promise<void>
   handleRefresh: () => Promise<void>
   handleSelectWorkflow: (wf: N8nWorkflow) => Promise<void>
@@ -24,7 +26,9 @@ export function useN8nKeyboard({
   filteredWorkflows,
   showConfig,
   configured,
+  configDismissed,
   setShowConfig,
+  setConfigDismissed,
   handleSaveConfig,
   handleRefresh,
   handleSelectWorkflow,
@@ -39,20 +43,30 @@ export function useN8nKeyboard({
     enterHint: 'Enter',
   })
 
+  const configPanelOpen = showConfig || (!configured && !configDismissed)
+
   _useToolKeyActions([
     {
       key: ',',
       modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
       label: t('actions.configure'),
       hint: '⌃,',
-      handler: () => setShowConfig((v) => !v),
+      handler: () => {
+        if (showConfig) {
+          setShowConfig(false)
+          setConfigDismissed(true)
+        } else {
+          setShowConfig(true)
+          setConfigDismissed(false)
+        }
+      },
     },
     {
       key: 'Enter',
       modifiers: ['ctrl'] as ('ctrl' | 'shift' | 'alt' | 'meta')[],
       label: t('actions.save'),
       hint: '⌃↵',
-      activeOn: () => showConfig || !configured,
+      activeOn: () => configPanelOpen,
       handler: () => {
         void handleSaveConfig()
       },
@@ -60,8 +74,11 @@ export function useN8nKeyboard({
     {
       key: 'Escape',
       label: t('actions.cancel'),
-      activeOn: () => showConfig,
-      handler: () => setShowConfig(false),
+      activeOn: () => configPanelOpen,
+      handler: () => {
+        setShowConfig(false)
+        setConfigDismissed(true)
+      },
     },
   ])
 

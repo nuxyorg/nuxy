@@ -50,7 +50,7 @@ test.describe('media / getNowPlaying (main process)', () => {
 test.describe('extension bootstrapping', () => {
   test('bundled extensions are loaded (workers spawned or registered)', async () => {
     // Check that the extension scanner ran and registered extensions
-    const extDir = path.join(os.homedir(), '.nuxy', 'extensions')
+    const extDir = path.join(os.homedir(), '.nuxy', 'extracted')
     const exists = fs.existsSync(extDir)
     if (!exists) {
       expect(exists).toBe(true)
@@ -67,7 +67,7 @@ test.describe('extension bootstrapping', () => {
   })
 
   test('extensions directory contains manifest.json files', async () => {
-    const extDir = path.join(os.homedir(), '.nuxy', 'extensions')
+    const extDir = path.join(os.homedir(), '.nuxy', 'extracted')
     const exists = fs.existsSync(extDir)
     if (!exists) {
       expect(exists).toBe(true)

@@ -37,7 +37,8 @@ export function useNotesKeyboard({
   handlers,
   t,
 }: Params): void {
-  const { handleNew, handleSave, handleDelete, handleRecord, handleStopRecord } = handlers
+  const handlersRef = React.useRef(handlers)
+  handlersRef.current = handlers
   const _useToolKeyActions = (window.UI || {}).useToolKeyActions || (() => {})
 
   _useToolKeyActions(
@@ -49,7 +50,7 @@ export function useNotesKeyboard({
           label: t('actions.newNote'),
           hint: '⌃N',
           handler: () => {
-            void handleNew()
+            void handlersRef.current.handleNew()
           },
         },
         {
@@ -59,7 +60,7 @@ export function useNotesKeyboard({
           hint: '⌃S',
           activeOn: () => editMode && selected !== null,
           handler: () => {
-            void handleSave()
+            void handlersRef.current.handleSave()
           },
         },
         {
@@ -68,7 +69,7 @@ export function useNotesKeyboard({
           hint: 'Del',
           activeOn: () => !editMode && selectedIndex > 0 && selectedIndex <= filteredNotes.length,
           handler: () => {
-            void handleDelete()
+            void handlersRef.current.handleDelete()
           },
         },
         {
@@ -78,7 +79,7 @@ export function useNotesKeyboard({
           activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex <= filteredNotes.length,
           handler: () => {
             if (selectedIndex === 0) {
-              void handleNew()
+              void handlersRef.current.handleNew()
             } else {
               const note = filteredNotes[selectedIndex - 1]
               if (note) {
@@ -153,7 +154,7 @@ export function useNotesKeyboard({
         id: 'notes-new',
         label: t('actions.newNote'),
         onExecute: () => {
-          void handleNew()
+          void handlersRef.current.handleNew()
         },
       },
     ]
@@ -163,22 +164,22 @@ export function useNotesKeyboard({
           id: 'notes-save',
           label: t('actions.save'),
           onExecute: () => {
-            void handleSave()
+            void handlersRef.current.handleSave()
           },
         },
         {
           id: 'notes-delete',
           label: t('actions.delete'),
           onExecute: () => {
-            void handleDelete()
+            void handlersRef.current.handleDelete()
           },
         },
         {
           id: 'notes-record',
           label: recording ? t('actions.stopRecording') : t('actions.record'),
           onExecute: () => {
-            if (recording) handleStopRecord()
-            else void handleRecord()
+            if (recording) handlersRef.current.handleStopRecord()
+            else void handlersRef.current.handleRecord()
           },
         }
       )

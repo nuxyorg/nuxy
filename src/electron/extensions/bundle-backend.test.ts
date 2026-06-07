@@ -15,7 +15,7 @@ describe('bundleExtensionBackend', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true })
   })
 
-  it('rejects backends that import fs', () => {
+  it('rejects backends that import fs', async () => {
     const entryPath = path.join(tmpDir, 'backend.ts')
     fs.writeFileSync(
       entryPath,
@@ -25,7 +25,7 @@ describe('bundleExtensionBackend', () => {
 `
     )
 
-    expect(() => bundleExtensionBackend(entryPath, tmpDir)).toThrow(
+    await expect(bundleExtensionBackend(entryPath, tmpDir)).rejects.toThrow(
       /Node built-in "fs" is not allowed/
     )
   })
@@ -40,7 +40,7 @@ describe('bundleExtensionBackend', () => {
 `
     )
 
-    const bundledPath = bundleExtensionBackend(entryPath, tmpDir)
+    const bundledPath = await bundleExtensionBackend(entryPath, tmpDir)
     const mod = await import(/* @vite-ignore */ bundledPath)
 
     expect(typeof mod.register).toBe('function')
@@ -49,7 +49,7 @@ describe('bundleExtensionBackend', () => {
     expect(registerTool).toHaveBeenCalledWith({ name: 'test-tool' })
   })
 
-  it('bundled output has no static fs import paths', () => {
+  it('bundled output has no static fs import paths', async () => {
     const entryPath = path.join(tmpDir, 'backend.ts')
     fs.writeFileSync(
       entryPath,
@@ -59,7 +59,7 @@ describe('bundleExtensionBackend', () => {
 `
     )
 
-    const bundledPath = bundleExtensionBackend(entryPath, tmpDir)
+    const bundledPath = await bundleExtensionBackend(entryPath, tmpDir)
     const code = fs.readFileSync(bundledPath, 'utf8')
 
     expect(code).not.toMatch(/from\s+['"]fs['"]/)

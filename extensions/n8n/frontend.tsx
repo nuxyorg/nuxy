@@ -22,6 +22,7 @@ export default function N8nApp({ query }: Props) {
   const { t } = _useTranslation(EXT_ID)
 
   const [showConfig, setShowConfig] = React.useState<boolean>(false)
+  const [configDismissed, setConfigDismissed] = React.useState<boolean>(false)
   const [selected, setSelected] = React.useState<N8nWorkflow | null>(null)
   const [executions, setExecutions] = React.useState<N8nExecution[]>([])
 
@@ -61,7 +62,9 @@ export default function N8nApp({ query }: Props) {
     filteredWorkflows,
     showConfig,
     configured,
+    configDismissed,
     setShowConfig,
+    setConfigDismissed,
     handleSaveConfig,
     handleRefresh,
     handleSelectWorkflow,
@@ -69,7 +72,7 @@ export default function N8nApp({ query }: Props) {
     t,
   })
 
-  if (showConfig || !configured) {
+  if (showConfig || (!configured && !configDismissed)) {
     return (
       <N8nConfigPanel
         baseUrl={baseUrl}
