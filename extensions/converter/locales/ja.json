@@ -1,9 +1,0 @@
-{
-  "meta": { "name": "単位変換", "direction": "ltr" },
-  "empty": "変換する値を入力してください",
-  "emptyHint": "例: 100 km、32 F to C、5 kg",
-  "noResults": "解析できませんでした",
-  "noResultsHint": "試してください: 100 km、32°F、5 lb",
-  "actions": { "copy": "コピー" },
-  "copied": "コピーしました！"
-}

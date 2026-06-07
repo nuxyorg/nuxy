@@ -1,9 +1,0 @@
-{
-  "name": "@nuxy-ext/video-downloader",
-  "private": true,
-  "type": "module",
-  "version": "1.0.0",
-  "dependencies": {
-    "@nuxy/extension-sdk": "workspace:*"
-  }
-}

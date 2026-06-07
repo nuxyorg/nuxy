@@ -1,9 +1,0 @@
-{
-  "meta": { "name": "Birim Donusturucu", "direction": "ltr" },
-  "empty": "Donusturmek icin bir deger girin",
-  "emptyHint": "Ornek: 100 km, 32 F to C, 5 kg",
-  "noResults": "Ayristirilamadi",
-  "noResultsHint": "Deneyin: 100 km, 32F, 5 lb",
-  "actions": { "copy": "Kopyala" },
-  "copied": "Kopyalandi!"
-}

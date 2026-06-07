@@ -1,9 +1,0 @@
-{
-  "name": "@nuxy-ext/clipboard",
-  "version": "1.0.0",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@nuxy/extension-sdk": "workspace:*"
-  }
-}

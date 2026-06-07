@@ -1,9 +1,0 @@
-{
-  "meta": { "name": "Unit Converter", "direction": "ltr" },
-  "empty": "Enter a value to convert",
-  "emptyHint": "Examples: 100 km, 32 F to C, 5 kg",
-  "noResults": "Could not parse",
-  "noResultsHint": "Try: 100 km, 32°F, 5 lb",
-  "actions": { "copy": "Copy" },
-  "copied": "Copied!"
-}

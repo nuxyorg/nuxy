@@ -1,9 +1,0 @@
-{
-  "name": "@nuxy-ext/n8n",
-  "private": true,
-  "type": "module",
-  "version": "1.0.0",
-  "dependencies": {
-    "@nuxy/extension-sdk": "workspace:*"
-  }
-}
