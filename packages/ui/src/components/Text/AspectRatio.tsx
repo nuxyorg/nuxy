@@ -1,11 +1,9 @@
-import React from 'react'
 
-export interface AspectRatioProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AspectRatioProps extends Record<string, unknown> {
   ratio?: number // e.g. 16/9, 4/3, 1
-  children: React.ReactNode
+  children: unknown
 }
 
-export function AspectRatio(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.AspectRatio || (() => null)
-  return <Impl {...props} />
+export function AspectRatio(...args: any[]): unknown {
+  return (window.UI as any)?.AspectRatio?.(...args) ?? null
 }

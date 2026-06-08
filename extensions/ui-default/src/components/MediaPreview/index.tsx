@@ -1,28 +1,17 @@
-import React from 'react'
-import { ProgressBar } from '../ProgressBar'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import './nuxy-media-preview.ts'
 
-export interface MediaPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface MediaPreviewProps extends Record<string, unknown> {
   thumbnail?: string | null
   title: string
   uploader?: string | null
   duration?: number | string | null
   progress?: number | null
   footerText?: string | null
-  badge?: React.ReactNode
+  badge?: UiChild
   size?: 'sm' | 'md' | 'lg'
   layout?: 'horizontal' | 'vertical'
-}
-
-function fmtDuration(sec: number | null | undefined): string {
-  if (sec === null || sec === undefined) return ''
-  const hrs = Math.floor(sec / 3600)
-  const mins = Math.floor((sec % 3600) / 60)
-  const secs = Math.floor(sec % 60)
-  if (hrs > 0) {
-    return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-  }
-  return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 
 export function MediaPreview({
@@ -38,44 +27,29 @@ export function MediaPreview({
   className,
   children,
   ...props
-}: MediaPreviewProps) {
-  const formattedDuration = typeof duration === 'number' ? fmtDuration(duration) : duration
+}: MediaPreviewProps): HTMLElement {
+  const durationAttr =
+    duration === null || duration === undefined
+      ? undefined
+      : typeof duration === 'number'
+        ? String(duration)
+        : duration
 
-  const classes = [
+  return h(
     'nuxy-media-preview',
-    `nuxy-media-preview--${size}`,
-    `nuxy-media-preview--${layout}`,
-    className || '',
-  ]
-    .filter(Boolean)
-    .join(' ')
-
-  return (
-    <div className={classes} {...props}>
-      {thumbnail && (
-        <div className="nuxy-media-preview__thumbnail-container">
-          <img src={thumbnail} className="nuxy-media-preview__thumbnail" alt="" />
-          {formattedDuration && (
-            <span className="nuxy-media-preview__duration">{formattedDuration}</span>
-          )}
-        </div>
-      )}
-      <div className="nuxy-media-preview__content">
-        <span className="nuxy-media-preview__title">{title}</span>
-        {(uploader || badge) && (
-          <div className="nuxy-media-preview__meta-row">
-            {uploader && <span className="nuxy-media-preview__uploader">{uploader}</span>}
-            {badge && <span className="nuxy-media-preview__badge">{badge}</span>}
-          </div>
-        )}
-        {typeof progress === 'number' && (
-          <div className="nuxy-media-preview__progress">
-            <ProgressBar value={progress} max={100} size="sm" />
-          </div>
-        )}
-        {footerText && <span className="nuxy-media-preview__footer-text">{footerText}</span>}
-        {children}
-      </div>
-    </div>
+    {
+      ...props,
+      class: className,
+      title,
+      size,
+      layout,
+      ...(thumbnail ? { thumbnail } : {}),
+      ...(uploader ? { uploader } : {}),
+      ...(durationAttr ? { duration: durationAttr } : {}),
+      ...(typeof progress === 'number' ? { progress: String(progress) } : {}),
+      ...(footerText ? { 'footer-text': footerText } : {}),
+    },
+    badge != null && badge !== false ? h('span', { 'data-badge': '' }, badge) : null,
+    children
   )
 }

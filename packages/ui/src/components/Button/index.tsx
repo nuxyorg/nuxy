@@ -1,10 +1,8 @@
-import React from 'react'
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends Record<string, unknown> {
   variant?: string
 }
 
-export function Button(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Button || (() => null)
-  return <Impl {...props} />
+export function Button(...args: any[]): unknown {
+  return (window.UI as any)?.Button?.(...args) ?? null
 }

@@ -1,16 +1,20 @@
-import React from 'react'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import './nuxy-wizard-section.ts'
 
 export interface WizardSectionProps {
-  icon?: React.ReactNode
+  icon?: UiChild
   title: string
+  className?: string
 }
 
-export function WizardSection({ icon, title }: WizardSectionProps) {
-  return (
-    <div className="nuxy-wizard-section">
-      {icon && <span className="nuxy-wizard-section__icon">{icon}</span>}
-      <h2 className="nuxy-wizard-section__title">{title}</h2>
-    </div>
+export function WizardSection({ icon, title, className }: WizardSectionProps) {
+  return h(
+    'nuxy-wizard-section',
+    {
+      title,
+      ...(className ? { class: className } : {}),
+    },
+    icon ?? null
   )
 }

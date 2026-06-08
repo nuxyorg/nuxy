@@ -1,8 +1,7 @@
-import React, { useRef, useEffect } from 'react'
-import './index.css'
-import { smoothScrollIntoViewIfNeeded } from '../../utils/scroll'
+import { h } from '../../h'
+import './nuxy-list-item.ts'
 
-export interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ListItemProps extends Record<string, unknown> {
   active?: boolean
   className?: string
 }
@@ -16,33 +15,25 @@ export function ListItem({
   ...props
 }: ListItemProps) {
   const interactive = Boolean(onClick)
-  const itemRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (active && itemRef.current) {
-      smoothScrollIntoViewIfNeeded(itemRef.current)
-    }
-  }, [active])
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (interactive && (e.key === 'Enter' || e.key === ' ')) {
       e.preventDefault()
-      onClick?.(e as unknown as React.MouseEvent<HTMLDivElement>)
+      onClick?.(e as unknown as MouseEvent)
     }
-    onKeyDown?.(e)
+    onKeyDown?.(e as unknown as KeyboardEvent)
   }
 
-  return (
-    <div
-      ref={itemRef}
-      className={`nuxy-list-item ${active ? 'nuxy-list-item--active' : ''} ${className || ''}`}
-      role={interactive ? 'button' : undefined}
-      tabIndex={interactive ? 0 : undefined}
-      onClick={onClick}
-      onKeyDown={interactive ? handleKeyDown : onKeyDown}
-      {...props}
-    >
-      {children}
-    </div>
+  return h(
+    'nuxy-list-item',
+    {
+      ...props,
+      class: className,
+      ...(active ? { active: '' } : {}),
+      onClick,
+      onKeyDown: interactive ? handleKeyDown : onKeyDown,
+      ...(interactive ? { role: 'button', tabIndex: 0 } : {}),
+    },
+    children
   )
 }

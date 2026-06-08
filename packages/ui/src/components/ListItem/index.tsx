@@ -1,11 +1,9 @@
-import React, { useRef, useEffect } from 'react'
 
-export interface ListItemProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ListItemProps extends Record<string, unknown> {
   active?: boolean
   className?: string
 }
 
-export function ListItem(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ListItem || (() => null)
-  return <Impl {...props} />
+export function ListItem(...args: any[]): unknown {
+  return (window.UI as any)?.ListItem?.(...args) ?? null
 }

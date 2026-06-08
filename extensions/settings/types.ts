@@ -4,12 +4,14 @@ export type BackgroundBehavior = 'reset-on-show' | 'resume-session'
 export type Theme = string
 export type ZoomLevel = string
 export type FontFamily = string
+export type FontWeight = string
 
 export interface NuxySettings {
   theme: Theme
   iconPack: string
   zoom: ZoomLevel
   font: FontFamily
+  fontWeight: FontWeight
   escAction: EscAction
   blurAction: BlurAction
   backgroundBehavior: BackgroundBehavior

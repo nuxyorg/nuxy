@@ -3,12 +3,15 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "jsx": "react",
-    "jsxFactory": "React.createElement",
-    "jsxFragmentFactory": "React.Fragment",
+    "jsx": "preserve",
     "strict": true,
     "noUnusedLocals": false,
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "paths": {
+      "@nuxy/core": ["../../packages/core/src/index.ts"],
+      "@nuxy/ui": ["../../extensions/ui-default/src/index.tsx"],
+      "@nuxy/extension-sdk": ["../../packages/extension-sdk/src/index.ts"]
+    }
   },
   "include": ["src", "vite.config.ts"]
 }

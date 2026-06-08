@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react'
-import './index.css'
-import { smoothScrollIntoViewIfNeeded } from '../../utils/scroll'
+import { h } from '../../h'
+import { host } from '../../host'
+import './nuxy-tab-bar.ts'
 
 export interface TabOption {
   id: string
@@ -8,11 +8,12 @@ export interface TabOption {
   icon?: string
 }
 
-export interface TabBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+export interface TabBarProps extends Record<string, unknown> {
   tabs: TabOption[]
   active: string
   onChange: (id: string) => void
   orientation?: 'horizontal' | 'vertical'
+  className?: string
 }
 
 export function TabBar({
@@ -22,33 +23,16 @@ export function TabBar({
   orientation = 'horizontal',
   className,
   ...rest
-}: TabBarProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!containerRef.current) return
-    const activeEl = containerRef.current.querySelector('.nuxy-tab--active')
-    if (activeEl) {
-      smoothScrollIntoViewIfNeeded(activeEl as HTMLElement)
+}: TabBarProps): HTMLElement {
+  const tabsJson = JSON.stringify(tabs)
+  return host(
+    'nuxy-tab-bar',
+    { class: className, tabs: tabsJson, active, orientation, ...rest },
+    {
+      'nuxy-tab-bar-change': (e) => {
+        const detail = (e as CustomEvent<{ id: string }>).detail
+        onChange(detail.id)
+      },
     }
-  }, [active])
-
-  return (
-    <div
-      ref={containerRef}
-      className={`nuxy-tab-bar nuxy-tab-bar--${orientation} ${className ?? ''}`}
-      {...rest}
-    >
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          className={`nuxy-tab ${active === tab.id ? 'nuxy-tab--active' : ''}`}
-          onClick={() => onChange(tab.id)}
-        >
-          {tab.icon && <span className="nuxy-tab__icon">{tab.icon}</span>}
-          <span className="nuxy-tab__label">{tab.label}</span>
-        </button>
-      ))}
-    </div>
   )
 }

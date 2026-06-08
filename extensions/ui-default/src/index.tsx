@@ -1,5 +1,7 @@
 // fallow-ignore-file code-duplication
 import './styles/base.css'
+import './components/ToolHost/index.css'
+import './components/ToolHost/nuxy-tool-host.ts'
 
 // --- Existing components ---
 export { Card, CardHeader, CardBody, CardFooter } from './components/Card'

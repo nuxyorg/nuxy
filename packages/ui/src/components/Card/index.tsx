@@ -1,31 +1,26 @@
-import React from 'react'
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends Record<string, unknown> {
   interactive?: boolean
 }
 
-export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CardHeaderProps extends Record<string, unknown> {}
 
-export interface CardBodyProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CardBodyProps extends Record<string, unknown> {}
 
-export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CardFooterProps extends Record<string, unknown> {}
 
-export function Card(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Card || (() => null)
-  return <Impl {...props} />
+export function Card(...args: any[]): unknown {
+  return (window.UI as any)?.Card?.(...args) ?? null
 }
 
-export function CardHeader(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.CardHeader || (() => null)
-  return <Impl {...props} />
+export function CardHeader(...args: any[]): unknown {
+  return (window.UI as any)?.CardHeader?.(...args) ?? null
 }
 
-export function CardBody(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.CardBody || (() => null)
-  return <Impl {...props} />
+export function CardBody(...args: any[]): unknown {
+  return (window.UI as any)?.CardBody?.(...args) ?? null
 }
 
-export function CardFooter(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.CardFooter || (() => null)
-  return <Impl {...props} />
+export function CardFooter(...args: any[]): unknown {
+  return (window.UI as any)?.CardFooter?.(...args) ?? null
 }

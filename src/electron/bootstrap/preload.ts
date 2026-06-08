@@ -1,4 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
+import { createCompositionBridge } from './composition-bridge.js'
+import { createShellBridge } from './shell-bridge.js'
+import { createEventsBridge } from './events-bridge.js'
 
 contextBridge.exposeInMainWorld('core', {
   ipc: {
@@ -30,10 +33,19 @@ contextBridge.exposeInMainWorld('core', {
   themes: {
     list: () => ipcRenderer.invoke('ext:invoke', 'kernel', 'listThemes', {}),
   },
+  tools: {
+    resolveElementTag: async (extId: string): Promise<string | null> => {
+      const res = (await ipcRenderer.invoke('ext:invoke', 'kernel', 'getToolElementTag', {
+        extId,
+      })) as { success: boolean; data?: string | null }
+      return res?.success ? (res.data ?? null) : null
+    },
+  },
+  composition: createCompositionBridge(ipcRenderer),
+  shell: createShellBridge(),
+  events: createEventsBridge(),
 })
 
-// Dynamically load active extension preload scripts
-// console.log(`[FLASH-DEBUG] preload.ts start at ${Date.now()}`)
 ipcRenderer
   .invoke('ext:invoke', 'kernel', 'getPreloads', {})
   .then(async (res: { success: boolean; data?: Array<{ id: string; url: string }> }) => {
@@ -50,6 +62,5 @@ ipcRenderer
     console.error('[Preload] Failed to fetch extension preloads:', err)
   })
   .finally(() => {
-    // console.log(`[FLASH-DEBUG] sending window:preloads-loaded at ${Date.now()}`)
     ipcRenderer.send('window:preloads-loaded')
   })

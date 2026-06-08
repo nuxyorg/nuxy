@@ -1,8 +1,7 @@
-import React from 'react'
 
 export interface CollapsibleProps {
-  trigger: React.ReactNode
-  children: React.ReactNode
+  trigger: unknown
+  children: unknown
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -11,8 +10,8 @@ export interface CollapsibleProps {
 
 export interface AccordionItem {
   id: string
-  trigger: React.ReactNode
-  content: React.ReactNode
+  trigger: unknown
+  content: unknown
 }
 
 export interface AccordionProps {
@@ -22,12 +21,10 @@ export interface AccordionProps {
   className?: string
 }
 
-export function Collapsible(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Collapsible || (() => null)
-  return <Impl {...props} />
+export function Collapsible(...args: any[]): unknown {
+  return (window.UI as any)?.Collapsible?.(...args) ?? null
 }
 
-export function Accordion(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Accordion || (() => null)
-  return <Impl {...props} />
+export function Accordion(...args: any[]): unknown {
+  return (window.UI as any)?.Accordion?.(...args) ?? null
 }

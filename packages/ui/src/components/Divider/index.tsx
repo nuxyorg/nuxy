@@ -1,11 +1,9 @@
-import React from 'react'
 
-export interface DividerProps extends React.HTMLAttributes<HTMLElement> {
+export interface DividerProps extends Record<string, unknown> {
   orientation?: 'horizontal' | 'vertical'
   label?: string
 }
 
-export function Divider(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Divider || (() => null)
-  return <Impl {...props} />
+export function Divider(...args: any[]): unknown {
+  return (window.UI as any)?.Divider?.(...args) ?? null
 }

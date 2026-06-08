@@ -1,12 +1,10 @@
-import React from 'react'
 
-export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SkeletonProps extends Record<string, unknown> {
   width?: number | string
   height?: number | string
   variant?: 'rect' | 'text' | 'circle'
 }
 
-export function Skeleton(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Skeleton || (() => null)
-  return <Impl {...props} />
+export function Skeleton(...args: any[]): unknown {
+  return (window.UI as any)?.Skeleton?.(...args) ?? null
 }

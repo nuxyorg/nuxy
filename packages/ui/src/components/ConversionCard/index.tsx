@@ -1,12 +1,10 @@
-import React from 'react'
 
 export interface ConversionCardProps {
-  from: React.ReactNode
-  to: React.ReactNode
+  from: unknown
+  to: unknown
   label?: string
 }
 
-export function ConversionCard(props: ConversionCardProps): React.ReactElement {
-  const Impl = (window.UI as any)?.ConversionCard || (() => null)
-  return <Impl {...props} />
+export function ConversionCard(...args: any[]): unknown {
+  return (window.UI as any)?.ConversionCard?.(...args) ?? null
 }

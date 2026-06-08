@@ -21,6 +21,9 @@ const KERNEL_CHANNELS = new Set([
   'uninstallExtension',
   'getExtensionTranslations',
   'setExtensionEnabled',
+  'getToolElementTag',
+  'listCompositionSlots',
+  'validateCompositionClaim',
 ])
 
 export function validateExtInvokeArgs(

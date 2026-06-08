@@ -1,11 +1,9 @@
-import React from 'react'
 
-export interface ItemLeadingProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ItemLeadingProps extends Record<string, unknown> {
   color?: string
   size?: 'sm' | 'md' | 'lg'
 }
 
-export function ItemLeading(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ItemLeading || (() => null)
-  return <Impl {...props} />
+export function ItemLeading(...args: any[]): unknown {
+  return (window.UI as any)?.ItemLeading?.(...args) ?? null
 }

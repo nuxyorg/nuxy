@@ -1,40 +1,35 @@
-import React from 'react'
 
 export interface DropdownItemProps {
-  onClick?: (e: React.MouseEvent) => void
+  onClick?: (e: unknown) => void
   disabled?: boolean
   variant?: 'default' | 'danger'
-  children: React.ReactNode
+  children: unknown
   className?: string
 }
 
 export interface DropdownHeaderProps {
-  children: React.ReactNode
+  children: unknown
 }
 
 export interface DropdownMenuProps {
-  trigger: React.ReactElement
-  children: React.ReactNode
+  trigger: unknown
+  children: unknown
   align?: 'left' | 'right'
   className?: string
 }
 
-export function DropdownItem(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.DropdownItem || (() => null)
-  return <Impl {...props} />
+export function DropdownItem(...args: any[]): unknown {
+  return (window.UI as any)?.DropdownItem?.(...args) ?? null
 }
 
-export function DropdownDivider(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.DropdownDivider || (() => null)
-  return <Impl {...props} />
+export function DropdownDivider(...args: any[]): unknown {
+  return (window.UI as any)?.DropdownDivider?.(...args) ?? null
 }
 
-export function DropdownHeader(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.DropdownHeader || (() => null)
-  return <Impl {...props} />
+export function DropdownHeader(...args: any[]): unknown {
+  return (window.UI as any)?.DropdownHeader?.(...args) ?? null
 }
 
-export function DropdownMenu(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.DropdownMenu || (() => null)
-  return <Impl {...props} />
+export function DropdownMenu(...args: any[]): unknown {
+  return (window.UI as any)?.DropdownMenu?.(...args) ?? null
 }

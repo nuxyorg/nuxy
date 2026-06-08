@@ -1,8 +1,6 @@
-import React from 'react'
 
-export type KbdProps = React.HTMLAttributes<HTMLElement>
+export type KbdProps = unknown
 
-export function Kbd(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Kbd || (() => null)
-  return <Impl {...props} />
+export function Kbd(...args: any[]): unknown {
+  return (window.UI as any)?.Kbd?.(...args) ?? null
 }

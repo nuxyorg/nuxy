@@ -1,7 +1,6 @@
-import React from 'react'
 
 export interface SearchInputProps extends Omit<
-  React.InputHTMLAttributes<HTMLInputElement>,
+  unknown,
   'onChange'
 > {
   value?: string
@@ -10,7 +9,6 @@ export interface SearchInputProps extends Omit<
   className?: string
 }
 
-export function SearchInput(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.SearchInput || (() => null)
-  return <Impl {...props} />
+export function SearchInput(...args: any[]): unknown {
+  return (window.UI as any)?.SearchInput?.(...args) ?? null
 }

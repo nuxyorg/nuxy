@@ -1,21 +1,19 @@
-import React from 'react'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import './nuxy-conversion-card.ts'
 
 export interface ConversionCardProps {
-  from: React.ReactNode
-  to: React.ReactNode
+  from: UiChild
+  to: UiChild
   label?: string
 }
 
 export function ConversionCard({ from, to, label }: ConversionCardProps) {
-  return (
-    <div className="nuxy-conversion-card">
-      {label && <div className="nuxy-conversion-card__label">{label}</div>}
-      <div className="nuxy-conversion-card__body">
-        <div className="nuxy-conversion-card__panel nuxy-conversion-card__panel--from">{from}</div>
-        <div className="nuxy-conversion-card__arrow">→</div>
-        <div className="nuxy-conversion-card__panel nuxy-conversion-card__panel--to">{to}</div>
-      </div>
-    </div>
+  return h(
+    'nuxy-conversion-card',
+    null,
+    label ? h('div', { 'data-label': '' }, label) : null,
+    h('div', { 'data-from': '' }, from),
+    h('div', { 'data-to': '' }, to)
   )
 }

@@ -1,4 +1,3 @@
-import React from 'react'
 
 export interface LoadingStateProps {
   message?: string
@@ -7,7 +6,6 @@ export interface LoadingStateProps {
   className?: string
 }
 
-export function LoadingState(props: LoadingStateProps): React.ReactElement {
-  const Impl = (window.UI as any)?.LoadingState || (() => null)
-  return <Impl {...props} />
+export function LoadingState(...args: any[]): unknown {
+  return (window.UI as any)?.LoadingState?.(...args) ?? null
 }

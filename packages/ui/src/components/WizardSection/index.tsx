@@ -1,11 +1,9 @@
-import React from 'react'
 
 export interface WizardSectionProps {
-  icon?: React.ReactNode
+  icon?: unknown
   title: string
 }
 
-export function WizardSection(props: WizardSectionProps): React.ReactElement {
-  const Impl = (window.UI as any)?.WizardSection || (() => null)
-  return <Impl {...props} />
+export function WizardSection(...args: any[]): unknown {
+  return (window.UI as any)?.WizardSection?.(...args) ?? null
 }

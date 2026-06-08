@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import path from 'path'
 import fs from 'fs'
 import os from 'os'
@@ -69,8 +68,6 @@ function createServerCore(handlers: Record<string, (p?: unknown) => Promise<unkn
 
 export default defineConfig({
   plugins: [
-    react({ jsxRuntime: 'classic' }),
-
     // virtual:ext-mocks — loads dev/mocks.ts when present, empty object otherwise
     {
       name: 'ext-mocks',
@@ -155,7 +152,6 @@ export default defineConfig({
   },
 
   resolve: {
-    dedupe: ['react', 'react-dom'],
     alias: {
       '~ext': EXT_PATH,
       // Use ui-default's real implementations — packages/ui hooks delegate to window.UI

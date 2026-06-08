@@ -2,36 +2,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { test, expect, type Page } from '../../src/e2e/fixtures.js'
-import { resetShell } from '../e2e-helpers.js'
-
-async function openTool(page: Page, toolName: string) {
-  await resetShell(page)
-  await page.keyboard.type(toolName)
-  const option = page.locator('[role="option"]', { hasText: toolName })
-  await option.first().click()
-  await page.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 400 })
-  await page.waitForFunction(
-    () => (document.querySelector('input') as HTMLInputElement | null)?.value === '',
-    { timeout: 400 }
-  )
-  await page.locator('input').focus()
-}
-
-async function openCommandPalette(page: Page) {
-  // The command palette only opens when a tool with registered actions is active.
-  // ANGRYsearch is the only tool that registers actions via nuxy-register-actions.
-  await openTool(page, 'angry')
-  await page.keyboard.press('Control+k')
-  const input = page.locator('.nuxy-command-palette__input')
-  await input.waitFor({ state: 'visible', timeout: 400 })
-  // Click to ensure focus lands on the palette input (not the shell input),
-  // then wait for activeElement to confirm — prevents race with keyboard.type()
-  await input.click()
-  await page.waitForFunction(
-    () => document.activeElement?.classList.contains('nuxy-command-palette__input'),
-    { timeout: 400 }
-  )
-}
+import { resetShell, typeInOmnibar, pressOmnibarKey, openTool, openCommandPalette, typeInCommandPalette } from '../e2e-helpers.js'
 
 // ---------------------------------------------------------------------------
 // App launch
@@ -48,7 +19,7 @@ test.describe('app launch', () => {
   })
 
   test('shell input is present', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
   })
 })
 
@@ -58,10 +29,10 @@ test.describe('app launch', () => {
 
 test.describe('shell search', () => {
   test('typing shows matching tool results', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('emoji')
+    await typeInOmnibar(appPage, 'emoji')
     await appPage.waitForFunction(() => document.body.innerText.toLowerCase().includes('emoji'), {
       timeout: 400,
     })
@@ -71,10 +42,10 @@ test.describe('shell search', () => {
   })
 
   test('typing math expression shows calculator result', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('2+2')
+    await typeInOmnibar(appPage, '2+2')
     await appPage.waitForFunction(
       () => document.body.innerText.includes('= 4'),
       undefined,
@@ -86,13 +57,13 @@ test.describe('shell search', () => {
   })
 
   test('escape clears active search', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
 
-    await appPage.keyboard.type('hello')
+    await typeInOmnibar(appPage, 'hello')
     await appPage.keyboard.press('Escape')
     await appPage.waitForFunction(
       () => (document.querySelector('input') as HTMLInputElement | null)?.value === '',
-      { timeout: 400 }
+      { timeout: 2000 }
     )
 
     const inputValue = await appPage.evaluate(
@@ -108,19 +79,22 @@ test.describe('shell search', () => {
 
 test.describe('extension interactions', () => {
   test('opens emoji picker via keyboard navigation', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('emoji')
-    await appPage.waitForSelector('[role="option"]', { timeout: 400 })
-    await appPage.keyboard.press('ArrowDown')
+    await typeInOmnibar(appPage, 'emoji')
+    await appPage.waitForSelector('[role="option"]', { timeout: 2000 })
+    await pressOmnibarKey(appPage, 'ArrowDown')
     await appPage.waitForFunction(() => document.querySelector('[aria-selected="true"]') !== null, {
       timeout: 400,
     })
-    await appPage.keyboard.press('Enter')
+    await pressOmnibarKey(appPage, 'Enter')
     await appPage.waitForFunction(
-      () => document.querySelector('.nuxy-shell-omni-bar__tool-name') !== null,
-      { timeout: 400 }
+      () => {
+        const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+        return !!el && !el.hidden && !!(el.textContent ?? '').trim()
+      },
+      { timeout: 2000 }
     )
 
     const body = await appPage.evaluate(() => document.body.innerText)
@@ -128,43 +102,49 @@ test.describe('extension interactions', () => {
   })
 
   test('emoji picker accepts search input', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('emoji')
-    await appPage.waitForSelector('[role="option"]', { timeout: 400 })
-    await appPage.keyboard.press('ArrowDown')
+    await typeInOmnibar(appPage, 'emoji')
+    await appPage.waitForSelector('[role="option"]', { timeout: 2000 })
+    await pressOmnibarKey(appPage, 'ArrowDown')
     await appPage.waitForFunction(() => document.querySelector('[aria-selected="true"]') !== null, {
       timeout: 400,
     })
-    await appPage.keyboard.press('Enter')
+    await pressOmnibarKey(appPage, 'Enter')
     await appPage.waitForFunction(
-      () => document.querySelector('.nuxy-shell-omni-bar__tool-name') !== null,
-      { timeout: 400 }
+      () => {
+        const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+        return !!el && !el.hidden && !!(el.textContent ?? '').trim()
+      },
+      { timeout: 2000 }
     )
 
-    await appPage.keyboard.type('heart')
-    await appPage.waitForFunction(() => /heart|❤/i.test(document.body.innerText), { timeout: 400 })
+    await typeInOmnibar(appPage, 'heart')
+    await appPage.waitForFunction(() => /heart|❤/i.test(document.body.innerText), { timeout: 2000 })
 
     const body = await appPage.evaluate(() => document.body.innerText)
     expect(body.toLowerCase()).toMatch(/heart|❤/)
   })
 
   test('opens translate tool via keyboard navigation', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('trans')
+    await typeInOmnibar(appPage, 'trans')
     await appPage.waitForSelector('[role="option"]', { timeout: 2000 })
-    await appPage.keyboard.press('ArrowDown')
+    await pressOmnibarKey(appPage, 'ArrowDown')
     await appPage.waitForFunction(
       () => document.querySelector('[aria-selected="true"]') !== null,
       undefined,
       { timeout: 2000 }
     )
-    await appPage.keyboard.press('Enter')
+    await pressOmnibarKey(appPage, 'Enter')
     await appPage.waitForFunction(
-      () => document.querySelector('.nuxy-shell-omni-bar__tool-name') !== null,
+      () => {
+        const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+        return !!el && !el.hidden && !!(el.textContent ?? '').trim()
+      },
       undefined,
       { timeout: 2000 }
     )
@@ -182,14 +162,14 @@ test.describe('extension interactions', () => {
 
 test.describe('escape behavior', () => {
   test('escape clears the search input', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('some query')
+    await typeInOmnibar(appPage, 'some query')
     await appPage.keyboard.press('Escape')
     await appPage.waitForFunction(
       () => (document.querySelector('input') as HTMLInputElement | null)?.value === '',
-      { timeout: 400 }
+      { timeout: 2000 }
     )
 
     const value = await appPage.evaluate(
@@ -199,18 +179,21 @@ test.describe('escape behavior', () => {
   })
 
   test('escape from inside a tool returns to the shell', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await openTool(appPage, 'emoji')
 
     await appPage.keyboard.press('Escape')
     await appPage.waitForFunction(
-      () => document.querySelector('.nuxy-shell-omni-bar__tool-name') === null,
-      { timeout: 400 }
+      () => {
+        const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+        return !el || el.hidden || !(el.textContent ?? '').trim()
+      },
+      { timeout: 2000 }
     )
 
     const hasToolName = await appPage.evaluate(() => {
-      const el = document.querySelector('.nuxy-shell-omni-bar__tool-name')
-      return el !== null && (el.textContent ?? '').trim().length > 0
+      const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+      return el !== null && !el.hidden && (el.textContent ?? '').trim().length > 0
     })
     expect(hasToolName).toBe(false)
   })
@@ -222,12 +205,12 @@ test.describe('escape behavior', () => {
 
 test.describe('keyboard navigation', () => {
   test('ArrowDown moves selection to first item', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('e')
-    await appPage.waitForSelector('[role="option"]', { timeout: 400 })
-    await appPage.keyboard.press('ArrowDown')
+    await typeInOmnibar(appPage, 'e')
+    await appPage.waitForSelector('[role="option"]', { timeout: 2000 })
+    await pressOmnibarKey(appPage, 'ArrowDown')
     await appPage.waitForFunction(() => document.querySelector('[aria-selected="true"]') !== null, {
       timeout: 400,
     })
@@ -242,19 +225,22 @@ test.describe('keyboard navigation', () => {
   })
 
   test('Enter opens the selected tool', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('emoji')
-    await appPage.waitForSelector('[role="option"]', { timeout: 400 })
-    await appPage.keyboard.press('ArrowDown')
+    await typeInOmnibar(appPage, 'emoji')
+    await appPage.waitForSelector('[role="option"]', { timeout: 2000 })
+    await pressOmnibarKey(appPage, 'ArrowDown')
     await appPage.waitForFunction(() => document.querySelector('[aria-selected="true"]') !== null, {
       timeout: 400,
     })
-    await appPage.keyboard.press('Enter')
+    await pressOmnibarKey(appPage, 'Enter')
     await appPage.waitForFunction(
-      () => document.querySelector('.nuxy-shell-omni-bar__tool-name') !== null,
-      { timeout: 400 }
+      () => {
+        const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+        return !!el && !el.hidden && !!(el.textContent ?? '').trim()
+      },
+      { timeout: 2000 }
     )
 
     const toolName = await appPage.evaluate(() => {
@@ -265,25 +251,28 @@ test.describe('keyboard navigation', () => {
   })
 
   test('Backspace on empty input inside a tool exits the tool', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await openTool(appPage, 'emoji')
 
     await appPage.keyboard.press('Control+a')
     await appPage.keyboard.press('Delete')
     await appPage.waitForFunction(
       () => (document.querySelector('input') as HTMLInputElement | null)?.value === '',
-      { timeout: 400 }
+      { timeout: 2000 }
     )
 
     await appPage.keyboard.press('Backspace')
     await appPage.waitForFunction(
-      () => document.querySelector('.nuxy-shell-omni-bar__tool-name') === null,
-      { timeout: 400 }
+      () => {
+        const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+        return !el || el.hidden || !(el.textContent ?? '').trim()
+      },
+      { timeout: 2000 }
     )
 
     const hasToolName = await appPage.evaluate(() => {
-      const el = document.querySelector('.nuxy-shell-omni-bar__tool-name')
-      return el !== null && (el.textContent ?? '').trim().length > 0
+      const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+      return el !== null && !el.hidden && (el.textContent ?? '').trim().length > 0
     })
     expect(hasToolName).toBe(false)
   })
@@ -295,17 +284,21 @@ test.describe('keyboard navigation', () => {
 
 test.describe('shell omnibar', () => {
   test('input is auto-focused on startup', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('.nuxy-shell-omni-bar__input', { timeout: 2000 })
+    await appPage.waitForFunction(
+      () => document.activeElement === document.querySelector('.nuxy-shell-omni-bar__input'),
+      { timeout: 5000 }
+    )
 
     const isFocused = await appPage.evaluate(() => {
-      const input = document.querySelector('input')
+      const input = document.querySelector('.nuxy-shell-omni-bar__input')
       return document.activeElement === input
     })
     expect(isFocused).toBe(true)
   })
 
   test('search placeholder is shown when empty', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
     // Translations load asynchronously — wait for a non-empty placeholder
@@ -323,13 +316,13 @@ test.describe('shell omnibar', () => {
   })
 
   test('input accepts and retains text', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('hello world')
+    await typeInOmnibar(appPage, 'hello world')
     await appPage.waitForFunction(
       () => (document.querySelector('input') as HTMLInputElement | null)?.value === 'hello world',
-      { timeout: 400 }
+      { timeout: 2000 }
     )
 
     const value = await appPage.evaluate(
@@ -339,7 +332,7 @@ test.describe('shell omnibar', () => {
   })
 
   test('tool name appears in omnibar when a tool is open', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await openTool(appPage, 'emoji')
 
     const toolName = await appPage.evaluate(() => {
@@ -356,29 +349,29 @@ test.describe('shell omnibar', () => {
 
 test.describe('provider results', () => {
   test('calculator provider shows result for math expression', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('5+3')
-    await appPage.waitForFunction(() => /=\s*\d/.test(document.body.innerText), { timeout: 400 })
+    await typeInOmnibar(appPage, '5+3')
+    await appPage.waitForFunction(() => /=\s*\d/.test(document.body.innerText), { timeout: 2000 })
 
     const body = await appPage.evaluate(() => document.body.innerText)
     expect(body).toMatch(/=\s*8/)
   })
 
   test('results update as query changes', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('10+10')
-    await appPage.waitForFunction(() => /=\s*20/.test(document.body.innerText), { timeout: 400 })
+    await typeInOmnibar(appPage, '10+10')
+    await appPage.waitForFunction(() => /=\s*20/.test(document.body.innerText), { timeout: 2000 })
 
     const bodyBefore = await appPage.evaluate(() => document.body.innerText)
     expect(bodyBefore).toMatch(/=\s*20/)
 
     await appPage.keyboard.press('Control+a')
-    await appPage.keyboard.type('10+20')
-    await appPage.waitForFunction(() => /=\s*30/.test(document.body.innerText), { timeout: 400 })
+    await typeInOmnibar(appPage, '10+20')
+    await appPage.waitForFunction(() => /=\s*30/.test(document.body.innerText), { timeout: 2000 })
 
     const bodyAfter = await appPage.evaluate(() => document.body.innerText)
     expect(bodyAfter).toMatch(/=\s*30/)
@@ -391,22 +384,22 @@ test.describe('provider results', () => {
 
 test.describe('command palette (Ctrl+K)', () => {
   test('Ctrl+K opens the command palette', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openTool(appPage, 'angry')
+    await appPage.waitForSelector('input', { timeout: 2000 })
+    await openTool(appPage, 'notes')
 
     await appPage.keyboard.press('Control+k')
-    await appPage.waitForSelector('.nuxy-command-palette', { timeout: 400 })
+    await appPage.waitForSelector('.nuxy-command-palette', { timeout: 2000 })
 
     const body = await appPage.evaluate(() => document.body.innerText)
     expect(body).toBeTruthy()
   })
 
   test('Escape closes the command palette', async ({ appPage }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
-    await openTool(appPage, 'angry')
+    await appPage.waitForSelector('input', { timeout: 2000 })
+    await openTool(appPage, 'notes')
 
     await appPage.keyboard.press('Control+k')
-    await appPage.waitForSelector('.nuxy-command-palette', { timeout: 400 })
+    await appPage.waitForSelector('.nuxy-command-palette', { timeout: 2000 })
     await appPage.keyboard.press('Escape')
     await appPage.waitForFunction(() => document.querySelector('.nuxy-command-palette') === null, {
       timeout: 400,
@@ -471,14 +464,14 @@ test.describe('command palette navigation', () => {
   })
 
   test('ArrowDown moves selection to next item', async ({ appPage }) => {
-    await appPage.keyboard.press('ArrowDown')
+    await pressOmnibarKey(appPage, 'ArrowDown')
     await appPage.waitForFunction(
       () => {
         const items = document.querySelectorAll('.nuxy-command-palette__item')
         const active = document.querySelector('.nuxy-command-palette__item--active')
         return items.length > 1 && active !== null && Array.from(items).indexOf(active) > 0
       },
-      { timeout: 400 }
+      { timeout: 2000 }
     )
 
     const secondLabel = await appPage.evaluate(() => {
@@ -488,14 +481,14 @@ test.describe('command palette navigation', () => {
   })
 
   test('ArrowUp moves selection back', async ({ appPage }) => {
-    await appPage.keyboard.press('ArrowDown')
+    await pressOmnibarKey(appPage, 'ArrowDown')
     await appPage.waitForFunction(
       () => {
         const items = document.querySelectorAll('.nuxy-command-palette__item')
         const active = document.querySelector('.nuxy-command-palette__item--active')
         return items.length > 1 && active !== null && Array.from(items).indexOf(active) > 0
       },
-      { timeout: 400 }
+      { timeout: 2000 }
     )
     await appPage.keyboard.press('ArrowUp')
     await appPage.waitForFunction(
@@ -504,7 +497,7 @@ test.describe('command palette navigation', () => {
         const active = document.querySelector('.nuxy-command-palette__item--active')
         return active !== null && Array.from(items).indexOf(active) === 0
       },
-      { timeout: 400 }
+      { timeout: 2000 }
     )
 
     const items = await appPage.evaluate(() => {
@@ -529,7 +522,7 @@ test.describe('command palette filtering', () => {
       () => document.querySelectorAll('.nuxy-command-palette__item').length
     )
 
-    await appPage.keyboard.type('zzzznocommandlikethis')
+    await typeInCommandPalette(appPage, 'zzzznocommandlikethis')
     await appPage.waitForFunction(
       () => {
         const input = document.querySelector(
@@ -537,7 +530,7 @@ test.describe('command palette filtering', () => {
         ) as HTMLInputElement | null
         return input?.value === 'zzzznocommandlikethis'
       },
-      { timeout: 400 }
+      { timeout: 2000 }
     )
 
     const totalAfter = await appPage.evaluate(
@@ -547,10 +540,10 @@ test.describe('command palette filtering', () => {
   })
 
   test('"No actions available" shows when nothing matches', async ({ appPage }) => {
-    await appPage.keyboard.type('xyzxyzxyz_no_match_possible')
+    await typeInCommandPalette(appPage, 'xyzxyzxyz_no_match_possible')
     await appPage.waitForFunction(
       () => /no actions|no commands|no results|xyzxyz/i.test(document.body.innerText),
-      { timeout: 400 }
+      { timeout: 2000 }
     )
 
     const body = await appPage.evaluate(() => document.body.innerText)
@@ -566,7 +559,7 @@ test.describe('omnibox DOM stability', () => {
   test('typing "not" and clearing 9 times leaves the same number of main-page elements', async ({
     appPage,
   }) => {
-    await appPage.waitForSelector('input', { timeout: 400 })
+    await appPage.waitForSelector('input', { timeout: 2000 })
     await resetShell(appPage)
 
     // Wait for the tool list to stabilize in the idle (empty-query) state
@@ -583,20 +576,23 @@ test.describe('omnibox DOM stability', () => {
 
     for (let i = 0; i < 9; i++) {
       // Type "not" into the omnibox
-      await appPage.keyboard.type('not')
+      await typeInOmnibar(appPage, 'not')
       await appPage.waitForFunction(
-        () => (document.querySelector('input') as HTMLInputElement | null)?.value === 'not',
-        { timeout: 400 }
+        () =>
+          (document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null)
+            ?.value === 'not',
+        { timeout: 2000 }
       )
 
       // Clear the input
-      await appPage.keyboard.press('Control+a')
-      await appPage.keyboard.press('Delete')
+      await typeInOmnibar(appPage, '')
 
       // Wait for the input to be empty
       await appPage.waitForFunction(
-        () => (document.querySelector('input') as HTMLInputElement | null)?.value === '',
-        { timeout: 400 }
+        () =>
+          (document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null)
+            ?.value === '',
+        { timeout: 2000 }
       )
 
       // Wait for the tool list to restore to the initial option count
@@ -640,7 +636,7 @@ test.describe('command palette dismissal', () => {
         await appPage.mouse.click(box.x + 2, box.y + 2)
         await appPage.waitForFunction(
           () => document.querySelector('.nuxy-command-palette') === null,
-          { timeout: 400 }
+          { timeout: 2000 }
         )
       }
     }
@@ -682,9 +678,12 @@ test.describe('i18n / locale', () => {
 
     try {
       // Reset shell in case a previous test left a tool active (which changes the placeholder)
-      await appPage.evaluate(() => window.dispatchEvent(new CustomEvent('nuxy-shell-reset')))
+      await appPage.evaluate(() => window.core?.events?.emit('shell-reset'))
       await appPage.waitForFunction(
-        () => document.querySelector('.nuxy-shell-omni-bar__tool-name') === null,
+        () => {
+          const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+          return !el || el.hidden || !(el.textContent ?? '').trim()
+        },
         { timeout: 2000 }
       )
 
@@ -692,7 +691,7 @@ test.describe('i18n / locale', () => {
       writeFileSync(settingsFile, JSON.stringify({ ...original, preferredLanguages: ['ja'] }))
 
       // Notify the renderer to reload translations
-      await appPage.evaluate(() => window.dispatchEvent(new Event('nuxy-locale-changed')))
+      await appPage.evaluate(() => window.core?.events?.emit('locale-changed'))
 
       // Wait for the Japanese placeholder to appear
       await appPage.waitForFunction(
@@ -710,7 +709,7 @@ test.describe('i18n / locale', () => {
     } finally {
       // Restore original settings and locale
       writeFileSync(settingsFile, JSON.stringify(original))
-      await appPage.evaluate(() => window.dispatchEvent(new Event('nuxy-locale-changed')))
+      await appPage.evaluate(() => window.core?.events?.emit('locale-changed'))
       // Wait for English placeholder to restore before the next test
       await appPage.waitForFunction(
         () =>

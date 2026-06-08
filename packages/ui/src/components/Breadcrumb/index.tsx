@@ -1,18 +1,16 @@
-import React from 'react'
 
 export interface BreadcrumbItem {
-  label: React.ReactNode
+  label: unknown
   href?: string
-  onClick?: (e: React.MouseEvent) => void
+  onClick?: (e: unknown) => void
 }
 
 export interface BreadcrumbProps {
   items: BreadcrumbItem[]
-  separator?: React.ReactNode
+  separator?: unknown
   className?: string
 }
 
-export function Breadcrumb(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Breadcrumb || (() => null)
-  return <Impl {...props} />
+export function Breadcrumb(...args: any[]): unknown {
+  return (window.UI as any)?.Breadcrumb?.(...args) ?? null
 }

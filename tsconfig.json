@@ -11,7 +11,7 @@
     "strict": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
@@ -23,5 +23,5 @@
       "@nuxy/extension-sdk": ["packages/extension-sdk/src/index.ts"]
     }
   },
-  "exclude": ["extensions/**/*", "extensions/global.d.ts"]
+  "exclude": ["extensions/global.d.ts"]
 }

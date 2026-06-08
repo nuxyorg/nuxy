@@ -1,8 +1,6 @@
-import React from 'react'
 
-export type ListItemMetaProps = React.HTMLAttributes<HTMLDivElement>
+export type ListItemMetaProps = unknown
 
-export function ListItemMeta(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ListItemMeta || (() => null)
-  return <Impl {...props} />
+export function ListItemMeta(...args: any[]): unknown {
+  return (window.UI as any)?.ListItemMeta?.(...args) ?? null
 }

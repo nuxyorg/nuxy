@@ -1,6 +1,8 @@
-# React → Lit Geçiş Analizi
+# React → Web Components Geçişi
 
-Nuxy'nin üçüncü parti developer ekosistemine açılması hedefiyle, mevcut React tabanlı mimariden Lit (Web Components) mimarisine geçişin etki analizi.
+> **Durum: Tamamlandı.** React kaldırıldı. Renderer vanilla Web Components bootstrap'a geçti. Extension frontend'leri `NuxyToolElement` arayüzünü uygulayan custom element'lere dönüştürüldü. Bu belge geçiş sürecinin analizini ve kararlarını belgeler.
+
+Nuxy'nin üçüncü parti developer ekosistemine açılması hedefiyle React tabanlı mimariden Web Components mimarisine geçişin etki analizi.
 
 ---
 
@@ -8,11 +10,11 @@ Nuxy'nin üçüncü parti developer ekosistemine açılması hedefiyle, mevcut R
 
 Şu anki mimaride extension'lar aynı DOM, aynı CSS scope ve aynı `window.*` namespace'ini paylaşıyor. Güvenilir bir üçüncü parti ekosistemi için izolasyon zorunlu.
 
-**Lit'in sağladığı:**
-- **Shadow DOM** — her component kendi CSS ve DOM scope'una sahip, dışarıya sızma yok
-- **Native custom elements** — `<nuxy-card>` gibi gerçek browser primitive'leri
+**Web Components'ın sağladığı:**
+- **Native custom elements** — `<nuxy-card>` gibi gerçek browser primitive'leri, framework bağımlılığı yok
 - **CSS custom properties mirası** — theme token'ları shadow boundary'yi geçer, diğer stiller geçmez
 - **~45KB küçük bundle** — React/ReactDOM çıkınca
+- **Shadow DOM** — opsiyonel izolasyon; şimdilik light DOM kullanılıyor, gerektiğinde eklenebilir
 
 **Şu anki riskler (React ile):**
 - Bir extension `.card { color: red }` yazsın → tüm extension'ları etkiler
@@ -58,18 +60,18 @@ export function Card(props: any): React.ReactElement {
 }
 ```
 
-Lit ile hedef pattern:
+Web Components hedef pattern:
 ```ts
-// packages/ui, custom element registration için thin wrapper'a dönüşür
-// ya da tamamen kaldırılır — extension'lar doğrudan custom element kullanır
-import type { CardProps } from './types'
-export { CardProps }
-// <nuxy-card> browser'da zaten tanımlı, import gerekmiyor
+// packages/ui, framework-agnostic stub'lara dönüştü
+export function Card(...args: any[]): unknown {
+  return (window.UI as any)?.Card?.(...args) ?? null
+}
+export interface CardProps extends Record<string, unknown> { /* ... */ }
 ```
 
 **Etkilenen:** 70 component stub, 4 hook stub, `src/index.tsx` barrel export.
 
-**Kritik karar:** `packages/ui` katmanı Lit'te anlamını yitirebilir. Custom element registration `ui-default` extension'ında olur, tip tanımları ayrı bir `packages/ui-types` paketine taşınabilir.
+**Karar:** `packages/ui` tip+stub katmanı olarak kaldı. Custom element registration `ui-default` extension'ında. `window.UI` factory function'ları `nuxy-*` element'leri oluşturur.
 
 ---
 
@@ -83,7 +85,7 @@ export { CardProps }
 - `className` prop'larıyla dinamik class composition
 - 57 CSS dosyası, ~3400 satır CSS
 
-**Lit'e geçişte ne değişir:**
+**Web Components'a geçişte ne değişti:**
 
 ```ts
 // ÖNCE (React)
@@ -97,22 +99,24 @@ export function Button({ children, variant, className, ...props }: ButtonProps) 
 ```
 
 ```ts
-// SONRA (Lit)
-@customElement('nuxy-button')
-export class NuxyButton extends LitElement {
-  @property() variant = 'default'
+// SONRA (vanilla custom element)
+export class NuxyButtonElement extends HTMLElement {
+  static get observedAttributes() { return ['variant', 'disabled'] }
 
-  static styles = css`
-    :host { display: inline-flex; }
-    button { /* Shadow DOM'da izole */ }
-  `
+  connectedCallback(): void {
+    this.style.display = 'contents'
+    this.ensureButton()
+    this.sync()
+  }
 
-  render() {
-    return html`<button part="button" class="nuxy-button--${this.variant}">
-      <slot></slot>
-    </button>`
+  attributeChangedCallback(): void { this.sync() }
+
+  private sync(): void {
+    const variant = this.getAttribute('variant') ?? 'default'
+    this.button?.setAttribute('class', `nuxy-button nuxy-button--${variant}`)
   }
 }
+customElements.define('nuxy-button', NuxyButtonElement)
 ```
 
 **CSS stratejisi:** Global `.nuxy-*` class'ları Shadow DOM içindeki `:host` ve `::part()` selector'larına taşınır. `--nuxy-*` CSS custom properties theme token'ları olarak shadow boundary'yi geçmeye devam eder.
@@ -138,15 +142,31 @@ export default function MyExtension({ query }: Props) {
 }
 ```
 
-**Lit'e geçiş seçenekleri:**
+**Seçilen yaklaşım — Vanilla custom elements:**
+Extension frontend'leri `HTMLElement` extend eder, DOM `h()` helper ile programatik olarak oluşturulur, state controller sınıflarıyla yönetilir.
 
-**Seçenek A — Tam Lit:** Extension'lar `LitElement` extend eder, `html` template literal kullanır. En temiz izolasyon. En yüksek yeniden yazım maliyeti.
+```ts
+export class NuxyToolNotesElement extends HTMLElement implements NuxyToolElement {
+  private controller: NotesController | null = null
 
-**Seçenek B — Hibrit (önerilen):** Extension frontend'leri Lit custom element içinde React render eder, geçiş döneminde. Sonradan kademeli Lit'e taşınır.
+  connectedCallback(): void {
+    this.controller = new NotesController(() => this.render())
+    this.controller.connect()
+    this.render()
+  }
 
-**Seçenek C — React adaları:** Shell Lit tabanlı olur, extension'lar kendi shadow root içinde React tree açar. İzolasyon sağlanır, React devam eder.
+  set query(value: string) {
+    this.controller?.setQuery(value)
+  }
 
-**Etkilenen:** 30 `frontend.tsx` dosyası, `global.d.ts` tip tanımları.
+  private render(): void {
+    this.replaceChildren(renderNotesApp(this.controller!))
+  }
+}
+customElements.define('nuxy-tool-notes', NuxyToolNotesElement)
+```
+
+**Etkilenen:** 30 `frontend.tsx` dosyası → `nuxy-tool-*.ts` + controller + dom dosyalarına dönüştürüldü. `global.d.ts` tip tanımları güncellendi.
 
 ---
 
@@ -165,16 +185,15 @@ window.dispatchEvent(new CustomEvent('nuxy-settings-updated'))
 
 **Problem:** Namespace'siz global event bus. Herhangi bir extension aynı event adını kullanarak başka bir extension'ın state'ini bozabilir.
 
-**Lit ile hedef mimari:**
+**Uygulanan mimari:**
 
 ```ts
-// core.events — namespaced event bus (extension-sdk'ya eklenir)
-core.events.emit('key-hints-changed', hints)    // sadece kendi namespace'i
+// core.events — namespaced event bus (uygulandı)
+core.events.emit('key-hints-changed', hints)
 core.events.on('settings-updated', handler)
 
-// Kernel-level event'lar (cross-extension) ayrı API ile
+// Kernel-level event'lar (cross-extension)
 core.kernel.on('theme-changed', handler)
-core.kernel.on('locale-changed', handler)
 ```
 
 Shadow DOM ile event'ların `composed: true/false` olup olmadığı da kontrol edilebilir hale gelir.
@@ -200,15 +219,15 @@ window.addEventListener('keydown', handleGlobalKeyDown)
 window.dispatchEvent(new CustomEvent('nuxy-shell-omni-bar-keydown', {...}))
 ```
 
-**Lit ile:**
+**Web Components ile (uygulanan):**
 ```ts
-// LitElement'in kendi event handling'i
-protected firstUpdated() {
+// connectedCallback'te event binding
+connectedCallback(): void {
   this.addEventListener('keydown', this._handleKeyDown)
 }
-
-// ya da core.events ile izole event routing
-core.events.on('keydown', this._handleKeyDown)
+disconnectedCallback(): void {
+  this.removeEventListener('keydown', this._handleKeyDown)
+}
 ```
 
 **Etkilenen:** 103 hook dosyası, özellikle `useKeyboard`, `useN8nKeyboard`, `useNotesKeyboard`.
@@ -219,22 +238,18 @@ core.events.on('keydown', this._handleKeyDown)
 
 **Zorluk: Kolay**
 
-**İyi haber:** CSS custom properties shadow boundary'yi **miras olarak geçer**. Theme token'ları (`--bg-base`, `--color-text`, `--space-5`, vb.) Lit component'larının içinde çalışmaya devam eder.
+**İyi haber:** CSS custom properties light DOM'da zaten çalışıyor. Theme token'ları (`--bg-base`, `--color-text`, `--space-5`, vb.) tüm extension'larda miras alınıyor.
 
 ```ts
-// App.tsx'de theme setup değişmez
+// bootstrap.ts'de theme setup (değişmedi)
 document.documentElement.style.setProperty('--bg-base', '#1a1a1a')
 
-// Lit component içinde
-static styles = css`
-  :host {
-    background: var(--bg-base);  /* shadow içinde inherited */
-    color: var(--color-text);
-  }
-`
+// Custom element içinde — CSS dosyasında veya inline style'da
+// background: var(--bg-base);
+// color: var(--color-text);
 ```
 
-**Tek değişim:** `styles` field in `ThemeDefinition` — şu an CSS class override'ları var. Shadow DOM'da bu çalışmaz, `::part()` selector'larına geçiş gerekebilir.
+**Tek değişim:** `ThemeDefinition` `styles` field'ı — CSS class override'ları yerini CSS custom property override'larına bıraktı.
 
 **Etkilenen:** `src/themes/*.json`, `ThemeDefinition` tipi, tema extension'ları.
 
@@ -246,7 +261,7 @@ static styles = css`
 
 | Dosya | Değişim |
 |-------|---------|
-| `src/electron/protocol/register.ts` | JSX injection kaldırılır, Lit dev mode support |
+| `src/electron/protocol/register.ts` | JSX injection kaldırıldı |
 | `src/electron/bootstrap/preload.ts` | `window.React` inject kaldırılır |
 | `src/renderer/main.tsx` | `ReactDOM.createRoot` → `customElements.define` |
 | `packages/extension-host/` | Backend katmanı değişmez |
@@ -257,45 +272,40 @@ static styles = css`
 
 ## Özet tablo
 
-| Alan | Dosya | Bileşen | Zorluk |
-|------|-------|---------|--------|
-| `packages/ui` stubs | 77 | 70 | Orta |
-| `ui-default` implementasyonlar | 79 | 66 | **Zor** |
-| Extension frontend'leri | 30 | 30 | **Orta-Zor** |
-| Custom hooks | 103 | — | **Zor** |
-| Global event bus | 72 | — | **Zor** |
-| Renderer bootstrap | 3 | 1 | Kolay |
-| Theming | 5 | — | Kolay |
-| Altyapı (protocol, preload) | 6 | — | Kolay |
-| **Toplam** | **375+** | **166+** | |
+| Alan | Durum | Notlar |
+|------|-------|--------|
+| `packages/ui` stubs | ✅ Tamamlandı | Framework-agnostic stub'lara dönüştürüldü |
+| `ui-default` implementasyonlar | ✅ Tamamlandı | `nuxy-*` custom element'ler |
+| Extension frontend'leri | ✅ Tamamlandı | `NuxyToolElement` + controller pattern |
+| Custom hooks (103 dosya) | ✅ Kaldırıldı | Controller sınıflarıyla değiştirildi |
+| Global event bus | ✅ Tamamlandı | `core.events` namespaced API |
+| Renderer bootstrap | ✅ Tamamlandı | React-free, vanilla bootstrap |
+| Theming | ✅ Değişmedi | CSS custom properties hâlâ çalışıyor |
+| `<nuxy-tool-host>` + `core.composition` | ⏳ Planlandı | Bkz. `architecture/lit-renderer-composition.md` |
 
 ---
 
-## Önerilen geçiş stratejisi
+## Tamamlanan geçiş adımları
 
-### Aşama 0 — Pilot (1 hafta)
-Tek bir basit extension'ı (örn. `color` veya `converter`) Lit'e taşı. Şunları doğrula:
-- `nuxy-ext://` protokolü Lit dosyalarını serve edebiliyor mu?
-- CSS custom property inheritance çalışıyor mu?
-- `window.core` IPC bridge değişmeden çalışıyor mu?
-- Keyboard event'ları shadow boundary içinde doğru routing yapıyor mu?
+### Aşama 0 — Renderer temizleme ✅
+React kaldırıldı. `src/renderer/main.ts` artık `window.UI = {}` + `bootstrap.ts` import'u. `bootstrap.ts` custom element'leri yükler, tema uygular ve `<nuxy-shell-view>` oluşturur.
 
-### Aşama 1 — Event bus redesign (1-2 hafta)
-`extension-sdk`'ya namespaced `core.events` API ekle. Tüm `window.dispatchEvent` usage'ını bu API'ye taşı. Bu değişiklik React/Lit bağımsız — hemen yapılabilir, güvenliği artırır.
+### Aşama 1 — Event bus ✅
+`core.events.emit` / `core.events.on` namespaced API eklendi. `window.dispatchEvent('nuxy-*')` usage'ları kaldırıldı.
 
-### Aşama 2 — UI component rewrite (3-4 hafta)
-`ui-default` extension'ındaki 66 component'i Lit'e taşı. CSS Shadow DOM'a alınır. `window.UI = {}` injection → `customElements.define()` registration.
+### Aşama 2 — UI component rewrite ✅
+`ui-default` component'leri `nuxy-*` custom element'lerine dönüştürüldü. `customElements.define()` ile register edilir. `window.UI = { Button, Card, … }` factory function'ları sağlar.
 
-### Aşama 3 — Extension frontend'leri (2-3 hafta)
-30 extension frontend'ini Lit'e taşı. Seçenek B (hibrit) ile başla, kademeli olarak tam Lit'e geç.
+### Aşama 3 — Extension frontend'leri ✅
+Extension frontend'leri `NuxyToolElement` arayüzünü uygulayan `HTMLElement` subclass'larına dönüştürüldü. React hook'ları yerine controller sınıfları, DOM için `h()` helper kullanılıyor. `entry.element` manifest alanı eklendi.
 
-### Aşama 4 — Hook sistemi (1-2 hafta)
-React hook'larını Lit controller pattern'ine taşı. Keyboard, state, data sync controller'ları yaz.
+### Aşama 4 — Hook sistemi ✅
+103 React hook dosyası kaldırıldı. Controller pattern ile değiştirildi (örn. `NotesController`, `NyaaController`). State yönetimi `ce-utils.ts`'deki `createStore()` ile sağlanıyor.
 
-### Aşama 5 — Temizlik (1 hafta)
-`window.React`, `window.ReactDOM` inject kaldırılır. `packages/ui` proxy katmanı değerlendirile (kaldırılabilir veya tip katmanına indirgenir). E2E test suite güncellenir.
-
-**Toplam tahmini:** 9-13 hafta
+### Kalan çalışmalar
+- `packages/ui` proxy katmanı tip katmanına indirgendi ama bazı extension'lar hâlâ import ediyor — tamamen kaldırılabilir
+- `<nuxy-tool-host>` ve `core.composition` API'si uygulanmayı bekliyor (detay: `architecture/lit-renderer-composition.md`)
+- E2E test suite tam güncellenmedi
 
 ---
 
@@ -305,4 +315,18 @@ React hook'larını Lit controller pattern'ine taşı. Keyboard, state, data syn
 2. **`packages/ui` ne olacak?** Kaldırılacak mı, tip katmanına mı indirgecek, yoksa custom element wrapper'a mı dönüşecek?
 3. **Event bus API tasarımı nedir?** `core.events` extension-sdk'ya giriyor — namespace stratejisi belirlenmeli.
 4. **Shadow DOM opt-in mi, zorunlu mu?** Extension'lar light DOM tercih edebilir mi? Güvenlik politikası ne olacak?
-5. **Üçüncü parti extension'lar ne kullanabilir?** Sadece Lit mi, her framework mi, vanilla JS mi?
+5. **Üçüncü parti extension'lar ne kullanabilir?** `NuxyToolElement` arayüzünü uygulayan herhangi bir custom element — vanilla JS, Lit, veya başka bir framework.
+
+---
+
+## Mimari plan (Composition API + Tool Host)
+
+Shadow DOM geçişinde kırılan iki kritik pattern (gradient → shell DOM inject, shell → tool dynamic render) için güvenli ve explicit API tasarımı:
+
+→ **[Web Components Renderer Composition Architecture](./architecture/lit-renderer-composition.md)**
+
+Kararlar:
+- Cross-extension DOM erişimi yasak; `core.composition` slot API ile değiştirilir
+- Tool render `<nuxy-tool-host>` üzerinden; `query` attribute değil property olarak akar
+- Shadow DOM zorunlu; React island geçiş dönemi fallback'i
+- 5 fazlı implementasyon planı (toplam ~6–9 hafta, tool migration paralel)

@@ -10,6 +10,25 @@
     "callable": false,
     "caller": true
   },
+  "composition": {
+    "provides": [
+      {
+        "name": "background-layer",
+        "description": "Full-bleed background behind shell chrome",
+        "maxMounts": 1
+      },
+      {
+        "name": "footer-portal",
+        "description": "Shortcut bar overlay region",
+        "maxMounts": 1
+      },
+      {
+        "name": "omnibar-portal",
+        "description": "OmniBar accessory region",
+        "maxMounts": 1
+      }
+    ]
+  },
   "entry": {
     "backend": "backend.ts",
     "frontend": "frontend.tsx"

@@ -1,15 +1,13 @@
-import React from 'react'
 
-export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
-  as?: React.ElementType
-  display?: React.CSSProperties['display']
+export interface BoxProps extends Record<string, unknown> {
+  as?: unknown
+  display?: unknown['display']
   padding?: number | string
   margin?: number | string
   gap?: number | string
-  flex?: React.CSSProperties['flex']
+  flex?: unknown['flex']
 }
 
-export function Box(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Box || (() => null)
-  return <Impl {...props} />
+export function Box(...args: any[]): unknown {
+  return (window.UI as any)?.Box?.(...args) ?? null
 }

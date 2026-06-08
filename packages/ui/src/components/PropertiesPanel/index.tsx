@@ -1,8 +1,7 @@
-import React from 'react'
 
 export interface PropertyRow {
   label: string
-  value: React.ReactNode
+  value: unknown
 }
 
 export interface PropertiesPanelProps {
@@ -10,7 +9,6 @@ export interface PropertiesPanelProps {
   rows: PropertyRow[]
 }
 
-export function PropertiesPanel(props: PropertiesPanelProps): React.ReactElement {
-  const Impl = (window.UI as any)?.PropertiesPanel || (() => null)
-  return <Impl {...props} />
+export function PropertiesPanel(...args: any[]): unknown {
+  return (window.UI as any)?.PropertiesPanel?.(...args) ?? null
 }

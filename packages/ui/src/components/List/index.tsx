@@ -1,10 +1,8 @@
-import React from 'react'
 
-export interface ListProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ListProps extends Record<string, unknown> {
   maxHeight?: 'md'
 }
 
-export function List(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.List || (() => null)
-  return <Impl {...props} />
+export function List(...args: any[]): unknown {
+  return (window.UI as any)?.List?.(...args) ?? null
 }

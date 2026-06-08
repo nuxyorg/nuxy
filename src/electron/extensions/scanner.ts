@@ -158,7 +158,6 @@ function scanDirectoryForNodeImports(dir: string): { file: string; imports: stri
 
 async function rescanExtensions(): Promise<void> {
   clearExtensionWatchers()
-  // eslint-disable-next-line react-doctor/async-await-in-loop
   for (const [, worker] of activeWorkers) {
     await worker.terminate()
   }
@@ -454,7 +453,6 @@ export async function scanExtensions(): Promise<void> {
         fs.cpSync(itemPath, tempPath, { recursive: true })
       }
 
-      // eslint-disable-next-line react-doctor/async-await-in-loop
       const secResult = await verifyAndSecureExtension(folderName, tempPath, targetPath)
       if (!secResult.trusted) {
         if (secResult.reason === 'rescan-triggered') {

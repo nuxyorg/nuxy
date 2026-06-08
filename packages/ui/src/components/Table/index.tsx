@@ -1,21 +1,20 @@
-import React from 'react'
 
-export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
+export interface TableProps extends Record<string, unknown> {
   containerClassName?: string
 }
 
-export interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+export interface TableRowProps extends Record<string, unknown> {
   interactive?: boolean
 }
 
-export interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+export interface TableCellProps extends Record<string, unknown> {
   header?: boolean
 }
 
 /* DataList */
 export interface DataListItem {
-  label: React.ReactNode
-  value: React.ReactNode
+  label: unknown
+  value: unknown
 }
 
 export interface DataListProps {
@@ -32,27 +31,22 @@ export interface StatProps {
   className?: string
 }
 
-export function Table(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Table || (() => null)
-  return <Impl {...props} />
+export function Table(...args: any[]): unknown {
+  return (window.UI as any)?.Table?.(...args) ?? null
 }
 
-export function TableRow(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.TableRow || (() => null)
-  return <Impl {...props} />
+export function TableRow(...args: any[]): unknown {
+  return (window.UI as any)?.TableRow?.(...args) ?? null
 }
 
-export function TableCell(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.TableCell || (() => null)
-  return <Impl {...props} />
+export function TableCell(...args: any[]): unknown {
+  return (window.UI as any)?.TableCell?.(...args) ?? null
 }
 
-export function DataList(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.DataList || (() => null)
-  return <Impl {...props} />
+export function DataList(...args: any[]): unknown {
+  return (window.UI as any)?.DataList?.(...args) ?? null
 }
 
-export function Stat(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Stat || (() => null)
-  return <Impl {...props} />
+export function Stat(...args: any[]): unknown {
+  return (window.UI as any)?.Stat?.(...args) ?? null
 }

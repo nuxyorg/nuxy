@@ -1,16 +1,14 @@
-import React from 'react'
 
 export interface CheckboxProps {
   checked?: boolean
   defaultChecked?: boolean
   onChange?: (checked: boolean) => void
   disabled?: boolean
-  label?: React.ReactNode
+  label?: unknown
   id?: string
   className?: string
 }
 
-export function Checkbox(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Checkbox || (() => null)
-  return <Impl {...props} />
+export function Checkbox(...args: any[]): unknown {
+  return (window.UI as any)?.Checkbox?.(...args) ?? null
 }

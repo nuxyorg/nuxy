@@ -1,7 +1,7 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-item-leading.ts'
 
-export interface ItemLeadingProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ItemLeadingProps extends Record<string, unknown> {
   color?: string
   size?: 'sm' | 'md' | 'lg'
 }
@@ -14,13 +14,15 @@ export function ItemLeading({
   children,
   ...rest
 }: ItemLeadingProps) {
-  return (
-    <div
-      className={`nuxy-item-leading nuxy-item-leading--${size} ${className ?? ''}`}
-      style={color ? { background: color, ...style } : style}
-      {...rest}
-    >
-      {children}
-    </div>
+  return h(
+    'nuxy-item-leading',
+    {
+      ...rest,
+      class: className,
+      size,
+      ...(color ? { color } : {}),
+      style,
+    },
+    children
   )
 }

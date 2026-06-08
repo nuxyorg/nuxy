@@ -1,12 +1,14 @@
 /// <reference types="vite/client" />
 import type { IpcResult } from '@nuxy/core'
 import { extensionHandlers } from './kernel-handlers/extensions.js'
+import { compositionHandlers } from './kernel-handlers/composition.js'
 import { themeHandlers } from './kernel-handlers/themes.js'
 import { i18nHandlers } from './kernel-handlers/i18n.js'
 import { systemHandlers } from './kernel-handlers/system.js'
 
 const handlers: Record<string, (payload: unknown) => IpcResult | Promise<IpcResult>> = {
   ...extensionHandlers,
+  ...compositionHandlers,
   ...themeHandlers,
   ...i18nHandlers,
   ...systemHandlers,

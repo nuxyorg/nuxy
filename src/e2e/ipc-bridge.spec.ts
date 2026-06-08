@@ -225,11 +225,12 @@ test.describe('preload security boundaries', () => {
 
   test('window.core only exposes declared API (no extra properties)', async ({ appPage }) => {
     const keys = await appPage.evaluate(() => Object.keys((window as any).core ?? {}))
-    // The preload only exposes: ipc, window, icons, themes
     expect(keys).toContain('ipc')
     expect(keys).toContain('window')
     expect(keys).toContain('icons')
     expect(keys).toContain('themes')
+    expect(keys).toContain('tools')
+    expect(keys).toContain('composition')
     // Must not accidentally expose Node internals under core
     expect(keys).not.toContain('require')
     expect(keys).not.toContain('process')

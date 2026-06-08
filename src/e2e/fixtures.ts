@@ -8,12 +8,12 @@ import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const require = createRequire(import.meta.url)
 const PROJECT_ROOT = resolve(__dirname, '..', '..')
 const APP_DIR = resolve(__dirname, '..')
 
 function findElectronBin(): string {
   try {
-    const require = createRequire(import.meta.url)
     return require('electron')
   } catch (e) {
     const bin = execSync(
@@ -50,6 +50,8 @@ async function launchApp(userDataDir: string, headless: boolean, socketPath: str
   } catch {}
 
   const cleanEnv = { ...process.env }
+  // Cursor/Playwright may set ELECTRON_RUN_AS_NODE — Electron then exits immediately as Node.
+  delete cleanEnv.ELECTRON_RUN_AS_NODE
   // If running in a Wayland environment, delete WAYLAND_DISPLAY so Electron falls back
   // to X11 (and thus correctly uses the virtual display set by xvfb-run).
   delete cleanEnv.WAYLAND_DISPLAY
@@ -58,6 +60,7 @@ async function launchApp(userDataDir: string, headless: boolean, socketPath: str
     executablePath: ELECTRON_BIN,
     args: [
       '--no-sandbox',
+      '--ozone-platform=x11',
       `--user-data-dir=${userDataDir}`,
       '--disable-renderer-backgrounding',
       '--disable-background-timer-throttling',
@@ -72,7 +75,7 @@ async function launchApp(userDataDir: string, headless: boolean, socketPath: str
       NUXY_DATA_DIR: nuxyDataDir,
       NUXY_SOCKET_PATH: socketPath,
     },
-    timeout: 3000,
+    timeout: 15000,
   })
   app.process().stdout?.on('data', (data) => console.log(`[MAIN-STDOUT] ${data.toString().trim()}`))
   app

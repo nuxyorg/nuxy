@@ -9,9 +9,13 @@
     "callable": false,
     "caller": false
   },
+  "composition": {
+    "claims": ["omnibar-portal"]
+  },
   "entry": {
     "backend": "backend.ts",
     "frontend": "frontend.tsx",
+    "element": "nuxy-tool-nyaa",
     "settings": "settings.json"
   },
   "locales": {

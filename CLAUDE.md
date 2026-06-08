@@ -61,7 +61,7 @@ Nuxy is a frameless, transparent Electron launcher — a popup shell that extens
 
 ```
 packages/core          → @nuxy/core      — shared types, logger, IPC message types
-packages/ui            → @nuxy/ui        — React component library (Card, List, Input, etc.)
+packages/ui            → @nuxy/ui        — custom element stubs (type-only, framework-agnostic)
 packages/extension-host→ @nuxy/extension-host — worker runner that loads backend extensions
 packages/extension-sdk → @nuxy/extension-sdk  — extension authoring API (re-exports @nuxy/core)
 extensions/            → bundled extensions (shell, clipboard, calculator, angrysearch)
@@ -94,25 +94,27 @@ A UNIX socket at `/tmp/nuxy.sock` accepts `toggle` and `show` commands from `nux
 
 ### Renderer (`src/renderer/`)
 
-Single-page React app. `App.tsx` dynamically imports `nuxy-ext://com.nuxy.shell/frontend.js` as the UI shell. The `window.core` object (injected by `preload.ts` via `contextBridge`) provides:
+Vanilla Web Components bootstrap — no React. `main.ts` sets `window.UI = {}` and runs `bootstrap.ts`. The bootstrap loads the active uikit extension (custom element registrations), applies theme tokens to `document.documentElement`, then creates `<nuxy-shell-view>` as the shell root. The `window.core` object (injected by `preload.ts` via `contextBridge`) provides:
 
 - `core.ipc.invoke(extId, channel, payload)` → routes through `ext:invoke` IPC
 - `core.window.*` → resize, hide, esc, drag, center, onShow
+- `core.events.*` → namespaced event bus (`emit`, `on`)
 
 ### `@nuxy/ui` — two-layer component system
 
 `packages/ui/src/` and `extensions/ui-default/src/` are **not duplicates**. They form a deliberate two-layer design:
 
-- **`packages/ui/src/components/`** — compile-time proxy stubs. Each component reads from `window.UI` at runtime and renders nothing if the runtime implementation is absent:
+- **`packages/ui/src/components/`** — compile-time stubs. Each component delegates to `window.UI` at runtime and returns `null` if the runtime implementation is absent:
   ```ts
-  const Impl = (window.UI as any)?.Button ?? (() => null)
-  return <Impl {...props} />
+  export function Button(...args: any[]): unknown {
+    return (window.UI as any)?.Button?.(...args) ?? null
+  }
   ```
-  This layer provides TypeScript types and import aliases (`@nuxy/ui`) without shipping CSS or real DOM.
+  This layer provides TypeScript types and import aliases (`@nuxy/ui`) without shipping CSS or real DOM. The stubs are framework-agnostic — callers may be React during migration or vanilla JS.
 
-- **`extensions/ui-default/src/components/`** — real CSS-styled implementations. Built into `extensions/ui-default/frontend.js`, which sets `window.UI = { Button, Card, … }` at runtime. This layer owns the visual design; swapping it (or shipping an alternative uikit extension) changes the entire UI without touching any consumer code.
+- **`extensions/ui-default/src/components/`** — real custom element implementations (`nuxy-button`, `nuxy-card`, etc.). Built into `extensions/ui-default/frontend.js`, which registers custom elements and sets `window.UI = { Button, Card, … }` factory functions at runtime. This layer owns the visual design; swapping it changes the entire UI without touching any consumer code.
 
-**Critical rule**: never add actual rendering logic or CSS to `packages/ui/src/`. It must stay as thin proxy stubs. All styling belongs in `extensions/ui-default/src/` (or a replacement uikit extension).
+**Critical rule**: never add actual rendering logic or CSS to `packages/ui/src/`. It must stay as thin stubs. All styling belongs in `extensions/ui-default/src/` (or a replacement uikit extension).
 
 `extensions/ui-default/frontend.js` is a **build artifact** (gitignored). Run `pnpm -C extensions/ui-default build` to regenerate it; `pnpm dev` does this automatically before starting the watchers.
 
@@ -122,9 +124,11 @@ Single-page React app. `App.tsx` dynamically imports `nuxy-ext://com.nuxy.shell/
 
 **Extension format** (place under `~/.nuxy/extensions/<folder>/`):
 
-- `manifest.json` — required; fields: `id`, `name`, `version`, `type` (`tool`|`provider`|`orchestrator`), `bootstrap`, `permissions`, `entry.backend`, `entry.frontend`
+- `manifest.json` — required; fields: `id`, `name`, `version`, `type` (`tool`|`provider`|`orchestrator`), `bootstrap`, `permissions`, `entry.backend`, `entry.frontend`, `entry.element`
 - `backend.js` — runs in a Worker thread; receives a `CoreContext` proxy
-- `frontend.js` — optional React component loaded by the shell via `nuxy-ext://`
+- `frontend.js` — registers a `nuxy-tool-<name>` custom element; loaded by the shell via `nuxy-ext://`. Declare `entry.element: "nuxy-tool-<name>"` in the manifest so the tool host can mount it.
+
+Tool custom elements implement `NuxyToolElement` from `@nuxy/core`: `connectedCallback`, `disconnectedCallback`, and `query`/`committedQuery`/`extensionId` property setters. DOM is built with the `h()` helper from `extensions/ce-utils.ts` and controller classes handle state.
 
 **Backend API** (`CoreContext` from `@nuxy/extension-sdk`):
 

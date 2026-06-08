@@ -1,10 +1,8 @@
-import React from 'react'
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface BadgeProps extends Record<string, unknown> {
   active?: boolean
 }
 
-export function Badge(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Badge || (() => null)
-  return <Impl {...props} />
+export function Badge(...args: any[]): unknown {
+  return (window.UI as any)?.Badge?.(...args) ?? null
 }

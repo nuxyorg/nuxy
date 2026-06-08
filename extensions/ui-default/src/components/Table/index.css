@@ -1,3 +1,8 @@
+nuxy-table-row,
+nuxy-table-cell {
+  display: contents;
+}
+
 .nuxy-table-container {
   width: 100%;
   overflow-x: auto;

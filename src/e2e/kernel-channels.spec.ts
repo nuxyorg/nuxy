@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test'
-import { validateExtInvokeArgs, validateWindowResize } from '../electron/ipc/validate.js'
-import {
-  clearRegistry,
-  registerExtension,
-  setExtensionChannels,
-} from '../electron/extensions/registry.js'
+import { electronRequire } from './electron-require.js'
 import type { LoadedExtension } from '@nuxy/core'
+
+const { validateExtInvokeArgs, validateWindowResize } = electronRequire(
+  '../electron/ipc/validate.js'
+)
+const { clearRegistry, registerExtension, setExtensionChannels } = electronRequire(
+  '../electron/extensions/registry.js'
+)
 
 const sample: LoadedExtension = {
   id: 'com.nuxy.e2e',

@@ -1,31 +1,16 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-divider.ts'
 
-export interface DividerProps extends React.HTMLAttributes<HTMLElement> {
+export interface DividerProps extends Record<string, unknown> {
   orientation?: 'horizontal' | 'vertical'
   label?: string
 }
 
 export function Divider({ orientation = 'horizontal', label, className, ...props }: DividerProps) {
-  if (label) {
-    return (
-      <div
-        className={`nuxy-divider nuxy-divider--label ${className || ''}`}
-        role="separator"
-        {...props}
-      >
-        <span className="nuxy-divider__label-text">{label}</span>
-      </div>
-    )
-  }
-  if (orientation === 'vertical') {
-    return (
-      <div
-        className={`nuxy-divider nuxy-divider--vertical ${className || ''}`}
-        role="separator"
-        {...props}
-      />
-    )
-  }
-  return <hr className={`nuxy-divider ${className || ''}`} {...props} />
+  return h('nuxy-divider', {
+    ...props,
+    class: className,
+    orientation,
+    ...(label ? { label } : {}),
+  })
 }

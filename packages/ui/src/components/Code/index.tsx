@@ -1,6 +1,5 @@
-import React from 'react'
 
-export interface CodeProps extends React.HTMLAttributes<HTMLElement> {}
+export interface CodeProps extends Record<string, unknown> {}
 
 export interface CodeBlockProps {
   code: string
@@ -9,12 +8,10 @@ export interface CodeBlockProps {
   className?: string
 }
 
-export function Code(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Code || (() => null)
-  return <Impl {...props} />
+export function Code(...args: any[]): unknown {
+  return (window.UI as any)?.Code?.(...args) ?? null
 }
 
-export function CodeBlock(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.CodeBlock || (() => null)
-  return <Impl {...props} />
+export function CodeBlock(...args: any[]): unknown {
+  return (window.UI as any)?.CodeBlock?.(...args) ?? null
 }

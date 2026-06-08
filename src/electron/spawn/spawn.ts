@@ -1,7 +1,7 @@
 import { Worker } from 'worker_threads'
 import path from 'path'
 import fs from 'fs'
-import { pathToFileURL } from 'url'
+import { pathToFileURL, fileURLToPath } from 'url'
 import { EXTRACTED_DIR } from '../config/paths.js'
 import { bundleExtensionBackend } from '../extensions/bundle-backend.js'
 import { kernelLogger } from '@nuxy/core'
@@ -20,7 +20,7 @@ export { activeWorkers } from './active-workers.js'
 const log = kernelLogger.child('Spawn')
 
 /** dist-electron/worker/extension-host.js (built from @nuxy/extension-host) */
-const hostScript = path.join(import.meta.dirname, 'worker', 'extension-host.js')
+const hostScript = path.join(path.dirname(fileURLToPath(import.meta.url)), 'worker', 'extension-host.js')
 
 export async function spawnExtension(
   extId: string,

@@ -10,6 +10,7 @@
   },
   "entry": {
     "backend": "backend.js",
-    "frontend": "frontend.js"
+    "frontend": "frontend.js",
+    "element": "nuxy-tool-my-extension"
   }
 }

@@ -3,8 +3,13 @@
  * These run without launching the Electron app.
  */
 import { test, expect } from '@playwright/test'
-import { validateExtInvokeArgs, validateWindowResize } from '../electron/ipc/validate.js'
-import {
+import { electronRequire } from './electron-require.js'
+import type { LoadedExtension } from '@nuxy/core'
+
+const { validateExtInvokeArgs, validateWindowResize } = electronRequire(
+  '../electron/ipc/validate.js'
+)
+const {
   clearRegistry,
   registerExtension,
   setExtensionChannels,
@@ -14,9 +19,8 @@ import {
   getDisplayName,
   resolveExtensionId,
   loadedExtensions,
-} from '../electron/extensions/registry.js'
-import { resolveStoragePath } from '../electron/config/storage-path.js'
-import type { LoadedExtension } from '@nuxy/core'
+} = electronRequire('../electron/extensions/registry.js')
+const { resolveStoragePath } = electronRequire('../electron/config/storage-path.js')
 
 const makeTool = (id: string, folder = id): LoadedExtension => ({
   id,

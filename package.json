@@ -19,8 +19,7 @@
     "deadcode": "knip",
     "create-ext": "node scripts/create-ext.mjs",
     "dev-ext": "node scripts/dev-ext.mjs",
-    "doctor": "node scripts/doctor.mjs",
-    "react-doctor": "npx react-doctor@latest"
+    "doctor": "node scripts/doctor.mjs"
   },
   "keywords": [],
   "author": "",
@@ -38,12 +37,11 @@
     "@types/adm-zip": "^0.5.8",
     "adm-zip": "^0.5.17",
     "eslint": "^9.39.4",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-lit": "^2.3.1",
+    "eslint-plugin-wc": "^3.1.0",
     "globals": "^17.6.0",
     "knip": "^6.15.0",
     "prettier": "^3.8.3",
-    "react-doctor": "^0.4.0",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.60.1"
   },

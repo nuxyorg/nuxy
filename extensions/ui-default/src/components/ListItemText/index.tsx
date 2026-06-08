@@ -1,12 +1,7 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-list-item-text.ts'
 
-const variantStyles: Record<string, string> = {
-  default: '',
-  success: 'nuxy-list-item-text--success',
-}
-
-export interface ListItemTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface ListItemTextProps extends Record<string, unknown> {
   variant?: 'default' | 'success'
 }
 
@@ -16,12 +11,13 @@ export function ListItemText({
   className,
   ...props
 }: ListItemTextProps) {
-  return (
-    <span
-      className={`nuxy-list-item-text ${variantStyles[variant] || ''} ${className || ''}`}
-      {...props}
-    >
-      {children}
-    </span>
+  return h(
+    'nuxy-list-item-text',
+    {
+      ...props,
+      class: className,
+      variant,
+    },
+    children
   )
 }

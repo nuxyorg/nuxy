@@ -29,21 +29,22 @@ extensions/
     preload.ts           # optional, runs in isolated window preload script context at startup
     backend.ts           # required if type is tool/provider/orchestrator; optional for helper
     backend.test.ts      # required when backend.ts exists
-    frontend.tsx         # optional, JSX/TSX component (entry point)
+    frontend.ts          # optional, registers the custom element (entry point)
+    nuxy-tool-<name>.ts  # optional — the LitElement or HTMLElement custom element
+    <name>-controller.ts # optional — state/business logic
+    <name>-dom.ts        # optional — DOM rendering helpers (for vanilla CE)
     types.ts             # extension-specific interfaces (data models, IPC payload types)
     package.json         # only if the extension has its own npm deps
-    components/          # optional — reusable TSX components imported by frontend.tsx
-    hooks/               # optional — custom React hooks (useXxx.ts / useXxx.tsx)
     utils/               # optional — pure utility/helper functions (.ts)
 ```
 
 - Extensions live strictly inside their own folder. No file may reference paths outside it.
 - Relative imports within the extension folder are allowed in both backend and frontend files. The protocol server resolves and transpiles each imported file individually via `nuxy-ext://`.
-- `components/`, `hooks/`, and `utils/` subdirectories are the only permitted subfolders for source files. A `styles/` directory is not permitted — all styling is done via CSS custom property tokens inline.
+- `utils/` is the only permitted subfolder for source files. A `styles/` directory is not permitted — all styling is done via CSS custom property tokens inline.
 - `preload.ts` runs directly in the main window's Electron preload context. It must contain the background listeners (like clipboard watchers), default settings initializers, and other early setup tasks.
 - `backend.ts` must export a named `register` function (`export function register(core: CoreContext): void`).
 - All extension-specific types belong in `types.ts` inside the extension folder — not in shared packages.
-- The protocol server transpiles `.ts` and `.tsx` files at runtime via `typescript.transpileModule`; no separate build step is needed.
+- The protocol server transpiles `.ts` files at runtime via `typescript.transpileModule`; no separate build step is needed.
 
 ---
 
@@ -63,7 +64,8 @@ extensions/
   "entry": {
     "preload": "preload.js",
     "backend": "backend.js",
-    "frontend": "frontend.js"
+    "frontend": "frontend.js",
+    "element": "nuxy-tool-<name>"
   }
 }
 ```

@@ -1,32 +1,21 @@
-import React from 'react'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import './nuxy-aspect-ratio.ts'
 
-export interface AspectRatioProps extends React.HTMLAttributes<HTMLDivElement> {
-  ratio?: number // e.g. 16/9, 4/3, 1
-  children: React.ReactNode
+export interface AspectRatioProps extends Record<string, unknown> {
+  ratio?: number
+  children: UiChild
 }
 
-export function AspectRatio({ ratio = 1, children, style, ...props }: AspectRatioProps) {
-  return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        paddingBottom: `${100 / ratio}%`,
-        ...style,
-      }}
-      {...props}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-        }}
-      >
-        {children}
-      </div>
-    </div>
+export function AspectRatio({ ratio = 1, className, style, children, ...props }: AspectRatioProps) {
+  return h(
+    'nuxy-aspect-ratio',
+    {
+      ...props,
+      ratio: String(ratio),
+      class: className,
+      style,
+    },
+    children
   )
 }

@@ -9,6 +9,7 @@ export default defineConfig({
     timeout: 2000,
   },
   retries: 0,
+  maxFailures: 1,
   workers: process.env.PLAYWRIGHT_WORKERS ? parseInt(process.env.PLAYWRIGHT_WORKERS, 10) : 8,
   reporter: [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
   use: {

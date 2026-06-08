@@ -1,11 +1,26 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import { host, wireInputRef } from '../../host'
+import './nuxy-textarea.ts'
 
-export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export interface TextareaProps extends Record<string, unknown> {
+  className?: string
+  value?: string
+  defaultValue?: string
+}
 
-export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => (
-    <textarea ref={ref} className={`nuxy-textarea ${className || ''}`} {...props} />
-  )
-)
-Textarea.displayName = 'Textarea'
+export function Textarea({
+  className,
+  value,
+  defaultValue,
+  ref,
+  ...props
+}: TextareaProps & { ref?: unknown }): HTMLElement {
+  const el = h('nuxy-textarea', {
+    ...props,
+    class: className,
+    ...(value !== undefined ? { value } : {}),
+    ...(defaultValue !== undefined ? { value: defaultValue } : {}),
+  })
+  if (ref) wireInputRef(el, ref)
+  return el
+}

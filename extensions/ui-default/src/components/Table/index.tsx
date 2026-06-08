@@ -1,64 +1,58 @@
-import React from 'react'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import './nuxy-table.ts'
 
-export interface TableProps extends React.TableHTMLAttributes<HTMLTableElement> {
+export interface TableProps extends Record<string, unknown> {
   containerClassName?: string
 }
 
-export function Table({ children, className, containerClassName, ...props }: TableProps) {
-  return (
-    <div className={`nuxy-table-container ${containerClassName || ''}`}>
-      <table className={`nuxy-table ${className || ''}`} {...props}>
-        {children}
-      </table>
-    </div>
+export function Table({ children, className, containerClassName, ...props }: TableProps): HTMLElement {
+  return h(
+    'nuxy-table-container',
+    {
+      ...props,
+      class: className,
+      'container-class': containerClassName,
+    },
+    children
   )
 }
 
-export interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {
+export interface TableRowProps extends Record<string, unknown> {
   interactive?: boolean
 }
 
-export function TableRow({ children, className, interactive, ...props }: TableRowProps) {
-  return (
-    <tr
-      className={[
-        'nuxy-table__tr',
-        interactive ? 'nuxy-table__tr--interactive' : '',
-        className || '',
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      {...props}
-    >
-      {children}
-    </tr>
+export function TableRow({ children, className, interactive, ...props }: TableRowProps): HTMLElement {
+  return h(
+    'nuxy-table-row',
+    {
+      ...props,
+      class: className,
+      ...(interactive ? { interactive: '' } : {}),
+    },
+    children
   )
 }
 
-export interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+export interface TableCellProps extends Record<string, unknown> {
   header?: boolean
 }
 
-export function TableCell({ children, className, header, ...props }: TableCellProps) {
-  if (header) {
-    return (
-      <th className={`nuxy-table__th ${className || ''}`} {...props}>
-        {children}
-      </th>
-    )
-  }
-  return (
-    <td className={`nuxy-table__td ${className || ''}`} {...props}>
-      {children}
-    </td>
+export function TableCell({ children, className, header, ...props }: TableCellProps): HTMLElement {
+  return h(
+    'nuxy-table-cell',
+    {
+      ...props,
+      class: className,
+      ...(header ? { header: '' } : {}),
+    },
+    children
   )
 }
 
-/* DataList */
 export interface DataListItem {
-  label: React.ReactNode
-  value: React.ReactNode
+  label: UiChild
+  value: UiChild
 }
 
 export interface DataListProps {
@@ -66,55 +60,40 @@ export interface DataListProps {
   className?: string
 }
 
-export function DataList({ items, className }: DataListProps) {
-  return (
-    <div className={`nuxy-data-list ${className || ''}`}>
-      {items.map((item, idx) => (
-        // eslint-disable-next-line react-doctor/no-array-index-as-key
-        <div key={idx} className="nuxy-data-list__item">
-          <span className="nuxy-data-list__label">{item.label}</span>
-          <span className="nuxy-data-list__value">{item.value}</span>
-        </div>
-      ))}
-    </div>
+function nodeToString(value: UiChild): string | undefined {
+  return typeof value === 'string' || typeof value === 'number' ? String(value) : undefined
+}
+
+function itemsToJson(items: DataListItem[]): string {
+  return JSON.stringify(
+    items.map((item) => ({
+      label: nodeToString(item.label) ?? '',
+      value: nodeToString(item.value) ?? '',
+    }))
   )
 }
 
-/* Stat / Metric */
+export function DataList({ items, className }: DataListProps): HTMLElement {
+  return h('nuxy-data-list', {
+    class: className,
+    items: itemsToJson(items),
+  })
+}
+
 export interface StatProps {
   label: string
   value: string | number
-  change?: number // percentage e.g. 12 or -5
+  change?: number
   helpText?: string
   className?: string
 }
 
-export function Stat({ label, value, change, helpText, className }: StatProps) {
-  const isUp = change !== undefined && change > 0
-  const isDown = change !== undefined && change < 0
-
-  return (
-    <div className={`nuxy-stat ${className || ''}`}>
-      <span className="nuxy-stat__label">{label}</span>
-      <span className="nuxy-stat__value">{value}</span>
-      {(change !== undefined || helpText) && (
-        <span
-          className={[
-            'nuxy-stat__help',
-            isUp ? 'nuxy-stat__help--up' : '',
-            isDown ? 'nuxy-stat__help--down' : '',
-          ]
-            .filter(Boolean)
-            .join(' ')}
-        >
-          {change !== undefined && (
-            <span>
-              {isUp ? '↑' : isDown ? '↓' : ''} {Math.abs(change)}%
-            </span>
-          )}
-          {helpText && <span>{helpText}</span>}
-        </span>
-      )}
-    </div>
-  )
+export function Stat({ label, value, change, helpText, className }: StatProps): HTMLElement {
+  return h('nuxy-stat', {
+    class: className,
+    label,
+    value: String(value),
+    ...(change !== undefined ? { change: String(change) } : {}),
+    ...(helpText ? { 'help-text': helpText } : {}),
+  })
 }

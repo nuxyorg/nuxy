@@ -9,6 +9,9 @@
     "callable": false,
     "caller": false
   },
+  "composition": {
+    "claims": ["background-layer"]
+  },
   "entry": {
     "frontend": "frontend.tsx"
   }

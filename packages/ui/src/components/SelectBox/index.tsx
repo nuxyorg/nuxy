@@ -1,5 +1,4 @@
 // fallow-ignore-file code-duplication
-import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
 
 export interface SelectOption {
   value: string
@@ -18,7 +17,6 @@ export interface SelectBoxProps {
   searchable?: boolean
 }
 
-export function SelectBox(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.SelectBox || (() => null)
-  return <Impl {...props} />
+export function SelectBox(...args: any[]): unknown {
+  return (window.UI as any)?.SelectBox?.(...args) ?? null
 }

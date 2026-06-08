@@ -1,6 +1,4 @@
 // fallow-ignore-file code-duplication
-import { useState, useEffect, useCallback } from 'react'
-
 type Translations = Record<string, string>
 type Vars = Record<string, string | number>
 
@@ -25,28 +23,24 @@ function selectPlural(
   return translations[`${key}__${cat}`] ?? translations[`${key}__other`]
 }
 
-interface TranslationState {
-  translations: Translations
-  locale: string
-  dir: 'ltr' | 'rtl'
-  loaded: boolean
-}
-
 export interface UseTranslationResult {
   t: (key: string, vars?: Vars, count?: number) => string
   locale: string
   dir: 'ltr' | 'rtl'
 }
 
-export function useTranslation(extId: string): UseTranslationResult {
-  const [state, setState] = useState<TranslationState>({
-    translations: {},
-    locale: 'en',
-    dir: 'ltr',
-    loaded: false,
-  })
+const cache = new Map<string, UseTranslationResult & { reload: () => void }>()
 
-  const fetchTranslations = useCallback(async () => {
+export function useTranslation(extId: string): UseTranslationResult {
+  let entry = cache.get(extId)
+  if (entry) return entry
+
+  let translations: Translations = {}
+  let locale = 'en'
+  let dir: 'ltr' | 'rtl' = 'ltr'
+  let loaded = false
+
+  const fetchTranslations = async (): Promise<void> => {
     try {
       const res = (await window.core?.ipc?.invoke('kernel', 'getExtensionTranslations', {
         extId,
@@ -56,30 +50,39 @@ export function useTranslation(extId: string): UseTranslationResult {
             data?: { locale: string; dir: 'ltr' | 'rtl'; translations: Translations }
           }
         | undefined
-      if (res?.success && res.data) setState({ ...res.data, loaded: true })
-    } catch {}
-  }, [extId])
+      if (res?.success && res.data) {
+        translations = res.data.translations
+        locale = res.data.locale
+        dir = res.data.dir
+        loaded = true
+      }
+    } catch {
+      /* ignore */
+    }
+  }
 
-  useEffect(() => {
-    void fetchTranslations()
-    const handler = () => void fetchTranslations()
-    window.addEventListener('nuxy-locale-changed', handler)
-    return () => window.removeEventListener('nuxy-locale-changed', handler)
-  }, [fetchTranslations])
+  void fetchTranslations()
+  window.core?.events?.on('locale-changed', () => void fetchTranslations())
 
-  const t = useCallback(
-    (key: string, vars?: Vars, count?: number): string => {
-      if (!state.loaded) return ''
+  entry = {
+    t(key, vars, count) {
+      if (!loaded) return ''
       let template: string | undefined
       if (count !== undefined) {
-        template = selectPlural(state.translations, key, count, state.locale)
+        template = selectPlural(translations, key, count, locale)
       }
-      if (!template) template = state.translations[key]
+      if (!template) template = translations[key]
       if (!template) return key
       return vars ? interpolate(template, vars) : template
     },
-    [state]
-  )
-
-  return { t, locale: state.locale, dir: state.dir }
+    get locale() {
+      return locale
+    },
+    get dir() {
+      return dir
+    },
+    reload: () => void fetchTranslations(),
+  }
+  cache.set(extId, entry)
+  return entry
 }

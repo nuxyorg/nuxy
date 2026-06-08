@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react'
 
-export function Toaster(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Toaster || (() => null)
-  return <Impl {...props} />
+export function Toaster(...args: any[]): unknown {
+  return (window.UI as any)?.Toaster?.(...args) ?? null
 }
 
 export { toast } from './store'

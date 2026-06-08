@@ -18,6 +18,24 @@ const cacheDir = path.resolve(srcE2eDir, '.cache')
 const cacheFile = path.resolve(cacheDir, 'e2e-cache.json')
 const tempReportFile = path.resolve(cacheDir, 'temp-report.json')
 
+/** Copy loose shared modules (ce-utils.ts, etc.) into ~/.nuxy for e2e. */
+function syncSharedExtensionFiles() {
+  const nuxyHome = path.join(process.env.HOME ?? '', '.nuxy')
+  const targets = [
+    path.join(nuxyHome, 'extensions'),
+    path.join(nuxyHome, 'extracted'),
+  ]
+  if (!fs.existsSync(extensionsDir)) return
+  for (const name of fs.readdirSync(extensionsDir)) {
+    const src = path.join(extensionsDir, name)
+    if (!fs.statSync(src).isFile() || !/\.(ts|tsx|js|jsx)$/.test(name)) continue
+    for (const dir of targets) {
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+      fs.copyFileSync(src, path.join(dir, name))
+    }
+  }
+}
+
 // Helper to recursively get files excluding ignored folders/files
 function getFiles(dir, allFiles = []) {
   const entries = fs.readdirSync(dir, { withFileTypes: true })
@@ -172,6 +190,7 @@ async function run() {
   const forwardedArgs = []
 
   for (const arg of cliArgs) {
+    if (arg === '--') continue
     if (arg.startsWith('-')) {
       forwardedArgs.push(arg)
     } else {
@@ -256,6 +275,7 @@ async function run() {
   }
 
   // 7. Spawn Playwright CLI
+  syncSharedExtensionFiles()
   const runFiles = toRunSpecs.map((s) => s.absolutePath)
   fs.mkdirSync(cacheDir, { recursive: true })
 

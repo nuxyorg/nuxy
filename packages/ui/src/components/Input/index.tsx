@@ -1,13 +1,11 @@
-import React from 'react'
 
 export interface InputProps
   extends
-    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
-    React.RefAttributes<HTMLInputElement> {
+    Omit<unknown, 'size'>,
+    unknown {
   size?: 'sm' | 'md' | 'lg'
 }
 
-export function Input(props: InputProps): React.ReactElement {
-  const Impl = (window.UI as any)?.Input || (() => null)
-  return <Impl {...props} />
+export function Input(...args: any[]): unknown {
+  return (window.UI as any)?.Input?.(...args) ?? null
 }

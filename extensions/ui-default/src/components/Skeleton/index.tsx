@@ -1,7 +1,7 @@
-import React from 'react'
-import '../ProgressBar/index.css'
+import { h } from '../../h'
+import './nuxy-skeleton.ts'
 
-export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SkeletonProps extends Record<string, unknown> {
   width?: number | string
   height?: number | string
   variant?: 'rect' | 'text' | 'circle'
@@ -15,24 +15,16 @@ export function Skeleton({
   style,
   ...props
 }: SkeletonProps) {
-  return (
-    <div
-      className={[
-        'nuxy-skeleton',
-        variant === 'text' ? 'nuxy-skeleton--text' : '',
-        variant === 'circle' ? 'nuxy-skeleton--circle' : '',
-        className || '',
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      style={{
-        width: width !== undefined ? (typeof width === 'number' ? `${width}px` : width) : undefined,
-        height:
-          height !== undefined ? (typeof height === 'number' ? `${height}px` : height) : undefined,
-        ...style,
-      }}
-      aria-hidden="true"
-      {...props}
-    />
-  )
+  return h('nuxy-skeleton', {
+    ...props,
+    class: className,
+    variant,
+    ...(width !== undefined
+      ? { width: typeof width === 'number' ? String(width) : width }
+      : {}),
+    ...(height !== undefined
+      ? { height: typeof height === 'number' ? String(height) : height }
+      : {}),
+    style,
+  })
 }

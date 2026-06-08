@@ -12,7 +12,8 @@
     "theme": "Theme",
     "iconPack": "Icon Pack",
     "zoom": "Zoom",
-    "font": "Font"
+    "font": "Font",
+    "fontWeight": "Font Weight"
   },
   "window": {
     "escAction": "Esc Key Action",
@@ -34,6 +35,13 @@
   "font": {
     "systemDefault": "System Default",
     "monospace": "Monospace"
+  },
+  "fontWeight": {
+    "300": "Light",
+    "400": "Normal",
+    "500": "Medium",
+    "600": "Semi Bold",
+    "700": "Bold"
   },
   "escAction": {
     "hide": "Hide",

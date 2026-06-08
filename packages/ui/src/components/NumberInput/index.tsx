@@ -1,4 +1,3 @@
-import React from 'react'
 
 export interface NumberInputProps {
   value?: number
@@ -12,7 +11,6 @@ export interface NumberInputProps {
   id?: string
 }
 
-export function NumberInput(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.NumberInput || (() => null)
-  return <Impl {...props} />
+export function NumberInput(...args: any[]): unknown {
+  return (window.UI as any)?.NumberInput?.(...args) ?? null
 }

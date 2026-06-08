@@ -1,8 +1,6 @@
-import React from 'react'
 
-export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export interface TextareaProps extends Record<string, unknown> {}
 
-export function Textarea(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Textarea || (() => null)
-  return <Impl {...props} />
+export function Textarea(...args: any[]): unknown {
+  return (window.UI as any)?.Textarea?.(...args) ?? null
 }

@@ -1,11 +1,11 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-text.ts'
 
 type TextSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 type TextVariant = 'default' | 'muted' | 'accent' | 'danger' | 'success'
 type TextAs = 'p' | 'span' | 'div' | 'label' | 'small' | 'strong' | 'em'
 
-export interface TextProps extends React.HTMLAttributes<HTMLElement> {
+export interface TextProps extends Record<string, unknown> {
   as?: TextAs
   size?: TextSize
   variant?: TextVariant
@@ -20,18 +20,20 @@ export function Text({
   bold,
   mono,
   className,
+  children,
   ...props
 }: TextProps) {
-  const classes = [
+  return h(
     'nuxy-text',
-    `nuxy-text--${size}`,
-    variant !== 'default' ? `nuxy-text--${variant}` : '',
-    bold ? 'nuxy-text--bold' : '',
-    mono ? 'nuxy-text--mono' : '',
-    className || '',
-  ]
-    .filter(Boolean)
-    .join(' ')
-  // @ts-ignore dynamic tag
-  return <Tag className={classes} {...props} />
+    {
+      ...props,
+      class: className,
+      as: Tag,
+      size,
+      variant,
+      ...(bold ? { bold: '' } : {}),
+      ...(mono ? { mono: '' } : {}),
+    },
+    children
+  )
 }

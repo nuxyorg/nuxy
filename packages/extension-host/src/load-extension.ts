@@ -25,7 +25,7 @@ function resolveExtensionModule(extModule: Record<string, unknown>): ExtensionMo
 }
 
 function rewriteLocalTsImports(code: string): string {
-  return code.replace(/(from\s+['"])(\.{1,2}\/[^'"]*)\.(ts|tsx)(['"]\s*;?)/g, '$1$2.mjs$4')
+  return code.replace(/(from\s+['"])(\.{1,2}\/[^'"]*)\.(ts)(['"]\s*;?)/g, '$1$2.mjs$4')
 }
 
 async function transpileTsBackend(fileUrl: string, logger: WorkerLogger): Promise<string> {
@@ -51,7 +51,7 @@ async function transpileTsBackend(fileUrl: string, logger: WorkerLogger): Promis
       if (statSync(full).isDirectory()) {
         if (entry !== 'node_modules' && entry !== '.git') walkDir(full)
       } else if (
-        /\.(ts|tsx)$/.test(entry) &&
+        entry.endsWith('.ts') &&
         !entry.endsWith('.test.ts') &&
         !entry.endsWith('.spec.ts')
       ) {
@@ -67,12 +67,11 @@ async function transpileTsBackend(fileUrl: string, logger: WorkerLogger): Promis
       compilerOptions: {
         module: ts.ModuleKind.ESNext,
         target: ts.ScriptTarget.ESNext,
-        jsx: file.endsWith('.tsx') ? ts.JsxEmit.React : ts.JsxEmit.None,
       },
     })
     const output = rewriteLocalTsImports(transpiled.outputText)
     const relPath = relative(extDir, file)
-    const outName = relPath.replace(/\.(ts|tsx)$/, '.mjs')
+    const outName = relPath.replace(/\.ts$/, '.mjs')
     const outPath = join(tmpDir, outName)
     mkdirSync(dirname(outPath), { recursive: true })
     writeFileSync(outPath, output, 'utf8')
@@ -92,7 +91,7 @@ export async function loadExtensionModule(
   logger.log('info', 'Loader', 'Loading extension module: ' + absolutePath)
 
   let loadPath = absolutePath
-  if (absolutePath.endsWith('.ts') || absolutePath.endsWith('.tsx')) {
+  if (absolutePath.endsWith('.ts')) {
     loadPath = await transpileTsBackend(absolutePath, logger)
   }
 

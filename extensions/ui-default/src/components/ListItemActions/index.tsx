@@ -1,12 +1,8 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-list-item-actions.ts'
 
-export type ListItemActionsProps = React.HTMLAttributes<HTMLDivElement>
+export type ListItemActionsProps = HTMLAttributes<HTMLDivElement>
 
 export function ListItemActions({ children, className, ...props }: ListItemActionsProps) {
-  return (
-    <div className={`nuxy-list-item-actions ${className || ''}`} {...props}>
-      {children}
-    </div>
-  )
+  return h('nuxy-list-item-actions', { ...props, class: className }, children)
 }

@@ -1,19 +1,16 @@
-import React from 'react'
 
-export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+export interface LabelProps extends Record<string, unknown> {
   required?: boolean
 }
 
-export interface HelperTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface HelperTextProps extends Record<string, unknown> {
   variant?: 'default' | 'error' | 'success'
 }
 
-export function Label(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Label || (() => null)
-  return <Impl {...props} />
+export function Label(...args: any[]): unknown {
+  return (window.UI as any)?.Label?.(...args) ?? null
 }
 
-export function HelperText(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.HelperText || (() => null)
-  return <Impl {...props} />
+export function HelperText(...args: any[]): unknown {
+  return (window.UI as any)?.HelperText?.(...args) ?? null
 }

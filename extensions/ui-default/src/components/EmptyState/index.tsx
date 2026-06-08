@@ -1,12 +1,17 @@
-import React from 'react'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import './nuxy-empty-state.ts'
 
-export interface EmptyStateProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> {
-  title?: React.ReactNode
-  message?: React.ReactNode
-  hint?: React.ReactNode
-  error?: React.ReactNode
+export interface EmptyStateProps extends Record<string, unknown> {
+  title?: UiChild
+  message?: UiChild
+  hint?: UiChild
+  error?: UiChild
   page?: boolean
+}
+
+function nodeToAttr(value: UiChild): string | undefined {
+  return typeof value === 'string' || typeof value === 'number' ? String(value) : undefined
 }
 
 export function EmptyState({
@@ -19,17 +24,40 @@ export function EmptyState({
   children,
   ...props
 }: EmptyStateProps) {
-  const rootClass = ['nuxy-empty-state', page ? 'nuxy-empty-state--page' : '', className || '']
-    .filter(Boolean)
-    .join(' ')
+  const extras: UiChild[] = []
+  if (title != null && nodeToAttr(title) === undefined) {
+    extras.push(
+      h('h2', { class: 'nuxy-empty-state__title' }, title)
+    )
+  }
+  if (message != null && nodeToAttr(message) === undefined) {
+    extras.push(
+      h('p', { class: 'nuxy-empty-state__message' }, message)
+    )
+  }
+  if (hint != null && nodeToAttr(hint) === undefined) {
+    extras.push(
+      h('p', { class: 'nuxy-empty-state__hint' }, hint)
+    )
+  }
+  if (error != null && nodeToAttr(error) === undefined) {
+    extras.push(
+      h('p', { class: 'nuxy-empty-state__error' }, error)
+    )
+  }
 
-  return (
-    <div className={rootClass} {...props}>
-      {title && <h2 className="nuxy-empty-state__title">{title}</h2>}
-      {message && <p className="nuxy-empty-state__message">{message}</p>}
-      {hint && <p className="nuxy-empty-state__hint">{hint}</p>}
-      {error && <p className="nuxy-empty-state__error">{error}</p>}
-      {children}
-    </div>
+  return h(
+    'nuxy-empty-state',
+    {
+      ...props,
+      class: className,
+      ...(page ? { page: '' } : {}),
+      ...(nodeToAttr(title) !== undefined ? { title: nodeToAttr(title) } : {}),
+      ...(nodeToAttr(message) !== undefined ? { message: nodeToAttr(message) } : {}),
+      ...(nodeToAttr(hint) !== undefined ? { hint: nodeToAttr(hint) } : {}),
+      ...(nodeToAttr(error) !== undefined ? { error: nodeToAttr(error) } : {}),
+    },
+    ...extras,
+    children
   )
 }

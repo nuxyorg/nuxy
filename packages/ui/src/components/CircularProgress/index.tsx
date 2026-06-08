@@ -1,4 +1,3 @@
-import React from 'react'
 
 export interface CircularProgressProps {
   value?: number // 0-100, omit for indeterminate spinner
@@ -20,22 +19,19 @@ export interface ErrorStateProps {
 /* Banner */
 export interface BannerProps {
   variant?: 'info' | 'warning' | 'error' | 'success'
-  children: React.ReactNode
+  children: unknown
   onClose?: () => void
   className?: string
 }
 
-export function CircularProgress(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.CircularProgress || (() => null)
-  return <Impl {...props} />
+export function CircularProgress(...args: any[]): unknown {
+  return (window.UI as any)?.CircularProgress?.(...args) ?? null
 }
 
-export function ErrorState(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ErrorState || (() => null)
-  return <Impl {...props} />
+export function ErrorState(...args: any[]): unknown {
+  return (window.UI as any)?.ErrorState?.(...args) ?? null
 }
 
-export function Banner(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Banner || (() => null)
-  return <Impl {...props} />
+export function Banner(...args: any[]): unknown {
+  return (window.UI as any)?.Banner?.(...args) ?? null
 }

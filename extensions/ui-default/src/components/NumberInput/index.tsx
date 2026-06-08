@@ -1,5 +1,5 @@
-import React from 'react'
-import './index.css'
+import { host } from '../../host'
+import './nuxy-number-input.ts'
 
 export interface NumberInputProps {
   value?: number
@@ -23,49 +23,26 @@ export function NumberInput({
   disabled,
   className,
   id,
-}: NumberInputProps) {
-  const [internalValue, setInternalValue] = React.useState(defaultValue)
+}: NumberInputProps): HTMLElement {
   const isControlled = value !== undefined
-  const current = isControlled ? value : internalValue
-
-  const update = (next: number) => {
-    if (min !== undefined && next < min) next = min
-    if (max !== undefined && next > max) next = max
-    if (!isControlled) setInternalValue(next)
-    onChange?.(next)
+  const listeners: Record<string, EventListener> = {}
+  if (onChange) {
+    listeners['nuxy-number-input-change'] = (e) => {
+      const detail = (e as CustomEvent<{ value: number }>).detail
+      onChange(detail.value)
+    }
   }
-
-  return (
-    <div className={`nuxy-number-input ${className || ''}`}>
-      <button
-        type="button"
-        className="nuxy-number-input__btn"
-        onClick={() => update(current - step)}
-        disabled={disabled || (min !== undefined && current <= min)}
-        aria-label="Decrease"
-      >
-        −
-      </button>
-      <input
-        id={id}
-        type="number"
-        className="nuxy-number-input__field"
-        value={current}
-        min={min}
-        max={max}
-        step={step}
-        disabled={disabled}
-        onChange={(e) => update(Number(e.target.value))}
-      />
-      <button
-        type="button"
-        className="nuxy-number-input__btn"
-        onClick={() => update(current + step)}
-        disabled={disabled || (max !== undefined && current >= max)}
-        aria-label="Increase"
-      >
-        +
-      </button>
-    </div>
+  return host(
+    'nuxy-number-input',
+    {
+      class: className,
+      ...(id ? { id } : {}),
+      ...(min !== undefined ? { min: String(min) } : {}),
+      ...(max !== undefined ? { max: String(max) } : {}),
+      step: String(step),
+      ...(disabled ? { disabled: '' } : {}),
+      ...(isControlled ? { value: String(value) } : { 'default-value': String(defaultValue) }),
+    },
+    listeners
   )
 }

@@ -1,11 +1,9 @@
-import React from 'react'
 
 export interface PortalProps {
-  children: React.ReactNode
+  children: unknown
   container?: HTMLElement
 }
 
-export function Portal(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Portal || (() => null)
-  return <Impl {...props} />
+export function Portal(...args: any[]): unknown {
+  return (window.UI as any)?.Portal?.(...args) ?? null
 }

@@ -1,12 +1,10 @@
-import React from 'react'
 
-export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IconButtonProps extends Record<string, unknown> {
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'ghost' | 'danger'
-  children: React.ReactNode
+  children: unknown
 }
 
-export function IconButton(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.IconButton || (() => null)
-  return <Impl {...props} />
+export function IconButton(...args: any[]): unknown {
+  return (window.UI as any)?.IconButton?.(...args) ?? null
 }

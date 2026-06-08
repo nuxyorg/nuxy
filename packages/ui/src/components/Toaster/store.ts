@@ -1,4 +1,3 @@
-import React from 'react'
 
 export type ToastType = 'info' | 'success' | 'warning' | 'error'
 
@@ -16,9 +15,9 @@ export interface Toast extends ToastOptions {
 
 type Subscriber = (toasts: Toast[]) => void
 
-export function toastStore(props: any): React.ReactElement {
+export function toastStore(props: any): unknown {
   const Impl = (window.UI as any)?.toastStore || (() => null)
-  return React.createElement(Impl, props)
+  return unknown(Impl, props)
 }
 
 export const toast = (...args: any[]): any => {

@@ -1,13 +1,10 @@
-import React from 'react'
 
-export type ShortcutHintProps = React.HTMLAttributes<HTMLDivElement>
+export type ShortcutHintProps = unknown
 
-export function ShortcutHint(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ShortcutHint || (() => null)
-  return <Impl {...props} />
+export function ShortcutHint(...args: any[]): unknown {
+  return (window.UI as any)?.ShortcutHint?.(...args) ?? null
 }
 
-export function ShortcutSep(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ShortcutSep || (() => null)
-  return <Impl {...props} />
+export function ShortcutSep(...args: any[]): unknown {
+  return (window.UI as any)?.ShortcutSep?.(...args) ?? null
 }

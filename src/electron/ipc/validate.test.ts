@@ -74,6 +74,21 @@ describe('validateExtInvokeArgs', () => {
     if (r.ok) expect(r.channel).toBe('uninstallExtension')
   })
 
+  it('allows kernel validateCompositionClaim', () => {
+    const r = validateExtInvokeArgs('kernel', 'validateCompositionClaim', {
+      extId: 'com.nuxy.gradient',
+      slotName: 'background-layer',
+    })
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.channel).toBe('validateCompositionClaim')
+  })
+
+  it('allows kernel getToolElementTag', () => {
+    const r = validateExtInvokeArgs('kernel', 'getToolElementTag', { extId: 'com.nuxy.test' })
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.channel).toBe('getToolElementTag')
+  })
+
   it('rejects unknown kernel channel', () => {
     const r = validateExtInvokeArgs('kernel', 'deleteEverything', {})
     expect(r.ok).toBe(false)

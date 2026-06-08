@@ -1,17 +1,14 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-badge.ts'
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface BadgeProps extends Record<string, unknown> {
   active?: boolean
 }
 
 export function Badge({ children, active, className, ...props }: BadgeProps) {
-  return (
-    <span
-      className={`nuxy-badge ${active ? 'nuxy-badge--active' : 'nuxy-badge--inactive'} ${className || ''}`}
-      {...props}
-    >
-      {children}
-    </span>
+  return h(
+    'nuxy-badge',
+    { ...props, class: className, ...(active ? { active: '' } : {}) },
+    children
   )
 }

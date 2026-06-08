@@ -1,10 +1,12 @@
-import React from 'react'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import { host } from '../../host'
+import './nuxy-tabs.ts'
 
 export interface TabItem {
   id: string
-  label: React.ReactNode
-  content: React.ReactNode
+  label: UiChild
+  content: UiChild
   disabled?: boolean
 }
 
@@ -16,51 +18,33 @@ export interface TabsProps {
   className?: string
 }
 
-export function Tabs({ items, activeId, defaultActiveId, onChange, className }: TabsProps) {
-  const [internalActive, setInternalActive] = React.useState(defaultActiveId ?? items[0]?.id)
-  const isControlled = activeId !== undefined
-  const active = isControlled ? activeId : internalActive
-
-  const handleSelect = (id: string, disabled?: boolean) => {
-    if (disabled) return
-    if (!isControlled) setInternalActive(id)
-    onChange?.(id)
-  }
-
-  const activeContent = items.find((item) => item.id === active)?.content
-
-  return (
-    <div className={`nuxy-tabs ${className || ''}`}>
-      <div className="nuxy-tabs__list" role="tablist">
-        {items.map((item) => {
-          const isActive = item.id === active
-          return (
-            <button
-              key={item.id}
-              role="tab"
-              aria-selected={isActive}
-              aria-controls={`panel-${item.id}`}
-              id={`tab-${item.id}`}
-              disabled={item.disabled}
-              className={['nuxy-tabs__trigger', isActive ? 'nuxy-tabs__trigger--active' : '']
-                .filter(Boolean)
-                .join(' ')}
-              onClick={() => handleSelect(item.id, item.disabled)}
-            >
-              {item.label}
-            </button>
-          )
-        })}
-      </div>
-      <div
-        id={`panel-${active}`}
-        role="tabpanel"
-        aria-labelledby={`tab-${active}`}
-        className="nuxy-tabs__content"
-        tabIndex={0}
-      >
-        {activeContent}
-      </div>
-    </div>
+export function Tabs({
+  items,
+  activeId,
+  defaultActiveId,
+  onChange,
+  className,
+}: TabsProps): HTMLElement {
+  const active = activeId ?? defaultActiveId ?? items[0]?.id ?? ''
+  const itemsJson = JSON.stringify(
+    items.map((item) => ({
+      id: item.id,
+      label: String(item.label),
+      disabled: item.disabled,
+    }))
   )
+  const el = host(
+    'nuxy-tabs',
+    { class: className, items: itemsJson, active },
+    onChange
+      ? {
+          'nuxy-tabs-change': (e) => {
+            const { id } = (e as CustomEvent<{ id: string }>).detail
+            onChange(id)
+          },
+        }
+      : undefined,
+    items.map((item) => h('div', { 'data-tab-content': item.id }, item.content))
+  )
+  return el
 }

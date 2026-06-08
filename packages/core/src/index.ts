@@ -1,7 +1,7 @@
-import type { NowPlaying } from './media.js'
-import type { IpcResult, ThemeDefinition, IconPackDefinition } from './types.js'
+import type { NowPlaying } from './media'
+import type { IpcResult, ThemeDefinition, IconPackDefinition } from './types'
 
-export type { NowPlaying } from './media.js'
+export type { NowPlaying } from './media'
 
 export interface DbHandle {
   exec(sql: string): void
@@ -142,8 +142,8 @@ export interface CoreContext {
   }
 }
 
-export { createLogger, kernelLogger } from './logger.js'
-export type { Logger, LogLevel } from './logger.js'
+export { createLogger, kernelLogger } from './logger'
+export type { Logger, LogLevel } from './logger'
 export type {
   ExtensionManifest,
   ExtensionLocaleConfig,
@@ -159,15 +159,39 @@ export type {
   ExtensionSettingField,
   ExtensionSettingsSchema,
   ExtensionSettingsInfo,
-} from './types.js'
-export { HostChannel } from './host-channels.js'
-export type { HostChannelName } from './host-channels.js'
-export type { WorkerToHostMessage, HostToWorkerMessage } from './messages.js'
+} from './types'
+export { HostChannel } from './host-channels'
+export type { HostChannelName } from './host-channels'
+export type { WorkerToHostMessage, HostToWorkerMessage } from './messages'
 export {
   resolveLocale,
   flattenTranslations,
   interpolate,
   selectPlural,
   getTextDirection,
-} from './i18n.js'
-export type { PluralCategory, TextDirection } from './i18n.js'
+} from './i18n'
+export type { PluralCategory, TextDirection } from './i18n'
+export {
+  resolveToolElementTag,
+  listCompositionProvides,
+  listCompositionClaims,
+  validateCompositionClaim,
+} from './composition'
+export type {
+  CompositionSlotDeclaration,
+  CompositionMountOptions,
+  CompositionHandle,
+  CoreComposition,
+  ToolActivateContext,
+  NuxyToolElement,
+  CompositionClaimValidation,
+  CompositionClaimFailure,
+} from './composition'
+export type {
+  ShellKeyAction,
+  ShellCommandAction,
+  ShellBridgeSnapshot,
+  OmniBarControlAction,
+  CoreShell,
+} from './shell'
+export type { CoreEvents, NuxyRendererEvent, NuxyRendererEventMap } from './events'

@@ -12,7 +12,8 @@
     "theme": "テーマ",
     "iconPack": "アイコンパック",
     "zoom": "ズーム",
-    "font": "フォント"
+    "font": "フォント",
+    "fontWeight": "フォントウェイト"
   },
   "window": {
     "escAction": "Escキーの動作",
@@ -34,6 +35,13 @@
   "font": {
     "systemDefault": "システムデフォルト",
     "monospace": "等幅"
+  },
+  "fontWeight": {
+    "300": "ライト",
+    "400": "ノーマル",
+    "500": "ミディアム",
+    "600": "セミボールド",
+    "700": "ボールド"
   },
   "escAction": {
     "hide": "非表示",

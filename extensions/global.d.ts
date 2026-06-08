@@ -1,15 +1,13 @@
 /**
  * Global type declarations for Nuxy extension frontends.
- * Frontend files (.tsx) run inside the renderer process and access
- * React, the UI kit, and the core API exclusively through window globals.
+ * Frontend files run inside the renderer process and access
+ * the UI kit and core API through window globals.
  */
 
-import type * as React from 'react'
 import type * as UIKit from '@nuxy/ui'
 
 declare global {
   interface Window {
-    React: typeof React & { createElement: typeof React.createElement }
     /** Primary access path for the UI kit (window.UI). */
     UI: typeof UIKit
     /** Legacy alias kept for backwards compat — prefer window.UI. */

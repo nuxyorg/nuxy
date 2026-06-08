@@ -1,20 +1,21 @@
-import React from 'react'
-import '../Text/index.css'
+import { h } from '../../h'
+import './nuxy-link.ts'
 
-export interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export interface LinkProps extends Record<string, unknown> {
   variant?: 'default' | 'muted'
   external?: boolean
 }
 
-export function Link({ variant = 'default', external, className, children, ...props }: LinkProps) {
-  return (
-    <a
-      className={`nuxy-link ${variant !== 'default' ? `nuxy-link--${variant}` : ''} ${className || ''}`}
-      target={external ? '_blank' : undefined}
-      rel={external ? 'noopener noreferrer' : undefined}
-      {...props}
-    >
-      {children}
-    </a>
+export function Link({ variant = 'default', external, className, children, href, ...props }: LinkProps) {
+  return h(
+    'nuxy-link',
+    {
+      ...props,
+      class: className,
+      variant,
+      ...(href ? { href } : {}),
+      ...(external ? { external: '' } : {}),
+    },
+    children
   )
 }

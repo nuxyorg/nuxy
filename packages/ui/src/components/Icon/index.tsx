@@ -1,6 +1,5 @@
-import React from 'react'
 
-export interface IconProps extends React.SVGProps<SVGSVGElement> {
+export interface IconProps extends Record<string, unknown> {
   size?: number | string
   opacity?: number
 }
@@ -16,7 +15,6 @@ export type IconName =
   | 'Trash' | 'Unlock' | 'Upload' | 'User' | 'Video'
   | 'Warning' | 'Workflow' | 'Zap'
 
-export function Icon({ name, ...props }: IconProps & { name: IconName }): React.ReactElement {
-  const Impl = (window.UI as any)?.Icon ?? (() => null)
-  return <Impl name={name} {...props} />
+export function Icon(props: IconProps & { name: IconName }): unknown {
+  return (window.UI as { Icon?: (p: IconProps & { name: IconName }) => unknown })?.Icon?.(props) ?? null
 }

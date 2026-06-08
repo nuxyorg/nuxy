@@ -1,9 +1,8 @@
 // fallow-ignore-file code-duplication
-import React from 'react'
 
 export interface RadioOption {
   value: string
-  label: React.ReactNode
+  label: unknown
   disabled?: boolean
 }
 
@@ -18,7 +17,6 @@ export interface RadioGroupProps {
   className?: string
 }
 
-export function RadioGroup(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.RadioGroup || (() => null)
-  return <Impl {...props} />
+export function RadioGroup(...args: any[]): unknown {
+  return (window.UI as any)?.RadioGroup?.(...args) ?? null
 }

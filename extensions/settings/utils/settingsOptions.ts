@@ -18,6 +18,14 @@ export const FONT_OPTIONS_STATIC: SelectOption<string>[] = [
   { value: 'monospace', label: 'Monospace' },
 ]
 
+export const FONT_WEIGHT_OPTIONS: SelectOption<string>[] = [
+  { value: '300', label: 'Light' },
+  { value: '400', label: 'Normal' },
+  { value: '500', label: 'Medium' },
+  { value: '600', label: 'Semi Bold' },
+  { value: '700', label: 'Bold' },
+]
+
 export const ESC_ACTION_OPTIONS: SelectOption<string>[] = [
   { value: 'hide', label: 'Hide' },
   { value: 'minimize', label: 'Minimize' },
@@ -119,6 +127,7 @@ export const DEFAULT_SETTINGS: NuxySettings = {
   iconPack: '',
   zoom: '100%',
   font: 'system',
+  fontWeight: '400',
   escAction: 'hide',
   blurAction: 'hide',
   backgroundBehavior: 'reset-on-show',
@@ -145,6 +154,7 @@ export const SECTIONS: SectionDef[] = [
       { key: 'iconPack', label: 'Icon Pack', options: iconPacks },
       { key: 'zoom', label: 'Zoom', options: ZOOM_OPTIONS },
       { key: 'font', label: 'Font', options: fontOptions, searchable: true },
+      { key: 'fontWeight', label: 'Font Weight', options: FONT_WEIGHT_OPTIONS },
     ],
   },
   {

@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron/simple'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -54,10 +53,13 @@ export default defineConfig({
 
         // Copy loose shared files (e.g. ui-hooks.ts) from extensions/ root directly.
         // These are shared modules imported by extension frontends; not packaged themselves.
+        const extractedDir = path.join(os.homedir(), '.nuxy', 'extracted')
         for (const name of fs.readdirSync(extensionsDir)) {
           const src = path.join(extensionsDir, name)
           if (fs.statSync(src).isFile() && /\.(ts|tsx|js|jsx)$/.test(name)) {
             fs.copyFileSync(src, path.join(nuxyExtDir, name))
+            fs.mkdirSync(extractedDir, { recursive: true })
+            fs.copyFileSync(src, path.join(extractedDir, name))
           }
         }
 
@@ -129,7 +131,6 @@ export default defineConfig({
         })
       },
     },
-    react(),
     electron({
       main: {
         entry: 'electron/bootstrap/main.ts',

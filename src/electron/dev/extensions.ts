@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
 import { EXTENSION_DIR } from '../config/paths.js'
 import { kernelLogger } from '@nuxy/core'
 
@@ -102,7 +103,7 @@ function copyExtensionTree(srcPath: string, destPath: string): void {
 /** Set NUXY_DEV_OVERWRITE=1 to replace entire extension folders. */
 function copyDefaultExtensions(): void {
   const overwrite = process.env.NUXY_DEV_OVERWRITE === '1'
-  const workspaceExtensions = findWorkspaceExtensionsDir(import.meta.dirname)
+  const workspaceExtensions = findWorkspaceExtensionsDir(path.dirname(fileURLToPath(import.meta.url)))
 
   if (!workspaceExtensions) {
     log.error(

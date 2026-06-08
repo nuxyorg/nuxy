@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react'
-import { useToolKeyActions, KeyAction } from './useToolKeyActions'
+import { createStore } from '../h'
+import { useToolKeyActions, type KeyAction } from './useToolKeyActions'
 import { useTranslation } from './useTranslation'
 
 export interface UseListNavigationOptions<T> {
@@ -12,7 +12,7 @@ export interface UseListNavigationOptions<T> {
 
 export interface UseListNavigationResult<T> {
   selectedIndex: number
-  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>
+  setSelectedIndex: (index: number | ((prev: number) => number)) => void
   selectedItem: T | null
 }
 
@@ -21,13 +21,10 @@ export function useListNavigation<T>(
   options: UseListNavigationOptions<T> = {}
 ): UseListNavigationResult<T> {
   const { t } = useTranslation('com.nuxy.shell')
-  const tr = useCallback(
-    (key: string, fallback: string) => {
-      const val = t(key)
-      return val === '' || val === key ? fallback : val
-    },
-    [t]
-  )
+  const tr = (key: string, fallback: string) => {
+    const val = t(key)
+    return val === '' || val === key ? fallback : val
+  }
 
   const {
     onEnter,
@@ -37,29 +34,33 @@ export function useListNavigation<T>(
     extraActions = [],
   } = options
 
-  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const store = createStore({ selectedIndex: -1, itemsLen: items.length })
+  store.setState({ itemsLen: items.length })
 
-  const moveUp = useCallback(() => {
-    setSelectedIndex((i) => {
-      if (i <= 0) return loop ? items.length - 1 : -1
-      return i - 1
+  const getIndex = () => store.getState().selectedIndex
+
+  const moveUp = () => {
+    store.setState((s) => {
+      const i = s.selectedIndex
+      if (i <= 0) return { selectedIndex: loop ? items.length - 1 : -1 }
+      return { selectedIndex: i - 1 }
     })
-  }, [items.length, loop])
+  }
 
-  const moveDown = useCallback(() => {
-    setSelectedIndex((i) => {
-      if (i >= items.length - 1) return loop ? 0 : items.length - 1
-      return i + 1
+  const moveDown = () => {
+    store.setState((s) => {
+      const i = s.selectedIndex
+      if (i >= items.length - 1) return { selectedIndex: loop ? 0 : items.length - 1 }
+      return { selectedIndex: i + 1 }
     })
-  }, [items.length, loop])
+  }
 
-  const handleEnter = useCallback(() => {
-    if (onEnter && selectedIndex >= 0 && selectedIndex < items.length) {
-      onEnter(items[selectedIndex], selectedIndex)
-    }
-  }, [items, onEnter, selectedIndex])
+  const handleEnter = () => {
+    const i = getIndex()
+    if (onEnter && i >= 0 && i < items.length) onEnter(items[i], i)
+  }
 
-  const navActions: KeyAction[] = [
+  useToolKeyActions([
     {
       key: 'ArrowUp',
       label: tr('keyboard.navigate', 'Navigate'),
@@ -71,12 +72,17 @@ export function useListNavigation<T>(
     ...(onEnter
       ? [{ key: 'Enter', label: enterLabel, hint: enterHint, handler: handleEnter }]
       : []),
-  ]
+    ...extraActions,
+  ])
 
-  useToolKeyActions([...navActions, ...extraActions])
-
-  const selectedItem =
-    selectedIndex >= 0 && selectedIndex < items.length ? items[selectedIndex] : null
-
-  return { selectedIndex, setSelectedIndex, selectedItem }
+  const idx = store.getState().selectedIndex
+  return {
+    selectedIndex: idx,
+    setSelectedIndex: (v) => {
+      store.setState({
+        selectedIndex: typeof v === 'function' ? v(store.getState().selectedIndex) : v,
+      })
+    },
+    selectedItem: idx >= 0 && idx < items.length ? items[idx] : null,
+  }
 }

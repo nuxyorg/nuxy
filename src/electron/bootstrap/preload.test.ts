@@ -39,12 +39,16 @@ describe('contextBridge.exposeInMainWorld', () => {
     expect(call![0]).toBe('core')
   })
 
-  it('exposed object has ipc, window, icons, themes keys', () => {
+  it('exposed object has ipc, window, icons, themes, tools, composition, shell, events keys', () => {
     const core = getExposedCore()
     expect(core).toHaveProperty('ipc')
     expect(core).toHaveProperty('window')
     expect(core).toHaveProperty('icons')
     expect(core).toHaveProperty('themes')
+    expect(core).toHaveProperty('tools')
+    expect(core).toHaveProperty('composition')
+    expect(core).toHaveProperty('shell')
+    expect(core).toHaveProperty('events')
   })
 
   it('window object has all 9 methods: ready, resize, hide, esc, center, dragStart, dragMove, dragEnd, onShow', () => {
@@ -184,6 +188,58 @@ describe('core.themes', () => {
     const { themes } = getExposedCore()
     themes.list()
     expect(mockInvoke).toHaveBeenCalledWith('ext:invoke', 'kernel', 'listThemes', {})
+  })
+})
+
+describe('core.tools', () => {
+  it('resolveElementTag(extId) → kernel getToolElementTag', async () => {
+    mockInvoke.mockResolvedValueOnce({ success: true, data: 'nuxy-tool-color' })
+    const { tools } = getExposedCore()
+    const tag = await tools.resolveElementTag('com.nuxy.color')
+    expect(mockInvoke).toHaveBeenCalledWith('ext:invoke', 'kernel', 'getToolElementTag', {
+      extId: 'com.nuxy.color',
+    })
+    expect(tag).toBe('nuxy-tool-color')
+  })
+
+  it('resolveElementTag returns null when kernel call fails', async () => {
+    mockInvoke.mockResolvedValueOnce({ success: false })
+    const { tools } = getExposedCore()
+    const tag = await tools.resolveElementTag('com.nuxy.missing')
+    expect(tag).toBeNull()
+  })
+})
+
+describe('core.composition', () => {
+  it('declareSlots and setState notify listeners', () => {
+    const { composition } = getExposedCore()
+    const handler = vi.fn()
+    composition.declareSlots([{ name: 'background-layer' }])
+    const off = composition.onStateChange('background-layer', handler)
+    composition.setState('background-layer', { active: true })
+    expect(handler).toHaveBeenCalledWith({ active: true })
+    off()
+  })
+})
+
+describe('core.shell', () => {
+  it('registerKeyActions updates snapshot', () => {
+    const { shell } = getExposedCore()
+    shell.registerKeyActions(() => [{ key: 'Enter', label: 'Go', handler: () => {} }])
+    expect(shell.getSnapshot().keyActionHints).toHaveLength(0)
+    shell.registerKeyActions(() => [{ key: 'Enter', label: 'Go', hint: '↵', handler: () => {} }])
+    expect(shell.getSnapshot().keyActionHints).toHaveLength(1)
+  })
+})
+
+describe('core.events', () => {
+  it('emit notifies subscribers', () => {
+    const { events } = getExposedCore()
+    const handler = vi.fn()
+    const off = events.on('shell-reset', handler)
+    events.emit('shell-reset')
+    expect(handler).toHaveBeenCalled()
+    off()
   })
 })
 

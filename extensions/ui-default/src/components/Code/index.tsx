@@ -1,16 +1,11 @@
-import React from 'react'
-import './index.css'
-import { CopyButton } from '../CopyButton'
-import { highlight } from '../../utils/highlight'
+import { h } from '../../h'
+import './nuxy-code.ts'
+import './nuxy-code-block.ts'
 
-export interface CodeProps extends React.HTMLAttributes<HTMLElement> {}
+export interface CodeProps extends Record<string, unknown> {}
 
 export function Code({ children, className, ...props }: CodeProps) {
-  return (
-    <code className={`nuxy-code ${className || ''}`} {...props}>
-      {children}
-    </code>
-  )
+  return h('nuxy-code', { ...props, class: className }, children)
 }
 
 export interface CodeBlockProps {
@@ -20,36 +15,16 @@ export interface CodeBlockProps {
   className?: string
 }
 
-export function CodeBlock({ code, language = 'text', showCopy = true, className }: CodeBlockProps) {
-  const lang = language.toLowerCase()
-  const shouldHighlight = lang !== 'text' && lang !== 'plain' && lang !== ''
-  const tokens = shouldHighlight ? highlight(code, lang) : null
-
-  return (
-    <div className={`nuxy-code-block ${className || ''}`}>
-      {(language || showCopy) && (
-        <div className="nuxy-code-block__header">
-          <span className="nuxy-code-block__lang">{language}</span>
-          {showCopy && (
-            <CopyButton value={code} label="Copy code" className="nuxy-code-block__copy" />
-          )}
-        </div>
-      )}
-      <pre className="nuxy-code-block__pre">
-        <code>
-          {tokens
-            ? tokens.map((tok, i) =>
-                tok.type === 'plain' ? (
-                  tok.text
-                ) : (
-                  <span key={`${tok.type}-${i}`} className={`nuxy-hl-${tok.type}`}>
-                    {tok.text}
-                  </span>
-                )
-              )
-            : code}
-        </code>
-      </pre>
-    </div>
-  )
+export function CodeBlock({
+  code,
+  language = 'text',
+  showCopy = true,
+  className,
+}: CodeBlockProps) {
+  return h('nuxy-code-block', {
+    code,
+    language,
+    class: className,
+    ...(showCopy ? {} : { 'show-copy': 'false' }),
+  })
 }

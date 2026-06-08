@@ -7,11 +7,11 @@
     "build": "vite build",
     "dev": "vite build --watch --mode development"
   },
+  "dependencies": {
+    "lit": "^3.0.0"
+  },
   "devDependencies": {
     "@nuxy/ui": "workspace:*",
-    "@vitejs/plugin-react": "^4.0.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "vite": "^4.4.5"
   }
 }

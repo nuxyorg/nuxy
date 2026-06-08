@@ -1,19 +1,18 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-list.ts'
 
-const maxHeightStyles: Record<string, string> = {
-  md: 'nuxy-list--max-h-md',
-}
-
-export interface ListProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ListProps extends Record<string, unknown> {
   maxHeight?: 'md'
 }
 
 export function List({ children, className, maxHeight, ...props }: ListProps) {
-  const heightClass = maxHeight ? maxHeightStyles[maxHeight] || '' : ''
-  return (
-    <div className={`nuxy-list ${heightClass} ${className || ''}`} {...props}>
-      {children}
-    </div>
+  return h(
+    'nuxy-list',
+    {
+      ...props,
+      class: className,
+      ...(maxHeight ? { 'max-height': maxHeight } : {}),
+    },
+    children
   )
 }

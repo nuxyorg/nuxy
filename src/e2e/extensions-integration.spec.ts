@@ -4,22 +4,7 @@
  * cross-extension IPC interactions.
  */
 import { test, expect } from './fixtures.js'
-
-async function resetShell(page: any) {
-  await page.evaluate(() => {
-    window.dispatchEvent(new CustomEvent('nuxy-shell-reset'))
-  })
-  await page.waitForFunction(
-    () => {
-      const toolName = document.querySelector('.nuxy-shell-omni-bar__tool-name')
-      const palette = document.querySelector('.nuxy-command-palette')
-      const input = document.querySelector('input') as HTMLInputElement | null
-      return toolName === null && palette === null && (input?.value ?? '') === ''
-    },
-    { timeout: 400 }
-  )
-  await page.locator('input').focus()
-}
+import { resetShell, typeInOmnibar } from '../../extensions/e2e-helpers.js'
 
 test.describe('angrysearch extension', () => {
   test('getStatus returns expected shape', async ({ appPage }) => {
@@ -173,7 +158,7 @@ test.describe('orchestrator routing', () => {
     await appPage.waitForSelector('input', { timeout: 400 })
     await resetShell(appPage)
 
-    await appPage.keyboard.type('what is the meaning of life')
+    await typeInOmnibar(appPage, 'what is the meaning of life')
     await appPage.waitForFunction(
       () =>
         (document.querySelector('input') as HTMLInputElement | null)?.value ===

@@ -1,16 +1,20 @@
-import React from 'react'
+import { h } from '../../h'
+import './nuxy-box.ts'
 
-export interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
-  as?: React.ElementType
-  display?: React.CSSProperties['display']
+export interface BoxProps extends Record<string, unknown> {
+  as?: string
+  display?: string
   padding?: number | string
   margin?: number | string
   gap?: number | string
-  flex?: React.CSSProperties['flex']
+  flex?: string
+  className?: string
+  style?: Record<string, string | number>
+  children?: unknown
 }
 
 export function Box({
-  as: Tag = 'div',
+  as: tag = 'nuxy-box',
   display,
   padding,
   margin,
@@ -18,23 +22,40 @@ export function Box({
   flex,
   style,
   className,
+  children,
   ...props
-}: BoxProps) {
+}: BoxProps): HTMLElement {
   const toPx = (v: number | string | undefined) =>
     v !== undefined ? (typeof v === 'number' ? `${v}px` : v) : undefined
 
-  return (
-    <Tag
-      className={`nuxy-box ${className || ''}`}
-      style={{
+  if (tag !== 'nuxy-box' && tag !== 'div') {
+    const el = h(tag, {
+      ...props,
+      class: `nuxy-box ${className || ''}`.trim(),
+      style: {
         display,
         padding: toPx(padding),
         margin: toPx(margin),
         gap: toPx(gap),
         flex,
         ...style,
-      }}
-      {...props}
-    />
+      },
+    }, children)
+    return el
+  }
+
+  return h(
+    'nuxy-box',
+    {
+      ...props,
+      class: className,
+      ...(display ? { display: String(display) } : {}),
+      ...(padding !== undefined ? { padding: typeof padding === 'number' ? String(padding) : padding } : {}),
+      ...(margin !== undefined ? { margin: typeof margin === 'number' ? String(margin) : margin } : {}),
+      ...(gap !== undefined ? { gap: typeof gap === 'number' ? String(gap) : gap } : {}),
+      ...(flex ? { flex: String(flex) } : {}),
+      style,
+    },
+    children
   )
 }

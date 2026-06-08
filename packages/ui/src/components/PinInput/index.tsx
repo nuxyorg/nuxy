@@ -1,4 +1,3 @@
-import React from 'react'
 
 export interface PinInputProps {
   length?: number
@@ -12,7 +11,6 @@ export interface PinInputProps {
   className?: string
 }
 
-export function PinInput(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.PinInput || (() => null)
-  return <Impl {...props} />
+export function PinInput(...args: any[]): unknown {
+  return (window.UI as any)?.PinInput?.(...args) ?? null
 }

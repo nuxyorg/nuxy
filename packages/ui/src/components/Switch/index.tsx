@@ -1,16 +1,14 @@
-import React from 'react'
 
 export interface SwitchProps {
   checked?: boolean
   defaultChecked?: boolean
   onChange?: (checked: boolean) => void
   disabled?: boolean
-  label?: React.ReactNode
+  label?: unknown
   id?: string
   className?: string
 }
 
-export function Switch(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Switch || (() => null)
-  return <Impl {...props} />
+export function Switch(...args: any[]): unknown {
+  return (window.UI as any)?.Switch?.(...args) ?? null
 }

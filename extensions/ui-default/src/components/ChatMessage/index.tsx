@@ -1,34 +1,32 @@
-import React from 'react'
-import './index.css'
-import { MarkdownText } from '../MarkdownText'
+import { h } from '../../h'
+import './nuxy-chat-message.ts'
 
 export interface ChatMessageProps {
   role: 'user' | 'assistant'
   content: string
+  className?: string
 }
 
-export function ChatMessage({ role, content }: ChatMessageProps) {
-  return (
-    <div className={`nuxy-chat-message nuxy-chat-message--${role}`}>
-      <div className="nuxy-chat-message__bubble">
-        {role === 'assistant' ? <MarkdownText>{content}</MarkdownText> : content}
-      </div>
-      <div className="nuxy-chat-message__role">{role === 'user' ? 'You' : 'Assistant'}</div>
-    </div>
-  )
+export function ChatMessage({ role, content, className }: ChatMessageProps) {
+  return h('nuxy-chat-message', { role, content, class: className })
 }
 
 export interface ChatListProps {
   messages: ChatMessageProps[]
+  className?: string
 }
 
-export function ChatList({ messages }: ChatListProps) {
-  return (
-    <div className="nuxy-chat-list">
-      {messages.map((msg, i) => (
-        // eslint-disable-next-line react-doctor/no-array-index-as-key
-        <ChatMessage key={i} role={msg.role} content={msg.content} />
-      ))}
-    </div>
+export function ChatList({ messages, className }: ChatListProps) {
+  return h(
+    'div',
+    { className: `nuxy-chat-list${className ? ` ${className}` : ''}` },
+    messages.map((msg, i) =>
+      h('nuxy-chat-message', {
+        key: i,
+        role: msg.role,
+        content: msg.content,
+        class: msg.className,
+      })
+    )
   )
 }

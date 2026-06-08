@@ -1,46 +1,33 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-card.ts'
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends Record<string, unknown> {
   interactive?: boolean
 }
 
 export function Card({ children, className, interactive, ...props }: CardProps) {
-  return (
-    <div
-      className={['nuxy-card', interactive ? 'nuxy-card--interactive' : '', className || '']
-        .filter(Boolean)
-        .join(' ')}
-      {...props}
-    >
-      {children}
-    </div>
+  return h(
+    'nuxy-card',
+    {
+      ...props,
+      class: className,
+      ...(interactive ? { interactive: '' } : {}),
+    },
+    children
   )
 }
 
-export interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CardHeaderProps extends Record<string, unknown> {}
 export function CardHeader({ children, className, ...props }: CardHeaderProps) {
-  return (
-    <div className={`nuxy-card__header ${className || ''}`} {...props}>
-      {children}
-    </div>
-  )
+  return h('nuxy-card-header', { ...props, class: className }, children)
 }
 
-export interface CardBodyProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CardBodyProps extends Record<string, unknown> {}
 export function CardBody({ children, className, ...props }: CardBodyProps) {
-  return (
-    <div className={`nuxy-card__body ${className || ''}`} {...props}>
-      {children}
-    </div>
-  )
+  return h('nuxy-card-body', { ...props, class: className }, children)
 }
 
-export interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface CardFooterProps extends Record<string, unknown> {}
 export function CardFooter({ children, className, ...props }: CardFooterProps) {
-  return (
-    <div className={`nuxy-card__footer ${className || ''}`} {...props}>
-      {children}
-    </div>
-  )
+  return h('nuxy-card-footer', { ...props, class: className }, children)
 }

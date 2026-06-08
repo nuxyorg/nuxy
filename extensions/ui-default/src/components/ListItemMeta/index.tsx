@@ -1,12 +1,8 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-list-item-meta.ts'
 
-export type ListItemMetaProps = React.HTMLAttributes<HTMLDivElement>
+export type ListItemMetaProps = HTMLAttributes<HTMLDivElement>
 
 export function ListItemMeta({ children, className, ...props }: ListItemMetaProps) {
-  return (
-    <div className={`nuxy-list-item-meta ${className || ''}`} {...props}>
-      <span className="nuxy-list-item-meta__text">{children}</span>
-    </div>
-  )
+  return h('nuxy-list-item-meta', { ...props, class: className }, children)
 }

@@ -1,16 +1,14 @@
-import React from 'react'
 
 export interface ModalProps {
   isOpen: boolean
   onClose: () => void
-  title?: React.ReactNode
-  children: React.ReactNode
-  footer?: React.ReactNode
+  title?: unknown
+  children: unknown
+  footer?: unknown
   size?: 'sm' | 'md' | 'lg'
   className?: string
 }
 
-export function Modal(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Modal || (() => null)
-  return <Impl {...props} />
+export function Modal(...args: any[]): unknown {
+  return (window.UI as any)?.Modal?.(...args) ?? null
 }

@@ -1,12 +1,10 @@
-import React from 'react'
 
-export interface TwoPanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  left: React.ReactNode
-  right: React.ReactNode
+export interface TwoPanelProps extends Record<string, unknown> {
+  left: unknown
+  right: unknown
   split?: string
 }
 
-export function TwoPanel(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.TwoPanel || (() => null)
-  return <Impl {...props} />
+export function TwoPanel(...args: any[]): unknown {
+  return (window.UI as any)?.TwoPanel?.(...args) ?? null
 }

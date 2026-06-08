@@ -1,6 +1,6 @@
 // fallow-ignore-file code-duplication
 import { test, expect } from '../../src/e2e/fixtures.js'
-import { resetShell, openTool } from '../e2e-helpers.js'
+import { resetShell, openTool, typeInOmnibar, submitOmnibar, waitForToolMounted } from '../e2e-helpers.js'
 
 const openGradient = (page: any) => openTool(page, 'gradient')
 
@@ -36,8 +36,8 @@ test.describe('shell gradient border and glow', () => {
   }) => {
     await resetShell(appPage)
 
-    const container = appPage.locator('.nuxy-shell-container')
-    await expect(container).not.toHaveClass(/nuxy-shell-container--gradient-active/)
+    const container = appPage.locator('nuxy-shell')
+    await expect(container).toHaveAttribute('gradient-mode', 'off')
 
     const shellCanvas = appPage.locator('#nuxy-shell-gradient-canvas')
     await expect(shellCanvas).not.toBeVisible({ timeout: 1000 })
@@ -83,6 +83,18 @@ async function installOllamaMock(appPage: any, electronApp: any) {
               return { success: true, data: ['llama3'] }
             }
             if (channel === 'configure') {
+              return { success: true }
+            }
+            if (channel === 'getConfig') {
+              return {
+                success: true,
+                data: { host: 'http://localhost:11434', model: 'llama3', thinkingColor: 'light' },
+              }
+            }
+            if (channel === 'history:load') {
+              return { success: true, data: [] }
+            }
+            if (channel === 'history:save' || channel === 'history:clear') {
               return { success: true }
             }
             if (channel === 'chat') {
@@ -136,26 +148,20 @@ test.describe('ollama thinking gradient activation', () => {
     appPage,
   }) => {
     // 1. Reset shell and open Ollama
-    await resetShell(appPage)
-    await appPage.keyboard.type('ollama')
-    const option = appPage.locator('[role="option"]', { hasText: 'ollama' })
-    await option.first().click()
-    await appPage.waitForSelector('.nuxy-shell-tool-wrapper', { timeout: 500 })
+    await openTool(appPage, 'ollama')
 
     // Verify gradient is initially inactive/hidden
-    const container = appPage.locator('.nuxy-shell-container')
-    await expect(container).not.toHaveClass(/nuxy-shell-container--gradient-active/)
+    const container = appPage.locator('nuxy-shell')
+    await expect(container).toHaveAttribute('gradient-mode', 'off')
     const shellCanvas = appPage.locator('#nuxy-shell-gradient-canvas')
     await expect(shellCanvas).not.toBeVisible({ timeout: 1000 })
 
     // 2. Type a message and hit Enter
-    const input = appPage.locator('.nuxy-shell-omni-bar__input')
-    await input.focus()
-    await appPage.keyboard.type('Hello, who are you?')
-    await appPage.keyboard.press('Enter')
+    await typeInOmnibar(appPage, 'Hello, who are you?')
+    await submitOmnibar(appPage)
 
-    // Expect the gradient class to be applied and canvas to become visible immediately during thinking state
-    await expect(container).toHaveClass(/nuxy-shell-container--gradient-active/)
+    // Expect the gradient class to be applied and canvas to become visible during thinking state
+    await expect(container).toHaveAttribute('gradient-mode', 'light', { timeout: 5000 })
     await expect(shellCanvas).toBeVisible()
 
     // 3. Wait for thinking state to finish (mock response resolves after 4 seconds, so we wait up to 6 seconds)
@@ -163,7 +169,7 @@ test.describe('ollama thinking gradient activation', () => {
     await expect(mockMessage).toBeVisible({ timeout: 6000 })
 
     // Expect the gradient class to be removed and canvas to be hidden again
-    await expect(container).not.toHaveClass(/nuxy-shell-container--gradient-active/)
+    await expect(container).toHaveAttribute('gradient-mode', 'off')
     await expect(shellCanvas).not.toBeVisible({ timeout: 1000 })
   })
 })

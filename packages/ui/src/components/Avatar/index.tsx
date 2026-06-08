@@ -1,4 +1,3 @@
-import React from 'react'
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
@@ -14,18 +13,16 @@ export interface AvatarProps {
 }
 
 export interface AvatarGroupProps {
-  children: React.ReactNode
+  children: unknown
   max?: number
   size?: AvatarSize
   className?: string
 }
 
-export function Avatar(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Avatar || (() => null)
-  return <Impl {...props} />
+export function Avatar(...args: any[]): unknown {
+  return (window.UI as any)?.Avatar?.(...args) ?? null
 }
 
-export function AvatarGroup(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.AvatarGroup || (() => null)
-  return <Impl {...props} />
+export function AvatarGroup(...args: any[]): unknown {
+  return (window.UI as any)?.AvatarGroup?.(...args) ?? null
 }

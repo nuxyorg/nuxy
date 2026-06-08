@@ -1,10 +1,9 @@
-import React from 'react'
 
 export interface AlertDialogProps {
   isOpen: boolean
   onClose: () => void
-  title: React.ReactNode
-  children: React.ReactNode
+  title: unknown
+  children: unknown
   confirmLabel?: string
   cancelLabel?: string
   onConfirm: () => void
@@ -12,7 +11,6 @@ export interface AlertDialogProps {
   className?: string
 }
 
-export function AlertDialog(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.AlertDialog || (() => null)
-  return <Impl {...props} />
+export function AlertDialog(...args: any[]): unknown {
+  return (window.UI as any)?.AlertDialog?.(...args) ?? null
 }

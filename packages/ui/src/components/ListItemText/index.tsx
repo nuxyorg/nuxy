@@ -1,10 +1,8 @@
-import React from 'react'
 
-export interface ListItemTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface ListItemTextProps extends Record<string, unknown> {
   variant?: 'default' | 'success'
 }
 
-export function ListItemText(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.ListItemText || (() => null)
-  return <Impl {...props} />
+export function ListItemText(...args: any[]): unknown {
+  return (window.UI as any)?.ListItemText?.(...args) ?? null
 }

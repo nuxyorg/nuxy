@@ -10,16 +10,17 @@ const EXTENSIONS_DIR = path.resolve(ROOT, 'extensions')
 
 // Named non-extension targets
 const NAMED_TARGETS = {
-  ui: path.resolve(ROOT, 'packages/ui'),
-  'ui-default': path.resolve(ROOT, 'extensions/ui-default'),
-  'nuxy-desktop': path.resolve(ROOT, 'src'),
-  src: path.resolve(ROOT, 'src'),
+  ui: 'packages/ui/**/*.{ts,tsx}',
+  'ui-default': 'extensions/ui-default/**/*.{ts,tsx}',
+  'nuxy-desktop': 'src/**/*.{ts,tsx}',
+  src: 'src/**/*.{ts,tsx}',
 }
 
 const name = process.argv[2]
 
-function runDoctor(targetDir, extra = []) {
-  const args = ['dlx', 'react-doctor@latest', '--no-telemetry', ...extra, targetDir]
+function runDoctor(targets, extra = []) {
+  const targetList = Array.isArray(targets) ? targets : [targets]
+  const args = ['dlx', 'lit-analyzer', ...extra, ...targetList]
   const proc = spawn('pnpm', args, { cwd: ROOT, stdio: 'inherit' })
   proc.on('exit', (code) => process.exit(code ?? 0))
 }
@@ -32,7 +33,11 @@ function listExtensions() {
 
 if (!name) {
   console.log('\n  Nuxy Doctor — Full Workspace Scan\n')
-  runDoctor('.', ['--yes'])
+  runDoctor([
+    'src/**/*.{ts,tsx}',
+    'extensions/**/*.{ts,tsx}',
+    'packages/ui/**/*.{ts,tsx}',
+  ])
 } else if (NAMED_TARGETS[name]) {
   console.log(`\n  Nuxy Doctor — ${name}\n`)
   runDoctor(NAMED_TARGETS[name])

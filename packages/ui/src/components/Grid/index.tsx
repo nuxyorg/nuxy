@@ -1,21 +1,18 @@
-import React, { useRef, useEffect } from 'react'
 
-export interface GridProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface GridProps extends Record<string, unknown> {
   cols?: number
   gap?: number
 }
 
-export interface GridItemProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface GridItemProps extends Record<string, unknown> {
   active?: boolean
   title?: string
 }
 
-export function Grid(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Grid || (() => null)
-  return <Impl {...props} />
+export function Grid(...args: any[]): unknown {
+  return (window.UI as any)?.Grid?.(...args) ?? null
 }
 
-export function GridItem(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.GridItem || (() => null)
-  return <Impl {...props} />
+export function GridItem(...args: any[]): unknown {
+  return (window.UI as any)?.GridItem?.(...args) ?? null
 }

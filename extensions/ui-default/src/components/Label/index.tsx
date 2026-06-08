@@ -1,22 +1,19 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-label.ts'
 
-export interface LabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
+export interface LabelProps extends Record<string, unknown> {
   required?: boolean
 }
 
 export function Label({ children, required, className, ...props }: LabelProps) {
-  return (
-    <label
-      className={`nuxy-label ${required ? 'nuxy-label--required' : ''} ${className || ''}`}
-      {...props}
-    >
-      {children}
-    </label>
+  return h(
+    'nuxy-label',
+    { ...props, class: className, ...(required ? { required: '' } : {}) },
+    children
   )
 }
 
-export interface HelperTextProps extends React.HTMLAttributes<HTMLSpanElement> {
+export interface HelperTextProps extends Record<string, unknown> {
   variant?: 'default' | 'error' | 'success'
 }
 
@@ -26,12 +23,13 @@ export function HelperText({
   className,
   ...props
 }: HelperTextProps) {
-  return (
-    <span
-      className={`nuxy-helper-text ${variant !== 'default' ? `nuxy-helper-text--${variant}` : ''} ${className || ''}`}
-      {...props}
-    >
-      {children}
-    </span>
+  return h(
+    'nuxy-helper-text',
+    {
+      ...props,
+      class: className,
+      ...(variant !== 'default' ? { variant } : {}),
+    },
+    children
   )
 }

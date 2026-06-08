@@ -88,10 +88,24 @@ export interface ExtensionManifest {
    * is attempted.
    */
   locales?: ExtensionLocaleConfig
+  /**
+   * Composition slots this extension may provide (shell) or claim (overlays).
+   * Kernel validates claims against the bootstrap shell manifest.
+   */
+  composition?: {
+    provides?: Array<{
+      name: string
+      description?: string
+      maxMounts?: number
+    }>
+    claims?: string[]
+  }
   entry?: {
     backend?: string
     frontend?: string
     preload?: string
+    /** Custom element tag for tool UI, e.g. "nuxy-tool-clipboard". */
+    element?: string
     /** Path to a ThemeDefinition JSON file within the extension folder. */
     theme?: string
     /** Path to an IconPackDefinition JSON file within the extension folder. */

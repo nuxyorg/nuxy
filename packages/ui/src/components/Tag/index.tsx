@@ -1,15 +1,13 @@
-import React from 'react'
 
 export interface TagProps {
-  children: React.ReactNode
+  children: unknown
   onRemove?: () => void
   variant?: 'default' | 'blue' | 'green' | 'orange' | 'red'
   className?: string
 }
 
-export function Tag(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Tag || (() => null)
-  return <Impl {...props} />
+export function Tag(...args: any[]): unknown {
+  return (window.UI as any)?.Tag?.(...args) ?? null
 }
 
 export { Tag as Chip }

@@ -1,11 +1,13 @@
-import React from 'react'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import { host } from '../../host'
+import './nuxy-dropdown-menu.ts'
 
 export interface DropdownItemProps {
-  onClick?: (e: React.MouseEvent) => void
+  onClick?: (e: MouseEvent) => void
   disabled?: boolean
   variant?: 'default' | 'danger'
-  children: React.ReactNode
+  children: UiChild
   className?: string
 }
 
@@ -15,77 +17,52 @@ export function DropdownItem({
   variant = 'default',
   children,
   className,
-}: DropdownItemProps) {
-  return (
-    <button
-      type="button"
-      disabled={disabled}
-      className={`nuxy-dropdown-item ${variant === 'danger' ? 'nuxy-dropdown-item--danger' : ''} ${className || ''}`}
-      onClick={onClick}
-    >
-      {children}
-    </button>
+}: DropdownItemProps): HTMLElement {
+  const el = host(
+    'nuxy-dropdown-item',
+    {
+      variant,
+      class: className,
+      ...(disabled ? { disabled: '' } : {}),
+    },
+    undefined,
+    children
   )
+  if (onClick) {
+    el.addEventListener('click', (e) => onClick(e as MouseEvent))
+  }
+  return el
 }
 
-export function DropdownDivider() {
-  return <div className="nuxy-dropdown-divider" role="separator" />
+export function DropdownDivider(): HTMLElement {
+  return h('nuxy-dropdown-divider')
 }
 
 export interface DropdownHeaderProps {
-  children: React.ReactNode
+  children: UiChild
 }
 
-export function DropdownHeader({ children }: DropdownHeaderProps) {
-  return <div className="nuxy-dropdown-header">{children}</div>
+export function DropdownHeader({ children }: DropdownHeaderProps): HTMLElement {
+  return h('nuxy-dropdown-header', null, children)
 }
 
 export interface DropdownMenuProps {
-  trigger: React.ReactElement
-  children: React.ReactNode
+  trigger: HTMLElement
+  children: UiChild
   align?: 'left' | 'right'
   className?: string
 }
 
-export function DropdownMenu({ trigger, children, align = 'right', className }: DropdownMenuProps) {
-  const [isOpen, setIsOpen] = React.useState(false)
-  const wrapperRef = React.useRef<HTMLDivElement>(null)
-
-  React.useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-    if (isOpen) {
-      document.addEventListener('mousedown', handleOutsideClick)
-    }
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick)
-    }
-  }, [isOpen])
-
-  const triggerEl = React.cloneElement(trigger, {
-    onClick: (e: React.MouseEvent) => {
-      trigger.props.onClick?.(e)
-      setIsOpen((prev) => !prev)
-    },
-  })
-
-  return (
-    <div ref={wrapperRef} className={`nuxy-dropdown-wrapper ${className || ''}`}>
-      {triggerEl}
-      <div
-        className={[
-          'nuxy-dropdown-menu',
-          align === 'left' ? 'nuxy-dropdown-menu--left' : '',
-          isOpen ? 'nuxy-dropdown-menu--open' : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-      >
-        {children}
-      </div>
-    </div>
+export function DropdownMenu({
+  trigger,
+  children,
+  align = 'right',
+  className,
+}: DropdownMenuProps): HTMLElement {
+  return h(
+    'nuxy-dropdown-menu',
+    { class: className, align },
+    h('span', { 'data-trigger': '' }, trigger),
+    children
   )
 }

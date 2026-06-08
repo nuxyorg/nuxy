@@ -1,12 +1,8 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-shortcut-bar.ts'
 
-export type ShortcutBarProps = React.HTMLAttributes<HTMLDivElement>
+export type ShortcutBarProps = HTMLAttributes<HTMLDivElement>
 
 export function ShortcutBar({ children, className, ...props }: ShortcutBarProps) {
-  return (
-    <div className={`nuxy-shortcut-bar ${className || ''}`} {...props}>
-      {children}
-    </div>
-  )
+  return h('nuxy-shortcut-bar', { ...props, class: className }, children)
 }

@@ -1,16 +1,17 @@
-import React from 'react'
-import '../Modal/index.css'
-import { Modal } from './index'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import { host } from '../../host'
+import './nuxy-alert-dialog.ts'
 
 export interface AlertDialogProps {
   isOpen: boolean
   onClose: () => void
-  title: React.ReactNode
-  children: React.ReactNode
+  title: UiChild
+  children: UiChild
   confirmLabel?: string
   cancelLabel?: string
-  onConfirm: () => void
-  variant?: 'danger' | 'warning' | 'info'
+  onConfirm?: () => void
+  variant?: 'default' | 'destructive'
   className?: string
 }
 
@@ -22,37 +23,28 @@ export function AlertDialog({
   confirmLabel = 'Confirm',
   cancelLabel = 'Cancel',
   onConfirm,
-  variant = 'danger',
+  variant = 'default',
   className,
-}: AlertDialogProps) {
-  const footer = (
-    <>
-      <button type="button" className="nuxy-button nuxy-button--default" onClick={onClose}>
-        {cancelLabel}
-      </button>
-      <button
-        type="button"
-        className={`nuxy-button ${variant === 'danger' ? 'nuxy-button--destructive' : 'nuxy-button--primary'}`}
-        onClick={() => {
-          onConfirm()
-          onClose()
-        }}
-      >
-        {confirmLabel}
-      </button>
-    </>
-  )
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-      footer={footer}
-      size="sm"
-      className={`nuxy-alert-dialog nuxy-alert-dialog--${variant} ${className || ''}`}
-    >
-      {children}
-    </Modal>
+}: AlertDialogProps): HTMLElement {
+  const isStringTitle = typeof title === 'string'
+  const listeners: Record<string, EventListener> = {
+    'nuxy-alert-dialog-close': () => onClose(),
+  }
+  if (onConfirm) {
+    listeners['nuxy-alert-dialog-confirm'] = () => onConfirm()
+  }
+  return host(
+    'nuxy-alert-dialog',
+    {
+      class: className,
+      variant,
+      'confirm-label': confirmLabel,
+      'cancel-label': cancelLabel,
+      ...(isOpen ? { open: '' } : {}),
+      ...(isStringTitle ? { title: String(title) } : {}),
+    },
+    listeners,
+    !isStringTitle ? h('span', { 'data-title': '', hidden: true }, title) : null,
+    h('div', { 'data-body': '' }, children)
   )
 }

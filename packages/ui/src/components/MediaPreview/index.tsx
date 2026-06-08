@@ -1,18 +1,16 @@
-import React from 'react'
 
-export interface MediaPreviewProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface MediaPreviewProps extends Record<string, unknown> {
   thumbnail?: string | null
   title: string
   uploader?: string | null
   duration?: number | string | null
   progress?: number | null
   footerText?: string | null
-  badge?: React.ReactNode
+  badge?: unknown
   size?: 'sm' | 'md' | 'lg'
   layout?: 'horizontal' | 'vertical'
 }
 
-export function MediaPreview(props: MediaPreviewProps): React.ReactElement {
-  const Impl = (window.UI as any)?.MediaPreview || (() => null)
-  return <Impl {...props} />
+export function MediaPreview(...args: any[]): unknown {
+  return (window.UI as any)?.MediaPreview?.(...args) ?? null
 }

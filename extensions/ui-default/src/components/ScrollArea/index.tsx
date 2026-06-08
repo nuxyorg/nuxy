@@ -1,38 +1,40 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-scroll-area.ts'
 
-export interface ScrollAreaProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ScrollAreaProps extends Record<string, unknown> {
   axis?: 'both' | 'y' | 'x'
   maxHeight?: number | string
   maxWidth?: number | string
+  className?: string
+  style?: Record<string, string | number>
+  children?: unknown
 }
 
-export const ScrollArea = React.forwardRef<HTMLDivElement, ScrollAreaProps>(
-  ({ axis = 'y', maxHeight, maxWidth, className, style, children, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={`nuxy-scroll-area ${axis !== 'both' ? `nuxy-scroll-area--${axis}` : ''} ${className || ''}`}
-        style={{
-          maxHeight:
-            maxHeight !== undefined
-              ? typeof maxHeight === 'number'
-                ? `${maxHeight}px`
-                : maxHeight
-              : undefined,
-          maxWidth:
-            maxWidth !== undefined
-              ? typeof maxWidth === 'number'
-                ? `${maxWidth}px`
-                : maxWidth
-              : undefined,
-          ...style,
-        }}
-        {...props}
-      >
-        {children}
-      </div>
-    )
-  }
-)
-ScrollArea.displayName = 'ScrollArea'
+export function ScrollArea({
+  axis = 'y',
+  maxHeight,
+  maxWidth,
+  className,
+  style,
+  children,
+  ref,
+  ...props
+}: ScrollAreaProps & { ref?: unknown }): HTMLElement {
+  return h(
+    'nuxy-scroll-area',
+    {
+      ...props,
+      ref,
+      class: className,
+      axis,
+      ...(maxHeight !== undefined
+        ? { 'max-height': typeof maxHeight === 'number' ? String(maxHeight) : maxHeight }
+        : {}),
+      ...(maxWidth !== undefined
+        ? { 'max-width': typeof maxWidth === 'number' ? String(maxWidth) : maxWidth }
+        : {}),
+      style,
+    },
+    children
+  )
+}

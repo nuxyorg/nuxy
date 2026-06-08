@@ -1,19 +1,41 @@
-import React from 'react'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import './nuxy-section-header.ts'
 
-export interface SectionHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SectionHeaderProps extends Record<string, unknown> {
   label: string
   description?: string
-  action?: React.ReactNode
+  action?: UiChild
+  className?: string
 }
 
-export const SectionHeader = React.forwardRef<HTMLDivElement, SectionHeaderProps>(
-  ({ label, description, action, className, ...rest }, ref) => (
-    <div ref={ref} className={`nuxy-section-header ${className ?? ''}`} {...rest}>
-      <span className="nuxy-section-header__label">{label}</span>
-      {description && <span className="nuxy-section-header__desc">{description}</span>}
-      {action && <span className="nuxy-section-header__action">{action}</span>}
-    </div>
-  )
-)
-SectionHeader.displayName = 'SectionHeader'
+export function SectionHeader({
+  label,
+  description,
+  action,
+  className,
+  ref,
+  ...rest
+}: SectionHeaderProps & { ref?: unknown }): HTMLElement {
+  if (action) {
+    return h(
+      'div',
+      {
+        ...rest,
+        ref,
+        class: `nuxy-section-header ${className ?? ''}`.trim(),
+      },
+      h('span', { class: 'nuxy-section-header__label' }, label),
+      description ? h('span', { class: 'nuxy-section-header__desc' }, description) : null,
+      h('span', { class: 'nuxy-section-header__action' }, action)
+    )
+  }
+
+  return h('nuxy-section-header', {
+    ...rest,
+    ref,
+    class: className,
+    label,
+    ...(description ? { description } : {}),
+  })
+}

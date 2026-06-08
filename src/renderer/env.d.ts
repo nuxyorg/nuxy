@@ -1,9 +1,10 @@
 /// <reference types="vite/client" />
 
+import type { CoreComposition, CoreShell, CoreEvents } from '@nuxy/core'
+
 declare const __NUXY_DEV__: boolean
 
 interface Window {
-  React: typeof import('react')
   UI: typeof import('@nuxy/ui')
   __NUXY_DEV__: boolean
   core?: {
@@ -37,5 +38,13 @@ interface Window {
     themes: {
       list: () => Promise<unknown>
     }
+    tools: {
+      resolveElementTag: (extId: string) => Promise<string | null>
+    }
+    composition: CoreComposition
+    shell: CoreShell
+    events: CoreEvents
   }
 }
+
+export {}

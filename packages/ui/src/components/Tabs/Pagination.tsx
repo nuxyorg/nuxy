@@ -1,4 +1,3 @@
-import React from 'react'
 
 export interface PaginationProps {
   total: number // total items
@@ -9,7 +8,6 @@ export interface PaginationProps {
   className?: string
 }
 
-export function Pagination(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Pagination || (() => null)
-  return <Impl {...props} />
+export function Pagination(...args: any[]): unknown {
+  return (window.UI as any)?.Pagination?.(...args) ?? null
 }

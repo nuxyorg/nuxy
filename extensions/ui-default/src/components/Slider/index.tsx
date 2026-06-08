@@ -1,5 +1,5 @@
-import React from 'react'
-import './index.css'
+import { host } from '../../host'
+import './nuxy-slider.ts'
 
 export interface SliderProps {
   value?: number
@@ -27,42 +27,24 @@ export function Slider({
   showLabels = false,
   className,
   id,
-}: SliderProps) {
-  const [internalValue, setInternalValue] = React.useState(defaultValue)
+}: SliderProps): HTMLElement {
   const isControlled = value !== undefined
-  const current = isControlled ? value : internalValue
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const num = Number(e.target.value)
-    if (!isControlled) setInternalValue(num)
-    onChange?.(num)
+  const listeners: Record<string, EventListener> = {}
+  if (onChange) {
+    listeners['nuxy-slider-change'] = (e) => {
+      const detail = (e as CustomEvent<{ value: number }>).detail
+      onChange(detail.value)
+    }
   }
-
-  return (
-    <div className={`nuxy-slider ${disabled ? 'nuxy-slider--disabled' : ''} ${className || ''}`}>
-      {showValue && <span className="nuxy-slider__value">{current}</span>}
-      <div className="nuxy-slider__track-wrapper">
-        <input
-          id={id}
-          type="range"
-          className="nuxy-slider__input"
-          min={min}
-          max={max}
-          step={step}
-          value={current}
-          disabled={disabled}
-          onChange={handleChange}
-          aria-valuemin={min}
-          aria-valuemax={max}
-          aria-valuenow={current}
-        />
-      </div>
-      {showLabels && (
-        <div className="nuxy-slider__labels">
-          <span>{min}</span>
-          <span>{max}</span>
-        </div>
-      )}
-    </div>
-  )
+  return host('nuxy-slider', {
+    class: className,
+    ...(id ? { id } : {}),
+    min: String(min),
+    max: String(max),
+    step: String(step),
+    ...(disabled ? { disabled: '' } : {}),
+    ...(showValue ? { 'show-value': '' } : {}),
+    ...(showLabels ? { 'show-labels': '' } : {}),
+    ...(isControlled ? { value: String(value) } : { 'default-value': String(defaultValue) }),
+  }, listeners)
 }

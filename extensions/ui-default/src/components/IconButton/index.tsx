@@ -1,10 +1,11 @@
-import React from 'react'
-import './index.css'
+import type { UiChild } from '../../types'
+import { h } from '../../h'
+import './nuxy-icon-button.ts'
 
-export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IconButtonProps extends Record<string, unknown> {
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'ghost' | 'danger'
-  children: React.ReactNode
+  children: UiChild
 }
 
 export function IconButton({
@@ -12,20 +13,20 @@ export function IconButton({
   variant = 'default',
   children,
   className,
+  disabled,
+  type,
   ...props
 }: IconButtonProps) {
-  const classes = [
+  return h(
     'nuxy-icon-button',
-    `nuxy-icon-button--${size}`,
-    variant !== 'default' ? `nuxy-icon-button--${variant}` : '',
-    className || '',
-  ]
-    .filter(Boolean)
-    .join(' ')
-
-  return (
-    <button className={classes} {...props}>
-      {children}
-    </button>
+    {
+      ...props,
+      class: className,
+      size,
+      variant,
+      ...(disabled ? { disabled: '' } : {}),
+      ...(type ? { type } : {}),
+    },
+    children
   )
 }

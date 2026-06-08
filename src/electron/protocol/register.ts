@@ -67,9 +67,6 @@ export function registerProtocols() {
               },
             })
             let output = transpiled.outputText
-            if (needsJsx && !output.includes('const React =')) {
-              output = `const React = window.React;\n` + output
-            }
             transpileCache.set(absolutePath, { mtime, output })
             return new Response(output, {
               headers: {

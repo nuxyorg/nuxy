@@ -1,13 +1,10 @@
-import React from 'react'
 
-export interface SectionHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SectionHeaderProps extends Record<string, unknown> {
   label: string
   description?: string
-  action?: React.ReactNode
+  action?: unknown
 }
 
-export const SectionHeader = React.forwardRef<HTMLDivElement, SectionHeaderProps>((props, ref) => {
-  const Impl = (window.UI as any)?.SectionHeader || (() => null)
-  return <Impl ref={ref} {...props} />
-})
-SectionHeader.displayName = 'SectionHeader'
+export function SectionHeader(...args: unknown[]): unknown {
+  return (window.UI as { SectionHeader?: (...a: unknown[]) => unknown })?.SectionHeader?.(...args) ?? null
+}

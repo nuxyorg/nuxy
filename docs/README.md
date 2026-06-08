@@ -32,7 +32,7 @@ Projenin yapısını, tüm eklentilerini ve gelecek vizyonunu açıklayan kapsam
 
 ```
 nuxy/                          # pnpm monorepo root
-├── src/                       # nuxy-desktop app (Electron + React)
+├── src/                       # nuxy-desktop app (Electron + Web Components)
 │   ├── electron/              # Main process (kernel)
 │   │   ├── bootstrap/         # main.ts, preload.ts — app lifecycle
 │   │   ├── config/            # paths, nuxyconfig, storage-path
@@ -43,14 +43,14 @@ nuxy/                          # pnpm monorepo root
 │   │   ├── media/             # now-playing (Linux MPRIS; macOS/Win stubs)
 │   │   ├── window/            # BrowserWindow, spring animation
 │   │   └── themes/            # bundled theme install
-│   └── renderer/              # React shell (App.tsx, main.tsx)
+│   └── renderer/              # Vanilla Web Components bootstrap (main.ts, bootstrap.ts)
 │
 ├── packages/
 │   ├── core/                  # @nuxy/core — CoreContext type, manifest types, logger
 │   ├── extension-host/        # @nuxy/extension-host — worker bootstrap + CoreContext proxy
 │   ├── extension-sdk/         # @nuxy/extension-sdk — defineExtension helper, re-exports
 │   ├── ext-template/          # Starter template for new extensions
-│   └── ui/                    # @nuxy/ui — shared React component library
+│   └── ui/                    # @nuxy/ui — custom element stubs (type-only, framework-agnostic)
 │
 ├── extensions/                # Sample extensions (synced to ~/.nuxy/extensions/ in dev)
 │   ├── calculator/            # provider: math evaluator
@@ -68,7 +68,7 @@ nuxy/                          # pnpm monorepo root
 2. The kernel scanner reads the manifest and spawns one `worker_threads` Worker per backend.
 3. `@nuxy/extension-host` runs inside the worker and calls `register(core)` on your module.
 4. `core` is a `CoreContext` proxy — clipboard, storage, media, IPC, registry, logger.
-5. The renderer loads frontend UIs via the `nuxy-ext://<manifest.id>/frontend.js` protocol.
+5. The renderer loads frontend UIs via the `nuxy-ext://<manifest.id>/frontend.js` protocol — each frontend registers a `nuxy-tool-*` custom element.
 
 Full API reference: [21. Extension Access & Permissions](./21-extension-access.md)  
 Starter template: `packages/ext-template/`
@@ -109,6 +109,7 @@ The numbered series covers the architectural decisions behind Nuxy:
 
 ### Plans & audits
 
+- [Web Components renderer composition architecture](./architecture/lit-renderer-composition.md) — Composition API + Tool Host design for secure cross-extension UI
 - [Architecture map](./architecture.md)
 - [Structure & restructure plan](./restructure-plan.md)
 - [Pain points plan](./pain-points-plan.md)

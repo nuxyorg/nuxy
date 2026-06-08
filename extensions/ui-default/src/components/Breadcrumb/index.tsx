@@ -1,54 +1,39 @@
-import React from 'react'
+import { host } from '../../host'
+import './nuxy-breadcrumb.ts'
 import './index.css'
 
 export interface BreadcrumbItem {
-  label: React.ReactNode
+  label: string
   href?: string
-  onClick?: (e: React.MouseEvent) => void
+  onClick?: (e: MouseEvent) => void
 }
 
 export interface BreadcrumbProps {
   items: BreadcrumbItem[]
-  separator?: React.ReactNode
+  separator?: string
   className?: string
 }
 
-export function Breadcrumb({ items, separator = '/', className }: BreadcrumbProps) {
-  return (
-    <nav aria-label="Breadcrumb" className={`nuxy-breadcrumb ${className || ''}`}>
-      <ol className="nuxy-breadcrumb">
-        {items.map((item, idx) => {
-          const isLast = idx === items.length - 1
-
-          return (
-            // eslint-disable-next-line react-doctor/no-array-index-as-key
-            <li key={idx} className="nuxy-breadcrumb__item">
-              {idx > 0 && (
-                <span className="nuxy-breadcrumb__sep" aria-hidden="true">
-                  {separator}
-                </span>
-              )}
-              {isLast ? (
-                <span className="nuxy-breadcrumb__current" aria-current="page">
-                  {item.label}
-                </span>
-              ) : item.href ? (
-                <a href={item.href} className="nuxy-breadcrumb__link" onClick={item.onClick}>
-                  {item.label}
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  className="nuxy-breadcrumb__link"
-                  onClick={item.onClick}
-                >
-                  {item.label}
-                </button>
-              )}
-            </li>
-          )
-        })}
-      </ol>
-    </nav>
+export function Breadcrumb({
+  items,
+  separator = '/',
+  className,
+}: BreadcrumbProps): HTMLElement {
+  const itemsJson = JSON.stringify(
+    items.map((item, idx) => ({
+      label: item.label,
+      href: item.href,
+      index: idx,
+    }))
   )
+  const el = host('nuxy-breadcrumb', {
+    class: className,
+    items: itemsJson,
+    separator,
+  })
+  el.addEventListener('nuxy-breadcrumb-navigate', (e) => {
+    const { index } = (e as CustomEvent<{ index: number }>).detail
+    items[index]?.onClick?.(e as unknown as MouseEvent)
+  })
+  return el
 }

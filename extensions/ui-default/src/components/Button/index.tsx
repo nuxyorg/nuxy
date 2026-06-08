@@ -1,15 +1,20 @@
-import React from 'react'
-import './index.css'
+import { h } from '../../h'
+import './nuxy-button.ts'
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends Record<string, unknown> {
   variant?: string
 }
 
-export function Button({ children, className, variant, ...props }: ButtonProps) {
-  const variantClass = variant ? `nuxy-button--${variant}` : 'nuxy-button--default'
-  return (
-    <button className={`nuxy-button ${variantClass} ${className || ''}`} {...props}>
-      {children}
-    </button>
+export function Button({ children, className, variant, disabled, type, ...props }: ButtonProps) {
+  return h(
+    'nuxy-button',
+    {
+      ...props,
+      class: className,
+      variant: variant ?? 'default',
+      ...(disabled ? { disabled: '' } : {}),
+      ...(type ? { type } : {}),
+    },
+    children
   )
 }

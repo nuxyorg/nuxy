@@ -12,7 +12,8 @@
     "theme": "Tema",
     "iconPack": "Simge Paketi",
     "zoom": "Yakınlaştırma",
-    "font": "Yazı Tipi"
+    "font": "Yazı Tipi",
+    "fontWeight": "Yazı Ağırlığı"
   },
   "window": {
     "escAction": "Esc Tuşu Eylemi",
@@ -34,6 +35,13 @@
   "font": {
     "systemDefault": "Sistem Varsayılanı",
     "monospace": "Monospace"
+  },
+  "fontWeight": {
+    "300": "İnce",
+    "400": "Normal",
+    "500": "Orta",
+    "600": "Yarı Kalın",
+    "700": "Kalın"
   },
   "escAction": {
     "hide": "Gizle",

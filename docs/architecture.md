@@ -10,7 +10,7 @@ Nuxy is an **Empty Shell** Kernel. It acts as an operating system for productivi
 
 - **Kernel (`src/electron/`)**: The main process with OS access. Acts as the filesystem firewall and schema validator. Routes messages via a Kernel Message Broker.
 - **Isolated Threads (`worker_threads`)**: Dedicated Node.js environments for extension backends. Ensures strict memory and execution isolation.
-- **React Canvas (`src/renderer/`)**: A blank frontend shell that dynamically loads and renders extension UIs via the `nuxy-ext://` protocol.
+- **Web Components Renderer (`src/renderer/`)**: A vanilla bootstrap that registers custom elements and mounts `<nuxy-shell-view>`. Extension UIs are loaded as `nuxy-tool-*` custom elements via the `nuxy-ext://` protocol.
 - **Reference**: [`02-architecture.md`](./02-architecture.md), [`04-modules.md`](./04-modules.md)
 
 ## 3. Data Flow
@@ -39,11 +39,20 @@ Extensions live in `~/.nuxy/extensions/` and declare capabilities in `manifest.j
 
 ## 6. Shared UI (`@nuxy/ui`)
 
-Extensions use a globally shared UI library based on Shadcn, injected at runtime by the host. This guarantees visual consistency and tiny bundle sizes.
+Extensions use a globally shared custom element library injected at runtime by the `ui-default` extension. `packages/ui` provides type-only stubs; the actual `nuxy-*` custom elements are registered by `ui-default/frontend.js`. This guarantees visual consistency and tiny per-extension bundle sizes.
 
 - **Reference**: [`17-frontend-extensions.md`](./17-frontend-extensions.md)
 
-## 7. Missing Gaps / Ambiguities
+## 7. Web Components Renderer
+
+The renderer runs React-free. Extension UIs are `nuxy-tool-*` custom elements implementing the `NuxyToolElement` interface (`query`, `committedQuery`, `extensionId` properties + `connectedCallback`/`disconnectedCallback`). DOM is composed with the `h()` helper from `ce-utils.ts`; state is managed by controller classes. Two renderer-side APIs handle cross-extension UI integration securely:
+
+- **`core.composition`** — named shell slots (`background-layer`, `footer-portal`); manifest-validated claims
+- **`<nuxy-tool-host>`** — dynamic tool mounting; forwards `query` via JS property (not attribute)
+
+- **Reference**: [`architecture/lit-renderer-composition.md`](./architecture/lit-renderer-composition.md), [`react-to-lit-migration.md`](./react-to-lit-migration.md)
+
+## 8. Missing Gaps / Ambiguities
 
 - **Dynamic Permission Prompts**: Specifics of pausing a worker while waiting for user consent UI are not finalized.
 - **Vite Externalization**: Detailed build config for seamlessly externalizing `@nuxy/ui` is not fully documented yet.

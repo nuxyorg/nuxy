@@ -1,13 +1,11 @@
-import React from 'react'
 
 type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 
-export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
+export interface HeadingProps extends Record<string, unknown> {
   level?: HeadingLevel
   as?: `h${HeadingLevel}`
 }
 
-export function Heading(props: any): React.ReactElement {
-  const Impl = (window.UI as any)?.Heading || (() => null)
-  return <Impl {...props} />
+export function Heading(...args: any[]): unknown {
+  return (window.UI as any)?.Heading?.(...args) ?? null
 }
