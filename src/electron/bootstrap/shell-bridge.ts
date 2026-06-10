@@ -1,6 +1,7 @@
 import type {
   CoreShell,
   OmniBarControlAction,
+  ResetToolStateOptions,
   ShellBridgeSnapshot,
   ShellCommandAction,
   ShellKeyAction,
@@ -13,9 +14,11 @@ function computeHints(getter: (() => ShellKeyAction[]) | null): ShellKeyAction[]
 
 export function createShellBridge(): CoreShell {
   let keyActionsGetter: (() => ShellKeyAction[]) | null = null
+  let keyActionsGeneration = 0
   let toolActions: ShellCommandAction[] = []
   let omniBarPortal: HTMLElement | null = null
   let footerPortal: HTMLElement | null = null
+  let searchPlaceholder: string | null = null
   let returnToShellHandler: (() => void) | null = null
   const listeners = new Set<() => void>()
   const omniBarControlListeners = new Set<(action: OmniBarControlAction) => void>()
@@ -36,12 +39,25 @@ export function createShellBridge(): CoreShell {
         keyActionHints: computeHints(keyActionsGetter),
         omniBarPortal,
         footerPortal,
+        searchPlaceholder,
       }
     },
 
     registerKeyActions(getter) {
-      keyActionsGetter = getter
-      notify()
+      if (getter) {
+        keyActionsGeneration += 1
+        keyActionsGetter = getter
+        notify()
+        return
+      }
+
+      // Defer clearing so a newly mounted tool can register in the same turn.
+      const generation = keyActionsGeneration
+      queueMicrotask(() => {
+        if (generation !== keyActionsGeneration) return
+        keyActionsGetter = null
+        notify()
+      })
     },
 
     refreshKeyHints() {
@@ -63,6 +79,11 @@ export function createShellBridge(): CoreShell {
       notify()
     },
 
+    setSearchPlaceholder(placeholder) {
+      searchPlaceholder = placeholder
+      notify()
+    },
+
     getKeyActionsGetter() {
       return keyActionsGetter
     },
@@ -80,11 +101,15 @@ export function createShellBridge(): CoreShell {
       return () => omniBarControlListeners.delete(handler)
     },
 
-    resetToolState() {
+    resetToolState(options?: ResetToolStateOptions) {
+      keyActionsGeneration += 1
       keyActionsGetter = null
       toolActions = []
       omniBarPortal = null
       footerPortal = null
+      if (options?.clearSearchPlaceholder !== false) {
+        searchPlaceholder = null
+      }
       notify()
     },
 

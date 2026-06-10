@@ -3,6 +3,7 @@
     "name": "Nyaa Search"
   },
   "search": {
+    "placeholder": "Search through Nyaa",
     "empty": {
       "message": "Search nyaa.si",
       "hint": "Type a title to search for torrents."

@@ -86,11 +86,16 @@ export class NuxyRadioGroupElement extends LitElement {
     }
   `
 
-  @property({ type: String }) options = ''
-  @property({ type: String }) value = ''
-  @property({ type: String }) name = ''
-  @property({ type: String, reflect: true }) orientation = 'vertical'
-  @property({ type: Boolean }) disabled = false
+  @property({ type: String })
+  declare options: string
+  @property({ type: String })
+  declare value: string
+  @property({ type: String })
+  declare name: string
+  @property({ type: String, reflect: true })
+  declare orientation: string
+  @property({ type: Boolean })
+  declare disabled: boolean
 
   private groupName = ''
 

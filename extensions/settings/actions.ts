@@ -24,6 +24,9 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
         if (!r?.success || !r.data) return
         const { colors, tokens } = r.data
         const root = document.documentElement
+        Array.from({ length: root.style.length }, (_, i) => root.style[i])
+          .filter((p) => p.startsWith('--'))
+          .forEach((p) => root.style.removeProperty(p))
         if (colors) Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
         if (tokens) Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
       })

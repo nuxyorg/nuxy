@@ -141,8 +141,10 @@ export class NuxyFileInputElement extends LitElement {
     }
   `
 
-  @state() private dragOver = false
-  @state() private internalFiles: File[] = []
+  @state()
+  declare private dragOver: boolean
+  @state()
+  declare private internalFiles: File[]
 
   static get observedAttributes(): string[] {
     return ['files-meta', 'multiple', 'accept', 'disabled', 'label', 'hint', 'id']

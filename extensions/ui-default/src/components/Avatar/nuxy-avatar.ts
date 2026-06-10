@@ -85,11 +85,16 @@ export class NuxyAvatarElement extends LitElement {
     }
   `
 
-  @property({ type: String, reflect: true }) src = ''
-  @property({ type: String, reflect: true }) name = ''
-  @property({ type: String, reflect: true }) size = 'md'
-  @property({ type: String, reflect: true }) variant = 'circle'
-  @property({ type: String, reflect: true }) status = ''
+  @property({ type: String, reflect: true })
+  declare src: string
+  @property({ type: String, reflect: true })
+  declare name: string
+  @property({ type: String, reflect: true })
+  declare size: string
+  @property({ type: String, reflect: true })
+  declare variant: string
+  @property({ type: String, reflect: true })
+  declare status: string
 
   updated(): void {
     if (this.name) {

@@ -607,6 +607,19 @@ export class NuxyToolMyExtensionElement extends LitElement implements NuxyToolEl
 
 No JSX, no `window.React`. `LitElement` with `html\`\``template literals is the standard approach for UI construction. The legacy`h()`helper from`extensions/ce-utils.ts` is deprecated and scheduled for removal.
 
+**Lit reactive properties — use `declare`, never class-field initializers:**
+
+```typescript
+// ✅ Correct — reactive updates work when parent sets .keys=
+@property({ type: String, attribute: 'keys' })
+declare keys: string
+
+// ❌ Banned — class field shadows @property setter; dynamic updates skip requestUpdate()
+@property({ type: String }) keys = ''
+```
+
+Same rule applies to `@state()`. See [class-field shadowing](https://lit.dev/msg/class-field-shadowing).
+
 Relative imports from `utils/` work via `nuxy-ext://` resolution — the protocol server transpiles each `.ts` file on demand.
 
 **Rules:**
@@ -1334,7 +1347,22 @@ pnpm test:e2e:core                 # core app e2e tests (src/e2e/)
 
 The following patterns are banned. Reviewers and AI agents must flag these.
 
-### A. Node.js imports in backend
+### A. Lit `@property` / `@state` class-field initializers
+
+```typescript
+// BANNED — breaks dynamic property updates (class-field shadowing)
+@property({ type: String }) label = ''
+@state() private _open = false
+
+// REQUIRED
+@property({ type: String })
+declare label: string
+@state() private declare _open: boolean
+```
+
+Enforced by `extensions/lit-property-shadowing.test.ts`.
+
+### B. Node.js imports in backend
 
 ```js
 // BANNED
@@ -1347,7 +1375,7 @@ import { DatabaseSync } from 'node:sqlite'
 
 Use `core.fs`, `core.db`, `core.shell` instead.
 
-### B. Hardcoded colors and spacing
+### C. Hardcoded colors and spacing
 
 ```jsx
 // BANNED
@@ -1358,7 +1386,7 @@ style={{ padding: '16px' }}
 
 Use CSS custom properties: `var(--color-danger)`, `var(--surface-overlay)`, `var(--space-4)`.
 
-### C. Custom UI components not in the UI kit
+### D. Custom UI components not in the UI kit
 
 ```jsx
 // BANNED
@@ -1375,7 +1403,7 @@ function MyCustomList({ items }) {
 
 Add the component to `packages/ui` or use an existing one.
 
-### D. Mouse-only actions
+### E. Mouse-only actions
 
 ```jsx
 // BANNED — no keyboard equivalent
@@ -1383,14 +1411,14 @@ Add the component to `packages/ui` or use an existing one.
 <ListItem onClick={handleOpen}>    // acceptable only WITH a keyboard binding
 ```
 
-### E. Own input elements
+### F. Own input elements
 
 ```jsx
 // BANNED
 <input value={query} onChange={(e) => setQuery(e.target.value)} />
 ```
 
-### F. Direct extension-to-extension calls
+### G. Direct extension-to-extension calls
 
 ```js
 // BANNED
@@ -1400,14 +1428,14 @@ window.core.ipc.invoke('com.nuxy.other-ext', 'channel', data) // from frontend
 
 Backend: use `core.extensions.invoke`. Frontend: proxy via own backend.
 
-### G. Undeclared permissions
+### H. Undeclared permissions
 
 ```json
 // manifest.json has no "storage" permission, but backend does:
 await core.storage.write('data.json', value)  // BANNED
 ```
 
-### H. Emojis in UI code
+### I. Emojis in UI code
 
 ```jsx
 // BANNED
@@ -1417,7 +1445,7 @@ await core.storage.write('data.json', value)  // BANNED
 
 Use icon components from `window.UI`.
 
-### I. `console.log` / `console.error` in backend
+### J. `console.log` / `console.error` in backend
 
 ```js
 // BANNED
@@ -1427,14 +1455,14 @@ console.error(err)
 
 Use `core.logger.*`.
 
-### J. Dispatching unlisted custom events
+### K. Dispatching unlisted custom events
 
 ```jsx
 // BANNED — not in the approved channel list
 window.dispatchEvent(new CustomEvent('my-private-event', { detail: data }))
 ```
 
-### K. JavaScript extension files
+### L. JavaScript extension files
 
 ```
 // BANNED — all extension files must be TypeScript
@@ -1445,7 +1473,7 @@ frontend.js
 
 Use `.ts` for all extension files. `.tsx` is permitted but not required — there is no JSX.
 
-### L. Importing React or using React patterns
+### M. Importing React or using React patterns
 
 ```typescript
 // BANNED — React is not installed in this project
@@ -1455,7 +1483,7 @@ import { useState, useEffect } from 'react'
 
 Extensions use native custom elements (`HTMLElement` or `LitElement`). State goes in controller class properties or `@state()` decorators (Lit).
 
-### M. Untyped IPC payloads in backend
+### N. Untyped IPC payloads in backend
 
 ```ts
 // BANNED — payload is unknown, must be cast before use
@@ -1470,7 +1498,7 @@ core.ipc.handle('doThing', async (payload: unknown) => {
 })
 ```
 
-### N. Extension-specific types in shared packages
+### O. Extension-specific types in shared packages
 
 ```ts
 // BANNED — ClipboardItem belongs in extensions/clipboard/types.ts
@@ -1480,7 +1508,7 @@ export interface ClipboardItem { ... }
 
 Put data-model types in `types.ts` inside the extension folder.
 
-### O. Hardcoded keyboard shortcut hints in UI layout
+### P. Hardcoded keyboard shortcut hints in UI layout
 
 ```typescript
 // BANNED — shortcut hints should not be hardcoded in render output
@@ -1489,7 +1517,7 @@ Put data-model types in `types.ts` inside the extension folder.
 
 Register all shortcuts via `useToolKeyActions` instead. This ensures all shortcut hints are unified and displayed in the shell's footer/shortcut bar.
 
-### P. Inline settings panel in extension frontend
+### Q. Inline settings panel in extension frontend
 
 ```typescript
 // BANNED — extensions must not implement their own settings UI
@@ -1498,7 +1526,7 @@ Register all shortcuts via `useToolKeyActions` instead. This ensures all shortcu
 
 Use `settings.json` + `entry.settings` in the manifest instead. The settings extension renders the UI automatically. The extension backend reads values via `core.settings.read()`.
 
-### Q. Using `core.storage` for user-facing settings
+### R. Using `core.storage` for user-facing settings
 
 ```ts
 // BANNED — user-visible config must go through core.settings
@@ -1508,7 +1536,7 @@ const cfg = await core.storage.read<Config>('config.json')
 
 `core.storage` is for extension-internal data (e.g. history, cache). User-facing settings that appear in the settings extension must use `core.settings.read` / `core.settings.write`, which share the same `ext-settings.json` file the settings extension reads and writes.
 
-### R. Hardcoded user-facing strings
+### S. Hardcoded user-facing strings
 
 ```ts
 // BANNED — string will not be translated
@@ -1522,7 +1550,7 @@ core.ipc.handle('getLabel', async () => 'Open file')
 
 Use `core.i18n.t('label')` in backend, `t('label')` from `useTranslation` in frontend.
 
-### S. Custom locale resolution in extensions
+### T. Custom locale resolution in extensions
 
 ```ts
 // BANNED — extensions must not detect or resolve locales themselves
@@ -1532,7 +1560,7 @@ const msgs = require(`./locales/${locale}.json`)
 
 Use `core.i18n` — the kernel resolves the locale and loads the file before `register()` is called.
 
-### T. Calling `getExtensionTranslations` directly from frontend
+### U. Calling `getExtensionTranslations` directly from frontend
 
 ```typescript
 // BANNED — use the hook instead
@@ -1556,7 +1584,7 @@ Use `const { t } = useTranslation(EXT_ID)` from `window.UI`.
 
 ---
 
-### U. Unpermitted subdirectories or external CSS
+### V. Unpermitted subdirectories or external CSS
 
 ```
 // BANNED — only utils/, tests/, dist/, types/ are permitted

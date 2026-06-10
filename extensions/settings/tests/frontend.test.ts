@@ -11,10 +11,28 @@ vi.hoisted(() => {
   }
   ;(globalThis as any).window = {
     core: {
-      ipc: { invoke: vi.fn().mockResolvedValue({ success: true, data: {} }) },
+      ipc: {
+        invoke: vi.fn(async (_ext: string, channel: string) => {
+          if (channel === 'getExtensionTranslations') {
+            return {
+              success: true,
+              data: {
+                locale: 'en',
+                dir: 'ltr',
+                translations: { 'search.placeholder': 'Search in settings' },
+              },
+            }
+          }
+          return { success: true, data: {} }
+        }),
+      },
       themes: { list: vi.fn().mockResolvedValue({ success: true, data: [] }) },
       icons: { listPacks: vi.fn().mockResolvedValue({ success: true, data: [] }) },
-      shell: { registerKeyActions: vi.fn(), refreshKeyHints: vi.fn() },
+      shell: {
+        registerKeyActions: vi.fn(),
+        refreshKeyHints: vi.fn(),
+        setSearchPlaceholder: vi.fn(),
+      },
       events: { on: vi.fn(() => () => {}), emit: vi.fn() },
     },
     UI: {},
@@ -112,7 +130,7 @@ describe('nuxy-tool-settings element', () => {
     expect(customElements.get('nuxy-tool-settings')).toBeDefined()
   })
 
-  it('renders native CE on connect', () => {
+  it('renders native CE on connect', async () => {
     const Ctor = customElements.get('nuxy-tool-settings')!
     const el = new Ctor() as any
 
@@ -120,9 +138,11 @@ describe('nuxy-tool-settings element', () => {
     el.extensionId = 'com.nuxy.settings'
     el.query = 'theme'
     el.committedQuery = 'theme dark'
+    await new Promise((resolve) => setTimeout(resolve, 0))
 
     expect(el.extensionId).toBe('com.nuxy.settings')
     expect(window.core.shell?.registerKeyActions).toHaveBeenCalled()
+    expect(window.core.shell?.setSearchPlaceholder).toHaveBeenCalled()
   })
 
   it('cleans up on disconnect', () => {

@@ -5,7 +5,7 @@ import './nuxy-portal-host.ts'
 import './nuxy-shell-resize-handles.ts'
 import './nuxy-shell-omni-bar.ts'
 import './nuxy-command-palette.ts'
-import type { CommandPaletteAction, KeyAction, ListItem, ProviderState } from './types.ts'
+import type { CommandPaletteAction, KeyAction, ProviderState } from './types.ts'
 import type { OmnibarSection } from './utils/listResults.ts'
 
 interface ResultItem {
@@ -222,6 +222,10 @@ export class NuxyShellViewElement extends LitElement {
       if (input && input.value !== s.query) {
         input.value = s.query
       }
+      const placeholder = ctrl.resolveOmniBarPlaceholder()
+      if (input && input.placeholder !== placeholder) {
+        input.placeholder = placeholder
+      }
       if (input && !s.activeTool && !s.showCommandPalette) {
         input.focus()
       }
@@ -233,16 +237,10 @@ export class NuxyShellViewElement extends LitElement {
     if (!ctrl) return nothing
     const { query, showOmniBar, searchIcon, bridge } = ctrl.state
     const activeToolName = ctrl.activeToolName
-    const activeToolPlaceholder = ctrl.activeToolPlaceholder
     const t = ctrl.t.t
     const isLoading = Object.values(ctrl.state.providerStates).some((s) => s.loading)
     const showPortalRegion = bridge.omniBarPortal != null
-
-    const placeholder = activeToolPlaceholder
-      ? activeToolPlaceholder
-      : activeToolName
-        ? t('omniBar.searchTool', { toolName: activeToolName })
-        : t('omniBar.placeholder')
+    const placeholder = ctrl.resolveOmniBarPlaceholder()
 
     return html`
       <nuxy-shell-omni-bar
@@ -396,7 +394,7 @@ export class NuxyShellViewElement extends LitElement {
               const active = currentIndex === selectedIndex
               return html`
                 <nuxy-list-item
-                  ?active=${active}
+                  .active=${active}
                   role="option"
                   aria-selected=${active ? 'true' : 'false'}
                   @click=${() => this.controller?.handleItemClick(item)}
@@ -507,7 +505,7 @@ export class NuxyShellViewElement extends LitElement {
                           : nothing}
                         <span class="nuxy-shortcut-action" @click=${() => a.handler()}>
                           ${(Array.isArray(a.hint) ? a.hint : [a.hint]).map(
-                            (k) => html` <nuxy-kbd keys=${k}></nuxy-kbd> `
+                            (k) => html` <nuxy-kbd .keys=${k}></nuxy-kbd> `
                           )}
                           <span>${a.label}</span>
                         </span>
@@ -552,6 +550,10 @@ export class NuxyShellViewElement extends LitElement {
     let toolHostEl: HTMLElement | null = null
     if (s.activeTool) {
       if (this.lastActiveTool !== s.activeTool || !this.toolHostEl?.isConnected) {
+        if (this.toolHostEl) {
+          this.toolHostEl.remove()
+          this.toolHostEl = null
+        }
         this.clearToolLoading()
         const newHost = createToolHost(ctrl) as HTMLElement & {
           extensionId: string
@@ -560,7 +562,7 @@ export class NuxyShellViewElement extends LitElement {
         }
 
         const observer = new MutationObserver(() => {
-          if (!newHost.classList.contains('nuxy-tool-host--loading')) {
+          if (!newHost.hasAttribute('loading')) {
             this.clearToolLoading()
           }
         })
@@ -568,7 +570,7 @@ export class NuxyShellViewElement extends LitElement {
 
         this.loadingTimer = setTimeout(() => {
           this.loadingTimer = null
-          if (newHost.classList.contains('nuxy-tool-host--loading')) {
+          if (newHost.hasAttribute('loading')) {
             const loading = document.createElement('nuxy-loading-state')
             loading.setAttribute('message', ctrl.t.t('loading'))
             loading.setAttribute('min-height', '200px')
@@ -576,8 +578,8 @@ export class NuxyShellViewElement extends LitElement {
           }
         }, 1000)
 
-        observer.observe(newHost, { attributes: true, attributeFilter: ['class'] })
-        if (!newHost.classList.contains('nuxy-tool-host--loading')) {
+        observer.observe(newHost, { attributes: true, attributeFilter: ['loading'] })
+        if (!newHost.hasAttribute('loading')) {
           this.clearToolLoading()
         }
 

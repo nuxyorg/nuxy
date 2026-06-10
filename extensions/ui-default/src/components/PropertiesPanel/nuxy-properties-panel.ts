@@ -52,8 +52,10 @@ export class NuxyPropertiesPanelElement extends LitElement {
     }
   `
 
-  @property({ type: String }) title = ''
-  @property({ type: String }) rows = ''
+  @property({ type: String })
+  declare title: string
+  @property({ type: String })
+  declare rows: string
 
   render(): TemplateResult {
     const rows = parseRows(this.rows)

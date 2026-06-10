@@ -2,8 +2,10 @@ import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-item-leading')
 export class NuxyItemLeadingElement extends LitElement {
-  @property({ type: String, reflect: true }) size = 'md'
-  @property({ type: String }) color = ''
+  @property({ type: String, reflect: true })
+  declare size: string
+  @property({ type: String })
+  declare color: string
 
   static styles = css`
     :host {

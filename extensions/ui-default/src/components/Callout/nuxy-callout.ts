@@ -116,11 +116,15 @@ export class NuxyCalloutElement extends LitElement {
     }
   `
 
-  @property({ type: String, reflect: true }) variant = 'info'
-  @property({ type: String }) title = ''
+  @property({ type: String, reflect: true })
+  declare variant: string
+  @property({ type: String })
+  declare title: string
 
-  @state() private _customIconHTML = ''
-  @state() private _messageHTML = ''
+  @state()
+  declare private _customIconHTML: string
+  @state()
+  declare private _messageHTML: string
 
   connectedCallback(): void {
     // Capture slotted content before Lit replaces it

@@ -4,6 +4,7 @@ import {
   html,
   css,
   customElement,
+  property,
   state,
   type PropertyValues,
   type TemplateResult,
@@ -23,12 +24,6 @@ function parseOptions(raw: string | null): SelectOption[] {
   } catch {
     return []
   }
-}
-
-function parseIndex(attr: string | null, fallback = 0): number {
-  if (attr === null || attr === '') return fallback
-  const n = Number(attr)
-  return Number.isFinite(n) ? n : fallback
 }
 
 function getZoom(): number {
@@ -91,17 +86,28 @@ export class NuxySelectBoxElement extends LitElement {
     }
   `
 
+  @property({ type: String })
+  declare options: string
+  @property({ type: String })
+  declare value: string
+  @property({ type: Boolean, reflect: true })
+  declare open: boolean
+  @property({ type: Number, attribute: 'focused-index' })
+  declare focusedIndex: number
+  @property({ type: Boolean, reflect: true })
+  declare searchable: boolean
+  @property({ type: String })
+  declare placeholder: string
+
   // Body-portal dropdown elements — kept imperative
   private dropdown: HTMLDivElement | null = null
   private searchInput: HTMLInputElement | null = null
   private optionsEl: HTMLDivElement | null = null
-  @state() private searchQuery = ''
-  @state() private internalFocused = 0
+  @state()
+  declare private searchQuery: string
+  @state()
+  declare private internalFocused: number
   private escapeHandler: ((e: KeyboardEvent) => void) | null = null
-
-  static get observedAttributes(): string[] {
-    return ['options', 'value', 'open', 'focused-index', 'searchable', 'placeholder', 'class']
-  }
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -116,20 +122,12 @@ export class NuxySelectBoxElement extends LitElement {
     this.detachDropdown()
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-    super.attributeChangedCallback(name, oldValue, newValue)
-    if (!this.isConnected) return
-    if (name === 'open') {
-      const wasOpen = oldValue !== null
-      const isOpen = newValue !== null
-      if (isOpen && !wasOpen) this.onOpenTransition()
-      else if (!isOpen && wasOpen) this.onCloseTransition()
-    }
-    this.requestUpdate()
-  }
-
   updated(changed: PropertyValues): void {
     super.updated(changed)
+    if (changed.has('open')) {
+      if (this.open) this.onOpenTransition()
+      else this.onCloseTransition()
+    }
     // Re-render dropdown content when relevant state/attrs change
     if (this.isOpen()) {
       if (!this.dropdown || !this.dropdown.isConnected) {
@@ -141,25 +139,26 @@ export class NuxySelectBoxElement extends LitElement {
   }
 
   private isOpen(): boolean {
-    return this.hasAttribute('open')
+    return this.open
   }
 
   private isSearchable(): boolean {
-    return this.hasAttribute('searchable')
+    return this.searchable
   }
 
   private getOptions(): SelectOption[] {
-    return parseOptions(this.getAttribute('options'))
+    return parseOptions(this.options)
   }
 
   private getValue(): string | undefined {
-    const v = this.getAttribute('value')
-    return v === null || v === '' ? undefined : v
+    const v = this.value
+    return v === undefined || v === '' ? undefined : v
   }
 
   private getFocusedIndex(): number {
     if (this.isSearchable()) return this.internalFocused
-    return parseIndex(this.getAttribute('focused-index'), 0)
+    const index = this.focusedIndex
+    return Number.isFinite(index) ? index : 0
   }
 
   private onTriggerMouseDown = (e: MouseEvent): void => {
@@ -297,13 +296,19 @@ export class NuxySelectBoxElement extends LitElement {
     const viewportHeight = window.innerHeight / zoom
     const viewportWidth = window.innerWidth / zoom
 
-    let top = r.bottom + gap
-    if (top + h > viewportHeight - margin && r.top - gap - h >= margin) {
-      top = r.top - gap - h
+    // getBoundingClientRect() returns viewport pixels; fixed positioning under
+    // CSS zoom works in zoom-space, so divide rect values by zoom to match.
+    const rTop = r.top / zoom
+    const rBottom = r.bottom / zoom
+    const rRight = r.right / zoom
+
+    let top = rBottom + gap
+    if (top + h > viewportHeight - margin && rTop - gap - h >= margin) {
+      top = rTop - gap - h
     }
     top = Math.max(margin, Math.min(top, viewportHeight - h - margin))
 
-    let left = r.right - w
+    let left = rRight - w
     left = Math.max(margin, Math.min(left, viewportWidth - w - margin))
 
     this.dropdown.style.position = 'fixed'
@@ -429,7 +434,7 @@ export class NuxySelectBoxElement extends LitElement {
   render(): TemplateResult {
     const options = this.getOptions()
     const value = this.getValue()
-    const placeholder = this.getAttribute('placeholder') ?? '—'
+    const placeholder = this.placeholder || '—'
     const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder
     const open = this.isOpen()
 

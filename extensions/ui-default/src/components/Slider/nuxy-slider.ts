@@ -92,15 +92,23 @@ export class NuxySliderElement extends LitElement {
     }
   `
 
-  @property({ type: Number }) min = 0
-  @property({ type: Number }) max = 100
-  @property({ type: Number }) step = 1
-  @property({ type: Boolean, reflect: true }) disabled = false
-  @property({ attribute: 'show-value', type: Boolean }) showValue = false
-  @property({ attribute: 'show-labels', type: Boolean }) showLabels = false
-  @property({ type: String }) id = ''
+  @property({ type: Number })
+  declare min: number
+  @property({ type: Number })
+  declare max: number
+  @property({ type: Number })
+  declare step: number
+  @property({ type: Boolean, reflect: true })
+  declare disabled: boolean
+  @property({ attribute: 'show-value', type: Boolean })
+  declare showValue: boolean
+  @property({ attribute: 'show-labels', type: Boolean })
+  declare showLabels: boolean
+  @property({ type: String })
+  declare id: string
 
-  @state() private currentValue: number | null = null
+  @state()
+  declare private currentValue: number | null
 
   private getCurrent(): number {
     if (this.currentValue !== null) return this.currentValue
@@ -113,7 +121,8 @@ export class NuxySliderElement extends LitElement {
   private clamp(value: number): number {
     const min = this.min
     const max = this.max
-    if (value < min) value = min
+    if (value < min) declare
+    value: unknown
     if (value > max) value = max
     return value
   }

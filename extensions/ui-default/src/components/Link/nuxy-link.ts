@@ -30,9 +30,12 @@ export class NuxyLinkElement extends LitElement {
     }
   `
 
-  @property({ type: String }) href = ''
-  @property({ type: String }) variant = 'default'
-  @property({ type: Boolean }) external = false
+  @property({ type: String })
+  declare href: string
+  @property({ type: String })
+  declare variant: string
+  @property({ type: Boolean })
+  declare external: boolean
 
   render(): TemplateResult {
     const href = this.href || this.getAttribute('href')

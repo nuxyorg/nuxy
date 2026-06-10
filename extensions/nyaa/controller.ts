@@ -1,11 +1,12 @@
-import type { ShellKeyAction } from '@nuxy/core'
+import type { ExtensionManifest, ShellKeyAction } from '@nuxy/core'
 import { createStore, type Store } from '../store.ts'
 import { createTranslator, type Translator } from '../shell-i18n.ts'
-import { completeToolAction } from '../tool-behavior.ts'
-import manifest from './manifest.json'
+import { completeToolAction, setToolSearchPlaceholder } from '../tool-behavior.ts'
+import manifestJson from './manifest.json'
 import type { NyaaResult } from './types.ts'
 
 const EXT_ID = 'com.nuxy.nyaa'
+const manifest = manifestJson as ExtensionManifest
 
 export type EnterAction = 'copyMagnet' | 'downloadTorrent'
 
@@ -45,6 +46,7 @@ export class NyaaController {
     })
     this.t = createTranslator(EXT_ID, () => {
       window.core?.shell?.refreshKeyHints()
+      this.syncSearchPlaceholder()
       this.onUpdate()
     })
     this.store.subscribe(() => this.onUpdate())
@@ -56,6 +58,8 @@ export class NyaaController {
 
   connect(): void {
     if (!window.core?.ipc) return
+
+    this.syncSearchPlaceholder()
 
     window.core.ipc
       .invoke(EXT_ID, 'getEnterAction', {})
@@ -91,6 +95,10 @@ export class NyaaController {
     })
     this.syncSearch()
     window.core?.shell?.refreshKeyHints()
+  }
+
+  private syncSearchPlaceholder(): void {
+    setToolSearchPlaceholder(this.t.t, 'search.placeholder')
   }
 
   setSelectedIndex(index: number | ((prev: number) => number)): void {

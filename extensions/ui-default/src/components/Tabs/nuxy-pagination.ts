@@ -106,10 +106,14 @@ export class NuxyPaginationElement extends LitElement {
     }
   `
 
-  @property({ type: Number }) total = 0
-  @property({ type: Number }) current = 1
-  @property({ attribute: 'page-size', type: Number }) pageSize = 10
-  @property({ type: Number }) siblings = 1
+  @property({ type: Number })
+  declare total: number
+  @property({ type: Number })
+  declare current: number
+  @property({ attribute: 'page-size', type: Number })
+  declare pageSize: number
+  @property({ type: Number })
+  declare siblings: number
 
   connectedCallback(): void {
     super.connectedCallback()

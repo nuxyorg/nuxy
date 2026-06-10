@@ -30,8 +30,10 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
       display: none !important;
     }
   `
-  @property({ type: String }) committedQuery = ''
-  @property({ type: String }) extensionId = ''
+  @property({ type: String })
+  declare committedQuery: string
+  @property({ type: String })
+  declare extensionId: string
 
   private controller: NotesController | null = null
   private _query = ''
@@ -73,11 +75,11 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
   private renderLeftPanel(): TemplateResult {
     const { filteredNotes, selectedIndex, query } = this.controller!.state
     return html`
-      <div>
+      <div class="nuxy-two-panel__left">
         <nuxy-section-header label="Notes"></nuxy-section-header>
-        <nuxy-list>
+        <nuxy-list active-index=${selectedIndex}>
           <nuxy-list-item
-            ?active=${selectedIndex === 0}
+            .active=${selectedIndex === 0}
             @click=${() => this.controller?.setSelectedIndex(0)}
           >
             <nuxy-list-item-body>
@@ -95,12 +97,12 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
             : filteredNotes.map(
                 (note, idx) => html`
                   <nuxy-list-item
-                    ?active=${idx + 1 === selectedIndex}
+                    .active=${idx + 1 === selectedIndex}
                     @click=${() => this.controller?.setSelectedIndex(idx + 1)}
                   >
                     <nuxy-list-item-body>
                       <nuxy-list-item-text>${note.title}</nuxy-list-item-text>
-                      <nuxy-list-item-meta>${note.body.slice(0, 60)}</nuxy-list-item-meta>
+                      <nuxy-list-item-meta>${(note.body ?? '').slice(0, 60)}</nuxy-list-item-meta>
                     </nuxy-list-item-body>
                   </nuxy-list-item>
                 `
@@ -116,19 +118,25 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
     if (editMode && selected) {
       return html`
         <div
-          style="display: flex; flex-direction: column; height: 100%; padding: var(--space-2); gap: var(--space-2);"
+          class="nuxy-two-panel__right"
+          style="display: flex; flex-direction: column; height: 100%; overflow: hidden;"
         >
-          <textarea
-            class="nuxy-textarea"
-            placeholder=${transcribing ? 'Transcribing…' : 'Start writing…'}
+          <nuxy-markdown-editor
+            style="flex: 1; min-height: 0; font-size: ${fontSize};"
             .value=${body}
-            style="flex: 1; resize: none; width: 100%; height: 100%; border: none; background: transparent; color: var(--text, #ffffff); outline: none; padding: var(--space-4, 12px); font-size: ${fontSize};"
+            placeholder=${transcribing ? 'Transcribing…' : 'Start writing…'}
             ${ref((el) => {
-              this.controller!.textareaRef.current = (el as HTMLTextAreaElement) ?? null
+              const editor = el as
+                | (HTMLElement & { nativeTextarea?: HTMLTextAreaElement | null })
+                | null
+                | undefined
+              this.controller!.textareaRef.current = editor?.nativeTextarea ?? null
             })}
-            @input=${(e: Event) =>
-              this.controller?.setBody((e.target as HTMLTextAreaElement).value)}
-          ></textarea>
+            @input=${(e: Event) => {
+              const editor = e.currentTarget as HTMLElement & { value: string }
+              this.controller?.setBody(editor.value)
+            }}
+          ></nuxy-markdown-editor>
         </div>
       `
     }
@@ -136,27 +144,23 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
     if (selected) {
       return html`
         <div
+          class="nuxy-two-panel__right"
           style="display: flex; flex-direction: column; height: 100%; padding: var(--space-4, 12px); overflow-y: auto; color: var(--text, #ffffff); gap: var(--space-2);"
         >
-          <div
-            style="font-size: 1.2em; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;"
-          >
-            ${selected.title}
-          </div>
-          <div
-            style="flex: 1; white-space: pre-wrap; opacity: 0.8; font-size: ${fontSize}; line-height: 1.5;"
-          >
-            <nuxy-markdown-text>${selected.body}</nuxy-markdown-text>
+          <div style="flex: 1; opacity: 0.8; font-size: ${fontSize}; line-height: 1.5;">
+            <nuxy-markdown-text content=${selected.body}></nuxy-markdown-text>
           </div>
         </div>
       `
     }
 
     return html`
-      <nuxy-empty-state
-        message="Select a note or create a new one."
-        hint="Use ⌃N to create a new note."
-      ></nuxy-empty-state>
+      <div class="nuxy-two-panel__right">
+        <nuxy-empty-state
+          message="Select a note or create a new one."
+          hint="Use ⌃N to create a new note."
+        ></nuxy-empty-state>
+      </div>
     `
   }
 }

@@ -64,11 +64,15 @@ export class NuxyTooltipElement extends LitElement {
     }
   `
 
-  @property({ type: String }) content = ''
-  @property({ type: String }) placement = 'top'
+  @property({ type: String })
+  declare content: string
+  @property({ type: String })
+  declare placement: string
 
-  @state() private _visible = false
-  @state() private _triggerHTML = ''
+  @state()
+  declare private _visible: boolean
+  @state()
+  declare private _triggerHTML: string
 
   connectedCallback(): void {
     // Capture trigger children before Lit replaces them

@@ -2,7 +2,8 @@ import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-card')
 export class NuxyCardElement extends LitElement {
-  @property({ type: Boolean, reflect: true }) interactive = false
+  @property({ type: Boolean, reflect: true })
+  declare interactive: boolean
 
   static styles = css`
     :host {

@@ -73,11 +73,16 @@ export class NuxyResultCardElement extends LitElement {
     }
   `
 
-  @property({ attribute: 'item-id' }) itemId = ''
-  @property() title = ''
-  @property() value = ''
-  @property({ attribute: 'provider-name' }) providerName = ''
-  @property({ type: Boolean }) copied = false
+  @property({ attribute: 'item-id' })
+  declare itemId: string
+  @property()
+  declare title: string
+  @property()
+  declare value: string
+  @property({ attribute: 'provider-name' })
+  declare providerName: string
+  @property({ type: Boolean })
+  declare copied: boolean
 
   connectedCallback(): void {
     super.connectedCallback()

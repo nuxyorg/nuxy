@@ -57,10 +57,13 @@ export class NuxySwitchElement extends LitElement {
     }
   `
 
-  @property({ type: Boolean, reflect: true }) checked = false
-  @property({ type: Boolean, reflect: true }) disabled = false
+  @property({ type: Boolean, reflect: true })
+  declare checked: boolean
+  @property({ type: Boolean, reflect: true })
+  declare disabled: boolean
 
-  @state() private _labelHTML = ''
+  @state()
+  declare private _labelHTML: string
 
   connectedCallback(): void {
     // Capture initial label content before Lit replaces it

@@ -97,9 +97,12 @@ export class NuxyTabBarElement extends LitElement {
     }
   `
 
-  @property({ type: String }) tabs = ''
-  @property({ type: String }) active = ''
-  @property({ type: String, reflect: true }) orientation = 'horizontal'
+  @property({ type: String })
+  declare tabs: string
+  @property({ type: String })
+  declare active: string
+  @property({ type: String, reflect: true })
+  declare orientation: string
 
   private _prevActive = ''
 

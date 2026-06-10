@@ -61,24 +61,42 @@ export class NuxyInputElement extends LitElement {
     }
   `
 
-  @property({ type: String }) type = ''
-  @property({ type: String }) name = ''
-  @property({ type: String }) value = ''
-  @property({ type: String }) placeholder = ''
-  @property({ type: Boolean }) disabled = false
-  @property({ type: Boolean }) readonly = false
-  @property({ type: Boolean }) required = false
-  @property({ type: String }) autocomplete = ''
-  @property({ type: Boolean }) autofocus = false
-  @property({ type: String }) min = ''
-  @property({ type: String }) max = ''
-  @property({ type: String }) step = ''
-  @property({ type: String }) pattern = ''
-  @property({ type: String }) inputmode = ''
-  @property({ type: String }) id = ''
-  @property({ attribute: 'aria-label', type: String }) ariaLabel = ''
-  @property({ attribute: 'aria-invalid', type: String }) ariaInvalid = ''
-  @property({ type: String }) tabindex = ''
+  @property({ type: String })
+  declare type: string
+  @property({ type: String })
+  declare name: string
+  @property({ type: String })
+  declare value: string
+  @property({ type: String })
+  declare placeholder: string
+  @property({ type: Boolean })
+  declare disabled: boolean
+  @property({ type: Boolean })
+  declare readonly: boolean
+  @property({ type: Boolean })
+  declare required: boolean
+  @property({ type: String })
+  declare autocomplete: string
+  @property({ type: Boolean })
+  declare autofocus: boolean
+  @property({ type: String })
+  declare min: string
+  @property({ type: String })
+  declare max: string
+  @property({ type: String })
+  declare step: string
+  @property({ type: String })
+  declare pattern: string
+  @property({ type: String })
+  declare inputmode: string
+  @property({ type: String })
+  declare id: string
+  @property({ attribute: 'aria-label', type: String })
+  declare ariaLabel: string
+  @property({ attribute: 'aria-invalid', type: String })
+  declare ariaInvalid: string
+  @property({ type: String })
+  declare tabindex: string
 
   private _inputRef: HTMLInputElement | null = null
 

@@ -20,16 +20,30 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
       overflow: hidden;
     }
   `
-  @property({ type: String }) query = ''
-  @property({ type: String }) committedQuery = ''
-  @property({ type: String }) extensionId = ''
+  @property({ type: String })
+  declare committedQuery: string
+  @property({ type: String })
+  declare extensionId: string
 
   private controller: SettingsController | null = null
+  private _query = ''
+
+  get query(): string {
+    return this._query
+  }
+
+  set query(value: string) {
+    const next = value ?? ''
+    if (this._query === next) return
+    this._query = next
+    this.controller?.setFilterQuery(next)
+  }
 
   connectedCallback(): void {
     super.connectedCallback()
     this.controller = new SettingsController(() => this.requestUpdate())
     this.controller.connect()
+    if (this._query) this.controller.setFilterQuery(this._query)
   }
 
   disconnectedCallback(): void {
@@ -46,8 +60,13 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
 
     return html`
       <nuxy-scroll-area style="flex: 1; min-height: 0;">
-        ${meta.sectionsToRender.map(
-          (section) => html`
+        ${meta.sectionsToRender.map((section) => {
+          const { selectedRow } = this.controller!.state
+          const start = meta.sectionStartIndex[section.id] ?? 0
+          const end = start + section.resolvedRows.length
+          const sectionActiveIndex =
+            selectedRow >= start && selectedRow < end ? selectedRow - start : -1
+          return html`
             <nuxy-section-header
               label=${section.label}
               ${ref((el) => {
@@ -57,7 +76,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
               })}
             ></nuxy-section-header>
 
-            <nuxy-list>
+            <nuxy-list active-index=${sectionActiveIndex}>
               ${section.resolvedRows.map((row, i) => this.renderSettingRow(section, row, i))}
             </nuxy-list>
 

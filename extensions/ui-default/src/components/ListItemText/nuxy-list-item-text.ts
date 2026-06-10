@@ -2,7 +2,8 @@ import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-list-item-text')
 export class NuxyListItemTextElement extends LitElement {
-  @property({ type: String, reflect: true }) variant = 'default'
+  @property({ type: String, reflect: true })
+  declare variant: string
 
   static styles = css`
     :host {

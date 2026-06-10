@@ -78,5 +78,8 @@
     "nextSetting": "Next setting",
     "openSetting": "Open setting",
     "closeSetting": "Close setting"
+  },
+  "search": {
+    "placeholder": "Filter settings"
   }
 }

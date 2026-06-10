@@ -2,7 +2,8 @@ import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-label')
 export class NuxyLabelElement extends LitElement {
-  @property({ type: Boolean, reflect: true }) required = false
+  @property({ type: Boolean, reflect: true })
+  declare required: boolean
 
   static styles = css`
     :host {
@@ -27,7 +28,8 @@ export class NuxyLabelElement extends LitElement {
 
 @customElement('nuxy-helper-text')
 export class NuxyHelperTextElement extends LitElement {
-  @property({ type: String, reflect: true }) variant = 'default'
+  @property({ type: String, reflect: true })
+  declare variant: string
 
   static styles = css`
     :host {

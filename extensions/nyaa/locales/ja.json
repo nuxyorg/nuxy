@@ -3,6 +3,7 @@
     "name": "Nyaa検索"
   },
   "search": {
+    "placeholder": "Nyaaを検索",
     "empty": {
       "message": "nyaa.siを検索",
       "hint": "タイトルを入力してトレントを検索してください。"

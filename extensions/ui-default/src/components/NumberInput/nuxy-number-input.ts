@@ -72,13 +72,19 @@ export class NuxyNumberInputElement extends LitElement {
     }
   `
 
-  @property({ type: Number }) min: number | undefined = undefined
-  @property({ type: Number }) max: number | undefined = undefined
-  @property({ type: Number }) step = 1
-  @property({ type: Boolean }) disabled = false
-  @property({ type: String }) id = ''
+  @property({ type: Number })
+  declare min: number | undefined
+  @property({ type: Number })
+  declare max: number | undefined
+  @property({ type: Number })
+  declare step: number
+  @property({ type: Boolean })
+  declare disabled: boolean
+  @property({ type: String })
+  declare id: string
 
-  @state() private currentValue: number | null = null
+  @state()
+  declare private currentValue: number | null
 
   private getStep(): number {
     return parseNum(this.getAttribute('step'), 1) ?? 1
@@ -95,7 +101,8 @@ export class NuxyNumberInputElement extends LitElement {
   private clamp(value: number): number {
     const min = this.min
     const max = this.max
-    if (min !== undefined && value < min) value = min
+    if (min !== undefined && value < min) declare
+    value: unknown
     if (max !== undefined && value > max) value = max
     return value
   }

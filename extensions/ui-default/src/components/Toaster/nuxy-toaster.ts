@@ -120,7 +120,8 @@ export class NuxyToasterElement extends LitElement {
     }
   `
 
-  @state() private toasts: Toast[] = []
+  @state()
+  declare private toasts: Toast[]
 
   private unsubscribe: (() => void) | null = null
 

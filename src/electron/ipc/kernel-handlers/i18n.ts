@@ -44,7 +44,7 @@ function translateSettingsSchema(ext: any, resolvedLocale: string): any {
       if (tField.options && Array.isArray(updatedField.options)) {
         updatedField.options = updatedField.options.map((opt: any) => {
           const optValStr = String(opt.value)
-          const optLabel = tField.options[optValStr] ?? opt.label
+          const optLabel = tField.options[optValStr] ?? optValStr
           return { ...opt, label: optLabel }
         })
       }

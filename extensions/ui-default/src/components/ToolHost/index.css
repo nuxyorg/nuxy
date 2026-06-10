@@ -1,11 +1,11 @@
-.nuxy-tool-host {
+nuxy-tool-host {
   display: flex;
   flex: 1;
   flex-direction: column;
   min-height: 0;
 }
 
-.nuxy-tool-host--loading {
+nuxy-tool-host[loading] {
   flex: 1;
   min-height: 200px;
 }

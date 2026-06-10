@@ -2,6 +2,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
 import type { DbHandle, PreparedStatement } from '@nuxy/core'
+import type { Note } from '../types.ts'
 
 interface MockDb {
   db: DbHandle
@@ -134,6 +135,23 @@ describe('notes backend', () => {
       expect(notes).toHaveLength(2)
       expect(notes[0].id).toBe('b')
       expect(notes[1].id).toBe('a')
+    })
+
+    it('normalizes notes missing body or title fields', async () => {
+      const legacy = { id: 'legacy', createdAt: 10, updatedAt: 20 }
+
+      const register = await freshBackend()
+      const { core, handlers } = createCore()
+      ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockResolvedValue([
+        { name: 'legacy.json', isDir: false },
+      ])
+      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(JSON.stringify(legacy))
+      await register(core)
+
+      const notes = await (handlers['notes:list'] as (p: unknown) => Promise<Note[]>)({})
+
+      expect(notes).toHaveLength(1)
+      expect(notes[0]).toMatchObject({ id: 'legacy', title: '', body: '' })
     })
   })
 

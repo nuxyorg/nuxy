@@ -62,12 +62,17 @@ export class NuxyCopyButtonElement extends LitElement {
     }
   `
 
-  @property({ type: String }) value = ''
-  @property({ type: String }) label = 'Copy'
-  @property({ attribute: 'copied-label', type: String }) copiedLabel = 'Copied!'
-  @property({ type: Number }) timeout = 1500
+  @property({ type: String })
+  declare value: string
+  @property({ type: String })
+  declare label: string
+  @property({ attribute: 'copied-label', type: String })
+  declare copiedLabel: string
+  @property({ type: Number })
+  declare timeout: number
 
-  @state() private copied = false
+  @state()
+  declare private copied: boolean
 
   private resetTimer: ReturnType<typeof setTimeout> | null = null
 

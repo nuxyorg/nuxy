@@ -50,6 +50,7 @@ mapfile -t edited_files < <(sort -u "$EDITED_LIST")
 
 lintable=()
 for file in "${edited_files[@]}"; do
+  [[ -f "$file" ]] || continue
   case "$file" in
     *.ts|*.tsx|*.js|*.jsx|*.mjs|*.cjs)
       lintable+=("$file")

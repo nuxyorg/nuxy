@@ -4,6 +4,7 @@ import { deriveTitle } from './utils/noteTitle.ts'
 import { invoke } from './utils/ipc.ts'
 import { createStore, type Store } from '../store.ts'
 import { createTranslator, type Translator } from '../shell-i18n.ts'
+import { setToolSearchPlaceholder } from '../tool-behavior.ts'
 
 const EXT_ID = 'com.nuxy.notes'
 
@@ -45,6 +46,7 @@ export class NotesController {
     })
     this.t = createTranslator(EXT_ID, () => {
       window.core?.shell?.refreshKeyHints()
+      this.syncSearchPlaceholder()
       this.onUpdate()
     })
     this.store.subscribe(() => this.onUpdate())
@@ -56,6 +58,7 @@ export class NotesController {
 
   connect(): void {
     if (!window.core?.ipc) return
+    this.syncSearchPlaceholder()
     invoke<Note[]>('notes:list', {})
       .then((notes) => {
         this.store.setState({ notes, filteredNotes: notes })
@@ -77,6 +80,10 @@ export class NotesController {
     this.t.destroy()
     window.core?.shell?.registerActions([])
     window.core?.shell?.registerKeyActions(null)
+  }
+
+  private syncSearchPlaceholder(): void {
+    setToolSearchPlaceholder(this.t.t, 'search.placeholder')
   }
 
   setQuery(query: string): void {
@@ -101,7 +108,7 @@ export class NotesController {
         const idx = filtered.findIndex((n) => n.id === noteId)
         this.store.setState({
           selected: note,
-          body: note.body,
+          body: note.body ?? '',
           selectedIndex: idx !== -1 ? idx + 1 : s.selectedIndex,
           editMode: false,
         })
@@ -230,7 +237,7 @@ export class NotesController {
     if (!query.trim() || query.startsWith('select:')) return notes
     const q = query.toLowerCase()
     return notes.filter(
-      (n) => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)
+      (n) => (n.title ?? '').toLowerCase().includes(q) || (n.body ?? '').toLowerCase().includes(q)
     )
   }
 
@@ -244,7 +251,7 @@ export class NotesController {
     if (selectedIndex > 0 && selectedIndex <= filteredNotes.length) {
       const note = filteredNotes[selectedIndex - 1]
       if (note) {
-        this.store.setState({ selected: note, body: note.body })
+        this.store.setState({ selected: note, body: note.body ?? '' })
         return
       }
     }
@@ -252,7 +259,7 @@ export class NotesController {
   }
 
   private getKeyActions(): ShellKeyAction[] {
-    const { editMode, selectedIndex, filteredNotes, selected, recording } = this.state
+    const { editMode, selectedIndex, filteredNotes, selected } = this.state
     const t = this.t.t
 
     return [
@@ -289,7 +296,7 @@ export class NotesController {
           } else {
             const note = filteredNotes[selectedIndex - 1]
             if (note) {
-              this.store.setState({ selected: note, body: note.body })
+              this.store.setState({ selected: note, body: note.body ?? '' })
               this.setEditMode(true)
             }
           }

@@ -2,7 +2,8 @@ import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-list-item')
 export class NuxyListItemElement extends LitElement {
-  @property({ type: Boolean, reflect: true }) active = false
+  @property({ type: Boolean, reflect: true })
+  declare active: boolean
 
   static styles = css`
     :host {

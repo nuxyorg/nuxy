@@ -19,7 +19,6 @@ import {
   BOOL_OPTIONS,
   SECTIONS,
   LANGUAGE_OPTIONS,
-  LANGUAGE_ADD_LABEL,
   buildFontFamilyMap,
   buildFontOptions,
 } from './utils/settingsOptions.ts'
@@ -63,19 +62,15 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
 
   const fontFamilyMap = buildFontFamilyMap(systemFonts)
   const fontOptions = buildFontOptions(systemFonts)
-  const tr = (key: string, fallback: string) => {
-    const v = t(key)
-    return v === key ? fallback : v
-  }
 
   const allSections: ResolvedSection[] = SECTIONS.map((s: SectionDef) => ({
     ...s,
-    label: tr('nav.' + s.id, s.label),
+    label: t('nav.' + s.id),
     resolvedRows: s.rows(themes, iconPacks, fontOptions).map((r) => {
       const translatedOptions = r.options?.map((opt) => {
         let optLabel = opt.label
         if (r.key === 'escAction' || r.key === 'blurAction') {
-          optLabel = tr('escAction.' + opt.value, opt.label)
+          optLabel = t('escAction.' + opt.value)
         } else if (r.key === 'windowPosition') {
           const keyMap: Record<string, string> = {
             '1/2, 1/6': 'topCenter',
@@ -90,22 +85,22 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
             '1/2, 1/3': 'upperCenterDefault',
           }
           const k = keyMap[String(opt.value)]
-          if (k) optLabel = tr('windowPosition.' + k, opt.label)
+          if (k) optLabel = t('windowPosition.' + k)
         } else if (r.key === 'backgroundBehavior') {
-          optLabel = tr('backgroundBehavior.' + opt.value, opt.label)
+          optLabel = t('backgroundBehavior.' + opt.value)
         } else if (typeof opt.value === 'boolean') {
-          optLabel = tr('bool.' + (opt.value ? 'yes' : 'no'), opt.label)
+          optLabel = t('bool.' + (opt.value ? 'yes' : 'no'))
         } else if (r.key === 'font') {
-          if (opt.value === 'system') optLabel = tr('font.systemDefault', opt.label)
-          else if (opt.value === 'monospace') optLabel = tr('font.monospace', opt.label)
+          if (opt.value === 'system') optLabel = t('font.systemDefault')
+          else if (opt.value === 'monospace') optLabel = t('font.monospace')
         } else if (r.key === 'fontWeight') {
-          optLabel = tr('fontWeight.' + opt.value, opt.label)
+          optLabel = t('fontWeight.' + opt.value)
         }
         return { ...opt, label: optLabel }
       })
       return {
         ...r,
-        label: tr(s.id + '.' + r.key, r.label),
+        label: t(s.id + '.' + r.key),
         options: translatedOptions,
       }
     }),
@@ -118,7 +113,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
         field.type === 'toggle'
           ? BOOL_OPTIONS.map((opt) => ({
               ...opt,
-              label: tr('bool.' + (opt.value ? 'yes' : 'no'), opt.label),
+              label: t('bool.' + (opt.value ? 'yes' : 'no')),
             }))
           : info.extId === OLLAMA_EXT_ID && field.key === 'model' && ollamaModelOptions.length > 0
             ? ollamaModelOptions
@@ -141,7 +136,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
 
   const languageAddRow: LanguageRow = {
     key: 'lang:add',
-    label: tr('language.addLanguage', LANGUAGE_ADD_LABEL),
+    label: t('language.addLanguage'),
     options: LANGUAGE_OPTIONS,
     isExtension: false as const,
     isLanguage: true as const,
@@ -161,7 +156,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
 
   const translatedBoolOptions = BOOL_OPTIONS.map((opt) => ({
     ...opt,
-    label: tr('bool.' + (opt.value ? 'yes' : 'no'), opt.label),
+    label: t('bool.' + (opt.value ? 'yes' : 'no')),
   }))
 
   const extToggleRows: ExtToggleRow[] = installedExtensions
@@ -184,7 +179,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
     }))
     const langSection: RenderSection = {
       id: 'language',
-      label: tr('nav.language', 'Language'),
+      label: t('nav.language'),
       isExtension: false,
       resolvedRows: [languageAddRow, ...languageRemoveRows],
     }
@@ -192,7 +187,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
       extToggleRows.length > 0
         ? {
             id: 'extensions',
-            label: tr('nav.extensions', 'Extensions'),
+            label: t('nav.extensions'),
             isExtension: false,
             resolvedRows: extToggleRows,
           }
@@ -222,13 +217,13 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
     }))
     base.push({
       id: 'language',
-      label: tr('nav.language', 'Language'),
+      label: t('nav.language'),
       itemCount: 1 + languageRemoveRows.length,
     })
     if (extToggleRows.length > 0) {
       base.push({
         id: 'extensions',
-        label: tr('nav.extensions', 'Extensions'),
+        label: t('nav.extensions'),
         itemCount: extToggleRows.length,
       })
     }
@@ -251,6 +246,50 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
     allSections,
     extSections,
     extToggleRows,
+    sectionsToRender,
+    allRows,
+    navSections,
+    sectionStartIndex,
+  }
+}
+
+function rowMatchesQuery(row: AnyRow, query: string): boolean {
+  const needle = query.toLowerCase()
+  if (row.label.toLowerCase().includes(needle)) return true
+  if ('description' in row && row.description) {
+    if (String(row.description).toLowerCase().includes(needle)) return true
+  }
+  return false
+}
+
+/** Filter visible settings rows/sections by omnibar query. Returns meta unchanged when query is blank. */
+export function filterSettingsByQuery(meta: SettingsMeta, query: string): SettingsMeta {
+  const trimmed = query.trim()
+  if (!trimmed) return meta
+
+  const sectionsToRender = meta.sectionsToRender
+    .map((section) => ({
+      ...section,
+      resolvedRows: section.resolvedRows.filter((row) => rowMatchesQuery(row, trimmed)),
+    }))
+    .filter((section) => section.resolvedRows.length > 0)
+
+  const allRows = sectionsToRender.flatMap((section) => section.resolvedRows)
+  const navSections = sectionsToRender.map((section) => ({
+    id: section.id,
+    label: section.label,
+    itemCount: section.resolvedRows.length,
+  }))
+
+  const sectionStartIndex: Record<string, number> = {}
+  let offset = 0
+  for (const section of navSections) {
+    sectionStartIndex[section.id] = offset
+    offset += section.itemCount
+  }
+
+  return {
+    ...meta,
     sectionsToRender,
     allRows,
     navSections,

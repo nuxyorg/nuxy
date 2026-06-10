@@ -79,7 +79,7 @@ Files under `extensions/shared/` are cross-extension utilities. Import from ther
 ## 7. UI Components
 
 - Use **LitElement** with `html\`\`` for all new extension frontends.
-- The `h()` helper in `extensions/ui-default/src/h.ts` is **deprecated** — do not use in new code.
+- The legacy `h()` / `host()` DOM factories in ui-default have been **removed**. Use Lit `<nuxy-*>` tags or `@nuxy/core` `html` templates.
 - `ce-utils.ts` has been **removed** — do not reference it anywhere.
 - All Lit imports must come from `@nuxy/core`, never directly from `lit`.
 - Light DOM is **mandatory**: every tool element must override `createRenderRoot()` to return `this`.

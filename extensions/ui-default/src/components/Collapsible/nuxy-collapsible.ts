@@ -66,7 +66,8 @@ export class NuxyCollapsibleElement extends LitElement {
     }
   `
 
-  @state() private isOpen = false
+  @state()
+  declare private isOpen: boolean
 
   connectedCallback(): void {
     super.connectedCallback()

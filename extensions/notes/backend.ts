@@ -20,9 +20,19 @@ function notePath(id: string): string {
   return `${extDataDir}/${id}.json`
 }
 
+function normalizeNote(raw: Partial<Note> & { id: string }): Note {
+  return {
+    id: raw.id,
+    title: raw.title ?? '',
+    body: raw.body ?? '',
+    createdAt: raw.createdAt ?? 0,
+    updatedAt: raw.updatedAt ?? 0,
+  }
+}
+
 async function readNote(core: CoreContext, id: string): Promise<Note> {
   const text = await core.fs.readFile(notePath(id))
-  return JSON.parse(text) as Note
+  return normalizeNote(JSON.parse(text) as Partial<Note> & { id: string })
 }
 
 async function writeNote(core: CoreContext, note: Note): Promise<void> {

@@ -19,9 +19,11 @@ export class NuxyAspectRatioElement extends LitElement {
     }
   `
 
-  @property({ type: Number }) ratio = 1
+  @property({ type: Number })
+  declare ratio: number
 
-  @property({ type: String }) class = ''
+  @property({ type: String })
+  declare class: string
 
   private _initialHTML = ''
 

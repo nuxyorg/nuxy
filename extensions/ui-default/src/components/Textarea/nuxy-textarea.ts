@@ -40,21 +40,36 @@ export class NuxyTextareaElement extends LitElement {
     }
   `
 
-  @property({ type: String }) name = ''
-  @property({ type: String }) value = ''
-  @property({ type: String }) placeholder = ''
-  @property({ type: Boolean }) disabled = false
-  @property({ type: Boolean }) readonly = false
-  @property({ type: Boolean }) required = false
-  @property({ type: Boolean }) autofocus = false
-  @property({ type: String }) rows = ''
-  @property({ type: String }) cols = ''
-  @property({ type: String }) maxlength = ''
-  @property({ type: String }) minlength = ''
-  @property({ type: String }) id = ''
-  @property({ attribute: 'aria-label', type: String }) ariaLabel = ''
-  @property({ attribute: 'aria-invalid', type: String }) ariaInvalid = ''
-  @property({ type: String }) tabindex = ''
+  @property({ type: String })
+  declare name: string
+  @property({ type: String })
+  declare value: string
+  @property({ type: String })
+  declare placeholder: string
+  @property({ type: Boolean })
+  declare disabled: boolean
+  @property({ type: Boolean })
+  declare readonly: boolean
+  @property({ type: Boolean })
+  declare required: boolean
+  @property({ type: Boolean })
+  declare autofocus: boolean
+  @property({ type: String })
+  declare rows: string
+  @property({ type: String })
+  declare cols: string
+  @property({ type: String })
+  declare maxlength: string
+  @property({ type: String })
+  declare minlength: string
+  @property({ type: String })
+  declare id: string
+  @property({ attribute: 'aria-label', type: String })
+  declare ariaLabel: string
+  @property({ attribute: 'aria-invalid', type: String })
+  declare ariaInvalid: string
+  @property({ type: String })
+  declare tabindex: string
 
   private _textareaRef: HTMLTextAreaElement | null = null
 

@@ -2,7 +2,8 @@ import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-alert')
 export class NuxyAlertElement extends LitElement {
-  @property({ type: String, reflect: true }) variant = 'info'
+  @property({ type: String, reflect: true })
+  declare variant: string
 
   static styles = css`
     :host {

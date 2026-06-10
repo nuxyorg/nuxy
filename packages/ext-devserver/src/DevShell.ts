@@ -73,8 +73,10 @@ export class DevShell extends LitElement {
     }
   `
 
-  @state() private query = ''
-  @state() private loading = true
+  @state()
+  declare private query: string
+  @state()
+  declare private loading: boolean
   @query('.ext-slot') private extSlot!: HTMLElement
 
   private toolEl: NuxyToolElement | null = null

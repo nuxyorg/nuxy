@@ -8,7 +8,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@nuxy/core': path.resolve(__dirname, '../packages/core/src/index.ts'),
+      '@nuxy/core': path.resolve(__dirname, '../packages/core/src/renderer.ts'),
     },
   },
 })

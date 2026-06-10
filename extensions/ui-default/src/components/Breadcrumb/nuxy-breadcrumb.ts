@@ -67,8 +67,10 @@ export class NuxyBreadcrumbElement extends LitElement {
     }
   `
 
-  @property({ type: String }) items = ''
-  @property({ type: String }) separator = '/'
+  @property({ type: String })
+  declare items: string
+  @property({ type: String })
+  declare separator: string
 
   private renderItem(item: BreadcrumbCeItem, idx: number, total: number): TemplateResult {
     const isLast = idx === total - 1

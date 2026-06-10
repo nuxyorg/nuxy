@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 import type { NuxyToolElement, ToolActivateContext } from '@nuxy/core'
 
 declare global {
@@ -8,11 +8,12 @@ declare global {
         resolveElementTag: (extId: string) => Promise<string | null>
       }
       composition?: Pick<ToolActivateContext['composition'], 'mount' | 'setState'>
+      shell?: {
+        refreshKeyHints(): void
+      }
     }
   }
 }
-
-const LOADING_CLASS = 'nuxy-tool-host--loading'
 
 async function loadFrontendModule(extId: string): Promise<void> {
   const dynamicImport = new Function('url', 'return import(url)')
@@ -32,9 +33,11 @@ export class NuxyToolHostElement extends LitElement {
   private toolEl: NuxyToolElement | null = null
   private swapGeneration = 0
 
+  @property({ type: Boolean, reflect: true })
+  declare loading: boolean
+
   connectedCallback(): void {
     super.connectedCallback()
-    this.classList.add('nuxy-tool-host')
     if (this._extensionId) {
       void this.swapTool(this._extensionId)
     }
@@ -95,7 +98,7 @@ export class NuxyToolHostElement extends LitElement {
     this.toolEl?.onToolDeactivate?.()
     this.toolEl = null
     this.replaceChildren()
-    this.classList.remove(LOADING_CLASS)
+    this.loading = false
   }
 
   private async swapTool(extId: string | null) {
@@ -103,7 +106,7 @@ export class NuxyToolHostElement extends LitElement {
     if (!extId) return
 
     const generation = ++this.swapGeneration
-    this.classList.add(LOADING_CLASS)
+    this.loading = true
 
     try {
       await loadFrontendModule(extId)
@@ -114,7 +117,7 @@ export class NuxyToolHostElement extends LitElement {
 
       if (tag) {
         if (!customElements.get(tag)) {
-          this.classList.remove(LOADING_CLASS)
+          this.loading = false
           console.warn(`[nuxy-tool-host] Custom element "${tag}" is not registered for "${extId}"`)
           return
         }
@@ -123,9 +126,10 @@ export class NuxyToolHostElement extends LitElement {
         el.extensionId = extId
         el.query = this._query
         el.committedQuery = this._committedQuery
-        this.classList.remove(LOADING_CLASS)
+        this.loading = false
         this.appendChild(el)
         this.toolEl = el
+        window.core?.shell?.refreshKeyHints()
 
         const composition = window.core?.composition
         if (composition && el.onToolActivate) {
@@ -138,11 +142,11 @@ export class NuxyToolHostElement extends LitElement {
         return
       }
 
-      this.classList.remove(LOADING_CLASS)
+      this.loading = false
       console.warn(`[nuxy-tool-host] Tool "${extId}" has no entry.element in manifest`)
     } catch (err) {
       if (generation !== this.swapGeneration) return
-      this.classList.remove(LOADING_CLASS)
+      this.loading = false
       console.warn(`[nuxy-tool-host] Failed to load tool "${extId}":`, err)
     }
   }

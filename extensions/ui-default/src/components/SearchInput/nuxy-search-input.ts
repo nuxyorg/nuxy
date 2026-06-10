@@ -69,16 +69,25 @@ export class NuxySearchInputElement extends LitElement {
     }
   `
 
-  @property({ type: String }) value = ''
-  @property({ type: String }) placeholder = ''
-  @property({ type: Boolean }) disabled = false
-  @property({ type: String }) name = ''
-  @property({ type: String }) autocomplete = ''
-  @property({ type: Boolean }) autofocus = false
-  @property({ attribute: 'aria-label', type: String }) ariaLabel = ''
-  @property({ type: String }) tabindex = ''
+  @property({ type: String })
+  declare value: string
+  @property({ type: String })
+  declare placeholder: string
+  @property({ type: Boolean })
+  declare disabled: boolean
+  @property({ type: String })
+  declare name: string
+  @property({ type: String })
+  declare autocomplete: string
+  @property({ type: Boolean })
+  declare autofocus: boolean
+  @property({ attribute: 'aria-label', type: String })
+  declare ariaLabel: string
+  @property({ type: String })
+  declare tabindex: string
 
-  @state() private hasValue = false
+  @state()
+  declare private hasValue: boolean
 
   private fieldRef: HTMLInputElement | null = null
 

@@ -39,7 +39,8 @@ export class NuxySpinnerElement extends LitElement {
     }
   `
 
-  @property({ type: String }) size = 'md'
+  @property({ type: String })
+  declare size: string
 
   connectedCallback(): void {
     super.connectedCallback()

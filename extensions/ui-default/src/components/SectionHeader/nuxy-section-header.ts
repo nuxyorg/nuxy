@@ -35,8 +35,10 @@ export class NuxySectionHeaderElement extends LitElement {
     }
   `
 
-  @property({ type: String }) label = ''
-  @property({ type: String }) description = ''
+  @property({ type: String })
+  declare label: string
+  @property({ type: String })
+  declare description: string
 
   render(): TemplateResult {
     return html`

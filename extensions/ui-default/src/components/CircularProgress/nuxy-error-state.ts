@@ -1,7 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property, unsafeHTML } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
 import type { TemplateResult } from '@nuxy/core'
-
-const ERROR_ICON = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
 
 @customElement('nuxy-error-state')
 export class NuxyErrorStateElement extends LitElement {
@@ -65,9 +63,12 @@ export class NuxyErrorStateElement extends LitElement {
     }
   `
 
-  @property({ type: String }) title = 'Something went wrong'
-  @property({ type: String }) message = ''
-  @property({ type: String, attribute: 'retry-label' }) retryLabel: string | null = null
+  @property({ type: String })
+  declare title: string
+  @property({ type: String })
+  declare message: string
+  @property({ type: String, attribute: 'retry-label' })
+  declare retryLabel: string | null
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -80,7 +81,7 @@ export class NuxyErrorStateElement extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <span class="nuxy-error-state__icon" aria-hidden="true">${unsafeHTML(ERROR_ICON)}</span>
+      <span class="nuxy-error-state__icon" aria-hidden="true"><nuxy-icon name="AlertCircle" size="32" opacity="1"></nuxy-icon></span>
       <h3 class="nuxy-error-state__title">${this.title}</h3>
       <p class="nuxy-error-state__message">${this.message}</p>
       ${this.retryLabel !== null

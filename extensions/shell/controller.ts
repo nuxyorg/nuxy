@@ -19,6 +19,8 @@ import type {
   Tool,
 } from './types.ts'
 import type { OmnibarSection } from './utils/listResults.ts'
+import { resolveOmniBarPlaceholder as computeOmniBarPlaceholder } from './utils/omniBarPlaceholder.ts'
+import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
 
 export type { OmnibarSection }
 
@@ -27,6 +29,7 @@ const EMPTY_SNAPSHOT: ShellBridgeSnapshot = {
   keyActionHints: [],
   omniBarPortal: null,
   footerPortal: null,
+  searchPlaceholder: null,
 }
 
 const DEFAULT_SETTINGS: ShellConfig = {
@@ -110,7 +113,10 @@ export class ShellController {
     this.win = new WindowController(this._host)
     this.tools = new ToolController(this._host, {
       onToolChange: (toolId) => {
-        window.core?.shell?.resetToolState()
+        window.core?.shell?.resetToolState({ clearSearchPlaceholder: toolId === null })
+        if (toolId) {
+          syncToolSearchPlaceholder(toolId, () => this.tools.activeTool === toolId)
+        }
         this.providers.sync(
           this.store.getState().savedQuery,
           toolId,
@@ -194,6 +200,15 @@ export class ShellController {
 
   get activeToolPlaceholder(): string | null {
     return this.tools.activeToolPlaceholder
+  }
+
+  resolveOmniBarPlaceholder(): string {
+    return computeOmniBarPlaceholder(
+      this.store.getState().bridge,
+      this.activeToolName,
+      this.activeToolPlaceholder,
+      this.t.t
+    )
   }
 
   setQuery(val: string): void {
@@ -518,7 +533,13 @@ export class ShellController {
       })
       .catch(() => {})
 
-    const offLocale = window.core?.events?.on('locale-changed', fetchAll)
+    const offLocale = window.core?.events?.on('locale-changed', () => {
+      fetchAll()
+      const toolId = this.tools.activeTool
+      if (toolId) {
+        syncToolSearchPlaceholder(toolId, () => this.tools.activeTool === toolId)
+      }
+    })
     if (offLocale) this.cleanups.push(offLocale)
   }
 

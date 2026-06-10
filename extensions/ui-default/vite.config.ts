@@ -15,7 +15,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@nuxy/ui': path.resolve(__dirname, 'src/index.tsx'),
+      '@nuxy/ui': path.resolve(__dirname, 'src/index.ts'),
       '@nuxy/core': path.resolve(repoRoot, 'packages/core/src/renderer.ts'),
     },
   },

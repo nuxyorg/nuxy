@@ -134,10 +134,14 @@ export class NuxyCommandPaletteElement extends LitElement {
     }
   `
 
-  @state() private _query = ''
-  @state() private _selectedIndex = 0
-  @state() private _menuStack: CommandPaletteAction[][] = []
-  @state() private _pathLabels: string[] = []
+  @state()
+  declare private _query: string
+  @state()
+  declare private _selectedIndex: number
+  @state()
+  declare private _menuStack: CommandPaletteAction[][]
+  @state()
+  declare private _pathLabels: string[]
 
   private _actions: CommandPaletteAction[] = []
   private _container: HTMLElement | null = null
@@ -343,7 +347,7 @@ export class NuxyCommandPaletteElement extends LitElement {
                 ${action.children
                   ? html`<span class="nuxy-command-palette__submenu-arrow">›</span>`
                   : html`<nuxy-kbd
-                      keys=${this._translate('commandPalette.enterShortcut')}
+                      .keys=${this._translate('commandPalette.enterShortcut')}
                     ></nuxy-kbd>`}
               </nuxy-list-item-actions>
             </nuxy-list-item>

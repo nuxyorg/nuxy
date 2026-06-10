@@ -69,10 +69,13 @@ export class NuxyIconButtonElement extends LitElement {
     }
   `
 
-  @property({ type: String }) size = 'md'
-  @property({ type: String }) variant = 'default'
+  @property({ type: String })
+  declare size: string
+  @property({ type: String })
+  declare variant: string
 
-  @state() private _contentHTML = ''
+  @state()
+  declare private _contentHTML: string
 
   connectedCallback(): void {
     // Capture initial slot content before Lit replaces it

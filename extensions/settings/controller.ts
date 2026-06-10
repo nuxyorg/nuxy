@@ -2,8 +2,9 @@ import type { ShellKeyAction } from '@nuxy/core'
 import { createStore, type Store } from '../store.ts'
 import { createTranslator, type Translator } from '../shell-i18n.ts'
 import { createSettingsActions, type SettingsActions } from './actions.ts'
+import { setToolSearchPlaceholder } from '../tool-behavior.ts'
 import { createDefaultSettingsData, loadSettingsData, type SettingsDataState } from './data.ts'
-import { computeSettingsMeta, type SettingsMeta } from './meta.ts'
+import { computeSettingsMeta, filterSettingsByQuery, type SettingsMeta } from './meta.ts'
 import type { AnyRow, NuxySettings, SelectOption, StateSnapshot } from './types.ts'
 import { getRowCurrentValue, getRowOptions } from './utils/settingsOptions.ts'
 
@@ -25,6 +26,7 @@ export class SettingsController {
 
   private actions: SettingsActions | null = null
   private meta: SettingsMeta | null = null
+  private filterQuery = ''
   private dataCleanup: (() => void) | null = null
 
   constructor(private onUpdate: () => void) {
@@ -36,6 +38,7 @@ export class SettingsController {
     })
     this.t = createTranslator(EXT_ID, () => {
       window.core?.shell?.refreshKeyHints()
+      this.syncSearchPlaceholder()
       this.onUpdate()
     })
     this.store.subscribe(() => {
@@ -77,14 +80,28 @@ export class SettingsController {
     })
 
     this.recomputeMeta()
+    this.syncSearchPlaceholder()
     this.bindKeyActions()
   }
 
   disconnect(): void {
     this.dataCleanup?.()
     this.dataCleanup = null
+    this.filterQuery = ''
     this.t.destroy()
     window.core?.shell?.registerKeyActions(null)
+  }
+
+  setFilterQuery(query: string): void {
+    const next = query ?? ''
+    if (this.filterQuery === next) return
+    this.filterQuery = next
+    this.store.setState({ selectedRow: -1, activeSelect: null })
+    this.recomputeMeta()
+  }
+
+  private syncSearchPlaceholder(): void {
+    setToolSearchPlaceholder(this.t.t, 'search.placeholder')
   }
 
   setSelectedRow(index: number | ((prev: number) => number)): void {
@@ -119,7 +136,7 @@ export class SettingsController {
 
   private recomputeMeta(): void {
     const s = this.state
-    this.meta = computeSettingsMeta({
+    const base = computeSettingsMeta({
       themes: s.themes,
       iconPacks: s.iconPacks,
       systemFonts: s.systemFonts,
@@ -129,6 +146,7 @@ export class SettingsController {
       preferredLanguages: s.settings.preferredLanguages ?? [],
       t: this.t.t,
     })
+    this.meta = filterSettingsByQuery(base, this.filterQuery)
   }
 
   private scrollRowIntoView(rowIdx: number): void {

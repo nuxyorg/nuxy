@@ -1,9 +1,17 @@
 import type { ExtensionManifest } from '@nuxy/core'
+import type { TranslateFn } from './shell-i18n.ts'
 
 export type ToolOnCompleteBehavior = 'stay' | 'returnToShell' | 'hide' | 'returnToShellAndHide'
 
 export function getToolOnComplete(manifest: ExtensionManifest): ToolOnCompleteBehavior {
   return manifest.behavior?.onComplete ?? 'stay'
+}
+
+/** Set omnibar placeholder for the active tool from its locale file. */
+export function setToolSearchPlaceholder(t: TranslateFn, key: string): void {
+  const translated = t(key)
+  if (!translated || translated === key) return
+  window.core?.shell?.setSearchPlaceholder(translated)
 }
 
 /** Run the manifest-declared completion behavior after a tool primary action. */

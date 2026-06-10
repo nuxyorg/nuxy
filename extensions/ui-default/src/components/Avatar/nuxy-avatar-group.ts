@@ -36,8 +36,10 @@ export class NuxyAvatarGroupElement extends LitElement {
     }
   `
 
-  @property({ type: Number }) max = 5
-  @property({ type: String }) size = 'md'
+  @property({ type: Number })
+  declare max: number
+  @property({ type: String })
+  declare size: string
 
   private overflowEl: HTMLSpanElement | null = null
   private observer = new MutationObserver(() => {

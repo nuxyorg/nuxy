@@ -209,7 +209,7 @@ function renderBlock(block: Block): HTMLElement | null {
   if (block.type === 'paragraph') {
     const p = document.createElement('p')
     p.className = 'nuxy-md-p'
-    const lines = block.text.split('\n')
+    const lines = (block.text ?? '').split('\n')
     lines.forEach((line, idx) => {
       appendInlineNodes(p, parseInline(line))
       if (idx < lines.length - 1) p.appendChild(document.createElement('br'))
@@ -220,8 +220,8 @@ function renderBlock(block: Block): HTMLElement | null {
   return null
 }
 
-export function renderMarkdownTo(container: HTMLElement, text: string): void {
-  const blocks = parseBlocks(text)
+export function renderMarkdownTo(container: HTMLElement, text: string | null | undefined): void {
+  const blocks = parseBlocks(text ?? '')
   const frag = document.createDocumentFragment()
   for (const block of blocks) {
     const el = renderBlock(block)

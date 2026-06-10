@@ -79,8 +79,10 @@ export class NuxyTabsElement extends LitElement {
     }
   `
 
-  @property({ type: String }) active = ''
-  @property({ type: String }) items = ''
+  @property({ type: String })
+  declare active: string
+  @property({ type: String })
+  declare items: string
 
   updated(): void {
     this.syncPanels()

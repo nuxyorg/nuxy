@@ -42,5 +42,8 @@
   },
   "provider": {
     "saveAsNote": "Save as note"
+  },
+  "search": {
+    "placeholder": "Search through notes"
   }
 }

@@ -32,9 +32,11 @@ export class NuxyWizardSectionElement extends LitElement {
     }
   `
 
-  @property({ type: String }) title = ''
+  @property({ type: String })
+  declare title: string
 
-  @state() private _iconHTML = ''
+  @state()
+  declare private _iconHTML: string
 
   connectedCallback(): void {
     // Capture initial children as icon content before Lit replaces them

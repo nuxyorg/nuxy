@@ -1,3 +1,4 @@
+import type {} from '../../../global'
 import type { ShellKeyAction } from '@nuxy/core'
 
 const BUILTIN_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter'])
@@ -19,7 +20,7 @@ export interface TwoPanelNavOptions {
   onFocusRight?: (sectionId: string) => void
   onFocusLeft?: () => void
   getRightPanelActions?: () => ShellKeyAction[]
-  translate?: (key: string, fallback: string) => string
+  translate?: (key: string) => string
 }
 
 export class TwoPanelNav {
@@ -33,7 +34,7 @@ export class TwoPanelNav {
   private onFocusRight?: (sectionId: string) => void
   private onFocusLeft?: () => void
   private getRightPanelActions: () => ShellKeyAction[]
-  private tr: (key: string, fallback: string) => string
+  private tr: (key: string) => string
   private cleanup: (() => void) | null = null
 
   constructor(opts: TwoPanelNavOptions) {
@@ -45,7 +46,7 @@ export class TwoPanelNav {
     this.onFocusRight = opts.onFocusRight
     this.onFocusLeft = opts.onFocusLeft
     this.getRightPanelActions = opts.getRightPanelActions ?? (() => [])
-    this.tr = opts.translate ?? ((_, fb) => fb)
+    this.tr = opts.translate ?? ((key) => key)
     this.recomputeSectionStartIndex()
   }
 
@@ -162,7 +163,7 @@ export class TwoPanelNav {
     return [
       {
         key: 'ArrowLeft',
-        label: tr('keyboard.focusTabs', 'Focus tabs'),
+        label: tr('keyboard.focusTabs'),
         handler: () => {
           if (this.focusArea !== 'right' || this.selectOpen) return
           const activeEl = this.getDeepActiveElement()
@@ -184,7 +185,7 @@ export class TwoPanelNav {
       },
       {
         key: 'ArrowRight',
-        label: tr('keyboard.focusContent', 'Focus content'),
+        label: tr('keyboard.focusContent'),
         handler: () => {
           if (this.focusArea === 'left') {
             this.focusArea = 'right'
@@ -203,7 +204,7 @@ export class TwoPanelNav {
       },
       {
         key: 'ArrowUp',
-        label: tr('keyboard.previous', 'Previous'),
+        label: tr('keyboard.previous'),
         hint: '↑↓',
         allowRepeat: true,
         handler: () => {
@@ -222,7 +223,7 @@ export class TwoPanelNav {
       },
       {
         key: 'ArrowDown',
-        label: tr('keyboard.next', 'Next'),
+        label: tr('keyboard.next'),
         allowRepeat: true,
         handler: () => {
           if (this.focusArea === 'left') this.moveSectionDown()
@@ -240,7 +241,7 @@ export class TwoPanelNav {
       },
       {
         key: 'Enter',
-        label: tr('keyboard.selectConfirm', 'Select / confirm'),
+        label: tr('keyboard.selectConfirm'),
         hint: '↵',
         handler: () => {
           if (this.focusArea === 'left') {

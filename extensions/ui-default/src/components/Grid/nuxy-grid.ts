@@ -11,8 +11,10 @@ export class NuxyGridElement extends LitElement {
     }
   `
 
-  @property({ type: String }) cols = '9'
-  @property({ type: String }) gap = '4'
+  @property({ type: String })
+  declare cols: string
+  @property({ type: String })
+  declare gap: string
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -67,12 +69,18 @@ export class NuxyGridItemElement extends LitElement {
     }
   `
 
-  @property({ type: Boolean, reflect: true }) active = false
-  @property({ type: Boolean }) disabled = false
-  @property({ type: String }) type = ''
-  @property({ type: String }) title = ''
-  @property({ attribute: 'aria-label', type: String }) ariaLabel = ''
-  @property({ type: String }) tabindex = ''
+  @property({ type: Boolean, reflect: true })
+  declare active: boolean
+  @property({ type: Boolean })
+  declare disabled: boolean
+  @property({ type: String })
+  declare type: string
+  @property({ type: String })
+  declare title: string
+  @property({ attribute: 'aria-label', type: String })
+  declare ariaLabel: string
+  @property({ type: String })
+  declare tabindex: string
 
   private buttonRef: HTMLButtonElement | null = null
 

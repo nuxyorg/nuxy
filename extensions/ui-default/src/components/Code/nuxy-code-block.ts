@@ -67,9 +67,12 @@ export class NuxyCodeBlockElement extends LitElement {
     }
   `
 
-  @property({ type: String }) code = ''
-  @property({ type: String }) language = 'text'
-  @property({ attribute: 'show-copy', type: String }) showCopy = 'true'
+  @property({ type: String })
+  declare code: string
+  @property({ type: String })
+  declare language: string
+  @property({ attribute: 'show-copy', type: String })
+  declare showCopy: string
 
   private renderTokens(): TemplateResult | string {
     const code = (this.code || this.getAttribute('code')) ?? ''

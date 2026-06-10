@@ -78,5 +78,8 @@
     "nextSetting": "次の設定",
     "openSetting": "設定を開く",
     "closeSetting": "設定を閉じる"
+  },
+  "search": {
+    "placeholder": "設定を検索"
   }
 }

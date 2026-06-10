@@ -2,9 +2,12 @@ import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-scroll-area')
 export class NuxyScrollAreaElement extends LitElement {
-  @property({ type: String, reflect: true }) axis = 'y'
-  @property({ type: String, attribute: 'max-height' }) maxHeight = ''
-  @property({ type: String, attribute: 'max-width' }) maxWidth = ''
+  @property({ type: String, reflect: true })
+  declare axis: string
+  @property({ type: String, attribute: 'max-height' })
+  declare maxHeight: string
+  @property({ type: String, attribute: 'max-width' })
+  declare maxWidth: string
 
   static styles = css`
     :host {

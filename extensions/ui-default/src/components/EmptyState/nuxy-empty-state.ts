@@ -52,11 +52,16 @@ export class NuxyEmptyStateElement extends LitElement {
     }
   `
 
-  @property({ type: String }) title = ''
-  @property({ type: String }) message = ''
-  @property({ type: String }) hint = ''
-  @property({ type: String }) error = ''
-  @property({ type: Boolean, reflect: true }) page = false
+  @property({ type: String })
+  declare title: string
+  @property({ type: String })
+  declare message: string
+  @property({ type: String })
+  declare hint: string
+  @property({ type: String })
+  declare error: string
+  @property({ type: Boolean, reflect: true })
+  declare page: boolean
 
   render(): TemplateResult {
     return html`

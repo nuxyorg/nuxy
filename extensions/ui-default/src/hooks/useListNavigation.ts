@@ -1,4 +1,4 @@
-import { createStore } from '../../../store.ts'
+import { createStore } from '../../../store'
 import { useToolKeyActions, type KeyAction } from './useToolKeyActions'
 import { useTranslation } from './useTranslation'
 
@@ -21,14 +21,10 @@ export function useListNavigation<T>(
   options: UseListNavigationOptions<T> = {}
 ): UseListNavigationResult<T> {
   const { t } = useTranslation('com.nuxy.shell')
-  const tr = (key: string, fallback: string) => {
-    const val = t(key)
-    return val === '' || val === key ? fallback : val
-  }
 
   const {
     onEnter,
-    enterLabel = tr('keyboard.select', 'Select'),
+    enterLabel = t('keyboard.select'),
     enterHint = 'Enter',
     loop = false,
     extraActions = [],
@@ -63,7 +59,7 @@ export function useListNavigation<T>(
   useToolKeyActions([
     {
       key: 'ArrowUp',
-      label: tr('keyboard.navigate', 'Navigate'),
+      label: t('keyboard.navigate'),
       hint: '↑↓',
       handler: moveUp,
       allowRepeat: true,

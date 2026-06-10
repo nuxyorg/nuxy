@@ -18,7 +18,7 @@
     "paths": {
       "@nuxy/extension-sdk": ["../packages/extension-sdk/src/index.ts"],
       "@nuxy/core": ["../packages/core/src/renderer.ts"],
-      "@nuxy/ui": ["../packages/ui/src/index.tsx"],
+      "@nuxy/ui": ["../extensions/ui-default/src/index.ts"],
       "vitest": ["../src/node_modules/vitest/dist/index.d.ts"],
       "vitest/*": ["../src/node_modules/vitest/dist/*"],
       "@playwright/test": [

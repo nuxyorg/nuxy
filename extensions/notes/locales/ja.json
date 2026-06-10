@@ -42,5 +42,8 @@
   },
   "provider": {
     "saveAsNote": "ノートとして保存"
+  },
+  "search": {
+    "placeholder": "ノートを検索"
   }
 }

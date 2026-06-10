@@ -127,8 +127,8 @@ export function parseListBlock(
   return { items, end: i }
 }
 
-export function parseBlocks(text: string): Block[] {
-  const lines = text.split('\n')
+export function parseBlocks(text: string | null | undefined): Block[] {
+  const lines = (text ?? '').split('\n')
   const blocks: Block[] = []
   let i = 0
 

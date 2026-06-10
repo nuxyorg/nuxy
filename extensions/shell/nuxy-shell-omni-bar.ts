@@ -89,15 +89,23 @@ export class NuxyShellOmniBarElement extends LitElement {
     }
   `
 
-  @property() query = ''
-  @property({ type: Boolean, reflect: true }) static = false
-  @property({ attribute: 'active-tool-name' }) activeToolName = ''
-  @property() placeholder = ''
-  @property({ attribute: 'aria-label' }) ariaLabel = ''
-  @property({ type: Boolean }) disabled = false
-  @property({ type: Boolean }) loading = false
+  @property()
+  declare query: string
+  @property({ type: Boolean, reflect: true })
+  declare static: boolean
+  @property({ attribute: 'active-tool-name' })
+  declare activeToolName: string
+  @property()
+  declare placeholder: string
+  @property({ attribute: 'aria-label' })
+  declare ariaLabel: string
+  @property({ type: Boolean })
+  declare disabled: boolean
+  @property({ type: Boolean })
+  declare loading: boolean
 
-  @state() private _searchIconHtml = ''
+  @state()
+  declare private _searchIconHtml: string
 
   @queryDecorator('input') private _inputEl!: HTMLInputElement | null
 
@@ -110,8 +118,12 @@ export class NuxyShellOmniBarElement extends LitElement {
   }
 
   updated(changed: Map<string, unknown>): void {
-    if (changed.has('query') && this._inputEl && this._inputEl.value !== this.query) {
+    if (!this._inputEl) return
+    if (changed.has('query') && this._inputEl.value !== this.query) {
       this._inputEl.value = this.query
+    }
+    if (this._inputEl.placeholder !== this.placeholder) {
+      this._inputEl.placeholder = this.placeholder
     }
   }
 
@@ -136,7 +148,7 @@ export class NuxyShellOmniBarElement extends LitElement {
         class="nuxy-shell-omni-bar__input"
         autofocus
         .value=${this.query}
-        placeholder=${this.placeholder || nothing}
+        .placeholder=${this.placeholder}
         aria-label=${this.ariaLabel || nothing}
         ?disabled=${this.disabled}
         @input=${(e: Event) => {

@@ -161,20 +161,21 @@ export class NuxyMarkdownTextElement extends LitElement {
     }
   `
 
-  @property({ type: String }) content = ''
+  @property({ type: String })
+  declare content: string
 
   private _contentRef: HTMLDivElement | null = null
 
   updated(): void {
     if (this._contentRef) {
-      renderMarkdownTo(this._contentRef, this.content)
+      renderMarkdownTo(this._contentRef, this.content ?? '')
     }
   }
 
   private onContentRef = (el: Element | undefined): void => {
     this._contentRef = (el as HTMLDivElement | null | undefined) ?? null
     if (this._contentRef) {
-      renderMarkdownTo(this._contentRef, this.content)
+      renderMarkdownTo(this._contentRef, this.content ?? '')
     }
   }
 

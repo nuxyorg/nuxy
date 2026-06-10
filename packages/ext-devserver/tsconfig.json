@@ -9,7 +9,7 @@
     "types": ["vite/client"],
     "paths": {
       "@nuxy/core": ["../../packages/core/src/index.ts"],
-      "@nuxy/ui": ["../../extensions/ui-default/src/index.tsx"],
+      "@nuxy/ui": ["../../extensions/ui-default/src/index.ts"],
       "@nuxy/extension-sdk": ["../../packages/extension-sdk/src/index.ts"]
     }
   },

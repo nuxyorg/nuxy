@@ -15,9 +15,12 @@ export class NuxyLoadingStateElement extends LitElement {
     }
   `
 
-  @property({ type: String }) message = ''
-  @property({ type: String }) size = 'md'
-  @property({ type: String, attribute: 'min-height' }) minHeight = '200px'
+  @property({ type: String })
+  declare message: string
+  @property({ type: String })
+  declare size: string
+  @property({ type: String, attribute: 'min-height' })
+  declare minHeight: string
 
   connectedCallback(): void {
     super.connectedCallback()

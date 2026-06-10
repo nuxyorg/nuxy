@@ -105,8 +105,10 @@ export class NuxyStepperElement extends LitElement {
     }
   `
 
-  @property({ type: String }) steps = ''
-  @property({ type: Number }) current = 0
+  @property({ type: String })
+  declare steps: string
+  @property({ type: Number })
+  declare current: number
 
   connectedCallback(): void {
     super.connectedCallback()

@@ -2,7 +2,8 @@ import { LitElement, nothing, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-portal')
 export class NuxyPortalElement extends LitElement {
-  @property({ type: String }) container = ''
+  @property({ type: String })
+  declare container: string
 
   private mountNode: HTMLElement | null = null
   private movedNodes: Node[] = []

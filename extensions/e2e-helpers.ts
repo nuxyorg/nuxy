@@ -171,7 +171,7 @@ export async function waitForToolMounted(page: any, timeout = 10000): Promise<vo
     () => {
       const view = document.querySelector('nuxy-shell-view')
       const host = view?.shadowRoot?.querySelector('.nuxy-shell-tool-wrapper nuxy-tool-host')
-      if (!host || host.classList.contains('nuxy-tool-host--loading')) return false
+      if (!host || host.hasAttribute('loading')) return false
       if (host.childElementCount === 0) return false
       // React island tools register key actions after first paint (useEffect).
       if (host.querySelector('.nuxy-react-tool-island')) {

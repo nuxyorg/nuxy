@@ -1,5 +1,5 @@
 import { ICON_PATHS } from './icon-paths'
-import { LitElement, html, css, nothing, customElement, property, unsafeHTML } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
 import type { TemplateResult } from '@nuxy/core'
 
 const DEFAULT_SIZE = 18
@@ -21,10 +21,14 @@ export class NuxyIconElement extends LitElement {
     }
   `
 
-  @property({ type: String }) name = ''
-  @property({ type: String }) size = ''
-  @property({ type: String }) opacity = ''
-  @property({ type: String }) color = ''
+  @property({ type: String })
+  declare name: string
+  @property({ type: String })
+  declare size: string
+  @property({ type: String })
+  declare opacity: string
+  @property({ type: String })
+  declare color: string
 
   render(): TemplateResult {
     if (!this.name) return html`${nothing}`
@@ -52,7 +56,7 @@ export class NuxyIconElement extends LitElement {
         stroke-linejoin="round"
         style=${style}
       >
-        ${unsafeHTML(def.paths)}
+        ${def.paths}
       </svg>
     `
   }

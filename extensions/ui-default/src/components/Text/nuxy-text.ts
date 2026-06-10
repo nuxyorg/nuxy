@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, property, unsafeHTML } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 import type { TemplateResult } from '@nuxy/core'
 
 const ALLOWED_TAGS = new Set(['p', 'span', 'div', 'label', 'small', 'strong', 'em'])
@@ -48,19 +48,16 @@ export class NuxyTextElement extends LitElement {
     }
   `
 
-  @property({ type: String }) as = 'p'
-  @property({ type: String }) size = 'md'
-  @property({ type: String }) variant = 'default'
-  @property({ type: Boolean }) bold = false
-  @property({ type: Boolean }) mono = false
-
-  private _innerContent = ''
-
-  connectedCallback(): void {
-    // Capture children before Lit renders
-    this._innerContent = this.innerHTML
-    super.connectedCallback()
-  }
+  @property({ type: String })
+  declare as: string
+  @property({ type: String })
+  declare size: string
+  @property({ type: String })
+  declare variant: string
+  @property({ type: Boolean })
+  declare bold: boolean
+  @property({ type: Boolean })
+  declare mono: boolean
 
   render(): TemplateResult {
     const tag = ALLOWED_TAGS.has(this.as) ? this.as : 'p'
@@ -74,7 +71,15 @@ export class NuxyTextElement extends LitElement {
       .filter(Boolean)
       .join(' ')
 
-    return html`${unsafeHTML(`<${tag} class="${className}">${this._innerContent}</${tag}>`)}`
+    switch (tag) {
+      case 'span': return html`<span class="${className}"><slot></slot></span>`
+      case 'div': return html`<div class="${className}"><slot></slot></div>`
+      case 'label': return html`<label class="${className}"><slot></slot></label>`
+      case 'small': return html`<small class="${className}"><slot></slot></small>`
+      case 'strong': return html`<strong class="${className}"><slot></slot></strong>`
+      case 'em': return html`<em class="${className}"><slot></slot></em>`
+      default: return html`<p class="${className}"><slot></slot></p>`
+    }
   }
 }
 

@@ -2,9 +2,12 @@ import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 @customElement('nuxy-skeleton')
 export class NuxySkeletonElement extends LitElement {
-  @property({ type: String, reflect: true }) variant = 'rect'
-  @property({ type: String }) width = ''
-  @property({ type: String }) height = ''
+  @property({ type: String, reflect: true })
+  declare variant: string
+  @property({ type: String })
+  declare width: string
+  @property({ type: String })
+  declare height: string
 
   static styles = css`
     :host {

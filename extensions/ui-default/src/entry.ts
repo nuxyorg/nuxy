@@ -2,12 +2,14 @@
  * com.nuxy.ui-default — Default UIKit Extension
  *
  * Entry point for the Vite build that produces frontend.js.
- * Merges all components into window.UI, preserving any components
- * already registered by higher-priority uikit extensions.
+ * Registers all Lit custom elements and exposes hooks/utils on window.UI.
  *
  * CSS is inlined by the inline-css plugin — no separate stylesheet needed.
  */
-import * as UI from './index'
+import './styles/base.css'
+import './components/ToolHost/index.css'
+import './register-components.ts'
+import * as UI from './index.ts'
 import * as NuxyCore from '@nuxy/core'
 
 const merged = {

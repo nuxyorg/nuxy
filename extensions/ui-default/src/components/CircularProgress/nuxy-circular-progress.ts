@@ -46,10 +46,14 @@ export class NuxyCircularProgressElement extends LitElement {
     }
   `
 
-  @property({ type: String }) value = ''
-  @property({ type: String }) size = '40'
-  @property({ type: String, attribute: 'stroke-width' }) strokeWidth = '4'
-  @property({ type: Boolean, attribute: 'show-label' }) showLabel = false
+  @property({ type: String })
+  declare value: string
+  @property({ type: String })
+  declare size: string
+  @property({ type: String, attribute: 'stroke-width' })
+  declare strokeWidth: string
+  @property({ type: Boolean, attribute: 'show-label' })
+  declare showLabel: boolean
 
   connectedCallback(): void {
     super.connectedCallback()

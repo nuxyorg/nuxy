@@ -48,9 +48,11 @@ export class NuxyDropdownMenuElement extends LitElement {
     }
   `
 
-  @property({ type: String }) align = 'right'
+  @property({ type: String })
+  declare align: string
 
-  @state() private isOpen = false
+  @state()
+  declare private isOpen: boolean
 
   private triggerSlotEl: HTMLSpanElement | null = null
   private menuEl: HTMLDivElement | null = null
@@ -194,8 +196,10 @@ export class NuxyDropdownItemElement extends LitElement {
     }
   `
 
-  @property({ type: String }) variant = 'default'
-  @property({ type: Boolean }) disabled = false
+  @property({ type: String })
+  declare variant: string
+  @property({ type: Boolean })
+  declare disabled: boolean
 
   render(): TemplateResult {
     const variant = (this.variant || this.getAttribute('variant')) ?? 'default'

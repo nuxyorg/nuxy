@@ -3,8 +3,10 @@ import { scrollListActiveItem } from '../../hooks/scroll-into-view'
 
 @customElement('nuxy-list')
 export class NuxyListElement extends LitElement {
-  @property({ type: String, attribute: 'max-height', reflect: true }) maxHeight = ''
-  @property({ type: Number, attribute: 'active-index' }) activeIndex = -1
+  @property({ type: String, attribute: 'max-height', reflect: true })
+  declare maxHeight: string
+  @property({ type: Number, attribute: 'active-index' })
+  declare activeIndex: number
 
   static styles = css`
     :host {

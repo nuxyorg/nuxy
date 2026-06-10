@@ -52,8 +52,10 @@ export class NuxyChatMessageElement extends LitElement {
     }
   `
 
-  @property({ type: String, reflect: true }) role = 'assistant'
-  @property({ type: String }) content = ''
+  @property({ type: String, reflect: true })
+  declare role: string
+  @property({ type: String })
+  declare content: string
 
   render(): TemplateResult {
     return html`

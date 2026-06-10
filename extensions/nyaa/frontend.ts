@@ -32,8 +32,10 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
       min-height: 0;
     }
   `
-  @property({ type: String }) committedQuery = ''
-  @property({ type: String }) extensionId = ''
+  @property({ type: String })
+  declare committedQuery: string
+  @property({ type: String })
+  declare extensionId: string
 
   private controller: NyaaController | null = null
   private _query = ''

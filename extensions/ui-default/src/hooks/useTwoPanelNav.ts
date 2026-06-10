@@ -1,4 +1,4 @@
-import { TwoPanelNav } from './two-panel-nav.ts'
+import { TwoPanelNav } from './two-panel-nav'
 import type { KeyAction } from './useToolKeyActions'
 import { useTranslation } from './useTranslation'
 
@@ -35,10 +35,6 @@ const navCache = new WeakMap<object, TwoPanelNav>()
 
 export function useTwoPanelNav(opts: UseTwoPanelNavOptions): UseTwoPanelNavResult {
   const { t } = useTranslation('com.nuxy.shell')
-  const tr = (key: string, fallback: string) => {
-    const val = t(key)
-    return val === '' || val === key ? fallback : val
-  }
 
   const key = opts as object
   let nav = navCache.get(key)
@@ -50,7 +46,7 @@ export function useTwoPanelNav(opts: UseTwoPanelNavOptions): UseTwoPanelNavResul
       onSectionChange: opts.onSectionChange,
       onFocusRight: opts.onFocusRight,
       getRightPanelActions: () => opts.rightPanelActions ?? [],
-      translate: tr,
+      translate: t,
     })
     nav.bind()
     navCache.set(key, nav)

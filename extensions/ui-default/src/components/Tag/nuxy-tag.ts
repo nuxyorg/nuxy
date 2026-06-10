@@ -1,7 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property, unsafeHTML } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
 import type { TemplateResult } from '@nuxy/core'
-
-const REMOVE_SVG = `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
 
 @customElement('nuxy-tag')
 export class NuxyTagElement extends LitElement {
@@ -71,16 +69,11 @@ export class NuxyTagElement extends LitElement {
     }
   `
 
-  @property({ type: String, reflect: true }) variant = 'default'
-  @property({ type: Boolean, reflect: true }) removable = false
+  @property({ type: String, reflect: true })
 
-  private _innerContent = ''
-
-  connectedCallback(): void {
-    // Capture label content before Lit renders
-    this._innerContent = this.innerHTML
-    super.connectedCallback()
-  }
+  declare variant: string
+  @property({ type: Boolean, reflect: true })
+  declare removable: boolean
 
   private onRemoveClick = (): void => {
     this.dispatchEvent(new CustomEvent('nuxy-tag-remove', { bubbles: true, composed: true }))
@@ -88,7 +81,7 @@ export class NuxyTagElement extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <span class="nuxy-tag__label">${unsafeHTML(this._innerContent)}</span>
+      <span class="nuxy-tag__label"><slot></slot></span>
       ${this.removable
         ? html`<button
             type="button"
@@ -96,7 +89,7 @@ export class NuxyTagElement extends LitElement {
             aria-label="Remove"
             @click=${this.onRemoveClick}
           >
-            ${unsafeHTML(REMOVE_SVG)}
+            <nuxy-icon name="Close" size="10" opacity="1"></nuxy-icon>
           </button>`
         : nothing}
     `

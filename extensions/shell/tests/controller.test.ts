@@ -7,7 +7,12 @@ vi.hoisted(() => {
     innerHeight: 1080,
     core: {
       ipc: { invoke: vi.fn() },
-      shell: { registerKeyActions: vi.fn(), refreshKeyHints: vi.fn(), resetToolState: vi.fn() },
+      shell: {
+        registerKeyActions: vi.fn(),
+        refreshKeyHints: vi.fn(),
+        resetToolState: vi.fn(),
+        setSearchPlaceholder: vi.fn(),
+      },
       events: { on: vi.fn(() => () => {}) },
     },
   }
@@ -57,5 +62,40 @@ describe('ShellController tryOrchestratorRoute', () => {
     vi.mocked(window.core!.ipc.invoke).mockClear()
     await ctrl.tryOrchestratorRoute()
     expect(window.core!.ipc.invoke).not.toHaveBeenCalled()
+  })
+})
+
+describe('ShellController tool search placeholder', () => {
+  beforeEach(() => {
+    vi.mocked(window.core!.ipc.invoke).mockReset()
+    vi.mocked(window.core!.shell.resetToolState).mockClear()
+    vi.mocked(window.core!.shell.setSearchPlaceholder).mockClear()
+  })
+
+  it('loads placeholder from kernel when a tool becomes active', async () => {
+    vi.mocked(window.core!.ipc.invoke).mockResolvedValue({
+      success: true,
+      data: { translations: { 'search.placeholder': 'Search through Nyaa' } },
+    })
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setActiveTool('com.nuxy.nyaa')
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(window.core!.shell.resetToolState).toHaveBeenCalledWith({
+      clearSearchPlaceholder: false,
+    })
+    expect(window.core!.ipc.invoke).toHaveBeenCalledWith('kernel', 'getExtensionTranslations', {
+      extId: 'com.nuxy.nyaa',
+    })
+    expect(window.core!.shell.setSearchPlaceholder).toHaveBeenCalledWith('Search through Nyaa')
+  })
+
+  it('clears placeholder when returning to shell', async () => {
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setActiveTool('com.nuxy.nyaa')
+    vi.mocked(window.core!.shell.resetToolState).mockClear()
+    ctrl.tools.setActiveTool(null)
+    expect(window.core!.shell.resetToolState).toHaveBeenCalledWith({
+      clearSearchPlaceholder: true,
+    })
   })
 })

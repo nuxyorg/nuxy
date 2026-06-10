@@ -156,7 +156,7 @@ export default defineConfig({
       '~ext': EXT_PATH,
       // Use ui-default's real implementations — packages/ui hooks delegate to window.UI
       // which would cause infinite recursion if window.UI is set from the same package.
-      '@nuxy/ui': path.resolve(repoRoot, 'extensions/ui-default/src/index.tsx'),
+      '@nuxy/ui': path.resolve(repoRoot, 'extensions/ui-default/src/index.ts'),
       '@nuxy/core': path.resolve(repoRoot, 'packages/core/src/index.ts'),
       '@nuxy/extension-sdk': path.resolve(repoRoot, 'packages/extension-sdk/src/index.ts'),
     },

@@ -23,7 +23,8 @@ export class NuxyTwoPanelElement extends LitElement {
     }
   `
 
-  @property({ type: String }) split = '50%'
+  @property({ type: String })
+  declare split: string
 
   private observer: MutationObserver | null = null
 

@@ -24,22 +24,6 @@ function selectPlural(
 
 export type TranslateFn = (key: string, vars?: Vars, count?: number) => string
 
-/** English defaults — shown until IPC translations load or when a key is missing. */
-const SHELL_FALLBACKS: Record<string, string> = {
-  'omniBar.placeholder': 'What do you have in mind?',
-  'omniBar.searchTool': 'Search {toolName}',
-  'omniBar.ariaLabel': 'Search',
-  'results.ariaLabel': 'Results',
-  'footer.extensionsLoaded': '{count} extensions loaded',
-  'footer.pressToRun': 'Press',
-  'footer.toRun': 'to run',
-  'footer.toActions': 'to actions',
-  loading: 'Loading…',
-  'commandPalette.searchPlaceholder': 'Search commands...',
-  'commandPalette.noActions': 'No actions available.',
-  'commandPalette.enterShortcut': 'Enter',
-}
-
 function resolveTemplate(
   translations: Translations,
   key: string,
@@ -50,7 +34,7 @@ function resolveTemplate(
     const plural = selectPlural(translations, key, count, locale)
     if (plural) return plural
   }
-  return translations[key] ?? SHELL_FALLBACKS[key]
+  return translations[key]
 }
 
 export interface Translator {
@@ -101,9 +85,8 @@ export function createTranslator(extId: string, onChange?: () => void): Translat
   })
 
   const t: TranslateFn = (key, vars, count) => {
-    const template = loaded
-      ? resolveTemplate(translations, key, count, locale)
-      : SHELL_FALLBACKS[key]
+    if (!loaded) return ''
+    const template = resolveTemplate(translations, key, count, locale)
     if (!template) return key
     return vars ? interpolate(template, vars) : template
   }

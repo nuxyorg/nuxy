@@ -98,10 +98,14 @@ export class NuxyCompareCardElement extends LitElement {
     }
   `
 
-  @property({ attribute: 'item-id' }) itemId = ''
-  @property() value = ''
-  @property({ attribute: false }) meta: CompareMeta | null = null
-  @property({ type: Boolean }) copied = false
+  @property({ attribute: 'item-id' })
+  declare itemId: string
+  @property()
+  declare value: string
+  @property({ attribute: false })
+  declare meta: CompareMeta | null
+  @property({ type: Boolean })
+  declare copied: boolean
 
   connectedCallback(): void {
     super.connectedCallback()

@@ -64,11 +64,16 @@ export class NuxyProgressBarElement extends LitElement {
     }
   `
 
-  @property({ type: Number }) value: number | undefined = undefined
-  @property({ type: Number }) max = 100
-  @property({ type: String }) size = 'md'
-  @property({ type: String }) label = ''
-  @property({ attribute: 'show-value', type: Boolean }) showValue = false
+  @property({ type: Number })
+  declare value: number | undefined
+  @property({ type: Number })
+  declare max: number
+  @property({ type: String })
+  declare size: string
+  @property({ type: String })
+  declare label: string
+  @property({ attribute: 'show-value', type: Boolean })
+  declare showValue: boolean
 
   connectedCallback(): void {
     super.connectedCallback()

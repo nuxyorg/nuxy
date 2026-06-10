@@ -2,6 +2,7 @@ import { app, BrowserWindow } from 'electron'
 import path from 'path'
 import { getConfig } from '../config/nuxyconfig.js'
 import { applyConfigToWindow, positionWindowOnDisplay } from './runtime.js'
+import { resolvePreloadScriptPath } from './preload-path.js'
 import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('Window')
@@ -61,7 +62,7 @@ export function createMainWindow() {
       contextIsolation: true,
       sandbox: true,
       backgroundThrottling: false,
-      preload: path.join(app.getAppPath(), 'dist-electron', 'preload.mjs'),
+      preload: resolvePreloadScriptPath(app.getAppPath()),
     },
   })
 

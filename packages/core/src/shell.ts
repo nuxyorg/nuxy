@@ -22,9 +22,16 @@ export interface ShellBridgeSnapshot {
   keyActionHints: ShellKeyAction[]
   omniBarPortal: HTMLElement | null
   footerPortal: HTMLElement | null
+  /** Omnibar placeholder set by the active tool at runtime. */
+  searchPlaceholder: string | null
 }
 
 export type OmniBarControlAction = 'show' | 'hide' | 'clear'
+
+export interface ResetToolStateOptions {
+  /** When false, keep the current omnibar placeholder (tool-to-tool switch). Default true. */
+  clearSearchPlaceholder?: boolean
+}
 
 /** Renderer-side shell integration API (preload). */
 export interface CoreShell {
@@ -37,6 +44,8 @@ export interface CoreShell {
 
   setOmniBarPortal(element: HTMLElement | null): void
   setFooterPortal(element: HTMLElement | null): void
+  /** Override omnibar placeholder while this tool is active. Pass null to clear. */
+  setSearchPlaceholder(placeholder: string | null): void
 
   /** Used by shell keyboard routing — not for extension authors. */
   getKeyActionsGetter(): (() => ShellKeyAction[]) | null
@@ -46,7 +55,7 @@ export interface CoreShell {
   subscribeOmniBarControl(handler: (action: OmniBarControlAction) => void): () => void
 
   /** Clears tool-scoped registrations (active tool changed or shell reset). */
-  resetToolState(): void
+  resetToolState(options?: ResetToolStateOptions): void
 
   /** Deactivate the active tool and clear omnibar query — returns to the main shell screen. */
   returnToShell(): void

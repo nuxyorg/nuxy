@@ -171,11 +171,16 @@ export class MockPanel extends LitElement {
     }
   `
 
-  @state() private open = true
-  @state() private channels: string[] = []
-  @state() private newChannel = ''
-  @state() private rowStates = new Map<string, MockRowState>()
-  @state() private tick = 0
+  @state()
+  declare private open: boolean
+  @state()
+  declare private channels: string[]
+  @state()
+  declare private newChannel: string
+  @state()
+  declare private rowStates: unknown
+  @state()
+  declare private tick: number
 
   private pollInterval?: ReturnType<typeof setInterval>
 
