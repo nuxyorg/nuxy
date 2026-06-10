@@ -1,0 +1,101 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_manifest_guide_manifest_guide",
+      "label": "Extension Manifest Developer Guide",
+      "file_type": "document",
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_manifest_guide_extension_types_table",
+      "label": "Extension Types Table (tool/provider/orchestrator/helper/uikit/theme/iconpack)",
+      "file_type": "concept",
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": "line 139-151",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_manifest_guide_permission_policy",
+      "label": "Strict Permission Policy",
+      "file_type": "concept",
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": "line 153-183",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_manifest_guide_proposed_improvements",
+      "label": "Proposed Manifest Improvements (nuxyVersion, permissionJustifications, granular shell/fs)",
+      "file_type": "concept",
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": "line 253-295",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_manifest_guide_manifest_guide",
+      "target": "extensions_extension_guide_manifest_rules",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_manifest_guide_manifest_guide",
+      "target": "extensions_manifest_guide_extension_types_table",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": "line 139-151",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_manifest_guide_manifest_guide",
+      "target": "extensions_manifest_guide_permission_policy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": "line 153-183",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_manifest_guide_permission_policy",
+      "target": "extensions_extension_guide_manifest_rules",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_manifest_guide_permission_policy",
+      "target": "extensions_manifest_guide_proposed_improvements",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/MANIFEST_GUIDE.md",
+      "source_location": "line 253-295",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

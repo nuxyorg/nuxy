@@ -6,7 +6,14 @@ export interface LinkProps extends Record<string, unknown> {
   external?: boolean
 }
 
-export function Link({ variant = 'default', external, className, children, href, ...props }: LinkProps) {
+export function Link({
+  variant = 'default',
+  external,
+  className,
+  children,
+  href,
+  ...props
+}: LinkProps) {
   return h(
     'nuxy-link',
     {

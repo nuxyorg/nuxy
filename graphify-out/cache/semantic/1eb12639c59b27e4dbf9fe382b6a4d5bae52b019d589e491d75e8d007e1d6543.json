@@ -1,0 +1,101 @@
+{
+  "nodes": [
+    {
+      "id": "docs_22_store_extension",
+      "label": "Nuxy Store Extension Design",
+      "file_type": "document",
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_22_store_security_chain",
+      "label": "7-Stage Extension Security Verification Chain",
+      "file_type": "concept",
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_22_store_kernel_install_channels",
+      "label": "Kernel Install/Uninstall IPC Channels",
+      "file_type": "concept",
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_22_store_publisher_trust",
+      "label": "Publisher Key Trust Handshake",
+      "file_type": "rationale",
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_22_store_extension",
+      "target": "docs_22_store_security_chain",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_22_store_extension",
+      "target": "docs_22_store_kernel_install_channels",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_22_store_security_chain",
+      "target": "docs_22_store_publisher_trust",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_22_store_security_chain",
+      "target": "nxt_readme_rsa_signing",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "docs_22_store_kernel_install_channels",
+      "target": "docs_02_kernel_message_broker",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/22-store-extension.md",
+      "source_location": null,
+      "weight": 0.85
+    }
+  ],
+  "hyperedges": []
+}

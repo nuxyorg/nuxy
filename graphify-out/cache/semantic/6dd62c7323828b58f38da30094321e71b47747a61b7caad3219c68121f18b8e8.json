@@ -1,0 +1,111 @@
+{
+  "nodes": [
+    {
+      "id": "docs_comprehensive_overview",
+      "label": "Nuxy Comprehensive Overview Document",
+      "file_type": "document",
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_comprehensive_tenets",
+      "label": "Three Core Design Tenets (Empty Shell, Extension Autonomy, Zero-Trust)",
+      "file_type": "rationale",
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_comprehensive_pain_points",
+      "label": "Pain Points P1-P18 Gap Analysis",
+      "file_type": "document",
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_comprehensive_phase_roadmap",
+      "label": "Implementation Phases 0-4 Roadmap",
+      "file_type": "document",
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_comprehensive_overview",
+      "target": "docs_comprehensive_tenets",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_comprehensive_overview",
+      "target": "docs_comprehensive_pain_points",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_comprehensive_overview",
+      "target": "docs_comprehensive_phase_roadmap",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_comprehensive_overview",
+      "target": "docs_02_architecture",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_comprehensive_tenets",
+      "target": "docs_00_empty_shell_philosophy",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "weight": 0.95
+    },
+    {
+      "source": "docs_comprehensive_tenets",
+      "target": "docs_10_security",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/comprehensive-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

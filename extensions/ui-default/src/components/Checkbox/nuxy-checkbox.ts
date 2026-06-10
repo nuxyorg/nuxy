@@ -1,98 +1,118 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-const CHECKMARK = `<svg class="nuxy-checkbox__checkmark" viewBox="0 0 12 9"><polyline points="1,5 4,8 11,1"/></svg>`
+const CHECKMARK_ICON: TemplateResult = html`<svg
+  class="nuxy-checkbox__checkmark"
+  viewBox="0 0 12 9"
+>
+  <polyline points="1,5 4,8 11,1" />
+</svg>`
 
-export class NuxyCheckboxElement extends HTMLElement {
-  private input: HTMLInputElement | null = null
+@customElement('nuxy-checkbox')
+export class NuxyCheckboxElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      cursor: pointer;
+      user-select: none;
+      font-size: var(--font-md);
+      color: var(--syntax-variable);
+    }
 
-  static get observedAttributes(): string[] {
-    return ['checked', 'disabled', 'id']
-  }
+    :host([disabled]) {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nuxy-checkbox__box {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--syntax-comment);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease;
+    }
+
+    :host([checked]) .nuxy-checkbox__box {
+      border-color: var(--syntax-operator);
+      background: var(--syntax-operator);
+    }
+
+    .nuxy-checkbox__checkmark {
+      display: none;
+      width: 9px;
+      height: 9px;
+      stroke: #000;
+      stroke-width: 2.5;
+      fill: none;
+    }
+
+    :host([checked]) .nuxy-checkbox__checkmark {
+      display: block;
+    }
+
+    .nuxy-checkbox__input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+  `
+
+  @property({ type: Boolean, reflect: true }) checked = false
+  @property({ type: Boolean, reflect: true }) disabled = false
+
+  @state() private _labelHTML = ''
 
   connectedCallback(): void {
-    this.classList.add('nuxy-checkbox')
-    this.build()
-    this.sync()
-    this.input?.addEventListener('change', this.onNativeChange)
+    // Capture initial label content before Lit replaces it
+    this._labelHTML = this.innerHTML
+    super.connectedCallback()
   }
 
-  disconnectedCallback(): void {
-    this.input?.removeEventListener('change', this.onNativeChange)
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private onNativeChange = (): void => {
-    this.toggleFromInput()
-  }
-
-  private build(): void {
-    if (this.input) return
-
-    const id = this.getAttribute('id')
-    this.input = document.createElement('input')
-    this.input.type = 'checkbox'
-    this.input.className = 'nuxy-checkbox__input'
-    if (id) this.input.id = id
-
-    const box = document.createElement('span')
-    box.className = 'nuxy-checkbox__box'
-    box.setAttribute('aria-hidden', 'true')
-    box.innerHTML = CHECKMARK
-    box.addEventListener('click', (e) => {
-      e.preventDefault()
-      this.toggle()
-    })
-
-    const labelSlot = document.createElement('span')
-    labelSlot.className = 'nuxy-checkbox__label'
-    while (this.firstChild) {
-      labelSlot.appendChild(this.firstChild)
-    }
-
-    this.append(this.input, box, labelSlot)
-  }
-
-  private sync(): void {
-    const checked = this.hasAttribute('checked')
-    const disabled = this.hasAttribute('disabled')
-    const extraClass = this.getAttribute('class') ?? ''
-
-    syncHostClasses(this, 'nuxy-checkbox', checked ? 'nuxy-checkbox--checked' : '', disabled ? 'nuxy-checkbox--disabled' : '')
-
-    if (this.input) {
-      this.input.checked = checked
-      this.input.disabled = disabled
-      this.input.setAttribute('aria-checked', String(checked))
-    }
-  }
-
-  private toggle(): void {
-    if (this.hasAttribute('disabled')) return
-    const next = !this.hasAttribute('checked')
-    if (next) this.setAttribute('checked', '')
-    else this.removeAttribute('checked')
-    this.sync()
+  private handleChange(e: Event): void {
+    if (this.disabled) return
+    const input = e.target as HTMLInputElement
+    this.checked = input.checked
     this.dispatchEvent(
-      new CustomEvent('nuxy-checkbox-change', { detail: { checked: next }, bubbles: true })
+      new CustomEvent('nuxy-checkbox-change', { detail: { checked: this.checked }, bubbles: true })
     )
   }
 
-  private toggleFromInput(): void {
-    if (this.hasAttribute('disabled')) return
-    const next = Boolean(this.input?.checked)
-    if (next) this.setAttribute('checked', '')
-    else this.removeAttribute('checked')
-    this.sync()
+  private handleBoxClick(e: Event): void {
+    e.preventDefault()
+    if (this.disabled) return
+    this.checked = !this.checked
     this.dispatchEvent(
-      new CustomEvent('nuxy-checkbox-change', { detail: { checked: next }, bubbles: true })
+      new CustomEvent('nuxy-checkbox-change', { detail: { checked: this.checked }, bubbles: true })
     )
   }
-}
 
-if (!customElements.get('nuxy-checkbox')) {
-  customElements.define('nuxy-checkbox', NuxyCheckboxElement)
+  render(): TemplateResult {
+    return html`
+      <input
+        type="checkbox"
+        class="nuxy-checkbox__input"
+        .checked=${this.checked}
+        .disabled=${this.disabled}
+        aria-checked=${String(this.checked)}
+        @change=${this.handleChange}
+      />
+      <span class="nuxy-checkbox__box" aria-hidden="true" @click=${this.handleBoxClick}
+        >${CHECKMARK_ICON}</span
+      >
+      ${this._labelHTML
+        ? html`<span class="nuxy-checkbox__label" .innerHTML=${this._labelHTML}></span>`
+        : nothing}
+    `
+  }
 }

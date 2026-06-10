@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "docs_changelog_20260519_doc",
+      "id": "changelog_20260519_doc",
       "label": "Changelog 2026-05-19",
       "file_type": "document",
       "source_file": "docs/changelog/2026-05-19.md",
@@ -12,69 +12,50 @@
       "contributor": null
     },
     {
-      "id": "docs_changelog_20260519_permissions_ts",
-      "label": "Permissions Enforcement Module (permissions.ts)",
-      "file_type": "concept",
+      "id": "changelog_20260519_permissions_ts",
+      "label": "permissions.ts \u2014 Manifest Permission Enforcement",
+      "file_type": "code",
       "source_file": "docs/changelog/2026-05-19.md",
-      "source_location": "Added section",
+      "source_location": "L7",
       "source_url": null,
-      "captured_at": "2026-05-19",
+      "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_changelog_20260519_broker_ts",
-      "label": "Cross-Extension IPC Broker (broker.ts)",
-      "file_type": "concept",
+      "id": "changelog_20260519_broker_ts",
+      "label": "broker.ts \u2014 Cross-Extension Invoke with caller/callable Checks",
+      "file_type": "code",
       "source_file": "docs/changelog/2026-05-19.md",
-      "source_location": "Added section",
+      "source_location": "L8",
       "source_url": null,
-      "captured_at": "2026-05-19",
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "changelog_20260519_shell_extension",
+      "label": "shell Extension \u2014 Bootstrap Launcher UI (com.nuxy.shell)",
+      "file_type": "code",
+      "source_file": "docs/changelog/2026-05-19.md",
+      "source_location": "L11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "changelog_20260519_safe_eval",
+      "label": "calculator/safe-eval.js \u2014 Safe Math Parser (no eval)",
+      "file_type": "code",
+      "source_file": "docs/changelog/2026-05-19.md",
+      "source_location": "L12",
+      "source_url": null,
+      "captured_at": null,
       "author": null,
       "contributor": null
     }
   ],
-  "edges": [
-    {
-      "source": "docs_changelog_20260519_doc",
-      "target": "docs_changelog_20260519_permissions_ts",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/changelog/2026-05-19.md",
-      "source_location": "Added section",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_changelog_20260519_doc",
-      "target": "docs_changelog_20260519_broker_ts",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/changelog/2026-05-19.md",
-      "source_location": "Added section",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_changelog_20260519_permissions_ts",
-      "target": "docs_04_modules_capabilities",
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "docs/changelog/2026-05-19.md",
-      "source_location": null,
-      "weight": 0.85
-    },
-    {
-      "source": "docs_changelog_20260519_broker_ts",
-      "target": "docs_04_modules_capabilities",
-      "relation": "implements",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "docs/changelog/2026-05-19.md",
-      "source_location": null,
-      "weight": 0.85
-    }
-  ],
+  "edges": [],
   "hyperedges": []
 }

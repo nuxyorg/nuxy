@@ -1,6 +1,5 @@
 // fallow-ignore-file code-duplication
 export const SHELL_EXT_ID = 'com.nuxy.shell'
-export const SHELL_CSS_ID = 'nuxy-shell-styles'
 
 export function parseCoordinate(
   val: string | null | undefined,
@@ -34,13 +33,4 @@ export function parseCoordinate(
     return Math.round(ratio)
   }
   return Math.round((displayLength - winLength) / 2)
-}
-
-export function ensureShellStyles(): void {
-  if (document.getElementById(SHELL_CSS_ID)) return
-  const link = document.createElement('link')
-  link.id = SHELL_CSS_ID
-  link.rel = 'stylesheet'
-  link.href = `nuxy-ext://${SHELL_EXT_ID}/shell.css`
-  document.head.appendChild(link)
 }

@@ -1,5 +1,5 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 export interface RadioGroupOption {
   value: string
@@ -17,88 +17,144 @@ function parseOptions(raw: string | null): RadioGroupOption[] {
   }
 }
 
-export class NuxyRadioGroupElement extends HTMLElement {
+@customElement('nuxy-radio-group')
+export class NuxyRadioGroupElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    :host([orientation='horizontal']) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+    }
+
+    .nuxy-radio {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      cursor: pointer;
+      user-select: none;
+      font-size: var(--font-md);
+      color: var(--syntax-variable);
+    }
+
+    .nuxy-radio--disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nuxy-radio__circle {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--syntax-comment);
+      border-radius: 50%;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color 0.15s ease;
+    }
+
+    .nuxy-radio--checked .nuxy-radio__circle {
+      border-color: var(--syntax-operator);
+    }
+
+    .nuxy-radio__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--syntax-operator);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .nuxy-radio--checked .nuxy-radio__dot {
+      opacity: 1;
+    }
+
+    .nuxy-radio__input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+  `
+
+  @property({ type: String }) options = ''
+  @property({ type: String }) value = ''
+  @property({ type: String }) name = ''
+  @property({ type: String, reflect: true }) orientation = 'vertical'
+  @property({ type: Boolean }) disabled = false
+
   private groupName = ''
 
-  static get observedAttributes(): string[] {
-    return ['options', 'value', 'name', 'orientation', 'disabled']
-  }
-
   connectedCallback(): void {
-    this.render()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
-
-  private render(): void {
-    const options = parseOptions(this.getAttribute('options'))
-    const selected = this.getAttribute('value') ?? ''
-    const orientation = this.getAttribute('orientation') ?? 'vertical'
-    const disabled = this.hasAttribute('disabled')
-    const extraClass = this.getAttribute('class') ?? ''
-
-    this.groupName =
-      this.getAttribute('name') ?? `nuxy-radio-${Math.random().toString(36).slice(2, 9)}`
-
-    syncHostClasses(this, 'nuxy-radio-group', orientation === 'horizontal' ? 'nuxy-radio-group--horizontal' : '')
+    super.connectedCallback()
     this.setAttribute('role', 'radiogroup')
-
-    this.replaceChildren()
-
-    for (const opt of options) {
-      const isChecked = selected === opt.value
-      const isDisabled = disabled || Boolean(opt.disabled)
-
-      const label = document.createElement('label')
-      label.className = [
-        'nuxy-radio',
-        isChecked ? 'nuxy-radio--checked' : '',
-        isDisabled ? 'nuxy-radio--disabled' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')
-
-      const input = document.createElement('input')
-      input.type = 'radio'
-      input.className = 'nuxy-radio__input'
-      input.name = this.groupName
-      input.value = opt.value
-      input.checked = isChecked
-      input.disabled = isDisabled
-      input.setAttribute('aria-checked', String(isChecked))
-      input.addEventListener('change', () => this.select(opt.value, opt.disabled))
-
-      const circle = document.createElement('span')
-      circle.className = 'nuxy-radio__circle'
-      circle.setAttribute('aria-hidden', 'true')
-      circle.innerHTML = '<span class="nuxy-radio__dot"></span>'
-      circle.addEventListener('click', (e) => {
-        e.preventDefault()
-        this.select(opt.value, opt.disabled)
-      })
-
-      const text = document.createElement('span')
-      text.textContent = opt.label
-
-      label.append(input, circle, text)
-      this.appendChild(label)
-    }
   }
 
   private select(optValue: string, optDisabled?: boolean): void {
-    if (this.hasAttribute('disabled') || optDisabled) return
-    this.setAttribute('value', optValue)
-    this.render()
+    if (this.disabled || optDisabled) return
+    this.value = optValue
     this.dispatchEvent(
       new CustomEvent('nuxy-radio-group-change', { detail: { value: optValue }, bubbles: true })
     )
   }
-}
 
-if (!customElements.get('nuxy-radio-group')) {
-  customElements.define('nuxy-radio-group', NuxyRadioGroupElement)
+  render(): TemplateResult {
+    const options = parseOptions(this.options || this.getAttribute('options'))
+    const selected = (this.value || this.getAttribute('value')) ?? ''
+    const disabled = this.disabled || this.hasAttribute('disabled')
+
+    this.groupName =
+      this.getAttribute('name') ?? `nuxy-radio-${Math.random().toString(36).slice(2, 9)}`
+
+    return html`
+      ${options.map((opt) => {
+        const isChecked = selected === opt.value
+        const isDisabled = disabled || Boolean(opt.disabled)
+        return html`
+          <label
+            class=${[
+              'nuxy-radio',
+              isChecked ? 'nuxy-radio--checked' : '',
+              isDisabled ? 'nuxy-radio--disabled' : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
+          >
+            <input
+              type="radio"
+              class="nuxy-radio__input"
+              name=${this.groupName}
+              value=${opt.value}
+              .checked=${isChecked}
+              ?disabled=${isDisabled}
+              aria-checked=${String(isChecked)}
+              @change=${() => this.select(opt.value, opt.disabled)}
+            />
+            <span
+              class="nuxy-radio__circle"
+              aria-hidden="true"
+              @click=${(e: MouseEvent) => {
+                e.preventDefault()
+                this.select(opt.value, opt.disabled)
+              }}
+            >
+              <span class="nuxy-radio__dot"></span>
+            </span>
+            <span>${opt.label}</span>
+          </label>
+        `
+      })}
+    `
+  }
 }
 
 declare global {

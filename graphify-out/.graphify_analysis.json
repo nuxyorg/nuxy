@@ -1,0 +1,238 @@
+{
+  "communities": {
+    "0": [
+      "lit_core_ce_utils_h_helper",
+      "lit_core_host_call_timeout_missing",
+      "lit_core_ipc_no_discriminator",
+      "lit_core_packages_ui_dead_code",
+      "lit_core_two_panel_global_dom_query",
+      "lit_core_worker_error_silent",
+      "lit_electron_worker_no_timeout",
+      "lit_genel_bakis_doc",
+      "lit_genel_h_helper_reinvented_jsx",
+      "lit_genel_ipc_promise_no_timeout",
+      "lit_genel_packages_ui_dead",
+      "lit_genel_three_paradigm_problem",
+      "lit_packages_core_doc"
+    ],
+    "1": [
+      "lit_electron_bootstrap_race_condition",
+      "lit_electron_ipc_register_monolith",
+      "lit_electron_preload_ready_on_error",
+      "lit_electron_protocol_path_traversal",
+      "lit_electron_renderer_bootstrap_no_error_propagation",
+      "lit_electron_renderer_doc",
+      "lit_electron_scanner_612_lines",
+      "lit_electron_scanner_no_manifest_validation",
+      "lit_electron_worker_error_passive",
+      "lit_genel_preload_signal_always_fires",
+      "lit_rewrite_plan_phase1_infra"
+    ],
+    "2": [
+      "lit_genel_lit_render_cycle_clash",
+      "lit_shell_command_palette_no_focus_trap",
+      "lit_shell_doc",
+      "lit_shell_dom_factory_antipattern",
+      "lit_shell_e2e_workaround_test_bug",
+      "lit_shell_omnibar_innerhtml_xss",
+      "lit_shell_omnibar_mutation_observer_loop",
+      "lit_shell_view_vanilla_not_lit"
+    ],
+    "3": [
+      "lit_rewrite_plan_shared_utils",
+      "lit_ui_aria_missing",
+      "lit_ui_components_doc",
+      "lit_ui_parseoptions_duplicated",
+      "lit_ui_shadow_vs_light_dom_inconsistency",
+      "lit_ui_sync_host_classes_repeated",
+      "lit_ui_text_unsafehtml_xss",
+      "lit_ui_unnecessary_custom_elements"
+    ],
+    "4": [
+      "lit_ext_calculator_eval_security",
+      "lit_ext_ext_id_hardcoded",
+      "lit_ext_nyaa_no_abort_controller",
+      "lit_ext_nyaa_silent_error",
+      "lit_ext_settings_race_condition",
+      "lit_ext_window_core_no_null_check",
+      "lit_extensions_doc"
+    ],
+    "5": [
+      "lit_rewrite_plan_core_decisions",
+      "lit_rewrite_plan_doc",
+      "lit_rewrite_plan_phase3_ui_library",
+      "lit_rewrite_plan_phase4_extensions",
+      "lit_rewrite_plan_scanner_split_5modules",
+      "lit_rewrite_plan_selectbox_split",
+      "lit_ui_selectbox_monolith_210lines"
+    ],
+    "6": [
+      "lit_genel_shell_controller_god_class",
+      "lit_rewrite_plan_navigation_controller",
+      "lit_rewrite_plan_phase2_shell",
+      "lit_rewrite_plan_query_controller",
+      "lit_shell_controller_19_field_god_state",
+      "lit_shell_controller_keyboard_167_lines"
+    ],
+    "7": ["lit_core_cross_extension_deadlock_risk"],
+    "8": ["lit_core_sdk_proxy_generic_errors"],
+    "9": ["lit_ext_calculator_empty_backend"],
+    "10": ["lit_ext_notes_clean"],
+    "11": ["lit_ext_settings_async_missing_await"],
+    "12": ["lit_shell_types_listitem_no_discriminator"],
+    "13": ["lit_shell_view_render_154_lines"],
+    "14": ["lit_ui_arrow_fn_event_listener_leak"],
+    "15": ["lit_ui_modal_reparent_slots"],
+    "16": ["lit_ui_selectbox_document_body_portal"]
+  },
+  "cohesion": {
+    "0": 0.16666666666666666,
+    "1": 0.2,
+    "2": 0.2857142857142857,
+    "3": 0.25,
+    "4": 0.2857142857142857,
+    "5": 0.3333333333333333,
+    "6": 0.3333333333333333,
+    "7": 1.0,
+    "8": 1.0,
+    "9": 1.0,
+    "10": 1.0,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0
+  },
+  "gods": [
+    {
+      "id": "lit_electron_renderer_doc",
+      "label": "Lit Remake: Electron & Renderer Analysis (05-electron-renderer.md)",
+      "degree": 9
+    },
+    {
+      "id": "lit_rewrite_plan_doc",
+      "label": "Lit Rewrite Plan (06-yeniden-yazirim-plani.md)",
+      "degree": 8
+    },
+    {
+      "id": "lit_shell_doc",
+      "label": "Lit Remake: Shell Extension Analysis (01-shell.md)",
+      "degree": 6
+    },
+    {
+      "id": "lit_ui_components_doc",
+      "label": "Lit Remake: UI Components Analysis (02-ui-components.md)",
+      "degree": 6
+    },
+    {
+      "id": "lit_packages_core_doc",
+      "label": "Lit Remake: Packages/Core Analysis (03-packages-core.md)",
+      "degree": 6
+    },
+    {
+      "id": "lit_extensions_doc",
+      "label": "Lit Remake: Bundled Extensions Analysis (04-extensions.md)",
+      "degree": 6
+    },
+    {
+      "id": "lit_genel_bakis_doc",
+      "label": "Lit Remake: General Overview (docs/lit-remake/00-genel-bakis.md)",
+      "degree": 5
+    },
+    {
+      "id": "lit_rewrite_plan_phase2_shell",
+      "label": "Rewrite Phase 2: Shell Extension — ShellController Split into ReactiveControllers, NuxyShellViewElement → LitElement",
+      "degree": 5
+    },
+    {
+      "id": "lit_genel_shell_controller_god_class",
+      "label": "Problem: ShellController 992-Line God Class",
+      "degree": 4
+    },
+    {
+      "id": "lit_shell_view_vanilla_not_lit",
+      "label": "Problem: nuxy-shell-view.ts Extends HTMLElement, Not LitElement",
+      "degree": 4
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Critical: host:call Promise Map Has No Timeout — Memory Leak",
+      "target": "Critical: Worker IPC Promises Have No Timeout (Memory Leak)",
+      "source_files": [
+        "/home/xava/Documents/nuxy/docs/lit-remake/03-packages-core.md",
+        "/home/xava/Documents/nuxy/docs/lit-remake/00-genel-bakis.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "semantically_similar_to",
+      "why": "inferred connection - not explicitly stated in source; semantically similar concepts with no structural link"
+    },
+    {
+      "source": "Bug: preload.ts Dispatches nuxy:ready Even When contextBridge.exposeInMainWorld Fails",
+      "target": "Critical: Preload Signal Fires Even on Error (nuxy:ready)",
+      "source_files": [
+        "/home/xava/Documents/nuxy/docs/lit-remake/05-electron-renderer.md",
+        "/home/xava/Documents/nuxy/docs/lit-remake/00-genel-bakis.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "semantically_similar_to",
+      "why": "inferred connection - not explicitly stated in source; semantically similar concepts with no structural link"
+    },
+    {
+      "source": "Problem: packages/ui Stubs Are Dead Code (window.UI Pattern Unused)",
+      "target": "Problem: packages/ui Stub Layer is Practically Dead Code",
+      "source_files": [
+        "/home/xava/Documents/nuxy/docs/lit-remake/03-packages-core.md",
+        "/home/xava/Documents/nuxy/docs/lit-remake/00-genel-bakis.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "semantically_similar_to",
+      "why": "inferred connection - not explicitly stated in source; semantically similar concepts with no structural link"
+    },
+    {
+      "source": "Core Decisions: Lit + Shadow DOM, Static Styles, Remove h()/packages/ui/ce-utils, EXT_ID from manifest",
+      "target": "Problem: ceListItem/ceList/h() — Manually Reinventing JSX",
+      "source_files": [
+        "/home/xava/Documents/nuxy/docs/lit-remake/06-yeniden-yazirim-plani.md",
+        "/home/xava/Documents/nuxy/docs/lit-remake/00-genel-bakis.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "rationale_for",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    },
+    {
+      "source": "Rewrite Phase 2: Shell Extension — ShellController Split into ReactiveControllers, NuxyShellViewElement → LitElement",
+      "target": "Problem: nuxy-shell-view.ts Extends HTMLElement, Not LitElement",
+      "source_files": [
+        "/home/xava/Documents/nuxy/docs/lit-remake/06-yeniden-yazirim-plani.md",
+        "/home/xava/Documents/nuxy/docs/lit-remake/01-shell.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "rationale_for",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `Lit Rewrite Plan (06-yeniden-yazirim-plani.md)` connect `Community 5` to `Community 1`, `Community 3`, `Community 6`?",
+      "why": "High betweenness centrality (0.315) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Rewrite Phase 2: Shell Extension — ShellController Split into ReactiveControllers, NuxyShellViewElement → LitElement` connect `Community 6` to `Community 2`, `Community 5`?",
+      "why": "High betweenness centrality (0.244) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Lit Remake: Electron & Renderer Analysis (05-electron-renderer.md)` connect `Community 1` to `Community 0`?",
+      "why": "High betweenness centrality (0.163) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Problem: Three Paradigms Running Simultaneously (Vanilla CE, Partial Lit, Real Lit)`, `Critical: Preload Signal Fires Even on Error (nuxy:ready)`, `Critical: Lit Render Cycle vs Manual DOM Sync Clash (queueMicrotask vs updateComplete)` to the rest of the system?",
+      "why": "44 weakly-connected nodes found - possible documentation gaps or missing edges."
+    }
+  ]
+}

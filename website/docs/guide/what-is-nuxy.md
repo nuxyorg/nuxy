@@ -15,7 +15,7 @@ The core Nuxy application deliberately does almost nothing on its own. It provid
 - A kernel that scans, loads, and mediates between extensions
 - An IPC bridge that safely connects the renderer to worker-backed extensions
 
-Everything else — the omnibar UI, the tool list, search results, clipboard management, calculator, notes, settings — comes from **extensions**. This design means the launcher is infinitely replaceable. You can swap the shell itself, and the core never needs to change.
+Everything else — the omnibar UI, the tool list, search results, calculator, notes, settings — comes from **extensions**. This design means the launcher is infinitely replaceable. You can swap the shell itself, and the core never needs to change.
 
 ## Extension Types
 
@@ -23,7 +23,7 @@ Nuxy recognizes seven extension types. Each has a distinct role:
 
 ### `tool`
 
-A tool is a user-activated feature. When selected from the launcher, its frontend component takes over the window. Examples: Clipboard Manager, Notes, Snippets.
+A tool is a user-activated feature. When selected from the launcher, its Lit frontend takes over the window. Examples: Notes, Settings, Nyaa.
 
 ```json
 { "type": "tool", "capabilities": { "callable": true, "caller": false } }
@@ -51,7 +51,7 @@ A helper is a background utility that other extensions call via `core.extensions
 
 ### `uikit`
 
-A uikit extension ships additional React components that are loaded into `window.UI` before the shell bootstraps. Other extensions can then use these components without bundling them.
+A uikit extension ships additional UI components (custom elements or element factories) that are loaded into `window.UI` before the shell bootstraps. Other extensions can then use these components without bundling them.
 
 ### `theme`
 
@@ -79,3 +79,12 @@ An icon pack extension ships a JSON file containing SVG strings keyed by name. T
 - **No custom UI components in extensions** — all UI comes from the shared `@nuxy/ui` kit via `window.UI`
 - **Keyboard-first** — every action must have a keyboard binding; mouse clicks are a secondary affordance
 - **No hardcoded colors** — all styling uses CSS custom property tokens from the active theme
+
+## Next steps
+
+| I want to…                      | Go to                                               |
+| ------------------------------- | --------------------------------------------------- |
+| Install and run Nuxy            | [Quick Start](/guide/getting-started)               |
+| Understand the architecture     | [Architecture](/guide/architecture)                 |
+| Build my first extension        | [Your First Extension](/extensions/first-extension) |
+| Read the full design philosophy | [Empty Shell](/design/overview)                     |

@@ -13,6 +13,6 @@
     "claims": ["background-layer"]
   },
   "entry": {
-    "frontend": "frontend.tsx"
+    "frontend": "frontend.ts"
   }
 }

@@ -1,5 +1,5 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 import '../MarkdownText/nuxy-markdown-text.ts'
 
 const ROLE_LABELS: Record<string, string> = {
@@ -7,49 +7,64 @@ const ROLE_LABELS: Record<string, string> = {
   assistant: 'Assistant',
 }
 
-export class NuxyChatMessageElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['role', 'content']
-  }
-
-  connectedCallback(): void {
-    this.render()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
-
-  private render(): void {
-    const role = this.getAttribute('role') ?? 'assistant'
-    const content = this.getAttribute('content') ?? ''
-    const extraClass = this.getAttribute('class') ?? ''
-
-    syncHostClasses(this, 'nuxy-chat-message', `nuxy-chat-message--${role}`)
-
-    this.replaceChildren()
-
-    const bubble = document.createElement('div')
-    bubble.className = 'nuxy-chat-message__bubble'
-
-    if (role === 'assistant') {
-      const md = document.createElement('nuxy-markdown-text')
-      md.setAttribute('content', content)
-      bubble.appendChild(md)
-    } else {
-      bubble.textContent = content
+@customElement('nuxy-chat-message')
+export class NuxyChatMessageElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      max-width: 80%;
     }
 
-    const roleEl = document.createElement('div')
-    roleEl.className = 'nuxy-chat-message__role'
-    roleEl.textContent = ROLE_LABELS[role] ?? role
+    :host([role='user']) {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
 
-    this.append(bubble, roleEl)
+    :host([role='assistant']) {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .nuxy-chat-message__bubble {
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-lg);
+      font-size: var(--font-sm);
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    :host([role='user']) .nuxy-chat-message__bubble {
+      background: var(--surface-accent-subtle, rgba(120, 80, 255, 0.18));
+      color: var(--text-primary, rgba(255, 255, 255, 0.92));
+    }
+
+    :host([role='assistant']) .nuxy-chat-message__bubble {
+      background: var(--surface-overlay, rgba(20, 20, 20, 0.65));
+      color: var(--text-primary, rgba(255, 255, 255, 0.92));
+    }
+
+    .nuxy-chat-message__role {
+      font-size: var(--font-xs);
+      color: var(--text-muted, rgba(255, 255, 255, 0.4));
+      padding: 0 var(--space-1);
+    }
+  `
+
+  @property({ type: String, reflect: true }) role = 'assistant'
+  @property({ type: String }) content = ''
+
+  render(): TemplateResult {
+    return html`
+      <div class="nuxy-chat-message__bubble">
+        ${this.role === 'assistant'
+          ? html`<nuxy-markdown-text content=${this.content}></nuxy-markdown-text>`
+          : this.content}
+      </div>
+      <div class="nuxy-chat-message__role">${ROLE_LABELS[this.role] ?? this.role}</div>
+    `
   }
-}
-
-if (!customElements.get('nuxy-chat-message')) {
-  customElements.define('nuxy-chat-message', NuxyChatMessageElement)
 }
 
 declare global {

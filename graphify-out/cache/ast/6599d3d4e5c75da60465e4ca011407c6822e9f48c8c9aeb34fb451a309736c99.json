@@ -1,0 +1,219 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_packages_ext_devserver_package_json",
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "ext_devserver_package_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "ext_devserver_package_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "ext_devserver_package_private",
+      "label": "private",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "ext_devserver_package_type",
+      "label": "type",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "ext_devserver_package_scripts",
+      "label": "scripts",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "ext_devserver_package_scripts_dev",
+      "label": "dev",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "ext_devserver_package_dependencies",
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "ext_devserver_package_dependencies_nuxy_ui",
+      "label": "@nuxy/ui",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "ext_devserver_package_dependencies_lit",
+      "label": "lit",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "ext_devserver_package_devdependencies",
+      "label": "devDependencies",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "ext_devserver_package_devdependencies_vite",
+      "label": "vite",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L14"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_package_json",
+      "target": "ext_devserver_package_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_package_json",
+      "target": "ext_devserver_package_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_package_json",
+      "target": "ext_devserver_package_private",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_package_json",
+      "target": "ext_devserver_package_type",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_package_json",
+      "target": "ext_devserver_package_scripts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_package_scripts",
+      "target": "ext_devserver_package_scripts_dev",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_package_json",
+      "target": "ext_devserver_package_dependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_package_dependencies",
+      "target": "ext_devserver_package_dependencies_nuxy_ui",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_package_dependencies_nuxy_ui",
+      "target": "nuxy_ui",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "ext_devserver_package_dependencies",
+      "target": "ext_devserver_package_dependencies_lit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_package_dependencies_lit",
+      "target": "lit",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_package_json",
+      "target": "ext_devserver_package_devdependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_package_devdependencies",
+      "target": "ext_devserver_package_devdependencies_vite",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_package_devdependencies_vite",
+      "target": "vite",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/package.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "context": "import"
+    }
+  ]
+}

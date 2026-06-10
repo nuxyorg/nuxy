@@ -1,5 +1,12 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import {
+  LitElement,
+  html,
+  css,
+  nothing,
+  customElement,
+  state,
+  type TemplateResult,
+} from '@nuxy/core'
 
 const UPLOAD_SVG = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`
 const REMOVE_SVG = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
@@ -28,43 +35,124 @@ function formatSize(bytes: number): string {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
 }
 
-export class NuxyFileInputElement extends HTMLElement {
-  private zone: HTMLDivElement | null = null
-  private nativeInput: HTMLInputElement | null = null
-  private filesEl: HTMLDivElement | null = null
-  private internalFiles: File[] = []
-  private dragOver = false
+@customElement('nuxy-file-input')
+export class NuxyFileInputElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .nuxy-file-input__zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: var(--space-6) var(--space-5);
+      border: 1.5px dashed var(--syntax-comment);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease;
+      text-align: center;
+      position: relative;
+    }
+
+    .nuxy-file-input__zone:hover,
+    .nuxy-file-input__zone--dragover {
+      border-color: var(--syntax-operator);
+      background: rgba(42, 192, 255, 0.04);
+    }
+
+    .nuxy-file-input__zone--has-files {
+      border-style: solid;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .nuxy-file-input__native {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .nuxy-file-input__icon {
+      color: var(--syntax-comment);
+    }
+
+    .nuxy-file-input__label {
+      font-size: var(--font-md);
+      color: var(--syntax-variable);
+    }
+
+    .nuxy-file-input__hint {
+      font-size: var(--font-sm);
+      color: var(--syntax-comment);
+    }
+
+    .nuxy-file-input__files {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .nuxy-file-input__file {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-2) var(--space-3);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: var(--radius-md);
+      font-size: var(--font-sm);
+      color: var(--syntax-variable);
+    }
+
+    .nuxy-file-input__file-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nuxy-file-input__file-size {
+      color: var(--syntax-comment);
+      flex-shrink: 0;
+    }
+
+    .nuxy-file-input__remove {
+      background: transparent;
+      border: none;
+      color: var(--syntax-comment);
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      transition: color 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .nuxy-file-input__remove:hover {
+      color: var(--syntax-invalid);
+    }
+  `
+
+  @state() private dragOver = false
+  @state() private internalFiles: File[] = []
 
   static get observedAttributes(): string[] {
     return ['files-meta', 'multiple', 'accept', 'disabled', 'label', 'hint', 'id']
   }
 
-  connectedCallback(): void {
-    this.build()
-    this.sync()
-    this.zone?.addEventListener('dragover', this.onDragOver)
-    this.zone?.addEventListener('dragleave', this.onDragLeave)
-    this.zone?.addEventListener('drop', this.onDrop)
-    this.zone?.addEventListener('click', this.onZoneClick)
-    this.zone?.addEventListener('keydown', this.onZoneKeyDown)
-    this.nativeInput?.addEventListener('change', this.onNativeChange)
-    this.filesEl?.addEventListener('click', this.onFilesClick)
-  }
-
-  disconnectedCallback(): void {
-    this.zone?.removeEventListener('dragover', this.onDragOver)
-    this.zone?.removeEventListener('dragleave', this.onDragLeave)
-    this.zone?.removeEventListener('drop', this.onDrop)
-    this.zone?.removeEventListener('click', this.onZoneClick)
-    this.zone?.removeEventListener('keydown', this.onZoneKeyDown)
-    this.nativeInput?.removeEventListener('change', this.onNativeChange)
-    this.filesEl?.removeEventListener('click', this.onFilesClick)
-  }
-
-  attributeChangedCallback(name: string): void {
-    if (!this.isConnected) return
-    if (name === 'files-meta') this.renderFiles()
-    else this.sync()
+  attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
+    super.attributeChangedCallback(name, oldVal, newVal)
+    if (this.isConnected) {
+      this.requestUpdate()
+    }
   }
 
   private isDisabled(): boolean {
@@ -90,36 +178,38 @@ export class NuxyFileInputElement extends HTMLElement {
     e.preventDefault()
     if (!this.isDisabled()) {
       this.dragOver = true
-      this.syncZoneClasses()
     }
   }
 
   private onDragLeave = (): void => {
     this.dragOver = false
-    this.syncZoneClasses()
   }
 
   private onDrop = (e: DragEvent): void => {
     e.preventDefault()
     this.dragOver = false
-    this.syncZoneClasses()
     if (!this.isDisabled()) this.handleFiles(e.dataTransfer?.files ?? null)
   }
 
   private onZoneClick = (): void => {
-    if (!this.isDisabled()) this.nativeInput?.click()
+    if (!this.isDisabled()) {
+      const input = this.renderRoot.querySelector<HTMLInputElement>('.nuxy-file-input__native')
+      input?.click()
+    }
   }
 
   private onZoneKeyDown = (e: KeyboardEvent): void => {
     if ((e.key === 'Enter' || e.key === ' ') && !this.isDisabled()) {
       e.preventDefault()
-      this.nativeInput?.click()
+      const input = this.renderRoot.querySelector<HTMLInputElement>('.nuxy-file-input__native')
+      input?.click()
     }
   }
 
-  private onNativeChange = (): void => {
-    this.handleFiles(this.nativeInput?.files ?? null)
-    if (this.nativeInput) this.nativeInput.value = ''
+  private onNativeChange = (e: Event): void => {
+    const input = e.target as HTMLInputElement
+    this.handleFiles(input?.files ?? null)
+    if (input) input.value = ''
   }
 
   private onFilesClick = (e: Event): void => {
@@ -131,7 +221,6 @@ export class NuxyFileInputElement extends HTMLElement {
 
     if (!this.hasAttribute('files-meta')) {
       this.internalFiles = this.internalFiles.filter((_, i) => i !== idx)
-      this.renderFiles()
     }
 
     this.dispatchEvent(
@@ -148,7 +237,6 @@ export class NuxyFileInputElement extends HTMLElement {
     const picked = Array.from(fileList)
     const next = this.isMultiple() ? [...this.internalFiles, ...picked] : picked
     this.internalFiles = next
-    this.renderFiles()
     this.dispatchEvent(
       new CustomEvent('nuxy-file-input-change', {
         detail: { files: next },
@@ -158,133 +246,80 @@ export class NuxyFileInputElement extends HTMLElement {
     )
   }
 
-  private build(): void {
-    if (this.zone) return
-
-    this.zone = document.createElement('div')
-    this.zone.className = 'nuxy-file-input__zone'
-    this.zone.setAttribute('role', 'button')
-    this.zone.tabIndex = 0
-
-    this.nativeInput = document.createElement('input')
-    this.nativeInput.type = 'file'
-    this.nativeInput.className = 'nuxy-file-input__native'
-
-    const icon = document.createElement('span')
-    icon.className = 'nuxy-file-input__icon'
-    icon.innerHTML = UPLOAD_SVG
-
-    const label = document.createElement('span')
-    label.className = 'nuxy-file-input__label'
-
-    const hint = document.createElement('span')
-    hint.className = 'nuxy-file-input__hint'
-
-    this.zone.append(this.nativeInput, icon, label, hint)
-
-    this.filesEl = document.createElement('div')
-    this.filesEl.className = 'nuxy-file-input__files'
-
-    this.append(this.zone, this.filesEl)
+  private renderFileRow(file: FileMeta, idx: number): TemplateResult {
+    const disabled = this.isDisabled()
+    return html`
+      <div class="nuxy-file-input__file">
+        <span class="nuxy-file-input__file-name">${file.name}</span>
+        <span class="nuxy-file-input__file-size">${formatSize(file.size)}</span>
+        ${!disabled
+          ? html`
+              <button
+                type="button"
+                class="nuxy-file-input__remove"
+                data-index=${String(idx)}
+                aria-label=${`Remove ${file.name}`}
+                .innerHTML=${REMOVE_SVG}
+              ></button>
+            `
+          : nothing}
+      </div>
+    `
   }
 
-  private sync(): void {
-    const extraClass = this.getAttribute('class') ?? ''
+  render(): TemplateResult {
     const label = this.getAttribute('label') ?? 'Choose files or drag them here'
     const hint = this.getAttribute('hint')
     const accept = this.getAttribute('accept')
     const id = this.getAttribute('id')
     const disabled = this.isDisabled()
-
-    syncHostClasses(this, 'nuxy-file-input')
-
-    if (this.zone) {
-      this.zone.setAttribute('aria-label', label)
-      this.zone.tabIndex = disabled ? -1 : 0
-    }
-    if (this.nativeInput) {
-      this.nativeInput.disabled = disabled
-      this.nativeInput.multiple = this.isMultiple()
-      this.nativeInput.setAttribute('aria-label', label)
-      if (accept) this.nativeInput.accept = accept
-      else this.nativeInput.removeAttribute('accept')
-      if (id) this.nativeInput.id = id
-      else this.nativeInput.removeAttribute('id')
-    }
-
-    const labelEl = this.zone?.querySelector('.nuxy-file-input__label')
-    if (labelEl) labelEl.textContent = label
-
-    const hintEl = this.zone?.querySelector('.nuxy-file-input__hint') as HTMLElement | null
-    if (hintEl) {
-      if (hint) {
-        hintEl.textContent = hint
-        hintEl.hidden = false
-      } else {
-        hintEl.textContent = ''
-        hintEl.hidden = true
-      }
-    }
-
-    this.syncZoneClasses()
-    this.renderFiles()
-  }
-
-  private syncZoneClasses(): void {
-    if (!this.zone) return
     const files = this.displayFiles()
-    this.zone.className = [
+
+    const zoneClass = [
       'nuxy-file-input__zone',
       this.dragOver ? 'nuxy-file-input__zone--dragover' : '',
       files.length > 0 ? 'nuxy-file-input__zone--has-files' : '',
     ]
       .filter(Boolean)
       .join(' ')
+
+    return html`
+      <div
+        class=${zoneClass}
+        role="button"
+        tabindex=${disabled ? '-1' : '0'}
+        aria-label=${label}
+        @dragover=${this.onDragOver}
+        @dragleave=${this.onDragLeave}
+        @drop=${this.onDrop}
+        @click=${this.onZoneClick}
+        @keydown=${this.onZoneKeyDown}
+      >
+        <input
+          type="file"
+          class="nuxy-file-input__native"
+          aria-label=${label}
+          ?disabled=${disabled}
+          ?multiple=${this.isMultiple()}
+          accept=${accept ?? nothing}
+          id=${id ?? nothing}
+          @change=${this.onNativeChange}
+        />
+        <span class="nuxy-file-input__icon" .innerHTML=${UPLOAD_SVG}></span>
+        <span class="nuxy-file-input__label">${label}</span>
+        ${hint
+          ? html`<span class="nuxy-file-input__hint">${hint}</span>`
+          : html`<span class="nuxy-file-input__hint" hidden></span>`}
+      </div>
+      ${files.length > 0
+        ? html`
+            <div class="nuxy-file-input__files" @click=${this.onFilesClick}>
+              ${files.map((f, i) => this.renderFileRow(f, i))}
+            </div>
+          `
+        : html`<div class="nuxy-file-input__files"></div>`}
+    `
   }
-
-  private renderFiles(): void {
-    if (!this.filesEl) return
-
-    const files = this.displayFiles()
-    this.syncZoneClasses()
-    this.filesEl.replaceChildren()
-
-    if (files.length === 0) return
-
-    const disabled = this.isDisabled()
-
-    for (let idx = 0; idx < files.length; idx++) {
-      const file = files[idx]
-      const row = document.createElement('div')
-      row.className = 'nuxy-file-input__file'
-
-      const name = document.createElement('span')
-      name.className = 'nuxy-file-input__file-name'
-      name.textContent = file.name
-
-      const size = document.createElement('span')
-      size.className = 'nuxy-file-input__file-size'
-      size.textContent = formatSize(file.size)
-
-      row.append(name, size)
-
-      if (!disabled) {
-        const removeBtn = document.createElement('button')
-        removeBtn.type = 'button'
-        removeBtn.className = 'nuxy-file-input__remove'
-        removeBtn.dataset.index = String(idx)
-        removeBtn.setAttribute('aria-label', `Remove ${file.name}`)
-        removeBtn.innerHTML = REMOVE_SVG
-        row.appendChild(removeBtn)
-      }
-
-      this.filesEl.appendChild(row)
-    }
-  }
-}
-
-if (!customElements.get('nuxy-file-input')) {
-  customElements.define('nuxy-file-input', NuxyFileInputElement)
 }
 
 declare global {

@@ -65,6 +65,9 @@ Desktop.ini
 .bun/
 bun.lock
 
+# Cursor hook runtime state
+.cursor/hooks/state/
+
 # Misc
 *.local
 .cache/

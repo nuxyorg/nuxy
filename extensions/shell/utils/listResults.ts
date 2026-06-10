@@ -13,7 +13,7 @@ export interface OmnibarSectionsResult {
 }
 
 const DEFAULT_GROUP_LABELS: Record<string, string> = {
-  actions: 'Actions',
+  actions: 'Tool actions',
 }
 
 function filterTools(tools: Tool[], savedQuery: string, recentToolIds: string[]): ListItem[] {

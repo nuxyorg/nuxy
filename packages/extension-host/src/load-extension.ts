@@ -67,6 +67,7 @@ async function transpileTsBackend(fileUrl: string, logger: WorkerLogger): Promis
       compilerOptions: {
         module: ts.ModuleKind.ESNext,
         target: ts.ScriptTarget.ESNext,
+        experimentalDecorators: true,
       },
     })
     const output = rewriteLocalTsImports(transpiled.outputText)

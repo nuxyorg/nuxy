@@ -88,6 +88,62 @@ function watchProductionExtensionFolder(folderName: string): void {
   }
 }
 
+/** Whether a dev-mode fs.watch event should trigger a full extension rescan. */
+export function shouldTriggerDevExtensionRescan(
+  filename: string | null,
+  extensionsRoot: string,
+  readType: (folderName: string) => string | null = (folderName) =>
+    readExtensionType(extensionsRoot, folderName)
+): boolean {
+  // Linux inotify often omits the changed filename — ignore to avoid rescan loops.
+  if (!filename) return false
+
+  const topLevel = filename.split(/[/\\]/)[0]
+  const folderName = folderNameFromWatchFilename(topLevel)
+  if (!folderName) return false
+
+  // Loose shared modules copied to the extensions root are not installable packages.
+  if (!filename.includes('/') && !filename.includes('\\') && !filename.endsWith('.nuxyext')) {
+    return false
+  }
+
+  if (readType(folderName) === 'uikit') return false
+
+  // Mid-write .nuxyext installs can be unreadable briefly — never rescan on that.
+  if (filename.endsWith('.nuxyext') && readType(folderName) === null) return false
+
+  return true
+}
+
+function readExtensionType(extDir: string, folderName: string): string | null {
+  // Case 1: directory-based extension
+  const manifestPath = path.join(extDir, folderName, 'manifest.json')
+  if (fs.existsSync(manifestPath)) {
+    try {
+      const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as { type?: string }
+      return m.type ?? null
+    } catch {
+      return null
+    }
+  }
+
+  // Case 2: .nuxyext zip file
+  const zipPath = path.join(extDir, `${folderName}.nuxyext`)
+  if (fs.existsSync(zipPath)) {
+    try {
+      const zip = new AdmZip(zipPath)
+      const entry = zip.getEntry('manifest.json')
+      if (!entry) return null
+      const m = JSON.parse(entry.getData().toString('utf8')) as { type?: string }
+      return m.type ?? null
+    } catch {
+      return null
+    }
+  }
+
+  return null
+}
+
 function startDevExtensionWatcher(onRescan: () => void): void {
   const skipDirs = new Set(['node_modules', '.git'])
 
@@ -100,7 +156,12 @@ function startDevExtensionWatcher(onRescan: () => void): void {
 
   const watchRecursive = (dir: string) => {
     try {
-      const watcher = fs.watch(dir, { recursive: false }, () => {
+      const watcher = fs.watch(dir, { recursive: false }, (_event, filename) => {
+        const shouldRescan = shouldTriggerDevExtensionRescan(filename ?? null, resolvedDir)
+        if (!shouldRescan) {
+          return
+        }
+
         if (devWatchDebounce) clearTimeout(devWatchDebounce)
         devWatchDebounce = setTimeout(() => {
           log.info('Extension directory changed — rescanning')

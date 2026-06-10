@@ -12,7 +12,7 @@ Nuxy's entire feature set is delivered through extensions. The launcher core is 
 
 Tools are the primary user-facing extension type. A tool appears in the launcher's tool list and, when activated, its frontend component takes over the window content area.
 
-**Examples:** Clipboard Manager, Notes, Snippets, Settings, Video Downloader
+**Examples:** Notes, Settings, Nyaa
 
 ```json
 { "type": "tool", "capabilities": { "callable": true, "caller": false } }
@@ -22,7 +22,7 @@ Tools are the primary user-facing extension type. A tool appears in the launcher
 
 Providers react to omnibar keystrokes in real time. Every active provider receives the current query and returns a list of result items. Results from all providers are merged and displayed together in the launcher.
 
-**Examples:** Calculator (evaluates math expressions), AngrySearch (fast file search), n8n workflow runner
+**Examples:** Calculator (evaluates math expressions inline)
 
 ```json
 { "type": "provider", "capabilities": { "callable": false, "caller": false } }
@@ -50,7 +50,7 @@ Helpers run in the background and are never shown to users. They provide utility
 
 ### UIKit Extensions
 
-UIKit extensions load before the shell and inject additional React components into `window.UI`. Any extension can then use these components via `window.UI.MyNewComponent`.
+UIKit extensions load before the shell and inject additional custom element factories into `window.UI`. Any extension can then use these components via `window.UI.MyNewComponent`.
 
 ```json
 { "type": "uikit", "priority": 10 }
@@ -64,7 +64,7 @@ Theme extensions ship a JSON file containing CSS custom property values. Once in
 { "type": "theme", "entry": { "theme": "theme.json" } }
 ```
 
-**Built-in themes:** `dark`, `light`, `ocean`, `glassmorphism`
+**Default themes:** `dark` and `light` ship with the kernel. Additional themes install as `theme` extensions (e.g. `com.nuxy.theme-sakura`).
 
 ### Icon Pack Extensions
 
@@ -81,29 +81,23 @@ Icon pack extensions ship an `icons.json` file with SVG strings keyed by name. T
 
 ## Built-in Extensions
 
-| Extension         | Type               | ID                          |
-| ----------------- | ------------------ | --------------------------- |
-| Shell             | `tool` (bootstrap) | `com.nuxy.shell`            |
-| Settings          | `tool`             | `com.nuxy.settings`         |
-| Clipboard Manager | `tool`             | `com.nuxy.clipboard`        |
-| Calculator        | `provider`         | `com.nuxy.calculator`       |
-| Snippets          | `tool`             | `com.nuxy.snippets`         |
-| Notes             | `tool`             | `com.nuxy.notes`            |
-| AI Orchestrator   | `orchestrator`     | `com.nuxy.ai-orchestrator`  |
-| AngrySearch       | `provider`         | `com.nuxy.angrysearch`      |
-| Ollama Chat       | `tool`             | `com.nuxy.ollama`           |
-| Video Downloader  | `tool`             | `com.nuxy.video-downloader` |
-| Focusblock        | `tool`             | `com.nuxy.focusblock`       |
-| Time Calculator   | `provider`         | `com.nuxy.time-calculator`  |
-| Converter         | `provider`         | `com.nuxy.converter`        |
-| Emoji Picker      | `tool`             | `com.nuxy.emoji-picker`     |
-| Bitwarden         | `tool`             | `com.nuxy.bitwarden`        |
-| Calendar          | `tool`             | `com.nuxy.calendar`         |
-| n8n               | `provider`         | `com.nuxy.n8n`              |
+See the full list with reference implementations: [Built-in Extensions](/extensions/built-in).
+
+| Extension     | Type               | ID                       |
+| ------------- | ------------------ | ------------------------ |
+| Shell         | `tool` (bootstrap) | `com.nuxy.shell`         |
+| Settings      | `tool`             | `com.nuxy.settings`      |
+| Notes         | `tool`             | `com.nuxy.notes`         |
+| Nyaa          | `tool`             | `com.nuxy.nyaa`          |
+| Calculator    | `provider`         | `com.nuxy.calculator`    |
+| Gradient      | `helper`           | `com.nuxy.gradient`      |
+| UI Default    | `uikit`            | `com.nuxy.ui-default`    |
+| Icons Default | `iconpack`         | `com.nuxy.icons-default` |
+| Theme Sakura  | `theme`            | `com.nuxy.theme-sakura`  |
 
 ## Next Steps
 
-- [Your First Extension](/extensions/first-extension) — step-by-step guide to building a working extension
+- [Your First Extension](/extensions/first-extension) — step-by-step Lit extension guide
 - [Manifest Reference](/extensions/manifest) — every manifest.json field documented
-- [CoreContext API](/extensions/core-context) — the full backend API reference
-- [Frontend Guide](/extensions/frontend) — how to build extension UIs
+- [Frontend Structure](/extensions/frontend-structure) — LitElement patterns, controllers, and light DOM
+- [Extension Development Guide](/extensions/development-guide) — complete authoring ruleset

@@ -1,0 +1,90 @@
+{
+  "nodes": [
+    {
+      "id": "nxt_readme_nxt_tool",
+      "label": "nxt \u2014 Nuxy Extension Tooling CLI",
+      "file_type": "document",
+      "source_file": "packages/nxt/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "nxt_readme_nuxyext_bundle",
+      "label": ".nuxyext Bundle Format",
+      "file_type": "concept",
+      "source_file": "packages/nxt/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "nxt_readme_rsa_signing",
+      "label": "RSA Developer Key Signing",
+      "file_type": "concept",
+      "source_file": "packages/nxt/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "nxt_readme_nxt_tool",
+      "target": "nxt_readme_nuxyext_bundle",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/nxt/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "nxt_readme_nxt_tool",
+      "target": "nxt_readme_rsa_signing",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/nxt/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "nxt_readme_nuxyext_bundle",
+      "target": "nxt_readme_rsa_signing",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/nxt/README.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "nxt_readme_nuxyext_bundle",
+      "target": "docs_22_store_security_chain",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "packages/nxt/README.md",
+      "source_location": null,
+      "weight": 0.85
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "extension_packaging_pipeline",
+      "label": "Extension Packaging and Install Pipeline: nxt -> .nuxyext -> store security chain",
+      "nodes": ["nxt_readme_nxt_tool", "nxt_readme_nuxyext_bundle", "docs_22_store_security_chain"],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "packages/nxt/README.md"
+    }
+  ]
+}

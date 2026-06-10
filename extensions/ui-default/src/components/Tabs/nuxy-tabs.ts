@@ -1,5 +1,5 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 export interface TabItemData {
   id: string
@@ -17,89 +17,102 @@ function parseItems(raw: string | null): TabItemData[] {
   }
 }
 
-export class NuxyTabsElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['active', 'items']
-  }
-
-  connectedCallback(): void {
-    this.render()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
-
-  private collectPanels(): Map<string, HTMLElement> {
-    const panels = new Map<string, HTMLElement>()
-    for (const el of this.querySelectorAll('[data-tab-content]')) {
-      const id = el.getAttribute('data-tab-content')
-      if (id) panels.set(id, el as HTMLElement)
+@customElement('nuxy-tabs')
+export class NuxyTabsElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
     }
-    return panels
+
+    .nuxy-tabs__list {
+      display: flex;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      gap: var(--space-4);
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .nuxy-tabs__trigger {
+      background: transparent;
+      border: none;
+      color: var(--syntax-comment);
+      font-size: var(--font-md);
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      padding: var(--space-3) var(--space-1);
+      position: relative;
+      transition: color 0.15s ease;
+      outline: none;
+    }
+
+    .nuxy-tabs__trigger:hover:not(:disabled) {
+      color: var(--syntax-variable);
+    }
+
+    .nuxy-tabs__trigger--active {
+      color: var(--syntax-operator);
+    }
+
+    .nuxy-tabs__trigger--active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--syntax-operator);
+      border-radius: 1px;
+    }
+
+    .nuxy-tabs__trigger:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .nuxy-tabs__content {
+      padding: var(--space-4) 0;
+      outline: none;
+    }
+  `
+
+  @property({ type: String }) active = ''
+  @property({ type: String }) items = ''
+
+  updated(): void {
+    this.syncPanels()
+  }
+
+  private getItems(): TabItemData[] {
+    return parseItems(this.items)
+  }
+
+  private getActiveId(): string {
+    const items = this.getItems()
+    return this.active || items[0]?.id || ''
   }
 
   private select(id: string, disabled?: boolean): void {
     if (disabled) return
-    this.setAttribute('active', id)
+    this.active = id
+    this.requestUpdate()
     this.dispatchEvent(
       new CustomEvent('nuxy-tabs-change', { detail: { id }, bubbles: true, composed: true })
     )
   }
 
-  private render(): void {
-    const items = parseItems(this.getAttribute('items'))
-    const active = this.getAttribute('active') ?? items[0]?.id ?? ''
-    const extraClass = this.getAttribute('class') ?? ''
-    const panels = this.collectPanels()
+  private syncPanels(): void {
+    const active = this.getActiveId()
+    const content = this.renderRoot.querySelector('.nuxy-tabs__content')
+    if (!content) return
 
-    syncHostClasses(this, 'nuxy-tabs')
-
-    let list = this.querySelector('.nuxy-tabs__list')
-    let content = this.querySelector('.nuxy-tabs__content')
-
-    if (!list) {
-      list = document.createElement('div')
-      list.className = 'nuxy-tabs__list'
-      list.setAttribute('role', 'tablist')
-      this.insertBefore(list, this.firstChild)
-    }
-
-    if (!content) {
-      content = document.createElement('div')
-      content.className = 'nuxy-tabs__content'
-      content.setAttribute('role', 'tabpanel')
-      content.tabIndex = 0
-      this.appendChild(content)
-    }
-
-    list.replaceChildren()
-
-    for (const item of items) {
-      const isActive = item.id === active
-      const btn = document.createElement('button')
-      btn.type = 'button'
-      btn.role = 'tab'
-      btn.id = `tab-${item.id}`
-      btn.setAttribute('aria-selected', String(isActive))
-      btn.setAttribute('aria-controls', `panel-${item.id}`)
-      btn.disabled = Boolean(item.disabled)
-      btn.className = [
-        'nuxy-tabs__trigger',
-        isActive ? 'nuxy-tabs__trigger--active' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')
-      btn.textContent = item.label
-      btn.addEventListener('click', () => this.select(item.id, item.disabled))
-      list.appendChild(btn)
-    }
-
-    content.id = `panel-${active}`
-    content.setAttribute('aria-labelledby', `tab-${active}`)
-    content.replaceChildren()
-
-    for (const [id, panel] of panels) {
+    for (const el of Array.from(this.querySelectorAll('[data-tab-content]'))) {
+      const id = el.getAttribute('data-tab-content')
+      if (!id) continue
+      const panel = el as HTMLElement
       panel.hidden = id !== active
       if (id === active) {
         content.appendChild(panel)
@@ -107,11 +120,44 @@ export class NuxyTabsElement extends HTMLElement {
         this.appendChild(panel)
       }
     }
-  }
-}
 
-if (!customElements.get('nuxy-tabs')) {
-  customElements.define('nuxy-tabs', NuxyTabsElement)
+    content.id = `panel-${active}`
+    content.setAttribute('aria-labelledby', `tab-${active}`)
+  }
+
+  render(): TemplateResult {
+    const items = this.getItems()
+    const active = this.getActiveId()
+
+    return html`
+      <div class="nuxy-tabs__list" role="tablist">
+        ${items.map((item) => {
+          const isActive = item.id === active
+          return html`
+            <button
+              type="button"
+              role="tab"
+              id="tab-${item.id}"
+              aria-selected=${String(isActive)}
+              aria-controls="panel-${item.id}"
+              ?disabled=${Boolean(item.disabled)}
+              class="nuxy-tabs__trigger ${isActive ? 'nuxy-tabs__trigger--active' : ''}"
+              @click=${() => this.select(item.id, item.disabled)}
+            >
+              ${item.label}
+            </button>
+          `
+        })}
+      </div>
+      <div
+        class="nuxy-tabs__content"
+        role="tabpanel"
+        id="panel-${active}"
+        aria-labelledby="tab-${active}"
+        tabindex="0"
+      ></div>
+    `
+  }
 }
 
 declare global {

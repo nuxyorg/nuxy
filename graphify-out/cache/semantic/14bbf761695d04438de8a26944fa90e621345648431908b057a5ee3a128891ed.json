@@ -1,0 +1,60 @@
+{
+  "nodes": [
+    {
+      "id": "reports_refactor_gradient_assessment",
+      "label": "Refactor Assessment: gradient.ts",
+      "file_type": "document",
+      "source_file": "reports/refactor/refactor_gradient_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_gradientts_vendored",
+      "label": "gradient.ts \u2014 Vendored Stripe WebGL Gradient (Do Not Refactor)",
+      "file_type": "rationale",
+      "source_file": "reports/refactor/refactor_gradient_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "gradient.ts is a verbatim copy of Stripe WebGL gradient by Kevin Hufnagl, with embedded Ashima Arts snoise (MIT) and glsl-blend (MIT). It is @ts-nocheck, minifier-artifact styled, and must be treated as an opaque black box. Any customization must happen exclusively in frontend.tsx using the Gradient public API."
+    }
+  ],
+  "edges": [
+    {
+      "source": "reports_refactor_gradient_assessment",
+      "target": "concept_nuxy_gradientts_vendored",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_gradient_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_gradient_assessment",
+      "target": "concept_nuxy_gradientextension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_gradient_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_gradientts_vendored",
+      "target": "concept_nuxy_gradientextension",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "reports/refactor/refactor_gradient_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

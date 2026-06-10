@@ -1,4 +1,4 @@
-import { createStore } from '../h'
+import { createStore } from '../../../store.ts'
 import { useToolKeyActions, type KeyAction } from './useToolKeyActions'
 import { useTranslation } from './useTranslation'
 

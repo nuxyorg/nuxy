@@ -1,0 +1,155 @@
+{
+  "nodes": [
+    {
+      "id": "perf_report_doc",
+      "label": "Nuxy Performance Report",
+      "file_type": "document",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "perf_issue_scan_blocks_window",
+      "label": "Issue: Extension Scan Blocks Window Creation (P1)",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L21",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "perf_issue_four_useeffect_ipc",
+      "label": "Issue: Four Independent useEffect IPC Calls on Mount (P3)",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L31",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "perf_issue_spring_250hz",
+      "label": "Issue: WindowSpringController 250Hz setInterval (P2)",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "perf_issue_sync_fs_ipc",
+      "label": "Issue: Synchronous fs.readFileSync in Hot IPC Paths (P4)",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L56",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "perf_issue_listener_accumulation",
+      "label": "Issue: Per-IPC-call worker.on Listener Accumulation (P5)",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L67",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "perf_issue_migrate_legacy_data",
+      "label": "Issue: migrateLegacyData on Every Spawn (P7)",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L78",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "perf_issue_spring_leak",
+      "label": "Issue: WindowSpringController Memory Leak on Destroyed Window (P6)",
+      "file_type": "concept",
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L138",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "perf_report_doc",
+      "target": "perf_issue_scan_blocks_window",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "perf_report_doc",
+      "target": "perf_issue_spring_250hz",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "perf_report_doc",
+      "target": "perf_issue_four_useeffect_ipc",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "perf_report_doc",
+      "target": "perf_issue_spring_leak",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "perf_issue_scan_blocks_window",
+      "target": "lit_electron_bootstrap_race_condition",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "perf_issue_listener_accumulation",
+      "target": "lit_ext_nyaa_no_abort_controller",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/performance/performance-report.md",
+      "source_location": null,
+      "weight": 0.6
+    }
+  ],
+  "hyperedges": []
+}

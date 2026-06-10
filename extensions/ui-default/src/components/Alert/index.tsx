@@ -6,9 +6,5 @@ export interface AlertProps extends Record<string, unknown> {
 }
 
 export function Alert({ variant = 'info', className, children, ...props }: AlertProps) {
-  return h(
-    'nuxy-alert',
-    { ...props, class: className, variant },
-    children
-  )
+  return h('nuxy-alert', { ...props, class: className, variant }, children)
 }

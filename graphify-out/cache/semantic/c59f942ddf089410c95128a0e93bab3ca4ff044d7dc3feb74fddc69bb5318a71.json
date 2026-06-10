@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "scratch_raw_html",
+      "label": "Raw HTML Elements Audit",
+      "file_type": "document",
+      "source_file": "scratch/raw-html.txt",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "scratch_raw_html",
+      "target": "concept_scan_report_violations",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scratch/raw-html.txt",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

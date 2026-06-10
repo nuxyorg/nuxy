@@ -1,48 +1,61 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
-export class NuxyTwoPanelElement extends HTMLElement {
-  private left: HTMLDivElement | null = null
-  private right: HTMLDivElement | null = null
-
-  static get observedAttributes(): string[] {
-    return ['split']
-  }
-
-  connectedCallback(): void {
-    const nodes: Node[] = []
-    for (const child of Array.from(this.childNodes)) {
-      nodes.push(child)
+@customElement('nuxy-two-panel')
+export class NuxyTwoPanelElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      height: 100%;
+      overflow: hidden;
     }
 
-    this.left = document.createElement('div')
-    this.left.className = 'nuxy-two-panel__left'
-    this.right = document.createElement('div')
-    this.right.className = 'nuxy-two-panel__right'
+    ::slotted(:first-child) {
+      flex-shrink: 0;
+      overflow-y: overlay;
+      border-right: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+    }
 
-    if (nodes[0]) this.left.appendChild(nodes[0])
-    if (nodes[1]) this.right.appendChild(nodes[1])
+    ::slotted(:last-child) {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+  `
 
-    this.appendChild(this.left)
-    this.appendChild(this.right)
+  @property({ type: String }) split = '50%'
+
+  private observer: MutationObserver | null = null
+
+  connectedCallback(): void {
+    super.connectedCallback()
+    this.observer = new MutationObserver(() => this.sync())
+    this.observer.observe(this, { childList: true })
     this.sync()
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+    this.observer?.disconnect()
+    this.observer = null
+  }
+
+  updated(): void {
+    this.sync()
   }
 
   private sync(): void {
-    const split = this.getAttribute('split') ?? '50%'
-    const extraClass = this.getAttribute('class') ?? ''
+    const children = Array.from(this.children)
 
-    syncHostClasses(this, 'nuxy-two-panel')
-    if (this.left) this.left.style.width = split
+    if (children[0]) {
+      const left = children[0] as HTMLElement
+      left.style.width = this.split
+    }
   }
-}
 
-if (!customElements.get('nuxy-two-panel')) {
-  customElements.define('nuxy-two-panel', NuxyTwoPanelElement)
+  render() {
+    return html`<slot></slot>`
+  }
 }
 
 declare global {

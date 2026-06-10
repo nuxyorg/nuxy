@@ -1,0 +1,114 @@
+{
+  "nodes": [
+    {
+      "id": "naming_report_doc",
+      "label": "Naming Consistency Report",
+      "file_type": "document",
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "naming_kernel_vs_core",
+      "label": "Naming Issue: 'kernel' vs 'core' Dual IPC Target Alias",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L12",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "naming_duplicate_extension_module",
+      "label": "Naming Issue: Duplicate ExtensionModule Interface with Divergent register Optionality",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L40",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "naming_ipc_casing",
+      "label": "Naming Issue: IPC Channel Casing Inconsistency (window:dragStart vs window:resize)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L55",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "naming_shell_css_no_namespace",
+      "label": "Naming Issue: Shell CSS Has No nuxy- Namespace Prefix (Collision Risk)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L103",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "naming_ui_props_any",
+      "label": "Naming Issue: All packages/ui Component Props Typed as any",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L131",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "naming_registry_sync_payload_dup",
+      "label": "Naming Issue: RegistrySyncPayload Duplicates ExtensionRuntimeMeta",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L149",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "naming_report_doc",
+      "target": "naming_kernel_vs_core",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "naming_report_doc",
+      "target": "naming_duplicate_extension_module",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "naming_report_doc",
+      "target": "naming_ui_props_any",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/naming-report.md",
+      "source_location": "L131",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": "website_docs_guide_ipc_kernel",
+      "label": "Nuxy IPC and Kernel Guide",
+      "file_type": "document",
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_ext_protocol",
+      "label": "nuxy-ext:// Privileged Custom Protocol",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_ext_invoke_channel",
+      "label": "ext:invoke IPC Channel (Renderer to Extension)",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_host_call_reply_protocol",
+      "label": "host:call / host:reply Worker Protocol",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_ipc_response",
+      "label": "IpcResponse Normalized Contract",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_kernel_builtins",
+      "label": "Kernel Built-in IPC Channels",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_message_broker",
+      "label": "Message Broker for Cross-Extension Calls",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_registry_sync",
+      "label": "registry:sync Worker Message (Channel Registration)",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "website_docs_guide_ipc_kernel",
+      "target": "concept_ext_invoke_channel",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_ipc_kernel",
+      "target": "concept_host_call_reply_protocol",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_ipc_kernel",
+      "target": "concept_ipc_response",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_ipc_kernel",
+      "target": "concept_kernel_builtins",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_ipc_kernel",
+      "target": "concept_message_broker",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_ipc_kernel",
+      "target": "concept_registry_sync",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_ipc_kernel",
+      "target": "concept_preload_bridge",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_ext_invoke_channel",
+      "target": "concept_host_call_reply_protocol",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/guide/ipc-kernel.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "ipc_pipeline",
+      "label": "Full IPC Pipeline: ext:invoke \u2192 host:call/reply \u2192 IpcResponse",
+      "nodes": [
+        "concept_ext_invoke_channel",
+        "concept_host_call_reply_protocol",
+        "concept_ipc_response"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/guide/ipc-kernel.md"
+    }
+  ]
+}

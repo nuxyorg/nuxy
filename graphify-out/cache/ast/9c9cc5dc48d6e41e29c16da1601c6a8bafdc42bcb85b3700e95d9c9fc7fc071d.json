@@ -1,0 +1,429 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_shell_locales_ja_json",
+      "label": "ja.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "locales_ja_meta",
+      "label": "meta",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "locales_ja_meta_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "locales_ja_omnibar",
+      "label": "omniBar",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "locales_ja_omnibar_placeholder",
+      "label": "placeholder",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "locales_ja_omnibar_searchtool",
+      "label": "searchTool",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "locales_ja_omnibar_arialabel",
+      "label": "ariaLabel",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "locales_ja_results",
+      "label": "results",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "locales_ja_results_arialabel",
+      "label": "ariaLabel",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "locales_ja_footer",
+      "label": "footer",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "locales_ja_footer_extensionsloaded",
+      "label": "extensionsLoaded",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "locales_ja_footer_presstorun",
+      "label": "pressToRun",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "locales_ja_footer_torun",
+      "label": "toRun",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "locales_ja_footer_toactions",
+      "label": "toActions",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "locales_ja_loading",
+      "label": "loading",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "locales_ja_commandpalette",
+      "label": "commandPalette",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "locales_ja_commandpalette_searchplaceholder",
+      "label": "searchPlaceholder",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "locales_ja_commandpalette_noactions",
+      "label": "noActions",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "locales_ja_commandpalette_entershortcut",
+      "label": "enterShortcut",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "locales_ja_keyboard",
+      "label": "keyboard",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "locales_ja_keyboard_focustabs",
+      "label": "focusTabs",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "locales_ja_keyboard_focuscontent",
+      "label": "focusContent",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "locales_ja_keyboard_previous",
+      "label": "previous",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "locales_ja_keyboard_next",
+      "label": "next",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "locales_ja_keyboard_selectconfirm",
+      "label": "selectConfirm",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "locales_ja_keyboard_navigate",
+      "label": "navigate",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "locales_ja_keyboard_select",
+      "label": "select",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L32"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_locales_ja_json",
+      "target": "locales_ja_meta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_meta",
+      "target": "locales_ja_meta_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_locales_ja_json",
+      "target": "locales_ja_omnibar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_omnibar",
+      "target": "locales_ja_omnibar_placeholder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_omnibar",
+      "target": "locales_ja_omnibar_searchtool",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_omnibar",
+      "target": "locales_ja_omnibar_arialabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_locales_ja_json",
+      "target": "locales_ja_results",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_results",
+      "target": "locales_ja_results_arialabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_locales_ja_json",
+      "target": "locales_ja_footer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_footer",
+      "target": "locales_ja_footer_extensionsloaded",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_footer",
+      "target": "locales_ja_footer_presstorun",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_footer",
+      "target": "locales_ja_footer_torun",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_footer",
+      "target": "locales_ja_footer_toactions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_locales_ja_json",
+      "target": "locales_ja_loading",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_locales_ja_json",
+      "target": "locales_ja_commandpalette",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_commandpalette",
+      "target": "locales_ja_commandpalette_searchplaceholder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_commandpalette",
+      "target": "locales_ja_commandpalette_noactions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_commandpalette",
+      "target": "locales_ja_commandpalette_entershortcut",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_shell_locales_ja_json",
+      "target": "locales_ja_keyboard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_keyboard",
+      "target": "locales_ja_keyboard_focustabs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_keyboard",
+      "target": "locales_ja_keyboard_focuscontent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_keyboard",
+      "target": "locales_ja_keyboard_previous",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_keyboard",
+      "target": "locales_ja_keyboard_next",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_keyboard",
+      "target": "locales_ja_keyboard_selectconfirm",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_keyboard",
+      "target": "locales_ja_keyboard_navigate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_ja_keyboard",
+      "target": "locales_ja_keyboard_select",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json",
+      "source_location": "L32",
+      "weight": 1.0
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "nodes": [
     {
       "id": "docs_20_logging",
-      "label": "Logging System Document (20)",
+      "label": "Logging System Document",
       "file_type": "document",
       "source_file": "docs/20-logging.md",
       "source_location": null,
@@ -12,11 +12,11 @@
       "contributor": null
     },
     {
-      "id": "docs_20_kernellogger",
-      "label": "kernelLogger (packages/core/src/logger.ts)",
+      "id": "docs_20_kernel_logger",
+      "label": "kernelLogger / createLogger Utility",
       "file_type": "concept",
       "source_file": "docs/20-logging.md",
-      "source_location": "line 6",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
@@ -24,21 +24,21 @@
     },
     {
       "id": "docs_20_worker_logger",
-      "label": "Worker Logger (core.logger in extensions)",
+      "label": "Worker Injected Logger (core.logger)",
       "file_type": "concept",
       "source_file": "docs/20-logging.md",
-      "source_location": "line 70",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_20_log_level_env",
-      "label": "LOG_LEVEL Environment Variable",
+      "id": "docs_20_log_levels",
+      "label": "Log Levels (error/warn/info/silly)",
       "file_type": "concept",
       "source_file": "docs/20-logging.md",
-      "source_location": "line 26",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
@@ -48,12 +48,12 @@
   "edges": [
     {
       "source": "docs_20_logging",
-      "target": "docs_20_kernellogger",
+      "target": "docs_20_kernel_logger",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/20-logging.md",
-      "source_location": "line 6",
+      "source_location": null,
       "weight": 1.0
     },
     {
@@ -63,38 +63,28 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/20-logging.md",
-      "source_location": "line 70",
+      "source_location": null,
       "weight": 1.0
     },
     {
       "source": "docs_20_logging",
-      "target": "docs_20_log_level_env",
+      "target": "docs_20_log_levels",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/20-logging.md",
-      "source_location": "line 26",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_20_kernellogger",
-      "target": "claude_core_package",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/20-logging.md",
-      "source_location": "line 44",
+      "source_location": null,
       "weight": 1.0
     },
     {
       "source": "docs_20_worker_logger",
-      "target": "claude_corecontext",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
+      "target": "docs_02_isolated_worker_threads",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
       "source_file": "docs/20-logging.md",
-      "source_location": "line 75",
-      "weight": 1.0
+      "source_location": null,
+      "weight": 0.85
     }
   ],
   "hyperedges": []

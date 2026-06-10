@@ -283,4 +283,26 @@ describe('spawnExtension', () => {
     expect(listener).toHaveBeenCalledWith(extId, 1)
     workerExitListeners.delete(listener)
   })
+
+  // ─── 13. worker 'error' event → remove + notify listeners ────────────────
+
+  it('removes worker from activeWorkers on worker error event', async () => {
+    await spawnExtension(extId, folderName, entryFile)
+    expect(activeWorkers.has(extId)).toBe(true)
+
+    lastWorker.emit('error', new Error('crash'))
+
+    expect(activeWorkers.has(extId)).toBe(false)
+  })
+
+  it('notifies workerRegistryErrorListeners on worker error event', async () => {
+    const listener = vi.fn()
+    workerRegistryErrorListeners.add(listener)
+
+    await spawnExtension(extId, folderName, entryFile)
+    lastWorker.emit('error', new Error('crash'))
+
+    expect(listener).toHaveBeenCalledWith(extId)
+    workerRegistryErrorListeners.delete(listener)
+  })
 })

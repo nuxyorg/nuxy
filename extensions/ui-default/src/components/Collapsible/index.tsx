@@ -40,8 +40,8 @@ export function Collapsible({
       ...(!isControlled && defaultOpen ? { 'default-open': '' } : {}),
     },
     listeners,
-    h('span', { 'data-trigger': '' }, trigger),
-    h('div', { 'data-content': '' }, children)
+    h('span', { slot: 'trigger' }, trigger),
+    h('div', { slot: 'content' }, children)
   )
 }
 

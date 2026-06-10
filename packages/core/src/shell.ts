@@ -47,4 +47,10 @@ export interface CoreShell {
 
   /** Clears tool-scoped registrations (active tool changed or shell reset). */
   resetToolState(): void
+
+  /** Deactivate the active tool and clear omnibar query — returns to the main shell screen. */
+  returnToShell(): void
+
+  /** @internal Registered by the shell extension during bootstrap. */
+  bindReturnToShell(handler: () => void): () => void
 }

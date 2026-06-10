@@ -1,0 +1,528 @@
+{
+  "nodes": [
+    {
+      "id": "root_claude_projectdoc",
+      "label": "CLAUDE.md Project Instructions",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_electronlauncher",
+      "label": "Nuxy: Frameless Transparent Electron Launcher",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_extensionsystem",
+      "label": "Extension System (Tool/Provider/Orchestrator/Theme/IconPack)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_workerthreadisolation",
+      "label": "Worker Thread Isolation for Extension Backends",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Each extension backend runs in its own Worker thread for security and isolation. Calls to core.* send host:call messages to the main thread via parentPort; replies come back as host:reply."
+    },
+    {
+      "id": "concept_nuxy_twolayerui",
+      "label": "Two-Layer UI Component System (@nuxy/ui stubs + ui-default runtime)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "packages/ui provides compile-time stubs delegating to window.UI at runtime; extensions/ui-default provides real custom element implementations. Swapping ui-default changes the entire UI without touching any consumer code."
+    },
+    {
+      "id": "concept_nuxy_corecontext",
+      "label": "CoreContext API (Extension Backend Proxy)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_ipcrouter",
+      "label": "IPC Router (ext:invoke channel)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_nuxyextprotocol",
+      "label": "nuxy-ext:// Privileged Protocol",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_springphysics",
+      "label": "Spring Physics Window Resizing (WindowSpringController)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_tddmandatory",
+      "label": "TDD Mandatory Development Workflow",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "TDD is mandatory for all new features. Write tests first (must fail), then minimum implementation, then iterate until full suite passes. A feature is not done until all tests are green."
+    },
+    {
+      "id": "concept_nuxy_manifestjson",
+      "label": "Extension manifest.json Format",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_iconpacksystem",
+      "label": "Icon Pack Extension System (SVG registry)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_windowcoreapi",
+      "label": "window.core Renderer API (IPC, window, events, themes, icons)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_selectboxcomponent",
+      "label": "SelectBox Fully-Controlled Keyboard Dropdown Component",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_litframeworkstandard",
+      "label": "LitElement Standard for Extension UI Components",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "LitElement with html template literals is the standard framework for UI components in extensions. The legacy h() helper from extensions/ce-utils.ts is deprecated and scheduled for removal."
+    },
+    {
+      "id": "concept_nuxy_extensionguidemd",
+      "label": "EXTENSION_GUIDE.md \u2014 Mandatory Ruleset for Extensions",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_unixsocket",
+      "label": "UNIX Socket Daemon (/tmp/nuxy.sock)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_viteconfigaliases",
+      "label": "Vite Workspace Alias Resolution (no build step for packages)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Workspace aliases are resolved at build time in src/vite.config.ts \u2014 package source files are pointed to directly, so no build step is needed for packages during development."
+    },
+    {
+      "id": "concept_nuxy_devsynccopy",
+      "label": "Dev Sync: extensions/ copied to ~/.nuxy/extensions/ on pnpm dev",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_uidefaultbuildartifact",
+      "label": "extensions/ui-default/frontend.js Build Artifact (gitignored)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "The ui-default frontend.js is a build artifact that must be regenerated with pnpm -C extensions/ui-default build, or automatically via pnpm dev. It is gitignored and not checked into the repo."
+    }
+  ],
+  "edges": [
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_electronlauncher",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_extensionsystem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_twolayerui",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_workerthreadisolation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_corecontext",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_ipcrouter",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_nuxyextprotocol",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_tddmandatory",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_extensionguidemd",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_litframeworkstandard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_viteconfigaliases",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_settingsjson",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_themesystem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_iconpacksystem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_windowcoreapi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_springphysics",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_unixsocket",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_manifestjson",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_selectboxcomponent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_devsynccopy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_claude_projectdoc",
+      "target": "concept_nuxy_uidefaultbuildartifact",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_corecontext",
+      "target": "concept_nuxy_workerthreadisolation",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_extensionsystem",
+      "target": "concept_nuxy_manifestjson",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_extensionsystem",
+      "target": "concept_nuxy_zerotrustsecurity",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_ipcrouter",
+      "target": "concept_nuxy_corecontext",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_nuxyextprotocol",
+      "target": "concept_nuxy_extensionsystem",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_extensionsinglefileconstraint",
+      "target": "concept_nuxy_tddmandatory",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_twolayerui",
+      "target": "concept_nuxy_uidefaultbuildartifact",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "extension_security_pipeline",
+      "label": "Extension Security Pipeline: Scanner + Zero-Trust + Worker Isolation",
+      "nodes": [
+        "concept_nuxy_scannerextensions",
+        "concept_nuxy_zerotrustsecurity",
+        "concept_nuxy_workerthreadisolation",
+        "concept_nuxy_manifestjson"
+      ],
+      "relation": "implement",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md"
+    }
+  ]
+}

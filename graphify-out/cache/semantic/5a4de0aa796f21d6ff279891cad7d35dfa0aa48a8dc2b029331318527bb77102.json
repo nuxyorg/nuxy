@@ -1,0 +1,100 @@
+{
+  "nodes": [
+    {
+      "id": "project_analysis_01_general_overview",
+      "label": "Nuxy General Overview and Core Architecture",
+      "file_type": "document",
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_useless_core_philosophy",
+      "label": "Useless Core Philosophy (Extensions Deliver All Features)",
+      "file_type": "concept",
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_three_layer_architecture",
+      "label": "Three-Layer Architecture (Main, Workers, Renderer)",
+      "file_type": "concept",
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "project_analysis_01_general_overview",
+      "target": "concept_useless_core_philosophy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "project_analysis_01_general_overview",
+      "target": "concept_three_layer_architecture",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "project_analysis_01_general_overview",
+      "target": "concept_zero_trust_permission_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "project_analysis_01_general_overview",
+      "target": "concept_worker_thread_isolation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "project_analysis_01_general_overview",
+      "target": "concept_storage_chroot",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_useless_core_philosophy",
+      "target": "concept_extension_types",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/project-analysis/01-general-overview.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": []
+}

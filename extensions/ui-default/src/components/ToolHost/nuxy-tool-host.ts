@@ -1,3 +1,4 @@
+import { LitElement, html, css, customElement } from '@nuxy/core'
 import type { NuxyToolElement, ToolActivateContext } from '@nuxy/core'
 
 declare global {
@@ -18,22 +19,35 @@ async function loadFrontendModule(extId: string): Promise<void> {
   await dynamicImport(`nuxy-ext://${extId}/frontend.js`)
 }
 
-export class NuxyToolHostElement extends HTMLElement {
+@customElement('nuxy-tool-host')
+export class NuxyToolHostElement extends LitElement {
+  static styles = css`
+    :host {
+      display: contents;
+    }
+  `
   private _extensionId: string | null = null
   private _query = ''
   private _committedQuery = ''
   private toolEl: NuxyToolElement | null = null
   private swapGeneration = 0
 
-  connectedCallback() {
+  connectedCallback(): void {
+    super.connectedCallback()
     this.classList.add('nuxy-tool-host')
     if (this._extensionId) {
       void this.swapTool(this._extensionId)
     }
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
     this.teardown()
+  }
+
+  // Tool content is managed imperatively via swapTool (light DOM children shown via slot)
+  render() {
+    return html`<slot></slot>`
   }
 
   get extensionId(): string | null {
@@ -133,11 +147,3 @@ export class NuxyToolHostElement extends HTMLElement {
     }
   }
 }
-
-export function registerNuxyToolHost(): void {
-  if (!customElements.get('nuxy-tool-host')) {
-    customElements.define('nuxy-tool-host', NuxyToolHostElement)
-  }
-}
-
-registerNuxyToolHost()

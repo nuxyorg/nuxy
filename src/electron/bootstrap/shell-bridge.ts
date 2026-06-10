@@ -16,6 +16,7 @@ export function createShellBridge(): CoreShell {
   let toolActions: ShellCommandAction[] = []
   let omniBarPortal: HTMLElement | null = null
   let footerPortal: HTMLElement | null = null
+  let returnToShellHandler: (() => void) | null = null
   const listeners = new Set<() => void>()
   const omniBarControlListeners = new Set<(action: OmniBarControlAction) => void>()
 
@@ -85,6 +86,17 @@ export function createShellBridge(): CoreShell {
       omniBarPortal = null
       footerPortal = null
       notify()
+    },
+
+    returnToShell() {
+      returnToShellHandler?.()
+    },
+
+    bindReturnToShell(handler) {
+      returnToShellHandler = handler
+      return () => {
+        if (returnToShellHandler === handler) returnToShellHandler = null
+      }
     },
   }
 

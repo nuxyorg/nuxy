@@ -1,0 +1,293 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_fallowrc_json",
+      "label": ".fallowrc.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "nuxy_fallowrc_schema",
+      "label": "$schema",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "nuxy_fallowrc_publicpackages",
+      "label": "publicPackages",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "nuxy_fallowrc_dynamicallyloaded",
+      "label": "dynamicallyLoaded",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "nuxy_fallowrc_ignoredependencies",
+      "label": "ignoreDependencies",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "nuxy_fallowrc_ignorepatterns",
+      "label": "ignorePatterns",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_fallowrc_json",
+      "target": "nuxy_fallowrc_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_fallowrc_json",
+      "target": "nuxy_fallowrc_publicpackages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_fallowrc_publicpackages",
+      "target": "ref_nuxy_ui",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "home_xava_documents_nuxy_fallowrc_json",
+      "target": "nuxy_fallowrc_dynamicallyloaded",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_fallowrc_dynamicallyloaded",
+      "target": "ref_extensions",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_dynamicallyloaded",
+      "target": "ref_src_electron_spawn_worker",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_dynamicallyloaded",
+      "target": "ref_src_electron_bootstrap_main_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_dynamicallyloaded",
+      "target": "ref_src_electron_protocol_register_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "home_xava_documents_nuxy_fallowrc_json",
+      "target": "nuxy_fallowrc_ignoredependencies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_fallowrc_ignoredependencies",
+      "target": "ref_nuxy_extension_host",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignoredependencies",
+      "target": "ref_nuxy_extension_sdk",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignoredependencies",
+      "target": "ref_nuxy_ui",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignoredependencies",
+      "target": "ref_ext",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignoredependencies",
+      "target": "ref_lit",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "home_xava_documents_nuxy_fallowrc_json",
+      "target": "nuxy_fallowrc_ignorepatterns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_website",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_claude",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_docs",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_dist",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_dist_electron",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_scratch",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_scratch_js",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_scratch_cjs",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_packages_ext_template",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_fallowrc_ignorepatterns",
+      "target": "ref_src_verify_ext_settings_mjs",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/.fallowrc.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "nodes": [
+    {
+      "id": "docs_09_error_unified_error_boundary",
+      "label": "Unified Error Boundary Architecture",
+      "file_type": "concept",
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_09_error_kernel_message_broker_catcher",
+      "label": "Kernel Message Broker Error Catcher",
+      "file_type": "concept",
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_09_error_frontend_resilience",
+      "label": "Frontend UI Resilience Pattern",
+      "file_type": "concept",
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_09_error_custom_element_isolation",
+      "label": "Custom Element Error Isolation",
+      "file_type": "concept",
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_09_error_unified_error_boundary",
+      "target": "docs_09_error_kernel_message_broker_catcher",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_09_error_unified_error_boundary",
+      "target": "docs_09_error_frontend_resilience",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_09_error_unified_error_boundary",
+      "target": "docs_09_error_custom_element_isolation",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_09_error_custom_element_isolation",
+      "target": "docs_react_to_lit_nuxy_tool_element",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "docs_09_error_kernel_message_broker_catcher",
+      "target": "docs_pain_points_no_broker_p3",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/09-error-handling.md",
+      "source_location": null,
+      "weight": 0.8
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "error_boundary_three_layers",
+      "label": "Three-Layer Error Boundary: Kernel Broker + Frontend Resilience + Custom Element Isolation",
+      "nodes": [
+        "docs_09_error_kernel_message_broker_catcher",
+        "docs_09_error_frontend_resilience",
+        "docs_09_error_custom_element_isolation"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/09-error-handling.md"
+    }
+  ]
+}

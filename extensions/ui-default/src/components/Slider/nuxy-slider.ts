@@ -1,5 +1,5 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 function parseNum(attr: string | null, fallback?: number): number | undefined {
   if (attr === null || attr === '') return fallback
@@ -7,61 +7,103 @@ function parseNum(attr: string | null, fallback?: number): number | undefined {
   return Number.isFinite(n) ? n : fallback
 }
 
-export class NuxySliderElement extends HTMLElement {
-  private valueEl: HTMLSpanElement | null = null
-  private input: HTMLInputElement | null = null
-  private labelsEl: HTMLDivElement | null = null
+@customElement('nuxy-slider')
+export class NuxySliderElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      width: 100%;
+    }
 
-  static get observedAttributes(): string[] {
-    return ['value', 'default-value', 'min', 'max', 'step', 'disabled', 'show-value', 'show-labels', 'id']
-  }
+    .nuxy-slider__track-wrapper {
+      position: relative;
+      height: 20px;
+      display: flex;
+      align-items: center;
+    }
 
-  connectedCallback(): void {
-    this.build()
-    this.sync()
-    this.input?.addEventListener('input', this.onInput)
-  }
+    .nuxy-slider__input {
+      width: 100%;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      z-index: 1;
+    }
 
-  disconnectedCallback(): void {
-    this.input?.removeEventListener('input', this.onInput)
-  }
+    .nuxy-slider__input::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--syntax-comment);
+    }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
+    .nuxy-slider__input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--syntax-operator);
+      cursor: pointer;
+      margin-top: -6px;
+      transition: transform 0.15s ease;
+    }
 
-  private onInput = (): void => {
-    if (this.hasAttribute('disabled') || !this.input) return
-    const next = this.clamp(Number(this.input.value))
-    this.setAttribute('value', String(next))
-    this.sync()
-    this.dispatchEvent(
-      new CustomEvent('nuxy-slider-change', { detail: { value: next }, bubbles: true })
-    )
-  }
+    .nuxy-slider__input::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
 
-  private build(): void {
-    if (this.input) return
+    .nuxy-slider__input::-moz-range-track {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--syntax-comment);
+    }
 
-    this.valueEl = document.createElement('span')
-    this.valueEl.className = 'nuxy-slider__value'
+    .nuxy-slider__input::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--syntax-operator);
+      border: none;
+      cursor: pointer;
+    }
 
-    const trackWrapper = document.createElement('div')
-    trackWrapper.className = 'nuxy-slider__track-wrapper'
+    .nuxy-slider__labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-xs);
+      color: var(--syntax-comment);
+    }
 
-    this.input = document.createElement('input')
-    this.input.type = 'range'
-    this.input.className = 'nuxy-slider__input'
+    .nuxy-slider__value {
+      font-size: var(--font-sm);
+      color: var(--syntax-operator);
+      font-variant-numeric: tabular-nums;
+    }
 
-    trackWrapper.appendChild(this.input)
+    :host([disabled]) .nuxy-slider__input {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  `
 
-    this.labelsEl = document.createElement('div')
-    this.labelsEl.className = 'nuxy-slider__labels'
+  @property({ type: Number }) min = 0
+  @property({ type: Number }) max = 100
+  @property({ type: Number }) step = 1
+  @property({ type: Boolean, reflect: true }) disabled = false
+  @property({ attribute: 'show-value', type: Boolean }) showValue = false
+  @property({ attribute: 'show-labels', type: Boolean }) showLabels = false
+  @property({ type: String }) id = ''
 
-    this.append(this.valueEl, trackWrapper, this.labelsEl)
-  }
+  @state() private currentValue: number | null = null
 
   private getCurrent(): number {
+    if (this.currentValue !== null) return this.currentValue
     if (this.hasAttribute('value')) {
       return parseNum(this.getAttribute('value'), 0) ?? 0
     }
@@ -69,58 +111,57 @@ export class NuxySliderElement extends HTMLElement {
   }
 
   private clamp(value: number): number {
-    const min = parseNum(this.getAttribute('min'), 0) ?? 0
-    const max = parseNum(this.getAttribute('max'), 100) ?? 100
+    const min = this.min
+    const max = this.max
     if (value < min) value = min
     if (value > max) value = max
     return value
   }
 
-  private sync(): void {
-    const extraClass = this.getAttribute('class') ?? ''
-    const disabled = this.hasAttribute('disabled')
-    const showValue = this.hasAttribute('show-value')
-    const showLabels = this.hasAttribute('show-labels')
-    const min = parseNum(this.getAttribute('min'), 0) ?? 0
-    const max = parseNum(this.getAttribute('max'), 100) ?? 100
-    const step = parseNum(this.getAttribute('step'), 1) ?? 1
-    const current = this.getCurrent()
-    const id = this.getAttribute('id')
-
-    syncHostClasses(this, 'nuxy-slider', disabled ? 'nuxy-slider--disabled' : '')
-
-    if (this.valueEl) {
-      this.valueEl.hidden = !showValue
-      this.valueEl.textContent = String(current)
-    }
-
-    if (this.input) {
-      this.input.min = String(min)
-      this.input.max = String(max)
-      this.input.step = String(step)
-      this.input.value = String(current)
-      this.input.disabled = disabled
-      this.input.setAttribute('aria-valuemin', String(min))
-      this.input.setAttribute('aria-valuemax', String(max))
-      this.input.setAttribute('aria-valuenow', String(current))
-      if (id) this.input.id = id
-      else this.input.removeAttribute('id')
-    }
-
-    if (this.labelsEl) {
-      this.labelsEl.hidden = !showLabels
-      if (showLabels) {
-        this.labelsEl.replaceChildren(
-          Object.assign(document.createElement('span'), { textContent: String(min) }),
-          Object.assign(document.createElement('span'), { textContent: String(max) })
-        )
-      }
-    }
+  private onInput(e: Event): void {
+    if (this.disabled) return
+    const input = e.target as HTMLInputElement
+    const next = this.clamp(Number(input.value))
+    this.currentValue = next
+    this.setAttribute('value', String(next))
+    this.dispatchEvent(
+      new CustomEvent('nuxy-slider-change', { detail: { value: next }, bubbles: true })
+    )
   }
-}
 
-if (!customElements.get('nuxy-slider')) {
-  customElements.define('nuxy-slider', NuxySliderElement)
+  render(): TemplateResult {
+    const min = this.min
+    const max = this.max
+    const step = this.step
+    const disabled = this.disabled
+    const showValue = this.showValue
+    const showLabels = this.showLabels
+    const current = this.getCurrent()
+    const inputId = this.id || undefined
+
+    return html`
+      <span class="nuxy-slider__value" ?hidden=${!showValue}>${current}</span>
+      <div class="nuxy-slider__track-wrapper">
+        <input
+          type="range"
+          class="nuxy-slider__input"
+          min=${min}
+          max=${max}
+          step=${step}
+          .value=${String(current)}
+          ?disabled=${disabled}
+          aria-valuemin=${min}
+          aria-valuemax=${max}
+          aria-valuenow=${current}
+          id=${inputId ?? nothing}
+          @input=${this.onInput}
+        />
+      </div>
+      <div class="nuxy-slider__labels" ?hidden=${!showLabels}>
+        ${showLabels ? html`<span>${min}</span><span>${max}</span>` : nothing}
+      </div>
+    `
+  }
 }
 
 declare global {

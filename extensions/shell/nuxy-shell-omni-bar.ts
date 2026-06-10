@@ -1,146 +1,170 @@
-import { syncHostClasses } from '../ce-utils.ts'
+import {
+  LitElement,
+  html,
+  css,
+  nothing,
+  customElement,
+  property,
+  state,
+  query as queryDecorator,
+  type TemplateResult,
+} from '@nuxy/core'
 
-export class NuxyShellOmniBarElement extends HTMLElement {
-  private input: HTMLInputElement | null = null
-  private iconEl: HTMLSpanElement | null = null
-  private toolNameEl: HTMLSpanElement | null = null
-  private toolSepEl: HTMLSpanElement | null = null
-  private portalMount: HTMLDivElement | null = null
-  private observer: MutationObserver | null = null
+const DEFAULT_SEARCH_ICON =
+  "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>"
 
-  private _searchIconHtml = ''
+@customElement('nuxy-shell-omni-bar')
+export class NuxyShellOmniBarElement extends LitElement {
+  static styles = css`
+    :host {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 13px var(--space-5);
+      min-height: 52px;
+      cursor: grab;
+    }
 
-  static get observedAttributes(): string[] {
-    return [
-      'query',
-      'static',
-      'active-tool-name',
-      'placeholder',
-      'aria-label',
-      'disabled',
-    ]
-  }
+    :host(:active) {
+      cursor: grabbing;
+    }
+
+    :host([static]) {
+      cursor: default;
+    }
+
+    .nuxy-shell-omni-bar__icon {
+      display: flex;
+      color: var(--syntax-comment);
+      flex-shrink: 0;
+      z-index: var(--z-1);
+    }
+
+    .nuxy-shell-omni-bar__sep {
+      color: var(--syntax-comment);
+      font-size: var(--font-xl);
+      line-height: 1;
+      user-select: none;
+      flex-shrink: 0;
+      z-index: var(--z-1);
+    }
+
+    .nuxy-shell-omni-bar__tool-name {
+      font-size: var(--font-body);
+      color: var(--syntax-operator);
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      flex-shrink: 0;
+      z-index: var(--z-1);
+    }
+
+    .nuxy-shell-omni-bar__input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--syntax-variable);
+      font-size: var(--font-body);
+      font-family: inherit;
+      caret-color: var(--syntax-operator);
+      z-index: var(--z-1);
+    }
+
+    .nuxy-shell-omni-bar__input::placeholder {
+      color: var(--syntax-keyword);
+    }
+
+    .nuxy-shell-omni-bar__input:disabled {
+      pointer-events: none;
+    }
+
+    .nuxy-shell-omni-bar__portal {
+      display: flex;
+      align-items: center;
+      padding-right: var(--space-3);
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+  `
+
+  @property() query = ''
+  @property({ type: Boolean, reflect: true }) static = false
+  @property({ attribute: 'active-tool-name' }) activeToolName = ''
+  @property() placeholder = ''
+  @property({ attribute: 'aria-label' }) ariaLabel = ''
+  @property({ type: Boolean }) disabled = false
+  @property({ type: Boolean }) loading = false
+
+  @state() private _searchIconHtml = ''
+
+  @queryDecorator('input') private _inputEl!: HTMLInputElement | null
 
   set searchIconHtml(html: string) {
     this._searchIconHtml = html
-    if (this.isConnected) this.syncIcon()
-  }
-
-  connectedCallback(): void {
-    this.build()
-    this.reparentPortalChildren()
-    this.sync()
-    this.observer = new MutationObserver(() => this.reparentPortalChildren())
-    this.observer.observe(this, { childList: true })
-  }
-
-  disconnectedCallback(): void {
-    this.observer?.disconnect()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
   }
 
   get nativeInput(): HTMLInputElement | null {
-    return this.input
+    return this._inputEl ?? null
   }
 
-  private build(): void {
-    if (this.input) return
-
-    this.iconEl = document.createElement('span')
-    this.iconEl.className = 'nuxy-shell-omni-bar__icon'
-    this.iconEl.setAttribute('aria-hidden', 'true')
-
-    const sep1 = document.createElement('span')
-    sep1.className = 'nuxy-shell-omni-bar__sep'
-    sep1.textContent = '›'
-
-    this.toolNameEl = document.createElement('span')
-    this.toolNameEl.className = 'nuxy-shell-omni-bar__tool-name'
-
-    this.toolSepEl = document.createElement('span')
-    this.toolSepEl.className = 'nuxy-shell-omni-bar__sep'
-    this.toolSepEl.textContent = '›'
-
-    this.input = document.createElement('input')
-    this.input.className = 'nuxy-shell-omni-bar__input'
-    this.input.autofocus = true
-
-    this.portalMount = document.createElement('div')
-    this.portalMount.className = 'nuxy-shell-omni-bar__portal'
-    this.portalMount.style.cssText =
-      'display:flex;align-items:center;padding-right:var(--space-3);flex-shrink:0'
-
-    this.append(this.iconEl, sep1, this.toolNameEl, this.toolSepEl, this.input, this.portalMount)
-  }
-
-  private reparentPortalChildren(): void {
-    if (!this.portalMount) return
-    const nodes: Node[] = []
-    for (const child of this.childNodes) {
-      if (
-        child === this.iconEl ||
-        child === this.toolNameEl ||
-        child === this.toolSepEl ||
-        child === this.input ||
-        child === this.portalMount
-      ) {
-        continue
-      }
-      nodes.push(child)
-    }
-    if (nodes.length) {
-      this.portalMount.replaceChildren(...nodes)
-      this.portalMount.hidden = false
+  updated(changed: Map<string, unknown>): void {
+    if (changed.has('query') && this._inputEl && this._inputEl.value !== this.query) {
+      this._inputEl.value = this.query
     }
   }
 
-  private syncIcon(): void {
-    const searchIcon = this._searchIconHtml
-    if (!this.iconEl) return
-    if (searchIcon) {
-      this.iconEl.innerHTML = `<span style="display:flex;align-items:center">${searchIcon}</span>`
-    } else {
-      this.iconEl.innerHTML =
-        '<span class="nuxy-shell-omni-bar__icon-placeholder" aria-hidden="true"></span>'
-    }
+  private _renderIcon(): TemplateResult {
+    const htmlStr = this._searchIconHtml || DEFAULT_SEARCH_ICON
+    return html`<span style="display:flex;align-items:center" .innerHTML=${htmlStr}></span>`
   }
 
-  private sync(): void {
-    syncHostClasses(
-      this,
-      'nuxy-shell-omni-bar',
-      this.hasAttribute('static') ? 'nuxy-shell-omni-bar--static' : ''
-    )
+  render(): TemplateResult {
+    const hasToolName = Boolean(this.activeToolName)
 
-    this.syncIcon()
-
-    const toolName = this.getAttribute('active-tool-name')
-    if (this.toolNameEl) {
-      this.toolNameEl.textContent = toolName ?? ''
-      this.toolNameEl.hidden = !toolName
-    }
-    if (this.toolSepEl) {
-      this.toolSepEl.hidden = !toolName
-    }
-
-    if (this.input) {
-      const query = this.getAttribute('query')
-      if (query !== null) this.input.value = query
-      const placeholder = this.getAttribute('placeholder')
-      if (placeholder) this.input.placeholder = placeholder
-      else this.input.removeAttribute('placeholder')
-      const ariaLabel = this.getAttribute('aria-label')
-      if (ariaLabel) this.input.setAttribute('aria-label', ariaLabel)
-      this.input.disabled = this.hasAttribute('disabled')
-    }
+    return html`
+      <span class="nuxy-shell-omni-bar__icon" aria-hidden="true"> ${this._renderIcon()} </span>
+      ${hasToolName
+        ? html`
+            <span class="nuxy-shell-omni-bar__sep">›</span>
+            <span class="nuxy-shell-omni-bar__tool-name">${this.activeToolName}</span>
+            <span class="nuxy-shell-omni-bar__sep">›</span>
+          `
+        : nothing}
+      <input
+        class="nuxy-shell-omni-bar__input"
+        autofocus
+        .value=${this.query}
+        placeholder=${this.placeholder || nothing}
+        aria-label=${this.ariaLabel || nothing}
+        ?disabled=${this.disabled}
+        @input=${(e: Event) => {
+          this.query = (e.target as HTMLInputElement).value
+          this.dispatchEvent(
+            new CustomEvent('nuxy-omni-input', {
+              detail: { value: this.query },
+              bubbles: true,
+              composed: true,
+            })
+          )
+        }}
+        @keydown=${(e: KeyboardEvent) => {
+          this.dispatchEvent(
+            new CustomEvent('nuxy-omni-keydown', {
+              detail: { nativeEvent: e },
+              bubbles: true,
+              composed: true,
+            })
+          )
+        }}
+      />
+      <div class="nuxy-shell-omni-bar__portal">
+        <slot></slot>
+        ${this.loading ? html`<nuxy-spinner size="sm"></nuxy-spinner>` : nothing}
+      </div>
+    `
   }
-}
-
-if (!customElements.get('nuxy-shell-omni-bar')) {
-  customElements.define('nuxy-shell-omni-bar', NuxyShellOmniBarElement)
 }
 
 declare global {

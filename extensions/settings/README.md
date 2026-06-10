@@ -140,7 +140,7 @@ To add a new locale, create `locales/<code>.json` and add the code to `locales.s
   },
   "entry": {
     "backend": "backend.ts",
-    "frontend": "frontend.tsx"
+    "frontend": "frontend.ts"
   },
   "locales": {
     "default": "en",

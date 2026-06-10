@@ -1,5 +1,4 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
 const OVERFLOW_SIZES: Record<string, { width: number; height: number; fontSize: number }> = {
   xs: { width: 20, height: 20, fontSize: 9 },
@@ -9,44 +8,64 @@ const OVERFLOW_SIZES: Record<string, { width: number; height: number; fontSize: 
   xl: { width: 64, height: 64, fontSize: 16 },
 }
 
-export class NuxyAvatarGroupElement extends HTMLElement {
-  private overflowEl: HTMLSpanElement | null = null
+@customElement('nuxy-avatar-group')
+export class NuxyAvatarGroupElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      align-items: center;
+    }
 
-  static get observedAttributes(): string[] {
-    return ['max', 'size']
-  }
+    ::slotted(nuxy-avatar + nuxy-avatar) {
+      margin-left: -8px;
+      border: 2px solid var(--bg-base);
+    }
+
+    .nuxy-avatar-group__overflow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--syntax-comment);
+      font-size: var(--font-xs);
+      font-weight: 600;
+      border: 2px solid var(--bg-base);
+      margin-left: -8px;
+      flex-shrink: 0;
+    }
+  `
+
+  @property({ type: Number }) max = 5
+  @property({ type: String }) size = 'md'
+
+  private overflowEl: HTMLSpanElement | null = null
+  private observer = new MutationObserver(() => {
+    if (this.isConnected) this.sync()
+  })
 
   connectedCallback(): void {
-    this.classList.add('nuxy-avatar-group')
+    super.connectedCallback()
     this.sync()
     this.observer.observe(this, { childList: true })
   }
 
   disconnectedCallback(): void {
+    super.disconnectedCallback()
     this.observer.disconnect()
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
+  updated(): void {
+    this.sync()
   }
 
-  private observer = new MutationObserver(() => {
-    if (this.isConnected) this.sync()
-  })
-
   private getAvatars(): HTMLElement[] {
-    return Array.from(this.children).filter(
-      (el): el is HTMLElement => el.tagName === 'NUXY-AVATAR'
-    )
+    return Array.from(this.children).filter((el): el is HTMLElement => el.tagName === 'NUXY-AVATAR')
   }
 
   private sync(): void {
-    const max = Number(this.getAttribute('max') ?? '5')
-    const size = this.getAttribute('size') ?? 'md'
-    const extraClass = this.getAttribute('class') ?? ''
-
-    syncHostClasses(this, 'nuxy-avatar-group')
-
+    const max = this.max
+    const size = this.size
     const avatars = this.getAvatars()
     const total = avatars.length
     const visibleCount = Math.min(total, max)
@@ -75,10 +94,10 @@ export class NuxyAvatarGroupElement extends HTMLElement {
       this.overflowEl.hidden = true
     }
   }
-}
 
-if (!customElements.get('nuxy-avatar-group')) {
-  customElements.define('nuxy-avatar-group', NuxyAvatarGroupElement)
+  render() {
+    return html`<slot></slot>`
+  }
 }
 
 declare global {

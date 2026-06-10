@@ -1,0 +1,233 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_lit_migration_guide_lit_migration_guide",
+      "label": "Lit Migration Guide",
+      "file_type": "document",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_light_dom_requirement",
+      "label": "Light DOM Requirement (createRenderRoot)",
+      "file_type": "rationale",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 33-43",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_litelement_pattern",
+      "label": "LitElement Extension Pattern",
+      "file_type": "concept",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 104-159",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_dom_helper_elimination",
+      "label": "DOM Helper File Elimination (*-dom.ts removal)",
+      "file_type": "rationale",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 174-271",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_template_result",
+      "label": "Lit TemplateResult Pattern",
+      "file_type": "concept",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 236-271",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_ref_directive",
+      "label": "Lit ref() Directive",
+      "file_type": "concept",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 319-333",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_requestupdate_pattern",
+      "label": "requestUpdate() Controller Integration",
+      "file_type": "concept",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 337-349",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_at_state_decorator",
+      "label": "@state() Decorator for Local UI State",
+      "file_type": "concept",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 353-368",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_css_static_styles_antipattern",
+      "label": "Anti-Pattern: static styles = css`` in Light DOM",
+      "file_type": "rationale",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 449-463",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_nuxy_core_import_rule",
+      "label": "Import Lit from @nuxy/core Rule",
+      "file_type": "rationale",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 13-27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_lit_migration_guide_migration_checklist",
+      "label": "Lit Migration Checklist",
+      "file_type": "document",
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 499-514",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_lit_migration_guide_lit_migration_guide",
+      "target": "extensions_lit_migration_guide_light_dom_requirement",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 33-43",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_lit_migration_guide_lit_migration_guide",
+      "target": "extensions_lit_migration_guide_litelement_pattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 104-159",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_lit_migration_guide_lit_migration_guide",
+      "target": "extensions_lit_migration_guide_nuxy_core_import_rule",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 13-27",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_lit_migration_guide_lit_migration_guide",
+      "target": "extensions_lit_migration_guide_dom_helper_elimination",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 174-234",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_lit_migration_guide_litelement_pattern",
+      "target": "extensions_lit_migration_guide_light_dom_requirement",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 118-119",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_lit_migration_guide_litelement_pattern",
+      "target": "extensions_lit_migration_guide_requestupdate_pattern",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 125",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_lit_migration_guide_dom_helper_elimination",
+      "target": "extensions_extension_guide_h_helper_deprecated",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 183",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_lit_migration_guide_litelement_pattern",
+      "target": "extensions_extension_guide_nuxy_tool_element_interface",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": "line 111",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_lit_migration_guide_litelement_pattern",
+      "target": "extensions_frontend_structure_guide_controller_pattern",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md",
+      "source_location": null,
+      "weight": 0.95
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "litelement_extension_authoring_contract",
+      "label": "LitElement Extension Authoring Contract (createRenderRoot + @nuxy/core imports + light DOM)",
+      "nodes": [
+        "extensions_lit_migration_guide_light_dom_requirement",
+        "extensions_lit_migration_guide_nuxy_core_import_rule",
+        "extensions_lit_migration_guide_litelement_pattern",
+        "extensions_extension_guide_nuxy_tool_element_interface"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/LIT_MIGRATION_GUIDE.md"
+    }
+  ]
+}

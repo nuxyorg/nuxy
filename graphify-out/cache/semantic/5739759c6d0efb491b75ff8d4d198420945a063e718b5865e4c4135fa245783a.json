@@ -1,8 +1,8 @@
 {
   "nodes": [
     {
-      "id": "docs_dead_code_report_doc",
-      "label": "Dead Code Report 2026-05-19",
+      "id": "dead_code_report_doc",
+      "label": "Dead Code Report",
       "file_type": "document",
       "source_file": "docs/cleanup/dead-code-report.md",
       "source_location": null,
@@ -12,33 +12,66 @@
       "contributor": null
     },
     {
-      "id": "docs_dead_code_report_broadcast_noop",
-      "label": "CoreContext.ipc.broadcast Unimplemented No-Op",
+      "id": "dead_code_config_ts_shim",
+      "label": "Dead Code: config/config.ts No-Op Re-Export Shim",
       "file_type": "concept",
       "source_file": "docs/cleanup/dead-code-report.md",
-      "source_location": "Finding 4",
+      "source_location": "L17",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_dead_code_report_registry_stubs",
-      "label": "CoreContext.registry Stub Methods (registerTool etc.)",
+      "id": "dead_code_math_random_id",
+      "label": "Dead Code: Duplicate Math.random ID Generator (Security)",
       "file_type": "concept",
       "source_file": "docs/cleanup/dead-code-report.md",
-      "source_location": "Finding 5",
+      "source_location": "L27",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_dead_code_report_migrate_data",
-      "label": "migrateLegacyData Unbounded Scan on Every Spawn",
+      "id": "dead_code_ipc_broadcast_noop",
+      "label": "Dead Code: CoreContext.ipc.broadcast No-Op API",
       "file_type": "concept",
       "source_file": "docs/cleanup/dead-code-report.md",
-      "source_location": "Finding 7",
+      "source_location": "L40",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dead_code_registry_stubs",
+      "label": "Dead Code: CoreContext.registry.* Stub Methods Silently Discarded",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dead-code-report.md",
+      "source_location": "L49",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dead_code_platform_stubs",
+      "label": "Dead Code: macOS/Win32 Media Platform Stubs (Always Null)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dead-code-report.md",
+      "source_location": "L59",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dead_code_legacy_migration",
+      "label": "Dead Code: LEGACY_DATA_DIR / migrateLegacyData Unbounded",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dead-code-report.md",
+      "source_location": "L69",
       "source_url": null,
       "captured_at": null,
       "author": null,
@@ -47,44 +80,64 @@
   ],
   "edges": [
     {
-      "source": "docs_dead_code_report_doc",
-      "target": "docs_dead_code_report_broadcast_noop",
+      "source": "dead_code_report_doc",
+      "target": "dead_code_config_ts_shim",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/cleanup/dead-code-report.md",
-      "source_location": "Finding 4",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
-      "source": "docs_dead_code_report_doc",
-      "target": "docs_dead_code_report_registry_stubs",
+      "source": "dead_code_report_doc",
+      "target": "dead_code_math_random_id",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/cleanup/dead-code-report.md",
-      "source_location": "Finding 5",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
-      "source": "docs_dead_code_report_doc",
-      "target": "docs_dead_code_report_migrate_data",
+      "source": "dead_code_report_doc",
+      "target": "dead_code_ipc_broadcast_noop",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/cleanup/dead-code-report.md",
-      "source_location": "Finding 7",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
-      "source": "docs_dead_code_report_broadcast_noop",
-      "target": "docs_dead_code_report_registry_stubs",
-      "relation": "semantically_similar_to",
+      "source": "dead_code_report_doc",
+      "target": "dead_code_registry_stubs",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/dead-code-report.md",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "dead_code_config_ts_shim",
+      "target": "arch_refactor_plan_doc",
+      "relation": "conceptually_related_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "source_file": "docs/cleanup/dead-code-report.md",
       "source_location": null,
-      "weight": 0.85
+      "weight": 0.7
+    },
+    {
+      "source": "dead_code_ipc_broadcast_noop",
+      "target": "dead_code_registry_stubs",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/dead-code-report.md",
+      "source_location": null,
+      "weight": 0.9
     }
   ],
   "hyperedges": []

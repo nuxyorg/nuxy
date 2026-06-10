@@ -1,97 +1,117 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
-import { smoothScrollIntoViewIfNeeded } from '../../utils/scroll'
+import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
+import { smoothScrollIntoViewIfNeeded } from '../../hooks/scroll-into-view'
 
-const MIRROR_ATTRS = [
-  'disabled',
-  'type',
-  'title',
-  'aria-label',
-  'tabindex',
-]
+@customElement('nuxy-grid')
+export class NuxyGridElement extends LitElement {
+  static styles = css`
+    :host {
+      display: grid;
+      padding: 4px 8px;
+    }
+  `
 
-export class NuxyGridElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['cols', 'gap']
-  }
+  @property({ type: String }) cols = '9'
+  @property({ type: String }) gap = '4'
 
   connectedCallback(): void {
+    super.connectedCallback()
     this.sync()
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
+  updated(): void {
+    this.sync()
   }
 
   private sync(): void {
-    const cols = this.getAttribute('cols') ?? '9'
-    const gap = this.getAttribute('gap') ?? '4'
-    const extraClass = this.getAttribute('class') ?? ''
+    this.style.gridTemplateColumns = `repeat(${this.cols}, 1fr)`
+    this.style.gap = `${this.gap}px`
+  }
 
-    syncHostClasses(this, 'nuxy-grid')
-    this.style.display = 'grid'
-    this.style.gridTemplateColumns = `repeat(${cols}, 1fr)`
-    this.style.gap = `${gap}px`
+  render() {
+    return html`<slot></slot>`
   }
 }
 
-export class NuxyGridItemElement extends HTMLElement {
-  private button: HTMLButtonElement | null = null
+@customElement('nuxy-grid-item')
+export class NuxyGridItemElement extends LitElement {
+  static styles = css`
+    :host {
+      display: contents;
+    }
 
-  static get observedAttributes(): string[] {
-    return ['active']
-  }
+    .nuxy-grid-item {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      border-radius: var(--radius-md);
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      position: relative;
+      color: inherit;
+      outline: none;
+      transition: background 0.1s;
+    }
 
-  connectedCallback(): void {
-    this.style.display = 'contents'
-    this.ensureButton()
-    this.sync()
-  }
+    .nuxy-grid-item:hover {
+      background: var(--syntax-comment);
+    }
 
-  attributeChangedCallback(name: string): void {
-    this.sync()
-    if (name === 'active' && this.hasAttribute('active') && this.button) {
-      smoothScrollIntoViewIfNeeded(this.button)
+    .nuxy-grid-item--active {
+      background: var(--syntax-comment);
+      box-shadow: inset 0 0 0 1px var(--syntax-operator);
+    }
+  `
+
+  @property({ type: Boolean, reflect: true }) active = false
+  @property({ type: Boolean }) disabled = false
+  @property({ type: String }) type = ''
+  @property({ type: String }) title = ''
+  @property({ attribute: 'aria-label', type: String }) ariaLabel = ''
+  @property({ type: String }) tabindex = ''
+
+  private buttonRef: HTMLButtonElement | null = null
+
+  updated(changedProperties: Map<string, unknown>): void {
+    if (changedProperties.has('active') && this.active && this.buttonRef) {
+      smoothScrollIntoViewIfNeeded(this.buttonRef)
     }
   }
 
-  private ensureButton(): void {
-    if (this.button?.isConnected) return
-    this.button = document.createElement('button')
-    while (this.firstChild) {
-      this.button.appendChild(this.firstChild)
-    }
-    this.appendChild(this.button)
+  private onButtonRef = (el: Element | undefined): void => {
+    this.buttonRef = (el as HTMLButtonElement | null | undefined) ?? null
   }
 
-  private sync(): void {
-    this.ensureButton()
-    const btn = this.button!
-    const extraClass = this.getAttribute('class') ?? ''
+  render(): TemplateResult {
+    const active = this.active || this.hasAttribute('active')
+    const disabled = this.disabled || this.hasAttribute('disabled')
+    const btnType = this.type || this.getAttribute('type') || 'button'
+    const titleAttr = this.title || this.getAttribute('title') || ''
+    const ariaLabelAttr = this.ariaLabel || this.getAttribute('aria-label') || ''
+    const tabindexAttr = this.tabindex || this.getAttribute('tabindex') || ''
 
-    btn.className = [
-      'nuxy-grid-item',
-      this.hasAttribute('active') ? 'nuxy-grid-item--active' : '',
-      extraClass,
-    ]
+    const btnClass = ['nuxy-grid-item', active ? 'nuxy-grid-item--active' : '']
       .filter(Boolean)
       .join(' ')
 
-    for (const attr of MIRROR_ATTRS) {
-      if (this.hasAttribute(attr)) {
-        btn.setAttribute(attr, this.getAttribute(attr) ?? '')
-      } else {
-        btn.removeAttribute(attr)
-      }
-    }
+    return html`
+      <button
+        class=${btnClass}
+        type=${btnType}
+        title=${titleAttr || nothing}
+        aria-label=${ariaLabelAttr || nothing}
+        tabindex=${tabindexAttr || nothing}
+        ?disabled=${disabled}
+        ${ref(this.onButtonRef)}
+      >
+        <slot></slot>
+      </button>
+    `
   }
-}
-
-if (!customElements.get('nuxy-grid')) {
-  customElements.define('nuxy-grid', NuxyGridElement)
-}
-if (!customElements.get('nuxy-grid-item')) {
-  customElements.define('nuxy-grid-item', NuxyGridItemElement)
 }
 
 declare global {

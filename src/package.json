@@ -7,7 +7,7 @@
   "author": "Nuxy",
   "main": "dist-electron/index.js",
   "scripts": {
-    "dev": "env -u ELECTRON_RUN_AS_NODE ELECTRON_OZONE_PLATFORM_HINT=x11 vite",
+    "dev": "env -u ELECTRON_RUN_AS_NODE vite",
     "build": "vitest run && vite build",
     "package": "electron-builder --config electron-builder.yml",
     "dist": "pnpm run build && pnpm run package",
@@ -28,7 +28,6 @@
     "@nuxy/core": "workspace:*",
     "@nuxy/extension-host": "workspace:*",
     "@nuxy/extension-sdk": "workspace:*",
-    "@nuxy/ui": "workspace:*",
     "@playwright/test": "^1.51.0",
     "@types/adm-zip": "^0.5.8",
     "autoprefixer": "^10.4.0",

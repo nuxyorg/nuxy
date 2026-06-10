@@ -24,6 +24,35 @@ function selectPlural(
 
 export type TranslateFn = (key: string, vars?: Vars, count?: number) => string
 
+/** English defaults — shown until IPC translations load or when a key is missing. */
+const SHELL_FALLBACKS: Record<string, string> = {
+  'omniBar.placeholder': 'What do you have in mind?',
+  'omniBar.searchTool': 'Search {toolName}',
+  'omniBar.ariaLabel': 'Search',
+  'results.ariaLabel': 'Results',
+  'footer.extensionsLoaded': '{count} extensions loaded',
+  'footer.pressToRun': 'Press',
+  'footer.toRun': 'to run',
+  'footer.toActions': 'to actions',
+  loading: 'Loading…',
+  'commandPalette.searchPlaceholder': 'Search commands...',
+  'commandPalette.noActions': 'No actions available.',
+  'commandPalette.enterShortcut': 'Enter',
+}
+
+function resolveTemplate(
+  translations: Translations,
+  key: string,
+  count: number | undefined,
+  locale: string
+): string | undefined {
+  if (count !== undefined) {
+    const plural = selectPlural(translations, key, count, locale)
+    if (plural) return plural
+  }
+  return translations[key] ?? SHELL_FALLBACKS[key]
+}
+
 export interface Translator {
   t: TranslateFn
   locale: string
@@ -36,6 +65,8 @@ export function createTranslator(extId: string, onChange?: () => void): Translat
   let locale = 'en'
   let dir: 'ltr' | 'rtl' = 'ltr'
   let loaded = false
+  let retryTimer: ReturnType<typeof setTimeout> | null = null
+  let retryCount = 0
 
   const fetchTranslations = async (): Promise<void> => {
     try {
@@ -52,7 +83,11 @@ export function createTranslator(extId: string, onChange?: () => void): Translat
         locale = res.data.locale
         dir = res.data.dir
         loaded = true
+        retryCount = 0
         onChange?.()
+      } else if (!loaded && retryCount < 8) {
+        retryCount++
+        retryTimer = setTimeout(() => void fetchTranslations(), retryCount * 250)
       }
     } catch {
       /* ignore */
@@ -60,15 +95,15 @@ export function createTranslator(extId: string, onChange?: () => void): Translat
   }
 
   void fetchTranslations()
-  const off = window.core?.events?.on('locale-changed', () => void fetchTranslations())
+  const off = window.core?.events?.on('locale-changed', () => {
+    retryCount = 0
+    void fetchTranslations()
+  })
 
   const t: TranslateFn = (key, vars, count) => {
-    if (!loaded) return key
-    let template: string | undefined
-    if (count !== undefined) {
-      template = selectPlural(translations, key, count, locale)
-    }
-    if (!template) template = translations[key]
+    const template = loaded
+      ? resolveTemplate(translations, key, count, locale)
+      : SHELL_FALLBACKS[key]
     if (!template) return key
     return vars ? interpolate(template, vars) : template
   }
@@ -83,6 +118,10 @@ export function createTranslator(extId: string, onChange?: () => void): Translat
     },
     destroy() {
       off?.()
+      if (retryTimer !== null) {
+        clearTimeout(retryTimer)
+        retryTimer = null
+      }
     },
   }
 }

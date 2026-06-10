@@ -1,6 +1,6 @@
 // Extension frontend — resolved at runtime via ~ext Vite alias
 // The file registers a custom element; no default export expected.
-declare module '~ext/frontend.tsx' {}
+declare module '~ext/frontend.ts' {}
 
 // IPC mock data — provided by virtual:ext-mocks Vite plugin
 declare module 'virtual:ext-mocks' {

@@ -2,6 +2,7 @@ import { parentPort, workerData } from 'worker_threads'
 import { createCoreProxy } from './core-proxy.js'
 import { loadExtensionModule } from './load-extension.js'
 import { createWorkerLogger } from './worker-log.js'
+import { createCallHost, resolveHostReply } from './call-host.js'
 import type { HostToWorkerMessage, WorkerToHostMessage } from '@nuxy/core'
 
 interface WorkerData {
@@ -30,19 +31,18 @@ const logger = createWorkerLogger(extId, logLevel)
 
 const pendingHostCalls = new Map<
   string,
-  { resolve: (v: unknown) => void; reject: (e: Error) => void }
+  {
+    resolve: (v: unknown) => void
+    reject: (e: Error) => void
+    timer: ReturnType<typeof setTimeout>
+  }
 >()
 
 const channelHandlers = new Map<string, (payload: unknown) => Promise<unknown>>()
 
 parentPort!.on('message', (msg: HostToWorkerMessage) => {
   if (msg?.type === 'host:reply') {
-    const cb = pendingHostCalls.get(msg.id)
-    if (cb) {
-      pendingHostCalls.delete(msg.id)
-      if (msg.error) cb.reject(new Error(msg.error))
-      else cb.resolve(msg.result)
-    }
+    resolveHostReply(pendingHostCalls, msg.id, msg.result, msg.error)
     return
   }
 
@@ -64,14 +64,7 @@ parentPort!.on('message', (msg: HostToWorkerMessage) => {
   }
 })
 
-function callHost(channel: string, payload?: unknown): Promise<unknown> {
-  return new Promise((resolve, reject) => {
-    const id = crypto.randomUUID()
-    pendingHostCalls.set(id, { resolve, reject })
-    const msg: WorkerToHostMessage = { type: 'host:call', id, channel, payload }
-    parentPort!.postMessage(msg)
-  })
-}
+const callHost = createCallHost(pendingHostCalls, (msg) => parentPort!.postMessage(msg))
 
 const { core, initI18n, getSyncPayload } = createCoreProxy(
   callHost,

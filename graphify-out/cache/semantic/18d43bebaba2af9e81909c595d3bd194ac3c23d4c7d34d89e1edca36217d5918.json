@@ -1,0 +1,135 @@
+{
+  "nodes": [
+    {
+      "id": "test_roadmap_doc",
+      "label": "Test Roadmap Document",
+      "file_type": "document",
+      "source_file": "docs/test-roadmap.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_roadmap_preload_test",
+      "label": "bootstrap/preload.test.ts \u2014 P0 Unit Test",
+      "file_type": "document",
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_roadmap_shell_e2e",
+      "label": "E2E Shell Interaction Test (P0)",
+      "file_type": "document",
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_roadmap_extension_resilience_e2e",
+      "label": "E2E Extension Crash Recovery Test (P1)",
+      "file_type": "document",
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L55",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_roadmap_theme_switching_e2e",
+      "label": "E2E Theme Switching Test (P1)",
+      "file_type": "document",
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L80",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_roadmap_permission_denial_e2e",
+      "label": "E2E Permission Denial Test (P1)",
+      "file_type": "document",
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L95",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_roadmap_shared_createcore",
+      "label": "Shared createCore() Test Utility (P2 Refactor)",
+      "file_type": "concept",
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L156",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "test_roadmap_cross_extension_e2e",
+      "label": "E2E Cross-Extension Call Test (P2)",
+      "file_type": "document",
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L169",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "test_roadmap_doc",
+      "target": "test_roadmap_preload_test",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "test_roadmap_doc",
+      "target": "test_roadmap_shell_e2e",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "test_roadmap_doc",
+      "target": "test_roadmap_extension_resilience_e2e",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "test_roadmap_doc",
+      "target": "test_roadmap_shared_createcore",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/test-roadmap.md",
+      "source_location": "L156",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

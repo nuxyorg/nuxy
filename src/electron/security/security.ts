@@ -180,11 +180,7 @@ export function isRevoked(
 /**
  * Cryptographically verifies a signature with a public key and target hash.
  */
-function verifySignature(
-  signature: string,
-  publicKey: string,
-  integrityHash: string
-): boolean {
+function verifySignature(signature: string, publicKey: string, integrityHash: string): boolean {
   try {
     const verify = crypto.createVerify('SHA256')
     verify.update(integrityHash)

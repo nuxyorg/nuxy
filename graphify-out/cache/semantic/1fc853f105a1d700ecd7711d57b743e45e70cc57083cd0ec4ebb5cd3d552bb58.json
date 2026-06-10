@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "root_eksik_completedtasks",
+      "label": "Eksik \u2014 Completed Missing Items",
+      "file_type": "document",
+      "source_file": "eksik.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "root_eksik_completedtasks",
+      "target": "concept_nuxy_extensionsystem",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "eksik.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

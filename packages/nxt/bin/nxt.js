@@ -27,17 +27,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // ─── Logging ──────────────────────────────────────────────────────────────────
 
-function ok(msg)   { console.log(`${pc.green('✔')} ${msg}`) }
-function info(msg) { console.log(`${pc.cyan('ℹ')} ${msg}`) }
-function warn(msg) { console.log(`${pc.yellow('⚠')} ${msg}`) }
-function fail(msg) { console.error(`${pc.red('✘')} ${msg}`); process.exit(1) }
+function ok(msg) {
+  console.log(`${pc.green('✔')} ${msg}`)
+}
+function info(msg) {
+  console.log(`${pc.cyan('ℹ')} ${msg}`)
+}
+function warn(msg) {
+  console.log(`${pc.yellow('⚠')} ${msg}`)
+}
+function fail(msg) {
+  console.error(`${pc.red('✘')} ${msg}`)
+  process.exit(1)
+}
 
 // ─── Built-in modules blocklist ───────────────────────────────────────────────
 
-const BUILTINS = new Set([
-  ...builtinModules,
-  ...builtinModules.map((m) => `node:${m}`),
-])
+const BUILTINS = new Set([...builtinModules, ...builtinModules.map((m) => `node:${m}`)])
 
 // ─── Crypto / signing helpers ─────────────────────────────────────────────────
 
@@ -46,7 +52,7 @@ function sha256(data) {
 }
 
 function computeDirectoryIntegrity(srcDir) {
-  const skip = new Set(['signature.json', 'node_modules', '.git'])
+  const skip = new Set(['signature.json', 'node_modules', '.git', 'dist', 'tests'])
   const filesMap = {}
 
   function walk(dir) {
@@ -150,7 +156,7 @@ async function bundleBackend(cwd, manifest) {
   if (repoRoot) {
     const map = {
       '@nuxy/extension-sdk': path.join(repoRoot, 'packages/extension-sdk/src/index.ts'),
-      '@nuxy/core':          path.join(repoRoot, 'packages/core/src/index.ts'),
+      '@nuxy/core': path.join(repoRoot, 'packages/core/src/index.ts'),
     }
     for (const [name, src] of Object.entries(map)) {
       if (fs.existsSync(src)) alias[name] = src
@@ -178,7 +184,7 @@ async function bundleBackend(cwd, manifest) {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const SKIP_DIRS  = new Set(['node_modules', '.git'])
+const SKIP_DIRS = new Set(['node_modules', '.git', 'tests', 'dist'])
 const SKIP_FILES = new Set(['.DS_Store', 'Thumbs.db'])
 const NUXY_EXT_DIR = path.join(os.homedir(), '.nuxy', 'extensions')
 
@@ -195,8 +201,8 @@ program
   .command('package')
   .description('Bundle and sign the current extension into a .nuxyext file')
   .option('--keys <path>', 'Path to developer keys JSON', '.nxt-keys.json')
-  .option('--out <dir>',   'Output directory for the .nuxyext file', '.')
-  .option('--no-sign',     'Skip code signing (not recommended for distribution)')
+  .option('--out <dir>', 'Output directory for the .nuxyext file', 'dist')
+  .option('--no-sign', 'Skip code signing (not recommended for distribution)')
   .action(async (opts) => {
     const cwd = process.cwd()
 
@@ -206,7 +212,7 @@ program
       fail('No manifest.json found. Are you inside an extension directory?')
     }
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
-    const extId   = manifest.id || path.basename(cwd)
+    const extId = manifest.id || path.basename(cwd)
     const version = manifest.version || '1.0.0'
 
     info(`Packaging extension: ${pc.bold(extId)} v${version}`)
@@ -228,8 +234,8 @@ program
     let keys = null
     if (opts.sign !== false) {
       // Key discovery order: --keys flag → repo dist/developer-keys.json → .nxt-keys.json (auto-generate)
-      const flagPath    = path.isAbsolute(opts.keys) ? opts.keys : path.join(cwd, opts.keys)
-      const repoRoot    = findRepoRoot(cwd)
+      const flagPath = path.isAbsolute(opts.keys) ? opts.keys : path.join(cwd, opts.keys)
+      const repoRoot = findRepoRoot(cwd)
       const repoKeysPath = repoRoot ? path.join(repoRoot, 'dist', 'developer-keys.json') : null
 
       if (opts.keys !== '.nxt-keys.json' && fs.existsSync(flagPath)) {
@@ -248,10 +254,10 @@ program
 
     function addDir(dir, zipBase) {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        if (SKIP_DIRS.has(entry.name))  continue
+        if (SKIP_DIRS.has(entry.name)) continue
         if (SKIP_FILES.has(entry.name)) continue
-        if (entry.name === '_backend.bundle.mjs') continue  // added explicitly below
-        const full     = path.join(dir, entry.name)
+        if (entry.name === '_backend.bundle.mjs') continue // added explicitly below
+        const full = path.join(dir, entry.name)
         const zipEntry = zipBase ? `${zipBase}/${entry.name}` : entry.name
         if (entry.isDirectory()) {
           addDir(full, zipEntry)
@@ -288,7 +294,7 @@ program
     }
 
     // 6. Write output
-    const outDir  = path.resolve(cwd, opts.out)
+    const outDir = path.resolve(cwd, opts.out)
     fs.mkdirSync(outDir, { recursive: true })
     const outFile = path.join(outDir, `${extId}.nuxyext`)
     zip.writeZip(outFile)
@@ -315,7 +321,8 @@ program
       }
       const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
       const extId = manifest.id || path.basename(cwd)
-      nuxyextPath = path.join(cwd, `${extId}.nuxyext`)
+      const inDist = path.join(cwd, 'dist', `${extId}.nuxyext`)
+      nuxyextPath = fs.existsSync(inDist) ? inDist : path.join(cwd, `${extId}.nuxyext`)
     }
 
     if (!fs.existsSync(nuxyextPath)) {
@@ -333,7 +340,9 @@ program
     }
 
     const dest = path.join(NUXY_EXT_DIR, path.basename(nuxyextPath))
-    fs.copyFileSync(nuxyextPath, dest)
+    const tmpDest = `${dest}.tmp`
+    fs.copyFileSync(nuxyextPath, tmpDest)
+    fs.renameSync(tmpDest, dest)
 
     ok(`Installed → ${pc.bold(dest)}`)
     info('Nuxy will hot-reload the extension automatically.')
@@ -345,9 +354,7 @@ program
   .description('Generate a new RSA developer key pair')
   .option('--out <path>', 'Output path for the keys JSON', '.nxt-keys.json')
   .action((opts) => {
-    const keysPath = path.isAbsolute(opts.out)
-      ? opts.out
-      : path.join(process.cwd(), opts.out)
+    const keysPath = path.isAbsolute(opts.out) ? opts.out : path.join(process.cwd(), opts.out)
     loadOrCreateKeys(keysPath, true)
   })
 
@@ -362,15 +369,17 @@ program
       fail('No manifest.json found. Are you inside an extension directory?')
     }
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
-    const pkgPath  = path.join(cwd, 'package.json')
-    const pkg      = fs.existsSync(pkgPath) ? JSON.parse(fs.readFileSync(pkgPath, 'utf8')) : {}
+    const pkgPath = path.join(cwd, 'package.json')
+    const pkg = fs.existsSync(pkgPath) ? JSON.parse(fs.readFileSync(pkgPath, 'utf8')) : {}
 
     console.log()
     console.log(`  ${pc.bold('Extension:')}   ${manifest.name || manifest.id}`)
     console.log(`  ${pc.bold('ID:')}          ${manifest.id}`)
     console.log(`  ${pc.bold('Version:')}     ${manifest.version}`)
     console.log(`  ${pc.bold('Type:')}        ${manifest.type}`)
-    console.log(`  ${pc.bold('Permissions:')} ${(manifest.permissions || []).join(', ') || '(none)'}`)
+    console.log(
+      `  ${pc.bold('Permissions:')} ${(manifest.permissions || []).join(', ') || '(none)'}`
+    )
     if (pkg.dependencies) {
       const deps = Object.keys(pkg.dependencies)
       console.log(`  ${pc.bold('Deps:')}        ${deps.join(', ')}`)

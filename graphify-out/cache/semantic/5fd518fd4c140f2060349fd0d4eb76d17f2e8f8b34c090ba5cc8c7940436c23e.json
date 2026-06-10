@@ -1,0 +1,189 @@
+{
+  "nodes": [
+    {
+      "id": "lit_genel_bakis_doc",
+      "label": "Lit Remake: General Overview (docs/lit-remake/00-genel-bakis.md)",
+      "file_type": "document",
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_genel_three_paradigm_problem",
+      "label": "Problem: Three Paradigms Running Simultaneously (Vanilla CE, Partial Lit, Real Lit)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L21",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_genel_shell_controller_god_class",
+      "label": "Problem: ShellController 992-Line God Class",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L43",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_genel_ipc_promise_no_timeout",
+      "label": "Critical: Worker IPC Promises Have No Timeout (Memory Leak)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L36",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_genel_preload_signal_always_fires",
+      "label": "Critical: Preload Signal Fires Even on Error (nuxy:ready)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L37",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_genel_lit_render_cycle_clash",
+      "label": "Critical: Lit Render Cycle vs Manual DOM Sync Clash (queueMicrotask vs updateComplete)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L35",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_genel_packages_ui_dead",
+      "label": "Problem: packages/ui Stub Layer is Practically Dead Code",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L44",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_genel_h_helper_reinvented_jsx",
+      "label": "Problem: ceListItem/ceList/h() \u2014 Manually Reinventing JSX",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L45",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "lit_genel_bakis_doc",
+      "target": "lit_genel_three_paradigm_problem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_genel_bakis_doc",
+      "target": "lit_genel_shell_controller_god_class",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_genel_bakis_doc",
+      "target": "lit_genel_ipc_promise_no_timeout",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_genel_bakis_doc",
+      "target": "lit_genel_packages_ui_dead",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_genel_bakis_doc",
+      "target": "lit_genel_h_helper_reinvented_jsx",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_genel_lit_render_cycle_clash",
+      "target": "lit_shell_view_vanilla_not_lit",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_genel_shell_controller_god_class",
+      "target": "lit_shell_controller_19_field_god_state",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "lit_genel_shell_controller_god_class",
+      "target": "lit_shell_controller_keyboard_167_lines",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/00-genel-bakis.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "lit_remake_problem_cluster",
+      "label": "Lit Remake: Three-Paradigm Codebase Problem (Vanilla CE + Partial Lit + Real Lit)",
+      "nodes": [
+        "lit_genel_three_paradigm_problem",
+        "lit_shell_view_vanilla_not_lit",
+        "lit_shell_dom_factory_antipattern"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/00-genel-bakis.md"
+    }
+  ]
+}

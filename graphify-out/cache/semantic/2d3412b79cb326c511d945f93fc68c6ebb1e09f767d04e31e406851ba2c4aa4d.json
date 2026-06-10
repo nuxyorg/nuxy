@@ -1,8 +1,8 @@
 {
   "nodes": [
     {
-      "id": "docs_redundant_tests_audit_doc",
-      "label": "Redundant Tests Audit Report",
+      "id": "docs_redundant_tests_audit",
+      "label": "Redundant Tests Audit Report (Turkish)",
       "file_type": "document",
       "source_file": "docs/redundant_tests_audit.md",
       "source_location": null,
@@ -12,11 +12,11 @@
       "contributor": null
     },
     {
-      "id": "docs_redundant_tests_audit_createmock",
-      "label": "Shared createMockCore() Helper Proposal",
+      "id": "docs_redundant_tests_create_mock_core",
+      "label": "createMockCore Shared Test Utility Proposal",
       "file_type": "concept",
       "source_file": "docs/redundant_tests_audit.md",
-      "source_location": "Section 3",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
@@ -25,24 +25,24 @@
   ],
   "edges": [
     {
-      "source": "docs_redundant_tests_audit_createmock",
-      "target": "docs_redundant_tests_audit_doc",
+      "source": "docs_redundant_tests_audit",
+      "target": "docs_redundant_tests_create_mock_core",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/redundant_tests_audit.md",
-      "source_location": "Section 3",
+      "source_location": null,
       "weight": 1.0
     },
     {
-      "source": "docs_redundant_tests_audit_doc",
-      "target": "docs_pain_points_plan_doc",
-      "relation": "semantically_similar_to",
+      "source": "docs_redundant_tests_create_mock_core",
+      "target": "docs_05_core_context_interface",
+      "relation": "conceptually_related_to",
       "confidence": "INFERRED",
-      "confidence_score": 0.65,
+      "confidence_score": 0.95,
       "source_file": "docs/redundant_tests_audit.md",
-      "source_location": "General",
-      "weight": 0.65
+      "source_location": null,
+      "weight": 0.95
     }
   ],
   "hyperedges": []

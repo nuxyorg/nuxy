@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_icons_default_readme_icons_default_extension",
+      "label": "Default Icons Extension (com.nuxy.icons-default)",
+      "file_type": "document",
+      "source_file": "extensions/icons-default/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_icons_default_readme_lucide_svg_icons",
+      "label": "Lucide-Style SVG Icon Set (50 icons)",
+      "file_type": "concept",
+      "source_file": "extensions/icons-default/README.md",
+      "source_location": "line 29-81",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_icons_default_readme_icons_default_extension",
+      "target": "extensions_icons_default_readme_lucide_svg_icons",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/icons-default/README.md",
+      "source_location": "line 29-81",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

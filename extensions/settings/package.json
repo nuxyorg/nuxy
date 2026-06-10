@@ -2,5 +2,8 @@
   "name": "@nuxy-ext/settings",
   "version": "1.0.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "lit": "^3.0.0"
+  }
 }

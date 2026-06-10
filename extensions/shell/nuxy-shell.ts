@@ -64,9 +64,10 @@ export class NuxyShellElement extends HTMLElement {
 
     window.core?.composition?.declareSlots(SHELL_COMPOSITION_SLOTS)
 
-    this.compositionOff = window.core?.composition?.onStateChange('background-layer', (state) => {
-      this.setAttribute('gradient-mode', gradientModeFromState(state))
-    }) ?? null
+    this.compositionOff =
+      window.core?.composition?.onStateChange('background-layer', (state) => {
+        this.setAttribute('gradient-mode', gradientModeFromState(state))
+      }) ?? null
 
     window.core?.events?.emit('composition-ready')
   }

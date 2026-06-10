@@ -8,9 +8,11 @@
  * CSS is inlined by the inline-css plugin — no separate stylesheet needed.
  */
 import * as UI from './index'
+import * as NuxyCore from '@nuxy/core'
 
 const merged = {
   ...window.UI,
   ...UI,
 }
 ;(window as any).UI = merged
+;(window as any).NuxyCore = NuxyCore

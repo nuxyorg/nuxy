@@ -1,32 +1,36 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
-import { smoothScrollIntoViewIfNeeded } from '../../utils/scroll'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
-export class NuxyListItemElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['active']
-  }
+@customElement('nuxy-list-item')
+export class NuxyListItemElement extends LitElement {
+  @property({ type: Boolean, reflect: true }) active = false
 
-  connectedCallback(): void {
-    this.sync()
-  }
-
-  attributeChangedCallback(name: string): void {
-    if (!this.isConnected) return
-    this.sync()
-    if (name === 'active' && this.hasAttribute('active')) {
-      smoothScrollIntoViewIfNeeded(this)
+  static styles = css`
+    :host {
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition:
+        background-color 150ms,
+        border-color 150ms;
+      border-left: 2px solid transparent;
     }
-  }
 
-  private sync(): void {
-    this.classList.toggle('nuxy-list-item--active', this.hasAttribute('active'))
-    syncHostClasses(this, 'nuxy-list-item')
-  }
-}
+    :host([active]) {
+      background-color: var(--syntax-comment);
+      border-left-color: var(--syntax-operator);
+    }
 
-if (!customElements.get('nuxy-list-item')) {
-  customElements.define('nuxy-list-item', NuxyListItemElement)
+    :host(:not([active]):hover) {
+      background-color: var(--syntax-comment);
+      border-left-color: var(--syntax-comment);
+    }
+  `
+
+  render() {
+    return html`<slot></slot>`
+  }
 }
 
 declare global {

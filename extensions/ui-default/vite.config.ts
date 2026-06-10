@@ -8,6 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '../..')
 
 export default defineConfig({
+  logLevel: process.argv.includes('--watch') ? 'warn' : undefined,
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'production'),
     'process.env': '{}',
@@ -15,6 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@nuxy/ui': path.resolve(__dirname, 'src/index.tsx'),
+      '@nuxy/core': path.resolve(repoRoot, 'packages/core/src/renderer.ts'),
     },
   },
   plugins: [
@@ -24,10 +26,7 @@ export default defineConfig({
         const jsPath = path.resolve(__dirname, 'frontend.js')
         const cssPath = path.resolve(__dirname, 'style.css')
 
-        if (!fs.existsSync(cssPath)) {
-          console.log('[inline-css] No style.css found — nothing to inline.')
-          return
-        }
+        if (!fs.existsSync(cssPath)) return
         if (!fs.existsSync(jsPath)) {
           console.error('[inline-css] frontend.js not found — did the build run?')
           return
@@ -44,8 +43,6 @@ export default defineConfig({
 
         fs.appendFileSync(jsPath, injection, 'utf8')
         fs.unlinkSync(cssPath)
-
-        console.log(`[inline-css] Inlined ${css.length} bytes of CSS into frontend.js`)
       },
     },
   ],
@@ -59,6 +56,14 @@ export default defineConfig({
     outDir: '.',
     emptyOutDir: false,
     cssCodeSplit: false,
+    ...(process.argv.includes('--watch')
+      ? {
+          watch: {
+            // closeBundle inlines CSS into frontend.js after each build — ignore those writes.
+            exclude: [path.resolve(__dirname, 'frontend.js'), path.resolve(__dirname, 'style.css')],
+          },
+        }
+      : {}),
     rollupOptions: {
       output: {
         entryFileNames: 'frontend.js',

@@ -1,0 +1,49 @@
+{
+  "nodes": [
+    {
+      "id": "reports_refactor_videodownloader_assessment",
+      "label": "Refactor Assessment: video-downloader/frontend.tsx",
+      "file_type": "document",
+      "source_file": "reports/refactor/refactor_video-downloader-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_videodownloaderextension",
+      "label": "Video Downloader Extension (931-line Monolith)",
+      "file_type": "concept",
+      "source_file": "reports/refactor/refactor_video-downloader-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "reports_refactor_videodownloader_assessment",
+      "target": "concept_nuxy_videodownloaderextension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_video-downloader-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_videodownloader_assessment",
+      "target": "concept_nuxy_staterefpattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_video-downloader-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

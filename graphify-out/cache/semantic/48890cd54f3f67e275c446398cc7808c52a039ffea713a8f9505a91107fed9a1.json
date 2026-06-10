@@ -1,0 +1,61 @@
+{
+  "nodes": [
+    {
+      "id": "reports_refactor_calendarfrontend_assessment",
+      "label": "Refactor Assessment: calendar/frontend.tsx",
+      "file_type": "document",
+      "source_file": "reports/refactor/refactor_calendar-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_calendarextension",
+      "label": "Calendar Extension (1016-line God Component)",
+      "file_type": "concept",
+      "source_file": "reports/refactor/refactor_calendar-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_extensionsinglefileconstraint",
+      "label": "Extension Single Self-Contained File Constraint (no relative imports)",
+      "file_type": "rationale",
+      "source_file": "reports/refactor/refactor_calendar-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "EXTENSION_GUIDE.md \u00a75 mandates: frontend.tsx must be a single self-contained file \u2014 no relative imports. Sub-components, custom hooks, and utility functions may not be extracted to sibling files. All extracted logic must stay inside frontend.tsx."
+    }
+  ],
+  "edges": [
+    {
+      "source": "reports_refactor_calendarfrontend_assessment",
+      "target": "concept_nuxy_calendarextension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_calendar-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_calendarfrontend_assessment",
+      "target": "concept_nuxy_extensionsinglefileconstraint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_calendar-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,35 +1,37 @@
-export class NuxyPortalElement extends HTMLElement {
+import { LitElement, nothing, customElement, property } from '@nuxy/core'
+
+@customElement('nuxy-portal')
+export class NuxyPortalElement extends LitElement {
+  @property({ type: String }) container = ''
+
   private mountNode: HTMLElement | null = null
   private movedNodes: Node[] = []
 
-  static get observedAttributes(): string[] {
-    return ['container']
+  protected createRenderRoot(): HTMLElement {
+    return this
   }
 
   connectedCallback(): void {
     this.style.display = 'contents'
     this.mount()
+    super.connectedCallback()
   }
 
   disconnectedCallback(): void {
-    for (const node of this.movedNodes) {
-      if (node.parentNode === this.mountNode) {
-        this.appendChild(node)
-      }
-    }
-    this.movedNodes = []
+    this.restore()
     this.mountNode = null
+    super.disconnectedCallback()
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) {
+  updated(changedProperties: Map<string, unknown>): void {
+    if (changedProperties.has('container')) {
       this.restore()
       this.mount()
     }
   }
 
   private resolveContainer(): HTMLElement {
-    const id = this.getAttribute('container')
+    const id = this.container || this.getAttribute('container')
     if (id) {
       const el = document.getElementById(id)
       if (el) return el
@@ -39,7 +41,8 @@ export class NuxyPortalElement extends HTMLElement {
 
   private mount(): void {
     this.mountNode = this.resolveContainer()
-    this.movedNodes = Array.from(this.childNodes)
+    // Skip comment nodes (Lit's render markers)
+    this.movedNodes = Array.from(this.childNodes).filter((n) => n.nodeType !== Node.COMMENT_NODE)
     for (const node of this.movedNodes) {
       this.mountNode.appendChild(node)
     }
@@ -53,10 +56,10 @@ export class NuxyPortalElement extends HTMLElement {
     }
     this.movedNodes = []
   }
-}
 
-if (!customElements.get('nuxy-portal')) {
-  customElements.define('nuxy-portal', NuxyPortalElement)
+  render() {
+    return nothing
+  }
 }
 
 declare global {

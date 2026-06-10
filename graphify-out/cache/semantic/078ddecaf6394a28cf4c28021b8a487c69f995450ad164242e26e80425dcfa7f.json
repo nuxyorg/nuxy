@@ -1,0 +1,70 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_settings_readme_settings_extension",
+      "label": "Settings Extension (com.nuxy.settings)",
+      "file_type": "document",
+      "source_file": "extensions/settings/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_settings_readme_preferred_languages",
+      "label": "Preferred Languages Setting",
+      "file_type": "concept",
+      "source_file": "extensions/settings/README.md",
+      "source_location": "line 85-92",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_settings_readme_extension_enable_disable",
+      "label": "Extension Enable/Disable Toggle",
+      "file_type": "concept",
+      "source_file": "extensions/settings/README.md",
+      "source_location": "line 53-55",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_settings_readme_settings_extension",
+      "target": "extensions_extension_guide_settings_json_schema",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/settings/README.md",
+      "source_location": "line 14",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_settings_readme_settings_extension",
+      "target": "extensions_settings_readme_preferred_languages",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/settings/README.md",
+      "source_location": "line 85-92",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_settings_readme_settings_extension",
+      "target": "extensions_settings_readme_extension_enable_disable",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/settings/README.md",
+      "source_location": "line 53-55",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

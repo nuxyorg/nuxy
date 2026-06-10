@@ -1,0 +1,91 @@
+{
+  "nodes": [
+    {
+      "id": "docs_08_auth_local_zero_trust",
+      "label": "Local-Only Zero Trust Authentication",
+      "file_type": "concept",
+      "source_file": "docs/08-authentication.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_08_auth_vault_extension",
+      "label": "Password Vault Extension Security Architecture",
+      "file_type": "concept",
+      "source_file": "docs/08-authentication.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_08_auth_crypto_engine",
+      "label": "Vault Cryptographic Engine (scrypt + AES-256-GCM)",
+      "file_type": "concept",
+      "source_file": "docs/08-authentication.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_08_auth_memory_handling",
+      "label": "Vault Strict Memory Handling",
+      "file_type": "concept",
+      "source_file": "docs/08-authentication.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_08_auth_vault_extension",
+      "target": "docs_08_auth_crypto_engine",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/08-authentication.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_08_auth_vault_extension",
+      "target": "docs_08_auth_memory_handling",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/08-authentication.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_08_auth_local_zero_trust",
+      "target": "docs_08_auth_vault_extension",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/08-authentication.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_08_auth_vault_extension",
+      "target": "docs_15_plugin_core_context_proxy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/08-authentication.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": []
+}

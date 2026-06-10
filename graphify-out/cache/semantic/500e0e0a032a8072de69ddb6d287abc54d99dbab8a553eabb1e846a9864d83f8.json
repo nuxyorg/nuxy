@@ -1,0 +1,122 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_frontend_structure_guide_frontend_structure_guide",
+      "label": "Frontend Structure Guide",
+      "file_type": "document",
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_frontend_structure_guide_controller_pattern",
+      "label": "Controller Pattern (State + IPC + Business Logic)",
+      "file_type": "concept",
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 19-56",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_frontend_structure_guide_frontend_entry_point_rule",
+      "label": "frontend.ts Entry Point Rule (Import Only)",
+      "file_type": "rationale",
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 3-17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_frontend_structure_guide_split_decision_guide",
+      "label": "Controller Split Decision Guide",
+      "file_type": "concept",
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 157-170",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_frontend_structure_guide_vanilla_htelement_deprecated",
+      "label": "Vanilla HTMLElement + h() Pattern (Deprecated)",
+      "file_type": "concept",
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 58-109",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_frontend_structure_guide_frontend_structure_guide",
+      "target": "extensions_extension_guide_extension_guide",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 1",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_frontend_structure_guide_frontend_structure_guide",
+      "target": "extensions_frontend_structure_guide_controller_pattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 19-56",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_frontend_structure_guide_frontend_structure_guide",
+      "target": "extensions_frontend_structure_guide_vanilla_htelement_deprecated",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 58-109",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_frontend_structure_guide_vanilla_htelement_deprecated",
+      "target": "extensions_extension_guide_h_helper_deprecated",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 59-62",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_frontend_structure_guide_controller_pattern",
+      "target": "extensions_lit_migration_guide_requestupdate_pattern",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": null,
+      "weight": 0.85
+    },
+    {
+      "source": "extensions_notes_readme_notes_extension",
+      "target": "extensions_frontend_structure_guide_frontend_structure_guide",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/FRONTEND_STRUCTURE_GUIDE.md",
+      "source_location": "line 189-208",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

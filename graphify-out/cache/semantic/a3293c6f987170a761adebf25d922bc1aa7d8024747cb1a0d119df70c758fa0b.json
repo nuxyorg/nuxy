@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "ext_devserver_indexhtml_devserver",
+      "label": "Extension Dev Server (ext-devserver)",
+      "file_type": "code",
+      "source_file": "packages/ext-devserver/index.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ext_devserver_indexhtml_nuxy_dev_shell",
+      "label": "nuxy-dev-shell Custom Element",
+      "file_type": "concept",
+      "source_file": "packages/ext-devserver/index.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "ext_devserver_indexhtml_devserver",
+      "target": "ext_devserver_indexhtml_nuxy_dev_shell",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/ext-devserver/index.html",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

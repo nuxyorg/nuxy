@@ -1,0 +1,124 @@
+{
+  "nodes": [
+    {
+      "id": "dep_report_doc",
+      "label": "Dependency Audit Report",
+      "file_type": "document",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dep_report_mcp_sdk_unused",
+      "label": "Issue: @modelcontextprotocol/sdk Unused Production Dep (High)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dep_report_types_bun_unused",
+      "label": "Issue: @types/bun Unused DevDep (High)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L38",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dep_report_typescript_v6_nonexistent",
+      "label": "Issue: typescript@^6.0.3 Non-Existent Version (High)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dep_report_vite_outdated",
+      "label": "Issue: vite@^4.4.5 EOL \u2014 Needs Upgrade to v6/v7 (Medium)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L140",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dep_report_typescript_runtime_dep",
+      "label": "Issue: typescript as Runtime Dep for Protocol Transpilation (Medium)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L85",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dep_report_typescript_duplication",
+      "label": "Issue: typescript Declared in Every Workspace Package (Medium)",
+      "file_type": "concept",
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L65",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "dep_report_doc",
+      "target": "dep_report_mcp_sdk_unused",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "dep_report_doc",
+      "target": "dep_report_typescript_v6_nonexistent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "dep_report_doc",
+      "target": "dep_report_typescript_runtime_dep",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "dep_report_doc",
+      "target": "dep_report_vite_outdated",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/cleanup/dependency-report.md",
+      "source_location": "L140",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

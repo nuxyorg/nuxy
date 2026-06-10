@@ -1,4 +1,5 @@
-import './index.css'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 export interface BreadcrumbCeItem {
   label: string
@@ -16,97 +17,107 @@ function parseItems(raw: string | null): BreadcrumbCeItem[] {
   }
 }
 
-export class NuxyBreadcrumbElement extends HTMLElement {
-  private nav: HTMLElement | null = null
-  private list: HTMLOListElement | null = null
-
-  static get observedAttributes(): string[] {
-    return ['items', 'separator', 'class']
-  }
-
-  connectedCallback(): void {
-    this.build()
-    this.render()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
-
-  private build(): void {
-    if (this.nav) return
-
-    this.nav = document.createElement('nav')
-    this.nav.setAttribute('aria-label', 'Breadcrumb')
-    this.list = document.createElement('ol')
-    this.list.className = 'nuxy-breadcrumb'
-    this.nav.appendChild(this.list)
-    this.appendChild(this.nav)
-  }
-
-  private render(): void {
-    if (!this.list) return
-
-    const items = parseItems(this.getAttribute('items'))
-    const separator = this.getAttribute('separator') ?? '/'
-    const extraClass = this.getAttribute('class') ?? ''
-
-    if (this.nav) {
-      this.nav.className = ['nuxy-breadcrumb', extraClass].filter(Boolean).join(' ')
+@customElement('nuxy-breadcrumb')
+export class NuxyBreadcrumbElement extends LitElement {
+  static styles = css`
+    :host {
+      display: block;
     }
 
-    this.list.replaceChildren()
+    .nuxy-breadcrumb {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: var(--font-sm);
+    }
 
-    items.forEach((item, idx) => {
-      const isLast = idx === items.length - 1
-      const itemIndex = item.index ?? idx
+    .nuxy-breadcrumb__item {
+      display: inline-flex;
+      align-items: center;
+    }
 
-      const li = document.createElement('li')
-      li.className = 'nuxy-breadcrumb__item'
+    .nuxy-breadcrumb__link {
+      color: var(--syntax-comment);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.15s ease;
+      padding: 2px 4px;
+      border-radius: var(--radius-sm);
+    }
 
-      if (idx > 0) {
-        const sep = document.createElement('span')
-        sep.className = 'nuxy-breadcrumb__sep'
-        sep.setAttribute('aria-hidden', 'true')
-        sep.textContent = separator
-        li.appendChild(sep)
-      }
+    .nuxy-breadcrumb__link:hover {
+      color: var(--syntax-variable);
+    }
 
-      if (isLast) {
-        const current = document.createElement('span')
-        current.className = 'nuxy-breadcrumb__current'
-        current.setAttribute('aria-current', 'page')
-        current.textContent = item.label
-        li.appendChild(current)
-      } else if (item.href) {
-        const link = document.createElement('a')
-        link.href = item.href
-        link.className = 'nuxy-breadcrumb__link'
-        link.textContent = item.label
-        li.appendChild(link)
-      } else {
-        const btn = document.createElement('button')
-        btn.type = 'button'
-        btn.className = 'nuxy-breadcrumb__link'
-        btn.textContent = item.label
-        btn.addEventListener('click', () => {
-          this.dispatchEvent(
-            new CustomEvent('nuxy-breadcrumb-navigate', {
-              detail: { index: itemIndex },
-              bubbles: true,
-            })
-          )
-        })
-        li.appendChild(btn)
-      }
+    .nuxy-breadcrumb__current {
+      color: var(--syntax-variable);
+      padding: 2px 4px;
+      font-weight: 500;
+    }
 
-      this.list!.appendChild(li)
-    })
+    .nuxy-breadcrumb__sep {
+      color: var(--syntax-comment);
+      padding: 0 var(--space-1);
+      user-select: none;
+      opacity: 0.5;
+    }
+  `
+
+  @property({ type: String }) items = ''
+  @property({ type: String }) separator = '/'
+
+  private renderItem(item: BreadcrumbCeItem, idx: number, total: number): TemplateResult {
+    const isLast = idx === total - 1
+    const itemIndex = item.index ?? idx
+    const sep =
+      idx > 0
+        ? html`<span class="nuxy-breadcrumb__sep" aria-hidden="true">${this.separator}</span>`
+        : nothing
+
+    let content: TemplateResult
+    if (isLast) {
+      content = html`<span class="nuxy-breadcrumb__current" aria-current="page"
+        >${item.label}</span
+      >`
+    } else if (item.href) {
+      content = html`<a href=${item.href} class="nuxy-breadcrumb__link">${item.label}</a>`
+    } else {
+      content = html`
+        <button
+          type="button"
+          class="nuxy-breadcrumb__link"
+          @click=${() =>
+            this.dispatchEvent(
+              new CustomEvent('nuxy-breadcrumb-navigate', {
+                detail: { index: itemIndex },
+                bubbles: true,
+              })
+            )}
+        >
+          ${item.label}
+        </button>
+      `
+    }
+
+    return html`<li class="nuxy-breadcrumb__item">${sep}${content}</li>`
   }
-}
 
-if (!customElements.get('nuxy-breadcrumb')) {
-  customElements.define('nuxy-breadcrumb', NuxyBreadcrumbElement)
+  render(): TemplateResult {
+    const rawItems = this.items || this.getAttribute('items')
+    const items = parseItems(rawItems)
+
+    return html`
+      <nav aria-label="Breadcrumb">
+        <ol class="nuxy-breadcrumb">
+          ${items.map((item, idx) => this.renderItem(item, idx, items.length))}
+        </ol>
+      </nav>
+    `
+  }
 }
 
 declare global {

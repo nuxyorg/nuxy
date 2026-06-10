@@ -1,0 +1,112 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_shell_readme_shell_extension",
+      "label": "Shell Extension (com.nuxy.shell)",
+      "file_type": "document",
+      "source_file": "extensions/shell/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_shell_readme_bootstrap_extension",
+      "label": "Bootstrap Extension Concept",
+      "file_type": "concept",
+      "source_file": "extensions/shell/README.md",
+      "source_location": "line 14-17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_shell_readme_orchestrator_routing",
+      "label": "Shell Orchestrator Routing (route channel)",
+      "file_type": "concept",
+      "source_file": "extensions/shell/README.md",
+      "source_location": "line 65-68",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_shell_readme_command_palette",
+      "label": "Command Palette",
+      "file_type": "concept",
+      "source_file": "extensions/shell/README.md",
+      "source_location": "line 44-50",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_shell_readme_recent_tools_tracking",
+      "label": "Recent Tools Tracking (getRecentTools/recordToolUsed)",
+      "file_type": "concept",
+      "source_file": "extensions/shell/README.md",
+      "source_location": "line 113-120",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_shell_readme_shell_extension",
+      "target": "extensions_shell_readme_bootstrap_extension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/shell/README.md",
+      "source_location": "line 14-17",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_shell_readme_shell_extension",
+      "target": "extensions_shell_readme_orchestrator_routing",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/shell/README.md",
+      "source_location": "line 65-68",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_shell_readme_shell_extension",
+      "target": "extensions_shell_readme_command_palette",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/shell/README.md",
+      "source_location": "line 44-50",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_shell_readme_shell_extension",
+      "target": "extensions_shell_readme_recent_tools_tracking",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/shell/README.md",
+      "source_location": "line 113-120",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_shell_readme_orchestrator_routing",
+      "target": "extensions_extension_guide_core_extensions_invoke",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "extensions/shell/README.md",
+      "source_location": null,
+      "weight": 0.85
+    }
+  ],
+  "hyperedges": []
+}

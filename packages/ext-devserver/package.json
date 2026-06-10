@@ -7,7 +7,6 @@
     "dev": "vite"
   },
   "dependencies": {
-    "@nuxy/ui": "workspace:*",
     "lit": "^3.0.0"
   },
   "devDependencies": {

@@ -103,7 +103,9 @@ function copyExtensionTree(srcPath: string, destPath: string): void {
 /** Set NUXY_DEV_OVERWRITE=1 to replace entire extension folders. */
 function copyDefaultExtensions(): void {
   const overwrite = process.env.NUXY_DEV_OVERWRITE === '1'
-  const workspaceExtensions = findWorkspaceExtensionsDir(path.dirname(fileURLToPath(import.meta.url)))
+  const workspaceExtensions = findWorkspaceExtensionsDir(
+    path.dirname(fileURLToPath(import.meta.url))
+  )
 
   if (!workspaceExtensions) {
     log.error(

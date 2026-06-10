@@ -10,9 +10,9 @@ Nuxy is configured via a plain key=value file at `~/.nuxy/nuxyconfig`. The file 
 
 ### Theme
 
-| Key     | Values                                          | Default  | Description                                                                                                                                       |
-| ------- | ----------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `theme` | `dark` \| `light` \| `system` \| `<theme-name>` | `system` | Active UI theme. `system` follows OS dark/light preference. Custom theme extensions (e.g. `ocean`, `glassmorphism`) are available once installed. |
+| Key     | Values                                          | Default  | Description                                                                                                      |
+| ------- | ----------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `theme` | `dark` \| `light` \| `system` \| `<theme-name>` | `system` | Active UI theme. `system` follows OS preference. Install `theme` extensions (e.g. `sakura`) to add more options. |
 
 ### Window Behavior
 
@@ -56,7 +56,7 @@ Position values:
 ```ini
 # ~/.nuxy/nuxyconfig
 
-theme = ocean
+theme = dark
 escAction = hide
 blurAction = hide
 windowWidth = 720
@@ -78,6 +78,12 @@ The config file is watched for changes using `fs.watch`. When you save `nuxyconf
 
 ## Extension Settings
 
-Extension-specific settings (e.g. the Ollama server URL, preferred snippet categories) are managed through the **Settings extension** (`com.nuxy.settings`), not via `nuxyconfig`. Activate the Settings extension in the launcher and navigate to the extension's settings tab.
+Extension-specific settings (server URLs, toggles, paths) are managed through the **Settings extension** (`com.nuxy.settings`), not via `nuxyconfig`. Open Settings from the tool list to configure each extension.
 
-Extension settings are stored per-extension at `~/.nuxy/extensions/<id>/ext-settings.json`.
+Settings are stored per-extension at `~/.nuxy/data/<id>/ext-settings.json`.
+
+## Next steps
+
+- [Built-in Extensions](/extensions/built-in) — bundled tools including Settings
+- [Manifest: settings schema](/extensions/manifest#settings-schema-settings-json) — declare extension settings
+- [Architecture](/guide/architecture) — how config hot-reload works

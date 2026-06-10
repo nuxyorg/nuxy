@@ -1,7 +1,7 @@
 import '../Code/index.css'
 import '../Table/index.css'
 import '../CopyButton/nuxy-copy-button.ts'
-import { highlight } from '../../utils/highlight'
+import { highlight } from '../Code/highlight'
 import {
   parseBlocks,
   parseInline,

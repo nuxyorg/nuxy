@@ -61,10 +61,15 @@ export function createCompositionBridge(ipcRenderer: IpcRenderer): CoreCompositi
         throw new Error(`Unknown composition slot: ${slotName}`)
       }
 
-      const validation = (await ipcRenderer.invoke('ext:invoke', 'kernel', 'validateCompositionClaim', {
-        extId,
-        slotName,
-      })) as { success: boolean; error?: string; data?: { maxMounts?: number } }
+      const validation = (await ipcRenderer.invoke(
+        'ext:invoke',
+        'kernel',
+        'validateCompositionClaim',
+        {
+          extId,
+          slotName,
+        }
+      )) as { success: boolean; error?: string; data?: { maxMounts?: number } }
 
       if (!validation?.success) {
         throw new Error(validation?.error ?? 'Composition claim denied')

@@ -1,36 +1,64 @@
-import '../Text/index.css'
+import { LitElement, html, css, customElement, property, unsafeHTML } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 
-export class NuxyHeadingElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['level', 'as']
-  }
+@customElement('nuxy-heading')
+export class NuxyHeadingElement extends LitElement {
+  static styles = css`
+    :host {
+      display: block;
+    }
+
+    .nuxy-heading {
+      margin: 0;
+      font-weight: 600;
+      color: var(--syntax-variable);
+      line-height: 1.3;
+    }
+    .nuxy-heading--1 {
+      font-size: 28px;
+    }
+    .nuxy-heading--2 {
+      font-size: 22px;
+    }
+    .nuxy-heading--3 {
+      font-size: var(--font-xl);
+    }
+    .nuxy-heading--4 {
+      font-size: var(--font-lg);
+    }
+    .nuxy-heading--5 {
+      font-size: var(--font-md);
+    }
+    .nuxy-heading--6 {
+      font-size: var(--font-sm);
+    }
+  `
+
+  @property({ type: String }) level = '2'
+  @property({ type: String }) as = ''
+
+  private _innerContent = ''
 
   connectedCallback(): void {
-    this.render()
+    // Capture children before Lit renders (replaces them)
+    this._innerContent = this.innerHTML
+    super.connectedCallback()
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
-
-  private render(): void {
-    const levelRaw = this.getAttribute('as') ?? this.getAttribute('level') ?? '2'
+  render(): TemplateResult {
+    const levelRaw = this.as || this.level || '2'
     const level = Math.min(6, Math.max(1, Number(levelRaw.replace('h', '')) || 2)) as HeadingLevel
-    const className = `nuxy-heading nuxy-heading--${level} ${this.getAttribute('class') ?? ''}`.trim()
-
-    const heading = document.createElement(`h${level}`)
-    heading.className = className
-    while (this.firstChild) {
-      heading.appendChild(this.firstChild)
-    }
-    this.replaceChildren(heading)
+    const className = `nuxy-heading nuxy-heading--${level}`
+    return html`${unsafeHTML(`<h${level} class="${className}">${this._innerContent}</h${level}>`)}`
   }
-}
-
-if (!customElements.get('nuxy-heading')) {
-  customElements.define('nuxy-heading', NuxyHeadingElement)
 }
 
 export type { HeadingLevel }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-heading': NuxyHeadingElement
+  }
+}

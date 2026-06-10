@@ -1,0 +1,126 @@
+{
+  "nodes": [
+    {
+      "id": "reports_refactor_top8_assessmentsummary",
+      "label": "Refactor Top-8 Files Assessment",
+      "file_type": "document",
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_staterefpattern",
+      "label": "stateRef Snapshot Pattern for Stable Keyboard Callbacks",
+      "file_type": "rationale",
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Calendar, video-downloader, and settings all use a manually-maintained stateRef.current snapshot to feed stable keyboard callbacks, avoiding stale closures with useToolKeyActions. A shared useStableRef(state) hook is proposed."
+    },
+    {
+      "id": "concept_nuxy_ipcclientpattern",
+      "label": "Duplicated ipcCall/invoke Pattern Across Extension Frontends",
+      "file_type": "rationale",
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "All 4 extension frontends (calendar, notes, clipboard, video-downloader) define their own local IPC helper with the same shape. Recommendation: provide a createIpcClient(extId) factory in @nuxy/extension-sdk to unify error handling."
+    }
+  ],
+  "edges": [
+    {
+      "source": "reports_refactor_top8_assessmentsummary",
+      "target": "concept_nuxy_calendarextension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_top8_assessmentsummary",
+      "target": "concept_nuxy_shellviewgodcomponent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_top8_assessmentsummary",
+      "target": "concept_nuxy_videodownloaderextension",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_top8_assessmentsummary",
+      "target": "concept_nuxy_scannerextensions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_top8_assessmentsummary",
+      "target": "concept_nuxy_staterefpattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_top8_assessmentsummary",
+      "target": "concept_nuxy_ipcclientpattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_staterefpattern",
+      "target": "concept_nuxy_ipcclientpattern",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "frontend_refactor_crosscutting",
+      "label": "Cross-Cutting Refactor Concerns: stateRef Pattern + IPC Client Pattern + Single-File Constraint",
+      "nodes": [
+        "concept_nuxy_staterefpattern",
+        "concept_nuxy_ipcclientpattern",
+        "concept_nuxy_extensionsinglefileconstraint"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "reports/refactor/refactor_top8_02-06-2026_011131.md"
+    }
+  ]
+}

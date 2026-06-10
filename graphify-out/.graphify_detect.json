@@ -1,0 +1,24 @@
+{
+  "files": {
+    "code": [],
+    "document": [
+      "/home/xava/Documents/nuxy/docs/lit-remake/00-genel-bakis.md",
+      "/home/xava/Documents/nuxy/docs/lit-remake/01-shell.md",
+      "/home/xava/Documents/nuxy/docs/lit-remake/02-ui-components.md",
+      "/home/xava/Documents/nuxy/docs/lit-remake/03-packages-core.md",
+      "/home/xava/Documents/nuxy/docs/lit-remake/04-extensions.md",
+      "/home/xava/Documents/nuxy/docs/lit-remake/05-electron-renderer.md",
+      "/home/xava/Documents/nuxy/docs/lit-remake/06-yeniden-yazirim-plani.md"
+    ],
+    "paper": [],
+    "image": [],
+    "video": []
+  },
+  "total_files": 7,
+  "total_words": 6159,
+  "needs_graph": false,
+  "warning": "Corpus is ~6,159 words - fits in a single context window. You may not need a graph.",
+  "skipped_sensitive": [],
+  "graphifyignore_patterns": 46,
+  "scan_root": "/home/xava/Documents/nuxy/docs/lit-remake"
+}

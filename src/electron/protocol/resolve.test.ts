@@ -57,4 +57,14 @@ describe('resolveExtensionFile', () => {
     const r = resolveExtensionFile('com.nuxy.clipboard', 'missing.js', tmpRoot)
     expect(r).toBeNull()
   })
+
+  it('blocks ext-id with path traversal segments (../)', () => {
+    const r = resolveExtensionFile('../../etc', 'passwd', tmpRoot)
+    expect(r).toBeNull()
+  })
+
+  it('blocks ext-id with null bytes', () => {
+    const r = resolveExtensionFile('com.nuxy\x00evil', 'frontend.js', tmpRoot)
+    expect(r).toBeNull()
+  })
 })

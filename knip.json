@@ -30,11 +30,11 @@
       "project": ["src/**/*.{ts,tsx}", "vite.config.ts"]
     },
     "packages/ext-template": {
-      "entry": ["backend.ts", "frontend.tsx"],
+      "entry": ["backend.ts", "frontend.ts"],
       "project": ["**/*.{ts,tsx}"]
     },
     "extensions/*": {
-      "entry": ["backend.ts", "frontend.tsx", "backend.js", "frontend.js", "entry.ts"],
+      "entry": ["backend.ts", "frontend.ts", "backend.js", "frontend.js", "entry.ts"],
       "project": ["**/*.{ts,tsx,js,jsx}"]
     }
   }

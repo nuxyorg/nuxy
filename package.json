@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "pnpm -C extensions/ui-default build && pnpm --parallel --filter nuxy-desktop --filter @nuxy/ui-default dev",
+    "dev": "node scripts/dev.mjs",
     "build": "pnpm -C extensions/ui-default build && pnpm -C src build",
     "package": "pnpm -C src dist",
     "test": "pnpm -C src test",
@@ -16,10 +16,15 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "typecheck": "pnpm -C src typecheck && tsc --project extensions/tsconfig.json --noEmit",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck",
+    "check:fix": "pnpm format && pnpm lint:fix && pnpm typecheck",
     "deadcode": "knip",
     "create-ext": "node scripts/create-ext.mjs",
     "dev-ext": "node scripts/dev-ext.mjs",
-    "doctor": "node scripts/doctor.mjs"
+    "doctor": "node scripts/doctor.mjs",
+    "docs:dev": "pnpm -C website dev",
+    "docs:build": "pnpm -C website build"
   },
   "keywords": [],
   "author": "",
@@ -44,11 +49,5 @@
     "prettier": "^3.8.3",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.60.1"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "electron",
-      "esbuild"
-    ]
   }
 }

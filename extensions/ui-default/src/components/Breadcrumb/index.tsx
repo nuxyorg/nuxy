@@ -14,11 +14,7 @@ export interface BreadcrumbProps {
   className?: string
 }
 
-export function Breadcrumb({
-  items,
-  separator = '/',
-  className,
-}: BreadcrumbProps): HTMLElement {
+export function Breadcrumb({ items, separator = '/', className }: BreadcrumbProps): HTMLElement {
   const itemsJson = JSON.stringify(
     items.map((item, idx) => ({
       label: item.label,

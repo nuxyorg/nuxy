@@ -42,4 +42,12 @@ describe('createShellBridge', () => {
     bridge.controlOmniBar('hide')
     expect(handler).toHaveBeenCalledWith('hide')
   })
+
+  it('returnToShell invokes bound handler', () => {
+    const bridge = createShellBridge()
+    const handler = vi.fn()
+    bridge.bindReturnToShell(handler)
+    bridge.returnToShell()
+    expect(handler).toHaveBeenCalledOnce()
+  })
 })

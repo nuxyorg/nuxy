@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "id": "docs_ext_simplification_report",
+      "label": "Extension Simplification Audit Report",
+      "file_type": "document",
+      "source_file": "docs/extension-simplification-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_ext_simplification_ipc_wrapper_pattern",
+      "label": "Duplicate IPC Wrapper Anti-Pattern",
+      "file_type": "concept",
+      "source_file": "docs/extension-simplification-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_ext_simplification_utils_ipc",
+      "label": "Shared utils/ipc.ts Fix",
+      "file_type": "concept",
+      "source_file": "docs/extension-simplification-report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_ext_simplification_report",
+      "target": "docs_ext_simplification_ipc_wrapper_pattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/extension-simplification-report.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ext_simplification_report",
+      "target": "docs_ext_simplification_utils_ipc",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/extension-simplification-report.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ext_simplification_utils_ipc",
+      "target": "docs_ext_simplification_ipc_wrapper_pattern",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/extension-simplification-report.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_ext_simplification_ipc_wrapper_pattern",
+      "target": "docs_05_ipc_response_wrapper",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/extension-simplification-report.md",
+      "source_location": null,
+      "weight": 0.75
+    }
+  ],
+  "hyperedges": []
+}

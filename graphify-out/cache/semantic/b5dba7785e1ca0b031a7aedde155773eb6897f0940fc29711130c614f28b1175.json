@@ -1,0 +1,328 @@
+{
+  "nodes": [
+    {
+      "id": "lit_rewrite_plan_doc",
+      "label": "Lit Rewrite Plan (06-yeniden-yazirim-plani.md)",
+      "file_type": "document",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_phase1_infra",
+      "label": "Rewrite Phase 1: Infrastructure \u2014 IPC Discriminator, Preload Signal, Protocol Sanitization, Scanner Split",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L20",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_phase2_shell",
+      "label": "Rewrite Phase 2: Shell Extension \u2014 ShellController Split into ReactiveControllers, NuxyShellViewElement \u2192 LitElement",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L93",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_query_controller",
+      "label": "Proposed: QueryController \u2014 Lit ReactiveController for Query State",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L116",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_navigation_controller",
+      "label": "Proposed: NavigationController \u2014 Lit ReactiveController for selectedIndex/keyboard",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L116",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_phase3_ui_library",
+      "label": "Rewrite Phase 3: UI Component Library \u2014 Shadow DOM, Shared Utils, ARIA Checklist",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L249",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_selectbox_split",
+      "label": "Proposed SelectBox Split: nuxy-select-box + nuxy-select-dropdown + nuxy-select-option",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L271",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_shared_utils",
+      "label": "Proposed Shared Utils: parse.ts, mirror-attrs.ts, host-classes.ts, focus-trap.ts, keyboard-nav.ts",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L316",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_phase4_extensions",
+      "label": "Rewrite Phase 4: Extension Fixes \u2014 eval() removal, AbortController, async await fixes",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L337",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_scanner_split_5modules",
+      "label": "Proposed: scanner.ts Split into 5 Modules (manifest-loader, worker-manager, theme-registrar, icon-registrar, dev-sync)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L79",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_rewrite_plan_core_decisions",
+      "label": "Core Decisions: Lit + Shadow DOM, Static Styles, Remove h()/packages/ui/ce-utils, EXT_ID from manifest",
+      "file_type": "rationale",
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "lit_rewrite_plan_doc",
+      "target": "lit_rewrite_plan_phase1_infra",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_doc",
+      "target": "lit_rewrite_plan_phase2_shell",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_doc",
+      "target": "lit_rewrite_plan_phase3_ui_library",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_doc",
+      "target": "lit_rewrite_plan_phase4_extensions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L337",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_doc",
+      "target": "lit_rewrite_plan_core_decisions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_doc",
+      "target": "lit_rewrite_plan_scanner_split_5modules",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_doc",
+      "target": "lit_rewrite_plan_selectbox_split",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_doc",
+      "target": "lit_rewrite_plan_shared_utils",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L316",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_phase2_shell",
+      "target": "lit_rewrite_plan_query_controller",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_phase2_shell",
+      "target": "lit_rewrite_plan_navigation_controller",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_rewrite_plan_phase1_infra",
+      "target": "lit_electron_preload_ready_on_error",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_phase1_infra",
+      "target": "lit_electron_protocol_path_traversal",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_phase2_shell",
+      "target": "lit_shell_view_vanilla_not_lit",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_phase3_ui_library",
+      "target": "lit_ui_selectbox_monolith_210lines",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_core_decisions",
+      "target": "lit_genel_h_helper_reinvented_jsx",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_scanner_split_5modules",
+      "target": "arch_refactor_scanner_lifecycle",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_selectbox_split",
+      "target": "lit_ui_selectbox_monolith_210lines",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_shared_utils",
+      "target": "lit_ui_parseoptions_duplicated",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_shared_utils",
+      "target": "lit_ui_sync_host_classes_repeated",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_rewrite_plan_phase2_shell",
+      "target": "lit_genel_shell_controller_god_class",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/06-yeniden-yazirim-plani.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": []
+}

@@ -15,12 +15,7 @@ export interface CodeBlockProps {
   className?: string
 }
 
-export function CodeBlock({
-  code,
-  language = 'text',
-  showCopy = true,
-  className,
-}: CodeBlockProps) {
+export function CodeBlock({ code, language = 'text', showCopy = true, className }: CodeBlockProps) {
   return h('nuxy-code-block', {
     code,
     language,

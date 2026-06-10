@@ -1,6 +1,5 @@
-import type { UiChild } from 'types'
-import { h } from './h.ts'
 import type { UiChild } from './types.ts'
+import { h } from './h.ts'
 
 export function host(
   tag: string,
@@ -26,7 +25,10 @@ export function setRef<T>(ref: unknown, value: T | null): void {
 
 export function wireInputRef(hostEl: HTMLElement, ref: unknown): void {
   queueMicrotask(() => {
-    const input = hostEl.querySelector('input, textarea') as HTMLInputElement | HTMLTextAreaElement | null
+    const input = hostEl.querySelector('input, textarea') as
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | null
     setRef(ref, input)
   })
 }

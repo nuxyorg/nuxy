@@ -10,6 +10,7 @@ import {
   reloadExtensionFolder,
   restartExtensionWorker,
   scheduleWorkerRestart,
+  shouldTriggerDevExtensionRescan,
   startExtensionDirectoryWatcher,
   terminateExtensionWorker,
 } from './extension-reload.js'
@@ -84,6 +85,42 @@ describe('folderNameFromWatchFilename', () => {
 
   it('returns null for empty filename', () => {
     expect(folderNameFromWatchFilename('')).toBeNull()
+  })
+})
+
+describe('shouldTriggerDevExtensionRescan', () => {
+  it('returns false for null filename (Linux inotify quirk)', () => {
+    expect(shouldTriggerDevExtensionRescan(null, '/ext')).toBe(false)
+  })
+
+  it('returns false for loose shared files at extensions root', () => {
+    expect(shouldTriggerDevExtensionRescan('e2e-helpers.ts', '/ext')).toBe(false)
+  })
+
+  it('returns false for uikit .nuxyext updates', () => {
+    const readType = (folderName: string) => (folderName === 'com.nuxy.ui-default' ? 'uikit' : null)
+    expect(shouldTriggerDevExtensionRescan('com.nuxy.ui-default.nuxyext', '/ext', readType)).toBe(
+      false
+    )
+  })
+
+  it('returns false when a .nuxyext is mid-write and type cannot be read', () => {
+    expect(shouldTriggerDevExtensionRescan('com.nuxy.ui-default.nuxyext', '/ext', () => null)).toBe(
+      false
+    )
+  })
+
+  it('returns true for non-uikit .nuxyext updates', () => {
+    const readType = (folderName: string) =>
+      folderName === 'com.nuxy.shell' ? 'orchestrator' : null
+    expect(shouldTriggerDevExtensionRescan('com.nuxy.shell.nuxyext', '/ext', readType)).toBe(true)
+  })
+
+  it('returns true for nested manifest changes', () => {
+    const readType = () => 'tool'
+    expect(shouldTriggerDevExtensionRescan('com.nuxy.notes/manifest.json', '/ext', readType)).toBe(
+      true
+    )
   })
 })
 

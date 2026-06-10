@@ -6,7 +6,12 @@ export interface TableProps extends Record<string, unknown> {
   containerClassName?: string
 }
 
-export function Table({ children, className, containerClassName, ...props }: TableProps): HTMLElement {
+export function Table({
+  children,
+  className,
+  containerClassName,
+  ...props
+}: TableProps): HTMLElement {
   return h(
     'nuxy-table-container',
     {
@@ -22,7 +27,12 @@ export interface TableRowProps extends Record<string, unknown> {
   interactive?: boolean
 }
 
-export function TableRow({ children, className, interactive, ...props }: TableRowProps): HTMLElement {
+export function TableRow({
+  children,
+  className,
+  interactive,
+  ...props
+}: TableRowProps): HTMLElement {
   return h(
     'nuxy-table-row',
     {

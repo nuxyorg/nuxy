@@ -1,6 +1,6 @@
 # Default UIKit
 
-> The built-in React component library that populates `window.UI` before the Nuxy shell boots.
+> The built-in custom element library that populates `window.UI` before the Nuxy shell boots.
 
 **Type:** `uikit`  
 **Version:** 1.0.0  
@@ -11,7 +11,7 @@
 
 ## Overview
 
-Default UIKit is the foundational component library for the Nuxy renderer. It bundles every shared React component — lists, cards, inputs, icons, navigation hooks, feedback components, and more — and exposes them on the global `window.UI` object so that extensions and the shell can consume them without bundling their own copies. It runs with `priority: 0`, meaning it is loaded first before any other uikit extension can override or extend it.
+Default UIKit is the foundational component library for the Nuxy renderer. It bundles every shared custom element — lists, cards, inputs, icons, navigation hooks, feedback components, and more — and exposes them on the global `window.UI` object so that extensions and the shell can consume them without bundling their own copies. It runs with `priority: 0`, meaning it is loaded first before any other uikit extension can override or extend it.
 
 ---
 

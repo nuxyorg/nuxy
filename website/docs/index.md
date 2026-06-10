@@ -4,32 +4,35 @@ layout: home
 hero:
   name: 'Nuxy'
   text: 'A Launcher That Gets Out of Your Way'
-  tagline: Frameless, transparent, extension-powered. Built on Electron + React.
+  tagline: Frameless, transparent, and entirely extension-powered. Built with Electron and Lit.
+  image:
+    src: /logo.svg
+    alt: Nuxy
   actions:
     - theme: brand
       text: Get Started
       link: /guide/getting-started
     - theme: alt
-      text: Create an Extension
+      text: Build an Extension
       link: /extensions/first-extension
 
 features:
   - icon: 🔌
     title: Extension-First
-    details: Every feature is an extension. The launcher core is intentionally minimal — all power comes from the ecosystem of tools, providers, and orchestrators.
+    details: The core is an empty shell. Tools, providers, orchestrators, themes, and UI kits are all extensions you install, swap, or build yourself.
   - icon: 🔒
-    title: Zero-Trust Security
-    details: Extensions run in isolated Worker threads. Permissions are declared in manifest.json and enforced by the kernel. No extension can access another's data or memory.
+    title: Sandboxed by Default
+    details: Each extension backend runs in its own Worker thread. Permissions are declared in manifest.json and enforced at the kernel boundary.
   - icon: ⚡
     title: Instant Popup
-    details: Frameless transparent window with spring-physics animations. Summon it with a global shortcut, use it, dismiss it — zero friction.
+    details: Summon a frameless transparent window from anywhere, act on results, dismiss — spring-physics animations included.
   - icon: 🎨
     title: Fully Themeable
-    details: CSS custom properties, JSON theme extensions, and icon pack extensions. Make Nuxy look exactly how you want without touching core code.
+    details: JSON theme extensions, icon packs, and CSS custom properties. Reskin the entire launcher without touching core code.
+  - icon: 🧩
+    title: Lit + UI Kit
+    details: Extension frontends use LitElement with a shared UI kit. Consistent look, tiny bundles, keyboard-first interaction.
   - icon: 🌐
     title: Internationalized
-    details: Built-in i18n system with BCP 47 locale resolution, RTL support, and per-extension translation files. Ship extensions in any language.
-  - icon: 🧪
-    title: TDD Culture
-    details: Every extension ships with a backend.test.ts. The mock CoreContext helper makes testing fast and reliable without spinning up Electron.
+    details: BCP 47 locale resolution, RTL support, and per-extension translation files. Ship in any language.
 ---

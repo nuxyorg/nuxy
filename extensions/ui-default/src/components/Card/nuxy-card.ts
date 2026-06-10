@@ -1,89 +1,80 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
-export class NuxyCardElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['interactive']
-  }
+@customElement('nuxy-card')
+export class NuxyCardElement extends LitElement {
+  @property({ type: Boolean, reflect: true }) interactive = false
 
-  connectedCallback(): void {
-    this.sync()
-  }
+  static styles = css`
+    :host {
+      background-color: var(--bg-base);
+      border: 1px solid var(--syntax-comment);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition:
+        background-color 300ms,
+        border-color 300ms,
+        box-shadow 300ms;
+    }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
+    :host([interactive]) {
+      cursor: pointer;
+    }
 
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-card', this.hasAttribute('interactive') ? 'nuxy-card--interactive' : '')
-  }
-}
+    :host([interactive]:hover) {
+      border-color: var(--syntax-operator);
+      background-color: rgba(255, 255, 255, 0.01);
+    }
+  `
 
-export class NuxyCardHeaderElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return []
-  }
-
-  connectedCallback(): void {
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-card__header')
+  render() {
+    return html`<slot></slot>`
   }
 }
 
-export class NuxyCardBodyElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return []
-  }
+@customElement('nuxy-card-header')
+export class NuxyCardHeaderElement extends LitElement {
+  static styles = css`
+    :host {
+      padding: var(--space-5);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  `
 
-  connectedCallback(): void {
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-card__body')
+  render() {
+    return html`<slot></slot>`
   }
 }
 
-export class NuxyCardFooterElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return []
-  }
+@customElement('nuxy-card-body')
+export class NuxyCardBodyElement extends LitElement {
+  static styles = css`
+    :host {
+      padding: var(--space-5);
+      flex: 1;
+    }
+  `
 
-  connectedCallback(): void {
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-card__footer')
+  render() {
+    return html`<slot></slot>`
   }
 }
 
-if (!customElements.get('nuxy-card')) {
-  customElements.define('nuxy-card', NuxyCardElement)
-}
-if (!customElements.get('nuxy-card-header')) {
-  customElements.define('nuxy-card-header', NuxyCardHeaderElement)
-}
-if (!customElements.get('nuxy-card-body')) {
-  customElements.define('nuxy-card-body', NuxyCardBodyElement)
-}
-if (!customElements.get('nuxy-card-footer')) {
-  customElements.define('nuxy-card-footer', NuxyCardFooterElement)
+@customElement('nuxy-card-footer')
+export class NuxyCardFooterElement extends LitElement {
+  static styles = css`
+    :host {
+      padding: var(--space-4) var(--space-5);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.01);
+    }
+  `
+
+  render() {
+    return html`<slot></slot>`
+  }
 }
 
 declare global {

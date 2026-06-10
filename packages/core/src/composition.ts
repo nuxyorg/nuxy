@@ -28,10 +28,7 @@ export interface CoreComposition {
     opts?: CompositionMountOptions
   ): Promise<CompositionHandle>
   setState(slotName: string, state: Record<string, unknown>): void
-  onStateChange(
-    slotName: string,
-    handler: (state: Record<string, unknown>) => void
-  ): () => void
+  onStateChange(slotName: string, handler: (state: Record<string, unknown>) => void): () => void
 }
 
 export interface ToolActivateContext {

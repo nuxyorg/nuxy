@@ -1,4 +1,4 @@
-import { TwoPanelNav } from '../../../two-panel-nav.ts'
+import { TwoPanelNav } from './two-panel-nav.ts'
 import type { KeyAction } from './useToolKeyActions'
 import { useTranslation } from './useTranslation'
 

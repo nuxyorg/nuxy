@@ -1,0 +1,281 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_packages_ext_devserver_tsconfig_json",
+      "label": "tsconfig.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions_target",
+      "label": "target",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions_module",
+      "label": "module",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions_moduleresolution",
+      "label": "moduleResolution",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions_jsx",
+      "label": "jsx",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions_strict",
+      "label": "strict",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions_nounusedlocals",
+      "label": "noUnusedLocals",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions_types",
+      "label": "types",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "ext_devserver_tsconfig_compileroptions_paths",
+      "label": "paths",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "ext_devserver_tsconfig_paths_nuxy_core",
+      "label": "@nuxy/core",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "ext_devserver_tsconfig_paths_nuxy_ui",
+      "label": "@nuxy/ui",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "ext_devserver_tsconfig_paths_nuxy_extension_sdk",
+      "label": "@nuxy/extension-sdk",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "ext_devserver_tsconfig_include",
+      "label": "include",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L16"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_tsconfig_json",
+      "target": "ext_devserver_tsconfig_compileroptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions",
+      "target": "ext_devserver_tsconfig_compileroptions_target",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions",
+      "target": "ext_devserver_tsconfig_compileroptions_module",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions",
+      "target": "ext_devserver_tsconfig_compileroptions_moduleresolution",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions",
+      "target": "ext_devserver_tsconfig_compileroptions_jsx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions",
+      "target": "ext_devserver_tsconfig_compileroptions_strict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions",
+      "target": "ext_devserver_tsconfig_compileroptions_nounusedlocals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions",
+      "target": "ext_devserver_tsconfig_compileroptions_types",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions_types",
+      "target": "ref_vite_client",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions",
+      "target": "ext_devserver_tsconfig_compileroptions_paths",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions_paths",
+      "target": "ext_devserver_tsconfig_paths_nuxy_core",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_paths_nuxy_core",
+      "target": "ref_packages_core_src_index_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions_paths",
+      "target": "ext_devserver_tsconfig_paths_nuxy_ui",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_paths_nuxy_ui",
+      "target": "ref_extensions_ui_default_src_index_tsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L12",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "ext_devserver_tsconfig_compileroptions_paths",
+      "target": "ext_devserver_tsconfig_paths_nuxy_extension_sdk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_paths_nuxy_extension_sdk",
+      "target": "ref_packages_extension_sdk_src_index_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L13",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "home_xava_documents_nuxy_packages_ext_devserver_tsconfig_json",
+      "target": "ext_devserver_tsconfig_include",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "ext_devserver_tsconfig_include",
+      "target": "ref_src",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "ext_devserver_tsconfig_include",
+      "target": "ref_vite_config_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json",
+      "source_location": "L16",
+      "weight": 1.0,
+      "context": "import"
+    }
+  ]
+}

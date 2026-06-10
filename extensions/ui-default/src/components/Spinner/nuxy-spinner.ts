@@ -1,47 +1,87 @@
-import '../ProgressBar/index.css'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 const SIZES: Record<string, number> = { sm: 16, md: 24, lg: 36 }
 
-function resolveSize(raw: string | null): number {
-  if (!raw) return SIZES.md
+function resolveSize(raw: string): number {
   if (raw in SIZES) return SIZES[raw]!
   const n = Number(raw)
   return Number.isFinite(n) && n > 0 ? n : SIZES.md
 }
 
-export class NuxySpinnerElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['size']
-  }
+@customElement('nuxy-spinner')
+export class NuxySpinnerElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nuxy-spinner__svg {
+      animation: nuxy-spin 0.75s linear infinite;
+    }
+
+    @keyframes nuxy-spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .nuxy-spinner__circle {
+      stroke: var(--syntax-operator);
+      stroke-linecap: round;
+      stroke-dasharray: 50;
+      stroke-dashoffset: 15;
+    }
+  `
+
+  @property({ type: String }) size = 'md'
 
   connectedCallback(): void {
-    this.classList.add('nuxy-spinner')
+    super.connectedCallback()
     if (!this.hasAttribute('role')) this.setAttribute('role', 'status')
     if (!this.hasAttribute('aria-label')) this.setAttribute('aria-label', 'Loading…')
-    this.render()
   }
 
-  attributeChangedCallback(name: string): void {
-    if (this.isConnected && name === 'size') this.render()
-  }
-
-  private render(): void {
-    const px = resolveSize(this.getAttribute('size'))
-
+  render(): TemplateResult {
+    const px = resolveSize(this.size)
     const r = (px / 2) * 0.7
     const circumference = 2 * Math.PI * r
     const strokeWidth = px * 0.1
 
-    this.innerHTML = `<svg class="nuxy-spinner__svg" width="${px}" height="${px}" viewBox="0 0 ${px} ${px}" fill="none" aria-hidden="true">
-      <circle class="nuxy-spinner__circle" cx="${px / 2}" cy="${px / 2}" r="${r}" stroke-width="${strokeWidth}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference * 0.25}" />
-    </svg>`
+    return html`
+      <svg
+        class="nuxy-spinner__svg"
+        width=${px}
+        height=${px}
+        viewBox="0 0 ${px} ${px}"
+        fill="none"
+        aria-hidden="true"
+      >
+        <circle
+          class="nuxy-spinner__circle"
+          cx=${px / 2}
+          cy=${px / 2}
+          r=${r}
+          stroke-width=${strokeWidth}
+          stroke-dasharray=${circumference}
+          stroke-dashoffset=${circumference * 0.25}
+        />
+      </svg>
+    `
   }
 }
 
 export function registerNuxySpinner(): void {
-  if (!customElements.get('nuxy-spinner')) {
-    customElements.define('nuxy-spinner', NuxySpinnerElement)
-  }
+  // registration handled by @customElement decorator
 }
 
-registerNuxySpinner()
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-spinner': NuxySpinnerElement
+  }
+}

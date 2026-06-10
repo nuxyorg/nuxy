@@ -264,9 +264,7 @@ export class MockPanel extends LitElement {
       null: { label: 'null', color: '#ff7070', bg: 'rgba(255,80,80,0.1)' },
     }
     const b = map[source] ?? map['null']
-    return html`<span
-      class="source-badge"
-      style="color:${b.color};background:${b.bg}"
+    return html`<span class="source-badge" style="color:${b.color};background:${b.bg}"
       >${b.label}</span
     >`
   }
@@ -291,7 +289,11 @@ export class MockPanel extends LitElement {
           ${row.applied ? html`<span class="applied-badge">active</span>` : nothing}
           <span class="spacer"></span>
           <button class="btn-clear" @click=${() => this.removeMock(channel)}>remove</button>
-          <button class="btn-apply" ?disabled=${!hasChanges} @click=${() => this.applyMock(channel)}>
+          <button
+            class="btn-apply"
+            ?disabled=${!hasChanges}
+            @click=${() => this.applyMock(channel)}
+          >
             apply
           </button>
         </div>
@@ -326,7 +328,9 @@ export class MockPanel extends LitElement {
       <div class="header" @click=${() => (this.open = !this.open)}>
         <span class="header-left">
           ${this.open ? '▼' : '▶'} Mocks
-          ${activeCount > 0 ? html`<span class="active-badge">${activeCount} active</span>` : nothing}
+          ${activeCount > 0
+            ? html`<span class="active-badge">${activeCount} active</span>`
+            : nothing}
         </span>
         <span class="header-right">
           ${this.channels.length} channel${this.channels.length !== 1 ? 's' : ''} seen
@@ -336,16 +340,21 @@ export class MockPanel extends LitElement {
         ? html`
             <div class="body">
               ${this.channels.length === 0
-                ? html`<div class="empty">No IPC calls yet — interact with the extension above.</div>`
+                ? html`<div class="empty">
+                    No IPC calls yet — interact with the extension above.
+                  </div>`
                 : nothing}
-              ${repeat(this.channels, (ch) => ch, (ch) => this.renderRow(ch))}
+              ${repeat(
+                this.channels,
+                (ch) => ch,
+                (ch) => this.renderRow(ch)
+              )}
               <div class="add-row">
                 <input
                   class="add-input"
                   placeholder="channel name (e.g. getHistory)"
                   .value=${this.newChannel}
-                  @input=${(e: Event) =>
-                    (this.newChannel = (e.target as HTMLInputElement).value)}
+                  @input=${(e: Event) => (this.newChannel = (e.target as HTMLInputElement).value)}
                   @keydown=${(e: KeyboardEvent) => e.key === 'Enter' && this.addChannel()}
                 />
                 <button class="btn-add" @click=${this.addChannel}>+ add</button>

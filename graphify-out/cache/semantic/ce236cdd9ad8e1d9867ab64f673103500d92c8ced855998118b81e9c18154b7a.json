@@ -1,0 +1,143 @@
+{
+  "nodes": [
+    {
+      "id": "docs_pain_points_plan_gap_analysis",
+      "label": "Pain Points and Gap Analysis",
+      "file_type": "document",
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_pain_points_fat_shell_p1",
+      "label": "P1: Fat Shell - Launcher Logic in Core",
+      "file_type": "concept",
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_pain_points_registry_noop_p2",
+      "label": "P2: Registry API Worker-Kernel Sync Gap",
+      "file_type": "concept",
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_pain_points_no_broker_p3",
+      "label": "P3: No Kernel Message Broker",
+      "file_type": "concept",
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_pain_points_capabilities_ignored_p4",
+      "label": "P4: Manifest Capabilities Not Enforced",
+      "file_type": "concept",
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_pain_points_worker_sandbox_p7",
+      "label": "P7: Worker Sandbox Weaker Than Documented",
+      "file_type": "concept",
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_pain_points_plan_gap_analysis",
+      "target": "docs_pain_points_fat_shell_p1",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pain_points_plan_gap_analysis",
+      "target": "docs_pain_points_registry_noop_p2",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pain_points_plan_gap_analysis",
+      "target": "docs_pain_points_no_broker_p3",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pain_points_plan_gap_analysis",
+      "target": "docs_pain_points_capabilities_ignored_p4",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pain_points_plan_gap_analysis",
+      "target": "docs_pain_points_worker_sandbox_p7",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_pain_points_capabilities_ignored_p4",
+      "target": "docs_16_omni_callable_caller_capabilities",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "docs_15_plugin_empty_shell_philosophy",
+      "target": "docs_pain_points_fat_shell_p1",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/pain-points-plan.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": []
+}

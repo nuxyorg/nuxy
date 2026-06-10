@@ -36,7 +36,7 @@ graph TD
         Worker3[Worker: Diğer Eklentiler]
     end
 
-    subgraph "Renderer Process (React Arayüzü)"
+    subgraph "Renderer Process (Web Components Arayüzü)"
         CoreUI[Dinamik Arayüz Canvas / Router]
     end
 
@@ -57,7 +57,7 @@ Electron'un ana sürecinde (`src/electron/`) çalışan Kernel, işletim sistemi
 
 - `~/.nuxy/extensions/` dizinini tarar ve eklentileri yükler.
 - Her eklenti için izole bir Node.js Worker Thread başlatır.
-- Eklentiler ile React Renderer arasındaki IPC (Inter-Process Communication) trafiğini yönetir, doğrular ve yönlendirir.
+- Eklentiler ile Web Components Renderer arasındaki IPC (Inter-Process Communication) trafiğini yönetir, doğrular ve yönlendirir.
 
 ### 2.2. Isolated Worker Threads (Arka Plan - Backend)
 
@@ -66,9 +66,9 @@ Eklentilerin arka plan kodları (`backend.ts`/`backend.js`), Electron ana sürec
 - **Donanımsal Bellek İzolasyonu**: Bir eklenti diğer eklentinin belleğine erişemez veya onun durumunu bozamaz.
 - **Kısıtlı Yetkiler**: Worker içinde doğrudan `fs` (dosya sistemi) veya `http` (ağ) çağrıları yapılması engellenir. Bunun yerine Kernel tarafından sağlanan, eklentinin manifest dosyasındaki izinlere göre filtrelenen proxy bir `CoreContext` API'si enjekte edilir.
 
-### 2.3. React Canvas (Ön Yüz - Renderer Process)
+### 2.3. Web Components Arayüzü (Ön Yüz - Renderer Process)
 
-Nuxy'nin ön yüzü boş bir tuvaldir. Kernel bir eklentiyi yüklediğinde, React ön yüzü `nuxy-ext://<extension-id>/frontend.js` özel protokolü üzerinden eklentinin arayüz kodunu dinamik olarak içe aktarır (dynamic import).
+Nuxy'nin ön yüzü boş bir tuvaldir. Kernel bir eklentiyi yüklediğinde, renderer `nuxy-ext://<extension-id>/frontend.js` özel protokolü üzerinden eklentinin custom element kodunu dinamik olarak içe aktarır (dynamic import).
 
 - **Tasarım Bütünlüğü**: Eklentiler kendi tasarım kütüphanelerini paketlemezler. Nuxy çekirdeğinin küresel olarak sağladığı `@nuxy/ui` (Shadcn tabanlı) bileşenlerini tüketirler. Bu sayede uygulama boyutu küçük kalır ve görsel tutarlılık korunur.
 - **Sandbox Güvenliği**: Arayüz katmanı Chromium'un izole edilmiş ve sandbox modundaki renderer sürecinde çalıştığı için sisteme doğrudan zarar veremez.

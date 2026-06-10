@@ -4,25 +4,40 @@
     "mtime_ns": 1779293934432828565,
     "hash": "d67af4a0e9ce0c2453366ca8f8d508b7b47f0c865928cb56861dbe6a9be488ea"
   },
+  "/home/xava/Documents/nuxy/eslint.config.js": {
+    "size": 1739,
+    "mtime_ns": 1780945201009283516,
+    "hash": "e68f03a34018d5fefb30385e823fc09eb3878a5000fd0012d8fbbc4526327c7f"
+  },
+  "/home/xava/Documents/nuxy/.fallowrc.json": {
+    "size": 624,
+    "mtime_ns": 1780945100866057962,
+    "hash": "24ae7268c66a2f425d5a4da54c497302471e52fabdb4b90e8daca7d148488b2a"
+  },
+  "/home/xava/Documents/nuxy/knip.json": {
+    "size": 1174,
+    "mtime_ns": 1780573153750816374,
+    "hash": "1ff8b38bc126cdffb63cc012dc803ff0e582d7a0715a0fa0b4f14df455b9c295"
+  },
   "/home/xava/Documents/nuxy/scratch.js": {
     "size": 1940,
     "mtime_ns": 1780094051560391688,
     "hash": "d5d697d192bd98b71f4dd8ff7f36f129b39deb0aa8b7b042f7a951303bd4d3d3"
   },
   "/home/xava/Documents/nuxy/tsconfig.json": {
-    "size": 529,
-    "mtime_ns": 1779834427633907486,
-    "hash": "d3dc40c101461bea7b79d6532cb9a22dc2c59d4aec0e82fc51afa122adc920bc"
+    "size": 793,
+    "mtime_ns": 1780944856504959964,
+    "hash": "2adc603d505c737b1ea348912943b5e9447536fdce927e74d76dcd00b6239a53"
   },
   "/home/xava/Documents/nuxy/package.json": {
-    "size": 980,
-    "mtime_ns": 1780220049047162619,
-    "hash": "cfcd8d34965c12efd1c48136d02fb9b7f98bcb8defadc0ebb03106f4f099b2c5"
+    "size": 1393,
+    "mtime_ns": 1780955878984641177,
+    "hash": "73bf69d5ef0ff1162a91f75783ee6317518c5ade0f9391ffeee919cf79715478"
   },
   "/home/xava/Documents/nuxy/.claude/settings.json": {
-    "size": 176,
-    "mtime_ns": 1779381828821481876,
-    "hash": "8c1bcf471f4549df33d8f80a6000fb6e6eb532ce426006fb0de5eaf4a2e384f9"
+    "size": 848,
+    "mtime_ns": 1780354719436891338,
+    "hash": "004221ff45c271a905c2bec1f572026919edf6a3b8d6cc8ff92b87bcd69302da"
   },
   "/home/xava/Documents/nuxy/.claude/settings.local.json": {
     "size": 1849,
@@ -35,19 +50,19 @@
     "hash": "59c0f70c956a59e738edfb2442c4508feac19adbd09978f3c3b31cbbaf7065af"
   },
   "/home/xava/Documents/nuxy/src/tsconfig.json": {
-    "size": 820,
-    "mtime_ns": 1779197400981645560,
-    "hash": "2fa8b902b920cc0bcc4b9d302b5db987701b94f46ff826715efec45a89c3c8a6"
+    "size": 796,
+    "mtime_ns": 1780945467273903990,
+    "hash": "a8b2c4d4c286985680f36e8c72614bca5356bad577d0e51e8c310cee0b823b3f"
   },
   "/home/xava/Documents/nuxy/src/vite.config.ts": {
-    "size": 8234,
-    "mtime_ns": 1780220981305559177,
-    "hash": "baf047dbbb79cb57fa12ee2ef46132e4cb828c6adda3ddbcc150d7c1169ee0b9"
+    "size": 6431,
+    "mtime_ns": 1780929160558545892,
+    "hash": "e57e7d0eff45b698fe5d441dcfdb721b7587607ee6581dc31959b19cd255ec13"
   },
   "/home/xava/Documents/nuxy/src/playwright.config.ts": {
-    "size": 602,
-    "mtime_ns": 1780245972015116054,
-    "hash": "46bbbca481b12184464330d316933f73d9b729be3eafa0ec9f8cf6b1cdbb34b5"
+    "size": 650,
+    "mtime_ns": 1780927113995943705,
+    "hash": "d7a77b66e37f0426029951533e95872e7d1225ae803cc0c194a983c51ab8157f"
   },
   "/home/xava/Documents/nuxy/src/verify-ext-settings.mjs": {
     "size": 3485,
@@ -60,44 +75,69 @@
     "hash": "373405fa9846fe393bc7e4f93ad436467798a309beff54fcb858dfbc0cc181af"
   },
   "/home/xava/Documents/nuxy/src/package.json": {
-    "size": 1397,
-    "mtime_ns": 1780220050995600323,
-    "hash": "e2efe41514f09527a64eb3140d8ed06f790e0f4483eeaad6e3b3c63a8917d067"
+    "size": 1274,
+    "mtime_ns": 1780944842884669920,
+    "hash": "f282911fa20ba63cea93bccc8e864e91afe6431e96e4641f2394c62cc56d4990"
   },
   "/home/xava/Documents/nuxy/src/e2e/unix-socket.spec.ts": {
-    "size": 3397,
-    "mtime_ns": 1779568685742201486,
-    "hash": "18ee0da5e3cd8884882a28a7d605ffef86fa03d922287a8ad4f97bec23985348"
+    "size": 3094,
+    "mtime_ns": 1780860671700649794,
+    "hash": "258e606ff043e51eae5b93522bd9c2df1af6599ee27bdcf4a289392d96a3a311"
   },
   "/home/xava/Documents/nuxy/src/e2e/media-bootstrap.spec.ts": {
-    "size": 5294,
-    "mtime_ns": 1780094051612310478,
-    "hash": "c69603699a9328f3ffd4a969c1e41bfa480faeee60e1f1c15dcf5ba8ab76c840"
+    "size": 5331,
+    "mtime_ns": 1780860671699649793,
+    "hash": "85dbd2a9e24fb24f0a156415c8c4ed1b4aaf3448a64e5dc9d55f64200d76719b"
   },
   "/home/xava/Documents/nuxy/src/e2e/extensions-integration.spec.ts": {
-    "size": 7751,
-    "mtime_ns": 1779568685742201486,
-    "hash": "7235e6e6653f37e020d953fa6551c78842c052476dc9228542c4476ce3cbece9"
+    "size": 7265,
+    "mtime_ns": 1780929157714538369,
+    "hash": "819834bcaed250ebaf77bfdc50f53991330a6be836e625014c769a78f60c07be"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/shell-interaction.spec.ts": {
+    "size": 7608,
+    "mtime_ns": 1780929345287330455,
+    "hash": "55399727a6d2fa138443a4e4dda4cdc68cea3540251e3573e718405dbd448bce"
   },
   "/home/xava/Documents/nuxy/src/e2e/kernel-channels.spec.ts": {
-    "size": 1260,
-    "mtime_ns": 1779351886680386312,
-    "hash": "a8823d932d70abafd3cabecb2775873a610f652fa2ce92782a9d3bdf7e01b3dc"
+    "size": 1344,
+    "mtime_ns": 1780927904860884569,
+    "hash": "32746c87ec36449e26e7bce74556a6a39c2dc2ad95533fdb5136dcf42bbc3465"
   },
   "/home/xava/Documents/nuxy/src/e2e/kernel.spec.ts": {
-    "size": 7998,
-    "mtime_ns": 1780094051604310491,
-    "hash": "6237e58cd3cf01d22556b358946b393a62bbda9d3a06beb30fe7162f29914c78"
+    "size": 8098,
+    "mtime_ns": 1780927904334808290,
+    "hash": "5472c6b2472c3c5bdfa982b526c5a414657974ffc772b74a973f391065330e50"
   },
   "/home/xava/Documents/nuxy/src/e2e/fixtures.ts": {
-    "size": 4905,
-    "mtime_ns": 1780246487692214045,
-    "hash": "bb9edbb3ee157228abdd560754276492e6a83cda1b17471e8ef6799a88d204c1"
+    "size": 5961,
+    "mtime_ns": 1780927899452954204,
+    "hash": "9fc91f4598b374baff376f485e3b62376be9bcdd3933d058ec35f11513ebdde3"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/electron-require.ts": {
+    "size": 194,
+    "mtime_ns": 1780927903969529253,
+    "hash": "fe79251fbf8100568c75923180b705f0314d18b65c1b5a767a3f812b8aac5012"
   },
   "/home/xava/Documents/nuxy/src/e2e/ipc-bridge.spec.ts": {
-    "size": 9634,
-    "mtime_ns": 1779495166459745376,
-    "hash": "8b74565653db127b7d89218828639c635471b65c343848799d3bb76a3d3ed1c0"
+    "size": 9717,
+    "mtime_ns": 1780913833121563677,
+    "hash": "cd4bae919861d14f8635c2fe569571a178477e00059a250aaa6c448d09b7f1f4"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/extension-resilience.spec.ts": {
+    "size": 8302,
+    "mtime_ns": 1780573154467006338,
+    "hash": "4b7380d01cd3be39381d824dd4852225dab72400549caeed7b913cf7f86756be"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/theme-switching.spec.ts": {
+    "size": 3934,
+    "mtime_ns": 1780396856668209374,
+    "hash": "fc09ea8af4af2d2e1925bb5b5c55ee48f0e68b8f63932daa62b34b767a426539"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/screenshot.js": {
+    "size": 2752,
+    "mtime_ns": 1780955878985641178,
+    "hash": "fb3f746fbb215789f0cb31bb7c47d2f1824c9cf88b093a3eb690902e906a9e72"
   },
   "/home/xava/Documents/nuxy/src/e2e/theme-zoom.spec.ts": {
     "size": 3327,
@@ -109,25 +149,30 @@
     "mtime_ns": 1780094051629310450,
     "hash": "34cfeaaa60254928dc26f24e6382d86acd06acb7b6d5afaad9bde26facc0cfa4"
   },
+  "/home/xava/Documents/nuxy/src/e2e/package.json": {
+    "size": 23,
+    "mtime_ns": 1780927897633648167,
+    "hash": "624fe1836d8c00f2c9281545ef9bb61a62bafb93f7ba098b539bf7cb97613029"
+  },
   "/home/xava/Documents/nuxy/src/e2e/run-cached.js": {
-    "size": 10109,
-    "mtime_ns": 1780154802816301802,
-    "hash": "f148ec24aefddd02e1a029be813f76e63275f958befca8567e19a6be042404ae"
+    "size": 10902,
+    "mtime_ns": 1780927916867854482,
+    "hash": "7baa8f96a977fa2531c0c37c351971f31b08bf8ae9a8e8865adaac6304b4b60f"
   },
-  "/home/xava/Documents/nuxy/src/renderer/App.tsx": {
-    "size": 5910,
-    "mtime_ns": 1780241690040123909,
-    "hash": "b73b8fe2bc5dbed314170ae2fb7644ae998bb3852117bb0ea12e555754af5f8f"
-  },
-  "/home/xava/Documents/nuxy/src/renderer/main.tsx": {
-    "size": 592,
-    "mtime_ns": 1780073741383650785,
-    "hash": "70bc99de16079b08338914762410b71e36c829aefaff99f57ed9b2869420695a"
+  "/home/xava/Documents/nuxy/src/renderer/main.ts": {
+    "size": 132,
+    "mtime_ns": 1780945497778053563,
+    "hash": "1edb750f08cac34778b0290b82ec3d971da32901417e81f150a4043d0415a734"
   },
   "/home/xava/Documents/nuxy/src/renderer/env.d.ts": {
-    "size": 712,
-    "mtime_ns": 1779200586398663297,
-    "hash": "aa1535d53ba0383ba4165d320535d84d6c477a1c13effd68a1161bb9b5ca22e4"
+    "size": 1128,
+    "mtime_ns": 1780923084669621442,
+    "hash": "ccfa859b386fd7c26a209a273860f3128aca75cb74f64bd1a4f95bae4e02efe5"
+  },
+  "/home/xava/Documents/nuxy/src/renderer/bootstrap.ts": {
+    "size": 4729,
+    "mtime_ns": 1780921160930611608,
+    "hash": "7da5b03625dc9089a88ca66a4bcb5b40150a61f2e8cb3eaf3e410cd9551eaa72"
   },
   "/home/xava/Documents/nuxy/src/electron/icons/registry.test.ts": {
     "size": 2924,
@@ -141,18 +186,18 @@
   },
   "/home/xava/Documents/nuxy/src/electron/security/sign-tool.ts": {
     "size": 2573,
-    "mtime_ns": 1780220973511548318,
+    "mtime_ns": 1780790990156074497,
     "hash": "14e452a11c29ebd5d07e8f62c923aaae09913afafff726da69e87fcabd707c1a"
   },
   "/home/xava/Documents/nuxy/src/electron/security/security.ts": {
-    "size": 8007,
-    "mtime_ns": 1780220993769577391,
-    "hash": "6e9a7fa365ce4ff08e4d26632e14167f026f92cb16be1e799c82b35a5c8276cf"
+    "size": 8000,
+    "mtime_ns": 1780684436968321655,
+    "hash": "f5bff236d9cc6ae7ddf6ad3a4563fa18604c20c5a833ac11a09afb3b1246e826"
   },
   "/home/xava/Documents/nuxy/src/electron/security/security.test.ts": {
-    "size": 5582,
-    "mtime_ns": 1780221065815701950,
-    "hash": "efa7acd01b1ea72270d05d483d89ddad1c1a2413a4958cc6a620e10ab3e286c1"
+    "size": 5575,
+    "mtime_ns": 1780573154809326646,
+    "hash": "18907fd3f29283207baa6f0acd9811623c10abeb81f2ef1be7e3bacd5e2edef7"
   },
   "/home/xava/Documents/nuxy/src/electron/dev/extensions.test.ts": {
     "size": 922,
@@ -160,9 +205,9 @@
     "hash": "ab62593d0fd5d932049daea447a7b250c69674bd0f884fa4851520acb6699136"
   },
   "/home/xava/Documents/nuxy/src/electron/dev/extensions.ts": {
-    "size": 4685,
-    "mtime_ns": 1779351886722895997,
-    "hash": "46d5a57f840e4481d4ac3d31343c8501ca7905910eca5d28f7c24933edd179ec"
+    "size": 4739,
+    "mtime_ns": 1780924235401734222,
+    "hash": "3739ef89eed775ee940e93867a6d3be6f75d384d3c5004e463454b53b6b988fe"
   },
   "/home/xava/Documents/nuxy/src/electron/dev/globals.d.ts": {
     "size": 29,
@@ -190,9 +235,9 @@
     "hash": "bb10bd15f49565814ed94ae2032785856cdaa99ec88ef87acef4056f6caeedb7"
   },
   "/home/xava/Documents/nuxy/src/electron/themes/defaults.ts": {
-    "size": 2168,
-    "mtime_ns": 1780220267291442698,
-    "hash": "5fcf1c6c7976e9a5b55bc43656b670481b13a17fa45a0fb6211f0336b6d05ced"
+    "size": 3786,
+    "mtime_ns": 1780573154878004230,
+    "hash": "00e7eadd81df2593466a51584c44a27371e9982fef0e41e5dd2aa448c04539b2"
   },
   "/home/xava/Documents/nuxy/src/electron/window/spring.test.ts": {
     "size": 7719,
@@ -205,54 +250,109 @@
     "hash": "17ba656bba9c361a1de2c308f841c39e1021d088962b62e63a837108326ac693"
   },
   "/home/xava/Documents/nuxy/src/electron/window/manager.ts": {
-    "size": 2916,
-    "mtime_ns": 1780241734065183010,
-    "hash": "870edcbd73c4da655a316148c5aefa057351b641d9319d0d9b760a71e4237179"
+    "size": 2925,
+    "mtime_ns": 1780860671701649796,
+    "hash": "9390d07b6b11f2a9d236caeb183f51a47bb9229660122d75e6e7521f5270cb05"
   },
   "/home/xava/Documents/nuxy/src/electron/window/spring.ts": {
-    "size": 3648,
-    "mtime_ns": 1779207672094484123,
-    "hash": "8d25b2f99fc926fbb1f999fff2f17c2ded38309ec1b81f4e55825fd5616b5d0b"
+    "size": 3641,
+    "mtime_ns": 1780684436974321660,
+    "hash": "97fbd080f1445c6eaf48186f5f4b9a73ef915ac47a9304c7b8ca8356bc632767"
   },
   "/home/xava/Documents/nuxy/src/electron/window/manager.test.ts": {
-    "size": 2597,
-    "mtime_ns": 1780241722079166912,
-    "hash": "b7aec7073a0fd7c2797c8b5288009e5a19cbb8668d62efa0bdbef8c4415f7ffc"
+    "size": 2608,
+    "mtime_ns": 1780573154890004169,
+    "hash": "e2641639c60214f982385c03b41178160ff9182ed4cb9c082ae7d582fd5f896c"
   },
   "/home/xava/Documents/nuxy/src/electron/spawn/active-workers.ts": {
-    "size": 101,
-    "mtime_ns": 1779197400981645560,
-    "hash": "f69c5dacba163e23af159b6cbc3ad6e2271978c93ed7c0932b34bf994a3ec6c6"
+    "size": 468,
+    "mtime_ns": 1780871392153322692,
+    "hash": "db6204ea52f05326f3755d20cc16aec1fba7597fb33f5dc10860094d02418ca0"
+  },
+  "/home/xava/Documents/nuxy/src/electron/spawn/active-workers.test.ts": {
+    "size": 1092,
+    "mtime_ns": 1780395818165438674,
+    "hash": "be00140c05c5647d439b79bbdd2928a00b792517a20ad44ba7828b393221c2ab"
   },
   "/home/xava/Documents/nuxy/src/electron/spawn/spawn.ts": {
-    "size": 2580,
-    "mtime_ns": 1780243732895572850,
-    "hash": "aafe84e8c7a6a18bc1844e0747f62a32f39412060a7dd1ef18c1c962b1c2137e"
+    "size": 3754,
+    "mtime_ns": 1780924231357731494,
+    "hash": "9e93b9f4eddfadecb10fc08869548adbadbbd3ff1b5455b6074d33b59ec9d531"
   },
   "/home/xava/Documents/nuxy/src/electron/spawn/migrate-data.ts": {
     "size": 928,
     "mtime_ns": 1779351886816385608,
     "hash": "db7b166996ab699de242268f02837d90f2d2739f78017eddc80aca092753abe6"
   },
+  "/home/xava/Documents/nuxy/src/electron/spawn/spawn.test.ts": {
+    "size": 10664,
+    "mtime_ns": 1780871392153322692,
+    "hash": "15734d6dfbd177513acf4179e08fa4a0aa0329c094c4362b1211e670ff38f537"
+  },
   "/home/xava/Documents/nuxy/src/electron/spawn/host-handlers.ts": {
-    "size": 6424,
-    "mtime_ns": 1780221036164646848,
-    "hash": "d42ff1dbaa73e331d6786ddd654d07912f59e8a6c804192313c3811a09139e52"
+    "size": 7256,
+    "mtime_ns": 1780423187163561383,
+    "hash": "d2418dce3c93360aa2417acb647ce788b2e07ac1097c7ed07816322a92e8d8f4"
+  },
+  "/home/xava/Documents/nuxy/src/electron/spawn/host-handlers.test.ts": {
+    "size": 22130,
+    "mtime_ns": 1780573154844306403,
+    "hash": "6dc7629146167d4732ae0c6bb902dd58672b0293731b69f217f276c95e49fb38"
+  },
+  "/home/xava/Documents/nuxy/src/electron/spawn/migrate-data.test.ts": {
+    "size": 5717,
+    "mtime_ns": 1780395818166341318,
+    "hash": "1f0adc154685128e316eea13216747cbf8fd132389edc3346f6e5643cb2f2644"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/preload.test.ts": {
+    "size": 9434,
+    "mtime_ns": 1780914650707899829,
+    "hash": "4c13df7bdf47f90569db384fcc337315c9ef76ba6e10c3e27a3b0048bdab1298"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/shell-bridge.ts": {
+    "size": 2066,
+    "mtime_ns": 1780914064522835979,
+    "hash": "49a076474135ba15660d6a55a3142aa1c936d0de0b9efb138468160899379d1d"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/composition-bridge.test.ts": {
+    "size": 2476,
+    "mtime_ns": 1780913833121563677,
+    "hash": "0b2cc6a18c01185d3d6edfe88b4f3488a3b4b7f50b92bafd07620c3ad07c98bf"
   },
   "/home/xava/Documents/nuxy/src/electron/bootstrap/main.ts": {
-    "size": 4551,
-    "mtime_ns": 1780246648503565256,
-    "hash": "e0f95c17055776c0a439e40753da230e661a466239e8e0ebf754fd03401300bc"
+    "size": 4786,
+    "mtime_ns": 1780924573722234604,
+    "hash": "9c078c7f0ae372cb378b2b5266872f91d31548194b4e787f97e14302ceb64ab2"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/events-bridge.test.ts": {
+    "size": 949,
+    "mtime_ns": 1780914600839329217,
+    "hash": "875023a85ccf2e5560bde4de8839965a6690464ba94e69dcd34f77662c57ea73"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/composition-bridge.ts": {
+    "size": 3652,
+    "mtime_ns": 1780913833121563677,
+    "hash": "171e375847d8c28c38f996525c8787e8a99e15d371bc25c6c5a92bf058fbc3c4"
   },
   "/home/xava/Documents/nuxy/src/electron/bootstrap/preload.ts": {
-    "size": 2042,
-    "mtime_ns": 1780241679315109524,
-    "hash": "0ad68b6b7c1671417577026d0a9699afa50e84e803edec4d912ae50d9c95e998"
+    "size": 2533,
+    "mtime_ns": 1780914601497350903,
+    "hash": "c596eb336fc4777794f671ff7fcfd323ad78057ce976b3c38f2e5e4facca9be7"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/events-bridge.ts": {
+    "size": 738,
+    "mtime_ns": 1780914598430249580,
+    "hash": "f8ca8425a0d545a3470f103cd03938a57e68d3929bd2b1ab4cd6cff44dd06d1d"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/shell-bridge.test.ts": {
+    "size": 1734,
+    "mtime_ns": 1780914071809133588,
+    "hash": "a91ddcf7f0ac20a32e37225c3902c6c40375200f62b284674915b68c26a6ebbf"
   },
   "/home/xava/Documents/nuxy/src/electron/protocol/register.ts": {
-    "size": 3507,
-    "mtime_ns": 1780243538053020210,
-    "hash": "6a7986f3559ce3cfd536de554fb34cdd336050b3189810a0c1594273df19bc1d"
+    "size": 5183,
+    "mtime_ns": 1780955878985641178,
+    "hash": "3e19efa4a75521944516a331abd4966d0f78a731ce196eda198445916628a2f5"
   },
   "/home/xava/Documents/nuxy/src/electron/protocol/resolve.test.ts": {
     "size": 1877,
@@ -260,9 +360,9 @@
     "hash": "faf789ac3ebe868bb66680e8a347eb4a5af488d657999d0b7786b022a3252e06"
   },
   "/home/xava/Documents/nuxy/src/electron/protocol/resolve.ts": {
-    "size": 1223,
-    "mtime_ns": 1780219516021643493,
-    "hash": "0bbaaeae527216efec1586ff152524d9162d3d9e2546b353a883fd612d8852a8"
+    "size": 1944,
+    "mtime_ns": 1780860671701649796,
+    "hash": "8f6e6384715578d94f9b000c5c15f4c8edae566e1548f5eaa5eaa53cbf8566a7"
   },
   "/home/xava/Documents/nuxy/src/electron/config/storage-path.ts": {
     "size": 504,
@@ -275,19 +375,19 @@
     "hash": "47af35ed6bc6a195ad4459f2aea1d1a777456196b933aa7da1ccc53b592e3cd4"
   },
   "/home/xava/Documents/nuxy/src/electron/config/permissions.ts": {
-    "size": 1188,
-    "mtime_ns": 1780256664864008848,
-    "hash": "edd56a92f456dd12b6d6cf9aa81d64398df9df251cb5e591dbd296e3b03b9f06"
+    "size": 1227,
+    "mtime_ns": 1780258538921844285,
+    "hash": "eaf8f44b7f580c9cd665824f6bac9c809093852618def596c83812c8a37ec2cb"
   },
   "/home/xava/Documents/nuxy/src/electron/config/nuxyconfig.test.ts": {
-    "size": 11492,
-    "mtime_ns": 1780222101099161383,
-    "hash": "40e9d0dfe98eb9489827e6257c6e24138e3b10275f9b37a62281644becf83648"
+    "size": 12133,
+    "mtime_ns": 1780871392153659775,
+    "hash": "d992da56aa1aac476da5b47c2eb387d9a6799a879ac4e3ef43749c2365867e96"
   },
   "/home/xava/Documents/nuxy/src/electron/config/paths.ts": {
-    "size": 634,
-    "mtime_ns": 1780220162176556023,
-    "hash": "e6abac54a464e3a45a42bb0f5a0d712d6782e3458fc02cf2e2a977edbd71320e"
+    "size": 627,
+    "mtime_ns": 1780684436986321669,
+    "hash": "5c24359a9ae81281afa0fdcc30bb64f9136967e689db87e7659f280722d52570"
   },
   "/home/xava/Documents/nuxy/src/electron/config/permissions.test.ts": {
     "size": 1246,
@@ -295,54 +395,144 @@
     "hash": "2687fdca6a01b50430c0845436e3948a4a1ce4391b4ec07a0c81c69af39a59e0"
   },
   "/home/xava/Documents/nuxy/src/electron/config/nuxyconfig.ts": {
-    "size": 6163,
-    "mtime_ns": 1780222078112399500,
-    "hash": "e4913ebe5ba4dbf93f47ccafc630397d00751a3eff00af27bea0377310c21e9c"
+    "size": 7239,
+    "mtime_ns": 1780871392153322692,
+    "hash": "0d58e44c05a94f1a5e6dd08ef69e0bd354d23d53f6d357880e16aa9b31ac4851"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/broker.ts": {
-    "size": 1264,
-    "mtime_ns": 1779351886749385954,
-    "hash": "9b9b6ee13922623e2b2fb9a00498e0b9a67c0e75045ce929b5e724a0bc54deb2"
+    "size": 1768,
+    "mtime_ns": 1780512007161345767,
+    "hash": "2d999ebb473490005ad34bba8e27c4ac951a8c1d6f02d810f419280aa09bb72a"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/register.test.ts": {
+    "size": 6462,
+    "mtime_ns": 1780871392153322692,
+    "hash": "72cf17a6bf80b914fa733dc520d09faf6d8a6e76553844008faef1238a64bf7f"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/validate.ts": {
-    "size": 2505,
-    "mtime_ns": 1780221675106626941,
-    "hash": "e0d39de71c1627b735bf3ef656fb4694331276b4dc38aee90af9e01436798a49"
+    "size": 2714,
+    "mtime_ns": 1780913833121563677,
+    "hash": "d1607e6d7bb28eb3e1c3f77510ea3b9cd14d3ecb424d36eb962347fe1b08fd39"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/composition.test.ts": {
+    "size": 3270,
+    "mtime_ns": 1780913833121563677,
+    "hash": "5901d57b6a4a6a028aea1bca1d18e1ce8fc4c1d4f41d5b799fd0ba104badae79"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/worker-invoke.ts": {
-    "size": 1452,
-    "mtime_ns": 1779351886770077254,
-    "hash": "de08ec91683a8a87029df0b700f434cc64fa1f0983b659c50050e377f3ea03eb"
+    "size": 1461,
+    "mtime_ns": 1780261342194191188,
+    "hash": "23f5c0136c299890b749c477c6fb62b7398f94f0ac66a1c058301b5039913c40"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/register.ts": {
-    "size": 8733,
-    "mtime_ns": 1780256512967808802,
-    "hash": "6a992e1fbb5b98ab463929deea2f696c31c407d901fce9c4f0a27e97d7145570"
+    "size": 1023,
+    "mtime_ns": 1780871392153322692,
+    "hash": "98cb9c54297d276f769a0041b6e2acfd040c1819846f25f7f33f166547bf8726"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/validate.test.ts": {
-    "size": 2971,
-    "mtime_ns": 1780221717079795457,
-    "hash": "669c82d36713df530530abe7f3a2ba52826e0cecc26e394b5a9317560426fce1"
+    "size": 4236,
+    "mtime_ns": 1780913833121563677,
+    "hash": "5d5a2294b81e0838dfe2631f6c19493bbe6827fe8c56be94fdf2df7ca6fca32b"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/extension-ops.ts": {
+    "size": 2681,
+    "mtime_ns": 1780757642552634031,
+    "hash": "012ac9ed400ec6acc20d881df409eb1c5eee5766fc2385c52184a353decfd14e"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-channels.ts": {
+    "size": 851,
+    "mtime_ns": 1780913833121563677,
+    "hash": "db14bf8cf1640addc6a33a3ccd26880e3769d9915e83b108dcd137654aed014d"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/list-by-type.test.ts": {
+    "size": 3789,
+    "mtime_ns": 1780871392153322692,
+    "hash": "edc36a22019727b9763ded18d1a87faa80c9bbbc4bfaf4c92ff6795f57339de7"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/window-channels.ts": {
+    "size": 2604,
+    "mtime_ns": 1780860671701649796,
+    "hash": "8eda7d0a06cf9a7219d2b4501287b8b1c9ed7f7bbc76e8749016bb564f98f189"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/broker.test.ts": {
-    "size": 4462,
-    "mtime_ns": 1779494449340970537,
-    "hash": "3d3e150b7661cfd235bbc3868e0254c854a529391f810d1b1f9b7ff27d3bd9c1"
+    "size": 6129,
+    "mtime_ns": 1780573154710005092,
+    "hash": "a38444a41ccaa4fcad7cffe26d9be31192cef7fb3d94a5d04930b1c4b300a11a"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/list-by-type.ts": {
+    "size": 909,
+    "mtime_ns": 1780871392153659775,
+    "hash": "b2eedf421e7e21a7ae818e8a2933c04079c176015dcd61ed3555ba8656d06d98"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-invokable.ts": {
+    "size": 1658,
+    "mtime_ns": 1780757128069637898,
+    "hash": "22f226712edcfa82e124636d2f522b7b5098c390ded4bc3e08aacf13ce2ed179"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/system.ts": {
+    "size": 1600,
+    "mtime_ns": 1780757840796087734,
+    "hash": "6cba1adab21c716d2f26b90136a31986c7411009a71965d0049876dcae7de023"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/extensions.ts": {
+    "size": 3429,
+    "mtime_ns": 1780757801649195890,
+    "hash": "e0d2b939f06f7a18f9f194235286cf949d03f873d16c79306cffdc93c402723b"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/themes.ts": {
+    "size": 1418,
+    "mtime_ns": 1780757810003172819,
+    "hash": "0ce52a28bac206fef1b139845a4c5327147c1d4215e4955ec0b45b5ec8caad8d"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/i18n.ts": {
+    "size": 4377,
+    "mtime_ns": 1780757830103117289,
+    "hash": "922d92d540c60f6f20bce4dead6c941ccef1d22816c50f92cb16e6c673f6b772"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/composition.ts": {
+    "size": 2002,
+    "mtime_ns": 1780913833114563714,
+    "hash": "0fdad6a45c14ee116d489113e8fd1c6d8c91d915c76f999815d86e387db1c4f7"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/scanner.ts": {
-    "size": 18600,
-    "mtime_ns": 1780243397966595681,
-    "hash": "f2ed9d00f7cadf5e34c12f2b9d8d44d22834465976b863356376306b17480e9f"
+    "size": 21191,
+    "mtime_ns": 1780955878985641178,
+    "hash": "2092dc688ded5b4444c96d1ac939df997838c72c9cfd201b29c24411d203507c"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/bundle-backend.test.ts": {
+    "size": 1954,
+    "mtime_ns": 1780871392153322692,
+    "hash": "38b3a21931c1003b9d588f08e5ca6fbfd91653480a14bf6a3cfabc71ba005b4c"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/extension-reload.ts": {
+    "size": 13643,
+    "mtime_ns": 1780871392153322692,
+    "hash": "9170603d9421ea88f109901ee6edb0a8d558cedb0fc9d644f3e7b28915394731"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/disabled.ts": {
+    "size": 785,
+    "mtime_ns": 1780353120596555777,
+    "hash": "d5844c356a515233f01c96a83c1bdfe808a2e16fc07b051b019061af28fd5a2f"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/scanner.test.ts": {
-    "size": 7676,
-    "mtime_ns": 1780225383714475141,
-    "hash": "96bfe84db260295450d0b6610b56ddf38a51d4e9fd823f2761949ec707892f6f"
+    "size": 7753,
+    "mtime_ns": 1780763294000902379,
+    "hash": "19843e1d0d3fd218b40b95b7d4cb596c0530abeb481b9b8dbf128dc843dd6ee9"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/bundle-backend.ts": {
+    "size": 3694,
+    "mtime_ns": 1780871392152659772,
+    "hash": "69f77137c68cc27ea8e1e09b2cbe23a342f5beb55bfe3e28ec7dddee83502985"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/registry.test.ts": {
     "size": 2176,
     "mtime_ns": 1780225365951438573,
     "hash": "5d0e6c8587971c83e327954a82696272eaa38f016d5ea72829b0893d5ed734b5"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/rescan-hook.ts": {
+    "size": 221,
+    "mtime_ns": 1780683053970029605,
+    "hash": "6f264896ad4252e14d79c0f0812b1fa044b4ddf9d9287eebc6c5f00c19441055"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/seed-bundled.test.ts": {
     "size": 616,
@@ -350,9 +540,14 @@
     "hash": "70f47b6537267fb2bb032c8a9c0cdd23540358ede0994ec74133f0e92329dd8c"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/registry.ts": {
-    "size": 1884,
-    "mtime_ns": 1780225347575400910,
-    "hash": "87c7bd36bc94a9e40bdd9475e8ab2956eb8c65be3d1697159930c9bfa37b7f30"
+    "size": 4075,
+    "mtime_ns": 1780871392153322692,
+    "hash": "84c1685c20b0bafb06d0e1be1d11e1a049fe3d356d88faceae5cafcab9194257"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/extension-reload.test.ts": {
+    "size": 11399,
+    "mtime_ns": 1780871392153322692,
+    "hash": "02a379ab14ba819c25034d927bc670ea22dc8e7fc695725b8cc39837a6798225"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/seed-bundled.ts": {
     "size": 1388,
@@ -365,9 +560,9 @@
     "hash": "c2c177a04a443fc14a18b0e3b468041a5f217d8c2d9f229f33fada2033a32d52"
   },
   "/home/xava/Documents/nuxy/src/electron/media/index.ts": {
-    "size": 825,
-    "mtime_ns": 1779351886772050044,
-    "hash": "213465878f3ae7abd3246b328f417ffd2cd95857353a4dcd51bba51e8c83a3fe"
+    "size": 802,
+    "mtime_ns": 1780684522904393146,
+    "hash": "18542ecae1269f0af7d852b0c3c9f66f935c76fd40fba0ddba25c8e3d68471e4"
   },
   "/home/xava/Documents/nuxy/src/electron/media/index.test.ts": {
     "size": 2458,
@@ -410,19 +605,24 @@
     "hash": "e8eec69738b08f43096e4276dd12f69e7010e2dea5781c999ce1176d5b41d806"
   },
   "/home/xava/Documents/nuxy/src/electron/media/platforms/linux/mpris.ts": {
-    "size": 2768,
-    "mtime_ns": 1779197401058646020,
-    "hash": "740d06a8c4908494b53fbdca8f587a53fa4aef7a94ffd42242ef1c701298f6dc"
+    "size": 2784,
+    "mtime_ns": 1780860671701649796,
+    "hash": "66f87179128bc6482c38634d84772f78566894b3ed642bead6bd7bde807a297c"
   },
   "/home/xava/Documents/nuxy/.vscode/settings.json": {
     "size": 262,
     "mtime_ns": 1779382143691215531,
     "hash": "6b3b2d52ff745fcbcef1a7d8f19c5d50963561ba4a6c8f274b9c24f8836339bf"
   },
-  "/home/xava/Documents/nuxy/packages/ext-template/frontend.tsx": {
-    "size": 301,
-    "mtime_ns": 1779833800483267774,
-    "hash": "8db99fba0569277a1275746da59dfac5a9bf7f143febd095fb72bbfecde5f5e5"
+  "/home/xava/Documents/nuxy/packages/ext-template/nuxy-tool-my-extension.ts": {
+    "size": 1275,
+    "mtime_ns": 1780945379409436532,
+    "hash": "0c06bfce5fcf73f10b8f0362cc3011a80e3d40132d12c5285fce96f50a0a3c77"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-template/frontend.ts": {
+    "size": 37,
+    "mtime_ns": 1780945382013451229,
+    "hash": "8ce3acb7e95f9ac617a4abd5f9c460711a5e1fbd98f918de53c3ad8d58ca42ed"
   },
   "/home/xava/Documents/nuxy/packages/ext-template/backend.ts": {
     "size": 220,
@@ -430,34 +630,44 @@
     "hash": "2335b62827e87c75524b77b6cbba568d15143071a2d5c77a740af65822b497d7"
   },
   "/home/xava/Documents/nuxy/packages/ext-template/manifest.json": {
-    "size": 280,
-    "mtime_ns": 1779197400981645560,
-    "hash": "fa89691d43d486a560c1e20afa6287b3c55e7583c810f9f34805de01d31fce54"
+    "size": 321,
+    "mtime_ns": 1780945386461476207,
+    "hash": "0d49cdea14703ec299427028761019c4489045655c2ce0ce05d001719b8f5087"
   },
   "/home/xava/Documents/nuxy/packages/ext-template/package.json": {
     "size": 335,
     "mtime_ns": 1779197400981645560,
     "hash": "7368fbb44b1993d74be96dac49c5fd5b566bd3f80ed1357a698d92c5c1644fc9"
   },
+  "/home/xava/Documents/nuxy/packages/nxt/package.json": {
+    "size": 378,
+    "mtime_ns": 1780860671698649791,
+    "hash": "b718f772465d62a756d0bc45a402a03044dfc4b0da0cc91c64cae7a8a28a85c4"
+  },
+  "/home/xava/Documents/nuxy/packages/nxt/bin/nxt.js": {
+    "size": 15605,
+    "mtime_ns": 1780860671698649791,
+    "hash": "cd322baf311ec42b1a1945f70aa1106bac58ff8ed08b1b8663471df6230b6ccb"
+  },
   "/home/xava/Documents/nuxy/packages/extension-sdk/package.json": {
-    "size": 262,
-    "mtime_ns": 1779197400981645560,
-    "hash": "56188b9adf629400a593af9a9f2650d1a8a8889e3c3351e4acf582a241fb5e56"
+    "size": 281,
+    "mtime_ns": 1780398911385167711,
+    "hash": "2f922d47998c7027a012bc03ebd9718bdb4782fe3f73eddd98d6550c0169b47e"
   },
   "/home/xava/Documents/nuxy/packages/extension-sdk/src/testing.ts": {
-    "size": 2392,
-    "mtime_ns": 1780135646520129018,
-    "hash": "2aec50765acd619b22ff80b16e93793fce1bedeb3123e985aece8716041df38a"
+    "size": 2409,
+    "mtime_ns": 1780573153892009287,
+    "hash": "c59585bc8eaa66412ef64ba4169a47646983cec2574955d0202bc739f4d97e7b"
   },
   "/home/xava/Documents/nuxy/packages/extension-sdk/src/index.ts": {
-    "size": 845,
-    "mtime_ns": 1780154802561985276,
-    "hash": "d0c24e32fd3c8930ca91d1cddc0533fb9e02e25e0c4727a85eb3aa70b6c93fe6"
+    "size": 1996,
+    "mtime_ns": 1780439543306176115,
+    "hash": "c7c362d667d2e01e5e871a0d54bcbf0d5971ef4bfd196543bef619bc19fc31a8"
   },
   "/home/xava/Documents/nuxy/packages/core/package.json": {
-    "size": 198,
-    "mtime_ns": 1779201139773055442,
-    "hash": "b9af539ba1d0115399ac350f9ee363b84f674875c81ed5eecb014385fc6ccff1"
+    "size": 241,
+    "mtime_ns": 1780955878984641177,
+    "hash": "0be78e4c7a888316526995470df8827c8afb43e0998a302b5e29f50eaf0163a4"
   },
   "/home/xava/Documents/nuxy/packages/core/src/logger.ts": {
     "size": 3211,
@@ -465,384 +675,444 @@
     "hash": "ea8b79e83ec5da23e0185d0d46a5d67ef776c4732d2ce1a95b4dcd345ff261b5"
   },
   "/home/xava/Documents/nuxy/packages/core/src/host-channels.ts": {
-    "size": 693,
-    "mtime_ns": 1779315852776641982,
-    "hash": "c58c7e165ba51e417442b909fc1c8c6f7b9e051e0bbeaf680a89867bcd40260a"
+    "size": 787,
+    "mtime_ns": 1780354719440754554,
+    "hash": "8f9048bc63d6a7fa1e5006719f0612782905c257e16e07efb9fcd2c56f5a3a3e"
+  },
+  "/home/xava/Documents/nuxy/packages/core/src/shell.ts": {
+    "size": 1484,
+    "mtime_ns": 1780913833121563677,
+    "hash": "8f3cc6ae81e7b9ad1ef4a0a47d9b27ecea43927edc898e53019839aed34340ce"
   },
   "/home/xava/Documents/nuxy/packages/core/src/index.ts": {
-    "size": 4817,
-    "mtime_ns": 1780136505243970594,
-    "hash": "5763661f9710d1aa4341ad8d174fa8c72bd3d8fe3d2a351c8cfe7da65feb31cd"
+    "size": 6526,
+    "mtime_ns": 1780955878984641177,
+    "hash": "e989b63bd6d2034645dc819d551f917ec33f2181b02c80e65a9c3f4f99a43165"
+  },
+  "/home/xava/Documents/nuxy/packages/core/src/events.ts": {
+    "size": 677,
+    "mtime_ns": 1780914593698718815,
+    "hash": "23f52f70941caa1dbfa4322713e884290b6ba08080a3ffc9a37b93b9f52f13bc"
   },
   "/home/xava/Documents/nuxy/packages/core/src/media.ts": {
     "size": 285,
     "mtime_ns": 1779197400981645560,
     "hash": "860b24ef31b49f245113e4e33440b6f3d25424fa42c0309def3597e400734b56"
   },
+  "/home/xava/Documents/nuxy/packages/core/src/i18n.ts": {
+    "size": 3294,
+    "mtime_ns": 1780573153777061505,
+    "hash": "f7de690006d23b8d9e7c9dce94ae14952a4dd9387097bdda3053565ecbe9b45d"
+  },
   "/home/xava/Documents/nuxy/packages/core/src/messages.ts": {
-    "size": 527,
-    "mtime_ns": 1779201769262163514,
-    "hash": "4985d87246a5b800aff942a87f0d5c6beef55b69884e4161c6002b37e2ca2dfc"
+    "size": 610,
+    "mtime_ns": 1780573153792009800,
+    "hash": "07740395887e98838b71bb5f7e367277bce9c968438662b9216e469549dab53c"
+  },
+  "/home/xava/Documents/nuxy/packages/core/src/composition.ts": {
+    "size": 3320,
+    "mtime_ns": 1780913833121563677,
+    "hash": "f4fc723e26286f09e6fa920077e9befae0a6093877c4b2ce6ae72378e5d08a95"
   },
   "/home/xava/Documents/nuxy/packages/core/src/types.ts": {
-    "size": 2745,
-    "mtime_ns": 1780221664670585508,
-    "hash": "350c3eddfcc3563bb80006d8f9f5a8c688fd90dec1f04f8dccfb4ee7afacea3e"
+    "size": 4080,
+    "mtime_ns": 1780913833121563677,
+    "hash": "618318240ed6e1e2f116c883dac98163d0767a6302706fa065077ea75520f77d"
   },
   "/home/xava/Documents/nuxy/packages/ui/package.json": {
-    "size": 241,
-    "mtime_ns": 1779099289935715347,
-    "hash": "a0e6b280e54da57a862a0aa8b04568ca85817a3d320da1766e7544e359862cf2"
+    "size": 129,
+    "mtime_ns": 1780923084892498040,
+    "hash": "0ec18b824bdc44ad49e85062a3f3f685a68336709ec0162e5be45d04a8b5f8c0"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/index.tsx": {
-    "size": 7830,
-    "mtime_ns": 1780176871420989166,
-    "hash": "a3f8dc71ac427c6bc63d829cf35e524e2fdcfb6fa4213392b26b356f713944e6"
+    "size": 8518,
+    "mtime_ns": 1780763252148125853,
+    "hash": "f2f5584158a77ee9b9beb01dac53366c7ee6ebf4ab410752c8291054f2f0ca71"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Label/index.tsx": {
-    "size": 560,
-    "mtime_ns": 1780094051467310711,
-    "hash": "54520ea1e20e9d52aeebc84cdec4bf0ffc5dedb77faba903473436f1f5694874"
+    "size": 422,
+    "mtime_ns": 1780923081566185946,
+    "hash": "4b00cf8f5403eb8f2dd48226190aa7df2297e3a903c2360380a8ca105a0ee299"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/IconButton/index.tsx": {
-    "size": 372,
-    "mtime_ns": 1780094051459310723,
-    "hash": "ef5d2054a3a71d94104e826e77b665cc6cf062cf90f3115fa9687a9d4a3865ab"
+    "size": 277,
+    "mtime_ns": 1780923081566185946,
+    "hash": "b044d195cc1c6d3db536cb08b5bc410d454b7a0af76cfda04f7946d6518a914b"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Modal/index.tsx": {
-    "size": 374,
-    "mtime_ns": 1780094051485310682,
-    "hash": "96410e013b0db52daa2f9d1ca6c0d68bdeed4ed44c530330c5736182978d3dfb"
+    "size": 285,
+    "mtime_ns": 1780923081567185943,
+    "hash": "495c0087ec1badcf3c97f0af64c5879c2c84b858429c9dbf95ee6594eef891d3"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Modal/AlertDialog.tsx": {
-    "size": 449,
-    "mtime_ns": 1780094051483133633,
-    "hash": "e3034ec9e25513d9289d11fa02559949494930d253ac27bc5e6a49a11c5a7606"
+    "size": 368,
+    "mtime_ns": 1780923081567185943,
+    "hash": "f03ae85133536a7cf8c6a4ac18720e75fc0a1b08fa1f3527c7b7837a15146eca"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/TwoPanel/index.tsx": {
-    "size": 324,
-    "mtime_ns": 1780094051541310592,
-    "hash": "b93061d82762c7b0a4adab0252da96d05d88e4625ff46fa6966cda7c11157500"
+    "size": 230,
+    "mtime_ns": 1780923081569185938,
+    "hash": "7bbd628ca38dd8b298fc01d06d5adc6adbcdb46c647f97f8608d79b2180f566d"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/RadioGroup/index.tsx": {
-    "size": 518,
-    "mtime_ns": 1780094051494310667,
-    "hash": "603bd463badcb8df7274611b1dac2f1e39df4a883e898c90a5be688ede3afb69"
+    "size": 484,
+    "mtime_ns": 1780923081567185943,
+    "hash": "c9ae0abccca1c30d0720a64b0029408fe8a6e5699648e7de42b26e810b5eed6e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Slider/index.tsx": {
-    "size": 432,
-    "mtime_ns": 1780094051509310643,
-    "hash": "3e20fa09ae7f39274499fbdd9b63cc4a8ea06596399432a4c726147a80d897d7"
+    "size": 367,
+    "mtime_ns": 1780923081568185940,
+    "hash": "c61002ec9c2f1cd30271a3c703be24f7a7836da01a81ab5867f796f6f3ea4bc5"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ItemLeading/index.tsx": {
-    "size": 312,
-    "mtime_ns": 1780094051463310717,
-    "hash": "30ac6b8792265899fcabbf9b4a5ff5b982480160e8bd12623927d0d981db5521"
+    "size": 234,
+    "mtime_ns": 1780923081566185946,
+    "hash": "bddc0e4fd9ce32a3ddcae5539de4b83038c73da2ae02908e268903d02dc8b150"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ScrollArea/index.tsx": {
-    "size": 351,
-    "mtime_ns": 1780094051496310664,
-    "hash": "c644dc284e549469c166d622bd62542898c68cfa64e4591e6281830abbeee158"
+    "size": 273,
+    "mtime_ns": 1780923081567185943,
+    "hash": "ca8a446ba5bf76d6052c57b718800048644e9d1cc436019831e75f2c7e2f1bc6"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tooltip/index.tsx": {
-    "size": 388,
-    "mtime_ns": 1780094051539310595,
-    "hash": "83ed190150ac7fc0f8f806ccdd2528b6a89d8f31a11a6f3e4d53a254cb7a1f0b"
+    "size": 304,
+    "mtime_ns": 1780923081569185938,
+    "hash": "d2b8608940353f1f7563e3bf41aa0b3008bc4d4f07a8ed2160da47a36f788577"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/NumberInput/index.tsx": {
-    "size": 402,
-    "mtime_ns": 1780094051488310677,
-    "hash": "05bd9563527725f47213afd8bda870855f4350ba3033c914ca5e904e192aa654"
+    "size": 337,
+    "mtime_ns": 1780923081567185943,
+    "hash": "77847fb3504bbb323cf3a8ede2d1a01a40380ac60ff3b20c02ed0fd38f83d25a"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/WizardSection/index.tsx": {
+    "size": 196,
+    "mtime_ns": 1780923081569185938,
+    "hash": "acff7767a56acd3819d669cc615a3a554979fc2d12c34239f2722d7598c823be"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Breadcrumb/index.tsx": {
-    "size": 416,
-    "mtime_ns": 1780094051414310796,
-    "hash": "8e9094a54852a256932218710b2c69043f0c86d8c2b841d5c3b527861e36a2d4"
+    "size": 326,
+    "mtime_ns": 1780923081565185948,
+    "hash": "ea0e8956ea40951bc709406c489fa4c20002169c0e44c17df3d4f583fce7931f"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Callout/index.tsx": {
-    "size": 354,
-    "mtime_ns": 1780094051418310789,
-    "hash": "152a0b01037248ee7be9080d0c22d64f18789c6bd072b9bacb4a5c9ff268c103"
+    "size": 273,
+    "mtime_ns": 1780923081565185948,
+    "hash": "a8c183da548036a6d84ce1b427f4b94ae8f131ade639623a7b44c976642fe2ad"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Stack/index.tsx": {
-    "size": 474,
-    "mtime_ns": 1780094051513310637,
-    "hash": "15f383fff159a033fb1a09e4cc54f409f885e6e748bd1f7a6d80e9fce5d9a2bb"
+    "size": 396,
+    "mtime_ns": 1780923081568185940,
+    "hash": "edde6dd6a351e3258159f396c63b19d32905783a61db29e32bd847907bd03f56"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Spinner/index.tsx": {
-    "size": 292,
-    "mtime_ns": 1780094051511310640,
-    "hash": "491635abc97bfc246f5bf95fa912bd98d5be4a13c50423b61becfb70a7808ba3"
+    "size": 227,
+    "mtime_ns": 1780923081568185940,
+    "hash": "804823b33c7191a72c4bc954623f440fb198366ef05c19d795c124262a787a80"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/MarkdownText/index.tsx": {
-    "size": 265,
-    "mtime_ns": 1780176829944971825,
-    "hash": "36202ea00134d448f43a547679c448a45b7fcb9b02bcd3ecf49c27439fde226f"
+    "size": 200,
+    "mtime_ns": 1780923081567185943,
+    "hash": "c4305a3906611b323972c4db570967db58f820cc85e67b3af981883fe4b94b3b"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Divider/index.tsx": {
-    "size": 311,
-    "mtime_ns": 1780094051438310757,
-    "hash": "7be07892fc24d380da4a5c56d0452a5d87f6ed576f8fd14af85f05490b695576"
+    "size": 236,
+    "mtime_ns": 1780923081565185948,
+    "hash": "c4a1a8a0ec221776780b58f4e589a2f0b68d1ece19e5efa9e091482ef785e26d"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/ChatMessage/index.tsx": {
+    "size": 383,
+    "mtime_ns": 1780923081565185948,
+    "hash": "99c8eafefea0804d719eb4199b85f8642594bf846d3aba00c5bd5ba286fcad1d"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/List/index.tsx": {
-    "size": 265,
-    "mtime_ns": 1780094051471310704,
-    "hash": "444064377495689f3a46c98949a9b3efe147ad31d00b4b73f0efc3bc57f929ae"
+    "size": 187,
+    "mtime_ns": 1780923081566185946,
+    "hash": "ec04d0a3c049399bdbace726ffa45be208b4106524e3aa18e704aa1de2a37b45"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Switch/index.tsx": {
-    "size": 376,
-    "mtime_ns": 1780094051514310635,
-    "hash": "086486f6007c44ccd8153029fc3a4e32a23640a5a2648a1b160865c726da84b8"
+    "size": 303,
+    "mtime_ns": 1780923081568185940,
+    "hash": "59fdd31c32b809a09f39c5f6db4c649398ce158a2b76ba269c9bde7db78666e2"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItemText/index.tsx": {
-    "size": 305,
-    "mtime_ns": 1780094051480310690,
-    "hash": "bcd3ef8f6709f2eb61ee6ea2a9db259eae075e74e4836d84194bb5225b4ac34b"
+    "size": 226,
+    "mtime_ns": 1780923081567185943,
+    "hash": "fcbe95e668c3b9a55904d3dbc8ccd46e67cec8279c5931ee39f049d851203afd"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/EmptyState/index.tsx": {
-    "size": 1775,
-    "mtime_ns": 1780094051444310747,
-    "hash": "64aab20eeebe176a94fc9fe0df8c4bb40b9a1f665b72de7930f0a1801a9e1228"
+    "size": 322,
+    "mtime_ns": 1780923106566123229,
+    "hash": "79dc55872c547a6c60a180cb5c367fc48a12e8deb66694c60b654b94b41255ed"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Badge/index.tsx": {
-    "size": 269,
-    "mtime_ns": 1780094051409794089,
-    "hash": "c27666399951c6971ae3f23859ae7baad56e589b65ea2a63cae4b7f9a7324785"
+    "size": 190,
+    "mtime_ns": 1780923081565185948,
+    "hash": "c4a7bfbcfe920bad650acd4f4b22e54b6a50b67d4a957d18d97fdeae40918c54"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tabs/Stepper.tsx": {
-    "size": 365,
-    "mtime_ns": 1780094051524310619,
-    "hash": "ce6c8c856d9b8f210d2fa007721b93fb5af5521648157a49d08d2578f76eb6ab"
+    "size": 300,
+    "mtime_ns": 1780923081568185940,
+    "hash": "51bcbc28026d3f6cd1d9592e24c987e6e685e57dfa42d4813c7fb5c19cc1bf8d"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tabs/index.tsx": {
-    "size": 438,
-    "mtime_ns": 1780094051522329407,
-    "hash": "795908e991120fde1405439d058ff67a6c433c423182a522902d81dd28d48a33"
+    "size": 357,
+    "mtime_ns": 1780923081568185940,
+    "hash": "f6d8244128205a81f6ac445473be7c00a355a20c880a4bfe6f3a2c55b332bf63"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tabs/Pagination.tsx": {
-    "size": 390,
-    "mtime_ns": 1780094051522329407,
-    "hash": "a89efa503a203d2b02d366ce9c608b787ddd2dd5fa97a9c6c5d39a7126e13311"
+    "size": 325,
+    "mtime_ns": 1780923081568185940,
+    "hash": "8563e0bc94031c3bf78290ec70933b3f53dd0daf110add05f7558b22dbe3a41f"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItemBody/index.tsx": {
-    "size": 255,
-    "mtime_ns": 1780094051476310696,
-    "hash": "3258ee9a77a812cbfe44f66e294d014610d82c929cf32d956fdec34f6731369f"
+    "size": 161,
+    "mtime_ns": 1780923081566185946,
+    "hash": "c8b693569ddc33f084ac73b17b9c9470311b925f8a461e3edde324f9a029fe49"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItem/index.tsx": {
-    "size": 321,
-    "mtime_ns": 1780094051473310701,
-    "hash": "bcb2708108d2a721151fc70d657c26fab1744e1a8f2201ada7bed2e2e424ffe4"
+    "size": 220,
+    "mtime_ns": 1780923081566185946,
+    "hash": "13f88021de7f697a7ea12d829edbf539737fc2d3981f49fb85af699793f8ea7e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Heading/index.tsx": {
-    "size": 351,
-    "mtime_ns": 1780094051450310738,
-    "hash": "660af57d0d32ffa3ef06c0c5472f813f5d2ffa82d87d09afc745a9e6a8a2127d"
+    "size": 269,
+    "mtime_ns": 1780923081566185946,
+    "hash": "6f1b603fbfe840d87043d79a6605f93d5573677dad82dc912b7d24fff188c053"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Collapsible/index.tsx": {
-    "size": 770,
-    "mtime_ns": 1780094051432310767,
-    "hash": "8bccb7ef8d30811c3cc8ac189a9625165e6d657cf0d6bc31976e081a32914b3f"
+    "size": 634,
+    "mtime_ns": 1780923081565185948,
+    "hash": "5b8e923d325ac27c671974160f241e5eff7258d327aa19221edfa969d6e98460"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Box/index.tsx": {
-    "size": 427,
-    "mtime_ns": 1780094051412498967,
-    "hash": "17b771a506f92f799df22a7b7a3e29cf0fb2841b2248cc08a6781fb5875d6c10"
+    "size": 315,
+    "mtime_ns": 1780923081565185948,
+    "hash": "d2f70df0f99d1654d4c1ab95fc9d617eaa9ff3e2b882848b2dceee1041a4f178"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Card/index.tsx": {
-    "size": 975,
-    "mtime_ns": 1780094051422096265,
-    "hash": "ad4a0ae07c5ab2aa09ea79fcb3f701cbd2dd790667b3bdc3715b79b5d5e4755b"
+    "size": 741,
+    "mtime_ns": 1780923081565185948,
+    "hash": "27120054c933d9701f898aafa99763a020d1cbcc89d3a490e4a42397535823d8"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Grid/index.tsx": {
-    "size": 577,
-    "mtime_ns": 1780094051448310741,
-    "hash": "a84ca4c839783bddda191be60480e5f0daa6f88f793a4e734c9fa4e2277ca2ff"
+    "size": 415,
+    "mtime_ns": 1780923081566185946,
+    "hash": "79a57df870a6cb829ca24bdfecbee6537037b99902846c29ba3d4bcc8bca9274"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/DropdownMenu/index.tsx": {
-    "size": 1073,
-    "mtime_ns": 1780094051441310752,
-    "hash": "63d8703f6167ea520e7d0c5885f0fa6cc87047925babce44e3eb08956da11ba3"
+    "size": 847,
+    "mtime_ns": 1780923081566185946,
+    "hash": "5c01ef6399575bc606e187383a23fcdff0bd9c41856f87c96d2fdd85275a7561"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Input/index.tsx": {
-    "size": 171,
-    "mtime_ns": 1780094051461310720,
-    "hash": "1126c6ba0d36f27bc5dd8a0b6a7ea94d44e9a28045e2cae44ef82b6d3a1dd085"
+    "size": 216,
+    "mtime_ns": 1780923081566185946,
+    "hash": "ca2fd2b77abc4cef39fcaad1d99290447beb8a87e6e82e56849537bcd7110375"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/TabBar/index.tsx": {
-    "size": 482,
-    "mtime_ns": 1780094051516310632,
-    "hash": "644e2eb4eeefa143db29776b29765ada156586c1afea2f081fea160e9e69f41f"
+    "size": 365,
+    "mtime_ns": 1780923081568185940,
+    "hash": "b2fd4960bf253f5de211740290eff44b8d182a4be28708fe7be6a21503315e76"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/SearchInput/index.tsx": {
-    "size": 396,
-    "mtime_ns": 1780094051498310661,
-    "hash": "5993c7ce39a89cb77bc7ec47200b79dd667989075be4e3eb64d7ec15564b5c25"
+    "size": 295,
+    "mtime_ns": 1780923081567185943,
+    "hash": "f7483e885ee8b7eb45eeacd9f1adf0744694a63faccf5d0090be7e68c47a1a57"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Checkbox/index.tsx": {
-    "size": 382,
-    "mtime_ns": 1780094051423310781,
-    "hash": "aa28502086e0b43fc2f8f5f8e8da21090eece0b0ffefdaaaa635407ca059a0c6"
+    "size": 309,
+    "mtime_ns": 1780923081565185948,
+    "hash": "f0739284651a04314dcde7f545b53fa6688604c5f15cb9b43feed3f9849944db"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Button/index.tsx": {
-    "size": 280,
-    "mtime_ns": 1780094051417110980,
-    "hash": "e51dbfdd48b69e9e5f2d16a027224c7298ce526674e840da63ab7815377a4ac4"
+    "size": 193,
+    "mtime_ns": 1780923081565185948,
+    "hash": "90baf030ce3136b308ea03e7674b9be1f72ee2bb5e3e00a87b6973e56cb6d38f"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/ConversionCard/index.tsx": {
+    "size": 213,
+    "mtime_ns": 1780923081565185948,
+    "hash": "402d4c461ef48134190755f1450c128bd89e53c495abf2226e60b26011555809"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItemMeta/index.tsx": {
-    "size": 255,
-    "mtime_ns": 1780094051478310693,
-    "hash": "422754281f8e636a2f5169e177eb59ee580dff02294a31b3716b71b0978e3c4b"
+    "size": 161,
+    "mtime_ns": 1780923081566185946,
+    "hash": "116df3785d6a09814bc251c8e8b956221824efe4410d766e0d534caf4603d3a8"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ShortcutBar/index.tsx": {
-    "size": 252,
-    "mtime_ns": 1780094051503310653,
-    "hash": "14b51c3d56f2e99d9b7efa687313c5416c767453510ae0305eaabfb4cd155bef"
+    "size": 158,
+    "mtime_ns": 1780923081567185943,
+    "hash": "6b3f28171e0533cc2582cae6aeeded31fe6758cc4740b20268a3c4fb65db5fd7"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Link/index.tsx": {
-    "size": 308,
-    "mtime_ns": 1780094051468310709,
-    "hash": "1ade51671f062aa149b747781632c68b68d418b30480e076eb72f27d94d46f8f"
+    "size": 221,
+    "mtime_ns": 1780923081566185946,
+    "hash": "0c4f978a9dec3543e4b64778b14658018f777f2c1d1c4fa920203a8516638b11"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ShortcutHint/index.tsx": {
-    "size": 412,
-    "mtime_ns": 1780094051505310650,
-    "hash": "84928d77b1082c5cb937fb0baab2268afbd826c435cd2951927c05ec0acdfcc3"
+    "size": 279,
+    "mtime_ns": 1780923081567185943,
+    "hash": "e77d8a71148ddd3939f2e1fe16633a3af55b0bdbbab022e6f48c0f43a51489ec"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ProgressBar/index.tsx": {
-    "size": 375,
-    "mtime_ns": 1780094051492310670,
-    "hash": "d6736c363ceb20124ee7dc8b3a2d5ae5d047b7429838f8fa7984d1fcff90d505"
+    "size": 310,
+    "mtime_ns": 1780923081567185943,
+    "hash": "56b2778742a5652dc4e4cbc8b8e8dc82fae1e1649f5eae4f7f12fe82a337a967"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/SelectBox/index.tsx": {
-    "size": 559,
-    "mtime_ns": 1780094051502310654,
-    "hash": "7299bdc6b3571a41e0ab015176cdb46024e663689ebec46bc119837cccd19f6e"
+    "size": 483,
+    "mtime_ns": 1780923081567185943,
+    "hash": "f6703d81f9dbe08735d631d45b2947929c65f96b02803ced2befdd79e268378d"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Kbd/index.tsx": {
-    "size": 225,
-    "mtime_ns": 1780094051464310715,
-    "hash": "464d9424dd765c4703bdb7be7d4beb999ca973ab401e77f6b14ca5557b6bc1f2"
+    "size": 134,
+    "mtime_ns": 1780923081566185946,
+    "hash": "d91f4b123717f4fd48e13dff6d153af7b214d7c9eb1d714f26e94da79f8c191e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Icon/index.tsx": {
-    "size": 6763,
-    "mtime_ns": 1780094051458494601,
-    "hash": "c6206672cb37529af5933e4f79d9f9a8bdc120950f0fa86c5163f53cdf90eaf1"
+    "size": 781,
+    "mtime_ns": 1780923106169124191,
+    "hash": "a7ec52d92579487588916201a425bd23e102403f1ac4710e9ae17bfaf20981f6"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/SectionHeader/index.tsx": {
-    "size": 403,
-    "mtime_ns": 1780094051500310658,
-    "hash": "f5f994737a5787132a41b7a7f003a87db9fd38b95c831db3e7a03bff693be424"
+    "size": 302,
+    "mtime_ns": 1780923103731130123,
+    "hash": "e244730ac8b4b2ef9615d97cf949ae63e11748f9778ca02fb82e41afee3f12ce"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Alert/index.tsx": {
-    "size": 303,
-    "mtime_ns": 1780094051404310812,
-    "hash": "d1cfd098c577b9b6a0e85b955c989ea4909758ab8ff655c9b35c7514b59ac008"
+    "size": 225,
+    "mtime_ns": 1780923081564185950,
+    "hash": "92029ce3dfcfe2ff20838ac53b880809611970de9736dd4266d690312455cdc0"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/PropertiesPanel/index.tsx": {
+    "size": 275,
+    "mtime_ns": 1780923081567185943,
+    "hash": "fee01357da1893ab726b58fc9a70632c35f4dc1d7147ecc06879772c2855184a"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/CircularProgress/index.tsx": {
-    "size": 1021,
-    "mtime_ns": 1780094051427342850,
-    "hash": "334d12e85037bd1ba7915e1a760d66112abfcb40c0568df62c3039ed92645228"
+    "size": 870,
+    "mtime_ns": 1780923081565185948,
+    "hash": "a63c29cb843df1d9365d924e9679dc267c932cd4c0694cb7d11a1c24aabff6ac"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/CopyButton/index.tsx": {
-    "size": 315,
-    "mtime_ns": 1780094051434310764,
-    "hash": "4e22052f1e8c7b5cc9a9037d1d4ad227ae9501ea189d29ca4609f137980081ec"
+    "size": 250,
+    "mtime_ns": 1780923081565185948,
+    "hash": "6b4d436bc73eecae0ab5a1a10bd2e52326e79008e269ca4f5e4cd34a1360ecb7"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/PinInput/index.tsx": {
-    "size": 425,
-    "mtime_ns": 1780094051491475297,
-    "hash": "1c561996d2c73e8ca1ace8871d86b51c5177ac5c090a3f5598bef5eeccca3c35"
+    "size": 360,
+    "mtime_ns": 1780923081567185943,
+    "hash": "823ca60ab3829ae64177a9b83761ce969a920b68329c13e1e8fe6903a43e0b60"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tag/index.tsx": {
-    "size": 355,
-    "mtime_ns": 1780094051527144001,
-    "hash": "11cb753f0f820e23271ac8e86087ef2ab53b5d838fa6d4501305e3a657d4fa2e"
+    "size": 282,
+    "mtime_ns": 1780923081568185940,
+    "hash": "efdcf08a10ed017b94936eff48834929ba6295cd8769b43456c99467eb11f4bf"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/LoadingState/index.tsx": {
+    "size": 249,
+    "mtime_ns": 1780923081567185943,
+    "hash": "a079446fe335bc052ca2ae81ab6bb8e05a8d60598817d219324a7a0e7d0a6702"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItemActions/index.tsx": {
-    "size": 264,
-    "mtime_ns": 1780094051475310698,
-    "hash": "f7ae56dd67ccfba36ecf8ca24ff35857b96e69ba0cb513673f047affd1baac9f"
+    "size": 170,
+    "mtime_ns": 1780923081566185946,
+    "hash": "7a94659a7898972a902208ef4e2dd06d6020d4966369ee11f8e2e7e3dbad327d"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Avatar/index.tsx": {
-    "size": 741,
-    "mtime_ns": 1780094051407310807,
-    "hash": "83f4cafa76dd5b9e6cf426b1a3321ebc858ea77b4d1d2c9e75f3aa0e5e2b9e59"
+    "size": 629,
+    "mtime_ns": 1780923081564185950,
+    "hash": "7cd9a838eea321532152eff6c37621556137445bccf6eb44fb352c0d5845d86b"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Table/index.tsx": {
-    "size": 1464,
-    "mtime_ns": 1780094051519310627,
-    "hash": "3bdce670e34fc9179405343a71b47f0ea06723c2b8dd27c654db7e3b61657042"
+    "size": 1168,
+    "mtime_ns": 1780923081568185940,
+    "hash": "b96be3208bab0d5df5ba69f992a2249b8c2e15c1137209a95c407a6b3bb2ac63"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Text/VisuallyHidden.tsx": {
-    "size": 259,
-    "mtime_ns": 1780094051531310608,
-    "hash": "9089900e9a6a887cf75a408136741172487bde60fd6fc264bfe2223475510f27"
+    "size": 186,
+    "mtime_ns": 1780923081568185940,
+    "hash": "6a83d2976fd7dfd1c9ce7fffe15fe28bacfce96ffe75ad09dbfb7a61eab17b28"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Text/Portal.tsx": {
-    "size": 261,
-    "mtime_ns": 1780094051530310609,
-    "hash": "9f07e7636e6e717ef8245a045884a03b7c45576cbec7fc80c738311fd18660d3"
+    "size": 188,
+    "mtime_ns": 1780923081568185940,
+    "hash": "e85c069d7941939d885eb99072b4359221314ab2e48eb8a4866aefdaed1507db"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Text/index.tsx": {
-    "size": 531,
-    "mtime_ns": 1780094051529310611,
-    "hash": "81bb9ec43a34a2923e22eb2973e270a44ae3c75ce672ea38d007163f61bb3a93"
+    "size": 456,
+    "mtime_ns": 1780923081568185940,
+    "hash": "d1c6b75e9e61abb74afcfd5ee94d23e887a1404b6b21c9d9aabf8f0eda5fec7e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Text/AspectRatio.tsx": {
-    "size": 333,
-    "mtime_ns": 1780094051527310614,
-    "hash": "d71b0b76dc1831af098771fa0a4c761b46fd478a1cc8e17b275fd45da3881284"
+    "size": 247,
+    "mtime_ns": 1780923081568185940,
+    "hash": "b612e15e14a86bc61e815da33a94cd79704c61e0b684837c1274c3aad63c4b5d"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/MediaPreview/index.tsx": {
+    "size": 438,
+    "mtime_ns": 1780923081567185943,
+    "hash": "38632f96e36654fabbece7ae21994b0839170614ee742d7f2f26aa9a69c8ff4c"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Textarea/index.tsx": {
-    "size": 270,
-    "mtime_ns": 1780094051533310605,
-    "hash": "187f9e84ba7279273cb136af20ca3d63ae739124810b49e3576334d65a5457eb"
+    "size": 179,
+    "mtime_ns": 1780923081569185938,
+    "hash": "5bbb744d24e390e35ac0cd7b0d454f5aba53ba48d2aeb95e624b92fb8a7d20e2"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Code/index.tsx": {
-    "size": 509,
-    "mtime_ns": 1780094051429310772,
-    "hash": "a069472a884e33bda806e775ea81878d3dddbb537928c5955a0214c33ea2d3a8"
+    "size": 395,
+    "mtime_ns": 1780923081565185948,
+    "hash": "7ccdbf0798055abb8833e30e52e13b604a325730631099f495e44dd7d3221193"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/FileInput/index.tsx": {
-    "size": 435,
-    "mtime_ns": 1780094051446310744,
-    "hash": "502ce86cc6f1f58f222634a64b1efe4756da3ba2f7ed81290fda152698d876cc"
+    "size": 370,
+    "mtime_ns": 1780923081566185946,
+    "hash": "0eb6bd4ddd0a430797a51885c68833b832942b402ce71b195bd99f62bc9f0a24"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Toaster/store.ts": {
-    "size": 624,
-    "mtime_ns": 1780094051538310596,
-    "hash": "20e924baf995a0c630d5cc2c55d8600dc8860f0a3f26ac33fc4a207b87bcabb4"
+    "size": 575,
+    "mtime_ns": 1780923081569185938,
+    "hash": "6e23bfb920c16b8cb22bf2e03d7dc99ed72eb95b6e7c551f9fdfeac9f0a71398"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Toaster/index.tsx": {
-    "size": 290,
-    "mtime_ns": 1780094051536310600,
-    "hash": "272a749c4d5926df4c6f6ed2838d909e889a60f8943b66ee02a23aab4d5794c8"
+    "size": 187,
+    "mtime_ns": 1780923081569185938,
+    "hash": "379fd6089686e4503051e05eb1d1f04389b2475ac2d4c7d73d4a2b4526405331"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Skeleton/index.tsx": {
-    "size": 350,
-    "mtime_ns": 1780094051507310646,
-    "hash": "97690db5524587983b4fca434099ea12388a0adcc5d90f2824186467c76be3ed"
+    "size": 272,
+    "mtime_ns": 1780923081567185943,
+    "hash": "fe47c3704a1af84e28554cca41efba3f6f8e3cff2bfc25142f9ac0d71a6e52c8"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/hooks/useToolKeyActions.ts": {
-    "size": 729,
-    "mtime_ns": 1780094051545310585,
-    "hash": "d28bc1eac0b4a5f4fea5d1aaecc9e0bc8c2c5e431a1201e8a5421325cc149698"
+    "size": 424,
+    "mtime_ns": 1780923098155618757,
+    "hash": "fff1d721399e31dc4a962816d42f9ac21f6a5bcf9fc56b421c56e8009f9c3608"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/hooks/useTwoPanelNav.ts": {
-    "size": 2542,
-    "mtime_ns": 1780094051547310582,
-    "hash": "77a1df1e1e0a7d20d956dcd5502e26cad50099adedc28c5f4f95f26003882594"
+    "size": 1362,
+    "mtime_ns": 1780923101901134602,
+    "hash": "0a59fcedd2369a8f02cd8fa553ea884ecf00a5881e5d9bb282289a4c3459c7c2"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/hooks/useListNavigation.ts": {
-    "size": 618,
-    "mtime_ns": 1780094051543310589,
-    "hash": "b3120c2c3a2c2dbf6426e71f76980abf97f594420e54bc99afb97c3c23e08032"
+    "size": 762,
+    "mtime_ns": 1780923099785727287,
+    "hash": "56df07ffaccccf7501d75fe84fd5cbd605cbe7fa5b3392089244d760ded45732"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/hooks/useTranslation.ts": {
+    "size": 480,
+    "mtime_ns": 1780923103590130468,
+    "hash": "d1968bb4e507bb7444ab94441c9a5b73911127a74cce78d68a17782c8a8ed4b4"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/utils/scroll.ts": {
-    "size": 2608,
-    "mtime_ns": 1780094051554310571,
-    "hash": "238f16376519172937b4731d926b4ca7d93d7b400774ef720eabea6350618038"
+    "size": 2655,
+    "mtime_ns": 1780763275493000533,
+    "hash": "bf4e9edc55b504e42b0be040e01cf825a54abc73be4dadac6295ebb9dc4d4aad"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/scripts/de-react-proxies.mjs": {
+    "size": 2255,
+    "mtime_ns": 1780923072370729424,
+    "hash": "0112fec5f86bff8518f2fb46900b85f55df899291f43aeeb5434ebea6b4950b9"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/package.json": {
     "size": 236,
@@ -850,14 +1120,19 @@
     "hash": "7b751cb8fbbfca1b2e2b0b59c70a026dfdd792af1d29163170e9c292a1a11aeb"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/src/core-proxy.ts": {
-    "size": 11732,
-    "mtime_ns": 1780176871420989166,
-    "hash": "c029bfea9ec7998d4a72112ee103fa49bf89c2ec94596b3e3b6e8767687efe2b"
+    "size": 9079,
+    "mtime_ns": 1780860671697649790,
+    "hash": "d4529e6017a4df7d0db12f8477885444c49b7c71ae8b8b20d0fbf5357abf5e96"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/src/load-extension.ts": {
-    "size": 3470,
-    "mtime_ns": 1780094051390310834,
-    "hash": "8fa76b7bbe6d5b681c7e7cf9a88b9691e46083d95a86c2135331b76797804b98"
+    "size": 3849,
+    "mtime_ns": 1780955878984641177,
+    "hash": "8af9bac4fa6a0a922b85dd9b7a7263dc5d9ac386797dadbd39eb282300f152a7"
+  },
+  "/home/xava/Documents/nuxy/packages/extension-host/src/proxy-fs.ts": {
+    "size": 2070,
+    "mtime_ns": 1780683527039020608,
+    "hash": "7753041fb080d9f8706541014f497c4f96e78096cf6a76c44ae785b5b0d69be5"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/src/worker-log.ts": {
     "size": 1426,
@@ -865,9 +1140,89 @@
     "hash": "22fc9e12c4b0bcbb9707d1c38cb8cf1c5b947d84620fff60615d193c9e67cfa5"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/src/index.ts": {
-    "size": 2934,
-    "mtime_ns": 1780136531315956932,
-    "hash": "2ec3987e134b6c7c3f855c8489c593eca552e81496ff59070b5f22e1fd4827c0"
+    "size": 3228,
+    "mtime_ns": 1780264702053986172,
+    "hash": "f846f62d4e1111846f9a62d6035d4491f93c6b1ac159a8a996f22759c0daeb1b"
+  },
+  "/home/xava/Documents/nuxy/packages/extension-host/src/proxy-shell.ts": {
+    "size": 1838,
+    "mtime_ns": 1780683295429371579,
+    "hash": "fc20562162ce68db09b81d5951a5e2c9b9e89f86a531d9a0b7cfe9ecb85c6d60"
+  },
+  "/home/xava/Documents/nuxy/packages/extension-host/src/proxy-settings.ts": {
+    "size": 3142,
+    "mtime_ns": 1780860671697649790,
+    "hash": "f61d1e25eea07ca307f157158a8cacdb2423252fb6b530225082db677c3a91b7"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json": {
+    "size": 475,
+    "mtime_ns": 1780944873660971035,
+    "hash": "8e3e41d09b36b94e8986e5db36bff9a5dab38937ffb448349e541d55640c6134"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/vite.config.ts": {
+    "size": 5906,
+    "mtime_ns": 1780944975449038338,
+    "hash": "b9fc68ad3482b00a9a1ac95f7a2e23482f2709c34aba05ba007bd0e23bde0f18"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/package.json": {
+    "size": 260,
+    "mtime_ns": 1780944848677954948,
+    "hash": "6599d3d4e5c75da60465e4ca011407c6822e9f48c8c9aeb34fb451a309736c99"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/virtual.d.ts": {
+    "size": 337,
+    "mtime_ns": 1780945077106107954,
+    "hash": "e602101ddf05a5033a1ba33f60fda5c8132244a7d55e9c7e7a1d63dc2353b93d"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/MockPanel.ts": {
+    "size": 10434,
+    "mtime_ns": 1780945064108098935,
+    "hash": "37f0576c657c6594b1eb790390775d6ea59abf4c1ba7e722d10e0b6dcb298cff"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/main.ts": {
+    "size": 203,
+    "mtime_ns": 1780944994983051543,
+    "hash": "3e78c9e06b1a93d9c0141038060d75660a6b5fd16433cf150d67398bc0904fcd"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/DevShell.ts": {
+    "size": 3685,
+    "mtime_ns": 1780945017080066584,
+    "hash": "73827565a71917adae957e143d89b0c9d10edd12318c5bbeb5c063da281c2f53"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/mock-core.ts": {
+    "size": 2834,
+    "mtime_ns": 1780573153814009687,
+    "hash": "ec95cfeb59bab6b2a05bc21220b70cb2557de6fcc6506da523a2235f3484ed74"
+  },
+  "/home/xava/Documents/nuxy/scripts/create-ext.mjs": {
+    "size": 6794,
+    "mtime_ns": 1780573154450006425,
+    "hash": "addfb91df308a8e110ea30ebab6abac35bfd9d8068208b1d0e526a5325c94e87"
+  },
+  "/home/xava/Documents/nuxy/scripts/doctor.mjs": {
+    "size": 1884,
+    "mtime_ns": 1780945558965336029,
+    "hash": "05cac707399e7e3d4448a1137cd02228d6b4a5d0839181d9629067207736ed94"
+  },
+  "/home/xava/Documents/nuxy/scripts/dev-ext.mjs": {
+    "size": 1751,
+    "mtime_ns": 1780440302792320759,
+    "hash": "555fa5059fb693b477653a51290bbe302f6b2bf8539a32a1b8731f1bd2dfabb6"
+  },
+  "/home/xava/Documents/nuxy/website/package.json": {
+    "size": 229,
+    "mtime_ns": 1780487845150322184,
+    "hash": "201970b2ca2168bcb7b26836dc8f9c3181f2f8a59c79a68cd17109c23280fd27"
+  },
+  "/home/xava/Documents/nuxy/website/docs/.vitepress/config.ts": {
+    "size": 3206,
+    "mtime_ns": 1780487858651063092,
+    "hash": "a3c510d09975818bab4a3acfdc33b377cd7b23ae289261ea2e02d1f690a95e53"
+  },
+  "/home/xava/Documents/nuxy/scratch/test-cleanup.js": {
+    "size": 1493,
+    "mtime_ns": 1780954717931616948,
+    "hash": "ff67bf005212c99b9426be106842428cd33f6350b0bdd663e822ad9c5399c42e"
   },
   "/home/xava/Documents/nuxy/scratch/robust_reset_shell.js": {
     "size": 1654,
@@ -879,15 +1234,15 @@
     "mtime_ns": 1780243497598900318,
     "hash": "b1ab40b243039024a684784c1adec5d302e36a6972f9d132c3785530c2622009"
   },
+  "/home/xava/Documents/nuxy/scratch/test-angrysearch-dom.js": {
+    "size": 2801,
+    "mtime_ns": 1780954613633266142,
+    "hash": "faf53cfa3c75fad8c4682a03af5b0250bf944e2d144dcf40b1a0f6a621d53e41"
+  },
   "/home/xava/Documents/nuxy/scratch/scan-extensions.js": {
     "size": 12074,
     "mtime_ns": 1780154802721440521,
     "hash": "3c3130f3a10cdb0a50b4d8e2cce314ea87e3ac6829560f9ea02a7b1a8ad8631b"
-  },
-  "/home/xava/Documents/nuxy/scratch/test_transpile.js": {
-    "size": 609,
-    "mtime_ns": 1780175651066553118,
-    "hash": "780dda57669bc407f6810c6477a96a9e0b3ff698e66a49383bee5c1ea9d40eb2"
   },
   "/home/xava/Documents/nuxy/scratch/scan-report.json": {
     "size": 21587,
@@ -899,40 +1254,50 @@
     "mtime_ns": 1780094051568310548,
     "hash": "b74a5e59be942e4d24c7cbce58143c3762cc969ac18ffe41df6b177a8a8e874c"
   },
+  "/home/xava/Documents/nuxy/scratch/screenshot.js": {
+    "size": 4033,
+    "mtime_ns": 1780955878985641178,
+    "hash": "3dc7cbbb5861837bd62515a17a7fe7713bcc951ef68d461039bd262598fea842"
+  },
+  "/home/xava/Documents/nuxy/extensions/e2e-helpers.ts": {
+    "size": 5887,
+    "mtime_ns": 1781038455718989148,
+    "hash": "92b2cb2f6efff72fa6a69c9cec2b1ba8851fbe46a697637b6acde2c17e2be315"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell-i18n.ts": {
+    "size": 2212,
+    "mtime_ns": 1780943380920082137,
+    "hash": "5b7e4ab25610dd69592a0e325e0c9c60830fc1ec9b04c67e0845fa90febfbc4e"
+  },
+  "/home/xava/Documents/nuxy/extensions/two-panel-nav.ts": {
+    "size": 7128,
+    "mtime_ns": 1780941758335545554,
+    "hash": "1ae63112b1f5685cac460118e7ff7a625c7ec84e0e39b0962afa766ae8946dda"
+  },
   "/home/xava/Documents/nuxy/extensions/global.d.ts": {
-    "size": 1198,
-    "mtime_ns": 1779833784400154089,
-    "hash": "615eb3fa00db61ce914c50631eb0f88f81b3dd330a2e2cc797ecce53d9fd7763"
+    "size": 1436,
+    "mtime_ns": 1780955878982208305,
+    "hash": "0b8cc2cee0cd294c4e59a1fc848e14e3a40cf73359a49780b5152c49195f8162"
   },
   "/home/xava/Documents/nuxy/extensions/tsconfig.json": {
-    "size": 1089,
-    "mtime_ns": 1780094050700288158,
-    "hash": "8589862474a2a612f9596598f6fb5607a7dd2a9072ab5cd618d1c42f2249e29c"
-  },
-  "/home/xava/Documents/nuxy/extensions/theme-ocean/theme.json": {
-    "size": 1021,
-    "mtime_ns": 1779547940736381867,
-    "hash": "09f50c05ea96627fbcc891edabe27ec881b507193b3152972023ba852badf468"
-  },
-  "/home/xava/Documents/nuxy/extensions/theme-ocean/manifest.json": {
-    "size": 166,
-    "mtime_ns": 1779304792113067341,
-    "hash": "f1c1ff9af71a2c448c5fe8fa0e87f7cda0d609d78cf0ee5d48d99234421ab7ef"
+    "size": 1056,
+    "mtime_ns": 1780955878982641176,
+    "hash": "f1788dab0c0daf0852999047a3cd8a4eea09f4b4aeccfacbddb283cf772ecf1b"
   },
   "/home/xava/Documents/nuxy/extensions/icons-default/icons.json": {
-    "size": 15830,
-    "mtime_ns": 1779812715172262800,
-    "hash": "8caf059ef2207f39854101b585c1ed024d646177eda981f89a76f0cb086b5874"
+    "size": 47513,
+    "mtime_ns": 1780682285219764303,
+    "hash": "42993d1eae1d4c4f115b231db5c38a313dcb6f7f3bddfbf775a9ecaea36f00ca"
   },
   "/home/xava/Documents/nuxy/extensions/icons-default/manifest.json": {
     "size": 173,
     "mtime_ns": 1779304793152065982,
     "hash": "232f3587953458f5948d8c4800d2ab1d02e52cb1df6026d194a5dabdb0df2a59"
   },
-  "/home/xava/Documents/nuxy/extensions/ui-default/frontend.js": {
-    "size": 128034,
-    "mtime_ns": 1780253600842392978,
-    "hash": "fb5b0ffb84dcf10fb99a0eca9ff81cd3d5110cdf511e346529fd5da256c72fb8"
+  "/home/xava/Documents/nuxy/extensions/icons-default/package.json": {
+    "size": 81,
+    "mtime_ns": 1780758116717578275,
+    "hash": "4dcec54d68e0c5faca2ed388bb8fedf5a571abd2acd26f1034e69a31c25bc295"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/manifest.json": {
     "size": 188,
@@ -940,364 +1305,769 @@
     "hash": "b0c3865e1a13a673c5f58df3dd746aadbe49b5a7f0b9dc29c7eee2d12b0d3d37"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/vite.config.ts": {
-    "size": 2309,
-    "mtime_ns": 1780094051253824144,
-    "hash": "f51b0c51815d2be35977fa6f6f7daa81ccfcc8371f1cd5df42cc830e9799441b"
+    "size": 1958,
+    "mtime_ns": 1780955878984641177,
+    "hash": "8430dda964a94bc653e6a64ddd17163541b78dac0a804dc339f3a2100dd4cece"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/package.json": {
-    "size": 362,
-    "mtime_ns": 1780090412885422701,
-    "hash": "fbb84ee8e7429c7e643d0e7d084617292fdef793b22982831127174d56c61e07"
+    "size": 317,
+    "mtime_ns": 1780944835981946847,
+    "hash": "56e86ae5242807d9348e3d2c235cd8d7ed75cc1d8157505dbe72032e711523af"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/h.ts": {
+    "size": 75,
+    "mtime_ns": 1780926468971763778,
+    "hash": "1e792f4260c1d224075f742e9e756ba165771d3d664507123a8c1cc83aa26c55"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/entry.ts": {
-    "size": 828,
-    "mtime_ns": 1780088753007391047,
-    "hash": "42282a267097fc2229bc13ca9ba27290410296f65c565044422aee8a903e366a"
+    "size": 511,
+    "mtime_ns": 1780955878984641177,
+    "hash": "388fd0a278976cce799c6fea875891ee199425faf51bbd8d6d878ccb07634243"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/index.tsx": {
-    "size": 8764,
-    "mtime_ns": 1780176871420210195,
-    "hash": "0f29ad55bfd76a8539a61eca32d7de7957d79a6d3e4df8b72bfa6a83fd765889"
+    "size": 8558,
+    "mtime_ns": 1780913833109455407,
+    "hash": "67dbbe8e01acc0bbbab99c8a0a1ef3a5db71ffce0aa90c9e5a14329e6cc1546e"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/host.ts": {
+    "size": 935,
+    "mtime_ns": 1780922498192793190,
+    "hash": "d8d03d94c94aa3fab93514080b14853a35f0bf16f458e098a73ffd0a7fcbeb07"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/types.ts": {
+    "size": 169,
+    "mtime_ns": 1780922498192793190,
+    "hash": "2420ccac8e8e82680b2ca47deb5f627396e7a118bca27cf6faca63a54d5be377"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Label/index.tsx": {
-    "size": 845,
-    "mtime_ns": 1780094050975311501,
-    "hash": "c695ea1a0538426b659227ac66582ab9d93d30d051e1d1193a0f526c8b74f5d3"
+    "size": 731,
+    "mtime_ns": 1780922498188793181,
+    "hash": "a10c646b2cff74792671c2ebc08eda87f45dc1e964313081800eaf81dd774ded"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Label/nuxy-label.ts": {
+    "size": 1316,
+    "mtime_ns": 1780999218676915379,
+    "hash": "8e50ac5d30ea389b0d5d102b13f567b6ed1ab855b76deef1a5260a32af5908bb"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/IconButton/index.tsx": {
-    "size": 660,
-    "mtime_ns": 1780094050955311533,
-    "hash": "4488bfe5f5348a8d64e58c420d47ba3e4b5f959b27220fa0a6ee9ac4811731e3"
+    "size": 622,
+    "mtime_ns": 1780922498188793181,
+    "hash": "de717f68bfa38022e104f8bc660e291af614821bc408b881f30cb88e1a651138"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/IconButton/nuxy-icon-button.ts": {
+    "size": 1525,
+    "mtime_ns": 1780955878983346977,
+    "hash": "b7fb041ec9b2c876fb0a25dcfee951b57039aa9c4d4c1b313395900a77025573"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Modal/nuxy-alert-dialog.ts": {
+    "size": 4769,
+    "mtime_ns": 1780955878983641177,
+    "hash": "4a67e7d3f069683c65c25d62e68c9dc45c39bbf38c1d8288ba9d10ad8e6350a3"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Modal/index.tsx": {
-    "size": 2074,
-    "mtime_ns": 1780094051016042940,
-    "hash": "49feb79dd36958bdb79dec88bb0c7a4ea8d7be6e8ef9c85a7c3120a68eec55ed"
+    "size": 929,
+    "mtime_ns": 1780922527265859503,
+    "hash": "0eb02a866f1913a61b7d2276873f1430fd2ce4d105ba580ca33f08379e05421c"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Modal/nuxy-modal.ts": {
+    "size": 6698,
+    "mtime_ns": 1780955878983641177,
+    "hash": "87e1ce16cfd607de9d031af0ddc6cf542ab38256617fbecaba68e453457336e5"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Modal/AlertDialog.tsx": {
-    "size": 1247,
-    "mtime_ns": 1780094051006311451,
-    "hash": "cabcb0fee76f4dad2d6da755274f53c25268e1e5675448cc7755aa90ec06d48a"
+    "size": 1245,
+    "mtime_ns": 1780922530711867363,
+    "hash": "d790c035309c230a9625cedfcc8cd03bd0467ca41e8a00546198a18d2dbad7c6"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/TwoPanel/index.tsx": {
-    "size": 542,
-    "mtime_ns": 1780088745914699999,
-    "hash": "c756174ab18150cc36edd7e4def753125b1986620c156ee01342bbfaedc26606"
+    "size": 438,
+    "mtime_ns": 1780922498192793190,
+    "hash": "f641de8b1150f9f80de28abc278dad208d2c75bb2b06c778cf5804abf35b6faa"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/TwoPanel/nuxy-two-panel.ts": {
+    "size": 1305,
+    "mtime_ns": 1780999241862762440,
+    "hash": "49f3b358f72afa436957440171a573881d07e426b25acd85c4d0ae57cd4fa2ee"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/RadioGroup/nuxy-radio-group.ts": {
+    "size": 3092,
+    "mtime_ns": 1780955905238661781,
+    "hash": "174e4b7333c9686785a0dacfc120a476d8dc9716927a2d8d444584b289944e7b"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/RadioGroup/index.tsx": {
-    "size": 2148,
-    "mtime_ns": 1780094051062311361,
-    "hash": "49aee6ec63d0a3165410d76635e26e4b11c8b7b5f75fe0e05e49fa375a853171"
+    "size": 1177,
+    "mtime_ns": 1780922562411939668,
+    "hash": "781852ff8232f1336780d44dcb9a275139484212ea0bd8b189907878c93efbbc"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Slider/nuxy-slider.ts": {
+    "size": 3132,
+    "mtime_ns": 1780955885142589844,
+    "hash": "d175911705f439305f183ba015a3e60a532364d4a0edc2f30e26662dc4963d93"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Slider/index.tsx": {
-    "size": 1621,
-    "mtime_ns": 1780088745913989418,
-    "hash": "0103efd3585f9bed86b2e2e9d21111a3bba212d9d114424dbcfdea925255b422"
+    "size": 1195,
+    "mtime_ns": 1780922534303875556,
+    "hash": "85bea55019e61f52674d45a902e5902d6844becce3c22b79c2be35648249881d"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ItemLeading/nuxy-item-leading.ts": {
+    "size": 743,
+    "mtime_ns": 1780999199147046454,
+    "hash": "236c08494d77d53e59beec13542833fbca54d2b2557aa7f8179e9957145b9471"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ItemLeading/index.tsx": {
-    "size": 520,
-    "mtime_ns": 1780094050963311520,
-    "hash": "5f8164413d19fc885dc4055a9aa44cad592545d0eb84239831419511fa582fd0"
+    "size": 466,
+    "mtime_ns": 1780922498188793181,
+    "hash": "38c388693f1b2a79bd1dc563a04f3a3c47d2c71866653b239df3aa635d613e13"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ScrollArea/nuxy-scroll-area.ts": {
+    "size": 1239,
+    "mtime_ns": 1780999212238958355,
+    "hash": "97df879c8b8f0f8226ac20b262023fdc70cd2592449fe647db589d093433329e"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ScrollArea/index.tsx": {
-    "size": 1075,
-    "mtime_ns": 1780094051070444978,
-    "hash": "905a561c251b15ed3f81afdce7ab78e242811f8fa23faebec1dd9e25fd34e3c9"
+    "size": 893,
+    "mtime_ns": 1780922550811913210,
+    "hash": "1ed422f539dfa91937c29f3cb6d5ee0e6986d0db105d1032817256381718d160"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tooltip/nuxy-tooltip.ts": {
+    "size": 1488,
+    "mtime_ns": 1780955878984641177,
+    "hash": "6c78d1a6a2786eee293185689cf411559b6b28fdfa751d7f74a109d51b60f53c"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tooltip/index.tsx": {
-    "size": 877,
-    "mtime_ns": 1780088745914661239,
-    "hash": "c86a0027f46075a298efc77ccd09409025f2e02b294eb7a5988ba2bf4a806c95"
+    "size": 579,
+    "mtime_ns": 1780922573661965332,
+    "hash": "604f464a483b5e17cd58121ad8a479ca69353bb5208983c39b949ebae142be3b"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/NumberInput/nuxy-number-input.ts": {
+    "size": 3444,
+    "mtime_ns": 1780955878983641177,
+    "hash": "3361eca8c3872799362c1633150e95dc1d563e165bfc1797f531558f3f8278b9"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/NumberInput/index.tsx": {
-    "size": 1682,
-    "mtime_ns": 1780088745913424438,
-    "hash": "a3ee790b9cdb834385da1425d310bcf042836f6cfe64eb7d2b2758525b866e2d"
+    "size": 1132,
+    "mtime_ns": 1780922540186888975,
+    "hash": "b97a566fcede54cdce5c14c8b39fd875a8284dc85ca5f9da26f6d57e802e06e4"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/WizardSection/nuxy-wizard-section.ts": {
+    "size": 1110,
+    "mtime_ns": 1780955878984641177,
+    "hash": "d468ab63ddce5eb0c4b9ff10bcd1b6caeff30202e921b6ddb8e3e5de65f2be03"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/WizardSection/index.tsx": {
-    "size": 405,
-    "mtime_ns": 1780176871420210195,
-    "hash": "008653a532e9318e8c8c0eafb6d19bff30dadc0fda7c0c265844c1b0c2e80c5d"
+    "size": 419,
+    "mtime_ns": 1780922498192793190,
+    "hash": "fb75a7d91188755c976eeba4eb1ed1a8d0900368f0155024774da6dcf3755c31"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Breadcrumb/nuxy-breadcrumb.ts": {
+    "size": 2145,
+    "mtime_ns": 1780955878982641176,
+    "hash": "c14e08a966c8b33612922135ecfcbbab71a71987f6e21c09c02da249c85727e1"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Breadcrumb/index.tsx": {
-    "size": 1754,
-    "mtime_ns": 1780094050836311724,
-    "hash": "046e7e148fccc20f89bdc8a5851f3551ca44bc06bac98d019278586198200ee9"
+    "size": 852,
+    "mtime_ns": 1780922564797945110,
+    "hash": "5e29286b6c73fbab9429d8e8d9e1c6ca92d5046309cd8d1c3b047b630b31469f"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Callout/nuxy-callout.ts": {
+    "size": 3234,
+    "mtime_ns": 1780955878982641176,
+    "hash": "b3ae45a8c127c8242d835f90ef0bbd39527662d080a6568c4f11649a4c70b529"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Callout/index.tsx": {
-    "size": 2331,
-    "mtime_ns": 1780094050845311709,
-    "hash": "c9d283c20b3bf46227d3a0b4e307d5cb600beafc8e21b96e9fab0cec2b2a773f"
+    "size": 656,
+    "mtime_ns": 1780922498179793160,
+    "hash": "956d035233864c9aa1f869d91e576e6c4ff9a5a110d8978004b281cdac62beb0"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Stack/nuxy-stack.ts": {
+    "size": 1089,
+    "mtime_ns": 1780999158371327135,
+    "hash": "fc826adc7607bd61580bd6477385faa124bd6b030301490d848fd83167700658"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Stack/index.tsx": {
-    "size": 1001,
-    "mtime_ns": 1780094051126311258,
-    "hash": "d3331032486728e4ea3ec05cdb24c8ca6062c3d84e23e799d205ec4e9b5a34f7"
+    "size": 823,
+    "mtime_ns": 1780922498190793185,
+    "hash": "4be41e431b4983311885087c63fef56df426ba8d02a4fe1e46731ddd40217816"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Spinner/nuxy-spinner.ts": {
+    "size": 1743,
+    "mtime_ns": 1780955878983641177,
+    "hash": "3839fde7eee09b3482ccf8f3714d6370953c09b16fd0dc909908ea6fd02478ce"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Spinner/index.tsx": {
-    "size": 1005,
-    "mtime_ns": 1780094051119734522,
-    "hash": "8065732517c83a655cc18aee497fe248cedd3c3225bd54a182ed06d09c78da9c"
+    "size": 433,
+    "mtime_ns": 1780922408704589075,
+    "hash": "1d0a9fa2dada5f3354b264e66056b32f37010b3b0b541cbf08cacec3caa65e09"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MarkdownText/nuxy-markdown-text.ts": {
+    "size": 1186,
+    "mtime_ns": 1780999291485444311,
+    "hash": "a3fd29d1df18e1ef4b2b11c1322b19365e9a2da5ab24a8d4550516e3d0e23718"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MarkdownText/index.tsx": {
-    "size": 10328,
-    "mtime_ns": 1780180072043041535,
-    "hash": "0fe43b3ce171db25139c55415d579a3f097842122c7d1aaf07d82c9f8d4979b3"
+    "size": 293,
+    "mtime_ns": 1780922408702589070,
+    "hash": "ae72b41eaee3eaec07f902314700cc2b885854e3f0ab8cf0ba4127af9b6cd0de"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MarkdownText/markdown.ts": {
+    "size": 6895,
+    "mtime_ns": 1780918976153733723,
+    "hash": "b35eec543914c6a37d7fff3c0757fbc4cfbc6bf74b230b391e6afffbcb5ad860"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MarkdownText/render-markdown.ts": {
+    "size": 6696,
+    "mtime_ns": 1780919002552795252,
+    "hash": "78dc902c50b8736484de630198b120092fd7498ccbb92700d63356317d638886"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Divider/index.tsx": {
-    "size": 813,
-    "mtime_ns": 1780094050898213636,
-    "hash": "0436a21cba78a29da92c583389d20408a5b5a94d7c331b081b48758584429cc8"
+    "size": 404,
+    "mtime_ns": 1780922498180793163,
+    "hash": "3db246a6cbeb8e8bc29f58c3941956ffb2af39bd215edc08d3da9e092065add2"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Divider/nuxy-divider.ts": {
+    "size": 1194,
+    "mtime_ns": 1780955878983346977,
+    "hash": "48c1eeea7c1ab4562311a70cb16018e00bc02fb0d41e6feb4437ab8eb76accc0"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ChatMessage/index.tsx": {
-    "size": 930,
-    "mtime_ns": 1780176871419256814,
-    "hash": "9fb287f6975d842010162f85af1af949e736ad84ff679cb91d0107eee3abef3e"
+    "size": 749,
+    "mtime_ns": 1780922408688589038,
+    "hash": "562442b5f8073d6d869274f8acb90262083e621297b1443132b45f5af754d339"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ChatMessage/nuxy-chat-message.ts": {
+    "size": 1299,
+    "mtime_ns": 1780955878982641176,
+    "hash": "55a5b36f0c8c6c9e01bfc1adc0ce56c0d3cc8a191da56cda1d9ea2ef2596980d"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/List/index.tsx": {
-    "size": 502,
-    "mtime_ns": 1780088745913027677,
-    "hash": "0db37468cb7830cfceb2debbab936459405e7c98557f14a4d1f03cffeb3ff005"
+    "size": 374,
+    "mtime_ns": 1780922498188793181,
+    "hash": "8e4234dd6531b8fe32c22dd7b75b7a409e2c60a47b0936d8b2513b1d629b312a"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/List/nuxy-list.ts": {
+    "size": 842,
+    "mtime_ns": 1780999165831275050,
+    "hash": "218f3ade14d5a935652b41d9de58ddc00b4de80fc1de78b93375089de7a5627a"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Switch/index.tsx": {
-    "size": 1350,
-    "mtime_ns": 1780094051132311248,
-    "hash": "ac760b99add84ff34692d0a2d197c96ceb9e58fc2faa8c256f0ba09eae8e5cc6"
+    "size": 1012,
+    "mtime_ns": 1780922523541063188,
+    "hash": "9c6bc092cc5cb0d68947b8fcbcae9330299b3598f203d16922a18e96c87d2974"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Switch/nuxy-switch.ts": {
+    "size": 2105,
+    "mtime_ns": 1780955878983641177,
+    "hash": "4ded1b7e40ed477221a5691e1961c95d20775d37bf9ae534174c67be6adfebf0"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemText/index.tsx": {
-    "size": 561,
-    "mtime_ns": 1780088745913281268,
-    "hash": "e304b68cfb93801715fd390249861d863431a580b86332965e8214f5c51f6a7e"
+    "size": 409,
+    "mtime_ns": 1780922498189793183,
+    "hash": "786b114aec6b82b9930df62a2db41af5bc583aae623aa1fbd0a32412622b9304"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemText/nuxy-list-item-text.ts": {
+    "size": 833,
+    "mtime_ns": 1780999196213066329,
+    "hash": "02ccca76f5a8977bb8bdb4d00513f12feead623389bda32908cc19f10f9bd193"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/EmptyState/nuxy-empty-state.ts": {
+    "size": 1342,
+    "mtime_ns": 1780955878983346977,
+    "hash": "33e85c4f864f12c67b85e99c570298f14b27a8658c545adf8f1c6f005350eaac"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/EmptyState/index.tsx": {
-    "size": 898,
-    "mtime_ns": 1780088745912467017,
-    "hash": "0d3e63c2ebfd470dc06b9d770d39beb224e46cef052e13999269a0d38625a0a4"
+    "size": 1640,
+    "mtime_ns": 1780922649837139080,
+    "hash": "9c997faaa52a28091308ab47318c411791a3aeaa7f60e19145443f55dad52275"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Badge/nuxy-badge.ts": {
+    "size": 660,
+    "mtime_ns": 1780999154430354787,
+    "hash": "4454478dc6bbf0e9292798c299b32b77331e599d3f3ef191340b58bc60836bd8"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Badge/index.tsx": {
-    "size": 412,
-    "mtime_ns": 1780088745911793096,
-    "hash": "7d11fcbf7df10d3daca4b7e1a3af3a6f31f04ab30603152767205b527b998d6c"
+    "size": 337,
+    "mtime_ns": 1780922498179793160,
+    "hash": "dbb46d6c6fc126c9033cd4695b03f0fd94d95a0bf55db7efd0aa018547d838b6"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/nuxy-stepper.ts": {
+    "size": 2015,
+    "mtime_ns": 1780955878984641177,
+    "hash": "ef7fe8f88aceff06b5012e676312bd07e9aec3ca890cff9538a148e4ae4a785e"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/nuxy-tabs.ts": {
+    "size": 3048,
+    "mtime_ns": 1780955878984641177,
+    "hash": "5f9eb1ac21ef8c34530c6c545a2859f587826a0c98f0c2c534f95b3b86c648a7"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/Stepper.tsx": {
-    "size": 1618,
-    "mtime_ns": 1780094051169311189,
-    "hash": "c9896c545358a302057cc706b5d0e8047a01e93cb2f4769901d2eec0dfe80ab6"
+    "size": 413,
+    "mtime_ns": 1780922408704589075,
+    "hash": "3f87fdc5f851edff31a31086bca01615af4d082e468d657f558da4b509956df4"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/index.tsx": {
-    "size": 1842,
-    "mtime_ns": 1780094051162311200,
-    "hash": "89c60d5be1734b0f3070d2b42d6bbb1c9c12db23feee2a508c797c3fc9af695b"
+    "size": 1110,
+    "mtime_ns": 1780922558518930789,
+    "hash": "6b45eb96033ac2c93de1cbe0c41256498d2af01daa5d9834e467eacb4eb83e27"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/Pagination.tsx": {
-    "size": 2859,
-    "mtime_ns": 1780094051165311196,
-    "hash": "afae25de8cd405d198a4423d17a51c4c2d17e4cce31b9059a56c1a5cdcd1a346"
+    "size": 746,
+    "mtime_ns": 1780922560473935248,
+    "hash": "0b76241d4a1b254a20c19034c5073f1ba9c9bca04bfc1f4d131c7d26027078a2"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/nuxy-pagination.ts": {
+    "size": 3440,
+    "mtime_ns": 1780955878983641177,
+    "hash": "ca6cd19693d67652cc2087828d486ca2214deeb710cef3a4fa0c1337512c5797"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemBody/index.tsx": {
-    "size": 322,
-    "mtime_ns": 1780088745913180977,
-    "hash": "2d59c499d79102e67dc186b0ba506ad070d81d3d604c68bab0e8328ccb90856e"
+    "size": 290,
+    "mtime_ns": 1780922408702589070,
+    "hash": "8dafb0d79d371771450b06d49e8c5b8dd18914ddef3c8279609c9bf9b92a4cb1"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemBody/nuxy-list-item-body.ts": {
+    "size": 545,
+    "mtime_ns": 1780999190836480882,
+    "hash": "62305368d896b7eca882efe456bedca8cc7241017899c6ae01ac2a53bdd084be"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItem/index.tsx": {
-    "size": 1215,
-    "mtime_ns": 1780088745913078267,
-    "hash": "3309bfbe3e40768526dc13a94fa399ab543a9addc1713d07604b835596bb53a2"
+    "size": 844,
+    "mtime_ns": 1780922498188793181,
+    "hash": "09e38e1b964d2127874589190de96dbf4b04005cb0067bf1d1da678ebe8f3bc5"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItem/nuxy-list-item.ts": {
+    "size": 956,
+    "mtime_ns": 1780999202952020751,
+    "hash": "99101b5c460c0b987c259c0ac37aa7e5810ecd170e4c37f9d157fbc938856e4c"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Heading/nuxy-heading.ts": {
+    "size": 1189,
+    "mtime_ns": 1780955878983346977,
+    "hash": "fdd6be9d7c68e78562c7b9d7df94936cac9a694ba17af671ee3f78b1200ceeec"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Heading/index.tsx": {
-    "size": 464,
-    "mtime_ns": 1780088745912631797,
-    "hash": "bb6268dc3c7f908544ebda0c4a276d4fd989356fd33fa89df12c809a4e1704e4"
+    "size": 466,
+    "mtime_ns": 1780922498187793178,
+    "hash": "e40ac9644c5f4b4dc558acd5f2384629f03c299dbcd6aa362d7c19a9852ff92d"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Collapsible/nuxy-accordion.ts": {
+    "size": 476,
+    "mtime_ns": 1780999174292216381,
+    "hash": "051fa27efedb1f9d557379d59acd4a7dfe705737c72b6326e2bb3068a2340d61"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Collapsible/index.tsx": {
-    "size": 2605,
-    "mtime_ns": 1780094050884654336,
-    "hash": "8a4f3e5abd2d8a3bfab07723efe3fd076de608eb2e9674459b3c6e036e39cc21"
+    "size": 1863,
+    "mtime_ns": 1780922588123346075,
+    "hash": "a3a77a43e243234266b8dd66b66eb163ddc5e454f036d39d2bb2c88e3abe8f7c"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Collapsible/nuxy-collapsible.ts": {
+    "size": 2974,
+    "mtime_ns": 1780955878983346977,
+    "hash": "32b6487a6a9eead3c6824a92d1dafdaee714ef179fe2a1e902b0f5832e786f6e"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Box/nuxy-box.ts": {
+    "size": 1436,
+    "mtime_ns": 1780999162962295041,
+    "hash": "3b4ff234b1c63320919446b76724515c1b755c174775fa8bfea81e061b1f7554"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Box/index.tsx": {
-    "size": 805,
-    "mtime_ns": 1780094050830311733,
-    "hash": "bb18ea34e01d8971daacc7b40dbe85a11770859e77f060b1aae352b9eb780e46"
+    "size": 1470,
+    "mtime_ns": 1780922588121998314,
+    "hash": "442c67c489cecc440f92280dae88171394f6e9f7b033602b3e5a8626c91e0a03"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Card/nuxy-card.ts": {
+    "size": 1665,
+    "mtime_ns": 1780999208311984681,
+    "hash": "d15ef4b58469480a9e97b1c0eee401f01e01aafe8df9f2681a05181993afa507"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Card/index.tsx": {
-    "size": 1278,
-    "mtime_ns": 1780094050851311700,
-    "hash": "2fb0d20287208d639e2e1427d98f3a432deacccd86d2ace6495787f4b821edb1"
+    "size": 1042,
+    "mtime_ns": 1780922498180793163,
+    "hash": "dc607a51388603cec5b68698a154c3dead77882c4d82b59cc8988be4ee6d10a1"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Grid/nuxy-grid.ts": {
+    "size": 3026,
+    "mtime_ns": 1780999228089545119,
+    "hash": "520041c1fe7d21fc78ca92f05190322527b7e75c3d2ca634c0fe48b3528997cb"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Grid/index.tsx": {
-    "size": 1576,
-    "mtime_ns": 1780088745912578087,
-    "hash": "7d7e1455b3626fd5b24b514538bd012c63ce4de9a1a9be21fe2fa2e86fe51c09"
+    "size": 1341,
+    "mtime_ns": 1780922548918908892,
+    "hash": "c3dda4228c4b134876d8c93e6375846cdd3fc26e80d6b4a7361c5d65783430d8"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ToolHost/nuxy-tool-host.ts": {
+    "size": 3913,
+    "mtime_ns": 1780955878984641177,
+    "hash": "40b6de8fb60010a2e25d2d2e521bf1ecc4190a9a1d756ede95556bcf18f2f32f"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/DropdownMenu/nuxy-dropdown-menu.ts": {
+    "size": 5938,
+    "mtime_ns": 1780999234909808005,
+    "hash": "528c00827b89605b53f44bd25413974eea50aac1ccb72cce9679a551100e0b3a"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/DropdownMenu/index.tsx": {
-    "size": 2253,
-    "mtime_ns": 1780094050907759034,
-    "hash": "cd0a76ea2505c41d43ab60197f28b75ce2ac979cc9940db84e437baa53bd4bd1"
+    "size": 1402,
+    "mtime_ns": 1780922582104538994,
+    "hash": "fbf4de0f55067a2c12f4d9fde017742ece7ce350c8556f4cae94bd2673c87891"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Input/nuxy-input.ts": {
+    "size": 2936,
+    "mtime_ns": 1780999276575695008,
+    "hash": "2b56d1eb5951ea46897a2a1d8d43ba6a989a43c8ed54600b17dbf47627ecf6e6"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Input/index.tsx": {
-    "size": 306,
-    "mtime_ns": 1780088745912781007,
-    "hash": "f57468c7ff2a275d372eb64fb58ed6c705f85776dc36426d596efb2ab5c097bf"
+    "size": 942,
+    "mtime_ns": 1780922502624803299,
+    "hash": "dbbf9b5859a2657e5b131cee1f3d698a568acbb9fbeca6def93d299fedf52543"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/TabBar/index.tsx": {
-    "size": 1369,
-    "mtime_ns": 1780094051142548819,
-    "hash": "c2b281d95dfb5e6113b2aa48c41faf0d7da73dfe6ed29815170bde4276646fad"
+    "size": 810,
+    "mtime_ns": 1780922500696754906,
+    "hash": "14ad4123c11dc9a180e464ef3796cf0faf308543eb1b82755da1d2931c96630e"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/TabBar/nuxy-tab-bar.ts": {
+    "size": 2251,
+    "mtime_ns": 1780955878983641177,
+    "hash": "dc8414d3691b08da0148240ea9ccd411d2cea84a8149dcee0d425bfcc90a11c5"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SearchInput/index.tsx": {
-    "size": 2005,
-    "mtime_ns": 1780094051075311340,
-    "hash": "e01bdb4f5dee8970481a28d2a6e0217d8e015bcda7bd595949ebf1ed664a27f3"
+    "size": 1062,
+    "mtime_ns": 1780922538200884445,
+    "hash": "f9b9f4fedb24a82451880bc956a52c29163e2e2da2a2429901d770de428496f2"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SearchInput/nuxy-search-input.ts": {
+    "size": 3737,
+    "mtime_ns": 1780955878983641177,
+    "hash": "2bb4dba8ca6f176e53b49af4e4896289b30fdd40c4b36e55fc347be1bfeb2d4a"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Checkbox/index.tsx": {
-    "size": 1424,
-    "mtime_ns": 1780094050858311688,
-    "hash": "590ae7cbd277e98c6bdbc05712b8d18c3e6351a7bc0f05fb470e653a88674a56"
+    "size": 1024,
+    "mtime_ns": 1780922525230666561,
+    "hash": "d18b16c5ce4273d06b888487c08bf49442e95c0d94fbc8ed42648b602569004a"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Checkbox/nuxy-checkbox.ts": {
+    "size": 2223,
+    "mtime_ns": 1780955878982641176,
+    "hash": "8b7985577eaf7019ca9732f32eb3e516546180d2de5933082cac72b98e0efabf"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Button/nuxy-button.ts": {
+    "size": 1531,
+    "mtime_ns": 1780955878982641176,
+    "hash": "dec0c640a81c765dd030053d6a82f8ca9d0b949809a9d34533c3032d1918b071"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Button/index.tsx": {
-    "size": 454,
-    "mtime_ns": 1780088745911949686,
-    "hash": "1eb1b2063e55e1fc9765d5d1bc53148eab77fab05cc7875ee212784b584ab75c"
+    "size": 456,
+    "mtime_ns": 1780922498179793160,
+    "hash": "65ea76cc313fc5083a15e9196d38250c0b78f83d039bcf1377df4795c4473135"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ConversionCard/index.tsx": {
-    "size": 698,
-    "mtime_ns": 1780176871419395215,
-    "hash": "c3d319e554257bac3aa64e4946a6d4e0d760c33f8673a510adad48ef295516dc"
+    "size": 462,
+    "mtime_ns": 1780922498180793163,
+    "hash": "f388ee8d5971cd4fddb3ec732b2787c1cb42b4060434fff291ca53d63bd22139"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ConversionCard/nuxy-conversion-card.ts": {
+    "size": 2932,
+    "mtime_ns": 1780999303253370606,
+    "hash": "18dfb0859d081e8b8838582b6a78580e49643bba1e8b153f896e2153e51fe508"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemMeta/nuxy-list-item-meta.ts": {
+    "size": 823,
+    "mtime_ns": 1780955878983641177,
+    "hash": "701557612231ef2350f0054e77b7db0e6b5c4899743df6fdae21b7e4c4981c3c"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemMeta/index.tsx": {
-    "size": 373,
-    "mtime_ns": 1780088745913232447,
-    "hash": "a0e5adee02c9446fe4f9e574d8c90ca297f3a29b88fc530c11316b563e674f3b"
+    "size": 290,
+    "mtime_ns": 1780922408702589070,
+    "hash": "5f2c9f9966a848b387aba4e4febb1ff6f983ed68b44692487a7821bce106c356"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ShortcutBar/index.tsx": {
-    "size": 317,
-    "mtime_ns": 1780088745913825178,
-    "hash": "b16418685050e4c4dbf62746826f5b8de11bfc12dcd40488399cafdd6ec4aa75"
+    "size": 283,
+    "mtime_ns": 1780922408703589072,
+    "hash": "0ff172db0658f7ebc7fcc9e4e1bc0903b3eec4f2bb2e1dc66aeb75b383f69228"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ShortcutBar/nuxy-shortcut-bar.ts": {
+    "size": 537,
+    "mtime_ns": 1780999188836116516,
+    "hash": "cb0c1e2e010d8e59325b2419f065ba68a459dec09f7d392f8854dfa934ba118a"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Link/index.tsx": {
-    "size": 575,
-    "mtime_ns": 1780088745912991877,
-    "hash": "4fe01f8f67f52ff9bdfba4f099c9ee82a152ea2e806b8abe85dda854c8f54388"
+    "size": 470,
+    "mtime_ns": 1780922498188793181,
+    "hash": "ce4b98630dbdfeb18e6ff95cd5ce5b175225094cb53f30f1f0680fe521509369"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Link/nuxy-link.ts": {
+    "size": 1226,
+    "mtime_ns": 1780955878983346977,
+    "hash": "9e6bec150fc9c8f0f9012a6a82e90d8f44172a564cc3cc08f906528b82144849"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ShortcutHint/index.tsx": {
-    "size": 410,
-    "mtime_ns": 1780088745913878188,
-    "hash": "d0f46dbb22f3c7c8d532ec2a8bbd64e53d7eb44c8f4cb0e005d93741d8e6dc28"
+    "size": 355,
+    "mtime_ns": 1780922408703589072,
+    "hash": "d47a6aa518821552c269e2aed2ba5e005bd70fd7f286c2c93bb166f0cbd4ad58"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ShortcutHint/nuxy-shortcut-hint.ts": {
+    "size": 738,
+    "mtime_ns": 1780999176704199734,
+    "hash": "316485e61b5406c190f4383bcd1bb4cfa770c765764ae755626aa109b5389ece"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ProgressBar/nuxy-progress-bar.ts": {
+    "size": 2765,
+    "mtime_ns": 1780955878983641177,
+    "hash": "fa4ad49b5045e3168a6b2297775d14deb9e762aa9e46982834aa435f78711aa0"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ProgressBar/index.tsx": {
-    "size": 1233,
-    "mtime_ns": 1780094051047311385,
-    "hash": "f93c579c174b07169f57ef4f1f73d877930f3d63ef0d7769cace200abded44e9"
+    "size": 604,
+    "mtime_ns": 1780922576718972304,
+    "hash": "48ef3619e9fb91c5b4457136e8381996348b923291c45e2bfd5de04bd1a5d1bc"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SelectBox/index.tsx": {
-    "size": 6429,
-    "mtime_ns": 1780094051094311309,
-    "hash": "e57b7bc07a48adf1820efecdc31d68c695d652a97f1de80d77e0cdf9897f24c1"
+    "size": 1343,
+    "mtime_ns": 1780922499085409156,
+    "hash": "6c0de404f0dd746f6b07e7f1aedc2f7fa5a6b692c8e89d1420191579b66329b4"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SelectBox/nuxy-select-box.ts": {
+    "size": 12162,
+    "mtime_ns": 1780957311594870022,
+    "hash": "a8b60eebfe58ca1c0221d410613d65701e219fc1701c49b326df768f5b432eee"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Kbd/index.tsx": {
-    "size": 281,
-    "mtime_ns": 1780088745912881837,
-    "hash": "255241eb58797c35686f5df4b7521aeb5cea66541df79b653f1776e85f81acb2"
+    "size": 368,
+    "mtime_ns": 1780945141675153218,
+    "hash": "52108bfc29e909f83972bf649d315bd09a88851a6b5cd22efab9b9c86cfd2102"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Kbd/nuxy-kbd.ts": {
+    "size": 2456,
+    "mtime_ns": 1780955878983346977,
+    "hash": "487510dbccc2c5d26c79b37b3ec9c7136435d3ea3997c766eb29489ee4287aab"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Icon/icon-paths.ts": {
+    "size": 6584,
+    "mtime_ns": 1780918982073735729,
+    "hash": "ba1646b47dc9f26cc0b9864672dc0048f271b6e437cb5414a62b12c9bbf7179d"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Icon/index.tsx": {
-    "size": 11253,
-    "mtime_ns": 1780094050949311542,
-    "hash": "e3e795064f7176c21c306b8f7b59dc680b927ce9b757441e9e95097160a0edd9"
+    "size": 3039,
+    "mtime_ns": 1780922498187793178,
+    "hash": "2ad3396578fba1db04f7e4bf5da3d8145416e73518de9b46b3df08103dcd3a7d"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Icon/nuxy-icon.ts": {
+    "size": 1779,
+    "mtime_ns": 1780955878983346977,
+    "hash": "3b5358b362991a4ea5e5104c3a426c0d3b14e1e7b0abf340e7fb19a21473b174"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SectionHeader/nuxy-section-header.ts": {
+    "size": 912,
+    "mtime_ns": 1780955878983641177,
+    "hash": "dfb0d32405e8a1052dad058e2a2878a70c5b700d39ec35eea588d44a48bd6308"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SectionHeader/index.tsx": {
-    "size": 726,
-    "mtime_ns": 1780176871420060205,
-    "hash": "b67a294e5a40d28ea3fb8c09fffb9b9cee206d897a3203ac43412807ce8b236f"
+    "size": 942,
+    "mtime_ns": 1780922583882988645,
+    "hash": "10a00547a217b47fe6c0adf5ed414792ef87a7ebfce06b593ec07e74c51df080"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Alert/index.tsx": {
-    "size": 472,
-    "mtime_ns": 1780088745911667406,
-    "hash": "e89d2f9b4d62470089361750276883f3700585cd37616ec17c76fee3464d214d"
+    "size": 356,
+    "mtime_ns": 1780922498179793160,
+    "hash": "ff256199b4ebc1b7dc2838a65e2ae8251a38053478e76e03779e1913cf715937"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Alert/nuxy-alert.ts": {
+    "size": 561,
+    "mtime_ns": 1780999151966066523,
+    "hash": "1b46eabffc43c2d3fbb79093c8a81fb50ab73b8d43fd751d5a26463f8b54ac97"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/PropertiesPanel/index.tsx": {
-    "size": 751,
-    "mtime_ns": 1780176871419710655,
-    "hash": "555d191a0fa4ce4e2cb5d310a5348fe4da32b706e4d6e3ae47cd076c2acb01cd"
+    "size": 437,
+    "mtime_ns": 1780922564891765577,
+    "hash": "90fcc02507437bc539db9fb64f852d28dfed800a4792a060b331ab334493bee9"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/PropertiesPanel/nuxy-properties-panel.ts": {
+    "size": 1372,
+    "mtime_ns": 1780955878983641177,
+    "hash": "1cc5a7210ae769215bafba5b0e34fdc8625a057a21f75cf27e1ba29d6a0369bd"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CircularProgress/nuxy-banner.ts": {
+    "size": 1722,
+    "mtime_ns": 1780955878983346977,
+    "hash": "d9067dde0015e060b88f83c4a976ce8afb20a3e3344df784cb7645b25fb88b2d"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CircularProgress/nuxy-error-state.ts": {
+    "size": 1785,
+    "mtime_ns": 1780955878983346977,
+    "hash": "8a8f29379219a87d648d836a25367cb1b6249d63a7ba3b2791eb41e39c3191ba"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CircularProgress/nuxy-circular-progress.ts": {
+    "size": 2911,
+    "mtime_ns": 1780955878983346977,
+    "hash": "7bc5e1d37db5542a2c5e5107dff743df5b365ea6b87254baa8b749abc4b36631"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CircularProgress/index.tsx": {
-    "size": 3981,
-    "mtime_ns": 1780094050868311672,
-    "hash": "70c801a527d2b7e32d41a3edc62ee306c7800a477bc774434edc1d2bb17748d4"
+    "size": 1902,
+    "mtime_ns": 1780922579853979455,
+    "hash": "03d93fdc1eb256fc458dd971c6420509c1eb953f265bd9fafa4252caa7bd2933"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CopyButton/index.tsx": {
-    "size": 1912,
-    "mtime_ns": 1780094050889311639,
-    "hash": "0b238f922953690a143ab46f55a7f0fcf42222753dd6e8c239538c0344a7d8df"
+    "size": 477,
+    "mtime_ns": 1780922408697589059,
+    "hash": "f794757bb004b1c81796659c27c92db578f0da9f72bab711734c5f23cc36276c"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CopyButton/nuxy-copy-button.ts": {
+    "size": 2733,
+    "mtime_ns": 1780955878983346977,
+    "hash": "8506c022fcf626b0794f646b7ced0cf2e4966bd15135205b7ffd4fd7bf2bb272"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/PinInput/index.tsx": {
-    "size": 3033,
-    "mtime_ns": 1780094051035311404,
-    "hash": "a798dfa9c2cc4cd4c674fa4ae426ba391ba5b2a50c0e4c07155efbf8af93c429"
+    "size": 1275,
+    "mtime_ns": 1780922542619894524,
+    "hash": "1eb1b927ae5f3de1276442b6e20e1bcbd19fccec9626c21629e305e248e3dbb3"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/PinInput/nuxy-pin-input.ts": {
+    "size": 4119,
+    "mtime_ns": 1780955878983641177,
+    "hash": "3d154ad3cc241422057517f73398a11aa5a374687a52d5cac9ea81a77e2b26ed"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tag/nuxy-tag.ts": {
+    "size": 1737,
+    "mtime_ns": 1780955878984641177,
+    "hash": "c6876bc59ffa8e6faae53286cfb8a90fca9faab77012d71c951440ef7c281047"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tag/index.tsx": {
-    "size": 1113,
-    "mtime_ns": 1780094051177311176,
-    "hash": "36bfc679d61a849791ce86f61642177d47d7076ccba14b358288e7a8dd1d788f"
+    "size": 673,
+    "mtime_ns": 1780922575225968899,
+    "hash": "fbab3d9043992e7f1214f3afc02bd443c581fda426cb60c1462b02a72c617061"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/LoadingState/nuxy-loading-state.ts": {
+    "size": 1486,
+    "mtime_ns": 1780955878983641177,
+    "hash": "5bccca9e59c7fb5c32991247b48b0b321684a048ee77941f4b4c5fdc1c564990"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/LoadingState/index.tsx": {
-    "size": 1522,
-    "mtime_ns": 1780176871419395215,
-    "hash": "e37ee4bc44518d721c89aab79d881009a45ceb7c8f78fed8d2075b3c282f0d13"
+    "size": 448,
+    "mtime_ns": 1780922408702589070,
+    "hash": "a96b5cb7e8b1f32785fee654f56f8b98dc420c0662a3935991206cc163742e3e"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemActions/index.tsx": {
-    "size": 334,
-    "mtime_ns": 1780088745913130127,
-    "hash": "ef592f81ecbe6808a8a3908ff882e45214168154cd4d12ef5793ed7ef2bc93a8"
+    "size": 305,
+    "mtime_ns": 1780922408702589070,
+    "hash": "f6689f395aae8233c7ccacd2b9c498df852b05b5ec130a8e1a63bfd1f7a785b1"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemActions/nuxy-list-item-actions.ts": {
+    "size": 560,
+    "mtime_ns": 1780999192833089285,
+    "hash": "9d6bd0d87b69e382ccdeda92bc85c40c586c497a19a8e01c88eacb33639761f7"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Avatar/nuxy-avatar.ts": {
+    "size": 1758,
+    "mtime_ns": 1780955878982641176,
+    "hash": "981705a41cada9f5802db40c38de56cc456010466dc54c9ea3ad34975e8ccf3e"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Avatar/nuxy-avatar-group.ts": {
+    "size": 2593,
+    "mtime_ns": 1780999253426687211,
+    "hash": "f43c641419299a4631f0f9cbef5cf1c5b6f6e6eee87135527ad3407211930740"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Avatar/index.tsx": {
-    "size": 2529,
-    "mtime_ns": 1780094050823437328,
-    "hash": "1a7f190883dc60a16c5b35a0b32cc765caaf1f3d6a2d89ba5b49d1a79f1970bf"
+    "size": 1055,
+    "mtime_ns": 1780922498179793160,
+    "hash": "8d152dfed53a6831be27a608a623ef7e868a6636148790657cdbfbff9e3b2d17"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Table/index.tsx": {
-    "size": 3031,
-    "mtime_ns": 1780094051153272150,
-    "hash": "5eb7275e2af84b9bd2af5acc2d76cce92c284ab818c377cdea68c0f62305d329"
+    "size": 2264,
+    "mtime_ns": 1780922648345725510,
+    "hash": "6dbb394ea8c3e91afe2961c1aae863761783f02005f396d64fde146bea654227"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Table/nuxy-table.ts": {
+    "size": 7786,
+    "mtime_ns": 1780955878983641177,
+    "hash": "e12c8afd2d1fff938e2e1bc952437d88ba1ba489e34b2aa1cba713217fc6db33"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/nuxy-text.ts": {
+    "size": 1424,
+    "mtime_ns": 1780955878984641177,
+    "hash": "d08e6883c267e69aae96f9c7c2eda586a2e27fdb169421a6abb6811cd32705d2"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/nuxy-visually-hidden.ts": {
+    "size": 765,
+    "mtime_ns": 1780999172334229921,
+    "hash": "14fd5e8339b66783fa61d9a82d3d0374a8aa812d3806fbdf230e23facf91b3ff"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/VisuallyHidden.tsx": {
-    "size": 506,
-    "mtime_ns": 1780088745914461899,
-    "hash": "a2d1a23e57d1024fc59a051780be8b763d904f8b4c12cb386853cac02402bd36"
+    "size": 290,
+    "mtime_ns": 1780922498191793188,
+    "hash": "be2a64121511937fe4561f15f2c1fd34984888714df4e1e578cca8545c66f865"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/Portal.tsx": {
-    "size": 464,
-    "mtime_ns": 1780088745914495399,
-    "hash": "30da23e081c5db9265087ea33e6600181d0b6d306248811d68a20a59ac1b9677"
+    "size": 365,
+    "mtime_ns": 1780922498191793188,
+    "hash": "a566b51980b71a8a8791741a561051731fedd01660dce8ca7b9ac9e94a36642f"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/index.tsx": {
-    "size": 872,
-    "mtime_ns": 1780094051185311163,
-    "hash": "783adc7c912abdc9f7163f555388ab887a1ad84add81303f5835cfe60fd13a8b"
+    "size": 766,
+    "mtime_ns": 1780922498191793188,
+    "hash": "3a9ea06417a29633f840d014b1478f2a0954c77c45dfb629043297ecfaa418e4"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/nuxy-aspect-ratio.ts": {
+    "size": 1137,
+    "mtime_ns": 1780955878984641177,
+    "hash": "1410bf4b60b522f5d1cde993a4ad7b8ea8dc08758593a096cb5f529a7f27371d"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/nuxy-portal.ts": {
+    "size": 1611,
+    "mtime_ns": 1780999417186687804,
+    "hash": "fb230a4ac9e69bc61dfdc6c04f2df4694ff4d001294705014ee4425607108038"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/AspectRatio.tsx": {
-    "size": 653,
-    "mtime_ns": 1780088745914479359,
-    "hash": "65d03dc90263d825d20bdeff20abf8ee60bd7332204c305f7a795e1d0ee93102"
+    "size": 463,
+    "mtime_ns": 1780922498191793188,
+    "hash": "e61f088818266a27f21e241a9fec49681526891bfae24685ac45d059810689f9"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MediaPreview/index.tsx": {
-    "size": 2447,
-    "mtime_ns": 1780154750550098821,
-    "hash": "0d8b95818462a6b9e11bf3bf090506925bde17c1be145b0669c0b89c95fe5c0f"
+    "size": 1338,
+    "mtime_ns": 1780922645357271268,
+    "hash": "8eac6362a9b798882e4e37ccffd26cdb494fd029ccb35008e41666f4e1547df6"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MediaPreview/nuxy-media-preview.ts": {
+    "size": 4638,
+    "mtime_ns": 1780955878983641177,
+    "hash": "d02dd4702e3bc596de6fa97f97ce23c0944da3f8bf024c7b3f4b2b5d129da024"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Textarea/index.tsx": {
-    "size": 382,
-    "mtime_ns": 1780088745914546539,
-    "hash": "3af7e1039972a8ec8c4f4a9dd91238ab2e7e4da1c8badc1203ade39067493226"
+    "size": 608,
+    "mtime_ns": 1780922504206806907,
+    "hash": "eebac4f6d9bc1df6340511dc3545e8e6b8732276a31d4a233248a3c75d30a5fd"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Textarea/nuxy-textarea.ts": {
+    "size": 2487,
+    "mtime_ns": 1780999284713487018,
+    "hash": "7fa6748e4bb47984fec0e5d228990beaf33638fb04b8ac02acdc404245089e3e"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Code/index.tsx": {
-    "size": 1519,
-    "mtime_ns": 1780177188145384084,
-    "hash": "397c9d3edaddf667ddf7d7d418fee6a927e63f3cdf0be1fc1e41dcfc2b4aca85"
+    "size": 644,
+    "mtime_ns": 1780922498180793163,
+    "hash": "4ac58d9016ca144088cfc08fd680aa35377850ee29cc3ab25af7d0b76f363a5a"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Code/nuxy-code.ts": {
+    "size": 358,
+    "mtime_ns": 1780999186361133424,
+    "hash": "422e066d0acab50c0b07f2caab5485352ccf7136a682b4fcac9ab65aa419bc09"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Code/nuxy-code-block.ts": {
+    "size": 2213,
+    "mtime_ns": 1780955878983346977,
+    "hash": "f778f96a7e21bf2bd9412ac9c9a0de2f14a894d9d76871b95217f32f9355f5a2"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/FileInput/index.tsx": {
-    "size": 4301,
-    "mtime_ns": 1780094050927311578,
-    "hash": "2d1196272cdb669ed5157121c985388d128f1d0e0ae05f186d0e389d1b3b3472"
+    "size": 1624,
+    "mtime_ns": 1780922545934902085,
+    "hash": "f029ec500e8eda47f60b1f27d0e78683ba9688899f67fe6e0014574fedc66014"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/FileInput/nuxy-file-input.ts": {
+    "size": 7070,
+    "mtime_ns": 1780955878983346977,
+    "hash": "1985ab2dfe6b70d81a3ae746c929d82814bfad60f8ef99a32f74f0204d940e8f"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Toaster/nuxy-toaster.ts": {
+    "size": 2843,
+    "mtime_ns": 1780955878984641177,
+    "hash": "c8e6599cd6f2224dd60ddc3360d1d0b1812c9c2b61c0e66d73fd677d09cbde77"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Toaster/store.ts": {
     "size": 1550,
@@ -1305,139 +2075,99 @@
     "hash": "75e6a479798e1e3b917f6aa7f066987decc2b61544f6f343c2c582e283bd653d"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Toaster/index.tsx": {
-    "size": 3380,
-    "mtime_ns": 1780094051202311136,
-    "hash": "aaccb5b5b6d11162ecad1363092af12dce3a312e75f76c88165bad14cdcec0ce"
+    "size": 295,
+    "mtime_ns": 1780922604513035700,
+    "hash": "be1bd41d75bb6d5f0dc4e0cb5d2253c61c353f870368ab05a9ceb55ea9fe9cad"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Skeleton/index.tsx": {
-    "size": 927,
-    "mtime_ns": 1780094051105311292,
-    "hash": "1a7f8ba87fad716bc62b11d05224ea5edfa0afd38adb7f037e005b41502c5393"
+    "size": 658,
+    "mtime_ns": 1780922498190793185,
+    "hash": "dcd01b75425f1ed0e2f73fd79a75148a389c1d29c8dbfca52263e6d4201466a8"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Skeleton/nuxy-skeleton.ts": {
+    "size": 1129,
+    "mtime_ns": 1780999169627248676,
+    "hash": "abfdf6b91c1fa78efa0acb016035ef48a3630b12afb0863a797a422b43525f19"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/hooks/useToolKeyActions.ts": {
-    "size": 1374,
-    "mtime_ns": 1780224821562429748,
-    "hash": "3df13696afcfff8bf2ad68f1cad390660e13162b817f6d45d6d77a3ba0811203"
+    "size": 654,
+    "mtime_ns": 1780930732864596901,
+    "hash": "c26cb1b085e014aec47230fd5758ccc91e984a06382a4cb0e327a149673ba627"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/hooks/useTwoPanelNav.ts": {
-    "size": 9174,
-    "mtime_ns": 1780152504895871790,
-    "hash": "26dc64973e3a6dd416d1733e054f22cda3941641e7c1df3049d5f82730159458"
+    "size": 2198,
+    "mtime_ns": 1780922626963086906,
+    "hash": "03bfee8190341cced4ea7c2a7454c7c289c8fb8e0643f96e97cac50a81093507"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/hooks/useListNavigation.ts": {
-    "size": 1905,
-    "mtime_ns": 1780224826285437166,
-    "hash": "f40dfb5849ea8f5b208ab25fcfe3c4c3a6eb4aaefadfd37eba212f90b0080bce"
+    "size": 2421,
+    "mtime_ns": 1780922656482154236,
+    "hash": "a1162eae8ed1f44d280b4d400a053a0d5696c27772c2c085e67184077f80ea58"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/hooks/useTranslation.ts": {
+    "size": 2326,
+    "mtime_ns": 1780922607613042771,
+    "hash": "e98a52ae04f28d8ef85b67e3fe2d65ea7840880eda1ba6af5ed12b7057ac78a7"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/utils/scroll.ts": {
-    "size": 2608,
-    "mtime_ns": 1780094051249311061,
-    "hash": "5bac2c3230b532d4adb8ee770ed72975cdc66fd47be078cb104095b85109fb47"
+    "size": 2655,
+    "mtime_ns": 1780763256708101238,
+    "hash": "29a22f0eb6cd540f29cbfd656653cb75f8b66fc3d073b4e06d3e36c99382aac8"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/utils/highlight.ts": {
-    "size": 9922,
-    "mtime_ns": 1780177179157370545,
-    "hash": "c0a2f99c6d9919e663060c730b8a0e1fedf3597e59d97fc1e729dbe7c9dabd05"
+    "size": 11070,
+    "mtime_ns": 1780573150922222361,
+    "hash": "a42324f446cf9248fc4ecde80a0ef2f3ce9a15e39a1309f7df171659863b4ba8"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/scripts/inline-css.mjs": {
-    "size": 1129,
-    "mtime_ns": 1779835187823978083,
-    "hash": "6b45925ec1dc16be4d8fddab782ffdfcbf2e620f42eb5db5168e919fff4356cb"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/frontend.tsx": {
-    "size": 8296,
-    "mtime_ns": 1780256518500815951,
-    "hash": "21915677c420447f88352087608c441a709dc3f3293921fb290e3a2e2767bd8f"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/e2e.spec.ts": {
-    "size": 3528,
-    "mtime_ns": 1780176871417174213,
-    "hash": "e304070df7771d8f113032e2a8e4b03e33c3f6b7d874aa0e3174540421502f22"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/backend.ts": {
-    "size": 3212,
-    "mtime_ns": 1780094350327822686,
-    "hash": "09417e2bfddbb1f13b7218dbdd0c714e9126beacfbcd976f3296ac472f0a59fd"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/manifest.json": {
-    "size": 293,
-    "mtime_ns": 1780094129404184926,
-    "hash": "411c6fa472ca8d3edaf3a858aaba5b57351f0dbe0eaa7d0f3df4b0c434b2fa96"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/backend.test.ts": {
-    "size": 6852,
-    "mtime_ns": 1780095702964529224,
-    "hash": "1a35749b67bf2340c6890af610c37cca842e6aaa64b978056e883854bc14bce1"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/types.ts": {
-    "size": 649,
-    "mtime_ns": 1779833898216251259,
-    "hash": "4e371582854630a304901a047d8a646bf8d917bc4c674938dee332f92287fcca"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/package.json": {
-    "size": 157,
-    "mtime_ns": 1779696633893254298,
-    "hash": "da3d3814417d353201670257c666045f7ef192385d4e222a784888266edcd1a3"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/frontend.tsx": {
-    "size": 11211,
-    "mtime_ns": 1780245167597504042,
-    "hash": "9a98786d02da23bf2e397563b06cc487310e264954ec3ab7d0bd78faf2a589d8"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/settings.json": {
-    "size": 921,
-    "mtime_ns": 1780181068336543142,
-    "hash": "3f94c996480dacda2ddcf28bc6a1758776eb49c10b3fb04d5d3e41a2d1a3a7df"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/backend.ts": {
-    "size": 3731,
-    "mtime_ns": 1780181167002814471,
-    "hash": "0c5b75396c4e1b9b4c83e0c70dba96c4deaf9785cc6e366ac8a685d38448474f"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/manifest.json": {
-    "size": 439,
-    "mtime_ns": 1780176871417596923,
-    "hash": "dadb1161f25d9a41fe032f7230e71c4113f0da06e7c487f54b9cb36118ed01a5"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/backend.test.ts": {
-    "size": 10739,
-    "mtime_ns": 1780180462052090017,
-    "hash": "f7b6230087b21ff154b33fd0437789243f44f4dda6318059f3a166477846d80c"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/types.ts": {
-    "size": 754,
-    "mtime_ns": 1780180400598773056,
-    "hash": "6559d5c4740c044f182325eea15496b462a4d7785a487b3c9a3800a061d6f9f4"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/package.json": {
-    "size": 160,
-    "mtime_ns": 1779695780304641103,
-    "hash": "9d449258ddc09a51ac2308e49637157f54ee00f8d858e48980d19c815b759838"
+    "size": 1168,
+    "mtime_ns": 1780763314804793264,
+    "hash": "ba8d92fe4c16e150e0a1221dfec252633b4533d35787e403e694a7ff3943877e"
   },
   "/home/xava/Documents/nuxy/extensions/notes/frontend.tsx": {
-    "size": 14222,
-    "mtime_ns": 1780247727484209260,
-    "hash": "c1e2efaab2f25dcf569c8c14be7a302ff277f8a2ae5b639cbe13c855577cf73b"
+    "size": 30,
+    "mtime_ns": 1780913861435989934,
+    "hash": "509e71830488536c4266436540785a3698ce1fe610b8effbeed497d523291ca5"
   },
   "/home/xava/Documents/nuxy/extensions/notes/e2e.spec.ts": {
-    "size": 9012,
-    "mtime_ns": 1780246962723254397,
-    "hash": "3703bf0a1198b697b3dfaec7619157d1f3082991bf8850c9ae2df7c7ab25ed37"
+    "size": 8338,
+    "mtime_ns": 1780935011399217416,
+    "hash": "82c8c6746cf10b3e222c6b9af624f685cebe43c4f1be561d7b0f69013747f8f3"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/settings.json": {
+    "size": 1209,
+    "mtime_ns": 1780354719439212425,
+    "hash": "4a2b8eff2a384e14fae37797bcf4f958a1b08b7f4f6f1d1108143b1d69585952"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/nuxy-tool-notes.test.ts": {
+    "size": 4009,
+    "mtime_ns": 1780955878982208305,
+    "hash": "ed0dd5474e21f12030492c7c60a1f0603044096b307a571ced18c90a9641601e"
   },
   "/home/xava/Documents/nuxy/extensions/notes/backend.ts": {
-    "size": 6676,
-    "mtime_ns": 1780246817675936672,
-    "hash": "4287b2d63601a7ada308cf6d1c7ed194281ac3a83ae6ff22ef12342393cf5f67"
+    "size": 7714,
+    "mtime_ns": 1780573149139224849,
+    "hash": "9a5e4f7d1e6d91ee6d0081b46febda1960ea58199927876879e2b7c05c4f5974"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/notes-controller.ts": {
+    "size": 11679,
+    "mtime_ns": 1780943393980058010,
+    "hash": "5f71bdcb4a2434fde975ebcdb5259d6318e75d436a5243f3631a07dc5b33db2c"
   },
   "/home/xava/Documents/nuxy/extensions/notes/manifest.json": {
-    "size": 305,
-    "mtime_ns": 1780176871417596923,
-    "hash": "387cc2321f1d8082be6ba821c3783ac57170cb0053cf636ebd348d6c80c13ebe"
+    "size": 519,
+    "mtime_ns": 1780913873277348454,
+    "hash": "94bbab8656c7731f621120edabd0a74443871f1c41f4fd851ec37d7e64fa523f"
   },
   "/home/xava/Documents/nuxy/extensions/notes/backend.test.ts": {
-    "size": 9987,
-    "mtime_ns": 1780154801659160722,
-    "hash": "d069978b1b8fae00ef701aa47c6f036aabfdd7663b7ac3c7d81bf0ac3e4f6fbe"
+    "size": 10237,
+    "mtime_ns": 1780763289946923790,
+    "hash": "a77d5ca779689a0331ff9f00ab2682ab542df31a5e475e47bd52b67b18b21fee"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/nuxy-tool-notes.ts": {
+    "size": 5153,
+    "mtime_ns": 1780955878982208305,
+    "hash": "ee21883b70f95d183c00c5ad0f8ee7ea570d3aafe3ae884cb03744f7345bacec"
   },
   "/home/xava/Documents/nuxy/extensions/notes/types.ts": {
     "size": 768,
@@ -1449,265 +2179,250 @@
     "mtime_ns": 1779695693559204956,
     "hash": "e27137ef31a99757483394f198baae08efbd8f97c89ea966f8f880890b615405"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/backend.ts": {
-    "size": 13910,
-    "mtime_ns": 1780176871414802831,
-    "hash": "123710c989eef2a3baa45260e07dc73cee0d4be3a75d98fb334c9683b5dfaa67"
+  "/home/xava/Documents/nuxy/extensions/notes/locales/tr.json": {
+    "size": 1142,
+    "mtime_ns": 1780354719439212425,
+    "hash": "03edf12d85a232b71f8a6da3235bee8462936f6c81e51cf97a55835765930187"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/manifest.json": {
-    "size": 312,
-    "mtime_ns": 1780094128451186472,
-    "hash": "a50ed8c271aeaa51b3d18a593e1e54c3b2332f3f6dadd737b024f38573c151e6"
+  "/home/xava/Documents/nuxy/extensions/notes/locales/en.json": {
+    "size": 1045,
+    "mtime_ns": 1780354719439073835,
+    "hash": "e4996c4a96702af2b038d0327f4bab2fe85b5debfc1851723b1884ad79d7ca06"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/backend.test.ts": {
-    "size": 23090,
-    "mtime_ns": 1780176871414802831,
-    "hash": "abfbe0b1df0bfd23aca3b42db03d36c5b3798c7dd1a39b57230e946f9f548c28"
+  "/home/xava/Documents/nuxy/extensions/notes/locales/ja.json": {
+    "size": 1348,
+    "mtime_ns": 1780528396740598484,
+    "hash": "73a407c599868283f1d8adf07274c3e981adae9bd9a0e2d1ced36538e30a2e14"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/types.ts": {
+  "/home/xava/Documents/nuxy/extensions/notes/utils/noteTitle.test.ts": {
     "size": 1113,
-    "mtime_ns": 1780176871414981501,
-    "hash": "ca2048db33472cb7c91098958e85d0bb708cf374040d09a66050969235b24a18"
+    "mtime_ns": 1780452814812592435,
+    "hash": "fe894755c6b2f8e6a0297f21f781af059aa065e193055b45943a8943f6767eda"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/package.json": {
-    "size": 169,
-    "mtime_ns": 1779376636516427881,
-    "hash": "7bfc1f2ac2bd7b7ea7678d6890d21d70f4e166784782e2fbfc8264b4d68ec73c"
+  "/home/xava/Documents/nuxy/extensions/notes/utils/ipc.ts": {
+    "size": 366,
+    "mtime_ns": 1780488419461458198,
+    "hash": "15975c94a084b974bd2bc4b2d3139fe1303cc47b5f438910c27ec0e48083fc28"
   },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/frontend.tsx": {
-    "size": 28613,
-    "mtime_ns": 1780256525347824813,
-    "hash": "a06f5c28d12671511efa5dd6e2ef7424a7cabd55427bbb0736bbe0330caa332d"
+  "/home/xava/Documents/nuxy/extensions/notes/utils/noteTitle.ts": {
+    "size": 308,
+    "mtime_ns": 1780452807668534223,
+    "hash": "ebeb52d4407071f1c0be81b52524d8e4bb8890c17eccaf71ca3e738cb630bc99"
   },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/e2e.spec.ts": {
-    "size": 17552,
-    "mtime_ns": 1780176871420485755,
-    "hash": "090226b7ffc120bd62b1ff3e0b66dc1cdc6feddc91d4a7e42c948c44297e3829"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/settings.json": {
-    "size": 844,
-    "mtime_ns": 1780135682609253920,
-    "hash": "1a4ba6cab119e19e3db8a5ab29c226facf6a8990edabe79cdf81e7541382a380"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/backend.ts": {
-    "size": 7118,
-    "mtime_ns": 1780154802426051946,
-    "hash": "233317116df6241f4c9cef181c1b8704f7763763fffb431b55f32c519304db56"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/manifest.json": {
-    "size": 353,
-    "mtime_ns": 1780176871420741926,
-    "hash": "e6c03b3f1ec48da0e51b1ebbe0ce062d570a85c37cb4bae9f91b2b368689a3e3"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/backend.test.ts": {
-    "size": 13442,
-    "mtime_ns": 1780154802416438523,
-    "hash": "25abad220f5b15b1d1dddf944d73ddeeaa8bf4ef389279815f746607da336371"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/types.ts": {
-    "size": 1461,
-    "mtime_ns": 1780154802478258988,
-    "hash": "16f9f174ea6a30737bcc63c6772ecd2817e6b81b4f021a308c19743adb836b4a"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/package.json": {
-    "size": 170,
-    "mtime_ns": 1779695726595090191,
-    "hash": "120438d015828a15003e298ae99656ae45b68c858a33a96c4b9a8b6f1ae49e88"
-  },
-  "/home/xava/Documents/nuxy/extensions/settings/frontend.tsx": {
-    "size": 23651,
-    "mtime_ns": 1780176871418251234,
-    "hash": "2c5c9db08b9d0b8b848530813f38dee488540d1287c99e0f5f3481713161bc77"
+  "/home/xava/Documents/nuxy/extensions/settings/settings-meta.ts": {
+    "size": 7688,
+    "mtime_ns": 1780943259192353126,
+    "hash": "fd9649681a5bf270e92ed9ccf3002141db2b9c36f34575f3114484c7d69fdb7a"
   },
   "/home/xava/Documents/nuxy/extensions/settings/e2e.spec.ts": {
-    "size": 24786,
-    "mtime_ns": 1780176871418115504,
-    "hash": "3f2b13109fcca4a7d59bde03137372afc1b63a48a56d21f860c22d38b372b8e2"
+    "size": 27746,
+    "mtime_ns": 1780931578018753960,
+    "hash": "d1d0f0a74af96c761d2b4e542b0122ae7ab8275d875a2de2a09cb3c1b16a4c34"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/frontend.ts": {
+    "size": 7869,
+    "mtime_ns": 1780955878982208305,
+    "hash": "b2e2db46963ed678a54af9dc408f1efe082f4e687d70205a290cdc2f604c6fbe"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/settings-data.ts": {
+    "size": 4315,
+    "mtime_ns": 1780922136868441814,
+    "hash": "280faecc9eba43f94346cd2d51f48efea2420882a46883fc6898227070257c65"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/frontend.test.ts": {
+    "size": 3969,
+    "mtime_ns": 1780955878982208305,
+    "hash": "2b48775e0f69fd31b8bd544f00700cfa7ec1693add78bf1e7ef0897e600bae3b"
   },
   "/home/xava/Documents/nuxy/extensions/settings/backend.ts": {
-    "size": 1577,
-    "mtime_ns": 1780176871417989643,
-    "hash": "5840abc2a045fe11fe9c48a7c01c4f378579db2de2a347ebe3897b1728b80761"
+    "size": 1677,
+    "mtime_ns": 1780955878982208305,
+    "hash": "a345327a501650a74239bf0b9692e4bf2d119e480fb9a675f1ddaa89298d53e5"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/settings-actions.ts": {
+    "size": 4643,
+    "mtime_ns": 1780943254241366078,
+    "hash": "52d63f71f67531b727a19b3840a75caaf4b895d4f50ff953ebc6c6b41de678f1"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/settings-controller.ts": {
+    "size": 10527,
+    "mtime_ns": 1780943384635075184,
+    "hash": "b3591e903e822951d6c70aad0df942d1d3d6bbe0895b961ee4cae18b84982a0f"
   },
   "/home/xava/Documents/nuxy/extensions/settings/manifest.json": {
-    "size": 327,
-    "mtime_ns": 1780136412412916069,
-    "hash": "a8817b37966b99c949b779715a3fe8dbf1064841add3cc1856c9e4f120d1090d"
+    "size": 440,
+    "mtime_ns": 1780955878982208305,
+    "hash": "65223dabd5dd9d15826c92e378b0cc213ee66c12b94ccd3105ab59cbb97ebed7"
   },
   "/home/xava/Documents/nuxy/extensions/settings/backend.test.ts": {
-    "size": 15683,
-    "mtime_ns": 1780176871417875723,
-    "hash": "09adbc1a2c7c2ba93213c2ebf68fb6719a4691cc5b693c42e94dc25ce6ff2e48"
+    "size": 15784,
+    "mtime_ns": 1780955878982208305,
+    "hash": "bf1b5eadf9078760c92df68545ef35f9ca76b0268f17bb5a6e1b27000e0701a0"
   },
   "/home/xava/Documents/nuxy/extensions/settings/types.ts": {
-    "size": 2120,
-    "mtime_ns": 1780154701670778729,
-    "hash": "cafb173f4c3df785f05465ec7669336bc202f78e0222a358dde750944df904f5"
+    "size": 2893,
+    "mtime_ns": 1780943224663446929,
+    "hash": "29aaf25b2e4890b8e1766e2522ea22a3659c9f2f014a52033663d55cd4188a70"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/frontend.tsx": {
-    "size": 19211,
-    "mtime_ns": 1780244671326706939,
-    "hash": "5b8dd7b4622cd6301b908db5f0c786ec894f705f8f0de556c27f9d7f41beb385"
+  "/home/xava/Documents/nuxy/extensions/settings/package.json": {
+    "size": 141,
+    "mtime_ns": 1780955878982208305,
+    "hash": "5b5a3fd83d894f0b06358e4c26efb496c6c6b39ff073fc75d9b7a59b60186f04"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/backend.ts": {
-    "size": 6041,
-    "mtime_ns": 1780154801200430558,
-    "hash": "bd5540610daf8da3d99e504bd562d8c8310f4af43ad0e4c93c4f0bd70cd929be"
+  "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json": {
+    "size": 2084,
+    "mtime_ns": 1780943275337486000,
+    "hash": "fcaa2fd339a40871c61ea261adc130350ecaade861ee6cf2aa7d8d2c34e431f0"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/manifest.json": {
-    "size": 317,
-    "mtime_ns": 1780094050020702715,
-    "hash": "6e0827db418976329c5558223bf4ecfc87a91702259837ec3081c0e021e040ac"
+  "/home/xava/Documents/nuxy/extensions/settings/locales/en.json": {
+    "size": 2009,
+    "mtime_ns": 1780943268045664184,
+    "hash": "862cdfcb15d3d4c52422fb4417adf4903e7e0a3c33128406cb24aee00b0e92d1"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/backend.test.ts": {
-    "size": 17515,
-    "mtime_ns": 1780176871415322571,
-    "hash": "bcedb60ff55b1d848e257bca16cac7ae5030c8c19b334a9e5523fb70d1ffcfec"
+  "/home/xava/Documents/nuxy/extensions/settings/locales/ja.json": {
+    "size": 2250,
+    "mtime_ns": 1780943281978160572,
+    "hash": "81cb80595b69a142b37cb9cd5637ddbc0087555660f7e435c4c7e122acdf2b59"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/types.ts": {
-    "size": 753,
-    "mtime_ns": 1779833918578773078,
-    "hash": "759486657a4240f14b2c2490050dd14cfe1da574766da1c5ba852e91098287c4"
+  "/home/xava/Documents/nuxy/extensions/settings/utils/settingsOptions.test.ts": {
+    "size": 4432,
+    "mtime_ns": 1780955878982208305,
+    "hash": "7b85d9edf843d6b67eb71e5ffac2fb5fa875f87704fcb18a942161f4a89484b1"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/package.json": {
-    "size": 163,
-    "mtime_ns": 1779696632082254156,
-    "hash": "6bdf9a97b0ce09387a0c6b4018ac31b1a31d754cbb8ef9b241dda46cd3282069"
+  "/home/xava/Documents/nuxy/extensions/settings/utils/settingsOptions.ts": {
+    "size": 8455,
+    "mtime_ns": 1780943247755383294,
+    "hash": "8a4116b73eb8e537d072c22eafff8d3f78bf8e74da8500bf72e8da62ec5c9f69"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/frontend.tsx": {
-    "size": 19236,
-    "mtime_ns": 1780176871416793452,
-    "hash": "811cd2221ccfebd3a8d914e3377722ab80807d9880a766f4192044c5ee6ff9b8"
+  "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json": {
+    "size": 2708,
+    "mtime_ns": 1780510100180072063,
+    "hash": "66551caa32e66f681b18d66665c254b07f9dc2aa37fe05c193584f31500bdfd4"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/e2e.spec.ts": {
-    "size": 3400,
-    "mtime_ns": 1780095630104654007,
-    "hash": "8a275044b42c618733a95a5bb3b21fa63cf1789be65b6a90db0523b44204e9e3"
+  "/home/xava/Documents/nuxy/extensions/theme-sakura/manifest.json": {
+    "size": 168,
+    "mtime_ns": 1780506605303571539,
+    "hash": "9feb6ee3239861cd02fcdf4ec8fb15241b531873362c7ca3a0aeb09f35f0759c"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/emojis.json": {
-    "size": 83269,
-    "mtime_ns": 1780094050236312687,
-    "hash": "27af3b7b1452a9134224a44e9b0b73c4563736be7b840d36a67e299d84b12ed3"
+  "/home/xava/Documents/nuxy/extensions/theme-sakura/package.json": {
+    "size": 80,
+    "mtime_ns": 1780758117034400788,
+    "hash": "f1cebfe274fb8b1f12ad69f2b2e7973fd7c1db5ff9f267d9df75ceb67fe1fb05"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/backend.ts": {
-    "size": 1854,
-    "mtime_ns": 1780094050199312747,
-    "hash": "1a78ebabd402aeeea1cecf19d0dcdf31fdbcc9587f167e6b05c141b27aec22d4"
+  "/home/xava/Documents/nuxy/extensions/nyaa/frontend.tsx": {
+    "size": 29,
+    "mtime_ns": 1780913872737351348,
+    "hash": "200cc54444660e868086c0ace122c5f99c76e0b81be3a83285ccd90a382b4d56"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/manifest.json": {
-    "size": 318,
-    "mtime_ns": 1780154244377789373,
-    "hash": "e3bc2f6128db570e4609e4bae3b968c6651ed3e712cb1f76021ccba1b0ce6f12"
+  "/home/xava/Documents/nuxy/extensions/nyaa/e2e.spec.ts": {
+    "size": 8285,
+    "mtime_ns": 1780935654599189413,
+    "hash": "4a88400ffc3d76ed981bc96f2c2b55211d1d57f03be3ac28fa3716612b988329"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/backend.test.ts": {
-    "size": 9508,
-    "mtime_ns": 1780176871416658872,
-    "hash": "ef79750dab665f0f6ff7afe516d4a634035e7c9ad1058ddc31bd0f3590f60823"
+  "/home/xava/Documents/nuxy/extensions/nyaa/nuxy-tool-nyaa.ts": {
+    "size": 7443,
+    "mtime_ns": 1780955878982208305,
+    "hash": "7e25acb93d78434aae6766e13dfaee18f85ec7020516d761f7f1672608b74a8d"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/types.ts": {
-    "size": 345,
-    "mtime_ns": 1779833895177556506,
-    "hash": "aa5b67c4108dfb3a506456455696b3e1d14fc5c5a36f70f28e244120b0317804"
+  "/home/xava/Documents/nuxy/extensions/nyaa/nyaa-controller.ts": {
+    "size": 10536,
+    "mtime_ns": 1780943397075052421,
+    "hash": "f8b7ed06d1c692791c90809776071b16ad5e443e9f2a733c03b6fafb8fc0aa87"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/package.json": {
-    "size": 166,
-    "mtime_ns": 1779376636517389483,
-    "hash": "b7dfeb50afadd8d15526ad9f49675281cc7c07c9a8b91e2953ca2bbcec3bafb3"
+  "/home/xava/Documents/nuxy/extensions/nyaa/settings.json": {
+    "size": 1746,
+    "mtime_ns": 1780557146007327991,
+    "hash": "3f1b07545c08d41207d95606e431c8d2048bfdf721efb0f32b513e5b3875cd3c"
   },
-  "/home/xava/Documents/nuxy/extensions/theme-glassmorphism/theme.json": {
-    "size": 1058,
-    "mtime_ns": 1779547942739379864,
-    "hash": "5077ea0fe6ab0782241f2fec298e45792a317917c790ba43428bfaeb43dcee42"
+  "/home/xava/Documents/nuxy/extensions/nyaa/backend.ts": {
+    "size": 2925,
+    "mtime_ns": 1780557415352545712,
+    "hash": "8fee25fdd999720078c9838e347dbcc01238796d21b578f28a19f2e8a4f9f91c"
   },
-  "/home/xava/Documents/nuxy/extensions/theme-glassmorphism/manifest.json": {
-    "size": 176,
-    "mtime_ns": 1779394241418169778,
-    "hash": "39609c1c56773e1d701050f02fecb035cb89fe76b5898a503658ec1fccc46816"
+  "/home/xava/Documents/nuxy/extensions/nyaa/manifest.json": {
+    "size": 511,
+    "mtime_ns": 1780913874289343029,
+    "hash": "dcd5ded90da09169fdcd85735a7b72283af82f7c1627b3dc420a817aab2119f8"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/backend.test.ts": {
+    "size": 8910,
+    "mtime_ns": 1780573149220036676,
+    "hash": "f6705f369da516f330f3b3ee2cfec02de0a71166f4020476b12e9562d564f054"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/nuxy-tool-nyaa.test.ts": {
+    "size": 4408,
+    "mtime_ns": 1780955878982208305,
+    "hash": "9f2868032b7fb1082bbbe5dce17d1ed3f1a898e915c87c2be2cac28cd62647cc"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/types.ts": {
+    "size": 494,
+    "mtime_ns": 1780557128677724652,
+    "hash": "2c7bf20ef9d30b53eb76c66a07d84b1c770ce46c233cb58d2365cce7351d7c19"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/package.json": {
+    "size": 92,
+    "mtime_ns": 1780935306348503627,
+    "hash": "a4176508a8f2de97798fcf47429f75086e8080584cf3d02030e09fa7ebe616dc"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/locales/tr.json": {
+    "size": 1539,
+    "mtime_ns": 1780557324460605935,
+    "hash": "d0f02e6a5210e0f1e335d06eb73376f367d0ccf97783fa93692c7d33b4bff9ed"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/locales/en.json": {
+    "size": 1377,
+    "mtime_ns": 1780557312684637733,
+    "hash": "94ee0df7ddbf1c862da9e013400c712adcf1d59958ec22e40525d422be8eb0df"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/locales/ja.json": {
+    "size": 1695,
+    "mtime_ns": 1780557334902583333,
+    "hash": "8837124d236c6f392dc772a803876dd6a3186a2258ee3fee43a0edf5d0f982d1"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/utils/parse.ts": {
+    "size": 1882,
+    "mtime_ns": 1780508675359106409,
+    "hash": "994835748d5094bb27992d7fc301636d8146c47ac8a1d2155816712e2baf71c6"
   },
   "/home/xava/Documents/nuxy/extensions/gradient/frontend.tsx": {
-    "size": 5077,
-    "mtime_ns": 1780182494671289185,
-    "hash": "1e18d8f2262da8937025f30bdfcdc8f73f48f73bcfe6242716b0a46d61a3abc4"
+    "size": 1696,
+    "mtime_ns": 1780930674219027660,
+    "hash": "5906b1f81210b272cd06e92237777d480738fb79ccc18c780e13b9fd50da8cc8"
   },
   "/home/xava/Documents/nuxy/extensions/gradient/e2e.spec.ts": {
-    "size": 8053,
-    "mtime_ns": 1780178088721063180,
-    "hash": "8c1b351018be9517f46b7c4c4e08b290301963d9be640f284ae3fe6b1ce66d12"
+    "size": 7474,
+    "mtime_ns": 1780930903092679997,
+    "hash": "25e4a041c9a5992cf5ddb928945bead9017b77b9da7de4e3aa12e8785629c154"
   },
   "/home/xava/Documents/nuxy/extensions/gradient/gradient.ts": {
     "size": 39188,
     "mtime_ns": 1780176871417061763,
     "hash": "e115a6f5c0e2ec392c01eabc53b479c23088223bb070d64acc083d9ad6dc8ea0"
   },
+  "/home/xava/Documents/nuxy/extensions/gradient/nuxy-gradient-layer.ts": {
+    "size": 3491,
+    "mtime_ns": 1780930947203690665,
+    "hash": "b175793968a30823a58a44ebd39fd68634bcb3cb0a724d606597be9879fddf09"
+  },
   "/home/xava/Documents/nuxy/extensions/gradient/manifest.json": {
-    "size": 256,
-    "mtime_ns": 1780183048189133528,
-    "hash": "072f7b38f847341ca7921ef490bab350808d2e5b98db1291a464463d6d484709"
+    "size": 315,
+    "mtime_ns": 1780913833121563677,
+    "hash": "89e493870248cae0c1ecf012116cd59124ceed8bd6360d71c50f4ee63d747f23"
   },
-  "/home/xava/Documents/nuxy/extensions/calendar/frontend.tsx": {
-    "size": 34915,
-    "mtime_ns": 1780244663417696805,
-    "hash": "795aff23d788863493acb9c8d821bdfabba4f3468b3e80d07cb23a5d66fcfd2f"
+  "/home/xava/Documents/nuxy/extensions/gradient/package.json": {
+    "size": 96,
+    "mtime_ns": 1780860671695649787,
+    "hash": "8b152d113443e7e20bf5312905c41e302710a3c6ce6f98fae1b3c272f23fae20"
   },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-key-conditions.test.ts": {
-    "size": 8558,
-    "mtime_ns": 1780098766955269423,
-    "hash": "a6bb0184061f0e0c2a36f508dfb79668e09e94365b95edac1dad5d96a668833c"
+  "/home/xava/Documents/nuxy/extensions/gradient/utils/gradientColors.test.ts": {
+    "size": 1444,
+    "mtime_ns": 1780573148985034553,
+    "hash": "2abb6aff72be28573b0e2e3a93662947a4b8d35f35c616097f4a85bfd4dbce05"
   },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-key-conditions.ts": {
-    "size": 2415,
-    "mtime_ns": 1780154801291431154,
-    "hash": "633fca31064ccb7bc01ef7072fb944a5e475f8e7bd454fb7276123b00d8d5715"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-utils.test.ts": {
-    "size": 14305,
-    "mtime_ns": 1780154801318431331,
-    "hash": "8b4c868f091d7eba665c9e8e5b24d9ba4fcf07f7cab9f06963c3281efd9c183e"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-create-form.test.ts": {
-    "size": 3687,
-    "mtime_ns": 1780099246537894930,
-    "hash": "0cd48a2b0f23659f9fe10522e90acafb30d0dbf4b5037e0a055ef4a04d4e37b8"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-create-form.ts": {
-    "size": 1279,
-    "mtime_ns": 1780099260928827008,
-    "hash": "3cf97de00c9de8cf5f4a6fb36bd2d89d0de841618d16a6b9e8b76dbd4b81e7af"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-key-exclusivity.test.ts": {
-    "size": 5554,
-    "mtime_ns": 1780154801301431219,
-    "hash": "e47b36b348f6f91f5161e6104791cfada77d4bc33ebf997c3ee947780387ff66"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/backend.ts": {
-    "size": 5817,
-    "mtime_ns": 1780176871415896122,
-    "hash": "f52011a1660808c73a7cb5279c8c68488b6080612b81d2ee876926f64da75108"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-utils.ts": {
-    "size": 2298,
-    "mtime_ns": 1780098127697367259,
-    "hash": "64831d0c494de30c3ad9910e4cdd4e08faf7842fbc3b11dca0905edd508d9710"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/manifest.json": {
-    "size": 296,
-    "mtime_ns": 1780243998733278484,
-    "hash": "6f4f7e8cf1f85863d0afe220d7d2b80dbe1ed81d63254e928eecf3ad240f3cbb"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/backend.test.ts": {
-    "size": 18181,
-    "mtime_ns": 1780176871415781602,
-    "hash": "aa7df5cce7992e5435a731ba7d2947ecddf66f53f9c6bce4f0252ba74bf34699"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/types.ts": {
-    "size": 662,
-    "mtime_ns": 1779833899466493234,
-    "hash": "ae93b55a2547c2df99bd2b1edece2983d4508b630b2601e517e1d46f7495cebe"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/package.json": {
-    "size": 162,
-    "mtime_ns": 1779696802739199310,
-    "hash": "1884fb209e2f469f6d0d4ec854e97d86dc6f5d4967ba230b754e3cf330393fa2"
+  "/home/xava/Documents/nuxy/extensions/gradient/utils/gradientColors.ts": {
+    "size": 432,
+    "mtime_ns": 1780452786020357817,
+    "hash": "a56de5f6bdd83236d642aa10a563d527ec84a97b01348460b33862f995101c7d"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/safe-eval.test.ts": {
     "size": 3760,
@@ -1720,19 +2435,19 @@
     "hash": "c18bae2d040578a8521ec94e8ce1533cbabf13289a21e7757f1a2842aa6b8b65"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/backend.ts": {
-    "size": 969,
-    "mtime_ns": 1780176871415569251,
-    "hash": "3dda01c381354dde30b1c109cd92f4de958d852a9ab4e2e1e53aca1348437d8b"
+    "size": 742,
+    "mtime_ns": 1780506321630488372,
+    "hash": "ebe544352917077d94c0054bcb16f64b7e7bd2214ef352c2421ae979bc0ac167"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/manifest.json": {
-    "size": 288,
-    "mtime_ns": 1779834264794505164,
-    "hash": "ac1571eb0f183fab56c9b1b5bb6c17344f450ad9d6757d60bc231f67d14487de"
+    "size": 365,
+    "mtime_ns": 1780573148136622547,
+    "hash": "a81cb24de820a6891a31adc7dbf4c89e880f79c7f8ba0d484183c250b2d76428"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/backend.test.ts": {
-    "size": 1385,
-    "mtime_ns": 1780095635057645526,
-    "hash": "da059b5b255f17f93dca8016d324f7d0028590b3541604486137c7f4375b6974"
+    "size": 1377,
+    "mtime_ns": 1780398911374486741,
+    "hash": "695b9860659ce967ea175d5ec773e5e5f89beca3b95f46bfa30f8a925a4d95bb"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/types.ts": {
     "size": 159,
@@ -1744,35 +2459,25 @@
     "mtime_ns": 1779197400981645560,
     "hash": "86a4818826d2f71448f641cb0c51f2851c0d78ae28577201e7396f2e92e68829"
   },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/frontend.tsx": {
-    "size": 11360,
-    "mtime_ns": 1780176871418966034,
-    "hash": "4211efe359be354ae98b70a9a52503e4c19de4b4fbf5beec2009af7cd3cf0ede"
+  "/home/xava/Documents/nuxy/extensions/calculator/locales/tr.json": {
+    "size": 49,
+    "mtime_ns": 1780527137405574558,
+    "hash": "dad22cc167be1c111d31794df50796fd653b2da0b675ea8a4d30e26c45d5bcd2"
   },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/backend.ts": {
-    "size": 12998,
-    "mtime_ns": 1780176871418840384,
-    "hash": "19c8714ded46973ae6d18d4a1b9e91ec9c689e194b3764fcd5d2f4c5c7cab297"
+  "/home/xava/Documents/nuxy/extensions/calculator/locales/en.json": {
+    "size": 45,
+    "mtime_ns": 1780527136993570800,
+    "hash": "8159f9041efb1cbf130b7f977a51fd02cf94d58dd9bd2eb797eb084f0774b3d2"
   },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/manifest.json": {
-    "size": 326,
-    "mtime_ns": 1779834366503324914,
-    "hash": "215c703b6fc6ccd3d752bd251f1bf304cadc378cd2b9f6627a8e6d3618bd4923"
+  "/home/xava/Documents/nuxy/extensions/calculator/locales/ja.json": {
+    "size": 41,
+    "mtime_ns": 1780528352542288730,
+    "hash": "5c482fd528c237cdd6ef27ec35e2c1f423fe657b72c8a94580c7173df20a74a3"
   },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/backend.test.ts": {
-    "size": 13825,
-    "mtime_ns": 1780095642010633619,
-    "hash": "81e8b6272d9b9894c34a417483a8195808d8b8f7e5aaa9427408cacc192e63eb"
-  },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/types.ts": {
-    "size": 946,
-    "mtime_ns": 1779834210174298607,
-    "hash": "cb26ba720e0280ad6201c4adaeeae18faa0ad35f2c1ebdba6c54e5578b77ac31"
-  },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/package.json": {
-    "size": 169,
-    "mtime_ns": 1779376636517389483,
-    "hash": "fa6ddd855b38296f2ded8e87d08df146b8ce93a6231a896caea288ab03b08f33"
+  "/home/xava/Documents/nuxy/extensions/shell/shell-controller.test.ts": {
+    "size": 2175,
+    "mtime_ns": 1780923135986054858,
+    "hash": "0f1d3213536a70612fd0bd829d3074b302aafaf454a9adf333cebd53d15c4680"
   },
   "/home/xava/Documents/nuxy/extensions/shell/utils.test.ts": {
     "size": 6316,
@@ -1780,114 +2485,134 @@
     "hash": "5e857d2158ffcacfbb9a137a13fbf6f89c720c9c4151510e5098c11d5b9c7275"
   },
   "/home/xava/Documents/nuxy/extensions/shell/frontend.tsx": {
-    "size": 32529,
-    "mtime_ns": 1780245846040852246,
-    "hash": "7e5ae262737cc1e9fff6658588dc83882e8971349384f41ae3f6fa1dd996a1e1"
+    "size": 100,
+    "mtime_ns": 1780921161989745154,
+    "hash": "c3febf8b60e133325ba4e74a592672557ae5f840d74e9e9ac237b0c69c978da3"
   },
   "/home/xava/Documents/nuxy/extensions/shell/utils.ts": {
-    "size": 1510,
-    "mtime_ns": 1779833984999091449,
-    "hash": "459342c11b6e4f87d3f4136d12e1fbdffef397627d4950a5162d6348b5abc426"
+    "size": 1549,
+    "mtime_ns": 1780763355672582476,
+    "hash": "91b271c72bb7cbe38eee113cd1855afe8b0db023b2906c994d20bf844c99f8c5"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-result-card.ts": {
+    "size": 1779,
+    "mtime_ns": 1780955878982208305,
+    "hash": "ce83cb892f87908cf9098e102ab89e5f9cdee9685eeeec1145304e4420f6c268"
   },
   "/home/xava/Documents/nuxy/extensions/shell/e2e.spec.ts": {
-    "size": 24953,
-    "mtime_ns": 1780253735934779688,
-    "hash": "ff721353ac753c96ea947141ed66ef55a881594bdcfa821e520ea41100601eb4"
+    "size": 26492,
+    "mtime_ns": 1780930674677448489,
+    "hash": "4c30a09ed0ee9995ca473668c4767725d1749c7a188cabb7609a0f8de6ed77b5"
   },
-  "/home/xava/Documents/nuxy/extensions/shell/hooks.tsx": {
-    "size": 13137,
-    "mtime_ns": 1780246824880952468,
-    "hash": "061cdc2303fcdb9a066d52ebf3b5e758788352cdb4e543c1f1504aa29dd7571d"
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-command-palette.ts": {
+    "size": 7663,
+    "mtime_ns": 1780955878982208305,
+    "hash": "32abb6a7bae70b724447b83f8e946c3b8dc65de52de3f493a074e60c48dd77e4"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-compare-card.ts": {
+    "size": 2475,
+    "mtime_ns": 1780955878982208305,
+    "hash": "aae07b936f31dd5e8c68a02915e0b9b0db08b048bb6516b94843b693d8afff1b"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell-skeleton-list.ts": {
+    "size": 906,
+    "mtime_ns": 1780955878982208305,
+    "hash": "ce5b311673415614c9e2dfbdebf62e8cb1ee57ecdc27e4a9e77cd2c26149abc0"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell.ts": {
+    "size": 2415,
+    "mtime_ns": 1780914615313800215,
+    "hash": "a5ecc92ea428efc1c6affe5fcc3700f4b944b31113fd047927056993bf6d8ae5"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/shell-controller.ts": {
+    "size": 32798,
+    "mtime_ns": 1780929268142829377,
+    "hash": "634d3d5d5a90833a8f5335e2294c70e4c1da6a0db55d818218ee78c329c87484"
   },
   "/home/xava/Documents/nuxy/extensions/shell/backend.ts": {
     "size": 828,
     "mtime_ns": 1779833951001331706,
     "hash": "c9954574881ae796b24599e27b2d742f05d1456c8cf39feaeeaa069e36a549ca"
   },
-  "/home/xava/Documents/nuxy/extensions/shell/ResultCard.tsx": {
-    "size": 2651,
-    "mtime_ns": 1780176871418372814,
-    "hash": "2c023f4e0c5ca90a6b16200085d2d7af6589377804e351077129a66648a4ba55"
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell-view.ts": {
+    "size": 10417,
+    "mtime_ns": 1781039946769560006,
+    "hash": "6bb2ea0846e32e5eec96ceace8d2509c287674eab55cd1af875ae51dd74d639a"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-portal-host.ts": {
+    "size": 1021,
+    "mtime_ns": 1780919883946826029,
+    "hash": "c5164abcfe9a6a4f6715ceff5a93f5c34d00534524f36d50ab7f821e5583c7b3"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/shell-dom.ts": {
+    "size": 12540,
+    "mtime_ns": 1781039934438052846,
+    "hash": "a43bad3724c73ac625f8474054b5bccbd2a7f51ec8f6d7380d555470c4cb7df8"
   },
   "/home/xava/Documents/nuxy/extensions/shell/manifest.json": {
-    "size": 308,
-    "mtime_ns": 1780176871418672874,
-    "hash": "75d227438069ac557f4b11d1a6e395e937e32a62e6742b925a21c7a11a4551fa"
+    "size": 828,
+    "mtime_ns": 1780913833121563677,
+    "hash": "5aa92d5b905533ca5dcbf458af9eb55f5e44d99a252ceece521f954fddbc79c3"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell-resize-handles.ts": {
+    "size": 1860,
+    "mtime_ns": 1780955878982208305,
+    "hash": "ca5cd4c4f4e62cbc738c886bb51fe8291ca52d7760b459ecaf70e0e303f14771"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell-omni-bar.ts": {
+    "size": 4148,
+    "mtime_ns": 1780955878982208305,
+    "hash": "83faa3ef86db371958c1f5dd43edea149f34193125bce6addb2ab22f64705832"
   },
   "/home/xava/Documents/nuxy/extensions/shell/backend.test.ts": {
-    "size": 6720,
-    "mtime_ns": 1780095714878508815,
-    "hash": "6e56438221daf4eabf3a5549845b2a2ece7e4638e5ff2ce7a5224e268ddf55ca"
-  },
-  "/home/xava/Documents/nuxy/extensions/shell/CommandPalette.tsx": {
-    "size": 5490,
-    "mtime_ns": 1780245150763473205,
-    "hash": "990b5af7ea5ae008c35c131fed83e56a074219da50c0ca040cfc25cd9ad970cc"
+    "size": 6716,
+    "mtime_ns": 1780398911383032421,
+    "hash": "a731d2b455b1c618ad1e17416f662dd31a2fc6ddc9bcaf36af62d543a8c38a02"
   },
   "/home/xava/Documents/nuxy/extensions/shell/types.ts": {
-    "size": 1319,
-    "mtime_ns": 1780245131492438140,
-    "hash": "4f2701bc745c776ca9a5e2afeb8709412e68069f9f5a0a0e7852ce1d47dd0e1d"
+    "size": 1485,
+    "mtime_ns": 1780871392153659775,
+    "hash": "5112afacbfb6df77a1f24160f03a0d8c7207640291132641f1a99902383658ff"
   },
   "/home/xava/Documents/nuxy/extensions/shell/package.json": {
     "size": 93,
     "mtime_ns": 1779197400981645560,
     "hash": "bfec6e9e1c4e391dacd825ca47283f4504e18c38f818c89bd42d0b0c94d3fc79"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/frontend.tsx": {
-    "size": 23678,
-    "mtime_ns": 1780244653978684862,
-    "hash": "650941fac0a0d8a2cb1a77c71a61521074146eb36cfc976ac7e91c4b55901087"
+  "/home/xava/Documents/nuxy/extensions/shell/locales/tr.json": {
+    "size": 815,
+    "mtime_ns": 1780571778632288725,
+    "hash": "713b4b30fe8699a6184adbaae8e51cc6ae4d955c2fc8b9c4c6cab0253eae2e84"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/backend.ts": {
-    "size": 7520,
-    "mtime_ns": 1780176871416280932,
-    "hash": "f69d38c5444d32069d077a035f2027d00fefe8607ed60a838db9ad3f3d8f99ef"
+  "/home/xava/Documents/nuxy/extensions/shell/locales/en.json": {
+    "size": 778,
+    "mtime_ns": 1780571786901280481,
+    "hash": "3a50e8a4bd1d2bd04863ad7d29e322c8f4a703dcdec8d53d1d0df9bdbddc1058"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/manifest.json": {
-    "size": 321,
-    "mtime_ns": 1780176871416532022,
-    "hash": "4c1cbf2c3f1d895b4d7c8be94813d27e0403d5e275799a6e450dc9b03a5a5c02"
+  "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json": {
+    "size": 899,
+    "mtime_ns": 1780571792788274624,
+    "hash": "9c9cc5dc48d6e41e29c16da1601c6a8bafdc42bcb85b3700e95d9c9fc7fc071d"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/backend.test.ts": {
-    "size": 22089,
-    "mtime_ns": 1780095649074621523,
-    "hash": "bf2f800e57ed47d325294a72fa536267a06583eeb3d8fc5405b0d30da2bbe798"
+  "/home/xava/Documents/nuxy/extensions/shell/utils/zoom.ts": {
+    "size": 183,
+    "mtime_ns": 1780452839495793550,
+    "hash": "74d4994b3ec949d171709751098c91818b8b94a8994fe5fbfefe31ddfe692379"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/types.ts": {
-    "size": 204,
-    "mtime_ns": 1779833900799076950,
-    "hash": "b9d54f105923637c4b9734e45564c32e0541b55610c021fa325bfa658779d9f8"
+  "/home/xava/Documents/nuxy/extensions/shell/utils/zoom.test.ts": {
+    "size": 1029,
+    "mtime_ns": 1780453145439285079,
+    "hash": "87e5317dd5b6138aa83a59a7ff1514e32c84f2eefe10d1f47e79819afc505540"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/package.json": {
-    "size": 163,
-    "mtime_ns": 1779197400981645560,
-    "hash": "eb457d0c884274d521a0bdf70f2608168aecf9d62ff74954458760ff05bf47fa"
+  "/home/xava/Documents/nuxy/extensions/shell/utils/listResults.ts": {
+    "size": 3652,
+    "mtime_ns": 1780871392153322692,
+    "hash": "398863d4de4a7b6ba264ecf6a17a07436a52e5e3b1e4fc7c401bc52f1bd9421c"
   },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/frontend.tsx": {
-    "size": 6012,
-    "mtime_ns": 1780244645337674070,
-    "hash": "23ceac9fc4bcfa19506975f77fd0cbed0be13ac8405531fe858a887a12f30acd"
-  },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/backend.ts": {
-    "size": 5636,
-    "mtime_ns": 1780244426154346012,
-    "hash": "9dd69498fdf3c736b54a5a3ae4a775f05e4b725e9d1a86ebcbfadd117c33ac59"
-  },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/manifest.json": {
-    "size": 316,
-    "mtime_ns": 1780176871415201521,
-    "hash": "8a1367d88e130245047c07b9e681383cfc7a144c3d0d053e9a163a721de0b8dd"
-  },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/backend.test.ts": {
-    "size": 15800,
-    "mtime_ns": 1780095711005515450,
-    "hash": "35337fb29bb42929b7f57a27cf0fcb64d6a1eacc1f64d016b5e27c3271b5a0a1"
-  },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/types.ts": {
-    "size": 422,
-    "mtime_ns": 1779833912917062510,
-    "hash": "1c4d024ecc2bd8af2ffeea5ae2e54d3aa51b01db542e02f066678dbf07c1f12d"
+  "/home/xava/Documents/nuxy/extensions/shell/utils/listResults.test.ts": {
+    "size": 8226,
+    "mtime_ns": 1780871392153322692,
+    "hash": "a3c39f40710d8630946b89d74dce2bc4bce566e24eac74feb1f28a548e738c35"
   },
   "/home/xava/Documents/nuxy/features.md": {
     "size": 14110,
@@ -1895,9 +2620,9 @@
     "hash": "996f3e62a009cb0d276554441b2320658b73dbc52886f4b41ac9480491fe948c"
   },
   "/home/xava/Documents/nuxy/pnpm-workspace.yaml": {
-    "size": 102,
-    "mtime_ns": 1779197400981645560,
-    "hash": "3c7a83d1c0d3a9fdf3ef4df7f60556cb7ed16095994f1902f70b020ab1ceee8d"
+    "size": 158,
+    "mtime_ns": 1780860671699649793,
+    "hash": "1279135ddff7e23e5df1bb3df83887c6801e0bc354faea15803a3756cd08b9b3"
   },
   "/home/xava/Documents/nuxy/agents.md": {
     "size": 1599,
@@ -1905,24 +2630,84 @@
     "hash": "81e5761b49375b2922490c9d5709ff4ecee11cfd274f1e045fcea3698c9dedb0"
   },
   "/home/xava/Documents/nuxy/CLAUDE.md": {
-    "size": 8182,
-    "mtime_ns": 1780094049328314145,
-    "hash": "7a10e55c820f88f54a9479b293721762b81d6d65f53ae5249f9de3d6aea4c31a"
+    "size": 10581,
+    "mtime_ns": 1781041385684820113,
+    "hash": "6cfbcab61042911a51c864150c3c79e183fa683e6975bb0a5c2181e8e9227c3e"
   },
   "/home/xava/Documents/nuxy/eksik.md": {
-    "size": 4355,
-    "mtime_ns": 1780176871414421170,
-    "hash": "91f45c2fe2bbf52ea604264d12f3c3d54a32d41c3d6074221c839edcc8016ba0"
+    "size": 2196,
+    "mtime_ns": 1780759256719011686,
+    "hash": "1fc853f105a1d700ecd7711d57b743e45e70cc57083cd0ec4ebb5cd3d552bb58"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_gradient_02-06-2026_011606.md": {
+    "size": 28058,
+    "mtime_ns": 1780573154180007809,
+    "hash": "14bbf761695d04438de8a26944fa90e621345648431908b057a5ee3a128891ed"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_top8_02-06-2026_011131.md": {
+    "size": 48694,
+    "mtime_ns": 1780573154371006830,
+    "hash": "108c7cadfa29062b5e2f84008034143c93aa40d199ecb9647e4b779e784da9c4"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_video-downloader-frontend_02-06-2026_011606.md": {
+    "size": 37103,
+    "mtime_ns": 1780573154404006661,
+    "hash": "a9e3cb1d46b7b561cebfaeaa492a1922a8c9ba86345faa11810a1420b8225bf8"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_shell-frontend_02-06-2026_011606.md": {
+    "size": 56247,
+    "mtime_ns": 1780573154323007076,
+    "hash": "1ab3d33dec983891b9581e76e6d210c3a2e028b18dacbac072774edd11ad3fdd"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_scanner_02-06-2026_011606.md": {
+    "size": 36970,
+    "mtime_ns": 1780573154256007420,
+    "hash": "e7bed222acec95ee269ed08829ea8c32c15e0a827fd92cc9b125ca5dd656e141"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_calendar-frontend_02-06-2026_011606.md": {
+    "size": 53620,
+    "mtime_ns": 1780573154117008132,
+    "hash": "48890cd54f3f67e275c446398cc7808c52a039ffea713a8f9505a91107fed9a1"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_notes-frontend_02-06-2026_011606.md": {
+    "size": 42399,
+    "mtime_ns": 1780573154221007599,
+    "hash": "5760c62f4a4d6dac3b30d2059a973279fd10dc4766658988d4882fcef3eaa57a"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_settings-frontend_02-06-2026_011606.md": {
+    "size": 38297,
+    "mtime_ns": 1780573154285007271,
+    "hash": "64e6f2b81fb4cf8b2e7c9148eed9168923b037278c7e0687cbc13364ac4a2de5"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_clipboard-frontend_02-06-2026_011606.md": {
+    "size": 39528,
+    "mtime_ns": 1780573154158007922,
+    "hash": "99d6ae314e95767269e23e6e66402a108d15f5799a22d1a9358dcea578f01bfe"
+  },
+  "/home/xava/Documents/nuxy/.github/workflows/package.yml": {
+    "size": 620,
+    "mtime_ns": 1780871392153322692,
+    "hash": "531f7f68fa7331fa6f1bf08f69436c3e54656c2e9dacd0ccc57e34e7990bea4a"
   },
   "/home/xava/Documents/nuxy/.github/workflows/ci.yml": {
-    "size": 496,
-    "mtime_ns": 1779197507771089512,
-    "hash": "5148ffe867b826a4e0e1e2824273bf04218a3a0f40697918c87735f90f7d6d33"
+    "size": 699,
+    "mtime_ns": 1780871392153322692,
+    "hash": "39750f52123974ffabdc249d28b4c1bfc138e89a39aedac51098192ffc79b0f5"
+  },
+  "/home/xava/Documents/nuxy/.claude/commands/refactor/refactor-code.md": {
+    "size": 28429,
+    "mtime_ns": 1780351650798099686,
+    "hash": "d958b1c24999dc74816fd8266e0f582e6bc9d35d0acd64b779a4562f11048c68"
+  },
+  "/home/xava/Documents/nuxy/.claude/skills/react-doctor/SKILL.md": {
+    "size": 2646,
+    "mtime_ns": 1780860671695486390,
+    "hash": "582687055b0b578cb395e4c4c8c1b407168b405f69df4f5b482bfcfded6c9764"
   },
   "/home/xava/Documents/nuxy/src/index.html": {
-    "size": 302,
-    "mtime_ns": 1779351886853385416,
-    "hash": "b9382f9beb95c7f09603a97d72a54ecb08c4a9c0595fcf680e4eee58e80c00a4"
+    "size": 301,
+    "mtime_ns": 1780921161677748604,
+    "hash": "e351feb0790811ddf9b7bb383d1c1ba4c07b62b584066965bd762d541a16d9be"
   },
   "/home/xava/Documents/nuxy/src/electron-builder.yml": {
     "size": 846,
@@ -1940,19 +2725,34 @@
     "hash": "6a8337f51c3d04961628ece61f2e9ebd1f3df212ab14adba30f46622574dd0f0"
   },
   "/home/xava/Documents/nuxy/packages/ext-template/README.md": {
-    "size": 649,
-    "mtime_ns": 1779197400981645560,
-    "hash": "17121701aa577206c6728fbdb61e231547477c0bf56622e50933bfa6bbd64789"
+    "size": 966,
+    "mtime_ns": 1780756991600383182,
+    "hash": "7c216a4b401ac9d44e3de4ebe17603ecfe3b16b8ceb8b9de0d639452a11c0c8f"
+  },
+  "/home/xava/Documents/nuxy/packages/nxt/README.md": {
+    "size": 1602,
+    "mtime_ns": 1780860671698649791,
+    "hash": "86e1c507b70533fe50074689b8cfd4b4efab45da9ac1e1f2dee111fec958d9b5"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/index.html": {
+    "size": 750,
+    "mtime_ns": 1780944983845044003,
+    "hash": "a3293c6f987170a761adebf25d922bc1aa7d8024747cb1a0d119df70c758fa0b"
+  },
+  "/home/xava/Documents/nuxy/docs/22-store-extension.md": {
+    "size": 8004,
+    "mtime_ns": 1780573147324043145,
+    "hash": "1eb12639c59b27e4dbf9fe382b6a4d5bae52b019d589e491d75e8d007e1d6543"
   },
   "/home/xava/Documents/nuxy/docs/02-architecture.md": {
-    "size": 2534,
-    "mtime_ns": 1779351885901751263,
-    "hash": "c747be8392728726f96ed55c42c3a74297ed9be11bc13b71dc6aa1f0fdaea639"
+    "size": 3820,
+    "mtime_ns": 1780955878979641174,
+    "hash": "e4b44fdde30975f44a305670d54073173d0d4411b793495f4b52fe51efee4dca"
   },
   "/home/xava/Documents/nuxy/docs/DOCUMENTATION.md": {
-    "size": 2744,
-    "mtime_ns": 1779351886203388782,
-    "hash": "bdfc7128d7f011d09cb89411e889428f6bdf5fb134e73b65c4ce2e97c1837978"
+    "size": 3548,
+    "mtime_ns": 1780573147521042125,
+    "hash": "3002ed7f54f6012d7ff6ecaab8193d32934419c9b8144ccdbecc8fc2b4383aab"
   },
   "/home/xava/Documents/nuxy/docs/planned-extensions.md": {
     "size": 18186,
@@ -1960,9 +2760,9 @@
     "hash": "1efaee96798b256b1e518608476858a5c24da4292c34f2f62ab4159eca717358"
   },
   "/home/xava/Documents/nuxy/docs/05-api-design.md": {
-    "size": 3505,
-    "mtime_ns": 1779351885953390076,
-    "hash": "65e72d8c7015e261b3842a999e4b7aefe3875c401ae06d6ad9e4c0e76a8f9686"
+    "size": 4384,
+    "mtime_ns": 1780955878979641174,
+    "hash": "a68b0ba3d6874e431fee25bdc0b77ca9faa708b622c9e1bfa7fb2411f348d84f"
   },
   "/home/xava/Documents/nuxy/docs/20-logging.md": {
     "size": 4325,
@@ -1970,34 +2770,49 @@
     "hash": "3564ecfc54bc7b7f5b14ea9d0d1c40e77179559ef07d6b8df80ca63dc5a7cc83"
   },
   "/home/xava/Documents/nuxy/docs/11-performance.md": {
-    "size": 2128,
-    "mtime_ns": 1779351885998389844,
-    "hash": "2284a5118d8d4ba90b382b6351eae13df7c4a1461d8b0c6b7645fe367ae1bc12"
+    "size": 2148,
+    "mtime_ns": 1781041405561709720,
+    "hash": "0a4f7ec7adac2a4ed301655690bc3f575aca08f4e1308f7bb87e18432ae773dc"
+  },
+  "/home/xava/Documents/nuxy/docs/comprehensive-overview.md": {
+    "size": 36340,
+    "mtime_ns": 1780955878981364334,
+    "hash": "6dd62c7323828b58f38da30094321e71b47747a61b7caad3219c68121f18b8e8"
+  },
+  "/home/xava/Documents/nuxy/docs/extension-simplification-report.md": {
+    "size": 20680,
+    "mtime_ns": 1780573147545731071,
+    "hash": "2400144f3dd52ec94e8b452122b28f6f001b9c281beb3a828fe5244e890b5948"
   },
   "/home/xava/Documents/nuxy/docs/10-security.md": {
-    "size": 4595,
-    "mtime_ns": 1779351885993248192,
-    "hash": "8f3808443b4a13550dc8f97d16c423f178c649515d688be856ac08f24b273c58"
+    "size": 5740,
+    "mtime_ns": 1780955878979641174,
+    "hash": "7d64d3a00b30606b2fa61f482b075178cab076920b6b8c1ca62c372110520d0b"
   },
   "/home/xava/Documents/nuxy/docs/00-overview.md": {
-    "size": 2179,
-    "mtime_ns": 1779351885891390397,
-    "hash": "fa249846ba2ce6a698c6b26d81149b81c2963187a30c3bd651bc95f00c82b801"
+    "size": 3331,
+    "mtime_ns": 1780955878979641174,
+    "hash": "e4af9385f46f42acc095b7cbf3c82ff59e765355ba6ed61b0e4a44cb20ba0ca3"
   },
   "/home/xava/Documents/nuxy/docs/01-system-analysis.md": {
-    "size": 1562,
-    "mtime_ns": 1779351885897899492,
-    "hash": "9fe464b6e1e8a8c65e24185f451aa0f029116508c682e29caecd72784e875f18"
+    "size": 1578,
+    "mtime_ns": 1780955878979641174,
+    "hash": "19a242b500bd951d70ace0a269827c8ef13a4c035fd95c42baa36e6e036aba29"
   },
   "/home/xava/Documents/nuxy/docs/14-rebuild-roadmap.md": {
-    "size": 2268,
-    "mtime_ns": 1779351886019389735,
-    "hash": "80878930feb944186926e1917e7ad763616331932286eb7ec8dca6d131d08c96"
+    "size": 3090,
+    "mtime_ns": 1780955878979641174,
+    "hash": "43097b9defcce3ad31e214c2c121b7470dc25e7f7d89d4f2ff17b73c0521c4b3"
   },
   "/home/xava/Documents/nuxy/docs/18-advanced-capabilities.md": {
-    "size": 2732,
-    "mtime_ns": 1779351886049389580,
-    "hash": "761742283f470b50e2d89fa6a2847e348a24abb8225f807faa8125b76493ffdd"
+    "size": 2724,
+    "mtime_ns": 1780955878979641174,
+    "hash": "8a7ab016a46d3e721c8916f1337305af00e0ac03ed04554977d1f2d5f91e25bc"
+  },
+  "/home/xava/Documents/nuxy/docs/static-colors.md": {
+    "size": 6797,
+    "mtime_ns": 1780573147765040862,
+    "hash": "33f4ed1d89bcdedd6460017a97266013c6afc0585790e816c4d9b99c81effaeb"
   },
   "/home/xava/Documents/nuxy/docs/redundant_tests_audit.md": {
     "size": 13769,
@@ -2005,89 +2820,94 @@
     "hash": "2d3412b79cb326c511d945f93fc68c6ebb1e09f767d04e31e406851ba2c4aa4d"
   },
   "/home/xava/Documents/nuxy/docs/implementation-plan.md": {
-    "size": 3344,
-    "mtime_ns": 1779142759161315296,
-    "hash": "37e7f77aec7abc2b1eae7e19fca2ee824df1adf179d68e3aae7a4281e9ffc13b"
+    "size": 3412,
+    "mtime_ns": 1780955878981364334,
+    "hash": "0132367c5f2d0faff89cc0040d072a95f5096c0d554445fd19657a7962a1fe0c"
   },
   "/home/xava/Documents/nuxy/docs/mvp-plan.md": {
-    "size": 2228,
-    "mtime_ns": 1779351886270388435,
-    "hash": "5b7f24deb78db80376df0411e6da787b2c6e2a7715e43a08b4723c0cee8263c3"
+    "size": 2287,
+    "mtime_ns": 1780955878981364334,
+    "hash": "486bf0dbc8967c8a2ae1e6a09c0bf35fbe3c808af5c377dfdb9ea60afcd01963"
   },
   "/home/xava/Documents/nuxy/docs/06-state-management.md": {
-    "size": 2476,
-    "mtime_ns": 1779351885964390020,
-    "hash": "a95b081b2a1b104a0bbb0e19afea79ca0f6a6c3e287242f41dbd6cea479be1ee"
+    "size": 2708,
+    "mtime_ns": 1780955878979641174,
+    "hash": "a57de24879b8f0a6ee6ac09c5497fa94e132d5ec22188ad159af464976408f19"
   },
   "/home/xava/Documents/nuxy/docs/13-deployment.md": {
-    "size": 2420,
-    "mtime_ns": 1779351886014418777,
-    "hash": "17f08205be576e105b05a7a08ea18bed01ee0273369802a0571d91f435ca5370"
+    "size": 2423,
+    "mtime_ns": 1780955878979641174,
+    "hash": "11a006a8fa899369f5ad96e3d2ef8a6b7b413ee314f3d08a4e9f839c3db33b99"
   },
   "/home/xava/Documents/nuxy/docs/15-modular-plugin-system.md": {
-    "size": 3540,
-    "mtime_ns": 1779351886028652607,
-    "hash": "be8069408b9742f420dac5d2605a3e54c9edb0569c827562a9a38ad150480ca8"
+    "size": 4781,
+    "mtime_ns": 1780955878979641174,
+    "hash": "c5fe7718a3a903fd598b68f635b0d12a11ae6afaeca37371d0a58eae95fe102f"
   },
   "/home/xava/Documents/nuxy/docs/09-error-handling.md": {
-    "size": 2441,
-    "mtime_ns": 1779351885984389916,
-    "hash": "fc89f52b1bbc36441172b9358df3e5c2b997bd68771c296fd3c1f1a0e3b2c147"
+    "size": 2362,
+    "mtime_ns": 1780955878979641174,
+    "hash": "17a53726b331832339f99c9ec8a22d0dd864d6dcdf60b6f02e3eac0b40917bb5"
   },
   "/home/xava/Documents/nuxy/docs/structure.md": {
-    "size": 2487,
-    "mtime_ns": 1779197401197646851,
-    "hash": "d5e980637f8cbdb29ed4bb93aefc4b4bbcf973d0cd2a87b36bf01a2506600bab"
+    "size": 3249,
+    "mtime_ns": 1780955878981641175,
+    "hash": "35329df7fc7d536497173e1a643679956cf32cf3c5a9b432745a54ab7321dec9"
   },
   "/home/xava/Documents/nuxy/docs/08-authentication.md": {
     "size": 2040,
-    "mtime_ns": 1779351885977050722,
-    "hash": "f0f728ddeccca71360c2f6d9c607b21bbaed068faffbbc1790c80aa1c56132b4"
+    "mtime_ns": 1780955878979641174,
+    "hash": "8f54d5461d6c4ea10eceb1e60beb35522ca996201353e073d38eedae7bd2e50f"
   },
   "/home/xava/Documents/nuxy/docs/16-omni-input-system.md": {
-    "size": 4666,
-    "mtime_ns": 1779351886036389647,
-    "hash": "7a34549e67caa70d62d05b1566b4ce8e6d6954c4606bf780e9bcaadb456e586f"
+    "size": 5318,
+    "mtime_ns": 1780573147256043496,
+    "hash": "31e7f28a020612792aedb5b58b5647a88be1d14c1eb6806a6ec98c7e8875e9a8"
   },
   "/home/xava/Documents/nuxy/docs/pain-points-plan.md": {
-    "size": 16477,
-    "mtime_ns": 1779351886288388342,
-    "hash": "d6354c4c732b5bc2e2880587c0901d17f82340d47a27b29591a28145e07c7d10"
+    "size": 18356,
+    "mtime_ns": 1780955878981364334,
+    "hash": "ce236cdd9ad8e1d9867ab64f673103500d92c8ced855998118b81e9c18154b7a"
   },
   "/home/xava/Documents/nuxy/docs/21-extension-access.md": {
-    "size": 18161,
-    "mtime_ns": 1779351886082389409,
-    "hash": "02d4eaf691cb4f1a37a47bdfe230cb9d89ccc1ce8375c0b5ffb1706a6fc95eeb"
+    "size": 18971,
+    "mtime_ns": 1780955878980641175,
+    "hash": "adc7a8c7ff3caf68ec0f64daae2db32e78133a432e68a64603bb251b450d83a8"
   },
   "/home/xava/Documents/nuxy/docs/README.md": {
-    "size": 5773,
-    "mtime_ns": 1780176871413003239,
-    "hash": "9431b74c34f733af93181153fc9a407e6a292c3f69f555b532f13e0e6ffea11c"
+    "size": 6127,
+    "mtime_ns": 1780943546645770086,
+    "hash": "e40506ed82d7b5cf0df880f91718406fd55bbf3cdab1b8fd7907c6891ceabab4"
+  },
+  "/home/xava/Documents/nuxy/docs/known-bugs.md": {
+    "size": 12886,
+    "mtime_ns": 1780871392153322692,
+    "hash": "0e016faaf4a053afe9f91ad69a8fb43e72ea3c3547262b250bd6008fabb2382a"
   },
   "/home/xava/Documents/nuxy/docs/raw-html-elements-report.md": {
-    "size": 14371,
-    "mtime_ns": 1780094049800313387,
-    "hash": "3dc33d01b57953f016bb449fcbf43bd4babc6d9fe7b9ca918b59c70dfc1455f0"
+    "size": 14494,
+    "mtime_ns": 1780955878981364334,
+    "hash": "1621529834fb61fa6bdef43e8f78f10765978c556acef8e493941327f8d86a2b"
   },
   "/home/xava/Documents/nuxy/docs/12-testing-strategy.md": {
-    "size": 2827,
-    "mtime_ns": 1779351886006932924,
-    "hash": "6460448ea75efa60d732d17c47cb9d587899c496389069552b41f4d6f40d692b"
+    "size": 3567,
+    "mtime_ns": 1780955878979641174,
+    "hash": "7e9a680e5bdeb8f6b3b290a148c168ed9f61818650c6b3afc7c900cd70bb6bdd"
   },
   "/home/xava/Documents/nuxy/docs/04-modules.md": {
-    "size": 2491,
-    "mtime_ns": 1779351885910825398,
-    "hash": "0adcde115de4fb0763ac24c4338c69bd18ce9d1165fc0bda7d2c9ec5049e099e"
+    "size": 2515,
+    "mtime_ns": 1780955878979641174,
+    "hash": "08354027a83af0973414715da54b696be2f29b87f6a52867e33a5d47f968a047"
   },
   "/home/xava/Documents/nuxy/docs/17-frontend-extensions.md": {
-    "size": 4976,
-    "mtime_ns": 1779351886045710153,
-    "hash": "0cf580f5111c8c9c0fe9f9be3ba5bde9a493e51d2b9188e224a8ef2cae651688"
+    "size": 4933,
+    "mtime_ns": 1781041409234689396,
+    "hash": "eff416c51a9bd0cd38b8dae870853a77e3770a84d26a36d8f88d99d141b68357"
   },
   "/home/xava/Documents/nuxy/docs/03-data-flow.md": {
-    "size": 1772,
-    "mtime_ns": 1779351885904532699,
-    "hash": "9197f264abcccaae1d6f397123231ab30fd63aebb81ff1266b9bfbd9baf600d4"
+    "size": 1784,
+    "mtime_ns": 1780955878979641174,
+    "hash": "7a863440e55c9edaad89e0ef725fb725142098806b8bc81cdb71f17a61933516"
   },
   "/home/xava/Documents/nuxy/docs/MASTER_CLEANUP_SUMMARY.md": {
     "size": 24442,
@@ -2095,9 +2915,9 @@
     "hash": "e6c18637a261d3a8d5366c11f305ecb514606062f5b320a176e620f01f4cf4c4"
   },
   "/home/xava/Documents/nuxy/docs/architecture.md": {
-    "size": 2770,
-    "mtime_ns": 1779142759157888506,
-    "hash": "f3a15753240e5ed6c5c19457b63ebd68d68798d38b2e50ae3477b045d1e9a86a"
+    "size": 3969,
+    "mtime_ns": 1781041412788669753,
+    "hash": "4c0c0bbaf1a4d47a18dfae73ff17d4885dec80b650b23c82357e81f53fa99e85"
   },
   "/home/xava/Documents/nuxy/docs/hardcoded-px-report.md": {
     "size": 23737,
@@ -2105,14 +2925,29 @@
     "hash": "d7088aa12809d3b783a2d97d7206b5e9e45d0184c341be0591785256e06370c2"
   },
   "/home/xava/Documents/nuxy/docs/electron-fix-plan.md": {
-    "size": 3538,
-    "mtime_ns": 1779351886207388761,
-    "hash": "ce3e9072af52e45e611252e02e5ab3f5619b8391cb98ef022dfe5fbf66036eb5"
+    "size": 4413,
+    "mtime_ns": 1780955878981364334,
+    "hash": "237c14b01e07183c1fed79055cdcd6797caa58aa0ee90e7248dc38ba1595c599"
+  },
+  "/home/xava/Documents/nuxy/docs/open-issues.md": {
+    "size": 3054,
+    "mtime_ns": 1780759264169000738,
+    "hash": "dcd7371063125d6250b82d0f3ba573e519645629c07fb84e5cd898bcd03933d4"
+  },
+  "/home/xava/Documents/nuxy/docs/react-to-lit-migration.md": {
+    "size": 12364,
+    "mtime_ns": 1780943641649776869,
+    "hash": "aefdff9fe109880c6dc9857c0a4f5e2a6c55c11447221f8e03143c8c86b57dbe"
   },
   "/home/xava/Documents/nuxy/docs/19-mvp-roadmap.md": {
-    "size": 3506,
-    "mtime_ns": 1779351886054389554,
-    "hash": "af6bd1af85a1d71de1c5d84ddbfbf411aa01125c3147373687e7c4394faf0817"
+    "size": 4598,
+    "mtime_ns": 1780955878979641174,
+    "hash": "c0ed7da918e2c0ffe65c65989d9bb44ec33f713f497e7e2f82e139352febb6a0"
+  },
+  "/home/xava/Documents/nuxy/docs/test-roadmap.md": {
+    "size": 7443,
+    "mtime_ns": 1780573147779069674,
+    "hash": "18d43bebaba2af9e81909c595d3bd194ac3c23d4c7d34d89e1edca36217d5918"
   },
   "/home/xava/Documents/nuxy/docs/07-database-design.md": {
     "size": 2206,
@@ -2120,14 +2955,14 @@
     "hash": "b312fc0f3c59b0fd5aad4df164560ec68b420b3b96c256c1f89290e0ae767125"
   },
   "/home/xava/Documents/nuxy/docs/restructure-plan.md": {
-    "size": 25475,
-    "mtime_ns": 1779351886325388150,
-    "hash": "a32491effd093d686e7a4bdf105153cbebdcea2119dca843a7dad3c6b61fdf94"
+    "size": 25567,
+    "mtime_ns": 1780955878981641175,
+    "hash": "a27854f3607f0fac3c3f27f59581cf9e58b5916c80c4a43d9a510ee906b5302f"
   },
   "/home/xava/Documents/nuxy/docs/performance/performance-report.md": {
-    "size": 16713,
-    "mtime_ns": 1779351886306388249,
-    "hash": "1c6f2f79e2f3500accdf67bc2f13525ea9e7f9de6864676d72d119c71bab1860"
+    "size": 16890,
+    "mtime_ns": 1780955878981364334,
+    "hash": "f63395aae0fad7cbe16ccc7e1ce40a5eb86672b10ed666a5da1e87517900ca69"
   },
   "/home/xava/Documents/nuxy/docs/changelog/2026-05-18.md": {
     "size": 767,
@@ -2140,9 +2975,9 @@
     "hash": "ccbe60a47833d4e0e8f9efcb01863c2bb19c6e856d9b11718ee626e3d90a5e19"
   },
   "/home/xava/Documents/nuxy/docs/cleanup/dependency-report.md": {
-    "size": 17681,
-    "mtime_ns": 1779351886148000287,
-    "hash": "373c07bb32d1e72136b322de1bb596706cb431d76a8d9c9ee57d01c611b905b3"
+    "size": 17858,
+    "mtime_ns": 1780955878980641175,
+    "hash": "76efe60d9294603bac4ae94bfc3a864802a7822994005d5d2e3add45d226a03d"
   },
   "/home/xava/Documents/nuxy/docs/cleanup/dead-code-report.md": {
     "size": 7313,
@@ -2150,14 +2985,49 @@
     "hash": "5739759c6d0efb491b75ff8d4d198420945a063e718b5865e4c4135fa245783a"
   },
   "/home/xava/Documents/nuxy/docs/cleanup/naming-report.md": {
-    "size": 11556,
-    "mtime_ns": 1779351886201231385,
-    "hash": "e7e5551119d0d715967cdb1d604f3ab1d004118a9d5ec239a9b6072b2694aca2"
+    "size": 11733,
+    "mtime_ns": 1780955878980641175,
+    "hash": "aec5464be2a23c95d4e2049915b43a757f7649dc0bbf3d82778c804c38e503fe"
   },
   "/home/xava/Documents/nuxy/docs/cleanup/documentation-audit-report.md": {
-    "size": 20572,
-    "mtime_ns": 1779351886188388860,
-    "hash": "dbce790a1e51493198836ffa5352b4f315931ea15e99f4b1c6ab751971465cd4"
+    "size": 20780,
+    "mtime_ns": 1780955878980641175,
+    "hash": "fd736f78b64b859ffafb92606446073c96eb1f7438169f44f0ae33727eb31136"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/00-genel-bakis.md": {
+    "size": 2967,
+    "mtime_ns": 1781040863186084250,
+    "hash": "5fd518fd4c140f2060349fd0d4eb76d17f2e8f8b34c090ba5cc8c7940436c23e"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/06-yeniden-yazirim-plani.md": {
+    "size": 12052,
+    "mtime_ns": 1781041324095166776,
+    "hash": "b5dba7785e1ca0b031a7aedde155773eb6897f0940fc29711130c614f28b1175"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/02-ui-components.md": {
+    "size": 8195,
+    "mtime_ns": 1781041027347963375,
+    "hash": "0588925637e69b0062239ad39608ad95daaf0a2367d32f38556400f9349d134b"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/01-shell.md": {
+    "size": 14352,
+    "mtime_ns": 1781040967946355982,
+    "hash": "d01904c995286aae841b0598faadd0419b004d1e1d150bc34f1789f202b5510b"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/05-electron-renderer.md": {
+    "size": 5853,
+    "mtime_ns": 1781041253962570892,
+    "hash": "a45ab1b7ac05be81d3daf84682151a04aa16539fa6f654c3adbdb6805bf2a8e9"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/03-packages-core.md": {
+    "size": 5322,
+    "mtime_ns": 1781041175834034557,
+    "hash": "3ae5c94ed593d73a2044f447d010d35563e1b93bdfc9a072c364769074e964cf"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/04-extensions.md": {
+    "size": 4939,
+    "mtime_ns": 1781041211562820626,
+    "hash": "cb1cf7cc6d56eb6051a19592d241789e1ba366d0a0cd4fb5ae9a8818d9bcd08d"
   },
   "/home/xava/Documents/nuxy/docs/ui/ui-cleanup-report.md": {
     "size": 6195,
@@ -2165,14 +3035,19 @@
     "hash": "02f14465a4daf775dcaca14ac46ebfdbc7779ea6c24208b9d2f03eeb4289eea6"
   },
   "/home/xava/Documents/nuxy/docs/architecture/extension-system-v2.md": {
-    "size": 9517,
-    "mtime_ns": 1780094049553313784,
-    "hash": "1858ab7dea0041b29f4dadcf73eddd490840504aa6024b74a982133351cedb4c"
+    "size": 9574,
+    "mtime_ns": 1780955878980641175,
+    "hash": "88a406e57316170db91562fd015c307d807561a074a436872c61035c5d6a163f"
   },
   "/home/xava/Documents/nuxy/docs/architecture/refactor-plan.md": {
-    "size": 24085,
-    "mtime_ns": 1779351886116389233,
-    "hash": "c1decc5663f3459f55ab346bf54d48b78d55940e57d5bca88b1e0c21195b7467"
+    "size": 23984,
+    "mtime_ns": 1780955878980641175,
+    "hash": "1a34b2f65bffd17c5ddaadb0603a8c886231822c74c0e6664b688ff3c39c965f"
+  },
+  "/home/xava/Documents/nuxy/docs/architecture/lit-renderer-composition.md": {
+    "size": 22706,
+    "mtime_ns": 1780943568488087246,
+    "hash": "fab7bbbd34094735306548463ca21d0acdb20421d2ca6d727bb49c6fefd79474"
   },
   "/home/xava/Documents/nuxy/docs/project-analysis/03-future-evolution.md": {
     "size": 4909,
@@ -2180,44 +3055,104 @@
     "hash": "97e68d6b66af72f18670bdc0d85e8f605d9e50a0c6b6439b345c9010c79edc09"
   },
   "/home/xava/Documents/nuxy/docs/project-analysis/02-extensions-review.md": {
-    "size": 11745,
-    "mtime_ns": 1780176871414110500,
-    "hash": "dab7b64274b094dc9b10e08556376203fabf4445de8d04f1184ede84292bd301"
+    "size": 11751,
+    "mtime_ns": 1780955878981364334,
+    "hash": "336ed74905112ef3fa6dcc85d1703f5817837f02f782be75175b2f415c06ac72"
   },
   "/home/xava/Documents/nuxy/docs/project-analysis/01-general-overview.md": {
-    "size": 4945,
-    "mtime_ns": 1780176871413003239,
-    "hash": "8686ed1cf69abfe58c86e4190eeba6418f5fcaa83c9db4540e9a197fc5f69277"
+    "size": 4974,
+    "mtime_ns": 1780955878981364334,
+    "hash": "5a4de0aa796f21d6ff279891cad7d35dfa0aa48a8dc2b029331318527bb77102"
   },
   "/home/xava/Documents/nuxy/docs/types/type-safety-report.md": {
-    "size": 19005,
-    "mtime_ns": 1779351886359387974,
-    "hash": "6929f4fb840608ded625c07db90424c40fa1ae83c08586f3b98b22eb25441a91"
+    "size": 19201,
+    "mtime_ns": 1780955878981641175,
+    "hash": "58071e986ba5c365e9ab0bc00e43645dc6b4eb832e310aaf3fd30c2aa63230ac"
   },
   "/home/xava/Documents/nuxy/docs/implementation/02-core-infrastructure.md": {
-    "size": 3508,
-    "mtime_ns": 1779351886227388658,
-    "hash": "39bba8abfd00001dc70bc230a0b876ef8a8191a0ea93bf6552e7c6e59475888d"
+    "size": 3520,
+    "mtime_ns": 1780955878981364334,
+    "hash": "4d54ac50d2e4773e916af53a8d2a2fbb8588e22ca040bfab78b066f358e6b081"
   },
   "/home/xava/Documents/nuxy/docs/implementation/01-setup.md": {
-    "size": 2859,
-    "mtime_ns": 1779351886217388709,
-    "hash": "082dcb3de1f1e54bf13188c3d3ea452392e3cc78a15ce311ba2d5e5b0df79665"
+    "size": 2863,
+    "mtime_ns": 1780955878981364334,
+    "hash": "d036e7b79b0a0b3b4aaa2946396f4ed3e9c6a9d27589e9ebcdcfc8b9662b2f28"
   },
   "/home/xava/Documents/nuxy/docs/implementation/04-integration.md": {
-    "size": 3835,
-    "mtime_ns": 1779351886243388575,
-    "hash": "fd6300ac938b7e2ceb8c846e3ca57446eb691d324a0db1a0a7ea404efbf27128"
+    "size": 4104,
+    "mtime_ns": 1780955878981364334,
+    "hash": "3bb34acef8de9403e593790ea247447bb8f7ba64c145fea83bb6a353de196906"
   },
   "/home/xava/Documents/nuxy/docs/implementation/03-feature-implementation.md": {
-    "size": 2793,
-    "mtime_ns": 1779351886234388622,
-    "hash": "a157d498b6846f7bbc60aed779a878ce30bcd08ee7ba8c1d29cc4beda298a39f"
+    "size": 3100,
+    "mtime_ns": 1780955878981364334,
+    "hash": "5e37d94287a4ad2e6e104d36084434dfc48d4172384da63cf3008988a6846628"
   },
   "/home/xava/Documents/nuxy/docs/implementation/05-final-polish.md": {
-    "size": 2517,
-    "mtime_ns": 1779351886249388544,
-    "hash": "16450f3feeee03d56cd4903b3814c98f2ecd73e6c48a7e73cebdd0b26e1b4d95"
+    "size": 2430,
+    "mtime_ns": 1780955878981364334,
+    "hash": "9867039c96080a0ef69d9866692294deff947a1f005448f40d0a08a03d8c84ae"
+  },
+  "/home/xava/Documents/nuxy/website/docs/index.md": {
+    "size": 1554,
+    "mtime_ns": 1780955878985641178,
+    "hash": "9ec0d90ccf009d98ca13d8f93cd78a35c9822f4ee4ed12cac132754472e151e7"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/configuration.md": {
+    "size": 4309,
+    "mtime_ns": 1780573155014345151,
+    "hash": "7057542dc077ec11c7e56e1c9f780b9a7c0bcd1d03b4afafeabd2575bf4c0a9d"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/security.md": {
+    "size": 5762,
+    "mtime_ns": 1780573155047003364,
+    "hash": "4bcc1c5104d2a4021e061b0c6004253dd9b66974df2cc2dc5c6dd1ee99ca8cad"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/installation.md": {
+    "size": 2649,
+    "mtime_ns": 1780487926776601452,
+    "hash": "ef31fe45ddb67de8a3c784ac56fe0eb869eaecac5e28cf2b099bcd0d7ac476d0"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/extension-system.md": {
+    "size": 5514,
+    "mtime_ns": 1780955878985641178,
+    "hash": "245d1f7aa779b3a5d51c719eab2880deafd9fca29bac0e6e78c4994ff6528f5d"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/ipc-kernel.md": {
+    "size": 6119,
+    "mtime_ns": 1780573155039003405,
+    "hash": "3fa5ee7b2804b556996b011fbb9a65eb49c69a6c43fd22650825e421a2f4a37a"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/architecture.md": {
+    "size": 6658,
+    "mtime_ns": 1780955878985641178,
+    "hash": "38c54c43b62e87c1f6f2411c2e5fa5ab21a864851c6c59c94f8979d95c34e9ea"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/what-is-nuxy.md": {
+    "size": 4122,
+    "mtime_ns": 1780955878985641178,
+    "hash": "720094ff177ba8001ec7090897ef0870ccbbadaca0a16d0008883076ebc754b6"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/getting-started.md": {
+    "size": 3208,
+    "mtime_ns": 1780573155026003472,
+    "hash": "cab243d2c1057dd0ef42f51dfb45326cf1b3b7d98a03cfd3744e24e6c391c85e"
+  },
+  "/home/xava/Documents/nuxy/website/docs/extensions/first-extension.md": {
+    "size": 8500,
+    "mtime_ns": 1781041416496649281,
+    "hash": "91185e5dc78536fc0d4aa3e042c14bf10feb26efefee2a70120639c904ed020f"
+  },
+  "/home/xava/Documents/nuxy/website/docs/extensions/manifest.md": {
+    "size": 10315,
+    "mtime_ns": 1780955878985641178,
+    "hash": "abaec427f39ba54f40056fac14ec0d8d3e13dad0e3d47114c20ac3135d3328ef"
+  },
+  "/home/xava/Documents/nuxy/website/docs/extensions/overview.md": {
+    "size": 4747,
+    "mtime_ns": 1780955878985641178,
+    "hash": "c79c26d5d0f368da14f902d1050e3cf7e61d5ee87286e630a393182031973f2f"
   },
   "/home/xava/Documents/nuxy/scratch/raw-html.txt": {
     "size": 10195,
@@ -2229,19 +3164,74 @@
     "mtime_ns": 1780154802740440645,
     "hash": "bcd85a1d7bc95f110d769f8635b6409f3389f01248bc9b081ce0e11f46fa8b94"
   },
+  "/home/xava/Documents/nuxy/extensions/LIT_MIGRATION_GUIDE.md": {
+    "size": 15161,
+    "mtime_ns": 1780954854957048025,
+    "hash": "e8dd776b63665b787b338731bfbb033774d9a765bab053861ce6b2274fc528dc"
+  },
+  "/home/xava/Documents/nuxy/extensions/EXTENSION_README_TEMPLATE.md": {
+    "size": 8071,
+    "mtime_ns": 1780573148845035276,
+    "hash": "4233c638776a3baf3ffa579b6e5900c730716c933c5ae750c1cbc64cfa035b02"
+  },
+  "/home/xava/Documents/nuxy/extensions/FRONTEND_STRUCTURE_GUIDE.md": {
+    "size": 7573,
+    "mtime_ns": 1781041395547765249,
+    "hash": "500e0e0a032a8072de69ddb6d287abc54d99dbab8a553eabb1e846a9864d83f8"
+  },
   "/home/xava/Documents/nuxy/extensions/README.md": {
     "size": 1273,
     "mtime_ns": 1779351886483061992,
     "hash": "1082e112082b8c9010e39a5a4e2475ac455d2f3d1800e6189f279f0c6713b9a1"
   },
   "/home/xava/Documents/nuxy/extensions/EXTENSION_GUIDE.md": {
-    "size": 42664,
-    "mtime_ns": 1780221698037718643,
-    "hash": "5d1f51fa7a1120c1db114efd58c64d3bb2c1eaeb8a4e40a25c25a85768372a91"
+    "size": 54374,
+    "mtime_ns": 1781041390479793419,
+    "hash": "2d37cc5307613a1c4acdb5f2421fece64024da7772089de4069bde90e8b77eb8"
   },
   "/home/xava/Documents/nuxy/extensions/MANIFEST_GUIDE.md": {
-    "size": 8784,
-    "mtime_ns": 1780221707805757972,
-    "hash": "34f0d678230e74563a04bdd5d7e93ac9687f1d1fd0f7771fced6a26e27a168ca"
+    "size": 13504,
+    "mtime_ns": 1781041401762730766,
+    "hash": "23ff10f341025dd02e050cd560e81583096d950c4ad4bc894e0814fa4e5e8211"
+  },
+  "/home/xava/Documents/nuxy/extensions/icons-default/README.md": {
+    "size": 4611,
+    "mtime_ns": 1780573148995347786,
+    "hash": "feeedac0c9ce9ced2f531819c1f689a1f86da6617a70325f9abcbc04a3035a2f"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/README.md": {
+    "size": 3455,
+    "mtime_ns": 1780955878982641176,
+    "hash": "e9901e9724250753e0f199279bff75be45e5f79a9b17a96a4a3b151d1da8f32c"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/README.md": {
+    "size": 7886,
+    "mtime_ns": 1780573149204057273,
+    "hash": "c943b2842028fcfb232333a0bc26089a35f4cbb014f3f243f4c474d06daa1ab3"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/README.md": {
+    "size": 6185,
+    "mtime_ns": 1780955878982208305,
+    "hash": "078ddecaf6394a28cf4c28021b8a487c69f995450ad164242e26e80425dcfa7f"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/README.md": {
+    "size": 3334,
+    "mtime_ns": 1780573149262116039,
+    "hash": "08ab0b70700067ad21cdd247f34e1b0df39cb7b1088eedeed90e4be687617e57"
+  },
+  "/home/xava/Documents/nuxy/extensions/gradient/README.md": {
+    "size": 2753,
+    "mtime_ns": 1780573148982667232,
+    "hash": "48a47875ce738a3d2004efe25d11e437a677190c83550503c70c3a8cfd493332"
+  },
+  "/home/xava/Documents/nuxy/extensions/calculator/README.md": {
+    "size": 3487,
+    "mtime_ns": 1780573148143102004,
+    "hash": "39c75993754d2688f3750d837e70488e1ec7201bff19f9364c2d6596437bb328"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/README.md": {
+    "size": 5349,
+    "mtime_ns": 1780573149746030623,
+    "hash": "ee46dceab4ae91c57784169c0bef24b3df457ef082298210fff2b4ea5fa99990"
   }
 }

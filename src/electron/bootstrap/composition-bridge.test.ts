@@ -4,7 +4,10 @@ import { createCompositionBridge } from './composition-bridge.js'
 describe('createCompositionBridge', () => {
   const invoke = vi.fn()
   let shellChildren: Array<{ slot: string; tagName: string }>
-  let shell: { appendChild: (el: { slot: string; tagName: string }) => void; contains: (el: unknown) => boolean }
+  let shell: {
+    appendChild: (el: { slot: string; tagName: string }) => void
+    contains: (el: unknown) => boolean
+  }
 
   beforeEach(() => {
     invoke.mockReset()

@@ -1,8 +1,10 @@
 import './index.css'
+import { LitElement, customElement, type PropertyValues } from '@nuxy/core'
 
 const CLOSE_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
 
-export class NuxyModalElement extends HTMLElement {
+@customElement('nuxy-modal')
+export class NuxyModalElement extends LitElement {
   private backdrop: HTMLDivElement | null = null
   private dialog: HTMLDivElement | null = null
   private titleEl: HTMLHeadingElement | null = null
@@ -16,18 +18,26 @@ export class NuxyModalElement extends HTMLElement {
     return ['open', 'size', 'title', 'class']
   }
 
+  // Lit render() returns null — all DOM is managed imperatively via syncOpenState
+  render() {
+    return null
+  }
+
   connectedCallback(): void {
-    this.sync()
+    super.connectedCallback()
+    this.syncOpenState()
   }
 
   disconnectedCallback(): void {
+    super.disconnectedCallback()
     this.stopObserving()
     this.unlockBodyScroll()
     this.removeEscListener()
     this.clearModal()
   }
 
-  attributeChangedCallback(name: string): void {
+  attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
+    super.attributeChangedCallback(name, oldVal, newVal)
     if (!this.isConnected) return
     if (name === 'open') this.syncOpenState()
     else if (this.isOpen()) this.syncModalContent()
@@ -35,10 +45,6 @@ export class NuxyModalElement extends HTMLElement {
 
   private isOpen(): boolean {
     return this.hasAttribute('open')
-  }
-
-  private sync(): void {
-    this.syncOpenState()
   }
 
   private syncOpenState(): void {
@@ -96,7 +102,7 @@ export class NuxyModalElement extends HTMLElement {
 
     this.dialog.append(header, this.bodyEl, this.footerEl)
     this.backdrop.appendChild(this.dialog)
-    this.appendChild(this.backdrop)
+    document.body.appendChild(this.backdrop)
   }
 
   private clearModal(): void {
@@ -164,9 +170,7 @@ export class NuxyModalElement extends HTMLElement {
   }
 
   private requestClose = (): void => {
-    this.dispatchEvent(
-      new CustomEvent('nuxy-modal-close', { bubbles: true, composed: true })
-    )
+    this.dispatchEvent(new CustomEvent('nuxy-modal-close', { bubbles: true, composed: true }))
   }
 
   private addEscListener(): void {
@@ -204,10 +208,6 @@ export class NuxyModalElement extends HTMLElement {
     this.observer?.disconnect()
     this.observer = null
   }
-}
-
-if (!customElements.get('nuxy-modal')) {
-  customElements.define('nuxy-modal', NuxyModalElement)
 }
 
 declare global {

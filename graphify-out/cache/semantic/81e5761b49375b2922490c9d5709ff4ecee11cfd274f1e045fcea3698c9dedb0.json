@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "agents_guidelines",
+      "id": "root_agents_guidelines",
       "label": "AI Agent Guidelines for Nuxy",
       "file_type": "document",
       "source_file": "agents.md",
@@ -12,99 +12,60 @@
       "contributor": null
     },
     {
-      "id": "agents_useless_core_principle",
-      "label": "Useless Core Principle (Kernel Only)",
+      "id": "concept_nuxy_usablekernel",
+      "label": "Useless Core Principle (Kernel = Extension Loading + IPC + Window Mgmt only)",
       "file_type": "rationale",
       "source_file": "agents.md",
-      "source_location": "line 3",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
-      "contributor": null
+      "contributor": null,
+      "rationale": "The Core is strictly a Kernel. Its ONLY jobs are Extension Loading, Sandboxed Execution, IPC Routing, and Window Management. If it can be an extension, it MUST be an extension. This is a Gnome-Shell-style architecture."
     },
     {
-      "id": "agents_gnome_style_extensions",
-      "label": "Gnome-Style Extension Architecture",
+      "id": "concept_nuxy_zerotrustsecurity",
+      "label": "Zero-Trust Default Deny Extension Permissions",
       "file_type": "rationale",
       "source_file": "agents.md",
-      "source_location": "line 11",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
-      "contributor": null
-    },
-    {
-      "id": "agents_zero_trust_security",
-      "label": "Zero-Trust Default Deny Security Model",
-      "file_type": "rationale",
-      "source_file": "agents.md",
-      "source_location": "line 18",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null
+      "contributor": null,
+      "rationale": "Host privileges require permissions in manifest.json. Extensions CANNOT communicate directly \u2014 cross-extension calls use core.extensions.invoke via broker.ts."
     }
   ],
   "edges": [
     {
-      "source": "agents_guidelines",
-      "target": "agents_useless_core_principle",
+      "source": "root_agents_guidelines",
+      "target": "concept_nuxy_usablekernel",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "agents.md",
-      "source_location": "line 3",
-      "weight": 1.0
-    },
-    {
-      "source": "agents_guidelines",
-      "target": "agents_gnome_style_extensions",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "agents.md",
-      "source_location": "line 11",
-      "weight": 1.0
-    },
-    {
-      "source": "agents_guidelines",
-      "target": "agents_zero_trust_security",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "agents.md",
-      "source_location": "line 18",
-      "weight": 1.0
-    },
-    {
-      "source": "agents_useless_core_principle",
-      "target": "features_worker_thread_isolation",
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "agents.md",
-      "source_location": "line 11",
-      "weight": 1.0
-    },
-    {
-      "source": "agents_zero_trust_security",
-      "target": "docs_10_cross_module_security",
-      "relation": "rationale_for",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "agents.md",
-      "source_location": "line 18",
-      "weight": 0.95
-    },
-    {
-      "source": "agents_gnome_style_extensions",
-      "target": "docs_02_isolated_v8_threads",
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
       "source_file": "agents.md",
       "source_location": null,
-      "weight": 0.85
+      "weight": 1.0
+    },
+    {
+      "source": "root_agents_guidelines",
+      "target": "concept_nuxy_zerotrustsecurity",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "root_agents_guidelines",
+      "target": "concept_nuxy_workerthreadisolation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents.md",
+      "source_location": null,
+      "weight": 1.0
     }
   ],
   "hyperedges": []

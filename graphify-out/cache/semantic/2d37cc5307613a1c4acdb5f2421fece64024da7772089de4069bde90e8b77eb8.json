@@ -1,0 +1,618 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_extension_guide_extension_guide",
+      "label": "Nuxy Extension Development Guide",
+      "file_type": "document",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_file_structure",
+      "label": "Extension File Structure Convention",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 25-48",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_manifest_rules",
+      "label": "Manifest Rules",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 50-188",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_uikit_extension_type",
+      "label": "UIKit Extension Type",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 97-148",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_helper_extension_type",
+      "label": "Helper Extension Type",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 152-188",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_settings_json_schema",
+      "label": "Extension Settings JSON Schema",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 190-299",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_core_fs_api",
+      "label": "core.fs File System API",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 319-346",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_core_storage_api",
+      "label": "core.storage Sandboxed JSON API",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 349-360",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_core_db_api",
+      "label": "core.db SQLite API",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 363-384",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_core_shell_api",
+      "label": "core.shell Execution API",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 386-396",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_core_extensions_invoke",
+      "label": "core.extensions.invoke Cross-Extension Call",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 407-419",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_nuxy_tool_element_interface",
+      "label": "NuxyToolElement Interface",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 454-508",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_window_ui_only_rule",
+      "label": "window.UI Only Rule (No Custom Components)",
+      "file_type": "rationale",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 559-584",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_keyboard_only_interaction",
+      "label": "Keyboard-Only Interaction Rule",
+      "file_type": "rationale",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 586-608",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_omnibar_input_rule",
+      "label": "Omnibar Input Rule (No Own Input Elements)",
+      "file_type": "rationale",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 610-626",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_theme_token_rule",
+      "label": "Theme Token CSS Custom Properties Rule",
+      "file_type": "rationale",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 628-643",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_use_tool_key_actions",
+      "label": "useToolKeyActions Keyboard Binding Utility",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 663-722",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_active_on_predicate",
+      "label": "activeOn Conditional Shortcut Predicate",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 724-779",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_nuxy_key_hints_changed",
+      "label": "nuxy-key-hints-changed Shell Event",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 773-779",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_approved_shell_channels",
+      "label": "Approved Shell Event Channels",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 826-833",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_smooth_scroll_utility",
+      "label": "smoothScrollIntoViewIfNeeded Utility",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 836-850",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_i18n_system",
+      "label": "Extension i18n / Localisation System",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 854-999",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_use_translation_hook",
+      "label": "useTranslation Frontend Hook",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 960-990",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_locale_resolution_algorithm",
+      "label": "Locale Resolution Algorithm",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 924-937",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_create_mock_core",
+      "label": "createMockCore Testing Utility",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 1182-1226",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_typed_invoker",
+      "label": "TypedInvoker IPC Type Safety",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 1094-1115",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_ipc_channel_map",
+      "label": "IpcChannelMap Type Contract",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 1076-1093",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_antipatterns",
+      "label": "Extension Anti-Patterns Reference",
+      "file_type": "document",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 1272-1510",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_core_settings_api",
+      "label": "core.settings Read/Write API",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 265-299",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_no_node_imports_rule",
+      "label": "No Direct Node.js Imports Rule",
+      "file_type": "rationale",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 307-317",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_extension_guide_h_helper_deprecated",
+      "label": "h() DOM Helper (Deprecated, Scheduled for Removal)",
+      "file_type": "concept",
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 549",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_lit_migration_guide_lit_migration_guide",
+      "target": "extensions_extension_guide_extension_guide",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 1492",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_extension_guide",
+      "target": "extensions_extension_guide_file_structure",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 25-48",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_extension_guide",
+      "target": "extensions_extension_guide_manifest_rules",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 50-188",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_manifest_rules",
+      "target": "extensions_extension_guide_uikit_extension_type",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 97-148",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_manifest_rules",
+      "target": "extensions_extension_guide_helper_extension_type",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 152-188",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_extension_guide",
+      "target": "extensions_extension_guide_settings_json_schema",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 190-299",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_settings_json_schema",
+      "target": "extensions_extension_guide_core_settings_api",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 265-299",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_no_node_imports_rule",
+      "target": "extensions_extension_guide_core_fs_api",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 307-346",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_no_node_imports_rule",
+      "target": "extensions_extension_guide_core_db_api",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 307-384",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_no_node_imports_rule",
+      "target": "extensions_extension_guide_core_shell_api",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 307-396",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_extension_guide",
+      "target": "extensions_extension_guide_nuxy_tool_element_interface",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 454-508",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_extension_guide",
+      "target": "extensions_extension_guide_use_tool_key_actions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 663-722",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_active_on_predicate",
+      "target": "extensions_extension_guide_nuxy_key_hints_changed",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 773-779",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_extension_guide",
+      "target": "extensions_extension_guide_i18n_system",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 854-999",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_i18n_system",
+      "target": "extensions_extension_guide_use_translation_hook",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 960-990",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_i18n_system",
+      "target": "extensions_extension_guide_locale_resolution_algorithm",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 924-937",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_extension_guide",
+      "target": "extensions_extension_guide_create_mock_core",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 1182-1226",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_typed_invoker",
+      "target": "extensions_extension_guide_ipc_channel_map",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 1094-1115",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_use_tool_key_actions",
+      "target": "extensions_ui_default_readme_use_list_navigation",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 663-722",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_settings_readme_preferred_languages",
+      "target": "extensions_extension_guide_locale_resolution_algorithm",
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 924-937",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_extension_guide",
+      "target": "extensions_extension_guide_antipatterns",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 1272-1510",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_antipatterns",
+      "target": "extensions_extension_guide_h_helper_deprecated",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 549",
+      "weight": 0.95
+    },
+    {
+      "source": "extensions_extension_guide_smooth_scroll_utility",
+      "target": "extensions_ui_default_readme_window_ui_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 836-850",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_extension_guide_use_translation_hook",
+      "target": "extensions_ui_default_readme_window_ui_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md",
+      "source_location": "line 961",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "extension_backend_core_api_sandboxing",
+      "label": "Extension Backend Core API Sandboxing (fs/storage/db/shell instead of Node.js)",
+      "nodes": [
+        "extensions_extension_guide_no_node_imports_rule",
+        "extensions_extension_guide_core_fs_api",
+        "extensions_extension_guide_core_storage_api",
+        "extensions_extension_guide_core_db_api",
+        "extensions_extension_guide_core_shell_api"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md"
+    },
+    {
+      "id": "keyboard_shortcut_system",
+      "label": "Keyboard Shortcut System (useToolKeyActions + activeOn + nuxy-key-hints-changed)",
+      "nodes": [
+        "extensions_extension_guide_use_tool_key_actions",
+        "extensions_extension_guide_active_on_predicate",
+        "extensions_extension_guide_nuxy_key_hints_changed",
+        "extensions_ui_default_readme_use_list_navigation"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_GUIDE.md"
+    }
+  ]
+}

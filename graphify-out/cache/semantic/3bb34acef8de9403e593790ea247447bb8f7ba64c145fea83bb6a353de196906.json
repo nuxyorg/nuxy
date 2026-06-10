@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {
+      "id": "implementation_04_integration",
+      "label": "Implementation Phase 4: Dynamic UI Integration",
+      "file_type": "document",
+      "source_file": "docs/implementation/04-integration.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "implementation_04_integration",
+      "target": "concept_nuxy_ext_protocol",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/implementation/04-integration.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "implementation_04_integration",
+      "target": "implementation_03_feature_implementation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/implementation/04-integration.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

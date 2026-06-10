@@ -19,9 +19,7 @@ export function Skeleton({
     ...props,
     class: className,
     variant,
-    ...(width !== undefined
-      ? { width: typeof width === 'number' ? String(width) : width }
-      : {}),
+    ...(width !== undefined ? { width: typeof width === 'number' ? String(width) : width } : {}),
     ...(height !== undefined
       ? { height: typeof height === 'number' ? String(height) : height }
       : {}),

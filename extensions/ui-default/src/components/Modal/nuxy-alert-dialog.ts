@@ -1,41 +1,58 @@
 import '../Modal/index.css'
 import './nuxy-modal.ts'
+import { LitElement, customElement } from '@nuxy/core'
 
-export class NuxyAlertDialogElement extends HTMLElement {
+@customElement('nuxy-alert-dialog')
+export class NuxyAlertDialogElement extends LitElement {
   private modal: HTMLElement | null = null
-  private confirmHandler: (() => void) | null = null
-  private closeHandler: (() => void) | null = null
 
   static get observedAttributes(): string[] {
     return ['open', 'title', 'variant', 'confirm-label', 'cancel-label', 'class']
   }
 
+  // Lit render() returns null — all DOM is managed imperatively
+  render() {
+    return null
+  }
+
   connectedCallback(): void {
-    this.style.display = 'contents'
+    super.connectedCallback()
     this.build()
     this.reparentBody()
     this.sync()
     this.modal?.addEventListener('nuxy-modal-close', this.onModalClose)
-    this.querySelector('[data-alert-cancel]')?.addEventListener('click', this.onCancel)
-    this.querySelector('[data-alert-confirm]')?.addEventListener('click', this.onConfirm)
+    this.modal?.querySelector('[data-alert-cancel]')?.addEventListener('click', this.onCancel)
+    this.modal?.querySelector('[data-alert-confirm]')?.addEventListener('click', this.onConfirm)
   }
 
   disconnectedCallback(): void {
+    super.disconnectedCallback()
     this.modal?.removeEventListener('nuxy-modal-close', this.onModalClose)
-    this.querySelector('[data-alert-cancel]')?.removeEventListener('click', this.onCancel)
-    this.querySelector('[data-alert-confirm]')?.removeEventListener('click', this.onConfirm)
+    this.modal?.querySelector('[data-alert-cancel]')?.removeEventListener('click', this.onCancel)
+    this.modal?.querySelector('[data-alert-confirm]')?.removeEventListener('click', this.onConfirm)
+    this.modal?.remove()
+    this.modal = null
   }
 
-  attributeChangedCallback(name: string): void {
+  attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
+    super.attributeChangedCallback(name, oldVal, newVal)
     if (!this.isConnected) return
     if (name === 'open') this.syncOpen()
-    else if (name === 'title' || name === 'variant' || name === 'confirm-label' || name === 'cancel-label' || name === 'class') {
+    else if (
+      name === 'title' ||
+      name === 'variant' ||
+      name === 'confirm-label' ||
+      name === 'cancel-label' ||
+      name === 'class'
+    ) {
       this.syncContent()
     }
   }
 
   private onModalClose = (): void => {
-    this.dispatchEvent(new CustomEvent('nuxy-alert-dialog-close', { bubbles: true, composed: true }))
+    this.dispatchEvent(
+      new CustomEvent('nuxy-alert-dialog-close', { bubbles: true, composed: true })
+    )
   }
 
   private onCancel = (): void => {
@@ -45,7 +62,9 @@ export class NuxyAlertDialogElement extends HTMLElement {
 
   private onConfirm = (): void => {
     if (this.modal) this.modal.removeAttribute('open')
-    this.dispatchEvent(new CustomEvent('nuxy-alert-dialog-confirm', { bubbles: true, composed: true }))
+    this.dispatchEvent(
+      new CustomEvent('nuxy-alert-dialog-confirm', { bubbles: true, composed: true })
+    )
   }
 
   private build(): void {
@@ -72,7 +91,7 @@ export class NuxyAlertDialogElement extends HTMLElement {
 
     footer.append(cancelBtn, confirmBtn)
     this.modal.append(bodySlot, footer)
-    this.appendChild(this.modal)
+    document.body.appendChild(this.modal)
   }
 
   private reparentBody(): void {
@@ -80,7 +99,6 @@ export class NuxyAlertDialogElement extends HTMLElement {
     if (!bodySlot) return
     const nodes: Node[] = []
     for (const child of this.childNodes) {
-      if (child === this.modal) continue
       nodes.push(child)
     }
     if (nodes.length) bodySlot.replaceChildren(...nodes)
@@ -97,11 +115,7 @@ export class NuxyAlertDialogElement extends HTMLElement {
 
     const variant = this.getAttribute('variant') ?? 'danger'
     const extraClass = this.getAttribute('class') ?? ''
-    this.modal.className = [
-      'nuxy-alert-dialog',
-      `nuxy-alert-dialog--${variant}`,
-      extraClass,
-    ]
+    this.modal.className = ['nuxy-alert-dialog', `nuxy-alert-dialog--${variant}`, extraClass]
       .filter(Boolean)
       .join(' ')
 
@@ -127,10 +141,6 @@ export class NuxyAlertDialogElement extends HTMLElement {
     this.syncContent()
     this.syncOpen()
   }
-}
-
-if (!customElements.get('nuxy-alert-dialog')) {
-  customElements.define('nuxy-alert-dialog', NuxyAlertDialogElement)
 }
 
 declare global {

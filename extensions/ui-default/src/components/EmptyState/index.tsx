@@ -26,24 +26,16 @@ export function EmptyState({
 }: EmptyStateProps) {
   const extras: UiChild[] = []
   if (title != null && nodeToAttr(title) === undefined) {
-    extras.push(
-      h('h2', { class: 'nuxy-empty-state__title' }, title)
-    )
+    extras.push(h('h2', { class: 'nuxy-empty-state__title' }, title))
   }
   if (message != null && nodeToAttr(message) === undefined) {
-    extras.push(
-      h('p', { class: 'nuxy-empty-state__message' }, message)
-    )
+    extras.push(h('p', { class: 'nuxy-empty-state__message' }, message))
   }
   if (hint != null && nodeToAttr(hint) === undefined) {
-    extras.push(
-      h('p', { class: 'nuxy-empty-state__hint' }, hint)
-    )
+    extras.push(h('p', { class: 'nuxy-empty-state__hint' }, hint))
   }
   if (error != null && nodeToAttr(error) === undefined) {
-    extras.push(
-      h('p', { class: 'nuxy-empty-state__error' }, error)
-    )
+    extras.push(h('p', { class: 'nuxy-empty-state__error' }, error))
   }
 
   return h(

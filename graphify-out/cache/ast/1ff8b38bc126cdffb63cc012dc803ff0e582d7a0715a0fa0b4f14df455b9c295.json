@@ -1,0 +1,701 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_knip_json",
+      "label": "knip.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "nuxy_knip_schema",
+      "label": "$schema",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "nuxy_knip_workspaces",
+      "label": "workspaces",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "nuxy_knip_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "nuxy_knip_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "nuxy_knip_workspaces_src",
+      "label": "src",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "nuxy_knip_src_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "nuxy_knip_src_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "nuxy_knip_workspaces_packages_core",
+      "label": "packages/core",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "nuxy_knip_packages_core_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "nuxy_knip_packages_core_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "nuxy_knip_workspaces_packages_ui",
+      "label": "packages/ui",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "nuxy_knip_packages_ui_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "nuxy_knip_packages_ui_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "nuxy_knip_workspaces_packages_extension_host",
+      "label": "packages/extension-host",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "nuxy_knip_packages_extension_host_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "nuxy_knip_packages_extension_host_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "nuxy_knip_workspaces_packages_extension_sdk",
+      "label": "packages/extension-sdk",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "nuxy_knip_packages_extension_sdk_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "nuxy_knip_packages_extension_sdk_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "nuxy_knip_workspaces_packages_ext_devserver",
+      "label": "packages/ext-devserver",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "nuxy_knip_packages_ext_devserver_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "nuxy_knip_packages_ext_devserver_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "nuxy_knip_workspaces_packages_ext_template",
+      "label": "packages/ext-template",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "nuxy_knip_packages_ext_template_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "nuxy_knip_packages_ext_template_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L34"
+    },
+    {
+      "id": "nuxy_knip_workspaces_extensions",
+      "label": "extensions/*",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "nuxy_knip_extensions_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "nuxy_knip_extensions_project",
+      "label": "project",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L38"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_knip_json",
+      "target": "nuxy_knip_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_knip_json",
+      "target": "nuxy_knip_workspaces",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_entry",
+      "target": "ref_scripts_js_mjs_cjs",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_entry",
+      "target": "ref_scratch_js_cjs",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_project",
+      "target": "ref_scripts_js_mjs_cjs",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_project",
+      "target": "ref_scratch_js_cjs",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_workspaces_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_src",
+      "target": "nuxy_knip_src_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_src_entry",
+      "target": "ref_electron_bootstrap_main_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_src_entry",
+      "target": "ref_renderer_main_tsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces_src",
+      "target": "nuxy_knip_src_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_src_project",
+      "target": "ref_ts_tsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L10",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_workspaces_packages_core",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_core",
+      "target": "nuxy_knip_packages_core_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_core",
+      "target": "nuxy_knip_packages_core_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_packages_core_project",
+      "target": "ref_src_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L14",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_workspaces_packages_ui",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_ui",
+      "target": "nuxy_knip_packages_ui_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_ui",
+      "target": "nuxy_knip_packages_ui_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_packages_ui_project",
+      "target": "ref_src_ts_tsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L18",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_workspaces_packages_extension_host",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_extension_host",
+      "target": "nuxy_knip_packages_extension_host_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_extension_host",
+      "target": "nuxy_knip_packages_extension_host_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_packages_extension_host_project",
+      "target": "ref_src_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_workspaces_packages_extension_sdk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_extension_sdk",
+      "target": "nuxy_knip_packages_extension_sdk_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_extension_sdk",
+      "target": "nuxy_knip_packages_extension_sdk_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_packages_extension_sdk_project",
+      "target": "ref_src_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L26",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_workspaces_packages_ext_devserver",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_ext_devserver",
+      "target": "nuxy_knip_packages_ext_devserver_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_packages_ext_devserver_entry",
+      "target": "ref_index_html",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L29",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_packages_ext_devserver_entry",
+      "target": "ref_vite_config_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L29",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_ext_devserver",
+      "target": "nuxy_knip_packages_ext_devserver_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_packages_ext_devserver_project",
+      "target": "ref_src_ts_tsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L30",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_packages_ext_devserver_project",
+      "target": "ref_vite_config_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L30",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_workspaces_packages_ext_template",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_ext_template",
+      "target": "nuxy_knip_packages_ext_template_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_packages_ext_template_entry",
+      "target": "ref_backend_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L33",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_packages_ext_template_entry",
+      "target": "ref_frontend_tsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L33",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces_packages_ext_template",
+      "target": "nuxy_knip_packages_ext_template_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_packages_ext_template_project",
+      "target": "ref_ts_tsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L34",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces",
+      "target": "nuxy_knip_workspaces_extensions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_workspaces_extensions",
+      "target": "nuxy_knip_extensions_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_extensions_entry",
+      "target": "ref_backend_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L37",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_extensions_entry",
+      "target": "ref_frontend_tsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L37",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_extensions_entry",
+      "target": "ref_backend_js",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L37",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_extensions_entry",
+      "target": "ref_frontend_js",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L37",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_extensions_entry",
+      "target": "ref_entry_ts",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L37",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "nuxy_knip_workspaces_extensions",
+      "target": "nuxy_knip_extensions_project",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "nuxy_knip_extensions_project",
+      "target": "ref_ts_tsx_js_jsx",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/knip.json",
+      "source_location": "L38",
+      "weight": 1.0,
+      "context": "import"
+    }
+  ]
+}

@@ -1,0 +1,1277 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_theme_sakura_theme_json",
+      "label": "theme.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "theme_sakura_theme_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "theme_sakura_theme_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "theme_sakura_theme_colors",
+      "label": "colors",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "theme_sakura_theme_colors_bg_base",
+      "label": "bg-base",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_comment",
+      "label": "syntax-comment",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_variable",
+      "label": "syntax-variable",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_constant",
+      "label": "syntax-constant",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_invalid",
+      "label": "syntax-invalid",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_deprecated",
+      "label": "syntax-deprecated",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_keyword",
+      "label": "syntax-keyword",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_operator",
+      "label": "syntax-operator",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_tag",
+      "label": "syntax-tag",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_function",
+      "label": "syntax-function",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_orange",
+      "label": "syntax-orange",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_peach",
+      "label": "syntax-peach",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "theme_sakura_theme_colors_syntax_green",
+      "label": "syntax-green",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "theme_sakura_theme_colors_scrollbar_thumb",
+      "label": "scrollbar-thumb",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "theme_sakura_theme_colors_scrollbar_thumb_hover",
+      "label": "scrollbar-thumb-hover",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "theme_sakura_theme_tokens",
+      "label": "tokens",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_space_px",
+      "label": "space-px",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_space_0",
+      "label": "space-0",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_space_1",
+      "label": "space-1",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_space_2",
+      "label": "space-2",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_space_3",
+      "label": "space-3",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_space_4",
+      "label": "space-4",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_space_5",
+      "label": "space-5",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_space_6",
+      "label": "space-6",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_font_xs",
+      "label": "font-xs",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_font_sm",
+      "label": "font-sm",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_font_md",
+      "label": "font-md",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_font_body",
+      "label": "font-body",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_font_lg",
+      "label": "font-lg",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L34"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_font_xl",
+      "label": "font-xl",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L35"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_radius_sm",
+      "label": "radius-sm",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_radius_md",
+      "label": "radius-md",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_radius_lg",
+      "label": "radius-lg",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L38"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_radius_xl",
+      "label": "radius-xl",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L39"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_text",
+      "label": "text",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L40"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_text_primary",
+      "label": "text-primary",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_text",
+      "label": "color-text",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L42"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_text_secondary",
+      "label": "text-secondary",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_text_muted",
+      "label": "text-muted",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L44"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_text_muted",
+      "label": "color-text-muted",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L45"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_text_dim",
+      "label": "text-dim",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L46"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_text_subtle",
+      "label": "text-subtle",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L47"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_text_accent",
+      "label": "text-accent",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L48"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_text_on_accent",
+      "label": "text-on-accent",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L49"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_error",
+      "label": "error",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L50"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_surface_overlay",
+      "label": "surface-overlay",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L51"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_surface_raised",
+      "label": "surface-raised",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L52"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_surface_inset",
+      "label": "surface-inset",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L53"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_surface_accent",
+      "label": "surface-accent",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L54"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_surface_accent_subtle",
+      "label": "surface-accent-subtle",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L55"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_surface_1",
+      "label": "surface-1",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L56"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_surface_2",
+      "label": "surface-2",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L57"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_bg_subtle",
+      "label": "bg-subtle",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L58"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_surface",
+      "label": "color-surface",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L59"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_preview_bg",
+      "label": "color-preview-bg",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L60"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_border",
+      "label": "border",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L61"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_border_accent",
+      "label": "border-accent",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L62"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_border_default",
+      "label": "border-default",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L63"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_border_color",
+      "label": "border-color",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L64"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_border",
+      "label": "color-border",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L65"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_accent",
+      "label": "accent",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L66"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_accent_fg",
+      "label": "accent-fg",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L67"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_accent_fg_muted",
+      "label": "accent-fg-muted",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L68"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_accent_subtle",
+      "label": "accent-subtle",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L69"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_accent",
+      "label": "color-accent",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L70"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_hover",
+      "label": "hover",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L71"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_danger",
+      "label": "color-danger",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L72"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_danger_bg",
+      "label": "color-danger-bg",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L73"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_danger_border",
+      "label": "color-danger-border",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L74"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_warning",
+      "label": "color-warning",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L75"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_info",
+      "label": "color-info",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L76"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_color_success",
+      "label": "color-success",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L77"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_shadow_dark",
+      "label": "shadow-dark",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L78"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_overlay_backdrop",
+      "label": "overlay-backdrop",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L79"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_syntax_string",
+      "label": "syntax-string",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L80"
+    },
+    {
+      "id": "theme_sakura_theme_tokens_syntax_number",
+      "label": "syntax-number",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L81"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_theme_sakura_theme_json",
+      "target": "theme_sakura_theme_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_theme_sakura_theme_json",
+      "target": "theme_sakura_theme_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_theme_sakura_theme_json",
+      "target": "theme_sakura_theme_colors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_bg_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_comment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_variable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_constant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_invalid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_deprecated",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_keyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_operator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_tag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_function",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_orange",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_peach",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_syntax_green",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_scrollbar_thumb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_colors",
+      "target": "theme_sakura_theme_colors_scrollbar_thumb_hover",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_theme_sakura_theme_json",
+      "target": "theme_sakura_theme_tokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_space_px",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_space_0",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_space_1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_space_2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_space_3",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_space_4",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_space_5",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_space_6",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_font_xs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_font_sm",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_font_md",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_font_body",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_font_lg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_font_xl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_radius_sm",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_radius_md",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_radius_lg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_radius_xl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_text_primary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_text_secondary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_text_muted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_text_muted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_text_dim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_text_subtle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_text_accent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_text_on_accent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_error",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_surface_overlay",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_surface_raised",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_surface_inset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_surface_accent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_surface_accent_subtle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_surface_1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_surface_2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_bg_subtle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_surface",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_preview_bg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_border",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_border_accent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_border_default",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_border_color",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_border",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_accent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_accent_fg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_accent_fg_muted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_accent_subtle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_accent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_hover",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_danger",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_danger_bg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_danger_border",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_warning",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_info",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_color_success",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_shadow_dark",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_overlay_backdrop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_syntax_string",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "theme_sakura_theme_tokens",
+      "target": "theme_sakura_theme_tokens_syntax_number",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json",
+      "source_location": "L81",
+      "weight": 1.0
+    }
+  ]
+}

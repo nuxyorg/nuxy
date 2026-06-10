@@ -53,8 +53,8 @@ export type IpcChannelMap = Record<string, { input: unknown; output: unknown }>
  * Typed invoke function for extension frontends.
  * Channel names and payload/return types are inferred from `TChannels`.
  *
- * Usage in `frontend.tsx`:
- * ```tsx
+ * Usage in `frontend.ts`:
+ * ```ts
  * import type { TypedInvoker } from '@nuxy/extension-sdk'
  * import type { IpcChannels } from './types.ts'
  *

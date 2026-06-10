@@ -1,97 +1,108 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-export class NuxySwitchElement extends HTMLElement {
-  private input: HTMLInputElement | null = null
+@customElement('nuxy-switch')
+export class NuxySwitchElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      cursor: pointer;
+      user-select: none;
+      font-size: var(--font-md);
+      color: var(--syntax-variable);
+    }
 
-  static get observedAttributes(): string[] {
-    return ['checked', 'disabled', 'id']
-  }
+    :host([disabled]) {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .nuxy-switch__track {
+      width: 36px;
+      height: 20px;
+      border-radius: 10px;
+      background: var(--syntax-comment);
+      position: relative;
+      transition: background 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    :host([checked]) .nuxy-switch__track {
+      background: var(--syntax-operator);
+    }
+
+    .nuxy-switch__thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--syntax-variable);
+      transition: transform 0.2s ease;
+    }
+
+    :host([checked]) .nuxy-switch__thumb {
+      transform: translateX(16px);
+    }
+
+    .nuxy-switch__input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+  `
+
+  @property({ type: Boolean, reflect: true }) checked = false
+  @property({ type: Boolean, reflect: true }) disabled = false
+
+  @state() private _labelHTML = ''
 
   connectedCallback(): void {
-    this.classList.add('nuxy-switch')
-    this.build()
-    this.sync()
-    this.input?.addEventListener('change', this.onNativeChange)
+    // Capture initial label content before Lit replaces it
+    this._labelHTML = this.innerHTML
+    super.connectedCallback()
   }
 
-  disconnectedCallback(): void {
-    this.input?.removeEventListener('change', this.onNativeChange)
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private onNativeChange = (): void => {
-    this.toggleFromInput()
-  }
-
-  private build(): void {
-    if (this.input) return
-
-    const id = this.getAttribute('id')
-    this.input = document.createElement('input')
-    this.input.type = 'checkbox'
-    this.input.role = 'switch'
-    this.input.className = 'nuxy-switch__input'
-    if (id) this.input.id = id
-
-    const track = document.createElement('span')
-    track.className = 'nuxy-switch__track'
-    track.setAttribute('aria-hidden', 'true')
-    track.innerHTML = '<span class="nuxy-switch__thumb"></span>'
-    track.addEventListener('click', (e) => {
-      e.preventDefault()
-      this.toggle()
-    })
-
-    const labelSlot = document.createElement('span')
-    labelSlot.className = 'nuxy-switch__label'
-    while (this.firstChild) {
-      labelSlot.appendChild(this.firstChild)
-    }
-
-    this.append(this.input, track, labelSlot)
-  }
-
-  private sync(): void {
-    const checked = this.hasAttribute('checked')
-    const disabled = this.hasAttribute('disabled')
-    const extraClass = this.getAttribute('class') ?? ''
-
-    syncHostClasses(this, 'nuxy-switch', checked ? 'nuxy-switch--checked' : '', disabled ? 'nuxy-switch--disabled' : '')
-
-    if (this.input) {
-      this.input.checked = checked
-      this.input.disabled = disabled
-      this.input.setAttribute('aria-checked', String(checked))
-    }
-  }
-
-  private toggle(): void {
-    if (this.hasAttribute('disabled')) return
-    const next = !this.hasAttribute('checked')
-    if (next) this.setAttribute('checked', '')
-    else this.removeAttribute('checked')
-    this.sync()
+  private handleChange(e: Event): void {
+    if (this.disabled) return
+    const input = e.target as HTMLInputElement
+    this.checked = input.checked
     this.dispatchEvent(
-      new CustomEvent('nuxy-switch-change', { detail: { checked: next }, bubbles: true })
+      new CustomEvent('nuxy-switch-change', { detail: { checked: this.checked }, bubbles: true })
     )
   }
 
-  private toggleFromInput(): void {
-    if (this.hasAttribute('disabled')) return
-    const next = Boolean(this.input?.checked)
-    if (next) this.setAttribute('checked', '')
-    else this.removeAttribute('checked')
-    this.sync()
+  private handleTrackClick(e: Event): void {
+    e.preventDefault()
+    if (this.disabled) return
+    this.checked = !this.checked
     this.dispatchEvent(
-      new CustomEvent('nuxy-switch-change', { detail: { checked: next }, bubbles: true })
+      new CustomEvent('nuxy-switch-change', { detail: { checked: this.checked }, bubbles: true })
     )
   }
-}
 
-if (!customElements.get('nuxy-switch')) {
-  customElements.define('nuxy-switch', NuxySwitchElement)
+  render(): TemplateResult {
+    return html`
+      <input
+        type="checkbox"
+        role="switch"
+        class="nuxy-switch__input"
+        .checked=${this.checked}
+        .disabled=${this.disabled}
+        aria-checked=${String(this.checked)}
+        @change=${this.handleChange}
+      />
+      <span class="nuxy-switch__track" aria-hidden="true" @click=${this.handleTrackClick}
+        ><span class="nuxy-switch__thumb"></span
+      ></span>
+      ${this._labelHTML
+        ? html`<span class="nuxy-switch__label" .innerHTML=${this._labelHTML}></span>`
+        : nothing}
+    `
+  }
 }

@@ -1,9 +1,20 @@
 {
   "nodes": [
     {
-      "id": "src_electron_builder",
-      "label": "electron-builder.yml (Packaging Config)",
-      "file_type": "document",
+      "id": "src_electronbuilderyml",
+      "label": "Electron Builder Configuration",
+      "file_type": "code",
+      "source_file": "src/electron-builder.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_electronbuilder",
+      "label": "Electron Builder Packaging (AppImage, deb, dmg, nsis)",
+      "file_type": "concept",
       "source_file": "src/electron-builder.yml",
       "source_location": null,
       "source_url": null,
@@ -14,14 +25,14 @@
   ],
   "edges": [
     {
-      "source": "src_electron_builder",
-      "target": "features_nuxy_featuretracker",
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
+      "source": "src_electronbuilderyml",
+      "target": "concept_nuxy_electronbuilder",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
       "source_file": "src/electron-builder.yml",
       "source_location": null,
-      "weight": 0.75
+      "weight": 1.0
     }
   ],
   "hyperedges": []

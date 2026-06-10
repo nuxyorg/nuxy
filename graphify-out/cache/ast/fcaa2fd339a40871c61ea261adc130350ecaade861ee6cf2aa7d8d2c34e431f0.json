@@ -1,0 +1,1085 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "label": "tr.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "locales_tr_meta",
+      "label": "meta",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "locales_tr_meta_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "locales_tr_nav",
+      "label": "nav",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "locales_tr_nav_general",
+      "label": "general",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "locales_tr_nav_window",
+      "label": "window",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "locales_tr_nav_language",
+      "label": "language",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "locales_tr_nav_extensions",
+      "label": "extensions",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "locales_tr_general",
+      "label": "general",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "locales_tr_general_theme",
+      "label": "theme",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "locales_tr_general_iconpack",
+      "label": "iconPack",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "locales_tr_general_zoom",
+      "label": "zoom",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "locales_tr_general_font",
+      "label": "font",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "locales_tr_general_fontweight",
+      "label": "fontWeight",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "locales_tr_window",
+      "label": "window",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "locales_tr_window_escaction",
+      "label": "escAction",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "locales_tr_window_bluraction",
+      "label": "blurAction",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "locales_tr_window_windowwidth",
+      "label": "windowWidth",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "locales_tr_window_windowmaxheight",
+      "label": "windowMaxHeight",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "locales_tr_window_windowposition",
+      "label": "windowPosition",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "locales_tr_window_opacity",
+      "label": "opacity",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "locales_tr_window_backgroundbehavior",
+      "label": "backgroundBehavior",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "locales_tr_window_alwaysontop",
+      "label": "alwaysOnTop",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "locales_tr_window_showintaskbar",
+      "label": "showInTaskbar",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "locales_tr_window_showonstartup",
+      "label": "showOnStartup",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "locales_tr_language",
+      "label": "language",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "locales_tr_language_addlanguage",
+      "label": "addLanguage",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "locales_tr_language_addplaceholder",
+      "label": "addPlaceholder",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "locales_tr_language_hint",
+      "label": "hint",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "locales_tr_font",
+      "label": "font",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L35"
+    },
+    {
+      "id": "locales_tr_font_systemdefault",
+      "label": "systemDefault",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "locales_tr_font_monospace",
+      "label": "monospace",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "locales_tr_fontweight",
+      "label": "fontWeight",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L39"
+    },
+    {
+      "id": "locales_tr_fontweight_300",
+      "label": "300",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L40"
+    },
+    {
+      "id": "locales_tr_fontweight_400",
+      "label": "400",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "locales_tr_fontweight_500",
+      "label": "500",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L42"
+    },
+    {
+      "id": "locales_tr_fontweight_600",
+      "label": "600",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "locales_tr_fontweight_700",
+      "label": "700",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L44"
+    },
+    {
+      "id": "locales_tr_escaction",
+      "label": "escAction",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L46"
+    },
+    {
+      "id": "locales_tr_escaction_hide",
+      "label": "hide",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L47"
+    },
+    {
+      "id": "locales_tr_escaction_minimize",
+      "label": "minimize",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L48"
+    },
+    {
+      "id": "locales_tr_escaction_quit",
+      "label": "quit",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L49"
+    },
+    {
+      "id": "locales_tr_escaction_none",
+      "label": "none",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L50"
+    },
+    {
+      "id": "locales_tr_windowposition",
+      "label": "windowPosition",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L52"
+    },
+    {
+      "id": "locales_tr_windowposition_topcenter",
+      "label": "topCenter",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L53"
+    },
+    {
+      "id": "locales_tr_windowposition_leftcenter",
+      "label": "leftCenter",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L54"
+    },
+    {
+      "id": "locales_tr_windowposition_screencenter",
+      "label": "screenCenter",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L55"
+    },
+    {
+      "id": "locales_tr_windowposition_rightcenter",
+      "label": "rightCenter",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L56"
+    },
+    {
+      "id": "locales_tr_windowposition_bottomcenter",
+      "label": "bottomCenter",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L57"
+    },
+    {
+      "id": "locales_tr_windowposition_topleft",
+      "label": "topLeft",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L58"
+    },
+    {
+      "id": "locales_tr_windowposition_topright",
+      "label": "topRight",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L59"
+    },
+    {
+      "id": "locales_tr_windowposition_bottomleft",
+      "label": "bottomLeft",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L60"
+    },
+    {
+      "id": "locales_tr_windowposition_bottomright",
+      "label": "bottomRight",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L61"
+    },
+    {
+      "id": "locales_tr_windowposition_uppercenterdefault",
+      "label": "upperCenterDefault",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L62"
+    },
+    {
+      "id": "locales_tr_backgroundbehavior",
+      "label": "backgroundBehavior",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L64"
+    },
+    {
+      "id": "locales_tr_backgroundbehavior_reset_on_show",
+      "label": "reset-on-show",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L65"
+    },
+    {
+      "id": "locales_tr_backgroundbehavior_resume_session",
+      "label": "resume-session",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L66"
+    },
+    {
+      "id": "locales_tr_bool",
+      "label": "bool",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L68"
+    },
+    {
+      "id": "locales_tr_bool_yes",
+      "label": "yes",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L69"
+    },
+    {
+      "id": "locales_tr_bool_no",
+      "label": "no",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L70"
+    },
+    {
+      "id": "locales_tr_selectbox",
+      "label": "selectBox",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L72"
+    },
+    {
+      "id": "locales_tr_selectbox_none",
+      "label": "none",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L73"
+    },
+    {
+      "id": "locales_tr_selectbox_placeholder",
+      "label": "placeholder",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L74"
+    },
+    {
+      "id": "locales_tr_actions",
+      "label": "actions",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L76"
+    },
+    {
+      "id": "locales_tr_actions_previoussetting",
+      "label": "previousSetting",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L77"
+    },
+    {
+      "id": "locales_tr_actions_nextsetting",
+      "label": "nextSetting",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L78"
+    },
+    {
+      "id": "locales_tr_actions_opensetting",
+      "label": "openSetting",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L79"
+    },
+    {
+      "id": "locales_tr_actions_closesetting",
+      "label": "closeSetting",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L80"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_meta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_meta",
+      "target": "locales_tr_meta_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_nav",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_nav",
+      "target": "locales_tr_nav_general",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_nav",
+      "target": "locales_tr_nav_window",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_nav",
+      "target": "locales_tr_nav_language",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_nav",
+      "target": "locales_tr_nav_extensions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_general",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_general",
+      "target": "locales_tr_general_theme",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_general",
+      "target": "locales_tr_general_iconpack",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_general",
+      "target": "locales_tr_general_zoom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_general",
+      "target": "locales_tr_general_font",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_general",
+      "target": "locales_tr_general_fontweight",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_window",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_escaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_bluraction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_windowwidth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_windowmaxheight",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_windowposition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_opacity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_backgroundbehavior",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_alwaysontop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_showintaskbar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_window",
+      "target": "locales_tr_window_showonstartup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_language",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_language",
+      "target": "locales_tr_language_addlanguage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_language",
+      "target": "locales_tr_language_addplaceholder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_language",
+      "target": "locales_tr_language_hint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_font",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_font",
+      "target": "locales_tr_font_systemdefault",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_font",
+      "target": "locales_tr_font_monospace",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_fontweight",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_fontweight",
+      "target": "locales_tr_fontweight_300",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_fontweight",
+      "target": "locales_tr_fontweight_400",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_fontweight",
+      "target": "locales_tr_fontweight_500",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_fontweight",
+      "target": "locales_tr_fontweight_600",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_fontweight",
+      "target": "locales_tr_fontweight_700",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_escaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_escaction",
+      "target": "locales_tr_escaction_hide",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_escaction",
+      "target": "locales_tr_escaction_minimize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_escaction",
+      "target": "locales_tr_escaction_quit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_escaction",
+      "target": "locales_tr_escaction_none",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_windowposition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_topcenter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_leftcenter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_screencenter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_rightcenter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_bottomcenter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_topleft",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_topright",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_bottomleft",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_bottomright",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_windowposition",
+      "target": "locales_tr_windowposition_uppercenterdefault",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_backgroundbehavior",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_backgroundbehavior",
+      "target": "locales_tr_backgroundbehavior_reset_on_show",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_backgroundbehavior",
+      "target": "locales_tr_backgroundbehavior_resume_session",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_bool",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_bool",
+      "target": "locales_tr_bool_yes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_bool",
+      "target": "locales_tr_bool_no",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_selectbox",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_selectbox",
+      "target": "locales_tr_selectbox_none",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_selectbox",
+      "target": "locales_tr_selectbox_placeholder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_settings_locales_tr_json",
+      "target": "locales_tr_actions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_actions",
+      "target": "locales_tr_actions_previoussetting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_actions",
+      "target": "locales_tr_actions_nextsetting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_actions",
+      "target": "locales_tr_actions_opensetting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_tr_actions",
+      "target": "locales_tr_actions_closesetting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json",
+      "source_location": "L80",
+      "weight": 1.0
+    }
+  ]
+}

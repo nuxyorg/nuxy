@@ -1,7 +1,7 @@
 {
   "nodes": [
     {
-      "id": "extensions_readme_document",
+      "id": "extensions_readme_extensions_readme",
       "label": "Extensions Workspace README",
       "file_type": "document",
       "source_file": "extensions/README.md",

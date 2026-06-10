@@ -1,0 +1,89 @@
+{
+  "nodes": [
+    {
+      "id": "website_docs_extensions_overview",
+      "label": "Extension System Overview",
+      "file_type": "document",
+      "source_file": "website/docs/extensions/overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_extension_types",
+      "label": "Extension Types (tool/provider/orchestrator/helper/uikit/theme/iconpack)",
+      "file_type": "concept",
+      "source_file": "website/docs/extensions/overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "website_docs_extensions_overview",
+      "target": "concept_extension_types",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_extensions_overview",
+      "target": "ext_com_nuxy_shell",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_extensions_overview",
+      "target": "ext_com_nuxy_clipboard",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_extensions_overview",
+      "target": "ext_com_nuxy_calculator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_extensions_overview",
+      "target": "ext_com_nuxy_ai_orchestrator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "ext_com_nuxy_ai_orchestrator",
+      "target": "concept_capabilities_lattice",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/extensions/overview.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": []
+}

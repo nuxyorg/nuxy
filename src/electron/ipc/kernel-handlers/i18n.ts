@@ -80,15 +80,14 @@ export const i18nHandlers: Record<string, Handler> = {
     }
 
     const ext = getExtensionById(targetExtId)
-    if (!ext?.manifest.locales) {
+    if (!ext) {
+      return { success: false, error: 'Extension not registered yet', code: 'NOT_FOUND' }
+    }
+    if (!ext.manifest.locales) {
       return { success: true, data: { locale: 'en', dir: 'ltr', translations: {} } }
     }
 
-    const {
-      supported,
-      default: defaultLocale,
-      dir: localesDir = 'locales',
-    } = ext.manifest.locales
+    const { supported, default: defaultLocale, dir: localesDir = 'locales' } = ext.manifest.locales
 
     const settingsFile = path.join(DATA_DIR, 'com.nuxy.settings', 'settings.json')
     let preferredLanguages: string[] = []

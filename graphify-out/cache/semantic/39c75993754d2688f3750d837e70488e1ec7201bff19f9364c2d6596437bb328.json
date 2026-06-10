@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_calculator_readme_calculator_extension",
+      "label": "Calculator Extension (com.nuxy.calculator)",
+      "file_type": "document",
+      "source_file": "extensions/calculator/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_calculator_readme_safe_math_parser",
+      "label": "Safe Math Expression Parser (no eval)",
+      "file_type": "concept",
+      "source_file": "extensions/calculator/README.md",
+      "source_location": "line 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_calculator_readme_calculator_extension",
+      "target": "extensions_calculator_readme_safe_math_parser",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/calculator/README.md",
+      "source_location": "line 14",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

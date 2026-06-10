@@ -1,4 +1,5 @@
-import './index.css'
+import { LitElement, html, css, customElement, property, unsafeHTML } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 function svg(content: string): string {
   return `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'>${content}</svg>`
@@ -28,37 +29,49 @@ const KEY_ICONS: Record<string, string> = {
   ),
 }
 
-export class NuxyKbdElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['keys']
-  }
+@customElement('nuxy-kbd')
+export class NuxyKbdElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      align-items: center;
+      gap: 1px;
+      padding: var(--space-0) var(--space-2);
+      border-radius: var(--radius-sm);
+      background-color: var(--syntax-comment);
+      border: 1px solid var(--syntax-keyword);
+      font-size: var(--font-xs);
+      color: var(--syntax-variable);
+      line-height: 1;
+    }
 
-  connectedCallback(): void {
-    this.classList.add('nuxy-kbd')
-    this.render()
-  }
+    .nuxy-kbd-icon {
+      display: inline-flex;
+      align-items: center;
+      line-height: 0;
+    }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
+    .nuxy-kbd-icon svg {
+      width: 0.9em;
+      height: 0.9em;
+    }
+  `
 
-  private render(): void {
-    const keys = this.getAttribute('keys') ?? ''
-    this.replaceChildren()
-    for (const ch of keys) {
+  @property({ type: String }) keys = ''
+
+  render(): TemplateResult {
+    return html`${[...this.keys].map((ch) => {
       const icon = KEY_ICONS[ch]
       if (icon) {
-        const span = document.createElement('span')
-        span.className = 'nuxy-kbd-icon'
-        span.innerHTML = icon
-        this.appendChild(span)
-      } else {
-        this.appendChild(document.createTextNode(ch))
+        return html`<span class="nuxy-kbd-icon">${unsafeHTML(icon)}</span>`
       }
-    }
+      return html`${ch}`
+    })}`
   }
 }
 
-if (!customElements.get('nuxy-kbd')) {
-  customElements.define('nuxy-kbd', NuxyKbdElement)
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-kbd': NuxyKbdElement
+  }
 }

@@ -1,17 +1,17 @@
-/**
- * Global type declarations for Nuxy extension frontends.
- * Frontend files run inside the renderer process and access
- * the UI kit and core API through window globals.
- */
-
-import type * as UIKit from '@nuxy/ui'
+import type { CoreShell, CoreEvents } from '@nuxy/core'
 
 declare global {
+  interface CustomElementRegistry {
+    registry: {
+      clear: () => void
+    }
+  }
+
   interface Window {
-    /** Primary access path for the UI kit (window.UI). */
-    UI: typeof UIKit
+    /** Primary access path for the UI kit (window.UI). Set by the active uikit extension at runtime. */
+    UI: Record<string, unknown>
     /** Legacy alias kept for backwards compat — prefer window.UI. */
-    ui: typeof UIKit
+    ui: Record<string, unknown>
     core: {
       ipc: {
         invoke: (extId: string, channel: string, payload?: unknown) => Promise<unknown>
@@ -33,6 +33,8 @@ declare global {
       themes: {
         list: () => Promise<unknown>
       }
+      shell?: CoreShell
+      events?: CoreEvents
       /**
        * Kernel i18n helper — fetches translations for any extension.
        * Prefer using `useTranslation(extId)` from `window.UI` in component code.

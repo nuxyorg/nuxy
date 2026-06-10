@@ -31,7 +31,7 @@ Every extension must have a `manifest.json` file at its root. This file is the s
 | `provider`     | Yes          | Required       | Optional          | Real-time omnibar result provider                   |
 | `orchestrator` | Yes          | Required       | Optional          | Fallback handler for unmatched Enter (typically AI) |
 | `helper`       | No           | Optional       | Optional          | Background utility called by other extensions       |
-| `uikit`        | No           | No             | Yes, loaded early | Extends `window.UI` with new React components       |
+| `uikit`        | No           | No             | Yes, loaded early | Extends `window.UI` with new UI components          |
 | `theme`        | No           | No             | No                | JSON CSS variable theme definition                  |
 | `iconpack`     | No           | No             | No                | JSON SVG icon pack                                  |
 
@@ -93,7 +93,7 @@ The `entry` object maps entry point names to relative file paths within the exte
 | Field            | Required for types                           | Description                                                                                    |
 | ---------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `entry.backend`  | `tool`, `provider`, `orchestrator`, `helper` | Backend TypeScript module — must export `register(core: CoreContext)`                          |
-| `entry.frontend` | Optional for all                             | Frontend TSX component — default export is the React component                                 |
+| `entry.frontend` | Optional for all                             | Frontend TypeScript file that registers the extension's custom element                         |
 | `entry.preload`  | Optional                                     | Runs in the Electron preload context at startup (clipboard watchers, early setup)              |
 | `entry.settings` | Optional                                     | Path to `settings.json` — declares user-configurable fields rendered by the Settings extension |
 | `entry.theme`    | `theme`                                      | Path to `theme.json` — CSS custom property value map                                           |
@@ -103,7 +103,7 @@ The `entry` object maps entry point names to relative file paths within the exte
 {
   "entry": {
     "backend": "backend.ts",
-    "frontend": "frontend.tsx",
+    "frontend": "frontend.ts",
     "preload": "preload.ts",
     "settings": "settings.json"
   }
@@ -193,7 +193,7 @@ When `entry.settings` is declared, the Settings extension reads the schema and r
   },
   "entry": {
     "backend": "backend.ts",
-    "frontend": "frontend.tsx",
+    "frontend": "frontend.ts",
     "settings": "settings.json"
   },
   "locales": {
@@ -202,3 +202,9 @@ When `entry.settings` is declared, the Settings extension reads the schema and r
   }
 }
 ```
+
+## Next steps
+
+- [Your First Extension](/extensions/first-extension) — walkthrough using these fields
+- [Access & Permissions](/extensions/extension-access) — what each permission gates
+- [Development Guide](/extensions/development-guide) — full authoring ruleset

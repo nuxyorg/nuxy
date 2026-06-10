@@ -8,14 +8,14 @@ Nuxy is a monorepo. The codebase is split into workspace packages, an Electron a
 
 ## Monorepo Layout
 
-| Path                      | Package                | Role                                                                          |
-| ------------------------- | ---------------------- | ----------------------------------------------------------------------------- |
-| `packages/core`           | `@nuxy/core`           | Shared types, logger, IPC message type definitions                            |
-| `packages/ui`             | `@nuxy/ui`             | React component library (Card, List, Input, SelectBox, etc.)                  |
-| `packages/extension-host` | `@nuxy/extension-host` | Worker runner that loads backend extensions; implements `createCoreProxy`     |
-| `packages/extension-sdk`  | `@nuxy/extension-sdk`  | Extension authoring API; re-exports `@nuxy/core` + `createMockCore` for tests |
-| `extensions/`             | —                      | Bundled first-party extensions (shell, clipboard, calculator, settings, …)    |
-| `src/`                    | —                      | Electron main process + Vite renderer (React single-page app)                 |
+| Path                      | Package                | Role                                                                                             |
+| ------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------ |
+| `packages/core`           | `@nuxy/core`           | Shared types, logger, IPC message type definitions                                               |
+| `packages/ui`             | `@nuxy/ui`             | Compile-time UI stubs (Card, List, Input, SelectBox, etc.) — delegates to `window.UI` at runtime |
+| `packages/extension-host` | `@nuxy/extension-host` | Worker runner that loads backend extensions; implements `createCoreProxy`                        |
+| `packages/extension-sdk`  | `@nuxy/extension-sdk`  | Extension authoring API; re-exports `@nuxy/core` + `createMockCore` for tests                    |
+| `extensions/`             | —                      | Bundled first-party extensions (shell, notes, calculator, settings, …)                           |
+| `src/`                    | —                      | Electron main process + Vite renderer (Lit bootstrap)                                            |
 
 Workspace aliases in `src/vite.config.ts` point to package source files directly — no separate build step is needed for packages during development.
 
@@ -45,7 +45,7 @@ Located in `src/electron/`. Bootstrap order in `main.ts`:
 ### IPC Flow
 
 ```
-Renderer (React)
+Renderer (Lit custom elements)
   │
   │  window.core.ipc.invoke(extId, channel, payload)
   ▼
@@ -74,7 +74,7 @@ Main Process — ipc/register.ts
 
 ## Renderer
 
-Single-page React app at `src/renderer/`. `App.tsx` dynamically imports `nuxy-ext://com.nuxy.shell/frontend.js` to load the shell UI. The entire launcher chrome — omnibar, result list, tool switcher — lives in the shell extension.
+Lit-based renderer at `src/renderer/`. Bootstrap loads the active uikit extension (registers `window.UI`), applies theme tokens, then mounts `<nuxy-shell-view>` by dynamically importing `nuxy-ext://com.nuxy.shell/frontend.js`. The entire launcher chrome — omnibar, result list, tool switcher — lives in the shell extension.
 
 The `window.core` object (injected by `preload.ts` via `contextBridge`) provides:
 
@@ -112,7 +112,7 @@ pnpm dev / app start
 2. Shell frontend debounces (50ms), then fans out to all active `provider` extensions via `core.ipc.invoke`
 3. Calculator backend receives the `eval` channel call, evaluates the expression, returns `{ result: '4' }`
 4. Shell renders the result as a list item
-5. User presses Enter → result is acted on (e.g. copied to clipboard)
+5. User presses Enter → result is acted on (e.g. opens a note, runs a command)
 
 ## Development vs Production
 
@@ -122,3 +122,7 @@ pnpm dev / app start
 | Extension sync  | Auto-copies `extensions/` → `~/.nuxy/extensions/` | Not auto-synced            |
 | Protocol server | Transpiles `.ts`/`.tsx` at request time           | Same runtime transpilation |
 | Log level       | Defaults to `info`; set `LOG_LEVEL=silly`         | Defaults to `warn`         |
+
+## Deep dive
+
+For the full architecture map with diagrams and data paths, see the [Architecture](/design/overview) section.

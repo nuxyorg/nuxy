@@ -36,15 +36,19 @@ export function Slider({
       onChange(detail.value)
     }
   }
-  return host('nuxy-slider', {
-    class: className,
-    ...(id ? { id } : {}),
-    min: String(min),
-    max: String(max),
-    step: String(step),
-    ...(disabled ? { disabled: '' } : {}),
-    ...(showValue ? { 'show-value': '' } : {}),
-    ...(showLabels ? { 'show-labels': '' } : {}),
-    ...(isControlled ? { value: String(value) } : { 'default-value': String(defaultValue) }),
-  }, listeners)
+  return host(
+    'nuxy-slider',
+    {
+      class: className,
+      ...(id ? { id } : {}),
+      min: String(min),
+      max: String(max),
+      step: String(step),
+      ...(disabled ? { disabled: '' } : {}),
+      ...(showValue ? { 'show-value': '' } : {}),
+      ...(showLabels ? { 'show-labels': '' } : {}),
+      ...(isControlled ? { value: String(value) } : { 'default-value': String(defaultValue) }),
+    },
+    listeners
+  )
 }

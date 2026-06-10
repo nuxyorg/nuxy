@@ -1,95 +1,172 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property, state, ref } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-const SEARCH_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`
+const MIRROR_ATTRS = [
+  'placeholder',
+  'disabled',
+  'name',
+  'autocomplete',
+  'autofocus',
+  'aria-label',
+  'tabindex',
+]
 
-const CLEAR_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
-
-const MIRROR_ATTRS = ['placeholder', 'disabled', 'name', 'autocomplete', 'autofocus', 'aria-label', 'tabindex']
-
-export class NuxySearchInputElement extends HTMLElement {
-  private field: HTMLInputElement | null = null
-  private clearBtn: HTMLButtonElement | null = null
-
-  static get observedAttributes(): string[] {
-    return ['value', 'class', ...MIRROR_ATTRS]
-  }
-
-  connectedCallback(): void {
-    this.build()
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private build(): void {
-    if (this.field) return
-
-    const icon = document.createElement('span')
-    icon.className = 'nuxy-search-input__icon'
-    icon.setAttribute('aria-hidden', 'true')
-    icon.innerHTML = SEARCH_ICON
-
-    this.field = document.createElement('input')
-    this.field.type = 'text'
-    this.field.className = 'nuxy-search-input__field'
-
-    this.clearBtn = document.createElement('button')
-    this.clearBtn.type = 'button'
-    this.clearBtn.className = 'nuxy-search-input__clear'
-    this.clearBtn.setAttribute('aria-label', 'Clear search')
-    this.clearBtn.innerHTML = CLEAR_ICON
-    this.clearBtn.addEventListener('click', () => this.clear())
-
-    this.append(icon, this.field, this.clearBtn)
-  }
-
-  private clear(): void {
-    if (!this.field || this.hasAttribute('disabled')) return
-    this.field.value = ''
-    this.removeAttribute('value')
-    this.syncClearVisibility()
-    this.field.dispatchEvent(new Event('input', { bubbles: true }))
-    this.dispatchEvent(new CustomEvent('nuxy-search-clear', { bubbles: true }))
-  }
-
-  private syncClearVisibility(): void {
-    if (!this.clearBtn || !this.field) return
-    const hasValue = this.field.value.length > 0
-    this.clearBtn.hidden = !hasValue
-    this.clearBtn.style.display = hasValue ? '' : 'none'
-  }
-
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-search-input')
-
-    if (this.field) {
-      const value = this.getAttribute('value')
-      if (value !== null) this.field.value = value
-
-      for (const attr of MIRROR_ATTRS) {
-        if (this.hasAttribute(attr)) {
-          this.field.setAttribute(attr, this.getAttribute(attr) ?? '')
-        } else {
-          this.field.removeAttribute(attr)
-        }
-      }
-
-      this.field.disabled = this.hasAttribute('disabled')
+@customElement('nuxy-search-input')
+export class NuxySearchInputElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: transparent;
+      border: 1px solid var(--syntax-comment);
+      border-radius: var(--radius-md);
+      transition: border-color 0.15s ease;
     }
 
-    this.syncClearVisibility()
+    :host(:focus-within) {
+      border-color: var(--syntax-operator);
+    }
+
+    .nuxy-search-input__icon {
+      color: var(--syntax-comment);
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .nuxy-search-input__field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--syntax-variable);
+      font-size: var(--font-md);
+      font-family: inherit;
+      outline: none;
+      min-width: 0;
+    }
+
+    .nuxy-search-input__field::placeholder {
+      color: var(--syntax-comment);
+    }
+
+    .nuxy-search-input__clear {
+      background: transparent;
+      border: none;
+      color: var(--syntax-comment);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      opacity: 0.6;
+      transition: opacity 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .nuxy-search-input__clear:hover {
+      opacity: 1;
+    }
+  `
+
+  @property({ type: String }) value = ''
+  @property({ type: String }) placeholder = ''
+  @property({ type: Boolean }) disabled = false
+  @property({ type: String }) name = ''
+  @property({ type: String }) autocomplete = ''
+  @property({ type: Boolean }) autofocus = false
+  @property({ attribute: 'aria-label', type: String }) ariaLabel = ''
+  @property({ type: String }) tabindex = ''
+
+  @state() private hasValue = false
+
+  private fieldRef: HTMLInputElement | null = null
+
+  connectedCallback(): void {
+    super.connectedCallback()
+    this.hasValue = (this.value || this.getAttribute('value') || '').length > 0
+  }
+
+  private onFieldRef = (el: Element | undefined): void => {
+    this.fieldRef = (el as HTMLInputElement | null | undefined) ?? null
   }
 
   get nativeInput(): HTMLInputElement | null {
-    return this.field
+    return this.fieldRef
   }
-}
 
-if (!customElements.get('nuxy-search-input')) {
-  customElements.define('nuxy-search-input', NuxySearchInputElement)
+  private onInput(e: Event): void {
+    const input = e.target as HTMLInputElement
+    this.hasValue = input.value.length > 0
+    if (!this.hasValue) this.removeAttribute('value')
+  }
+
+  private clear(): void {
+    if (!this.fieldRef || this.disabled || this.hasAttribute('disabled')) return
+    this.fieldRef.value = ''
+    this.hasValue = false
+    this.removeAttribute('value')
+    this.fieldRef.dispatchEvent(new Event('input', { bubbles: true }))
+    this.dispatchEvent(new CustomEvent('nuxy-search-clear', { bubbles: true }))
+  }
+
+  render(): TemplateResult {
+    const val = this.getAttribute('value')
+    const disabled = this.disabled || this.hasAttribute('disabled')
+
+    return html`
+      <span class="nuxy-search-input__icon" aria-hidden="true">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      </span>
+      <input
+        type="text"
+        class="nuxy-search-input__field"
+        .value=${val ?? ''}
+        ?disabled=${disabled}
+        placeholder=${this.placeholder || this.getAttribute('placeholder') || ''}
+        name=${this.name || this.getAttribute('name') || ''}
+        autocomplete=${this.autocomplete || this.getAttribute('autocomplete') || ''}
+        ?autofocus=${this.autofocus || this.hasAttribute('autofocus')}
+        aria-label=${this.ariaLabel || this.getAttribute('aria-label') || ''}
+        tabindex=${this.tabindex || this.getAttribute('tabindex') || ''}
+        ${ref(this.onFieldRef)}
+        @input=${this.onInput}
+      />
+      <button
+        type="button"
+        class="nuxy-search-input__clear"
+        aria-label="Clear search"
+        style=${!this.hasValue ? 'display:none' : ''}
+        @click=${this.clear}
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    `
+  }
 }
 
 declare global {

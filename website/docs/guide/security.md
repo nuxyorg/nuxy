@@ -4,6 +4,10 @@ title: Security Model
 
 # Security Model
 
+::: tip Full design document
+For the complete security architecture (chroot jails, permission prompts, threat model), see [Security & Isolation](/design/security).
+:::
+
 ## Worker Isolation
 
 Every extension backend runs in its own Node.js Worker thread — a separate V8 isolate with no shared memory. An extension cannot:
@@ -45,10 +49,10 @@ If an extension calls a `core.*` API without the corresponding permission declar
 When an extension calls `core.storage.read('history.json')`, the kernel translates the path:
 
 ```
-~/.nuxy/data/com.nuxy.clipboard/history.json
+~/.nuxy/data/com.nuxy.notes/notes.json
 ```
 
-Path traversal attempts are blocked. If `com.nuxy.clipboard` requests `../com.nuxy.notes/notes.json`, the kernel detects the traversal via `path.relative` and rejects the request. Extensions cannot access each other's storage directories.
+Path traversal attempts are blocked. If `com.nuxy.notes` requests `../com.nuxy.settings/config.json`, the kernel detects the traversal via `path.relative` and rejects the request. Extensions cannot access each other's storage directories.
 
 The same chroot applies to `core.db.open('my-data')` — the SQLite file is created under the extension's data directory.
 
@@ -94,3 +98,9 @@ The renderer runs with Electron's `contextIsolation: true`. Direct access to Nod
 - **Network proxying** — route extension `fetch()` through a kernel proxy with host allowlisting
 - **Extension signing** — verify cryptographic signatures before loading third-party extensions
 - **Per-command shell allowlisting** — `"permissions": [{ "name": "shell", "allowedCommands": ["ffmpeg"] }]`
+
+## Next steps
+
+- [Security & Isolation](/design/security) — full threat model
+- [Extension Access](/extensions/extension-access) — permission gates and API surface
+- [IPC & Kernel](/guide/ipc-kernel) — how host calls are routed

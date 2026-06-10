@@ -31,7 +31,7 @@
   },
   "entry": {
     "backend": "backend.ts",
-    "frontend": "frontend.tsx"
+    "frontend": "frontend.ts"
   },
   "locales": {
     "default": "en",

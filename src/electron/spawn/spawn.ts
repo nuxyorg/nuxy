@@ -20,7 +20,11 @@ export { activeWorkers } from './active-workers.js'
 const log = kernelLogger.child('Spawn')
 
 /** dist-electron/worker/extension-host.js (built from @nuxy/extension-host) */
-const hostScript = path.join(path.dirname(fileURLToPath(import.meta.url)), 'worker', 'extension-host.js')
+const hostScript = path.join(
+  path.dirname(fileURLToPath(import.meta.url)),
+  'worker',
+  'extension-host.js'
+)
 
 export async function spawnExtension(
   extId: string,
@@ -92,6 +96,14 @@ export async function spawnExtension(
       message: err.message,
       stack: err.stack,
     })
+    activeWorkers.delete(extId)
+    for (const listener of workerRegistryErrorListeners) {
+      try {
+        listener(extId)
+      } catch (e) {
+        log.error(`Registry error listener failed for "${extId}"`, e)
+      }
+    }
   })
 
   worker.on('exit', (code) => {

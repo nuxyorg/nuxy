@@ -21,10 +21,7 @@ const tempReportFile = path.resolve(cacheDir, 'temp-report.json')
 /** Copy loose shared modules (ce-utils.ts, etc.) into ~/.nuxy for e2e. */
 function syncSharedExtensionFiles() {
   const nuxyHome = path.join(process.env.HOME ?? '', '.nuxy')
-  const targets = [
-    path.join(nuxyHome, 'extensions'),
-    path.join(nuxyHome, 'extracted'),
-  ]
+  const targets = [path.join(nuxyHome, 'extensions'), path.join(nuxyHome, 'extracted')]
   if (!fs.existsSync(extensionsDir)) return
   for (const name of fs.readdirSync(extensionsDir)) {
     const src = path.join(extensionsDir, name)
@@ -204,9 +201,7 @@ async function run() {
     filteredSpecs = specFiles.filter((spec) => {
       return filters.some((filter) => {
         return (
-          spec.name.includes(filter) ||
-          spec.relativePath.includes(filter) ||
-          spec.type === filter
+          spec.name.includes(filter) || spec.relativePath.includes(filter) || spec.type === filter
         )
       })
     })

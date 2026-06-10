@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_gradient_readme_gradient_extension",
+      "label": "Gradient Helper Extension (com.nuxy.gradient)",
+      "file_type": "document",
+      "source_file": "extensions/gradient/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_gradient_readme_webgl_mesh_gradient",
+      "label": "WebGL Mesh Gradient (Stripe Shader)",
+      "file_type": "concept",
+      "source_file": "extensions/gradient/README.md",
+      "source_location": "line 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "extensions_gradient_readme_nuxy_gradient_toggle_event",
+      "label": "nuxy-gradient-toggle Custom Event",
+      "file_type": "concept",
+      "source_file": "extensions/gradient/README.md",
+      "source_location": "line 29-44",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_gradient_readme_gradient_extension",
+      "target": "extensions_extension_guide_helper_extension_type",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/gradient/README.md",
+      "source_location": "line 8",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_gradient_readme_gradient_extension",
+      "target": "extensions_gradient_readme_webgl_mesh_gradient",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/gradient/README.md",
+      "source_location": "line 14",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_gradient_readme_gradient_extension",
+      "target": "extensions_gradient_readme_nuxy_gradient_toggle_event",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/gradient/README.md",
+      "source_location": "line 29-44",
+      "weight": 1.0
+    },
+    {
+      "source": "extensions_gradient_readme_nuxy_gradient_toggle_event",
+      "target": "extensions_extension_guide_approved_shell_channels",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "extensions/gradient/README.md",
+      "source_location": null,
+      "weight": 0.75
+    }
+  ],
+  "hyperedges": []
+}

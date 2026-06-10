@@ -1,0 +1,91 @@
+{
+  "nodes": [
+    {
+      "id": "docs_react_to_lit_migration_completed",
+      "label": "React to Web Components Migration (Completed)",
+      "file_type": "document",
+      "source_file": "docs/react-to-lit-migration.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_react_to_lit_nuxy_tool_element",
+      "label": "NuxyToolElement Interface",
+      "file_type": "concept",
+      "source_file": "docs/react-to-lit-migration.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_react_to_lit_controller_pattern",
+      "label": "Controller Pattern (replaces React hooks)",
+      "file_type": "concept",
+      "source_file": "docs/react-to-lit-migration.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_react_to_lit_namespaced_event_bus",
+      "label": "core.events Namespaced Event Bus",
+      "file_type": "concept",
+      "source_file": "docs/react-to-lit-migration.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_react_to_lit_migration_completed",
+      "target": "docs_react_to_lit_nuxy_tool_element",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/react-to-lit-migration.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_react_to_lit_migration_completed",
+      "target": "docs_react_to_lit_controller_pattern",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/react-to-lit-migration.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_react_to_lit_migration_completed",
+      "target": "docs_react_to_lit_namespaced_event_bus",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/react-to-lit-migration.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_react_to_lit_nuxy_tool_element",
+      "target": "docs_17_frontend_shared_ui_paradigm",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/react-to-lit-migration.md",
+      "source_location": null,
+      "weight": 0.8
+    }
+  ],
+  "hyperedges": []
+}

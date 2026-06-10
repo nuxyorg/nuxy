@@ -1,0 +1,91 @@
+{
+  "nodes": [
+    {
+      "id": "implementation_02_core_infrastructure",
+      "label": "Implementation Phase 2: Core Infrastructure",
+      "file_type": "document",
+      "source_file": "docs/implementation/02-core-infrastructure.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_corecontext_proxy",
+      "label": "CoreContext Proxy Object",
+      "file_type": "concept",
+      "source_file": "docs/implementation/02-core-infrastructure.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_window_manager",
+      "label": "WindowManager (Frameless Transparent BrowserWindow)",
+      "file_type": "concept",
+      "source_file": "docs/implementation/02-core-infrastructure.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_preload_bridge",
+      "label": "Preload Bridge (contextBridge window.core)",
+      "file_type": "concept",
+      "source_file": "docs/implementation/02-core-infrastructure.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "implementation_02_core_infrastructure",
+      "target": "concept_corecontext_proxy",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/implementation/02-core-infrastructure.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "implementation_02_core_infrastructure",
+      "target": "concept_window_manager",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/implementation/02-core-infrastructure.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "implementation_02_core_infrastructure",
+      "target": "concept_preload_bridge",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/implementation/02-core-infrastructure.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "implementation_02_core_infrastructure",
+      "target": "concept_extension_scanner",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/implementation/02-core-infrastructure.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

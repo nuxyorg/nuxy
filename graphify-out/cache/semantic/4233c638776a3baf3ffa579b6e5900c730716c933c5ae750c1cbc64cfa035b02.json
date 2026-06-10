@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_extension_readme_template_readme_template",
+      "label": "Extension README Template",
+      "file_type": "document",
+      "source_file": "extensions/EXTENSION_README_TEMPLATE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "extensions_extension_readme_template_readme_template",
+      "target": "extensions_extension_guide_manifest_rules",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "extensions/EXTENSION_README_TEMPLATE.md",
+      "source_location": "line 229-254",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

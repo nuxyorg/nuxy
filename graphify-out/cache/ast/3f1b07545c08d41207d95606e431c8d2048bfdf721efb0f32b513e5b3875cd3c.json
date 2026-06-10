@@ -1,0 +1,45 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_nyaa_settings_json",
+      "label": "settings.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/nyaa/settings.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "nyaa_settings_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/nyaa/settings.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "nyaa_settings_fields",
+      "label": "fields",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/nyaa/settings.json",
+      "source_location": "L3"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_nyaa_settings_json",
+      "target": "nyaa_settings_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/nyaa/settings.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_nyaa_settings_json",
+      "target": "nyaa_settings_fields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/nyaa/settings.json",
+      "source_location": "L3",
+      "weight": 1.0
+    }
+  ]
+}

@@ -1,0 +1,258 @@
+{
+  "nodes": [
+    {
+      "id": "arch_refactor_plan_doc",
+      "label": "Architecture Refactor Plan",
+      "file_type": "document",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_validation_duplicate",
+      "label": "Refactor Finding 1: Validation Logic Duplicated in validate.ts and broker.ts",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L28",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_register_god_handler",
+      "label": "Refactor Finding 2: register.ts God-Handler (Three Responsibilities)",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L49",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_nuxyconfig_god_module",
+      "label": "Refactor Finding 3: nuxyconfig.ts God-Module with Circular Import Workaround",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L72",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_worker_protocol_untyped",
+      "label": "Refactor Finding 5: Worker Message Protocol Untyped Ad-Hoc String Format",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L117",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_renderer_window_any",
+      "label": "Refactor Finding 6: Renderer Bypasses Type Safety via (window as any).core",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L154",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_scanner_lifecycle",
+      "label": "Refactor Finding 7: Scanner Owns Too Many Lifecycle Concerns",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L196",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_protocol_ts_transpile",
+      "label": "Refactor Finding 11: Protocol Handler Does Runtime TypeScript Transpilation (High Risk)",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L289",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_extension_load_silent_fail",
+      "label": "Refactor Finding 14: loadExtensionModule Silently Swallows Load Failures",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L352",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_registration_race",
+      "label": "Refactor Finding 13: Extension Registered Before Worker Ready (Race Condition)",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L329",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_refactor_msgid_weak",
+      "label": "Refactor Finding 10: msgId Math.random() Cryptographically Weak and Duplicated",
+      "file_type": "concept",
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L271",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_validation_duplicate",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_register_god_handler",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_nuxyconfig_god_module",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_worker_protocol_untyped",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_renderer_window_any",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_scanner_lifecycle",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_protocol_ts_transpile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_extension_load_silent_fail",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L352",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_registration_race",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L329",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_plan_doc",
+      "target": "arch_refactor_msgid_weak",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_refactor_msgid_weak",
+      "target": "dead_code_math_random_id",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "arch_refactor_registration_race",
+      "target": "lit_electron_bootstrap_race_condition",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": null,
+      "weight": 0.8
+    },
+    {
+      "source": "arch_refactor_renderer_window_any",
+      "target": "naming_ui_props_any",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/architecture/refactor-plan.md",
+      "source_location": null,
+      "weight": 0.6
+    }
+  ],
+  "hyperedges": []
+}

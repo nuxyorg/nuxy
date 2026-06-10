@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "id": "docs_architecture_empty_shell_kernel",
+      "label": "Nuxy Architecture: Empty Shell Kernel",
+      "file_type": "document",
+      "source_file": "docs/architecture.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_web_components_renderer",
+      "label": "Web Components Renderer Architecture",
+      "file_type": "concept",
+      "source_file": "docs/architecture.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_architecture_core_composition_api",
+      "label": "core.composition Named Shell Slots API",
+      "file_type": "concept",
+      "source_file": "docs/architecture.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_architecture_empty_shell_kernel",
+      "target": "docs_15_plugin_empty_shell_philosophy",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_empty_shell_kernel",
+      "target": "docs_architecture_web_components_renderer",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_architecture_web_components_renderer",
+      "target": "docs_react_to_lit_migration_completed",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "docs_architecture_core_composition_api",
+      "target": "docs_react_to_lit_migration_completed",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": []
+}

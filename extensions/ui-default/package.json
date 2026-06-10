@@ -11,7 +11,6 @@
     "lit": "^3.0.0"
   },
   "devDependencies": {
-    "@nuxy/ui": "workspace:*",
     "vite": "^4.4.5"
   }
 }

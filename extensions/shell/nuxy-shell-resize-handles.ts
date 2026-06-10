@@ -1,3 +1,5 @@
+import { LitElement, html, css, customElement } from '@nuxy/core'
+
 const DIRECTIONS = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as const
 type Direction = (typeof DIRECTIONS)[number]
 
@@ -12,9 +14,16 @@ const HANDLE_STYLES: Record<Direction, string> = {
   sw: 'bottom:0;left:0;width:10px;height:10px;cursor:nwse-resize',
 }
 
-export class NuxyShellResizeHandlesElement extends HTMLElement {
+@customElement('nuxy-shell-resize-handles')
+export class NuxyShellResizeHandlesElement extends LitElement {
+  static styles = css`
+    :host {
+      display: contents;
+    }
+  `
+
   connectedCallback(): void {
-    this.style.display = 'contents'
+    super.connectedCallback()
     if (this.childElementCount > 0) return
 
     for (const dir of DIRECTIONS) {
@@ -33,10 +42,14 @@ export class NuxyShellResizeHandlesElement extends HTMLElement {
       this.appendChild(handle)
     }
   }
-}
 
-if (!customElements.get('nuxy-shell-resize-handles')) {
-  customElements.define('nuxy-shell-resize-handles', NuxyShellResizeHandlesElement)
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+  }
+
+  render() {
+    return html`<slot></slot>`
+  }
 }
 
 declare global {

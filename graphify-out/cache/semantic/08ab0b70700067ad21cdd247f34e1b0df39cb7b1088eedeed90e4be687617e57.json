@@ -1,0 +1,17 @@
+{
+  "nodes": [
+    {
+      "id": "extensions_nyaa_readme_nyaa_extension",
+      "label": "Nyaa Search Extension (com.nuxy.nyaa)",
+      "file_type": "document",
+      "source_file": "extensions/nyaa/README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [],
+  "hyperedges": []
+}

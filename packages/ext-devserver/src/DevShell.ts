@@ -85,7 +85,7 @@ export class DevShell extends LitElement {
 
   private async mountExtension() {
     try {
-      await import(/* @vite-ignore */ '~ext/frontend.tsx')
+      await import(/* @vite-ignore */ '~ext/frontend.ts')
       const tag = `nuxy-tool-${__EXT_NAME__}`
       if (!customElements.get(tag)) {
         await customElements.whenDefined(tag)
@@ -115,11 +115,7 @@ export class DevShell extends LitElement {
       </div>
       <div class="window">
         <div class="omnibar">
-          <input
-            .value=${this.query}
-            @input=${this.handleInput}
-            placeholder="Search…"
-          />
+          <input .value=${this.query} @input=${this.handleInput} placeholder="Search…" />
         </div>
         ${this.loading
           ? html`<div class="loading-hint">Loading…</div>`

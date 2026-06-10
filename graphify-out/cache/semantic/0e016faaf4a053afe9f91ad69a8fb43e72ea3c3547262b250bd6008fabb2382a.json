@@ -1,0 +1,60 @@
+{
+  "nodes": [
+    {
+      "id": "docs_known_bugs_open_bugs",
+      "label": "Known Bugs Tracker",
+      "file_type": "document",
+      "source_file": "docs/known-bugs.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_known_bugs_bug04_worker_sandbox",
+      "label": "BUG-04: Worker Sandbox Weaker Than Documented",
+      "file_type": "concept",
+      "source_file": "docs/known-bugs.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_known_bugs_bug09_restructure_pending",
+      "label": "BUG-09: Restructure Plan Phase 1 Pending",
+      "file_type": "concept",
+      "source_file": "docs/known-bugs.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_pain_points_worker_sandbox_p7",
+      "target": "docs_known_bugs_bug04_worker_sandbox",
+      "relation": "semantically_similar_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/known-bugs.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_known_bugs_open_bugs",
+      "target": "docs_pain_points_plan_gap_analysis",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/known-bugs.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

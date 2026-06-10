@@ -89,6 +89,14 @@ export interface ExtensionManifest {
    */
   locales?: ExtensionLocaleConfig
   /**
+   * Tool lifecycle behavior declared in the manifest.
+   * Extensions read this themselves via `completeToolAction(manifest)`.
+   */
+  behavior?: {
+    /** What happens after the tool's primary action completes (e.g. Enter on a result). */
+    onComplete?: 'stay' | 'returnToShell' | 'hide' | 'returnToShellAndHide'
+  }
+  /**
    * Composition slots this extension may provide (shell) or claim (overlays).
    * Kernel validates claims against the bootstrap shell manifest.
    */

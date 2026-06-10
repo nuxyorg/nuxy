@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "src_indexhtml",
+      "label": "Renderer HTML Entry Point",
+      "file_type": "code",
+      "source_file": "src/index.html",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "src_indexhtml",
+      "target": "concept_nuxy_electronlauncher",
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "src/index.html",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

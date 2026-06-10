@@ -20,9 +20,5 @@ export function Callout({ variant = 'info', title, children, icon, className }: 
     )
   }
 
-  return h(
-    'nuxy-callout',
-    { class: className, variant, ...(title ? { title } : {}) },
-    children
-  )
+  return h('nuxy-callout', { class: className, variant, ...(title ? { title } : {}) }, children)
 }

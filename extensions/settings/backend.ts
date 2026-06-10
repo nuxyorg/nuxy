@@ -7,6 +7,7 @@ const DEFAULT: NuxySettings = {
   iconPack: '',
   zoom: '100%',
   font: 'system',
+  fontWeight: '400',
   // Window behaviour (formerly nuxyconfig)
   escAction: 'hide',
   blurAction: 'hide',

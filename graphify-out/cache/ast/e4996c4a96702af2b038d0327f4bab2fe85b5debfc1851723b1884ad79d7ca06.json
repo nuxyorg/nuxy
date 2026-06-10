@@ -1,0 +1,573 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "label": "en.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "locales_en_meta",
+      "label": "meta",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "locales_en_meta_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "locales_en_sections",
+      "label": "sections",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "locales_en_sections_notes",
+      "label": "notes",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "locales_en_list",
+      "label": "list",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "locales_en_list_newnote",
+      "label": "newNote",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "locales_en_list_newnotehint",
+      "label": "newNoteHint",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "locales_en_list_nonotes",
+      "label": "noNotes",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "locales_en_list_nomatching",
+      "label": "noMatching",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "locales_en_list_createhint",
+      "label": "createHint",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "locales_en_editor",
+      "label": "editor",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "locales_en_editor_placeholder",
+      "label": "placeholder",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "locales_en_editor_transcribing",
+      "label": "transcribing",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "locales_en_empty",
+      "label": "empty",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "locales_en_empty_selectorcreate",
+      "label": "selectOrCreate",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "locales_en_empty_createhint",
+      "label": "createHint",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "locales_en_errors",
+      "label": "errors",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "locales_en_errors_rendererror",
+      "label": "renderError",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "locales_en_toasts",
+      "label": "toasts",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "locales_en_toasts_saved",
+      "label": "saved",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "locales_en_toasts_deleted",
+      "label": "deleted",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "locales_en_actions",
+      "label": "actions",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "locales_en_actions_newnote",
+      "label": "newNote",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "locales_en_actions_save",
+      "label": "save",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "locales_en_actions_savenote",
+      "label": "saveNote",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "locales_en_actions_delete",
+      "label": "delete",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L34"
+    },
+    {
+      "id": "locales_en_actions_deletenote",
+      "label": "deleteNote",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L35"
+    },
+    {
+      "id": "locales_en_actions_editnote",
+      "label": "editNote",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "locales_en_actions_record",
+      "label": "record",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "locales_en_actions_stoprecording",
+      "label": "stopRecording",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L38"
+    },
+    {
+      "id": "locales_en_actions_focussearchexitedit",
+      "label": "focusSearchExitEdit",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L39"
+    },
+    {
+      "id": "locales_en_actions_previous",
+      "label": "previous",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L40"
+    },
+    {
+      "id": "locales_en_actions_next",
+      "label": "next",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "locales_en_provider",
+      "label": "provider",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "locales_en_provider_saveasnote",
+      "label": "saveAsNote",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L44"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_meta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_meta",
+      "target": "locales_en_meta_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_sections",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_sections",
+      "target": "locales_en_sections_notes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_list",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_list",
+      "target": "locales_en_list_newnote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_list",
+      "target": "locales_en_list_newnotehint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_list",
+      "target": "locales_en_list_nonotes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_list",
+      "target": "locales_en_list_nomatching",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_list",
+      "target": "locales_en_list_createhint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_editor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_editor",
+      "target": "locales_en_editor_placeholder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_editor",
+      "target": "locales_en_editor_transcribing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_empty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_empty",
+      "target": "locales_en_empty_selectorcreate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_empty",
+      "target": "locales_en_empty_createhint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_errors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_errors",
+      "target": "locales_en_errors_rendererror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_toasts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_toasts",
+      "target": "locales_en_toasts_saved",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_toasts",
+      "target": "locales_en_toasts_deleted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_actions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_newnote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_save",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_savenote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_delete",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_deletenote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_editnote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_record",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_stoprecording",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_focussearchexitedit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_previous",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_actions",
+      "target": "locales_en_actions_next",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_locales_en_json",
+      "target": "locales_en_provider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_provider",
+      "target": "locales_en_provider_saveasnote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/locales/en.json",
+      "source_location": "L44",
+      "weight": 1.0
+    }
+  ]
+}

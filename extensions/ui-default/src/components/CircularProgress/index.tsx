@@ -67,7 +67,12 @@ export interface BannerProps {
   className?: string
 }
 
-export function Banner({ variant = 'info', children, onClose, className }: BannerProps): HTMLElement {
+export function Banner({
+  variant = 'info',
+  children,
+  onClose,
+  className,
+}: BannerProps): HTMLElement {
   const listeners: Record<string, EventListener> = {}
   if (onClose) {
     listeners['nuxy-banner-close'] = () => onClose()

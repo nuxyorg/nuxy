@@ -1,55 +1,22 @@
 {
   "nodes": [
     {
-      "id": "scratch_scan_report_document",
+      "id": "scratch_scan_report",
       "label": "Extension Scan Report",
       "file_type": "document",
       "source_file": "scratch/scan-report.md",
       "source_location": null,
       "source_url": null,
-      "captured_at": "2026-05-29",
-      "author": null,
-      "contributor": null
-    },
-    {
-      "id": "scratch_scan_report_bitwarden_violations",
-      "label": "Bitwarden Extension Violations",
-      "file_type": "document",
-      "source_file": "scratch/scan-report.md",
-      "source_location": "Extension: bitwarden",
-      "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "scratch_scan_report_emoji_picker_violations",
-      "label": "Emoji Picker Extension Violations",
-      "file_type": "document",
+      "id": "concept_scan_report_violations",
+      "label": "Extension Code Violations (raw HTML, hardcoded styles)",
+      "file_type": "concept",
       "source_file": "scratch/scan-report.md",
-      "source_location": "Extension: emoji-picker",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null
-    },
-    {
-      "id": "scratch_scan_report_shell_violations",
-      "label": "Shell Extension Violations",
-      "file_type": "document",
-      "source_file": "scratch/scan-report.md",
-      "source_location": "Extension: shell",
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null
-    },
-    {
-      "id": "scratch_scan_report_ui_default_violations",
-      "label": "ui-default Extension Violations (js files)",
-      "file_type": "document",
-      "source_file": "scratch/scan-report.md",
-      "source_location": "Extension: ui-default",
+      "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
@@ -58,54 +25,74 @@
   ],
   "edges": [
     {
-      "source": "scratch_scan_report_document",
-      "target": "scratch_scan_report_bitwarden_violations",
+      "source": "scratch_scan_report",
+      "target": "concept_scan_report_violations",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scratch/scan-report.md",
-      "source_location": "Extension: bitwarden",
+      "source_location": null,
       "weight": 1.0
     },
     {
-      "source": "scratch_scan_report_document",
-      "target": "scratch_scan_report_emoji_picker_violations",
+      "source": "scratch_scan_report",
+      "target": "ext_com_nuxy_bitwarden",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scratch/scan-report.md",
-      "source_location": "Extension: emoji-picker",
+      "source_location": null,
       "weight": 1.0
     },
     {
-      "source": "scratch_scan_report_document",
-      "target": "scratch_scan_report_shell_violations",
+      "source": "scratch_scan_report",
+      "target": "ext_com_nuxy_notes",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scratch/scan-report.md",
-      "source_location": "Extension: shell",
+      "source_location": null,
       "weight": 1.0
     },
     {
-      "source": "scratch_scan_report_document",
-      "target": "scratch_scan_report_ui_default_violations",
+      "source": "scratch_scan_report",
+      "target": "ext_com_nuxy_ollama",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scratch/scan-report.md",
-      "source_location": "Extension: ui-default",
+      "source_location": null,
       "weight": 1.0
     },
     {
-      "source": "scratch_scan_report_document",
-      "target": "extensions_extension_guide_anti_patterns",
+      "source": "scratch_scan_report",
+      "target": "ext_com_nuxy_n8n",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scratch/scan-report.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "scratch_scan_report",
+      "target": "ext_com_nuxy_video_downloader",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scratch/scan-report.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_scan_report_violations",
+      "target": "concept_window_ui_factories",
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
-      "confidence_score": 0.95,
+      "confidence_score": 0.85,
       "source_file": "scratch/scan-report.md",
-      "source_location": "Violations match anti-patterns in EXTENSION_GUIDE.md",
-      "weight": 0.95
+      "source_location": null,
+      "weight": 0.8
     }
   ],
   "hyperedges": []

@@ -184,7 +184,7 @@ Nuxy projesinde yer alan tüm eklentiler (extensions), uygulamanın temel işlev
 
 ### 4.3. Default UIKit (`com.nuxy.ui-default`) & Icons (`com.nuxy.icons-default`)
 
-- **Ne İşe Yarar?**: Eklentilerin ortak kullanması gereken Shadcn tabanlı React bileşen kütüphanesi ve varsayılan ikon paketidir.
+- **Ne İşe Yarar?**: Eklentilerin ortak kullanması gereken Lit tabanlı custom element bileşen kütüphanesi ve varsayılan ikon paketidir.
 - **Artıları**:
   - Eklenti geliştiricilerinin sıfırdan buton, input veya scrollbar tasarlamasını engeller, uygulamanın tutarlı görünmesini garanti eder.
 - **Eksileri**:

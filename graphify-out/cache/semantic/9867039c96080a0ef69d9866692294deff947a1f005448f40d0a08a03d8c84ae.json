@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    {
+      "id": "implementation_05_final_polish",
+      "label": "Implementation Phase 5: Final Polish",
+      "file_type": "document",
+      "source_file": "docs/implementation/05-final-polish.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "implementation_05_final_polish",
+      "target": "concept_tdd_mandatory",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/implementation/05-final-polish.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

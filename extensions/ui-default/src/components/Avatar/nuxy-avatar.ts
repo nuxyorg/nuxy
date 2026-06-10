@@ -1,5 +1,5 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 function getInitials(name: string): string {
   const parts = name.split(' ').filter(Boolean)
@@ -8,55 +8,114 @@ function getInitials(name: string): string {
   return (parts[0]![0]! + parts[parts.length - 1]![0]!).toUpperCase()
 }
 
-export class NuxyAvatarElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['src', 'name', 'size', 'variant', 'status']
-  }
+@customElement('nuxy-avatar')
+export class NuxyAvatarElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      font-weight: 600;
+      background: var(--syntax-keyword);
+      color: var(--syntax-variable);
+      user-select: none;
+      position: relative;
+    }
 
-  connectedCallback(): void {
-    this.render()
-  }
+    :host([size='xs']) {
+      width: 20px;
+      height: 20px;
+      font-size: 9px;
+    }
+    :host([size='sm']) {
+      width: 28px;
+      height: 28px;
+      font-size: 11px;
+    }
+    :host([size='md']) {
+      width: 36px;
+      height: 36px;
+      font-size: var(--font-sm);
+    }
+    :host([size='lg']) {
+      width: 48px;
+      height: 48px;
+      font-size: var(--font-md);
+    }
+    :host([size='xl']) {
+      width: 64px;
+      height: 64px;
+      font-size: var(--font-lg);
+    }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
+    :host([variant='square']) {
+      border-radius: var(--radius-md);
+    }
 
-  private render(): void {
-    const src = this.getAttribute('src')
-    const name = this.getAttribute('name') ?? ''
-    const size = this.getAttribute('size') ?? 'md'
-    const variant = this.getAttribute('variant') ?? 'circle'
-    const status = this.getAttribute('status')
-    const extraClass = this.getAttribute('class') ?? ''
+    .nuxy-avatar__img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-    syncHostClasses(this, 'nuxy-avatar', `nuxy-avatar--${size}`, variant === 'square' ? 'nuxy-avatar--square' : '')
+    .nuxy-avatar__badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-base);
+    }
 
-    if (name) this.title = name
-    else this.removeAttribute('title')
+    .nuxy-avatar__badge--online {
+      background: var(--syntax-green);
+    }
+    .nuxy-avatar__badge--busy {
+      background: var(--syntax-constant);
+    }
+    .nuxy-avatar__badge--away {
+      background: var(--syntax-orange);
+    }
+    .nuxy-avatar__badge--offline {
+      background: var(--syntax-comment);
+    }
+  `
 
-    this.replaceChildren()
+  @property({ type: String, reflect: true }) src = ''
+  @property({ type: String, reflect: true }) name = ''
+  @property({ type: String, reflect: true }) size = 'md'
+  @property({ type: String, reflect: true }) variant = 'circle'
+  @property({ type: String, reflect: true }) status = ''
 
-    if (src) {
-      const img = document.createElement('img')
-      img.src = src
-      img.alt = name || 'Avatar'
-      img.className = 'nuxy-avatar__img'
-      this.appendChild(img)
+  updated(): void {
+    if (this.name) {
+      this.title = this.name
     } else {
-      const span = document.createElement('span')
-      span.textContent = getInitials(name)
-      this.appendChild(span)
+      this.removeAttribute('title')
     }
+  }
 
-    if (status) {
-      const badge = document.createElement('span')
-      badge.className = `nuxy-avatar__badge nuxy-avatar__badge--${status}`
-      badge.setAttribute('role', 'presentation')
-      this.appendChild(badge)
-    }
+  render(): TemplateResult {
+    return html`
+      ${this.src
+        ? html`<img src=${this.src} alt=${this.name || 'Avatar'} class="nuxy-avatar__img" />`
+        : html`<span>${getInitials(this.name)}</span>`}
+      ${this.status
+        ? html`<span
+            class="nuxy-avatar__badge nuxy-avatar__badge--${this.status}"
+            role="presentation"
+          ></span>`
+        : nothing}
+    `
   }
 }
 
-if (!customElements.get('nuxy-avatar')) {
-  customElements.define('nuxy-avatar', NuxyAvatarElement)
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-avatar': NuxyAvatarElement
+  }
 }

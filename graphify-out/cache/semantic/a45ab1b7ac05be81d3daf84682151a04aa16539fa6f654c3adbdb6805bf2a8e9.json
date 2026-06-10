@@ -1,0 +1,271 @@
+{
+  "nodes": [
+    {
+      "id": "lit_electron_renderer_doc",
+      "label": "Lit Remake: Electron & Renderer Analysis (05-electron-renderer.md)",
+      "file_type": "document",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_bootstrap_race_condition",
+      "label": "Problem: Bootstrap Sequence Race \u2014 Extensions Spawn After Window Opens",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L10",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_ipc_register_monolith",
+      "label": "Problem: ipc/register.ts 600+ Line Monolith \u2014 All Handlers in One File",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_scanner_612_lines",
+      "label": "Problem: extensions/scanner.ts 612 Lines \u2014 Too Many Responsibilities",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_scanner_no_manifest_validation",
+      "label": "Bug: Scanner Accepts Manifests with Missing Required Fields (id can be undefined)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L42",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_preload_ready_on_error",
+      "label": "Bug: preload.ts Dispatches nuxy:ready Even When contextBridge.exposeInMainWorld Fails",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L58",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_renderer_bootstrap_no_error_propagation",
+      "label": "Bug: renderer/bootstrap.ts Chain Has No Error Propagation (loadUiKit fail continues)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L83",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_protocol_path_traversal",
+      "label": "Security: nuxy-ext:// Protocol No ext-id Validation \u2014 Directory Traversal Risk",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L114",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_worker_no_timeout",
+      "label": "Critical: Worker Threads Have No Timeout \u2014 Zombie Workers on Hang",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L143",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_electron_worker_error_passive",
+      "label": "Problem: worker.on('error') Only Logs \u2014 Extension Not Marked Failed",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L155",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_bootstrap_race_condition",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_ipc_register_monolith",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_scanner_612_lines",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_preload_ready_on_error",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_protocol_path_traversal",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_worker_no_timeout",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_scanner_no_manifest_validation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_renderer_bootstrap_no_error_propagation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_renderer_doc",
+      "target": "lit_electron_worker_error_passive",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_electron_preload_ready_on_error",
+      "target": "lit_genel_preload_signal_always_fires",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_electron_scanner_612_lines",
+      "target": "arch_refactor_scanner_lifecycle",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_electron_ipc_register_monolith",
+      "target": "arch_refactor_register_god_handler",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_electron_protocol_path_traversal",
+      "target": "arch_refactor_protocol_ts_transpile",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": null,
+      "weight": 0.7
+    },
+    {
+      "source": "lit_electron_worker_no_timeout",
+      "target": "lit_core_host_call_timeout_missing",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/05-electron-renderer.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "security_critical_issues_cluster",
+      "label": "Security-Critical Issues Requiring Fix: Path Traversal, eval(), innerHTML XSS",
+      "nodes": [
+        "lit_electron_protocol_path_traversal",
+        "lit_ext_calculator_eval_security",
+        "lit_shell_omnibar_innerhtml_xss"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/05-electron-renderer.md"
+    }
+  ]
+}

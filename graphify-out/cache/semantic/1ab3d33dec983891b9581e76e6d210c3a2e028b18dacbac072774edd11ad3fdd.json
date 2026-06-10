@@ -1,0 +1,146 @@
+{
+  "nodes": [
+    {
+      "id": "reports_refactor_shellfrontend_assessment",
+      "label": "Refactor Assessment: shell/frontend.tsx",
+      "file_type": "document",
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_shellviewgodcomponent",
+      "label": "ShellView God Component (933-line monolith with memory leak)",
+      "file_type": "concept",
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_customeventsapi",
+      "label": "CustomEvent Shell API (nuxy-shell-reset, nuxy-register-actions, etc.)",
+      "file_type": "concept",
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_nuxy_shellmemoryleak",
+      "label": "ShellView Resize Listener Memory Leak (Line 304)",
+      "file_type": "concept",
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "reports_refactor_shellfrontend_assessment",
+      "target": "concept_nuxy_shellviewgodcomponent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_shellfrontend_assessment",
+      "target": "concept_nuxy_shellmemoryleak",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_shellfrontend_assessment",
+      "target": "concept_nuxy_customeventsapi",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "reports_refactor_shellfrontend_assessment",
+      "target": "concept_nuxy_dragresize",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_shellviewgodcomponent",
+      "target": "concept_nuxy_shellextension",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_shellviewgodcomponent",
+      "target": "concept_nuxy_omnibar",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_shellviewgodcomponent",
+      "target": "concept_nuxy_commandpalette",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_nuxy_shellmemoryleak",
+      "target": "concept_nuxy_shellviewgodcomponent",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "shell_rendering_architecture",
+      "label": "Shell Rendering Architecture: ShellView + Omnibar + CommandPalette + CustomEvents",
+      "nodes": [
+        "concept_nuxy_shellviewgodcomponent",
+        "concept_nuxy_omnibar",
+        "concept_nuxy_commandpalette",
+        "concept_nuxy_customeventsapi"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "reports/refactor/refactor_shell-frontend_02-06-2026_011606.md"
+    }
+  ]
+}

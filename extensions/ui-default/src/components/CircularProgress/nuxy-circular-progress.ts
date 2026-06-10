@@ -1,38 +1,71 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-export class NuxyCircularProgressElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['value', 'size', 'stroke-width', 'show-label']
-  }
+@customElement('nuxy-circular-progress')
+export class NuxyCircularProgressElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      position: relative;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nuxy-circular-progress__svg {
+      transform: rotate(-90deg);
+    }
+
+    .nuxy-circular-progress__track {
+      stroke: rgba(255, 255, 255, 0.08);
+    }
+
+    .nuxy-circular-progress__fill {
+      stroke: var(--syntax-operator);
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.3s ease;
+    }
+
+    .nuxy-circular-progress__fill--indeterminate {
+      animation: nuxy-circular-rotate 1.4s linear infinite;
+      stroke-dasharray: 80, 200;
+      stroke-dashoffset: 0;
+    }
+
+    @keyframes nuxy-circular-rotate {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .nuxy-circular-progress__label {
+      position: absolute;
+      font-size: var(--font-xs);
+      font-weight: 600;
+      color: var(--syntax-variable);
+      font-variant-numeric: tabular-nums;
+    }
+  `
+
+  @property({ type: String }) value = ''
+  @property({ type: String }) size = '40'
+  @property({ type: String, attribute: 'stroke-width' }) strokeWidth = '4'
+  @property({ type: Boolean, attribute: 'show-label' }) showLabel = false
 
   connectedCallback(): void {
-    this.render()
+    super.connectedCallback()
+    this.setAttribute('role', 'progressbar')
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
+  updated(): void {
+    const valueNum = this.value !== '' ? Number(this.value) : undefined
+    const indeterminate = valueNum === undefined || Number.isNaN(valueNum)
+    const size = Number(this.size) || 40
 
-  private render(): void {
-    const valueRaw = this.getAttribute('value')
-    const value = valueRaw != null && valueRaw !== '' ? Number(valueRaw) : undefined
-    const indeterminate = value === undefined || Number.isNaN(value)
-    const size = Number(this.getAttribute('size') ?? '40') || 40
-    const strokeWidth = Number(this.getAttribute('stroke-width') ?? '4') || 4
-    const showLabel = this.hasAttribute('show-label')
-    const extraClass = this.getAttribute('class') ?? ''
-
-    const r = (size - strokeWidth) / 2
-    const circumference = 2 * Math.PI * r
-    const offset = indeterminate ? 0 : circumference - ((value ?? 0) / 100) * circumference
-
-    syncHostClasses(this, 'nuxy-circular-progress')
     this.style.width = `${size}px`
     this.style.height = `${size}px`
-    this.setAttribute('role', 'progressbar')
-    if (!indeterminate && value !== undefined) {
-      this.setAttribute('aria-valuenow', String(value))
+
+    if (!indeterminate && valueNum !== undefined) {
+      this.setAttribute('aria-valuenow', String(valueNum))
       this.setAttribute('aria-valuemin', '0')
       this.setAttribute('aria-valuemax', '100')
     } else {
@@ -40,21 +73,55 @@ export class NuxyCircularProgressElement extends HTMLElement {
       this.removeAttribute('aria-valuemin')
       this.removeAttribute('aria-valuemax')
     }
+  }
 
-    this.innerHTML = `<svg class="nuxy-circular-progress__svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-      <circle class="nuxy-circular-progress__track" cx="${size / 2}" cy="${size / 2}" r="${r}" stroke-width="${strokeWidth}" fill="none"/>
-      <circle class="nuxy-circular-progress__fill${indeterminate ? ' nuxy-circular-progress__fill--indeterminate' : ''}" cx="${size / 2}" cy="${size / 2}" r="${r}" stroke-width="${strokeWidth}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" fill="none"/>
-    </svg>`
+  render(): TemplateResult {
+    const valueNum = this.value !== '' ? Number(this.value) : undefined
+    const indeterminate = valueNum === undefined || Number.isNaN(valueNum)
+    const size = Number(this.size) || 40
+    const strokeW = Number(this.strokeWidth) || 4
 
-    if (showLabel && !indeterminate && value !== undefined) {
-      const label = document.createElement('span')
-      label.className = 'nuxy-circular-progress__label'
-      label.textContent = `${Math.round(value)}%`
-      this.appendChild(label)
-    }
+    const r = (size - strokeW) / 2
+    const circumference = 2 * Math.PI * r
+    const offset = indeterminate ? 0 : circumference - ((valueNum ?? 0) / 100) * circumference
+
+    const fillClass = `nuxy-circular-progress__fill${indeterminate ? ' nuxy-circular-progress__fill--indeterminate' : ''}`
+
+    return html`
+      <svg
+        class="nuxy-circular-progress__svg"
+        width=${size}
+        height=${size}
+        viewBox="0 0 ${size} ${size}"
+      >
+        <circle
+          class="nuxy-circular-progress__track"
+          cx=${size / 2}
+          cy=${size / 2}
+          r=${r}
+          stroke-width=${strokeW}
+          fill="none"
+        />
+        <circle
+          class=${fillClass}
+          cx=${size / 2}
+          cy=${size / 2}
+          r=${r}
+          stroke-width=${strokeW}
+          stroke-dasharray=${circumference}
+          stroke-dashoffset=${offset}
+          fill="none"
+        />
+      </svg>
+      ${this.showLabel && !indeterminate && valueNum !== undefined
+        ? html`<span class="nuxy-circular-progress__label">${Math.round(valueNum)}%</span>`
+        : nothing}
+    `
   }
 }
 
-if (!customElements.get('nuxy-circular-progress')) {
-  customElements.define('nuxy-circular-progress', NuxyCircularProgressElement)
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-circular-progress': NuxyCircularProgressElement
+  }
 }

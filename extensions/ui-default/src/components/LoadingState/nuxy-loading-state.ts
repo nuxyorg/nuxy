@@ -1,52 +1,48 @@
 import '../Spinner/nuxy-spinner.ts'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-export class NuxyLoadingStateElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['message', 'size', 'min-height']
-  }
+@customElement('nuxy-loading-state')
+export class NuxyLoadingStateElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: var(--space-3);
+    }
+  `
+
+  @property({ type: String }) message = ''
+  @property({ type: String }) size = 'md'
+  @property({ type: String, attribute: 'min-height' }) minHeight = '200px'
 
   connectedCallback(): void {
-    this.classList.add('nuxy-loading-state')
+    super.connectedCallback()
     if (!this.hasAttribute('role')) this.setAttribute('role', 'status')
-    this.render()
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
+  updated(): void {
+    this.style.minHeight = this.minHeight
+    this.setAttribute('aria-label', this.message || 'Loading')
   }
 
-  private render(): void {
-    const message = this.getAttribute('message')
-    const size = this.getAttribute('size') ?? 'md'
-    const minHeight = this.getAttribute('min-height') ?? '200px'
-
-    this.style.display = 'flex'
-    this.style.flexDirection = 'column'
-    this.style.alignItems = 'center'
-    this.style.justifyContent = 'center'
-    this.style.flex = '1'
-    this.style.minHeight = minHeight
-    this.style.gap = 'var(--space-3)'
-    this.setAttribute('aria-label', message || 'Loading')
-
-    this.replaceChildren()
-
-    const spinner = document.createElement('nuxy-spinner')
-    spinner.setAttribute('size', size)
-    spinner.setAttribute('aria-label', message || 'Loading')
-    this.appendChild(spinner)
-
-    if (message) {
-      const span = document.createElement('span')
-      span.textContent = message
-      span.style.fontSize = 'var(--font-sm)'
-      span.style.color = 'var(--text-muted)'
-      span.style.opacity = '0.75'
-      this.appendChild(span)
-    }
+  render(): TemplateResult {
+    return html`
+      <nuxy-spinner size=${this.size} aria-label=${this.message || 'Loading'}></nuxy-spinner>
+      ${this.message
+        ? html`<span style="font-size: var(--font-sm); color: var(--text-muted); opacity: 0.75;"
+            >${this.message}</span
+          >`
+        : nothing}
+    `
   }
 }
 
-if (!customElements.get('nuxy-loading-state')) {
-  customElements.define('nuxy-loading-state', NuxyLoadingStateElement)
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-loading-state': NuxyLoadingStateElement
+  }
 }

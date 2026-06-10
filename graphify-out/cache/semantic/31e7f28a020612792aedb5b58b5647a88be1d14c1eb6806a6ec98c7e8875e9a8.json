@@ -1,0 +1,126 @@
+{
+  "nodes": [
+    {
+      "id": "docs_16_omni_callable_caller_capabilities",
+      "label": "callable vs caller Manifest Capabilities",
+      "file_type": "concept",
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_16_omni_extension_type_tool",
+      "label": "Extension Type: Tool",
+      "file_type": "concept",
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_16_omni_extension_type_provider",
+      "label": "Extension Type: Provider",
+      "file_type": "concept",
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_16_omni_extension_type_orchestrator",
+      "label": "Extension Type: Orchestrator",
+      "file_type": "concept",
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_16_omni_schema_validation",
+      "label": "Input/Output Schema Validation",
+      "file_type": "concept",
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_16_omni_callable_caller_capabilities",
+      "target": "docs_16_omni_extension_type_tool",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_16_omni_callable_caller_capabilities",
+      "target": "docs_16_omni_extension_type_provider",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_16_omni_callable_caller_capabilities",
+      "target": "docs_16_omni_extension_type_orchestrator",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_16_omni_schema_validation",
+      "target": "docs_16_omni_callable_caller_capabilities",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "docs_16_omni_extension_type_orchestrator",
+      "target": "docs_15_plugin_orchestrator_tool_crosscomm",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/16-omni-input-system.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "extension_type_role_system",
+      "label": "Extension Type Role System: Tool + Provider + Orchestrator",
+      "nodes": [
+        "docs_16_omni_extension_type_tool",
+        "docs_16_omni_extension_type_provider",
+        "docs_16_omni_extension_type_orchestrator"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/16-omni-input-system.md"
+    }
+  ]
+}

@@ -1,48 +1,60 @@
-import './index.css'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
-export class NuxyLabelElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['required']
-  }
+@customElement('nuxy-label')
+export class NuxyLabelElement extends LitElement {
+  @property({ type: Boolean, reflect: true }) required = false
 
-  connectedCallback(): void {
-    this.syncClasses()
-  }
+  static styles = css`
+    :host {
+      display: block;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--syntax-variable);
+      margin-bottom: var(--space-1);
+      user-select: none;
+    }
 
-  attributeChangedCallback(): void {
-    this.syncClasses()
-  }
+    :host([required])::after {
+      content: ' *';
+      color: var(--syntax-invalid);
+    }
+  `
 
-  private syncClasses(): void {
-    this.classList.add('nuxy-label')
-    this.classList.toggle('nuxy-label--required', this.hasAttribute('required'))
-  }
-}
-
-export class NuxyHelperTextElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['variant']
-  }
-
-  connectedCallback(): void {
-    this.syncClasses()
-  }
-
-  attributeChangedCallback(): void {
-    this.syncClasses()
-  }
-
-  private syncClasses(): void {
-    const variant = this.getAttribute('variant') ?? 'default'
-    this.classList.add('nuxy-helper-text')
-    this.classList.toggle('nuxy-helper-text--error', variant === 'error')
-    this.classList.toggle('nuxy-helper-text--success', variant === 'success')
+  render() {
+    return html`<slot></slot>`
   }
 }
 
-if (!customElements.get('nuxy-label')) {
-  customElements.define('nuxy-label', NuxyLabelElement)
+@customElement('nuxy-helper-text')
+export class NuxyHelperTextElement extends LitElement {
+  @property({ type: String, reflect: true }) variant = 'default'
+
+  static styles = css`
+    :host {
+      display: block;
+      font-size: var(--font-sm);
+      color: var(--syntax-comment);
+      margin-top: var(--space-1);
+      line-height: 1.4;
+    }
+
+    :host([variant='error']) {
+      color: var(--syntax-invalid);
+    }
+
+    :host([variant='success']) {
+      color: var(--syntax-green);
+    }
+  `
+
+  render() {
+    return html`<slot></slot>`
+  }
 }
-if (!customElements.get('nuxy-helper-text')) {
-  customElements.define('nuxy-helper-text', NuxyHelperTextElement)
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-label': NuxyLabelElement
+    'nuxy-helper-text': NuxyHelperTextElement
+  }
 }

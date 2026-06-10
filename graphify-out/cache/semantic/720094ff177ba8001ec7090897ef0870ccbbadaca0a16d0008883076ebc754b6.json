@@ -1,0 +1,59 @@
+{
+  "nodes": [
+    {
+      "id": "website_docs_guide_what_is_nuxy",
+      "label": "What is Nuxy?",
+      "file_type": "document",
+      "source_file": "website/docs/guide/what-is-nuxy.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_spring_physics_resize",
+      "label": "Spring-Physics Window Resize Animation",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/what-is-nuxy.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "website_docs_guide_what_is_nuxy",
+      "target": "concept_useless_core_philosophy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/what-is-nuxy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_what_is_nuxy",
+      "target": "concept_spring_physics_resize",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/what-is-nuxy.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_what_is_nuxy",
+      "target": "concept_extension_types",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/what-is-nuxy.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

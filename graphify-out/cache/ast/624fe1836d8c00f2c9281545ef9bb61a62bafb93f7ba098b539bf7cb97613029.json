@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_src_e2e_package_json",
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/src/e2e/package.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "e2e_package_type",
+      "label": "type",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/src/e2e/package.json",
+      "source_location": "L2"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_src_e2e_package_json",
+      "target": "e2e_package_type",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/src/e2e/package.json",
+      "source_location": "L2",
+      "weight": 1.0
+    }
+  ]
+}

@@ -1,73 +1,101 @@
-import './index.css'
+import { LitElement, html, css, nothing, customElement, ref } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-export class NuxyConversionCardElement extends HTMLElement {
+@customElement('nuxy-conversion-card')
+export class NuxyConversionCardElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      width: 100%;
+    }
+
+    .nuxy-conversion-card__label {
+      font-size: var(--font-xs);
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-muted, rgba(255, 255, 255, 0.4));
+    }
+
+    .nuxy-conversion-card__body {
+      display: flex;
+      align-items: center;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background: var(--surface-overlay, rgba(20, 20, 20, 0.65));
+      border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+      position: relative;
+      min-height: calc(var(--space-6) * 2);
+    }
+
+    .nuxy-conversion-card__panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4) var(--space-5);
+    }
+
+    .nuxy-conversion-card__panel--from {
+      border-right: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
+    }
+
+    .nuxy-conversion-card__arrow {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-muted, rgba(255, 255, 255, 0.3));
+      font-size: var(--font-lg);
+      pointer-events: none;
+      z-index: 1;
+    }
+  `
+
   private observer = new MutationObserver(() => {
-    if (this.isConnected) this.sync()
+    if (this.isConnected) this.requestUpdate()
   })
 
+  private _labelRef: HTMLDivElement | null = null
+  private _fromRef: HTMLDivElement | null = null
+  private _toRef: HTMLDivElement | null = null
+
   connectedCallback(): void {
-    this.classList.add('nuxy-conversion-card')
+    super.connectedCallback()
     this.observer.observe(this, { childList: true, subtree: true })
-    this.sync()
   }
 
   disconnectedCallback(): void {
+    super.disconnectedCallback()
     this.observer.disconnect()
   }
 
-  private findMarkers(): {
-    label: Element | null
-    from: Element | null
-    to: Element | null
-  } {
-    return {
-      label: this.querySelector('[data-label]'),
-      from: this.querySelector('[data-from]'),
-      to: this.querySelector('[data-to]'),
-    }
+  private onLabelRef = (el: Element | undefined): void => {
+    this._labelRef = (el as HTMLDivElement | null | undefined) ?? null
+    this.syncSlots()
   }
 
-  private ensureStructure(): {
-    labelEl: HTMLDivElement | null
-    fromPanel: HTMLDivElement
-    toPanel: HTMLDivElement
-  } {
-    let labelEl = this.querySelector<HTMLDivElement>('.nuxy-conversion-card__label')
-    let body = this.querySelector<HTMLDivElement>('.nuxy-conversion-card__body')
-    let fromPanel = this.querySelector<HTMLDivElement>('.nuxy-conversion-card__panel--from')
-    let arrow = this.querySelector<HTMLDivElement>('.nuxy-conversion-card__arrow')
-    let toPanel = this.querySelector<HTMLDivElement>('.nuxy-conversion-card__panel--to')
-
-    if (!body) {
-      body = document.createElement('div')
-      body.className = 'nuxy-conversion-card__body'
-      this.appendChild(body)
-    }
-
-    if (!fromPanel) {
-      fromPanel = document.createElement('div')
-      fromPanel.className = 'nuxy-conversion-card__panel nuxy-conversion-card__panel--from'
-      body.insertBefore(fromPanel, body.firstChild)
-    }
-
-    if (!arrow) {
-      arrow = document.createElement('div')
-      arrow.className = 'nuxy-conversion-card__arrow'
-      arrow.textContent = '→'
-      body.appendChild(arrow)
-    }
-
-    if (!toPanel) {
-      toPanel = document.createElement('div')
-      toPanel.className = 'nuxy-conversion-card__panel nuxy-conversion-card__panel--to'
-      body.appendChild(toPanel)
-    }
-
-    return { labelEl, fromPanel, toPanel }
+  private onFromRef = (el: Element | undefined): void => {
+    this._fromRef = (el as HTMLDivElement | null | undefined) ?? null
+    this.syncSlots()
   }
 
-  private sync(): void {
-    const { label, from, to } = this.findMarkers()
+  private onToRef = (el: Element | undefined): void => {
+    this._toRef = (el as HTMLDivElement | null | undefined) ?? null
+    this.syncSlots()
+  }
+
+  updated(): void {
+    this.syncSlots()
+  }
+
+  private syncSlots(): void {
+    const label = this.querySelector(':scope > [data-label]')
+    const from = this.querySelector(':scope > [data-from]')
+    const to = this.querySelector(':scope > [data-to]')
 
     for (const marker of [label, from, to]) {
       if (marker instanceof HTMLElement) {
@@ -76,28 +104,46 @@ export class NuxyConversionCardElement extends HTMLElement {
       }
     }
 
-    let labelEl = this.querySelector<HTMLDivElement>('.nuxy-conversion-card__label')
-
-    if (label) {
-      if (!labelEl) {
-        labelEl = document.createElement('div')
-        labelEl.className = 'nuxy-conversion-card__label'
-        const body = this.querySelector('.nuxy-conversion-card__body')
-        this.insertBefore(labelEl, body)
+    if (this._labelRef) {
+      if (label) {
+        this._labelRef.hidden = false
+        this._labelRef.replaceChildren(
+          ...Array.from(label.childNodes).map((n) => n.cloneNode(true))
+        )
+      } else {
+        this._labelRef.hidden = true
       }
-      labelEl.replaceChildren(...label.childNodes)
-    } else if (labelEl) {
-      labelEl.remove()
     }
 
-    const { fromPanel, toPanel } = this.ensureStructure()
-    fromPanel.replaceChildren(...(from ? from.childNodes : []))
-    toPanel.replaceChildren(...(to ? to.childNodes : []))
-  }
-}
+    if (this._fromRef && from) {
+      this._fromRef.replaceChildren(...Array.from(from.childNodes).map((n) => n.cloneNode(true)))
+    }
 
-if (!customElements.get('nuxy-conversion-card')) {
-  customElements.define('nuxy-conversion-card', NuxyConversionCardElement)
+    if (this._toRef && to) {
+      this._toRef.replaceChildren(...Array.from(to.childNodes).map((n) => n.cloneNode(true)))
+    }
+  }
+
+  render(): TemplateResult {
+    const label = this.querySelector(':scope > [data-label]')
+
+    return html`
+      ${label
+        ? html`<div class="nuxy-conversion-card__label" ${ref(this.onLabelRef)}></div>`
+        : nothing}
+      <div class="nuxy-conversion-card__body">
+        <div
+          class="nuxy-conversion-card__panel nuxy-conversion-card__panel--from"
+          ${ref(this.onFromRef)}
+        ></div>
+        <div class="nuxy-conversion-card__arrow">→</div>
+        <div
+          class="nuxy-conversion-card__panel nuxy-conversion-card__panel--to"
+          ${ref(this.onToRef)}
+        ></div>
+      </div>
+    `
+  }
 }
 
 declare global {

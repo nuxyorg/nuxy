@@ -1,8 +1,8 @@
 {
   "nodes": [
     {
-      "id": "docs_07_database_design_doc",
-      "label": "07 - Database Design and Data Isolation",
+      "id": "db_design_doc",
+      "label": "Database Design & Data Isolation",
       "file_type": "document",
       "source_file": "docs/07-database-design.md",
       "source_location": null,
@@ -12,33 +12,44 @@
       "contributor": null
     },
     {
-      "id": "docs_07_database_design_chroot_jail",
-      "label": "Storage Chroot Jail",
+      "id": "db_design_storage_engine",
+      "label": "StorageEngine \u2014 Chroot Jail Pattern",
       "file_type": "concept",
       "source_file": "docs/07-database-design.md",
-      "source_location": "section 2",
+      "source_location": "L17",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_07_database_design_atomic_write",
+      "id": "db_design_atomic_write",
       "label": "Atomic Write Pattern (tmp + rename)",
       "file_type": "concept",
       "source_file": "docs/07-database-design.md",
-      "source_location": "section 2",
+      "source_location": "L28",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_07_database_design_offline_first",
-      "label": "Offline-First Local-Only Persistence Philosophy",
-      "file_type": "rationale",
+      "id": "db_design_note_schema",
+      "label": "NoteSchema \u2014 Notes Extension Data Schema",
+      "file_type": "concept",
       "source_file": "docs/07-database-design.md",
-      "source_location": "section 1",
+      "source_location": "L43",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "db_design_clipboard_schema",
+      "label": "ClipboardEntry \u2014 Clipboard Extension Data Schema",
+      "file_type": "concept",
+      "source_file": "docs/07-database-design.md",
+      "source_location": "L55",
       "source_url": null,
       "captured_at": null,
       "author": null,
@@ -47,60 +58,25 @@
   ],
   "edges": [
     {
-      "source": "docs_07_database_design_doc",
-      "target": "docs_07_database_design_chroot_jail",
+      "source": "db_design_storage_engine",
+      "target": "db_design_atomic_write",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/07-database-design.md",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "db_design_doc",
+      "target": "db_design_storage_engine",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/07-database-design.md",
-      "source_location": "section 2",
+      "source_location": "L17",
       "weight": 1.0
-    },
-    {
-      "source": "docs_07_database_design_doc",
-      "target": "docs_07_database_design_atomic_write",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/07-database-design.md",
-      "source_location": "section 2",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_07_database_design_doc",
-      "target": "docs_07_database_design_offline_first",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/07-database-design.md",
-      "source_location": "section 1",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_07_database_design_chroot_jail",
-      "target": "docs_electron_fix_plan_canonical_layout",
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "docs/07-database-design.md",
-      "source_location": null,
-      "weight": 0.85
     }
   ],
-  "hyperedges": [
-    {
-      "id": "extension_security_model",
-      "label": "Extension Security Model (Chroot + Worker Isolation + Permissions)",
-      "nodes": [
-        "docs_07_database_design_chroot_jail",
-        "docs_17_frontend_extensions_frontend_security",
-        "docs_changelog_20260519_permissions_ts",
-        "docs_04_modules_capabilities"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "docs/07-database-design.md"
-    }
-  ]
+  "hyperedges": []
 }

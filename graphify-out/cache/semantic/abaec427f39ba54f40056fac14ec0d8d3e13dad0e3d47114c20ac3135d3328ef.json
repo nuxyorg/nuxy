@@ -1,0 +1,121 @@
+{
+  "nodes": [
+    {
+      "id": "website_docs_extensions_manifest",
+      "label": "Extension Manifest Reference",
+      "file_type": "document",
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_manifest_json",
+      "label": "manifest.json Extension Metadata Format",
+      "file_type": "concept",
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_settings_json_schema",
+      "label": "settings.json Auto-Generated UI Schema",
+      "file_type": "concept",
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_i18n_locales",
+      "label": "Extension Internationalisation (BCP 47 Locales)",
+      "file_type": "concept",
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "website_docs_extensions_manifest",
+      "target": "concept_manifest_json",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_extensions_manifest",
+      "target": "concept_settings_json_schema",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_extensions_manifest",
+      "target": "concept_i18n_locales",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_extensions_manifest",
+      "target": "concept_capabilities_lattice",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_manifest_json",
+      "target": "concept_zero_trust_permission_model",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "concept_manifest_json",
+      "target": "concept_capabilities_lattice",
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "concept_i18n_locales",
+      "target": "ext_com_nuxy_settings",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "website/docs/extensions/manifest.md",
+      "source_location": null,
+      "weight": 0.7
+    }
+  ],
+  "hyperedges": []
+}

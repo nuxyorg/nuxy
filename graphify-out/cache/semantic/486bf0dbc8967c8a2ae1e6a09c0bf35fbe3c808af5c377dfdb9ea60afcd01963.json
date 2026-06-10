@@ -1,0 +1,59 @@
+{
+  "nodes": [
+    {
+      "id": "docs_mvp_plan",
+      "label": "MVP Plan Document",
+      "file_type": "document",
+      "source_file": "docs/mvp-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_mvp_scope_exclusions",
+      "label": "MVP Scope Exclusions (AI, WASM, Permissions UI)",
+      "file_type": "rationale",
+      "source_file": "docs/mvp-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_mvp_plan",
+      "target": "docs_mvp_scope_exclusions",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/mvp-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_mvp_scope_exclusions",
+      "target": "docs_18_wasm_backend",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/mvp-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_mvp_scope_exclusions",
+      "target": "docs_10_permission_prompt",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/mvp-plan.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

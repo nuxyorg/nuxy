@@ -1,0 +1,45 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_calculator_locales_en_json",
+      "label": "en.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/locales/en.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "locales_en_meta",
+      "label": "meta",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/locales/en.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "locales_en_meta_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/locales/en.json",
+      "source_location": "L3"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_calculator_locales_en_json",
+      "target": "locales_en_meta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/locales/en.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "locales_en_meta",
+      "target": "locales_en_meta_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/calculator/locales/en.json",
+      "source_location": "L3",
+      "weight": 1.0
+    }
+  ]
+}

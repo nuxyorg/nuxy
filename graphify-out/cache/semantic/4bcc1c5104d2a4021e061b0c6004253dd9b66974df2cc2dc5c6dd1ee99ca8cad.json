@@ -1,0 +1,156 @@
+{
+  "nodes": [
+    {
+      "id": "website_docs_guide_security",
+      "label": "Nuxy Security Model Guide",
+      "file_type": "document",
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_zero_trust_permission_model",
+      "label": "Zero-Trust Permission Model",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_worker_thread_isolation",
+      "label": "Worker Thread Isolation per Extension",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_storage_chroot",
+      "label": "Storage Chroot per Extension ID",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "concept_capabilities_lattice",
+      "label": "Capabilities Lattice (caller/callable)",
+      "file_type": "concept",
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "website_docs_guide_security",
+      "target": "concept_zero_trust_permission_model",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_security",
+      "target": "concept_worker_thread_isolation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_security",
+      "target": "concept_storage_chroot",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_security",
+      "target": "concept_capabilities_lattice",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "website_docs_guide_security",
+      "target": "concept_nuxy_ext_protocol",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "concept_zero_trust_permission_model",
+      "target": "concept_worker_thread_isolation",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "concept_zero_trust_permission_model",
+      "target": "concept_storage_chroot",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "concept_zero_trust_permission_model",
+      "target": "concept_capabilities_lattice",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/guide/security.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "security_triad",
+      "label": "Security Enforcement Triad: Worker Isolation, Storage Chroot, Capabilities Lattice",
+      "nodes": [
+        "concept_worker_thread_isolation",
+        "concept_storage_chroot",
+        "concept_capabilities_lattice"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "website/docs/guide/security.md"
+    }
+  ]
+}

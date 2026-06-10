@@ -12,9 +12,12 @@
   "composition": {
     "claims": ["omnibar-portal"]
   },
+  "behavior": {
+    "onComplete": "returnToShellAndHide"
+  },
   "entry": {
     "backend": "backend.ts",
-    "frontend": "frontend.tsx",
+    "frontend": "frontend.ts",
     "element": "nuxy-tool-nyaa",
     "settings": "settings.json"
   },

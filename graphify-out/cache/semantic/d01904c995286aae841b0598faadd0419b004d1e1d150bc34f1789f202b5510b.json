@@ -1,0 +1,218 @@
+{
+  "nodes": [
+    {
+      "id": "lit_shell_doc",
+      "label": "Lit Remake: Shell Extension Analysis (01-shell.md)",
+      "file_type": "document",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_view_vanilla_not_lit",
+      "label": "Problem: nuxy-shell-view.ts Extends HTMLElement, Not LitElement",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L37",
+      "source_url": null,
+      "contributor": null,
+      "captured_at": null,
+      "author": null
+    },
+    {
+      "id": "lit_shell_view_render_154_lines",
+      "label": "Problem: Shell View render() 154-Line Monolith",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L41",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_dom_factory_antipattern",
+      "label": "Anti-Pattern: shell-dom.ts \u2014 Imperative DOM Factory (Should be Lit Templates)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L103",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_omnibar_mutation_observer_loop",
+      "label": "Bug: nuxy-shell-omni-bar.ts MutationObserver Infinite Loop",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L130",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_omnibar_innerhtml_xss",
+      "label": "Security: nuxy-shell-omni-bar.ts innerHTML SVG Binding \u2014 XSS Risk",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L142",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_controller_19_field_god_state",
+      "label": "Problem: ShellController 19-Field God State Object",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L67",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_controller_keyboard_167_lines",
+      "label": "Problem: bindGlobalKeyboard() 167-Line Method",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L73",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_command_palette_no_focus_trap",
+      "label": "Accessibility: nuxy-command-palette.ts No Focus Trap or role=dialog",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L171",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_types_listitem_no_discriminator",
+      "label": "Type Safety: ListItem Not a Discriminated Union",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L240",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_shell_e2e_workaround_test_bug",
+      "label": "Test Issue: pressOmnibarKey Workaround Concealed Real Bug",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L314",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "lit_shell_doc",
+      "target": "lit_shell_view_vanilla_not_lit",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_shell_doc",
+      "target": "lit_shell_dom_factory_antipattern",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_shell_doc",
+      "target": "lit_shell_omnibar_mutation_observer_loop",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_shell_doc",
+      "target": "lit_shell_omnibar_innerhtml_xss",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_shell_doc",
+      "target": "lit_shell_controller_god_state",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_shell_doc",
+      "target": "lit_shell_e2e_workaround_test_bug",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_shell_doc",
+      "target": "lit_shell_command_palette_no_focus_trap",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_shell_view_vanilla_not_lit",
+      "target": "lit_shell_dom_factory_antipattern",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_shell_command_palette_no_focus_trap",
+      "target": "ui_cleanup_listitem_keyboard",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/lit-remake/01-shell.md",
+      "source_location": null,
+      "weight": 0.7
+    }
+  ],
+  "hyperedges": []
+}

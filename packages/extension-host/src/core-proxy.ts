@@ -169,14 +169,22 @@ export function createCoreProxy(
     registry: {
       registerTool: (cfg) => {
         displayName = cfg.displayName as string | undefined
-        const entry: RegistryEntry = { kind: 'tool', name: cfg.name as string | undefined, displayName }
+        const entry: RegistryEntry = {
+          kind: 'tool',
+          name: cfg.name as string | undefined,
+          displayName,
+        }
         registeredEntries.push(entry)
         onRegistryEntry?.(entry)
         logger.log('info', 'Registry', 'Registered Tool: ' + cfg.name, cfg)
       },
       registerProvider: (cfg) => {
         displayName = cfg.displayName as string | undefined
-        const entry: RegistryEntry = { kind: 'provider', name: cfg.name as string | undefined, displayName }
+        const entry: RegistryEntry = {
+          kind: 'provider',
+          name: cfg.name as string | undefined,
+          displayName,
+        }
         registeredEntries.push(entry)
         onRegistryEntry?.(entry)
         logger.log('info', 'Registry', 'Registered Provider: ' + cfg.name, cfg)

@@ -14,9 +14,15 @@ const BASE_URL = 'https://nyaa.si'
 export function register(core: CoreContext): void {
   core.registry.registerTool({ name: 'nyaa' })
 
+  let currentController: AbortController | null = null
+
   core.ipc.handle('search', async (payload: unknown): Promise<NyaaResult[]> => {
     const { query } = payload as SearchPayload
     if (!query || !query.trim()) return []
+
+    currentController?.abort()
+    currentController = new AbortController()
+    const { signal } = currentController
 
     const category = (await core.settings.read<string>('category')) ?? '1_2'
     const filter = (await core.settings.read<string>('filter')) ?? '0'
@@ -36,6 +42,7 @@ export function register(core: CoreContext): void {
     core.logger.info(`Fetching nyaa.si: ${url}`)
 
     const response = await fetch(url, {
+      signal,
       headers: { 'User-Agent': 'Mozilla/5.0 (compatible; NuxyApp/1.0)' },
     })
 

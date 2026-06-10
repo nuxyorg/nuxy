@@ -1,35 +1,90 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property, state, ref } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-export class NuxyDropdownMenuElement extends HTMLElement {
-  private triggerSlot: HTMLSpanElement | null = null
+@customElement('nuxy-dropdown-menu')
+export class NuxyDropdownMenuElement extends LitElement {
+  static styles = css`
+    :host {
+      position: relative;
+      display: inline-block;
+    }
+
+    .nuxy-dropdown-menu {
+      position: absolute;
+      top: 100%;
+      margin-top: 4px;
+      right: 0;
+      z-index: var(--z-popover);
+      background: var(--bg-base);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      min-width: 180px;
+      padding: var(--space-2) 0;
+      animation: nuxy-slide-up 0.15s ease;
+      transform-origin: top right;
+      display: none;
+    }
+
+    .nuxy-dropdown-menu--left {
+      right: auto;
+      left: 0;
+      transform-origin: top left;
+    }
+
+    .nuxy-dropdown-menu--open {
+      display: block;
+    }
+
+    @keyframes nuxy-slide-up {
+      from {
+        transform: translateY(4px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  `
+
+  @property({ type: String }) align = 'right'
+
+  @state() private isOpen = false
+
+  private triggerSlotEl: HTMLSpanElement | null = null
   private menuEl: HTMLDivElement | null = null
-  private isOpen = false
   private outsideHandler: ((e: MouseEvent) => void) | null = null
   private observer: MutationObserver | null = null
 
-  static get observedAttributes(): string[] {
-    return ['align']
-  }
-
   connectedCallback(): void {
-    this.build()
-    this.reparentChildren()
-    this.sync()
-    this.triggerSlot?.addEventListener('click', this.onTriggerClick)
+    super.connectedCallback()
     this.observer = new MutationObserver(() => this.reparentChildren())
     this.observer.observe(this, { childList: true, subtree: false })
   }
 
   disconnectedCallback(): void {
-    this.triggerSlot?.removeEventListener('click', this.onTriggerClick)
+    super.disconnectedCallback()
     this.removeOutsideListener()
     this.observer?.disconnect()
     this.observer = null
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
+  updated(): void {
+    this.reparentChildren()
+  }
+
+  private onTriggerSlotRef = (el: Element | undefined): void => {
+    this.triggerSlotEl = (el as HTMLSpanElement | null | undefined) ?? null
+    if (this.triggerSlotEl) {
+      this.triggerSlotEl.addEventListener('click', this.onTriggerClick)
+    }
+    this.reparentChildren()
+  }
+
+  private onMenuRef = (el: Element | undefined): void => {
+    this.menuEl = (el as HTMLDivElement | null | undefined) ?? null
+    this.reparentChildren()
   }
 
   private onTriggerClick = (): void => {
@@ -38,7 +93,6 @@ export class NuxyDropdownMenuElement extends HTMLElement {
 
   private setOpen(open: boolean): void {
     this.isOpen = open
-    this.menuEl?.classList.toggle('nuxy-dropdown-menu--open', open)
     if (open) this.addOutsideListener()
     else this.removeOutsideListener()
   }
@@ -59,93 +113,96 @@ export class NuxyDropdownMenuElement extends HTMLElement {
     this.outsideHandler = null
   }
 
-  private build(): void {
-    if (this.triggerSlot) return
-
-    this.triggerSlot = document.createElement('span')
-    this.menuEl = document.createElement('div')
-    this.menuEl.className = 'nuxy-dropdown-menu'
-
-    this.append(this.triggerSlot, this.menuEl)
-  }
-
   private reparentChildren(): void {
+    if (!this.triggerSlotEl || !this.menuEl) return
+
     const triggerSource = this.querySelector(':scope > [data-trigger]')
-    if (triggerSource && this.triggerSlot && triggerSource.parentElement !== this.triggerSlot) {
-      this.triggerSlot.appendChild(triggerSource)
+    if (triggerSource && triggerSource.parentElement !== this.triggerSlotEl) {
+      this.triggerSlotEl.appendChild(triggerSource)
     }
 
-    if (!this.menuEl) return
-
     for (const child of Array.from(this.children)) {
-      if (child === this.triggerSlot || child === this.menuEl) continue
+      if (child === this.triggerSlotEl || child === this.menuEl) continue
       if (child.parentElement !== this.menuEl) {
         this.menuEl.appendChild(child)
       }
     }
   }
 
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-dropdown-wrapper')
+  render(): TemplateResult {
+    const align = (this.align || this.getAttribute('align')) ?? 'right'
+    const menuClass = [
+      'nuxy-dropdown-menu',
+      align === 'left' ? 'nuxy-dropdown-menu--left' : '',
+      this.isOpen ? 'nuxy-dropdown-menu--open' : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
 
-    const align = this.getAttribute('align') ?? 'right'
-    if (this.menuEl) {
-      this.menuEl.classList.toggle('nuxy-dropdown-menu--left', align === 'left')
-      this.menuEl.classList.toggle('nuxy-dropdown-menu--open', this.isOpen)
-    }
-
-    this.reparentChildren()
+    return html`
+      <span ${ref(this.onTriggerSlotRef)}></span>
+      <div class=${menuClass} ${ref(this.onMenuRef)}></div>
+    `
   }
 }
 
-export class NuxyDropdownItemElement extends HTMLElement {
-  private button: HTMLButtonElement | null = null
-
-  static get observedAttributes(): string[] {
-    return ['variant', 'disabled']
-  }
-
-  private observer: MutationObserver | null = null
-
-  connectedCallback(): void {
-    this.build()
-    this.sync()
-    this.observer = new MutationObserver(() => this.sync())
-    this.observer.observe(this, { childList: true, subtree: false })
-  }
-
-  disconnectedCallback(): void {
-    this.observer?.disconnect()
-    this.observer = null
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private build(): void {
-    if (this.button) return
-
-    this.button = document.createElement('button')
-    this.button.type = 'button'
-
-    const nodes: Node[] = []
-    for (const child of this.childNodes) nodes.push(child)
-    for (const node of nodes) this.button.appendChild(node)
-
-    this.appendChild(this.button)
-  }
-
-  private sync(): void {
-    if (!this.button) return
-
-    while (this.firstChild && this.firstChild !== this.button) {
-      this.button.appendChild(this.firstChild)
+@customElement('nuxy-dropdown-item')
+export class NuxyDropdownItemElement extends LitElement {
+  static styles = css`
+    :host {
+      display: contents;
     }
 
-    const variant = this.getAttribute('variant') ?? 'default'
+    button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--font-sm);
+      color: var(--syntax-variable);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      transition:
+        background 0.1s ease,
+        color 0.1s ease;
+      outline: none;
+      font-family: inherit;
+    }
+
+    button:hover:not(:disabled),
+    button:focus:not(:disabled) {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--syntax-operator);
+    }
+
+    button.nuxy-dropdown-item--danger {
+      color: var(--syntax-invalid);
+    }
+
+    button.nuxy-dropdown-item--danger:hover:not(:disabled),
+    button.nuxy-dropdown-item--danger:focus:not(:disabled) {
+      background: rgba(255, 29, 100, 0.08);
+      color: var(--syntax-invalid);
+    }
+
+    button:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+  `
+
+  @property({ type: String }) variant = 'default'
+  @property({ type: Boolean }) disabled = false
+
+  render(): TemplateResult {
+    const variant = (this.variant || this.getAttribute('variant')) ?? 'default'
+    const disabled = this.disabled || this.hasAttribute('disabled')
     const extraClass = this.getAttribute('class') ?? ''
-    this.button.className = [
+
+    const btnClass = [
       'nuxy-dropdown-item',
       variant === 'danger' ? 'nuxy-dropdown-item--danger' : '',
       extraClass,
@@ -153,46 +210,52 @@ export class NuxyDropdownItemElement extends HTMLElement {
       .filter(Boolean)
       .join(' ')
 
-    this.button.disabled = this.hasAttribute('disabled')
+    return html`
+      <button type="button" class=${btnClass} ?disabled=${disabled}>
+        <slot></slot>
+      </button>
+    `
   }
 }
 
-export class NuxyDropdownDividerElement extends HTMLElement {
+@customElement('nuxy-dropdown-divider')
+export class NuxyDropdownDividerElement extends LitElement {
+  static styles = css`
+    :host {
+      display: block;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.06);
+      margin: var(--space-1) 0;
+    }
+  `
+
   connectedCallback(): void {
-    this.className = 'nuxy-dropdown-divider'
+    super.connectedCallback()
     this.setAttribute('role', 'separator')
   }
-}
 
-export class NuxyDropdownHeaderElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return []
-  }
-
-  connectedCallback(): void {
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-dropdown-header')
+  render() {
+    return nothing
   }
 }
 
-if (!customElements.get('nuxy-dropdown-menu')) {
-  customElements.define('nuxy-dropdown-menu', NuxyDropdownMenuElement)
-}
-if (!customElements.get('nuxy-dropdown-item')) {
-  customElements.define('nuxy-dropdown-item', NuxyDropdownItemElement)
-}
-if (!customElements.get('nuxy-dropdown-divider')) {
-  customElements.define('nuxy-dropdown-divider', NuxyDropdownDividerElement)
-}
-if (!customElements.get('nuxy-dropdown-header')) {
-  customElements.define('nuxy-dropdown-header', NuxyDropdownHeaderElement)
+@customElement('nuxy-dropdown-header')
+export class NuxyDropdownHeaderElement extends LitElement {
+  static styles = css`
+    :host {
+      display: block;
+      font-size: var(--font-xs);
+      color: var(--syntax-comment);
+      font-weight: 600;
+      padding: var(--space-1) var(--space-4);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  `
+
+  render() {
+    return html`<slot></slot>`
+  }
 }
 
 declare global {

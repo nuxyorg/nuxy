@@ -1,0 +1,187 @@
+{
+  "nodes": [
+    {
+      "id": "lit_extensions_doc",
+      "label": "Lit Remake: Bundled Extensions Analysis (04-extensions.md)",
+      "file_type": "document",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_notes_clean",
+      "label": "Notes Extension: Generally Clean Pattern",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_ext_id_hardcoded",
+      "label": "Problem: EXT_ID Hard-Coded in All Extensions (Should Come from extensionId Setter)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L18",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_nyaa_silent_error",
+      "label": "Bug: nyaa Extension .catch(() => {}) Silent Error Swallowing",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L38",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_nyaa_no_abort_controller",
+      "label": "Bug: nyaa Extension No AbortController \u2014 Parallel Fetch Accumulation",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L46",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_settings_async_missing_await",
+      "label": "Bug: settings Backend Handler Missing await on storage.get (Returns Promise Unresolved)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L59",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_settings_race_condition",
+      "label": "Bug: settings State Race Condition \u2014 UI Updates Before Backend Confirmation",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L68",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_calculator_eval_security",
+      "label": "Security: calculator Extension Uses eval() \u2014 Expression Injection Risk",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L92",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_calculator_empty_backend",
+      "label": "Waste: calculator Has Empty Backend Worker Thread (No Backend Logic)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L86",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_ext_window_core_no_null_check",
+      "label": "Bug: All Extensions Access window.core Without Null Check",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L138",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "lit_extensions_doc",
+      "target": "lit_ext_ext_id_hardcoded",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_extensions_doc",
+      "target": "lit_ext_nyaa_silent_error",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_extensions_doc",
+      "target": "lit_ext_nyaa_no_abort_controller",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_extensions_doc",
+      "target": "lit_ext_calculator_eval_security",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_extensions_doc",
+      "target": "lit_ext_settings_race_condition",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_extensions_doc",
+      "target": "lit_ext_window_core_no_null_check",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_ext_calculator_eval_security",
+      "target": "changelog_20260519_safe_eval",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/04-extensions.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,5 +1,7 @@
 # Dependency Audit Report
 
+> **Historical report** — reflects the codebase before the React→Lit/Web Components migration (completed 2026-06-09). React references below describe the old architecture.
+
 **Project**: nuxy (Electron + pnpm monorepo)
 **Date**: 2026-05-19
 **Audited by**: Dependency Cleanup Agent

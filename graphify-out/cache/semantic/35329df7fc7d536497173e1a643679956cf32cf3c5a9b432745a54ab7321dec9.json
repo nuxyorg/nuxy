@@ -1,0 +1,39 @@
+{
+  "nodes": [
+    {
+      "id": "docs_structure_monorepo_layout",
+      "label": "Nuxy Monorepo File Structure",
+      "file_type": "document",
+      "source_file": "docs/structure.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_structure_guiding_principles",
+      "label": "No Monoliths Guiding Principle",
+      "file_type": "rationale",
+      "source_file": "docs/structure.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_structure_monorepo_layout",
+      "target": "docs_structure_guiding_principles",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/structure.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

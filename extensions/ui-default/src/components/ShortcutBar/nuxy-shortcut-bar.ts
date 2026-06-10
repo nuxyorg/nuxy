@@ -1,26 +1,21 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, customElement } from '@nuxy/core'
 
-export class NuxyShortcutBarElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return []
+@customElement('nuxy-shortcut-bar')
+export class NuxyShortcutBarElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-5);
+      padding: var(--space-3) var(--space-5);
+      border-top: 1px solid var(--syntax-comment);
+    }
+  `
+
+  render() {
+    return html`<slot></slot>`
   }
-
-  connectedCallback(): void {
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-shortcut-bar')
-  }
-}
-
-if (!customElements.get('nuxy-shortcut-bar')) {
-  customElements.define('nuxy-shortcut-bar', NuxyShortcutBarElement)
 }
 
 declare global {

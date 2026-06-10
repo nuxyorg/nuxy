@@ -1,3 +1,13 @@
+import {
+  LitElement,
+  html,
+  css,
+  nothing,
+  customElement,
+  state,
+  ref,
+  type TemplateResult,
+} from '@nuxy/core'
 import type { CommandPaletteAction, Position } from './types.ts'
 
 const MAX_DEPTH = 10
@@ -9,13 +19,125 @@ function getZoom(): number {
   return parseFloat(z) || 1
 }
 
-export class NuxyCommandPaletteElement extends HTMLElement {
-  private backdrop: HTMLDivElement | null = null
-  private panel: HTMLDivElement | null = null
-  private breadcrumbEl: HTMLDivElement | null = null
-  private breadcrumbPathEl: HTMLSpanElement | null = null
-  private input: HTMLInputElement | null = null
-  private listEl: HTMLDivElement | null = null
+@customElement('nuxy-command-palette')
+export class NuxyCommandPaletteElement extends LitElement {
+  static styles = css`
+    .nuxy-command-palette-backdrop {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 32px;
+      background-color: transparent;
+      z-index: var(--z-modal);
+    }
+
+    .nuxy-command-palette {
+      width: 100%;
+      max-width: 350px;
+      background-color: var(--bg-base);
+      border: 1px solid var(--syntax-comment);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      animation: slide-up 150ms ease-out;
+    }
+
+    @keyframes slide-up {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .nuxy-command-palette__input-wrapper {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--syntax-comment);
+    }
+
+    .nuxy-command-palette__input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--syntax-variable);
+      font-size: var(--font-lg);
+    }
+
+    .nuxy-command-palette__input::placeholder {
+      color: var(--syntax-keyword);
+    }
+
+    .nuxy-command-palette__list {
+      max-height: 300px;
+      overflow-y: overlay;
+      padding: 0;
+    }
+
+    .nuxy-command-palette__list::-webkit-scrollbar {
+    }
+
+    .nuxy-command-palette__empty {
+      padding: 12px 16px;
+      color: var(--syntax-comment);
+    }
+
+    .nuxy-command-palette__submenu-arrow {
+      font-size: var(--font-lg);
+      color: var(--syntax-comment);
+      line-height: 1;
+    }
+
+    nuxy-list-item[active] .nuxy-command-palette__submenu-arrow {
+      color: var(--syntax-function);
+    }
+
+    .nuxy-command-palette__breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--syntax-comment);
+      background-color: color-mix(in srgb, var(--syntax-comment) 20%, transparent);
+    }
+
+    .nuxy-command-palette__back {
+      background: none;
+      border: none;
+      color: var(--syntax-comment);
+      cursor: pointer;
+      font-size: var(--font-lg);
+      padding: 0 4px;
+      line-height: 1;
+      border-radius: var(--radius-sm);
+      transition:
+        color 150ms,
+        background-color 150ms;
+    }
+
+    .nuxy-command-palette__back:hover {
+      color: var(--syntax-variable);
+      background-color: color-mix(in srgb, var(--syntax-comment) 40%, transparent);
+    }
+
+    .nuxy-command-palette__breadcrumb-path {
+      font-size: var(--font-sm);
+      color: var(--syntax-keyword);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  `
+
+  @state() private _query = ''
+  @state() private _selectedIndex = 0
+  @state() private _menuStack: CommandPaletteAction[][] = []
+  @state() private _pathLabels: string[] = []
 
   private _actions: CommandPaletteAction[] = []
   private _container: HTMLElement | null = null
@@ -23,156 +145,127 @@ export class NuxyCommandPaletteElement extends HTMLElement {
   private _translate: (key: string) => string = (k) => k
   private _onClose: (() => void) | null = null
 
-  private query = ''
-  private selectedIndex = 0
-  private menuStack: CommandPaletteAction[][] = []
-  private pathLabels: string[] = []
-  private keyHandler: ((e: KeyboardEvent) => void) | null = null
+  private _panelEl: HTMLDivElement | null = null
+  private _inputEl: HTMLInputElement | null = null
+  private _keyHandler: ((e: KeyboardEvent) => void) | null = null
 
   connectedCallback(): void {
-    this.build()
-    this.resetStack()
-    this.render()
-    this.keyHandler = (e) => this.onKeyDown(e)
-    window.addEventListener('keydown', this.keyHandler)
+    super.connectedCallback()
+    this._resetStack()
+    this._keyHandler = (e) => this._onKeyDown(e)
+    window.addEventListener('keydown', this._keyHandler)
   }
 
   disconnectedCallback(): void {
-    if (this.keyHandler) window.removeEventListener('keydown', this.keyHandler)
-    this.keyHandler = null
+    super.disconnectedCallback()
+    if (this._keyHandler) window.removeEventListener('keydown', this._keyHandler)
+    this._keyHandler = null
+  }
+
+  protected firstUpdated(): void {
+    this._focusInput()
+  }
+
+  protected updated(changed: Map<string, unknown>): void {
+    if (changed.has('_selectedIndex')) {
+      // active-index on nuxy-list handles scroll
+    }
+    if (changed.has('_menuStack') || changed.has('_actions')) {
+      this._focusInput()
+    }
+  }
+
+  private _focusInput(): void {
+    requestAnimationFrame(() => this._inputEl?.focus())
   }
 
   set actions(value: CommandPaletteAction[]) {
     this._actions = value
     if (this.isConnected) {
-      this.resetStack()
-      this.render()
+      this._resetStack()
+      this.requestUpdate()
     }
   }
 
   set containerEl(el: HTMLElement | null) {
     this._container = el
-    if (this.isConnected) this.updatePosition()
+    if (this.isConnected) this._updatePosition()
   }
 
   set position(value: Position) {
     this._position = value
-    if (this.isConnected) this.updatePosition()
+    if (this.isConnected) this._updatePosition()
   }
 
   set translateFn(fn: (key: string) => string) {
     this._translate = fn
-    if (this.isConnected) this.renderList()
+    if (this.isConnected) this.requestUpdate()
   }
 
   set onClose(fn: (() => void) | null) {
     this._onClose = fn
   }
 
-  private build(): void {
-    if (this.backdrop) return
-
-    this.backdrop = document.createElement('div')
-    this.backdrop.className = 'nuxy-command-palette-backdrop'
-    this.backdrop.addEventListener('click', (e) => {
-      if (e.target === this.backdrop) this.close()
-    })
-
-    this.panel = document.createElement('div')
-    this.panel.className = 'nuxy-command-palette'
-
-    this.breadcrumbEl = document.createElement('div')
-    this.breadcrumbEl.className = 'nuxy-command-palette__breadcrumb'
-    this.breadcrumbEl.hidden = true
-
-    const backBtn = document.createElement('button')
-    backBtn.type = 'button'
-    backBtn.className = 'nuxy-command-palette__back'
-    backBtn.textContent = '←'
-    backBtn.addEventListener('click', () => this.goBack())
-
-    this.breadcrumbPathEl = document.createElement('span')
-    this.breadcrumbPathEl.className = 'nuxy-command-palette__breadcrumb-path'
-
-    this.breadcrumbEl.append(backBtn, this.breadcrumbPathEl)
-
-    const inputWrap = document.createElement('div')
-    inputWrap.className = 'nuxy-command-palette__input-wrapper'
-
-    this.input = document.createElement('input')
-    this.input.className = 'nuxy-command-palette__input'
-    this.input.autofocus = true
-    this.input.addEventListener('input', () => {
-      this.query = this.input?.value ?? ''
-      this.selectedIndex = 0
-      this.renderList()
-    })
-
-    inputWrap.appendChild(this.input)
-
-    this.listEl = document.createElement('div')
-    this.listEl.className = 'nuxy-command-palette__list'
-
-    this.panel.append(this.breadcrumbEl, inputWrap, this.listEl)
-    this.backdrop.appendChild(this.panel)
-    this.appendChild(this.backdrop)
-  }
-
-  private resetStack(): void {
-    this.menuStack = [this._actions]
-    this.pathLabels = []
-    this.query = ''
-    this.selectedIndex = 0
-    if (this.input) this.input.value = ''
-  }
-
-  private currentLevel(): CommandPaletteAction[] {
-    return this.menuStack[this.menuStack.length - 1] ?? []
-  }
-
-  private filteredActions(): CommandPaletteAction[] {
-    const q = this.query.toLowerCase()
-    return this.currentLevel().filter((a) => a.label.toLowerCase().includes(q))
-  }
-
-  private goBack(): void {
-    if (this.menuStack.length > 1) {
-      this.menuStack = this.menuStack.slice(0, -1)
-      this.pathLabels = this.pathLabels.slice(0, -1)
-      this.query = ''
-      this.selectedIndex = 0
-      if (this.input) this.input.value = ''
-      this.render()
-    } else {
-      this.close()
+  updated(): void {
+    this._updatePosition()
+    if (this._inputEl) {
+      this._inputEl.placeholder = this._translate('commandPalette.searchPlaceholder')
     }
   }
 
-  private openSubmenu(action: CommandPaletteAction): void {
-    if (!action.children || this.menuStack.length >= MAX_DEPTH) return
-    this.menuStack = [...this.menuStack, action.children]
-    this.pathLabels = [...this.pathLabels, action.label]
-    this.query = ''
-    this.selectedIndex = 0
-    if (this.input) this.input.value = ''
-    this.render()
+  private _resetStack(): void {
+    this._menuStack = [this._actions]
+    this._pathLabels = []
+    this._query = ''
+    this._selectedIndex = 0
+    if (this._inputEl) this._inputEl.value = ''
   }
 
-  private executeAction(action: CommandPaletteAction): void {
+  private _currentLevel(): CommandPaletteAction[] {
+    return this._menuStack[this._menuStack.length - 1] ?? []
+  }
+
+  private _filteredActions(): CommandPaletteAction[] {
+    const q = this._query.toLowerCase()
+    return this._currentLevel().filter((a) => a.label.toLowerCase().includes(q))
+  }
+
+  private _goBack(): void {
+    if (this._menuStack.length > 1) {
+      this._menuStack = this._menuStack.slice(0, -1)
+      this._pathLabels = this._pathLabels.slice(0, -1)
+      this._query = ''
+      this._selectedIndex = 0
+      if (this._inputEl) this._inputEl.value = ''
+    } else {
+      this._close()
+    }
+  }
+
+  private _openSubmenu(action: CommandPaletteAction): void {
+    if (!action.children || this._menuStack.length >= MAX_DEPTH) return
+    this._menuStack = [...this._menuStack, action.children]
+    this._pathLabels = [...this._pathLabels, action.label]
+    this._query = ''
+    this._selectedIndex = 0
+    if (this._inputEl) this._inputEl.value = ''
+  }
+
+  private _executeAction(action: CommandPaletteAction): void {
     if (action.children) {
-      this.openSubmenu(action)
+      this._openSubmenu(action)
     } else if (action.onExecute) {
       action.onExecute()
-      this.close()
+      this._close()
     }
   }
 
-  private close(): void {
+  private _close(): void {
     this._onClose?.()
   }
 
-  private updatePosition(): void {
-    if (!this.panel || !this._container) return
+  private _updatePosition(): void {
+    if (!this._panelEl || !this._container) return
 
     const zoom = getZoom()
     const cssWindowHeight = window.innerHeight / zoom
@@ -185,99 +278,121 @@ export class NuxyCommandPaletteElement extends HTMLElement {
     let bottom = cssWindowHeight - (this._position.y + winHeight)
     if (bottom < 12) bottom = 12
 
-    this.panel.style.position = 'absolute'
-    this.panel.style.bottom = `${bottom}px`
-    this.panel.style.left = `${left}px`
-    this.panel.style.width = '350px'
-    this.panel.style.margin = '0'
+    this._panelEl.style.position = 'absolute'
+    this._panelEl.style.bottom = `${bottom}px`
+    this._panelEl.style.left = `${left}px`
+    this._panelEl.style.width = '350px'
+    this._panelEl.style.margin = '0'
   }
 
-  private onKeyDown(e: KeyboardEvent): void {
-    const filtered = this.filteredActions()
+  private _onKeyDown(e: KeyboardEvent): void {
+    const filtered = this._filteredActions()
 
     if (e.key === 'Escape') {
       e.preventDefault()
       e.stopPropagation()
-      this.goBack()
-    } else if (e.key === 'ArrowLeft' && this.query === '' && this.menuStack.length > 1) {
+      this._goBack()
+    } else if (e.key === 'ArrowLeft' && this._query === '' && this._menuStack.length > 1) {
       e.preventDefault()
-      this.goBack()
+      this._goBack()
     } else if (e.key === 'ArrowDown') {
       e.preventDefault()
-      this.selectedIndex = Math.min(this.selectedIndex + 1, Math.max(0, filtered.length - 1))
-      this.renderList()
+      this._selectedIndex = Math.min(this._selectedIndex + 1, Math.max(0, filtered.length - 1))
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
-      this.selectedIndex = Math.max(this.selectedIndex - 1, 0)
-      this.renderList()
+      this._selectedIndex = Math.max(this._selectedIndex - 1, 0)
     } else if (e.key === 'Enter') {
       e.preventDefault()
-      const action = filtered[this.selectedIndex]
-      if (action) this.executeAction(action)
+      const action = filtered[this._selectedIndex]
+      if (action) this._executeAction(action)
     } else if (e.key === 'ArrowRight') {
       e.preventDefault()
-      const action = filtered[this.selectedIndex]
-      if (action?.children) this.openSubmenu(action)
+      const action = filtered[this._selectedIndex]
+      if (action?.children) this._openSubmenu(action)
     }
   }
 
-  private render(): void {
-    this.updatePosition()
-    if (this.breadcrumbEl && this.breadcrumbPathEl) {
-      const show = this.pathLabels.length > 0
-      this.breadcrumbEl.hidden = !show
-      this.breadcrumbPathEl.textContent = this.pathLabels.join(' › ')
-    }
-    if (this.input) {
-      this.input.placeholder = this._translate('commandPalette.searchPlaceholder')
-    }
-    this.renderList()
+  private _onInputInput(e: Event): void {
+    this._query = (e.target as HTMLInputElement).value
+    this._selectedIndex = 0
   }
 
-  private renderList(): void {
-    if (!this.listEl) return
-    const filtered = this.filteredActions()
-    this.listEl.replaceChildren()
+  private _renderList(): TemplateResult {
+    const filtered = this._filteredActions()
 
     if (filtered.length === 0) {
-      const empty = document.createElement('div')
-      empty.style.padding = '12px 16px'
-      empty.style.color = 'var(--syntax-comment)'
-      empty.textContent = this._translate('commandPalette.noActions')
-      this.listEl.appendChild(empty)
-      return
+      return html`
+        <div class="nuxy-command-palette__empty">
+          ${this._translate('commandPalette.noActions')}
+        </div>
+      `
     }
 
-    filtered.forEach((action, idx) => {
-      const item = document.createElement('div')
-      item.className = [
-        'nuxy-command-palette__item',
-        idx === this.selectedIndex ? 'nuxy-command-palette__item--active' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')
-      item.addEventListener('click', () => this.executeAction(action))
-
-      const label = document.createElement('span')
-      label.textContent = action.label
-
-      const trailing = document.createElement('span')
-      if (action.children) {
-        trailing.className = 'nuxy-command-palette__submenu-arrow'
-        trailing.textContent = '›'
-      } else {
-        trailing.className = 'nuxy-command-palette__shortcut'
-        trailing.textContent = this._translate('commandPalette.enterShortcut')
-      }
-
-      item.append(label, trailing)
-      this.listEl.appendChild(item)
-    })
+    return html`
+      <nuxy-list active-index=${this._selectedIndex}>
+        ${filtered.map(
+          (action, idx) => html`
+            <nuxy-list-item
+              ?active=${idx === this._selectedIndex}
+              @click=${() => this._executeAction(action)}
+            >
+              <nuxy-list-item-body>
+                <nuxy-list-item-text>${action.label}</nuxy-list-item-text>
+              </nuxy-list-item-body>
+              <nuxy-list-item-actions>
+                ${action.children
+                  ? html`<span class="nuxy-command-palette__submenu-arrow">›</span>`
+                  : html`<nuxy-kbd
+                      keys=${this._translate('commandPalette.enterShortcut')}
+                    ></nuxy-kbd>`}
+              </nuxy-list-item-actions>
+            </nuxy-list-item>
+          `
+        )}
+      </nuxy-list>
+    `
   }
-}
 
-if (!customElements.get('nuxy-command-palette')) {
-  customElements.define('nuxy-command-palette', NuxyCommandPaletteElement)
+  render(): TemplateResult {
+    const showBreadcrumb = this._pathLabels.length > 0
+
+    return html`
+      <div
+        class="nuxy-command-palette-backdrop"
+        @click=${(e: MouseEvent) => {
+          if (e.target === e.currentTarget) this._close()
+        }}
+      >
+        <div
+          class="nuxy-command-palette"
+          ${ref((el) => {
+            this._panelEl = el as HTMLDivElement | null
+          })}
+        >
+          <div class="nuxy-command-palette__breadcrumb" ?hidden=${!showBreadcrumb}>
+            <button type="button" class="nuxy-command-palette__back" @click=${() => this._goBack()}>
+              ←
+            </button>
+            <span class="nuxy-command-palette__breadcrumb-path"
+              >${this._pathLabels.join(' › ')}</span
+            >
+          </div>
+          <div class="nuxy-command-palette__input-wrapper">
+            <input
+              class="nuxy-command-palette__input"
+              autofocus
+              .value=${this._query}
+              @input=${this._onInputInput}
+              ${ref((el) => {
+                this._inputEl = el as HTMLInputElement | null
+              })}
+            />
+          </div>
+          <div class="nuxy-command-palette__list">${this._renderList()}</div>
+        </div>
+      </div>
+    `
+  }
 }
 
 declare global {

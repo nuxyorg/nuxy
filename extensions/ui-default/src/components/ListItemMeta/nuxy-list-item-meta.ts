@@ -1,45 +1,32 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, customElement, unsafeHTML } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-export class NuxyListItemMetaElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return []
-  }
+@customElement('nuxy-list-item-meta')
+export class NuxyListItemMetaElement extends LitElement {
+  private _innerContent = ''
+
+  static styles = css`
+    :host {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .nuxy-list-item-meta__text {
+      font-size: var(--font-xs);
+      color: var(--syntax-keyword);
+    }
+  `
 
   connectedCallback(): void {
-    this.classList.add('nuxy-list-item-meta')
-    this.render()
+    // Capture children before Lit renders
+    this._innerContent = this.innerHTML
+    super.connectedCallback()
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
+  render(): TemplateResult {
+    return html`<span class="nuxy-list-item-meta__text">${unsafeHTML(this._innerContent)}</span>`
   }
-
-  private render(): void {
-    const extraClass = this.getAttribute('class') ?? ''
-
-    syncHostClasses(this, 'nuxy-list-item-meta')
-
-    let text = this.querySelector('.nuxy-list-item-meta__text')
-    const nodes: Node[] = []
-    for (const child of this.childNodes) {
-      if (child === text) continue
-      nodes.push(child)
-    }
-
-    if (!text) {
-      text = document.createElement('span')
-      text.className = 'nuxy-list-item-meta__text'
-      this.appendChild(text)
-    }
-    if (nodes.length) {
-      text.replaceChildren(...nodes)
-    }
-  }
-}
-
-if (!customElements.get('nuxy-list-item-meta')) {
-  customElements.define('nuxy-list-item-meta', NuxyListItemMetaElement)
 }
 
 declare global {

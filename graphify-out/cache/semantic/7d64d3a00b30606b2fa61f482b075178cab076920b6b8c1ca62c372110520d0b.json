@@ -1,0 +1,146 @@
+{
+  "nodes": [
+    {
+      "id": "docs_10_security",
+      "label": "Security and Strict Isolation Document",
+      "file_type": "document",
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_10_storage_chroot",
+      "label": "Storage Chroot Jail (~/.nuxy/data/<id>/)",
+      "file_type": "concept",
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_10_cross_module_broker",
+      "label": "Cross-Module Invocation via Kernel Broker",
+      "file_type": "concept",
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_10_permission_prompt",
+      "label": "Dynamic Permission Prompt (OS-Style Consent)",
+      "file_type": "concept",
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_10_context_isolation",
+      "label": "Chromium contextIsolation + CSP Enforcement",
+      "file_type": "concept",
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_10_security",
+      "target": "docs_10_storage_chroot",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_10_security",
+      "target": "docs_10_cross_module_broker",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_10_security",
+      "target": "docs_10_permission_prompt",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_10_security",
+      "target": "docs_10_context_isolation",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_10_cross_module_broker",
+      "target": "docs_02_kernel_message_broker",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_10_permission_prompt",
+      "target": "docs_10_context_isolation",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "weight": 0.75
+    },
+    {
+      "source": "docs_10_storage_chroot",
+      "target": "docs_02_filesystem_firewall",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/10-security.md",
+      "source_location": null,
+      "weight": 0.85
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "security_isolation_triad",
+      "label": "Security Isolation Triad: Worker Threads + Chroot Storage + Context Bridge",
+      "nodes": [
+        "docs_02_isolated_worker_threads",
+        "docs_10_storage_chroot",
+        "docs_05_context_bridge_design"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/10-security.md"
+    }
+  ]
+}

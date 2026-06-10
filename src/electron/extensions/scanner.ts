@@ -8,9 +8,9 @@ import { spawnExtension, activeWorkers } from '../spawn/spawn.js'
 import { workerExitListeners, workerRegistryErrorListeners } from '../spawn/active-workers.js'
 import {
   onExtensionWorkerExit,
-  scheduleWorkerRestart,
   startExtensionDirectoryWatcher,
   clearExtensionWatchers,
+  terminateExtensionWorker,
 } from './extension-reload.js'
 import { getMainWindow } from '../window/manager.js'
 import { setRescanFn } from './rescan-hook.js'
@@ -157,11 +157,11 @@ function scanDirectoryForNodeImports(dir: string): { file: string; imports: stri
 }
 
 async function rescanExtensions(): Promise<void> {
+  const workerIds = [...activeWorkers.keys()]
   clearExtensionWatchers()
-  for (const [, worker] of activeWorkers) {
-    await worker.terminate()
+  for (const extId of workerIds) {
+    await terminateExtensionWorker(extId)
   }
-  activeWorkers.clear()
   await scanExtensions()
   getMainWindow()?.webContents.reload()
 }
@@ -172,6 +172,17 @@ function startExtensionWatcher(): void {
   startExtensionDirectoryWatcher(import.meta.env.DEV, () => {
     void rescanExtensions()
   })
+}
+
+function restoreWritable(p: string): void {
+  try {
+    fs.chmodSync(p, 0o755)
+    if (fs.statSync(p).isDirectory()) {
+      for (const item of fs.readdirSync(p)) {
+        restoreWritable(path.join(p, item))
+      }
+    }
+  } catch {}
 }
 
 /**
@@ -237,14 +248,6 @@ async function verifyAndSecureExtension(
   if (fs.existsSync(targetPath)) {
     // Restore write permissions before removal — makeDirectoryReadOnly sets 0o555
     // and rmSync cannot delete files inside read-only directories on Linux.
-    const restoreWritable = (p: string) => {
-      try {
-        fs.chmodSync(p, 0o755)
-        if (fs.statSync(p).isDirectory()) {
-          for (const item of fs.readdirSync(p)) restoreWritable(path.join(p, item))
-        }
-      } catch {}
-    }
     restoreWritable(targetPath)
     fs.rmSync(targetPath, { recursive: true, force: true })
   }
@@ -335,8 +338,7 @@ function registerExtensionByType(
 workerExitListeners.add(onExtensionWorkerExit)
 
 workerRegistryErrorListeners.add((extId) => {
-  log.info(`Extension "${extId}" failed to register — scheduling restart`)
-  scheduleWorkerRestart(extId)
+  log.info(`Extension "${extId}" failed to register — restart scheduled on worker exit`)
 })
 
 function promptTrustPublisherKey(extensionId: string, publicKeyPem: string): boolean {
@@ -477,9 +479,14 @@ export async function scanExtensions(): Promise<void> {
     for (const extDir of extractedDirs) {
       if (activeFolders.has(extDir)) continue
       const fullPath = path.join(EXTRACTED_DIR, extDir)
-      if (fs.statSync(fullPath).isDirectory()) {
-        fs.rmSync(fullPath, { recursive: true, force: true })
-        log.info(`Cleaned stale extracted folder: ${extDir}`)
+      try {
+        if (fs.statSync(fullPath).isDirectory()) {
+          restoreWritable(fullPath)
+          fs.rmSync(fullPath, { recursive: true, force: true })
+          log.info(`Cleaned stale extracted folder: ${extDir}`)
+        }
+      } catch (err) {
+        log.warn(`Failed to clean stale folder: ${extDir}`, err)
       }
     }
   } catch {}

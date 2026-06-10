@@ -43,7 +43,6 @@ const DEFAULTS: NuxyConfig = {
   extensions: {},
 }
 
-
 /** Path to the settings.json written by the settings extension. */
 const SETTINGS_JSON_PATH = path.join(DATA_DIR, 'com.nuxy.settings', 'settings.json')
 
@@ -60,8 +59,7 @@ function parseSettingsFields(parsed: Record<string, unknown>): Partial<NuxyConfi
   if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)
     result.windowMaxHeight = parsed.windowMaxHeight
   if (typeof parsed.alwaysOnTop === 'boolean') result.alwaysOnTop = parsed.alwaysOnTop
-  if (typeof parsed.opacity === 'number')
-    result.opacity = Math.min(1, Math.max(0, parsed.opacity))
+  if (typeof parsed.opacity === 'number') result.opacity = Math.min(1, Math.max(0, parsed.opacity))
   if (typeof parsed.showInTaskbar === 'boolean') result.showInTaskbar = parsed.showInTaskbar
   if (typeof parsed.showOnStartup === 'boolean') result.showOnStartup = parsed.showOnStartup
   if (typeof parsed.windowPosition === 'string') result.windowPosition = parsed.windowPosition

@@ -1,5 +1,7 @@
 # Nuxy Performance Report
 
+> **Historical report** — reflects the codebase before the React→Lit/Web Components migration (completed 2026-06-09). React references below describe the old architecture.
+
 **Generated:** 2026-05-19
 **Scope:** Startup path, renderer lifecycle, extension worker architecture, media detection, window animation
 

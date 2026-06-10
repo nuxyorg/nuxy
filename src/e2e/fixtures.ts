@@ -15,7 +15,7 @@ const APP_DIR = resolve(__dirname, '..')
 function findElectronBin(): string {
   try {
     return require('electron')
-  } catch (e) {
+  } catch {
     const bin = execSync(
       `find "${PROJECT_ROOT}/node_modules/.pnpm" -name "electron" -path "*/dist/electron" -type f 2>/dev/null | head -1`
     )
@@ -38,7 +38,11 @@ function createTestDataDir(baseDir: string): string {
   return baseDir
 }
 
-async function launchApp(userDataDir: string, headless: boolean, socketPath: string): Promise<ElectronApplication> {
+async function launchApp(
+  userDataDir: string,
+  headless: boolean,
+  socketPath: string
+): Promise<ElectronApplication> {
   // Use a unique user-data-dir so Electron's requestSingleInstanceLock
   // doesn't conflict with any running nuxy instance on the developer's machine.
   // NUXY_DATA_DIR isolates settings (escAction, blurAction) without touching extensions.
@@ -125,7 +129,7 @@ type ElectronTestFixtures = {
 
 export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
   socketPath: [
-    async ({}, use) => {
+    async (_worker, use) => {
       const socketName = `nuxy-test-${Math.random().toString(36).substring(2, 9)}.sock`
       const socketPath = resolve(tmpdir(), socketName)
       await use(socketPath)

@@ -1,53 +1,5 @@
-.nuxy-select-box {
-  position: relative;
-  display: inline-flex;
-}
-
-.nuxy-select-box__trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  padding: 0;
-  background: none;
-  border: none;
-  font-family: inherit;
-  font-size: inherit;
-  color: var(--syntax-keyword);
-  cursor: pointer;
-  white-space: nowrap;
-  outline: none;
-  transition: color 120ms;
-}
-
-.nuxy-select-box__trigger:hover,
-.nuxy-select-box__trigger--open {
-  color: var(--syntax-variable);
-}
-
-.nuxy-select-box__value {
-  line-height: 1;
-}
-
-.nuxy-select-box__chevron {
-  opacity: 0.4;
-  font-size: 9px;
-  line-height: 1;
-  flex-shrink: 0;
-  transition:
-    transform 150ms,
-    opacity 150ms;
-}
-
-.nuxy-select-box__trigger:hover .nuxy-select-box__chevron,
-.nuxy-select-box__trigger--open .nuxy-select-box__chevron {
-  opacity: 0.7;
-}
-
-.nuxy-select-box__chevron--open {
-  transform: rotate(180deg);
-}
-
 /* Action menu dropdown — positioned via inline style: left=trigger.right, translateX(-100%) right-aligns */
+/* These styles are for the body-portal dropdown, which lives outside the shadow root */
 .nuxy-select-box__dropdown {
   position: fixed;
   min-width: 160px;

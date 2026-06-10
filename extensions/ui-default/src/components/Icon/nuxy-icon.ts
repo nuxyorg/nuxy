@@ -1,67 +1,65 @@
 import { ICON_PATHS } from './icon-paths'
+import { LitElement, html, css, nothing, customElement, property, unsafeHTML } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 const DEFAULT_SIZE = 18
 const DEFAULT_OPACITY = 0.65
 
-function resolveSize(raw: string | null): number | string {
+function resolveSize(raw: string): number | string {
   if (!raw) return DEFAULT_SIZE
   const n = Number(raw)
   return Number.isFinite(n) && n > 0 ? n : raw
 }
 
-export class NuxyIconElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['name', 'size', 'opacity', 'color', 'class']
-  }
-
-  connectedCallback(): void {
-    this.render()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
-
-  private render(): void {
-    const name = this.getAttribute('name')
-    if (!name) {
-      this.replaceChildren()
-      return
+@customElement('nuxy-icon')
+export class NuxyIconElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
+  `
 
-    const def = ICON_PATHS[name]
-    if (!def) {
-      this.replaceChildren()
-      return
-    }
+  @property({ type: String }) name = ''
+  @property({ type: String }) size = ''
+  @property({ type: String }) opacity = ''
+  @property({ type: String }) color = ''
 
-    const size = resolveSize(this.getAttribute('size'))
-    const opacityAttr = this.getAttribute('opacity')
+  render(): TemplateResult {
+    if (!this.name) return html`${nothing}`
+
+    const def = ICON_PATHS[this.name]
+    if (!def) return html`${nothing}`
+
+    const size = resolveSize(this.size)
     const opacity =
-      opacityAttr != null
-        ? Number(opacityAttr)
-        : (def.defaultOpacity ?? DEFAULT_OPACITY)
-    const color = this.getAttribute('color') ?? def.defaultColor ?? 'currentColor'
-    const extraClass = this.getAttribute('class') ?? ''
+      this.opacity !== '' ? Number(this.opacity) : (def.defaultOpacity ?? DEFAULT_OPACITY)
+    const color = this.color || def.defaultColor || 'currentColor'
 
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    svg.setAttribute('width', String(size))
-    svg.setAttribute('height', String(size))
-    svg.setAttribute('viewBox', '0 0 24 24')
-    svg.setAttribute('fill', 'none')
-    svg.setAttribute('stroke', 'currentColor')
-    svg.setAttribute('stroke-width', '1.5')
-    svg.setAttribute('stroke-linecap', 'round')
-    svg.setAttribute('stroke-linejoin', 'round')
-    if (extraClass) svg.setAttribute('class', extraClass)
-    svg.style.opacity = String(opacity)
-    if (color !== 'currentColor') svg.style.color = color
-    svg.innerHTML = def.paths
+    const colorStyle = color !== 'currentColor' ? `color: ${color};` : ''
+    const style = `opacity: ${opacity}; ${colorStyle}`
 
-    this.replaceChildren(svg)
+    return html`
+      <svg
+        width=${size}
+        height=${size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style=${style}
+      >
+        ${unsafeHTML(def.paths)}
+      </svg>
+    `
   }
 }
 
-if (!customElements.get('nuxy-icon')) {
-  customElements.define('nuxy-icon', NuxyIconElement)
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-icon': NuxyIconElement
+  }
 }

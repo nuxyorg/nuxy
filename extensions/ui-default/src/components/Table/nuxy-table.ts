@@ -1,8 +1,9 @@
 import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxy/core'
 
 const TABLE_HOST_ATTRS = new Set(['container-class', 'class', 'style'])
 
+// NuxyTableContainerElement: slot-based child reparenting into <table> — keep as HTMLElement
 export class NuxyTableContainerElement extends HTMLElement {
   private container: HTMLDivElement | null = null
   private table: HTMLTableElement | null = null
@@ -60,6 +61,7 @@ export class NuxyTableContainerElement extends HTMLElement {
   }
 }
 
+// NuxyTableRowElement: slot-based child reparenting into <tr> — keep as HTMLElement
 export class NuxyTableRowElement extends HTMLElement {
   private row: HTMLTableRowElement | null = null
 
@@ -105,6 +107,7 @@ export class NuxyTableRowElement extends HTMLElement {
   }
 }
 
+// NuxyTableCellElement: slot-based child reparenting into <th>/<td> — keep as HTMLElement
 export class NuxyTableCellElement extends HTMLElement {
   private cell: HTMLTableCellElement | null = null
 
@@ -162,105 +165,158 @@ function parseDataListItems(raw: string | null): DataListItemMeta[] {
   }
 }
 
-export class NuxyDataListElement extends HTMLElement {
+@customElement('nuxy-data-list')
+export class NuxyDataListElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .nuxy-data-list__item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    @media (min-width: 480px) {
+      .nuxy-data-list__item {
+        flex-direction: row;
+        align-items: baseline;
+      }
+      .nuxy-data-list__label {
+        width: 140px;
+        flex-shrink: 0;
+      }
+    }
+
+    .nuxy-data-list__label {
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--syntax-comment);
+    }
+
+    .nuxy-data-list__value {
+      font-size: var(--font-sm);
+      color: var(--syntax-variable);
+    }
+  `
+
   static get observedAttributes(): string[] {
     return ['items']
   }
 
-  connectedCallback(): void {
-    this.render()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
-
-  private render(): void {
-    const items = parseDataListItems(this.getAttribute('items'))
-    const extraClass = this.getAttribute('class') ?? ''
-
-    syncHostClasses(this, 'nuxy-data-list')
-    this.replaceChildren()
-
-    for (const item of items) {
-      const row = document.createElement('div')
-      row.className = 'nuxy-data-list__item'
-
-      const label = document.createElement('span')
-      label.className = 'nuxy-data-list__label'
-      label.textContent = item.label
-
-      const value = document.createElement('span')
-      value.className = 'nuxy-data-list__value'
-      value.textContent = item.value
-
-      row.append(label, value)
-      this.appendChild(row)
+  attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
+    super.attributeChangedCallback(name, oldVal, newVal)
+    if (this.isConnected) {
+      this.requestUpdate()
     }
+  }
+
+  render(): TemplateResult {
+    const items = parseDataListItems(this.getAttribute('items'))
+
+    return html`
+      ${items.map(
+        (item) => html`
+          <div class="nuxy-data-list__item">
+            <span class="nuxy-data-list__label">${item.label}</span>
+            <span class="nuxy-data-list__value">${item.value}</span>
+          </div>
+        `
+      )}
+    `
   }
 }
 
-export class NuxyStatElement extends HTMLElement {
+@customElement('nuxy-stat')
+export class NuxyStatElement extends LitElement {
+  static styles = css`
+    :host {
+      padding: var(--space-4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+
+    .nuxy-stat__label {
+      font-size: var(--font-xs);
+      color: var(--syntax-comment);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .nuxy-stat__value {
+      font-size: var(--font-xl);
+      font-weight: 600;
+      color: var(--syntax-variable);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .nuxy-stat__help {
+      font-size: var(--font-xs);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    .nuxy-stat__help--up {
+      color: var(--syntax-green);
+    }
+    .nuxy-stat__help--down {
+      color: var(--syntax-invalid);
+    }
+  `
+
   static get observedAttributes(): string[] {
     return ['label', 'value', 'change', 'help-text']
   }
 
-  connectedCallback(): void {
-    this.render()
+  attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
+    super.attributeChangedCallback(name, oldVal, newVal)
+    if (this.isConnected) {
+      this.requestUpdate()
+    }
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.render()
-  }
-
-  private render(): void {
+  render(): TemplateResult {
     const label = this.getAttribute('label') ?? ''
     const value = this.getAttribute('value') ?? ''
     const changeRaw = this.getAttribute('change')
     const helpText = this.getAttribute('help-text') ?? ''
-    const extraClass = this.getAttribute('class') ?? ''
 
     const change = changeRaw !== null && changeRaw !== '' ? Number(changeRaw) : undefined
     const isUp = change !== undefined && change > 0
     const isDown = change !== undefined && change < 0
 
-    syncHostClasses(this, 'nuxy-stat')
-    this.replaceChildren()
-
-    const labelEl = document.createElement('span')
-    labelEl.className = 'nuxy-stat__label'
-    labelEl.textContent = label
-
-    const valueEl = document.createElement('span')
-    valueEl.className = 'nuxy-stat__value'
-    valueEl.textContent = value
-
-    this.append(labelEl, valueEl)
-
-    if (change !== undefined || helpText) {
-      const helpEl = document.createElement('span')
-      helpEl.className = [
-        'nuxy-stat__help',
-        isUp ? 'nuxy-stat__help--up' : '',
-        isDown ? 'nuxy-stat__help--down' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')
-
-      if (change !== undefined) {
-        const changeEl = document.createElement('span')
-        const arrow = isUp ? '↑' : isDown ? '↓' : ''
-        changeEl.textContent = `${arrow} ${Math.abs(change)}%`.trim()
-        helpEl.appendChild(changeEl)
-      }
-      if (helpText) {
-        const textEl = document.createElement('span')
-        textEl.textContent = helpText
-        helpEl.appendChild(textEl)
-      }
-
-      this.appendChild(helpEl)
-    }
+    return html`
+      <span class="nuxy-stat__label">${label}</span>
+      <span class="nuxy-stat__value">${value}</span>
+      ${change !== undefined || helpText
+        ? html`
+            <span
+              class=${[
+                'nuxy-stat__help',
+                isUp ? 'nuxy-stat__help--up' : '',
+                isDown ? 'nuxy-stat__help--down' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              ${change !== undefined
+                ? html`<span
+                    >${(isUp ? '↑' : isDown ? '↓' : '') + ' ' + Math.abs(change) + '%'}</span
+                  >`
+                : nothing}
+              ${helpText ? html`<span>${helpText}</span>` : nothing}
+            </span>
+          `
+        : nothing}
+    `
   }
 }
 
@@ -272,12 +328,6 @@ if (!customElements.get('nuxy-table-row')) {
 }
 if (!customElements.get('nuxy-table-cell')) {
   customElements.define('nuxy-table-cell', NuxyTableCellElement)
-}
-if (!customElements.get('nuxy-data-list')) {
-  customElements.define('nuxy-data-list', NuxyDataListElement)
-}
-if (!customElements.get('nuxy-stat')) {
-  customElements.define('nuxy-stat', NuxyStatElement)
 }
 
 declare global {

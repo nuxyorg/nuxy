@@ -1,8 +1,8 @@
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import litPlugin from 'eslint-plugin-lit';
-import wcPlugin from 'eslint-plugin-wc';
-import globals from 'globals';
+import eslint from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import litPlugin from 'eslint-plugin-lit'
+import wcPlugin from 'eslint-plugin-wc'
+import globals from 'globals'
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -57,5 +57,4 @@ export default tseslint.config(
       },
     },
   }
-);
-
+)

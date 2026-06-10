@@ -1,58 +1,49 @@
-export class NuxyAspectRatioElement extends HTMLElement {
-  private inner: HTMLDivElement | null = null
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-  static get observedAttributes(): string[] {
-    return ['ratio', 'class']
-  }
+@customElement('nuxy-aspect-ratio')
+export class NuxyAspectRatioElement extends LitElement {
+  static styles = css`
+    :host {
+      display: block;
+      position: relative;
+      width: 100%;
+    }
+
+    div {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+  `
+
+  @property({ type: Number }) ratio = 1
+
+  @property({ type: String }) class = ''
+
+  private _initialHTML = ''
 
   connectedCallback(): void {
-    this.build()
-    this.reparentChildren()
-    this.sync()
+    // Capture initial children before Lit replaces them
+    this._initialHTML = this.innerHTML
+    super.connectedCallback()
+    this.applyHostStyles()
   }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
+  updated(): void {
+    this.applyHostStyles()
   }
 
-  private build(): void {
-    if (this.inner) return
-    this.inner = document.createElement('div')
-    this.appendChild(this.inner)
-  }
-
-  private reparentChildren(): void {
-    if (!this.inner) return
-    const nodes: Node[] = []
-    for (const child of this.childNodes) {
-      if (child === this.inner) continue
-      nodes.push(child)
-    }
-    if (nodes.length) this.inner.replaceChildren(...nodes)
-  }
-
-  private sync(): void {
-    const ratio = Number(this.getAttribute('ratio') ?? '1') || 1
-    const extraClass = this.getAttribute('class') ?? ''
-
-    this.style.position = 'relative'
-    this.style.width = '100%'
+  private applyHostStyles(): void {
+    const ratio = Number(this.ratio) || 1
     this.style.paddingBottom = `${100 / ratio}%`
-
-    if (this.inner) {
-      this.inner.style.position = 'absolute'
-      this.inner.style.top = '0'
-      this.inner.style.right = '0'
-      this.inner.style.bottom = '0'
-      this.inner.style.left = '0'
-    }
-
-    if (extraClass) this.className = extraClass
   }
-}
 
-if (!customElements.get('nuxy-aspect-ratio')) {
-  customElements.define('nuxy-aspect-ratio', NuxyAspectRatioElement)
+  render(): TemplateResult {
+    return html` <div .innerHTML=${this._initialHTML}></div> `
+  }
 }
 
 declare global {

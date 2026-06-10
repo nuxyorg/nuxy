@@ -69,7 +69,10 @@ export function buildSettingsApi(
     ): Promise<void> => {
       const dir = getTargetExtDir(targetExtId)
       fs.mkdirSync(dir, { recursive: true })
-      await fsPromises.writeFile(path.join(dir, 'ext-settings.json'), JSON.stringify(values, null, 2))
+      await fsPromises.writeFile(
+        path.join(dir, 'ext-settings.json'),
+        JSON.stringify(values, null, 2)
+      )
     }
     baseApi.writeExtension = async (
       targetExtId: string,

@@ -9,11 +9,15 @@ export interface ResolvedExtensionFile {
   extensionId: string
 }
 
+const SAFE_EXT_ID_RE = /^[a-z0-9._-]+$/i
+
 export function resolveExtensionFile(
   idOrFolder: string,
   filePath: string,
   extensionsRoot: string = EXTRACTED_DIR
 ): ResolvedExtensionFile | null {
+  if (!SAFE_EXT_ID_RE.test(idOrFolder)) return null
+
   const extensionId = resolveExtensionId(idOrFolder) ?? idOrFolder
   const folderName = getExtensionFolder(extensionId) ?? idOrFolder
 

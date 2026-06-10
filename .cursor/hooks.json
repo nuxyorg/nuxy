@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/after-edit.sh",
+        "matcher": "Write|StrReplace|EditNotebook"
+      }
+    ],
+    "stop": [
+      {
+        "command": ".cursor/hooks/stop-verify.sh",
+        "timeout": 300,
+        "loop_limit": 5
+      }
+    ]
+  }
+}

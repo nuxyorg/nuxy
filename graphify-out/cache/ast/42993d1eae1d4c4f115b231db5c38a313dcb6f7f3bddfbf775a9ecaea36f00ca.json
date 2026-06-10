@@ -1,0 +1,2189 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_icons_default_icons_json",
+      "label": "icons.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "icons_default_icons_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "icons_default_icons_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "icons_default_icons_icons",
+      "label": "icons",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "icons_default_icons_icons_shell",
+      "label": "shell",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "icons_default_icons_icons_clipboard",
+      "label": "clipboard",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "icons_default_icons_icons_calculator",
+      "label": "calculator",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "icons_default_icons_icons_gradient",
+      "label": "gradient",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "icons_default_icons_icons_search",
+      "label": "search",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "icons_default_icons_icons_settings",
+      "label": "settings",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "icons_default_icons_icons_file",
+      "label": "file",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "icons_default_icons_icons_folder",
+      "label": "folder",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "icons_default_icons_icons_link",
+      "label": "link",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "icons_default_icons_icons_star",
+      "label": "star",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "icons_default_icons_icons_music",
+      "label": "music",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "icons_default_icons_icons_tool",
+      "label": "tool",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "icons_default_icons_icons_calendar",
+      "label": "calendar",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "icons_default_icons_icons_notes",
+      "label": "notes",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "icons_default_icons_icons_emoji",
+      "label": "emoji",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "icons_default_icons_icons_bitwarden",
+      "label": "bitwarden",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "icons_default_icons_icons_video",
+      "label": "video",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "icons_default_icons_icons_workflow",
+      "label": "workflow",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "icons_default_icons_icons_ai",
+      "label": "ai",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "icons_default_icons_icons_clock",
+      "label": "clock",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "icons_default_icons_icons_copy",
+      "label": "copy",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "icons_default_icons_icons_check",
+      "label": "check",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "icons_default_icons_icons_trash",
+      "label": "trash",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "icons_default_icons_icons_edit",
+      "label": "edit",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "icons_default_icons_icons_pin",
+      "label": "pin",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "icons_default_icons_icons_download",
+      "label": "download",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "icons_default_icons_icons_upload",
+      "label": "upload",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "icons_default_icons_icons_refresh",
+      "label": "refresh",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "icons_default_icons_icons_globe",
+      "label": "globe",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "icons_default_icons_icons_close",
+      "label": "close",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L34"
+    },
+    {
+      "id": "icons_default_icons_icons_plus",
+      "label": "plus",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L35"
+    },
+    {
+      "id": "icons_default_icons_icons_minus",
+      "label": "minus",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "icons_default_icons_icons_arrow_left",
+      "label": "arrow-left",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "icons_default_icons_icons_arrow_right",
+      "label": "arrow-right",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L38"
+    },
+    {
+      "id": "icons_default_icons_icons_chevron_down",
+      "label": "chevron-down",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L39"
+    },
+    {
+      "id": "icons_default_icons_icons_chevron_up",
+      "label": "chevron-up",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L40"
+    },
+    {
+      "id": "icons_default_icons_icons_mic",
+      "label": "mic",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "icons_default_icons_icons_image",
+      "label": "image",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L42"
+    },
+    {
+      "id": "icons_default_icons_icons_lock",
+      "label": "lock",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "icons_default_icons_icons_unlock",
+      "label": "unlock",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L44"
+    },
+    {
+      "id": "icons_default_icons_icons_eye",
+      "label": "eye",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L45"
+    },
+    {
+      "id": "icons_default_icons_icons_eye_off",
+      "label": "eye-off",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L46"
+    },
+    {
+      "id": "icons_default_icons_icons_warning",
+      "label": "warning",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L47"
+    },
+    {
+      "id": "icons_default_icons_icons_info",
+      "label": "info",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L48"
+    },
+    {
+      "id": "icons_default_icons_icons_send",
+      "label": "send",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L49"
+    },
+    {
+      "id": "icons_default_icons_icons_filter",
+      "label": "filter",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L50"
+    },
+    {
+      "id": "icons_default_icons_icons_tag",
+      "label": "tag",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L51"
+    },
+    {
+      "id": "icons_default_icons_icons_user",
+      "label": "user",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L52"
+    },
+    {
+      "id": "icons_default_icons_icons_zap",
+      "label": "zap",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L53"
+    },
+    {
+      "id": "icons_default_icons_icons_key_up",
+      "label": "key-up",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L54"
+    },
+    {
+      "id": "icons_default_icons_icons_key_down",
+      "label": "key-down",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L55"
+    },
+    {
+      "id": "icons_default_icons_icons_key_left",
+      "label": "key-left",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L56"
+    },
+    {
+      "id": "icons_default_icons_icons_key_right",
+      "label": "key-right",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L57"
+    },
+    {
+      "id": "icons_default_icons_icons_key_enter",
+      "label": "key-enter",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L58"
+    },
+    {
+      "id": "icons_default_icons_icons_key_shift",
+      "label": "key-shift",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L59"
+    },
+    {
+      "id": "icons_default_icons_icons_key_ctrl",
+      "label": "key-ctrl",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L60"
+    },
+    {
+      "id": "icons_default_icons_icons_key_alt",
+      "label": "key-alt",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L61"
+    },
+    {
+      "id": "icons_default_icons_icons_key_backspace",
+      "label": "key-backspace",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L62"
+    },
+    {
+      "id": "icons_default_icons_icons_key_escape",
+      "label": "key-escape",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L63"
+    },
+    {
+      "id": "icons_default_icons_icons_key_tab",
+      "label": "key-tab",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L64"
+    },
+    {
+      "id": "icons_default_icons_icons_key_a",
+      "label": "key-a",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L65"
+    },
+    {
+      "id": "icons_default_icons_icons_key_b",
+      "label": "key-b",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L66"
+    },
+    {
+      "id": "icons_default_icons_icons_key_c",
+      "label": "key-c",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L67"
+    },
+    {
+      "id": "icons_default_icons_icons_key_d",
+      "label": "key-d",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L68"
+    },
+    {
+      "id": "icons_default_icons_icons_key_e",
+      "label": "key-e",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L69"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f",
+      "label": "key-f",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L70"
+    },
+    {
+      "id": "icons_default_icons_icons_key_g",
+      "label": "key-g",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L71"
+    },
+    {
+      "id": "icons_default_icons_icons_key_h",
+      "label": "key-h",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L72"
+    },
+    {
+      "id": "icons_default_icons_icons_key_i",
+      "label": "key-i",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L73"
+    },
+    {
+      "id": "icons_default_icons_icons_key_j",
+      "label": "key-j",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L74"
+    },
+    {
+      "id": "icons_default_icons_icons_key_k",
+      "label": "key-k",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L75"
+    },
+    {
+      "id": "icons_default_icons_icons_key_l",
+      "label": "key-l",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L76"
+    },
+    {
+      "id": "icons_default_icons_icons_key_m",
+      "label": "key-m",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L77"
+    },
+    {
+      "id": "icons_default_icons_icons_key_n",
+      "label": "key-n",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L78"
+    },
+    {
+      "id": "icons_default_icons_icons_key_o",
+      "label": "key-o",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L79"
+    },
+    {
+      "id": "icons_default_icons_icons_key_p",
+      "label": "key-p",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L80"
+    },
+    {
+      "id": "icons_default_icons_icons_key_q",
+      "label": "key-q",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L81"
+    },
+    {
+      "id": "icons_default_icons_icons_key_r",
+      "label": "key-r",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L82"
+    },
+    {
+      "id": "icons_default_icons_icons_key_s",
+      "label": "key-s",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L83"
+    },
+    {
+      "id": "icons_default_icons_icons_key_t",
+      "label": "key-t",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L84"
+    },
+    {
+      "id": "icons_default_icons_icons_key_u",
+      "label": "key-u",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L85"
+    },
+    {
+      "id": "icons_default_icons_icons_key_v",
+      "label": "key-v",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L86"
+    },
+    {
+      "id": "icons_default_icons_icons_key_w",
+      "label": "key-w",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L87"
+    },
+    {
+      "id": "icons_default_icons_icons_key_x",
+      "label": "key-x",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L88"
+    },
+    {
+      "id": "icons_default_icons_icons_key_y",
+      "label": "key-y",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L89"
+    },
+    {
+      "id": "icons_default_icons_icons_key_z",
+      "label": "key-z",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L90"
+    },
+    {
+      "id": "icons_default_icons_icons_key_0",
+      "label": "key-0",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L91"
+    },
+    {
+      "id": "icons_default_icons_icons_key_1",
+      "label": "key-1",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L92"
+    },
+    {
+      "id": "icons_default_icons_icons_key_2",
+      "label": "key-2",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L93"
+    },
+    {
+      "id": "icons_default_icons_icons_key_3",
+      "label": "key-3",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L94"
+    },
+    {
+      "id": "icons_default_icons_icons_key_4",
+      "label": "key-4",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L95"
+    },
+    {
+      "id": "icons_default_icons_icons_key_5",
+      "label": "key-5",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L96"
+    },
+    {
+      "id": "icons_default_icons_icons_key_6",
+      "label": "key-6",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L97"
+    },
+    {
+      "id": "icons_default_icons_icons_key_7",
+      "label": "key-7",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L98"
+    },
+    {
+      "id": "icons_default_icons_icons_key_8",
+      "label": "key-8",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L99"
+    },
+    {
+      "id": "icons_default_icons_icons_key_9",
+      "label": "key-9",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L100"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f1",
+      "label": "key-f1",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L101"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f2",
+      "label": "key-f2",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L102"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f3",
+      "label": "key-f3",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L103"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f4",
+      "label": "key-f4",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L104"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f5",
+      "label": "key-f5",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L105"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f6",
+      "label": "key-f6",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L106"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f7",
+      "label": "key-f7",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L107"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f8",
+      "label": "key-f8",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L108"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f9",
+      "label": "key-f9",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L109"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f10",
+      "label": "key-f10",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L110"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f11",
+      "label": "key-f11",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L111"
+    },
+    {
+      "id": "icons_default_icons_icons_key_f12",
+      "label": "key-f12",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L112"
+    },
+    {
+      "id": "icons_default_icons_icons_key_win",
+      "label": "key-win",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L113"
+    },
+    {
+      "id": "icons_default_icons_icons_key_altgr",
+      "label": "key-altgr",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L114"
+    },
+    {
+      "id": "icons_default_icons_icons_key_ins",
+      "label": "key-ins",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L115"
+    },
+    {
+      "id": "icons_default_icons_icons_key_del",
+      "label": "key-del",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L116"
+    },
+    {
+      "id": "icons_default_icons_icons_key_home",
+      "label": "key-home",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L117"
+    },
+    {
+      "id": "icons_default_icons_icons_key_end",
+      "label": "key-end",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L118"
+    },
+    {
+      "id": "icons_default_icons_icons_key_pageup",
+      "label": "key-pageup",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L119"
+    },
+    {
+      "id": "icons_default_icons_icons_key_pagedown",
+      "label": "key-pagedown",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L120"
+    },
+    {
+      "id": "icons_default_icons_icons_key_capslock",
+      "label": "key-capslock",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L121"
+    },
+    {
+      "id": "icons_default_icons_icons_key_space",
+      "label": "key-space",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L122"
+    },
+    {
+      "id": "icons_default_icons_icons_key_numlock",
+      "label": "key-numlock",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L123"
+    },
+    {
+      "id": "icons_default_icons_icons_key_scrolllock",
+      "label": "key-scrolllock",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L124"
+    },
+    {
+      "id": "icons_default_icons_icons_key_printscreen",
+      "label": "key-printscreen",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L125"
+    },
+    {
+      "id": "icons_default_icons_icons_key_pause",
+      "label": "key-pause",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L126"
+    },
+    {
+      "id": "icons_default_icons_icons_key_backquote",
+      "label": "key-backquote",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L127"
+    },
+    {
+      "id": "icons_default_icons_icons_key_minus",
+      "label": "key-minus",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L128"
+    },
+    {
+      "id": "icons_default_icons_icons_key_equals",
+      "label": "key-equals",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L129"
+    },
+    {
+      "id": "icons_default_icons_icons_key_bracket_left",
+      "label": "key-bracket-left",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L130"
+    },
+    {
+      "id": "icons_default_icons_icons_key_bracket_right",
+      "label": "key-bracket-right",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L131"
+    },
+    {
+      "id": "icons_default_icons_icons_key_backslash",
+      "label": "key-backslash",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L132"
+    },
+    {
+      "id": "icons_default_icons_icons_key_semicolon",
+      "label": "key-semicolon",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L133"
+    },
+    {
+      "id": "icons_default_icons_icons_key_quote",
+      "label": "key-quote",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L134"
+    },
+    {
+      "id": "icons_default_icons_icons_key_comma",
+      "label": "key-comma",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L135"
+    },
+    {
+      "id": "icons_default_icons_icons_key_period",
+      "label": "key-period",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L136"
+    },
+    {
+      "id": "icons_default_icons_icons_key_slash",
+      "label": "key-slash",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L137"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_icons_default_icons_json",
+      "target": "icons_default_icons_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_icons_default_icons_json",
+      "target": "icons_default_icons_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_icons_default_icons_json",
+      "target": "icons_default_icons_icons",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_shell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_clipboard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_calculator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_gradient",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_search",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_settings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_file",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_folder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_link",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_star",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_music",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_tool",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_calendar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_notes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_emoji",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_bitwarden",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_video",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_workflow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_ai",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_clock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_copy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_check",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_trash",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_edit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_pin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_download",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_upload",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_refresh",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_globe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_close",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_plus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_minus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_arrow_left",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_arrow_right",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_chevron_down",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_chevron_up",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_mic",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_image",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_lock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_unlock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_eye",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_eye_off",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_warning",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_info",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_send",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_filter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_tag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_user",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_zap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_up",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_down",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_left",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_right",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_enter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_shift",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_ctrl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_alt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_backspace",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_escape",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_tab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_a",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_b",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_c",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_d",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_e",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_g",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_h",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_i",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_j",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_k",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_l",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_m",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_n",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_o",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_p",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_q",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_r",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_s",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_t",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_u",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_w",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_x",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_y",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_z",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_0",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_3",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_4",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_5",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_6",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_7",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_8",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_9",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f3",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f4",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f5",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f6",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f7",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f8",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f9",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f10",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f11",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_f12",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_win",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_altgr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_ins",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_del",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_home",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_end",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_pageup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_pagedown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_capslock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_space",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_numlock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_scrolllock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_printscreen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_pause",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_backquote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_minus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_equals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_bracket_left",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_bracket_right",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_backslash",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_semicolon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_quote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_comma",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_period",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "icons_default_icons_icons",
+      "target": "icons_default_icons_icons_key_slash",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/icons-default/icons.json",
+      "source_location": "L137",
+      "weight": 1.0
+    }
+  ]
+}

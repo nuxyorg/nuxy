@@ -1,8 +1,8 @@
 {
   "nodes": [
     {
-      "id": "docs_ui_cleanup_report_doc",
-      "label": "UI Cleanup Report 2026-05-19",
+      "id": "ui_cleanup_report_doc",
+      "label": "UI Cleanup Report",
       "file_type": "document",
       "source_file": "docs/ui/ui-cleanup-report.md",
       "source_location": null,
@@ -12,44 +12,55 @@
       "contributor": null
     },
     {
-      "id": "docs_ui_cleanup_report_transition_all",
-      "label": "transition:all Performance Issue in CSS",
+      "id": "ui_cleanup_transition_all",
+      "label": "UI Issue: transition:all Causes Unnecessary Repaints (Button, Card, ListItem, shell.css)",
       "file_type": "concept",
       "source_file": "docs/ui/ui-cleanup-report.md",
-      "source_location": "Issue 1",
+      "source_location": "L16",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_ui_cleanup_report_accessibility",
-      "label": "Accessibility Gaps (ARIA roles, keyboard semantics)",
+      "id": "ui_cleanup_results_list_aria",
+      "label": "UI Issue: Results List Missing role=listbox / role=option ARIA",
       "file_type": "concept",
       "source_file": "docs/ui/ui-cleanup-report.md",
-      "source_location": "Issues 3-5",
+      "source_location": "L57",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_ui_cleanup_report_theme_tokens",
-      "label": "ThemeTokens Type Contract Gap",
+      "id": "ui_cleanup_listitem_keyboard",
+      "label": "UI Issue: ListItem Clickable div Without Keyboard Semantics (WCAG 2.1.1)",
       "file_type": "concept",
       "source_file": "docs/ui/ui-cleanup-report.md",
-      "source_location": "Issue 7",
+      "source_location": "L70",
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null
     },
     {
-      "id": "docs_ui_cleanup_report_reduced_motion",
-      "label": "prefers-reduced-motion Missing Support",
+      "id": "ui_cleanup_no_reduced_motion",
+      "label": "UI Issue: No prefers-reduced-motion Support in shell.css",
       "file_type": "concept",
       "source_file": "docs/ui/ui-cleanup-report.md",
-      "source_location": "Issue 6",
+      "source_location": "L83",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ui_cleanup_theme_token_gap",
+      "label": "UI Issue: Theme Variable Alignment Gap \u2014 Silent Visual Regression on Missing Tokens",
+      "file_type": "concept",
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "L112",
       "source_url": null,
       "captured_at": null,
       "author": null,
@@ -58,54 +69,74 @@
   ],
   "edges": [
     {
-      "source": "docs_ui_cleanup_report_doc",
-      "target": "docs_ui_cleanup_report_transition_all",
+      "source": "ui_cleanup_report_doc",
+      "target": "ui_cleanup_results_list_aria",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/ui/ui-cleanup-report.md",
-      "source_location": "Issue 1",
+      "source_location": "L57",
       "weight": 1.0
     },
     {
-      "source": "docs_ui_cleanup_report_doc",
-      "target": "docs_ui_cleanup_report_accessibility",
+      "source": "ui_cleanup_report_doc",
+      "target": "ui_cleanup_listitem_keyboard",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/ui/ui-cleanup-report.md",
-      "source_location": "Issues 3-5",
+      "source_location": "L70",
       "weight": 1.0
     },
     {
-      "source": "docs_ui_cleanup_report_doc",
-      "target": "docs_ui_cleanup_report_theme_tokens",
+      "source": "ui_cleanup_report_doc",
+      "target": "ui_cleanup_no_reduced_motion",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/ui/ui-cleanup-report.md",
-      "source_location": "Issue 7",
+      "source_location": "L83",
       "weight": 1.0
     },
     {
-      "source": "docs_ui_cleanup_report_doc",
-      "target": "docs_ui_cleanup_report_reduced_motion",
+      "source": "ui_cleanup_report_doc",
+      "target": "ui_cleanup_theme_token_gap",
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/ui/ui-cleanup-report.md",
-      "source_location": "Issue 6",
+      "source_location": "L112",
       "weight": 1.0
     },
     {
-      "source": "docs_ui_cleanup_report_theme_tokens",
-      "target": "docs_hardcoded_px_report_design_tokens",
+      "source": "ui_cleanup_report_doc",
+      "target": "ui_cleanup_transition_all",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "ui_cleanup_results_list_aria",
+      "target": "lit_ui_aria_missing",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/ui/ui-cleanup-report.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "ui_cleanup_listitem_keyboard",
+      "target": "lit_ui_aria_missing",
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "source_file": "docs/ui/ui-cleanup-report.md",
       "source_location": null,
-      "weight": 0.85
+      "weight": 0.8
     }
   ],
   "hyperedges": []

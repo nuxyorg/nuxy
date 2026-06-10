@@ -1,5 +1,7 @@
 # Documentation Audit Report
 
+> **Historical report** — reflects the codebase before the React→Lit/Web Components migration (completed 2026-06-09). React references below describe the old architecture; they have since been resolved.
+
 **Generated:** 2026-05-19  
 **Auditor:** Documentation Agent  
 **Scope:** All files listed in the task brief plus key source files for ground-truth comparison.

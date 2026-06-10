@@ -4,9 +4,7 @@ title: Installation
 
 # Installation
 
-## From Source (Development)
-
-Nuxy is currently distributed as source code. Install from the repository and run in development mode.
+## Development
 
 ```bash
 git clone https://github.com/nuxy/nuxy
@@ -15,77 +13,68 @@ pnpm install
 pnpm dev
 ```
 
-Development mode (`pnpm dev`) starts Electron with HMR enabled. The renderer reloads on frontend changes; the main process restarts on backend changes. Extensions are copied from `extensions/` in the repo to `~/.nuxy/extensions/` on startup.
+Development mode runs Electron with HMR. The renderer hot-reloads on frontend changes; the main process restarts on backend changes.
 
-## Building for Production
+## Production build
 
 ```bash
-# Run tests, then build renderer + Electron main process
-pnpm build
-
-# Build + package a distributable (electron-builder)
-pnpm package
+pnpm build      # tests + compile renderer + Electron main
+pnpm package    # electron-builder distributable
 ```
 
-`pnpm build` produces a compiled Electron app. `pnpm package` creates platform-specific distributables in `dist/`.
-
-::: warning Build required for E2E tests
-Playwright E2E tests (`pnpm -C src test:e2e:core`) require a completed `pnpm build` first — they launch the real app.
+::: warning E2E tests need a build
+`pnpm test:e2e:core` requires `pnpm build` first — Playwright launches the real app.
 :::
 
-## Directory Structure (Runtime)
+## Runtime directories
 
-After first launch, Nuxy creates the following directories in your home folder:
+After first launch:
 
 ```
 ~/.nuxy/
-  nuxyconfig          # Key=value configuration file (auto-created)
-  extensions/         # Installed extensions (each in its own subfolder)
+  nuxyconfig              # key=value settings (auto-created)
+  extensions/
     com.nuxy.shell/
     com.nuxy.settings/
-    com.nuxy.clipboard/
-    ...
-  data/               # Extension storage (chrooted per extension ID)
-    com.nuxy.clipboard/
-      history.json
     com.nuxy.notes/
-      notes.db
+    com.nuxy.calculator/
     ...
-  themes/             # JSON theme files (built-in + theme extensions)
-    dark.json
-    light.json
-    ocean.json
+  data/                   # chrooted per extension ID
+    com.nuxy.notes/
+    com.nuxy.settings/
     ...
+  themes/                 # user-installed theme JSON files
 ```
 
-## Installing Extensions
+Bundled extensions are synced from `extensions/` in the repo during `pnpm dev`.
 
-To install a third-party extension:
+## Installing third-party extensions
 
-1. Create a folder with the extension's id inside `~/.nuxy/extensions/`:
+1. Create a folder under `~/.nuxy/extensions/`:
 
    ```bash
    mkdir -p ~/.nuxy/extensions/com.example.my-tool
    ```
 
-2. Place `manifest.json`, `backend.ts`, and `frontend.tsx` (and any other extension files) in that folder.
+2. Add `manifest.json`, `backend.ts`, and optionally `frontend.ts` + `nuxy-tool-*.ts`.
 
-3. Restart Nuxy. The scanner picks up new extensions on every launch. In development mode, it also watches for changes.
+3. Restart Nuxy — the scanner picks up new extensions on launch.
 
-::: tip Dev mode auto-copy
-During `pnpm dev`, the bundled extensions in the repo's `extensions/` directory are automatically synced to `~/.nuxy/extensions/`. Use `NUXY_DEV_OVERWRITE=1` to force a full replacement instead of skipping unchanged files.
+::: tip Dev sync
+`pnpm dev` auto-syncs repo extensions to `~/.nuxy/extensions/`. Use `NUXY_DEV_OVERWRITE=1` to force a full replace.
 :::
 
 ## Logging
 
-Nuxy uses structured logging with configurable verbosity:
-
 ```bash
-# Maximum verbosity (includes all trace output)
-LOG_LEVEL=silly pnpm dev
-
-# Available levels: silly | info | warn | error
-LOG_LEVEL=info pnpm dev
+LOG_LEVEL=silly pnpm dev   # maximum verbosity
+LOG_LEVEL=info  pnpm dev   # default in dev
 ```
 
-Logs appear in the terminal where Nuxy was started. Extension workers log through `core.logger.*`, which is scoped to the extension's ID.
+Levels: `silly` · `info` · `warn` · `error`. Extension workers log via `core.logger.*`, scoped to the extension ID.
+
+## Next steps
+
+- [Configuration](/guide/configuration) — `nuxyconfig` reference
+- [Built-in Extensions](/extensions/built-in) — what ships in the repo
+- [Your First Extension](/extensions/first-extension) — build your own

@@ -1,5 +1,7 @@
 # Raw HTML Element Usage Report (Extensions)
 
+> **Historical report** — reflects the codebase before the React→Lit/Web Components migration (completed 2026-06-09).
+
 **Total files with raw HTML elements:** 7
 **Total instances:** 102
 

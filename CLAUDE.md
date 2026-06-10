@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **Agent rules & architecture constraints**: [`rules/AGENTS.md`](rules/AGENTS.md) — read this before making any changes.
+
 ## Commands
 
 All commands run from the repo root. `pnpm` is required (enforced by `preinstall`).
@@ -13,6 +15,11 @@ pnpm package      # Build + package distributable via electron-builder
 pnpm test         # Run vitest unit tests (from src/)
 pnpm format       # Format all files with Prettier
 pnpm format:check # Check formatting without writing
+pnpm lint         # ESLint across the repo
+pnpm lint:fix     # ESLint with auto-fix
+pnpm typecheck    # TypeScript check (src/ + extensions/)
+pnpm check        # format:check + lint + typecheck (CI-style)
+pnpm check:fix    # format + lint:fix + typecheck (after AI edits)
 ```
 
 > **Note**: `extensions/ui-default/frontend.js` is a build artifact (gitignored). Run `pnpm -C extensions/ui-default build` manually to rebuild it, or use `pnpm dev` which handles this automatically.
@@ -23,7 +30,8 @@ Run from `src/` directly for more granular control:
 pnpm -C src test           # Run unit tests once
 pnpm -C src test:watch     # Watch mode
 pnpm -C src test:e2e:core  # Playwright core e2e tests (restricted to src/e2e)
-pnpm -C src typecheck      # TypeScript check without emit
+pnpm typecheck             # TypeScript check (src/ + extensions/)
+pnpm -C src typecheck      # src/ only
 ```
 
 Single test file: `pnpm -C src test -- electron/ipc/validate.test.ts`
@@ -105,11 +113,13 @@ Vanilla Web Components bootstrap — no React. `main.ts` sets `window.UI = {}` a
 `packages/ui/src/` and `extensions/ui-default/src/` are **not duplicates**. They form a deliberate two-layer design:
 
 - **`packages/ui/src/components/`** — compile-time stubs. Each component delegates to `window.UI` at runtime and returns `null` if the runtime implementation is absent:
+
   ```ts
   export function Button(...args: any[]): unknown {
     return (window.UI as any)?.Button?.(...args) ?? null
   }
   ```
+
   This layer provides TypeScript types and import aliases (`@nuxy/ui`) without shipping CSS or real DOM. The stubs are framework-agnostic — callers may be React during migration or vanilla JS.
 
 - **`extensions/ui-default/src/components/`** — real custom element implementations (`nuxy-button`, `nuxy-card`, etc.). Built into `extensions/ui-default/frontend.js`, which registers custom elements and sets `window.UI = { Button, Card, … }` factory functions at runtime. This layer owns the visual design; swapping it changes the entire UI without touching any consumer code.
@@ -120,7 +130,7 @@ Vanilla Web Components bootstrap — no React. `main.ts` sets `window.UI = {}` a
 
 ### Extension system
 
-> **Extension authoring rules**: See [`extensions/EXTENSION_GUIDE.md`](extensions/EXTENSION_GUIDE.md) for the full mandatory ruleset. AI agents must read and follow that document when writing or reviewing any extension.
+> **Extension authoring rules**: See [`rules/EXTENSION_GUIDE.md`](rules/EXTENSION_GUIDE.md) for the full mandatory ruleset. AI agents must read and follow that document when writing or reviewing any extension.
 
 **Extension format** (place under `~/.nuxy/extensions/<folder>/`):
 
@@ -128,7 +138,7 @@ Vanilla Web Components bootstrap — no React. `main.ts` sets `window.UI = {}` a
 - `backend.js` — runs in a Worker thread; receives a `CoreContext` proxy
 - `frontend.js` — registers a `nuxy-tool-<name>` custom element; loaded by the shell via `nuxy-ext://`. Declare `entry.element: "nuxy-tool-<name>"` in the manifest so the tool host can mount it.
 
-Tool custom elements implement `NuxyToolElement` from `@nuxy/core`: `connectedCallback`, `disconnectedCallback`, and `query`/`committedQuery`/`extensionId` property setters. DOM is built with the `h()` helper from `extensions/ce-utils.ts` and controller classes handle state.
+Tool custom elements implement `NuxyToolElement` from `@nuxy/core`: `connectedCallback`, `disconnectedCallback`, and `query`/`committedQuery`/`extensionId` property setters. LitElement with `html` template literals is the standard framework for UI components. The legacy `h()` helper from `extensions/ce-utils.ts` is deprecated and scheduled for removal.
 
 **Backend API** (`CoreContext` from `@nuxy/extension-sdk`):
 

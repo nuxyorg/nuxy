@@ -1,31 +1,43 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
-export class NuxyItemLeadingElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['size', 'color']
-  }
+@customElement('nuxy-item-leading')
+export class NuxyItemLeadingElement extends LitElement {
+  @property({ type: String, reflect: true }) size = 'md'
+  @property({ type: String }) color = ''
 
-  connectedCallback(): void {
-    this.sync()
-  }
+  static styles = css`
+    :host {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg-subtle, rgba(255, 255, 255, 0.06));
+    }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
+    :host([size='sm']) {
+      width: 24px;
+      height: 24px;
+    }
 
-  private sync(): void {
-    const size = this.getAttribute('size') ?? 'md'
-    const color = this.getAttribute('color')
-    const extraClass = this.getAttribute('class') ?? ''
+    :host([size='md']) {
+      width: 32px;
+      height: 32px;
+    }
 
-    syncHostClasses(this, 'nuxy-item-leading', `nuxy-item-leading--${size}`)
+    :host([size='lg']) {
+      width: 40px;
+      height: 40px;
+    }
+  `
 
-    if (color) this.style.background = color
+  updated(): void {
+    if (this.color) this.style.background = this.color
     else this.style.removeProperty('background')
   }
-}
 
-if (!customElements.get('nuxy-item-leading')) {
-  customElements.define('nuxy-item-leading', NuxyItemLeadingElement)
+  render() {
+    return html`<slot></slot>`
+  }
 }

@@ -1,70 +1,55 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
-export class NuxyWizardSectionElement extends HTMLElement {
-  private iconSlot: HTMLSpanElement | null = null
-  private titleEl: HTMLHeadingElement | null = null
-  private observer: MutationObserver | null = null
+@customElement('nuxy-wizard-section')
+export class NuxyWizardSectionElement extends LitElement {
+  static styles = css`
+    :host {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
 
-  static get observedAttributes(): string[] {
-    return ['title']
-  }
+    .nuxy-wizard-section__icon {
+      display: flex;
+      align-items: center;
+      width: var(--icon-md);
+      height: var(--icon-md);
+      flex-shrink: 0;
+    }
+
+    .nuxy-wizard-section__icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .nuxy-wizard-section__title {
+      margin: 0;
+      font-size: var(--font-lg);
+      font-weight: var(--font-semibold);
+      color: var(--text-primary, rgba(255, 255, 255, 0.92));
+      line-height: 1.2;
+    }
+  `
+
+  @property({ type: String }) title = ''
+
+  @state() private _iconHTML = ''
 
   connectedCallback(): void {
-    this.build()
-    this.sync()
-    this.reparentChildren()
-    this.observer = new MutationObserver(() => this.reparentChildren())
-    this.observer.observe(this, { childList: true })
+    // Capture initial children as icon content before Lit replaces them
+    this._iconHTML = this.innerHTML
+    super.connectedCallback()
   }
 
-  disconnectedCallback(): void {
-    this.observer?.disconnect()
-    this.observer = null
+  render(): TemplateResult {
+    return html`
+      ${this._iconHTML
+        ? html`<span class="nuxy-wizard-section__icon" .innerHTML=${this._iconHTML}></span>`
+        : nothing}
+      <h2 class="nuxy-wizard-section__title">${this.title}</h2>
+    `
   }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private build(): void {
-    if (this.iconSlot) return
-
-    this.className = 'nuxy-wizard-section'
-
-    this.iconSlot = document.createElement('span')
-    this.iconSlot.className = 'nuxy-wizard-section__icon'
-
-    this.titleEl = document.createElement('h2')
-    this.titleEl.className = 'nuxy-wizard-section__title'
-
-    this.append(this.iconSlot, this.titleEl)
-  }
-
-  private reparentChildren(): void {
-    if (!this.iconSlot || !this.titleEl) return
-    for (const child of Array.from(this.childNodes)) {
-      if (child !== this.iconSlot && child !== this.titleEl) {
-        this.iconSlot.appendChild(child)
-      }
-    }
-  }
-
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-wizard-section')
-
-    if (this.titleEl) {
-      this.titleEl.textContent = this.getAttribute('title') ?? ''
-    }
-
-    if (this.iconSlot) {
-      this.iconSlot.hidden = this.iconSlot.childNodes.length === 0
-    }
-  }
-}
-
-if (!customElements.get('nuxy-wizard-section')) {
-  customElements.define('nuxy-wizard-section', NuxyWizardSectionElement)
 }
 
 declare global {

@@ -1,20 +1,9 @@
 {
   "nodes": [
     {
-      "id": "docs_hardcoded_px_report_doc",
-      "label": "Hardcoded px Usage Report",
+      "id": "docs_hardcoded_px_report",
+      "label": "Hardcoded px Usage Report (261 instances)",
       "file_type": "document",
-      "source_file": "docs/hardcoded-px-report.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null
-    },
-    {
-      "id": "docs_hardcoded_px_report_design_tokens",
-      "label": "CSS Design Tokens vs Hardcoded px",
-      "file_type": "rationale",
       "source_file": "docs/hardcoded-px-report.md",
       "source_location": null,
       "source_url": null,
@@ -25,14 +14,14 @@
   ],
   "edges": [
     {
-      "source": "docs_hardcoded_px_report_doc",
-      "target": "docs_hardcoded_px_report_design_tokens",
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
+      "source": "docs_hardcoded_px_report",
+      "target": "docs_master_cleanup_17_fixes",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
       "source_file": "docs/hardcoded-px-report.md",
       "source_location": null,
-      "weight": 1.0
+      "weight": 0.6
     }
   ],
   "hyperedges": []

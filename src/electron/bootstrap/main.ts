@@ -13,6 +13,20 @@ import { reloadConfig, setSettingsReloadCallback } from '../config/nuxyconfig.js
 import { kernelLogger } from '@nuxy/core'
 import { platformId, getNowPlaying } from '../media/index.js'
 
+// Linux: disable Vulkan (breaks on Wayland). Do not force X11 or disable GPU by default —
+// both break transparent windows on Wayland desktops.
+if (process.platform === 'linux') {
+  const platform = process.env.NUXY_OZONE_PLATFORM?.trim()
+  if (platform === 'x11' || platform === 'wayland') {
+    app.commandLine.appendSwitch('ozone-platform', platform)
+  }
+  app.commandLine.appendSwitch('disable-features', 'Vulkan')
+
+  if (process.env.NUXY_NO_GPU === '1') {
+    app.disableHardwareAcceleration()
+  }
+}
+
 // Expose media functions on globalThis for E2E tests
 ;(globalThis as any).__test_media = { platformId, getNowPlaying }
 

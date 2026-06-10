@@ -1,0 +1,387 @@
+{
+  "nodes": [
+    {
+      "id": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "label": "manifest.json",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "notes_manifest_id",
+      "label": "id",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "notes_manifest_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "notes_manifest_version",
+      "label": "version",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "notes_manifest_type",
+      "label": "type",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "notes_manifest_providergroup",
+      "label": "providerGroup",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "notes_manifest_providergrouplabel",
+      "label": "providerGroupLabel",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "notes_manifest_icon",
+      "label": "icon",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "notes_manifest_permissions",
+      "label": "permissions",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "notes_manifest_capabilities",
+      "label": "capabilities",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "notes_manifest_capabilities_callable",
+      "label": "callable",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "notes_manifest_capabilities_caller",
+      "label": "caller",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "notes_manifest_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "notes_manifest_entry_backend",
+      "label": "backend",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "notes_manifest_entry_frontend",
+      "label": "frontend",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "notes_manifest_entry_element",
+      "label": "element",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "notes_manifest_entry_settings",
+      "label": "settings",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "notes_manifest_locales",
+      "label": "locales",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "notes_manifest_locales_default",
+      "label": "default",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "notes_manifest_locales_supported",
+      "label": "supported",
+      "file_type": "code",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L22"
+    }
+  ],
+  "edges": [
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_id",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_type",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_providergroup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_providergrouplabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_icon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_permissions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_permissions",
+      "target": "ref_storage",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "notes_manifest_permissions",
+      "target": "ref_network",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "notes_manifest_permissions",
+      "target": "ref_fs",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "notes_manifest_permissions",
+      "target": "ref_db",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_capabilities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_capabilities",
+      "target": "notes_manifest_capabilities_callable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_capabilities",
+      "target": "notes_manifest_capabilities_caller",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_entry",
+      "target": "notes_manifest_entry_backend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_entry",
+      "target": "notes_manifest_entry_frontend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_entry",
+      "target": "notes_manifest_entry_element",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_entry",
+      "target": "notes_manifest_entry_settings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "home_xava_documents_nuxy_extensions_notes_manifest_json",
+      "target": "notes_manifest_locales",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_locales",
+      "target": "notes_manifest_locales_default",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_locales",
+      "target": "notes_manifest_locales_supported",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "notes_manifest_locales_supported",
+      "target": "ref_en",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "notes_manifest_locales_supported",
+      "target": "ref_tr",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "notes_manifest_locales_supported",
+      "target": "ref_ja",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/home/xava/Documents/nuxy/extensions/notes/manifest.json",
+      "source_location": "L22",
+      "weight": 1.0,
+      "context": "import"
+    }
+  ]
+}

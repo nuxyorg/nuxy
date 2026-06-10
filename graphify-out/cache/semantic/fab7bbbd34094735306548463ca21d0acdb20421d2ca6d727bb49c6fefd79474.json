@@ -1,0 +1,215 @@
+{
+  "nodes": [
+    {
+      "id": "arch_lit_renderer_composition_doc",
+      "label": "Web Components Renderer Architecture \u2014 Composition & Tool Host",
+      "file_type": "document",
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_lit_composition_api",
+      "label": "CoreComposition API \u2014 Named Slot System for Extension UI Integration",
+      "file_type": "concept",
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L99",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_lit_nuxy_tool_host",
+      "label": "nuxy-tool-host \u2014 Tool Loading Custom Element with Property Forwarding",
+      "file_type": "concept",
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L283",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_lit_composition_slot_claim",
+      "label": "Composition Slot Claim Validation \u2014 Kernel Enforced (manifest.claims vs manifest.provides)",
+      "file_type": "concept",
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L223",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_lit_shadow_dom_policy",
+      "label": "Shadow DOM Policy \u2014 All Tool Extensions Must Use Shadow Root",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L462",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_lit_gradient_dom_injection_problem",
+      "label": "Problem: gradient Extension Direct DOM Injection into Shell (document.querySelector)",
+      "file_type": "concept",
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_lit_query_property_not_attribute",
+      "label": "Design Decision: query Forwarded via JS Property, Not DOM Attribute (Performance)",
+      "file_type": "rationale",
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L403",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "arch_lit_nuxy_tool_element_interface",
+      "label": "NuxyToolElement Interface \u2014 query/committedQuery/extensionId Property Contract",
+      "file_type": "concept",
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L302",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "arch_lit_renderer_composition_doc",
+      "target": "arch_lit_composition_api",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_renderer_composition_doc",
+      "target": "arch_lit_nuxy_tool_host",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L283",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_renderer_composition_doc",
+      "target": "arch_lit_composition_slot_claim",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L223",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_renderer_composition_doc",
+      "target": "arch_lit_shadow_dom_policy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L462",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_renderer_composition_doc",
+      "target": "arch_lit_gradient_dom_injection_problem",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_renderer_composition_doc",
+      "target": "arch_lit_nuxy_tool_element_interface",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_renderer_composition_doc",
+      "target": "arch_lit_query_property_not_attribute",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L403",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_composition_api",
+      "target": "arch_lit_composition_slot_claim",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L223",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_nuxy_tool_host",
+      "target": "arch_lit_nuxy_tool_element_interface",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_gradient_dom_injection_problem",
+      "target": "arch_lit_composition_api",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "arch_lit_shadow_dom_policy",
+      "target": "lit_ui_shadow_vs_light_dom_inconsistency",
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "arch_lit_nuxy_tool_element_interface",
+      "target": "lit_rewrite_plan_phase2_shell",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/architecture/lit-renderer-composition.md",
+      "source_location": null,
+      "weight": 0.7
+    }
+  ],
+  "hyperedges": []
+}

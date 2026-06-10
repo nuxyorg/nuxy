@@ -1,0 +1,70 @@
+{
+  "nodes": [
+    {
+      "id": "docs_00_overview",
+      "label": "System Overview Document",
+      "file_type": "document",
+      "source_file": "docs/00-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_00_empty_shell_philosophy",
+      "label": "Empty Shell Philosophy (Core Must Be Useless)",
+      "file_type": "rationale",
+      "source_file": "docs/00-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_00_gnome_extensions_inspiration",
+      "label": "Gnome Extensions Ecosystem Inspiration",
+      "file_type": "rationale",
+      "source_file": "docs/00-overview.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_00_overview",
+      "target": "docs_00_empty_shell_philosophy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/00-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_00_overview",
+      "target": "docs_00_gnome_extensions_inspiration",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/00-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_00_overview",
+      "target": "docs_02_architecture",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/00-overview.md",
+      "source_location": null,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

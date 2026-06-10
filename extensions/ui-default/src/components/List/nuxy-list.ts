@@ -1,34 +1,34 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import { scrollListActiveItem } from '../../hooks/scroll-into-view'
 
-const maxHeightClasses: Record<string, string> = {
-  md: 'nuxy-list--max-h-md',
-}
+@customElement('nuxy-list')
+export class NuxyListElement extends LitElement {
+  @property({ type: String, attribute: 'max-height', reflect: true }) maxHeight = ''
+  @property({ type: Number, attribute: 'active-index' }) activeIndex = -1
 
-export class NuxyListElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['max-height']
+  static styles = css`
+    :host {
+      display: flex;
+      flex-direction: column;
+    }
+
+    :host::-webkit-scrollbar {
+    }
+
+    :host([max-height='md']) {
+      max-height: 320px;
+    }
+  `
+
+  updated(changedProperties: Map<string, unknown>): void {
+    if (changedProperties.has('activeIndex')) {
+      scrollListActiveItem(this, this.activeIndex)
+    }
   }
 
-  connectedCallback(): void {
-    this.sync()
+  render() {
+    return html`<slot></slot>`
   }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private sync(): void {
-    const maxHeight = this.getAttribute('max-height')
-    const extraClass = this.getAttribute('class') ?? ''
-    const heightClass = maxHeight ? maxHeightClasses[maxHeight] ?? '' : ''
-
-    syncHostClasses(this, 'nuxy-list', heightClass)
-  }
-}
-
-if (!customElements.get('nuxy-list')) {
-  customElements.define('nuxy-list', NuxyListElement)
 }
 
 declare global {

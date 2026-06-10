@@ -1,5 +1,29 @@
 /** Browser-side shell tool state (CE keeps tool-name node in DOM, toggles hidden). */
 
+function getShellViewShadow(): ShadowRoot | null {
+  return document.querySelector('nuxy-shell-view')?.shadowRoot ?? null
+}
+
+function getOmniBarInput(): HTMLInputElement | null {
+  return (
+    getShellViewShadow()
+      ?.querySelector('nuxy-shell-omni-bar')
+      ?.shadowRoot?.querySelector('.nuxy-shell-omni-bar__input') ?? null
+  )
+}
+
+function getOmniBarToolName(): HTMLElement | null {
+  return (
+    getShellViewShadow()
+      ?.querySelector('nuxy-shell-omni-bar')
+      ?.shadowRoot?.querySelector('.nuxy-shell-omni-bar__tool-name') ?? null
+  )
+}
+
+function getCommandPalette(): HTMLElement | null {
+  return getShellViewShadow()?.querySelector('nuxy-command-palette') ?? null
+}
+
 function toolNamePattern(name: string): RegExp {
   return new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
 }
@@ -10,7 +34,14 @@ export async function typeInOmnibar(page: any, text: string): Promise<void> {
   await input.fill(text)
   await input.dispatchEvent('input', { bubbles: true })
   await page.waitForFunction(
-    (t) => (document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement)?.value === t,
+    (t) => {
+      const view = document.querySelector('nuxy-shell-view')
+      const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
+      const inp = omni?.shadowRoot?.querySelector(
+        '.nuxy-shell-omni-bar__input'
+      ) as HTMLInputElement | null
+      return inp?.value === t
+    },
     text,
     { timeout: 2000 }
   )
@@ -32,12 +63,15 @@ export async function submitOmnibar(page: any): Promise<void> {
   await page.keyboard.press('Enter')
 }
 
-/** Shell keyboard nav listens on nuxy-shell-omni-bar; Playwright key presses on the inner input do not reach it reliably. */
 export async function pressOmnibarKey(page: any, key: string): Promise<void> {
   await page.evaluate((k) => {
-    document.querySelector('nuxy-shell-omni-bar')?.dispatchEvent(
-      new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true })
-    )
+    const view = document.querySelector('nuxy-shell-view')
+    const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
+    const input = omni?.shadowRoot?.querySelector(
+      '.nuxy-shell-omni-bar__input'
+    ) as HTMLInputElement | null
+    const target = input ?? omni
+    target?.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }))
   }, key)
 }
 
@@ -54,11 +88,16 @@ export async function resetShell(page: any) {
   })
   await page.waitForFunction(
     () => {
-      const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
-      const toolActive =
-        el !== null && !el.hidden && (el.textContent ?? '').trim().length > 0
-      const palette = document.querySelector('.nuxy-command-palette')
-      const input = document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null
+      const view = document.querySelector('nuxy-shell-view')
+      const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
+      const el = omni?.shadowRoot?.querySelector(
+        '.nuxy-shell-omni-bar__tool-name'
+      ) as HTMLElement | null
+      const toolActive = el !== null && !el.hidden && (el.textContent ?? '').trim().length > 0
+      const palette = view?.shadowRoot?.querySelector('nuxy-command-palette')
+      const input = omni?.shadowRoot?.querySelector(
+        '.nuxy-shell-omni-bar__input'
+      ) as HTMLInputElement | null
       return !toolActive && palette === null && (input?.value ?? '') === ''
     },
     undefined,
@@ -74,11 +113,28 @@ export async function clickToolOption(page: any, name: string): Promise<void> {
   await page.waitForFunction(
     (toolName) => {
       const re = new RegExp(toolName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
-      for (const section of document.querySelectorAll('.nuxy-provider-section')) {
-        const header = section.querySelector('.nuxy-provider-section__header span')?.textContent ?? ''
+      const view = document.querySelector('nuxy-shell-view')
+      const root = view?.shadowRoot
+      if (!root) {
+        console.log('E2E Debug: no nuxy-shell-view or shadowRoot found')
+        return false
+      }
+      const sections = root.querySelectorAll('.nuxy-provider-section')
+      console.log('E2E Debug: sections count =', sections.length)
+      console.log('E2E Debug: controller query =', (view as any).controller?.state?.query)
+      console.log('E2E Debug: controller savedQuery =', (view as any).controller?.state?.savedQuery)
+      for (const section of sections) {
+        console.log('E2E Debug: section HTML =', section.innerHTML)
+        const headerEl = section.querySelector('.nuxy-provider-section__header span')
+        const header = headerEl?.textContent ?? ''
+        console.log('E2E Debug: found section header =', header.trim())
         if (!/^Tools$/i.test(header.trim())) continue
-        for (const option of section.querySelectorAll('[role="option"]')) {
-          if (re.test(option.textContent ?? '')) return true
+        const options = section.querySelectorAll('[role="option"]')
+        console.log('E2E Debug: options count in Tools section =', options.length)
+        for (const option of options) {
+          const txt = option.textContent ?? ''
+          console.log('E2E Debug: option text =', txt)
+          if (re.test(txt)) return true
         }
       }
       return false
@@ -95,7 +151,17 @@ export async function clickToolOption(page: any, name: string): Promise<void> {
 export async function waitForToolMounted(page: any, timeout = 10000): Promise<void> {
   await page.waitForFunction(
     () => {
-      const el = document.querySelector('.nuxy-shell-omni-bar__tool-name') as HTMLElement | null
+      const view = document.querySelector('nuxy-shell-view')
+      const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
+      const el = omni?.shadowRoot?.querySelector(
+        '.nuxy-shell-omni-bar__tool-name'
+      ) as HTMLElement | null
+      console.log(
+        'E2E Debug: waitForToolMounted - activeTool =',
+        (view as any).controller?.state?.activeTool
+      )
+      console.log('E2E Debug: waitForToolMounted - tool-name text =', el?.textContent)
+      console.log('E2E Debug: waitForToolMounted - tool-name hidden =', el?.hidden)
       return !!el && !el.hidden && !!(el.textContent ?? '').trim()
     },
     undefined,
@@ -103,7 +169,8 @@ export async function waitForToolMounted(page: any, timeout = 10000): Promise<vo
   )
   await page.waitForFunction(
     () => {
-      const host = document.querySelector('.nuxy-shell-tool-wrapper nuxy-tool-host')
+      const view = document.querySelector('nuxy-shell-view')
+      const host = view?.shadowRoot?.querySelector('.nuxy-shell-tool-wrapper nuxy-tool-host')
       if (!host || host.classList.contains('nuxy-tool-host--loading')) return false
       if (host.childElementCount === 0) return false
       // React island tools register key actions after first paint (useEffect).
@@ -133,7 +200,11 @@ export async function openTool(page: any, name: string) {
 export async function openCommandPalette(page: any) {
   await openTool(page, 'notes')
   await page.waitForFunction(
-    () => (document.querySelector('.nuxy-shell-tool-wrapper nuxy-tool-host')?.childElementCount ?? 0) > 0,
+    () => {
+      const view = document.querySelector('nuxy-shell-view')
+      const host = view?.shadowRoot?.querySelector('.nuxy-shell-tool-wrapper nuxy-tool-host')
+      return (host?.childElementCount ?? 0) > 0
+    },
     { timeout: 5000 }
   )
   // Register multiple palette actions (save, delete, …) by creating a note first.
@@ -144,7 +215,14 @@ export async function openCommandPalette(page: any) {
   await input.waitFor({ state: 'visible', timeout: 2000 })
   await input.click()
   await page.waitForFunction(
-    () => document.activeElement?.classList.contains('nuxy-command-palette__input'),
+    () => {
+      const view = document.querySelector('nuxy-shell-view')
+      let active = view?.shadowRoot?.activeElement
+      if (active?.tagName?.toLowerCase() === 'nuxy-command-palette') {
+        active = active.shadowRoot?.activeElement
+      }
+      return active?.classList?.contains('nuxy-command-palette__input')
+    },
     { timeout: 2000 }
   )
 }

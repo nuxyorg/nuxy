@@ -1,66 +1,85 @@
-import './index.css'
+import { LitElement, html, css, customElement, property, unsafeHTML } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 const ALLOWED_TAGS = new Set(['p', 'span', 'div', 'label', 'small', 'strong', 'em'])
 
-export class NuxyTextElement extends HTMLElement {
-  private inner: HTMLElement | null = null
+@customElement('nuxy-text')
+export class NuxyTextElement extends LitElement {
+  static styles = css`
+    :host {
+      display: block;
+    }
 
-  static get observedAttributes(): string[] {
-    return ['as', 'size', 'variant', 'bold', 'mono', 'class']
-  }
+    .nuxy-text {
+      margin: 0;
+    }
+    .nuxy-text--xs {
+      font-size: var(--font-xs);
+    }
+    .nuxy-text--sm {
+      font-size: var(--font-sm);
+    }
+    .nuxy-text--md {
+      font-size: var(--font-md);
+    }
+    .nuxy-text--lg {
+      font-size: var(--font-lg);
+    }
+    .nuxy-text--xl {
+      font-size: var(--font-xl);
+    }
+    .nuxy-text--muted {
+      color: var(--syntax-comment);
+    }
+    .nuxy-text--accent {
+      color: var(--syntax-operator);
+    }
+    .nuxy-text--danger {
+      color: var(--syntax-invalid);
+    }
+    .nuxy-text--success {
+      color: var(--syntax-green);
+    }
+    .nuxy-text--bold {
+      font-weight: 600;
+    }
+    .nuxy-text--mono {
+      font-family: monospace;
+    }
+  `
+
+  @property({ type: String }) as = 'p'
+  @property({ type: String }) size = 'md'
+  @property({ type: String }) variant = 'default'
+  @property({ type: Boolean }) bold = false
+  @property({ type: Boolean }) mono = false
+
+  private _innerContent = ''
 
   connectedCallback(): void {
-    this.ensureInner()
-    this.syncClasses()
+    // Capture children before Lit renders
+    this._innerContent = this.innerHTML
+    super.connectedCallback()
   }
 
-  attributeChangedCallback(name: string): void {
-    if (name === 'as') {
-      this.ensureInner(true)
-    }
-    this.syncClasses()
-  }
-
-  private ensureInner(rebuild = false): void {
-    const as = this.getAttribute('as') ?? 'p'
-    const tag = ALLOWED_TAGS.has(as) ? as : 'p'
-
-    if (this.inner && !rebuild && this.inner.tagName.toLowerCase() === tag) return
-
-    const next = document.createElement(tag)
-    const source = this.inner ?? this
-    while (source.firstChild) {
-      next.appendChild(source.firstChild)
-    }
-    if (this.inner) {
-      this.inner.replaceWith(next)
-    } else {
-      this.replaceChildren(next)
-    }
-    this.inner = next
-  }
-
-  private syncClasses(): void {
-    this.ensureInner()
-    if (!this.inner) return
-
-    const size = this.getAttribute('size') ?? 'md'
-    const variant = this.getAttribute('variant') ?? 'default'
-    const extraClass = this.getAttribute('class') ?? ''
-
-    this.inner.className = [
+  render(): TemplateResult {
+    const tag = ALLOWED_TAGS.has(this.as) ? this.as : 'p'
+    const className = [
       'nuxy-text',
-      `nuxy-text--${size}`,
-      variant !== 'default' ? `nuxy-text--${variant}` : '',
-      this.hasAttribute('bold') ? 'nuxy-text--bold' : '',
-      this.hasAttribute('mono') ? 'nuxy-text--mono' : '',
-      extraClass,
+      `nuxy-text--${this.size}`,
+      this.variant !== 'default' ? `nuxy-text--${this.variant}` : '',
+      this.bold ? 'nuxy-text--bold' : '',
+      this.mono ? 'nuxy-text--mono' : '',
     ]
       .filter(Boolean)
       .join(' ')
+
+    return html`${unsafeHTML(`<${tag} class="${className}">${this._innerContent}</${tag}>`)}`
   }
 }
 
-if (!customElements.get('nuxy-text')) {
-  customElements.define('nuxy-text', NuxyTextElement)
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-text': NuxyTextElement
+  }
 }

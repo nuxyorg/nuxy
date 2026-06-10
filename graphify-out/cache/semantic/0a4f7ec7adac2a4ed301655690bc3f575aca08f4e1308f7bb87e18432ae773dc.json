@@ -1,0 +1,91 @@
+{
+  "nodes": [
+    {
+      "id": "docs_11_performance",
+      "label": "Performance Optimization Document",
+      "file_type": "document",
+      "source_file": "docs/11-performance.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_11_window_throttling",
+      "label": "Window Throttling (setBackgroundThrottling)",
+      "file_type": "concept",
+      "source_file": "docs/11-performance.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_11_dynamic_import_caching",
+      "label": "Dynamic Import Caching for Extension UIs",
+      "file_type": "concept",
+      "source_file": "docs/11-performance.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "docs_11_worker_parallelism",
+      "label": "Free Parallelism via Worker Threads",
+      "file_type": "rationale",
+      "source_file": "docs/11-performance.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "docs_11_performance",
+      "target": "docs_11_window_throttling",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/11-performance.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_11_performance",
+      "target": "docs_11_dynamic_import_caching",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/11-performance.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_11_performance",
+      "target": "docs_11_worker_parallelism",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/11-performance.md",
+      "source_location": null,
+      "weight": 1.0
+    },
+    {
+      "source": "docs_11_worker_parallelism",
+      "target": "docs_02_isolated_worker_threads",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/11-performance.md",
+      "source_location": null,
+      "weight": 0.95
+    }
+  ],
+  "hyperedges": []
+}

@@ -1,0 +1,92 @@
+{
+  "nodes": [
+    {
+      "id": "restructure_plan_doc",
+      "label": "Nuxy Restructure Plan",
+      "file_type": "document",
+      "source_file": "docs/restructure-plan.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": "2026-05-19",
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "restructure_plan_target_tree",
+      "label": "Target Monorepo Tree (apps/desktop + packages/*)",
+      "file_type": "concept",
+      "source_file": "docs/restructure-plan.md",
+      "source_location": "L167",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "restructure_plan_kernel_domains",
+      "label": "Kernel Domain Folder Boundaries",
+      "file_type": "concept",
+      "source_file": "docs/restructure-plan.md",
+      "source_location": "L299",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "restructure_plan_extension_workspace",
+      "label": "Extension Workspace Package Model (Phase 4)",
+      "file_type": "concept",
+      "source_file": "docs/restructure-plan.md",
+      "source_location": "L324",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "restructure_plan_phase_status",
+      "label": "Restructure Phase Completion Status (Phases 1-3 Done)",
+      "file_type": "concept",
+      "source_file": "docs/restructure-plan.md",
+      "source_location": "L409",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "restructure_plan_doc",
+      "target": "restructure_plan_target_tree",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/restructure-plan.md",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "restructure_plan_doc",
+      "target": "restructure_plan_kernel_domains",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/restructure-plan.md",
+      "source_location": "L299",
+      "weight": 1.0
+    },
+    {
+      "source": "restructure_plan_doc",
+      "target": "restructure_plan_phase_status",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/restructure-plan.md",
+      "source_location": "L409",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": []
+}

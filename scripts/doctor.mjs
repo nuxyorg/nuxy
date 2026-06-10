@@ -33,11 +33,7 @@ function listExtensions() {
 
 if (!name) {
   console.log('\n  Nuxy Doctor — Full Workspace Scan\n')
-  runDoctor([
-    'src/**/*.{ts,tsx}',
-    'extensions/**/*.{ts,tsx}',
-    'packages/ui/**/*.{ts,tsx}',
-  ])
+  runDoctor(['src/**/*.{ts,tsx}', 'extensions/**/*.{ts,tsx}', 'packages/ui/**/*.{ts,tsx}'])
 } else if (NAMED_TARGETS[name]) {
   console.log(`\n  Nuxy Doctor — ${name}\n`)
   runDoctor(NAMED_TARGETS[name])

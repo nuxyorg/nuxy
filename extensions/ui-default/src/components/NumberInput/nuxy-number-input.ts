@@ -1,5 +1,5 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 function parseNum(attr: string | null, fallback?: number): number | undefined {
   if (attr === null || attr === '') return fallback
@@ -7,54 +7,85 @@ function parseNum(attr: string | null, fallback?: number): number | undefined {
   return Number.isFinite(n) ? n : fallback
 }
 
-export class NuxyNumberInputElement extends HTMLElement {
-  private decBtn: HTMLButtonElement | null = null
-  private field: HTMLInputElement | null = null
-  private incBtn: HTMLButtonElement | null = null
+@customElement('nuxy-number-input')
+export class NuxyNumberInputElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--syntax-comment);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: transparent;
+      transition: border-color 0.15s ease;
+    }
 
-  static get observedAttributes(): string[] {
-    return ['value', 'default-value', 'min', 'max', 'step', 'disabled', 'id', 'class']
-  }
+    :host(:focus-within) {
+      border-color: var(--syntax-operator);
+    }
 
-  connectedCallback(): void {
-    this.build()
-    this.sync()
-  }
+    .nuxy-number-input__btn {
+      width: 28px;
+      height: 28px;
+      background: transparent;
+      border: none;
+      color: var(--syntax-variable);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-lg);
+      opacity: 0.6;
+      transition:
+        opacity 0.15s ease,
+        background 0.15s ease;
+      flex-shrink: 0;
+      outline: none;
+    }
 
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
+    .nuxy-number-input__btn:hover:not(:disabled) {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.05);
+    }
 
-  private build(): void {
-    if (this.field) return
+    .nuxy-number-input__btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
 
-    this.decBtn = document.createElement('button')
-    this.decBtn.type = 'button'
-    this.decBtn.className = 'nuxy-number-input__btn'
-    this.decBtn.setAttribute('aria-label', 'Decrease')
-    this.decBtn.textContent = '−'
-    this.decBtn.addEventListener('click', () => this.adjust(-this.getStep()))
+    .nuxy-number-input__field {
+      width: 60px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      color: var(--syntax-variable);
+      font-size: var(--font-md);
+      font-family: inherit;
+      outline: none;
+      padding: var(--space-1) 0;
+      -moz-appearance: textfield;
+    }
 
-    this.field = document.createElement('input')
-    this.field.type = 'number'
-    this.field.className = 'nuxy-number-input__field'
-    this.field.addEventListener('change', () => this.commitFromField())
+    .nuxy-number-input__field::-webkit-outer-spin-button,
+    .nuxy-number-input__field::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+  `
 
-    this.incBtn = document.createElement('button')
-    this.incBtn.type = 'button'
-    this.incBtn.className = 'nuxy-number-input__btn'
-    this.incBtn.setAttribute('aria-label', 'Increase')
-    this.incBtn.textContent = '+'
-    this.incBtn.addEventListener('click', () => this.adjust(this.getStep()))
+  @property({ type: Number }) min: number | undefined = undefined
+  @property({ type: Number }) max: number | undefined = undefined
+  @property({ type: Number }) step = 1
+  @property({ type: Boolean }) disabled = false
+  @property({ type: String }) id = ''
 
-    this.append(this.decBtn, this.field, this.incBtn)
-  }
+  @state() private currentValue: number | null = null
 
   private getStep(): number {
     return parseNum(this.getAttribute('step'), 1) ?? 1
   }
 
   private getCurrent(): number {
+    if (this.currentValue !== null) return this.currentValue
     if (this.hasAttribute('value')) {
       return parseNum(this.getAttribute('value'), 0) ?? 0
     }
@@ -62,64 +93,75 @@ export class NuxyNumberInputElement extends HTMLElement {
   }
 
   private clamp(value: number): number {
-    const min = parseNum(this.getAttribute('min'))
-    const max = parseNum(this.getAttribute('max'))
+    const min = this.min
+    const max = this.max
     if (min !== undefined && value < min) value = min
     if (max !== undefined && value > max) value = max
     return value
   }
 
   private adjust(delta: number): void {
-    if (this.hasAttribute('disabled')) return
+    if (this.disabled) return
     this.setValue(this.clamp(this.getCurrent() + delta))
   }
 
-  private commitFromField(): void {
-    if (this.hasAttribute('disabled') || !this.field) return
-    this.setValue(this.clamp(Number(this.field.value)))
+  private commitFromField(e: Event): void {
+    if (this.disabled) return
+    const input = e.target as HTMLInputElement
+    this.setValue(this.clamp(Number(input.value)))
   }
 
   private setValue(next: number): void {
+    this.currentValue = next
     this.setAttribute('value', String(next))
-    this.sync()
     this.dispatchEvent(
       new CustomEvent('nuxy-number-input-change', { detail: { value: next }, bubbles: true })
     )
   }
 
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-number-input')
-
+  render(): TemplateResult {
     const current = this.getCurrent()
-    const min = parseNum(this.getAttribute('min'))
-    const max = parseNum(this.getAttribute('max'))
+    const min = this.min
+    const max = this.max
     const step = this.getStep()
-    const disabled = this.hasAttribute('disabled')
-    const id = this.getAttribute('id')
+    const disabled = this.disabled
+    const inputId = this.id || undefined
 
-    if (this.field) {
-      this.field.value = String(current)
-      if (min !== undefined) this.field.min = String(min)
-      else this.field.removeAttribute('min')
-      if (max !== undefined) this.field.max = String(max)
-      else this.field.removeAttribute('max')
-      this.field.step = String(step)
-      this.field.disabled = disabled
-      if (id) this.field.id = id
-      else this.field.removeAttribute('id')
-    }
+    const decDisabled = disabled || (min !== undefined && current <= min)
+    const incDisabled = disabled || (max !== undefined && current >= max)
 
-    if (this.decBtn) {
-      this.decBtn.disabled = disabled || (min !== undefined && current <= min)
-    }
-    if (this.incBtn) {
-      this.incBtn.disabled = disabled || (max !== undefined && current >= max)
-    }
+    return html`
+      <button
+        type="button"
+        class="nuxy-number-input__btn"
+        aria-label="Decrease"
+        ?disabled=${decDisabled}
+        @click=${() => this.adjust(-step)}
+      >
+        −
+      </button>
+      <input
+        type="number"
+        class="nuxy-number-input__field"
+        .value=${String(current)}
+        min=${min !== undefined ? min : nothing}
+        max=${max !== undefined ? max : nothing}
+        step=${step}
+        ?disabled=${disabled}
+        id=${inputId ?? nothing}
+        @change=${this.commitFromField}
+      />
+      <button
+        type="button"
+        class="nuxy-number-input__btn"
+        aria-label="Increase"
+        ?disabled=${incDisabled}
+        @click=${() => this.adjust(step)}
+      >
+        +
+      </button>
+    `
   }
-}
-
-if (!customElements.get('nuxy-number-input')) {
-  customElements.define('nuxy-number-input', NuxyNumberInputElement)
 }
 
 declare global {

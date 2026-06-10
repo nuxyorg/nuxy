@@ -1,24 +1,42 @@
-import './index.css'
+import { LitElement, html, css, customElement, property } from '@nuxy/core'
 
-export class NuxyAlertElement extends HTMLElement {
-  static get observedAttributes(): string[] {
-    return ['variant']
+@customElement('nuxy-alert')
+export class NuxyAlertElement extends LitElement {
+  @property({ type: String, reflect: true }) variant = 'info'
+
+  static styles = css`
+    :host {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-top: 1px solid transparent;
+    }
+
+    :host([variant='danger']) {
+      color: var(--color-danger, #e55);
+      background: rgba(220, 50, 50, 0.08);
+      border-top-color: rgba(220, 50, 50, 0.2);
+    }
+
+    :host([variant='warning']) {
+      color: var(--color-warning, #eab308);
+      background: rgba(234, 179, 8, 0.08);
+      border-top-color: rgba(234, 179, 8, 0.2);
+    }
+
+    :host([variant='info']) {
+      color: var(--color-info, #3b82f6);
+      background: rgba(59, 130, 246, 0.08);
+      border-top-color: rgba(59, 130, 246, 0.2);
+    }
+
+    :host([variant='success']) {
+      color: var(--color-success, #22c55e);
+      background: rgba(34, 197, 94, 0.08);
+      border-top-color: rgba(34, 197, 94, 0.2);
+    }
+  `
+
+  render() {
+    return html`<slot></slot>`
   }
-
-  connectedCallback(): void {
-    this.syncClasses()
-  }
-
-  attributeChangedCallback(): void {
-    this.syncClasses()
-  }
-
-  private syncClasses(): void {
-    const variant = this.getAttribute('variant') ?? 'info'
-    this.className = ['nuxy-alert', `nuxy-alert--${variant}`].join(' ')
-  }
-}
-
-if (!customElements.get('nuxy-alert')) {
-  customElements.define('nuxy-alert', NuxyAlertElement)
 }

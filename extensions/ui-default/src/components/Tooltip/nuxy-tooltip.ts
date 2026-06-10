@@ -1,83 +1,111 @@
-import './index.css'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 const PLACEMENTS = new Set(['top', 'bottom', 'left', 'right'])
 
-export class NuxyTooltipElement extends HTMLElement {
-  private wrapper: HTMLSpanElement | null = null
-  private triggerSlot: HTMLSpanElement | null = null
-  private tooltipEl: HTMLSpanElement | null = null
+@customElement('nuxy-tooltip')
+export class NuxyTooltipElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+    }
 
-  static get observedAttributes(): string[] {
-    return ['content', 'placement', 'class']
-  }
+    .nuxy-tooltip-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .nuxy-tooltip {
+      position: absolute;
+      z-index: var(--z-popover);
+      background: var(--syntax-keyword);
+      color: var(--syntax-variable);
+      font-size: var(--font-sm);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-md);
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      max-width: 220px;
+      white-space: normal;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nuxy-tooltip--visible {
+      opacity: 1;
+    }
+
+    /* Placement */
+    .nuxy-tooltip--top {
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nuxy-tooltip--bottom {
+      top: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nuxy-tooltip--left {
+      right: calc(100% + 6px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .nuxy-tooltip--right {
+      left: calc(100% + 6px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  `
+
+  @property({ type: String }) content = ''
+  @property({ type: String }) placement = 'top'
+
+  @state() private _visible = false
+  @state() private _triggerHTML = ''
 
   connectedCallback(): void {
-    this.build()
-    this.sync()
-    this.wrapper?.addEventListener('mouseenter', this.show)
-    this.wrapper?.addEventListener('mouseleave', this.hide)
-    this.wrapper?.addEventListener('focusin', this.show)
-    this.wrapper?.addEventListener('focusout', this.hide)
-  }
-
-  disconnectedCallback(): void {
-    this.wrapper?.removeEventListener('mouseenter', this.show)
-    this.wrapper?.removeEventListener('mouseleave', this.hide)
-    this.wrapper?.removeEventListener('focusin', this.show)
-    this.wrapper?.removeEventListener('focusout', this.hide)
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
+    // Capture trigger children before Lit replaces them
+    this._triggerHTML = this.innerHTML
+    super.connectedCallback()
   }
 
   private show = (): void => {
-    this.tooltipEl?.classList.add('nuxy-tooltip--visible')
+    this._visible = true
   }
 
   private hide = (): void => {
-    this.tooltipEl?.classList.remove('nuxy-tooltip--visible')
+    this._visible = false
   }
 
-  private build(): void {
-    if (this.wrapper) return
+  render(): TemplateResult {
+    const placement = PLACEMENTS.has(this.placement) ? this.placement : 'top'
 
-    const nodes: Node[] = []
-    for (const child of this.childNodes) nodes.push(child)
-
-    this.wrapper = document.createElement('span')
-    this.wrapper.className = 'nuxy-tooltip-wrapper'
-
-    this.triggerSlot = document.createElement('span')
-    for (const node of nodes) {
-      this.triggerSlot.appendChild(node)
-    }
-
-    this.tooltipEl = document.createElement('span')
-    this.tooltipEl.role = 'tooltip'
-
-    this.wrapper.append(this.triggerSlot, this.tooltipEl)
-    this.appendChild(this.wrapper)
+    return html`
+      <span
+        class="nuxy-tooltip-wrapper"
+        @mouseenter=${this.show}
+        @mouseleave=${this.hide}
+        @focusin=${this.show}
+        @focusout=${this.hide}
+      >
+        <span .innerHTML=${this._triggerHTML}></span>
+        <span
+          role="tooltip"
+          class="nuxy-tooltip nuxy-tooltip--${placement} ${this._visible
+            ? 'nuxy-tooltip--visible'
+            : ''}"
+          >${this.content}</span
+        >
+      </span>
+    `
   }
-
-  private sync(): void {
-    const content = this.getAttribute('content') ?? ''
-    const placementRaw = this.getAttribute('placement') ?? 'top'
-    const placement = PLACEMENTS.has(placementRaw) ? placementRaw : 'top'
-    const extraClass = this.getAttribute('class') ?? ''
-
-    if (this.wrapper) {
-      this.wrapper.className = ['nuxy-tooltip-wrapper', extraClass].filter(Boolean).join(' ')
-    }
-    if (this.tooltipEl) {
-      this.tooltipEl.className = `nuxy-tooltip nuxy-tooltip--${placement}`
-      this.tooltipEl.textContent = content
-    }
-  }
-}
-
-if (!customElements.get('nuxy-tooltip')) {
-  customElements.define('nuxy-tooltip', NuxyTooltipElement)
 }
 
 declare global {

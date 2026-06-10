@@ -126,8 +126,8 @@ test.describe('shell reset', () => {
     })
     await appPage.waitForFunction(
       () =>
-        ((document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null)?.value ??
-          '') === '',
+        ((document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null)
+          ?.value ?? '') === '',
       { timeout: 2000 }
     )
     const value = await appPage.locator('.nuxy-shell-omni-bar__input').inputValue()
@@ -165,8 +165,8 @@ test.describe('shell reset', () => {
     })
     await appPage.waitForFunction(
       () =>
-        ((document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null)?.value ??
-          '') === '',
+        ((document.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null)
+          ?.value ?? '') === '',
       undefined,
       { timeout: 2000 }
     )

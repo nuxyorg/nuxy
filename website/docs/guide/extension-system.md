@@ -44,7 +44,7 @@ This design means extensions cannot directly access Node.js built-ins, Electron 
 | `provider`     | Yes          | Required       | Optional                       | Real-time data provider that reacts to omnibar input        |
 | `orchestrator` | Yes          | Required       | Optional                       | Fallback handler for unmatched Enter; typically an AI layer |
 | `helper`       | No           | Optional       | Optional, loaded early         | Background utility called by other extensions               |
-| `uikit`        | No           | No             | Yes, loaded before shell       | Extends `window.UI` with additional React components        |
+| `uikit`        | No           | No             | Yes, loaded before shell       | Extends `window.UI` with additional UI components           |
 | `theme`        | No           | No             | No                             | JSON file defining CSS custom property values               |
 | `iconpack`     | No           | No             | No                             | JSON file containing SVG icon strings                       |
 
@@ -66,7 +66,7 @@ Every extension must have a `manifest.json` in its root folder:
   },
   "entry": {
     "backend": "backend.ts",
-    "frontend": "frontend.tsx",
+    "frontend": "frontend.ts",
     "settings": "settings.json"
   },
   "locales": {
@@ -120,3 +120,10 @@ Extension assets (JavaScript, CSS, images) are served via a privileged Electron 
 4. Any path that escapes the extension folder (e.g. `../../../etc/passwd`) is rejected
 
 This means extensions can be written in TypeScript without a build step — the protocol server handles transpilation on demand.
+
+## Next steps
+
+- [Extension types reference](/extensions/overview) — tools, providers, orchestrators, helpers
+- [Built-in Extensions](/extensions/built-in) — bundled extensions in the repo
+- [Your First Extension](/extensions/first-extension) — hands-on tutorial
+- [Manifest Reference](/extensions/manifest) — `manifest.json` fields

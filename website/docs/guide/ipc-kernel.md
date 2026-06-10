@@ -4,9 +4,7 @@ title: IPC & Kernel
 
 # IPC & Kernel
 
-## The IPC Contract
-
-All communication between the renderer and extension backends goes through a single standardized IPC channel: `ext:invoke`. Every response is wrapped in a normalized `IpcResponse` object:
+All renderer ↔ backend communication goes through a single channel: `ext:invoke`. Every response is wrapped in `IpcResponse`:
 
 ```typescript
 interface IpcResponse<T = unknown> {
@@ -17,132 +15,92 @@ interface IpcResponse<T = unknown> {
 }
 ```
 
-This guarantees the frontend never crashes due to an unhandled throw in a backend handler. If the handler throws, the kernel catches it and returns `{ success: false, error: 'message', code: 'INTERNAL_ERROR' }`.
+Unhandled backend throws become `{ success: false, code: 'INTERNAL_ERROR' }` — the renderer never crashes on a bad handler.
 
-## `ext:invoke` Routing
-
-The main process registers an `ipcMain.handle('ext:invoke', ...)` handler. When the renderer calls:
+## Calling an extension
 
 ```javascript
-window.core.ipc.invoke('com.nuxy.clipboard', 'getHistory', { limit: 50 })
+const res = await window.core.ipc.invoke('com.nuxy.notes', 'listNotes', { limit: 50 })
+if (res.success) {
+  const notes = res.data
+}
 ```
 
 The main process:
 
-1. Validates the `extId` exists in the registry
-2. Validates the `channel` is in the extension's allowed channel list
-3. Routes the call to the correct worker thread via `parentPort.postMessage`
-4. Awaits the `host:reply` message
-5. Returns the result wrapped in `IpcResponse`
+1. Validates `extId` exists in the registry
+2. Validates the channel is registered by that extension
+3. Routes to the correct Worker via `parentPort`
+4. Awaits `host:reply` and returns `IpcResponse`
 
-## Kernel Built-ins
+## Kernel built-ins
 
-Some channels are handled directly in the main process without going to a worker. Use `extId: 'kernel'` (or `'core'`) to call them:
+Use `extId: 'kernel'` (or `'core'`) for main-process handlers:
 
-| Channel                    | Returns                                                                 |
-| -------------------------- | ----------------------------------------------------------------------- |
-| `listTools`                | All extensions with `type === 'tool'` (excludes `bootstrap` extensions) |
-| `listProviders`            | All extensions with `type === 'provider'`                               |
-| `listOrchestrators`        | All extensions with `type === 'orchestrator'`                           |
-| `getConfig`                | Current `NuxyConfig` (parsed `nuxyconfig`)                              |
-| `getTheme`                 | Active theme definition (CSS variable map)                              |
-| `getThemeByName`           | Theme definition for a named theme                                      |
-| `getExtensionTranslations` | Translation strings for a given extension ID                            |
+| Channel                    | Returns                               |
+| -------------------------- | ------------------------------------- |
+| `listTools`                | All `type: "tool"` extensions         |
+| `listProviders`            | All `type: "provider"` extensions     |
+| `listOrchestrators`        | All `type: "orchestrator"` extensions |
+| `getConfig`                | Parsed `nuxyconfig`                   |
+| `getTheme`                 | Active theme CSS variables            |
+| `getThemeByName`           | Named theme definition                |
+| `getExtensionTranslations` | Locale strings for an extension       |
 
 ```javascript
-// From extension frontend — call a kernel built-in
-const res = await window.core.ipc.invoke('kernel', 'listTools', undefined)
-if (res.success) {
-  const tools = res.data // ToolSchema[]
-}
+const res = await window.core.ipc.invoke('kernel', 'listTools')
 ```
 
-## Host Call Protocol (Worker ↔ Main)
+## Host call protocol (Worker ↔ main)
 
-When an extension backend calls `core.clipboard.readText()`, the CoreContext proxy in `@nuxy/extension-host` does not execute anything locally. Instead:
+When a backend calls `core.storage.read('notes.json')`, the `CoreContext` proxy serializes a `host:call` message:
 
 ```
-Extension Worker
-  core.clipboard.readText()
-    │
-    │  parentPort.postMessage({
-    │    type: 'host:call',
-    │    callId: 'uuid',
-    │    method: 'clipboard:readText',
-    │    args: []
-    │  })
-    │
-    ▼
-Main Process (host-handlers.ts)
-  Checks: extension has 'clipboard' permission?
-    │ Yes → Electron clipboard.readText()
-    │ No  → Error('PERMISSION_DENIED')
-    │
-    │  worker.postMessage({
-    │    type: 'host:reply',
-    │    callId: 'uuid',
-    │    result: 'clipboard text here'
-    │  })
-    │
-    ▼
-Extension Worker
-  Promise resolves with 'clipboard text here'
+Extension Worker                    Main Process
+  core.storage.read('notes.json')
+    │ host:call { method: 'storage:read', args: [...] }
+    ├──────────────────────────────────►  permission check
+    │                                       read file
+    │◄──────────────────────────────────  host:reply { result }
+  Promise resolves
 ```
 
-Each `host:call` is matched to its `host:reply` by a unique `callId`. The proxy awaits the reply via a `Promise` before returning to the extension handler.
+Each call is matched by a unique `callId`. No Worker has direct Electron or Node I/O access.
 
-## Message Broker (Cross-Extension Calls)
+## Cross-extension calls
 
-When an extension calls `core.extensions.invoke('com.nuxy.other', 'someChannel', payload)`, the broker in the main process mediates:
+`core.extensions.invoke(targetId, channel, payload)` routes through the message broker:
 
-1. Verify the calling extension has `capabilities.caller: true`
-2. Verify the target extension has `capabilities.callable: true`
-3. Forward the call to the target worker
-4. Return the result to the calling worker
+1. Caller must have `capabilities.caller: true`
+2. Target must have `capabilities.callable: true`
+3. Broker forwards to the target Worker and returns the result
 
-This means extensions are completely blind to each other — they communicate only through the kernel. A malicious extension cannot directly access another extension's memory or call its functions.
+Extensions cannot call each other directly — only through the kernel.
 
-## IPC Handler Registration
-
-In the backend, IPC handlers are registered during `register()`:
+## Registering handlers
 
 ```typescript
 export function register(core: CoreContext): void {
-  // Register a handler the frontend can call
-  core.ipc.handle('getHistory', async (payload: unknown): Promise<HistoryItem[]> => {
+  core.ipc.handle('listNotes', async (payload: unknown) => {
     const { limit } = payload as { limit: number }
-    return await getStoredHistory(limit)
+    return await core.storage.read(`notes-${limit}.json`)
   })
 }
 ```
 
-After `register()` completes, the worker posts a `registry:sync` message to the main process listing all registered channel names. The kernel uses this to validate future `ext:invoke` calls — any channel not in this list is rejected with `UNKNOWN_CHANNEL`.
+After `register()`, the Worker sends `registry:sync` listing all channel names. Unknown channels are rejected with `UNKNOWN_CHANNEL`.
 
-## `ipc.broadcast` (Planned)
+## Preload bridge
 
-`core.ipc.broadcast(channel, payload)` — push events from the backend to the frontend without polling. Currently a stub that logs a warning. Full implementation is planned. Use polling via `setInterval` in the frontend as a temporary workaround.
-
-## Preload Bridge
-
-The `window.core` object is injected by `src/electron/bootstrap/preload.ts` via Electron's `contextBridge`. The preload script runs in a sandboxed context with access to `ipcRenderer`. It exposes a minimal, typed API surface — raw `ipcRenderer.send` and `ipcRenderer.invoke` are never exposed.
+`window.core` is injected by `preload.ts` via `contextBridge`. Raw `ipcRenderer` is never exposed:
 
 ```typescript
-// What preload.ts exposes (simplified)
 contextBridge.exposeInMainWorld('core', {
   ipc: {
     invoke: (extId, channel, payload) =>
       ipcRenderer.invoke('ext:invoke', { extId, channel, payload }),
   },
-  window: {
-    resize: (w, h) => ipcRenderer.send('window:resize', { width: w, height: h }),
-    hide: () => ipcRenderer.send('window:hide'),
-    esc: () => ipcRenderer.send('window:esc'),
-    center: () => ipcRenderer.send('window:center'),
-    onShow: (cb) => {
-      ipcRenderer.on('window-show', cb)
-      return () => ipcRenderer.off('window-show', cb)
-    },
-  },
+  window: { resize, hide, esc, center, onShow, dragStart, dragMove, dragEnd },
   themes: { list: () => ipcRenderer.invoke('themes:list') },
   icons: {
     get: (name, pack) => ipcRenderer.invoke('icons:get', { name, pack }),
@@ -150,3 +108,9 @@ contextBridge.exposeInMainWorld('core', {
   },
 })
 ```
+
+## Next steps
+
+- [API: IPC](/api/ipc) — typed invoker patterns
+- [Extension Access](/extensions/extension-access) — permissions and capabilities
+- [Security](/guide/security) — isolation model

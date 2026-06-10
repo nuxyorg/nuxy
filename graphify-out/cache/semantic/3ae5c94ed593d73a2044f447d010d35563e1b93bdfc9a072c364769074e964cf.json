@@ -1,0 +1,220 @@
+{
+  "nodes": [
+    {
+      "id": "lit_packages_core_doc",
+      "label": "Lit Remake: Packages/Core Analysis (03-packages-core.md)",
+      "file_type": "document",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_core_ipc_no_discriminator",
+      "label": "Problem: IPC Messages Have No Discriminator Field (kind/type)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L9",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_core_host_call_timeout_missing",
+      "label": "Critical: host:call Promise Map Has No Timeout \u2014 Memory Leak",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_core_packages_ui_dead_code",
+      "label": "Problem: packages/ui Stubs Are Dead Code (window.UI Pattern Unused)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L37",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_core_sdk_proxy_generic_errors",
+      "label": "Problem: Extension-SDK CoreContext Proxy \u2014 Generic Error Messages",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L58",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_core_cross_extension_deadlock_risk",
+      "label": "Problem: core.extensions.invoke Circular Call Deadlock Risk",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L67",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_core_worker_error_silent",
+      "label": "Problem: Worker Startup Failure Logged But Not Marked Failed in Registry",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L75",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_core_ce_utils_h_helper",
+      "label": "Anti-Pattern: ce-utils.ts h() \u2014 Hand-Written JSX Alternative (to Be Removed in Rewrite)",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L86",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "lit_core_two_panel_global_dom_query",
+      "label": "Bug: two-panel-nav.ts Uses document.querySelectorAll Crossing Component Boundaries",
+      "file_type": "concept",
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L107",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "lit_packages_core_doc",
+      "target": "lit_core_ipc_no_discriminator",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_packages_core_doc",
+      "target": "lit_core_host_call_timeout_missing",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_packages_core_doc",
+      "target": "lit_core_packages_ui_dead_code",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_packages_core_doc",
+      "target": "lit_core_worker_error_silent",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_packages_core_doc",
+      "target": "lit_core_ce_utils_h_helper",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_packages_core_doc",
+      "target": "lit_core_two_panel_global_dom_query",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "lit_core_ipc_no_discriminator",
+      "target": "arch_refactor_worker_protocol_untyped",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_core_host_call_timeout_missing",
+      "target": "lit_genel_ipc_promise_no_timeout",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_core_worker_error_silent",
+      "target": "arch_refactor_extension_load_silent_fail",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": null,
+      "weight": 0.9
+    },
+    {
+      "source": "lit_core_packages_ui_dead_code",
+      "target": "lit_genel_packages_ui_dead",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/lit-remake/03-packages-core.md",
+      "source_location": null,
+      "weight": 0.9
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "ipc_timeout_memory_leak_cluster",
+      "label": "IPC/Worker Timeout & Memory Leak Cluster (No Timeout \u2192 Zombie Workers)",
+      "nodes": [
+        "lit_core_host_call_timeout_missing",
+        "lit_electron_worker_no_timeout",
+        "lit_genel_ipc_promise_no_timeout"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/lit-remake/03-packages-core.md"
+    }
+  ]
+}

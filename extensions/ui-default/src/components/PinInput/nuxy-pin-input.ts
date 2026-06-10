@@ -1,25 +1,57 @@
-import './index.css'
-import { syncHostClasses } from '../../h.ts'
+import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxy/core'
 
-export class NuxyPinInputElement extends HTMLElement {
-  private inputs: HTMLInputElement[] = []
-  private builtLength = 0
-  private sepEl: HTMLSpanElement | null = null
+@customElement('nuxy-pin-input')
+export class NuxyPinInputElement extends LitElement {
+  static styles = css`
+    :host {
+      display: inline-flex;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    .nuxy-pin-input__cell {
+      width: 44px;
+      height: 48px;
+      text-align: center;
+      font-size: var(--font-xl);
+      font-weight: 600;
+      font-family: monospace;
+      background: transparent;
+      border: 1.5px solid var(--syntax-comment);
+      border-radius: var(--radius-md);
+      color: var(--syntax-variable);
+      outline: none;
+      transition: border-color 0.15s ease;
+      caret-color: var(--syntax-operator);
+    }
+
+    .nuxy-pin-input__cell:focus {
+      border-color: var(--syntax-operator);
+    }
+
+    .nuxy-pin-input__cell--filled {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .nuxy-pin-input__cell--error {
+      border-color: var(--syntax-invalid);
+    }
+
+    .nuxy-pin-input__sep {
+      color: var(--syntax-comment);
+      font-size: var(--font-lg);
+      padding: 0 var(--space-1);
+    }
+  `
 
   static get observedAttributes(): string[] {
     return ['length', 'value', 'default-value', 'disabled', 'error', 'mask', 'class']
   }
 
-  connectedCallback(): void {
-    this.render()
-  }
-
-  attributeChangedCallback(name: string): void {
-    if (!this.isConnected) return
-    if (name === 'length') {
-      this.render()
-    } else {
-      this.sync()
+  attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
+    super.attributeChangedCallback(name, oldVal, newVal)
+    if (this.isConnected) {
+      this.requestUpdate()
     }
   }
 
@@ -36,68 +68,14 @@ export class NuxyPinInputElement extends HTMLElement {
     return this.getAttribute('default-value') ?? ''
   }
 
-  private render(): void {
-    const length = this.getLength()
-    syncHostClasses(this, 'nuxy-pin-input')
-
-    if (this.builtLength !== length) {
-      this.replaceChildren()
-      this.inputs = []
-      this.sepEl = null
-      const sepIndex = Math.floor(length / 2) - 1
-
-      for (let idx = 0; idx < length; idx++) {
-        const input = document.createElement('input')
-        input.className = 'nuxy-pin-input__cell'
-        input.inputMode = 'numeric'
-        input.pattern = '[0-9]*'
-        input.maxLength = 1
-        input.setAttribute('aria-label', `Digit ${idx + 1}`)
-        input.addEventListener('input', () => this.onCellInput(idx))
-        input.addEventListener('keydown', (e) => this.onCellKeyDown(e, idx))
-        this.inputs.push(input)
-        this.appendChild(input)
-
-        if (idx === sepIndex && length > 4) {
-          this.sepEl = document.createElement('span')
-          this.sepEl.className = 'nuxy-pin-input__sep'
-          this.sepEl.setAttribute('aria-hidden', 'true')
-          this.sepEl.textContent = '−'
-          this.appendChild(this.sepEl)
-        }
-      }
-
-      this.builtLength = length
-    }
-
-    this.sync()
+  private focusInput(idx: number): void {
+    const inputs = this.renderRoot.querySelectorAll<HTMLInputElement>('.nuxy-pin-input__cell')
+    inputs[idx]?.focus()
   }
 
-  private sync(): void {
-    const currentVal = this.getCurrent()
-    const disabled = this.hasAttribute('disabled')
-    const error = this.hasAttribute('error')
-    const mask = this.hasAttribute('mask')
-
-    for (let idx = 0; idx < this.inputs.length; idx++) {
-      const input = this.inputs[idx]
-      const val = currentVal[idx] || ''
-      input.type = mask ? 'password' : 'text'
-      input.value = val
-      input.disabled = disabled
-      input.className = [
-        'nuxy-pin-input__cell',
-        val ? 'nuxy-pin-input__cell--filled' : '',
-        error ? 'nuxy-pin-input__cell--error' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')
-    }
-  }
-
-  private onCellInput(idx: number): void {
+  private onCellInput(idx: number, e: InputEvent): void {
     if (this.hasAttribute('disabled')) return
-    const input = this.inputs[idx]
+    const input = e.target as HTMLInputElement
     const val = input?.value ?? ''
     if (!val) return
 
@@ -109,16 +87,16 @@ export class NuxyPinInputElement extends HTMLElement {
     this.commit(finalVal)
 
     if (idx < this.getLength() - 1 && char) {
-      this.inputs[idx + 1]?.focus()
+      this.focusInput(idx + 1)
     }
   }
 
-  private onCellKeyDown(e: KeyboardEvent, idx: number): void {
+  private onCellKeyDown(idx: number, e: KeyboardEvent): void {
     if (e.key !== 'Backspace' || this.hasAttribute('disabled')) return
 
     const nextVal = this.getCurrent().split('')
     if (!nextVal[idx] && idx > 0) {
-      this.inputs[idx - 1]?.focus()
+      this.focusInput(idx - 1)
       nextVal[idx - 1] = ''
     } else {
       nextVal[idx] = ''
@@ -130,7 +108,7 @@ export class NuxyPinInputElement extends HTMLElement {
 
   private commit(finalVal: string): void {
     this.setAttribute('value', finalVal)
-    this.sync()
+    this.requestUpdate()
     this.dispatchEvent(
       new CustomEvent('nuxy-pin-input-change', { detail: { value: finalVal }, bubbles: true })
     )
@@ -140,10 +118,52 @@ export class NuxyPinInputElement extends HTMLElement {
       )
     }
   }
-}
 
-if (!customElements.get('nuxy-pin-input')) {
-  customElements.define('nuxy-pin-input', NuxyPinInputElement)
+  private renderCell(idx: number, currentVal: string, length: number): TemplateResult {
+    const disabled = this.hasAttribute('disabled')
+    const error = this.hasAttribute('error')
+    const mask = this.hasAttribute('mask')
+    const val = currentVal[idx] || ''
+
+    const cellClass = [
+      'nuxy-pin-input__cell',
+      val ? 'nuxy-pin-input__cell--filled' : '',
+      error ? 'nuxy-pin-input__cell--error' : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
+
+    return html`
+      <input
+        class=${cellClass}
+        inputmode="numeric"
+        pattern="[0-9]*"
+        maxlength="1"
+        aria-label=${`Digit ${idx + 1}`}
+        type=${mask ? 'password' : 'text'}
+        .value=${val}
+        ?disabled=${disabled}
+        @input=${(e: InputEvent) => this.onCellInput(idx, e)}
+        @keydown=${(e: KeyboardEvent) => this.onCellKeyDown(idx, e)}
+      />
+    `
+  }
+
+  render(): TemplateResult {
+    const length = this.getLength()
+    const currentVal = this.getCurrent()
+    const sepIndex = Math.floor(length / 2) - 1
+
+    const cells: TemplateResult[] = []
+    for (let idx = 0; idx < length; idx++) {
+      cells.push(this.renderCell(idx, currentVal, length))
+      if (idx === sepIndex && length > 4) {
+        cells.push(html` <span class="nuxy-pin-input__sep" aria-hidden="true">−</span> `)
+      }
+    }
+
+    return html`${cells}`
+  }
 }
 
 declare global {

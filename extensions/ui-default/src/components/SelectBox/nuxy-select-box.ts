@@ -1,6 +1,14 @@
 import './index.css'
-import { syncHostClasses } from '../../h.ts'
-import { smoothScrollIntoViewIfNeeded } from '../../utils/scroll'
+import {
+  LitElement,
+  html,
+  css,
+  customElement,
+  state,
+  type PropertyValues,
+  type TemplateResult,
+} from '@nuxy/core'
+import { smoothScrollIntoViewIfNeeded } from '../../hooks/scroll-into-view'
 
 export interface SelectOption {
   value: string
@@ -23,14 +31,72 @@ function parseIndex(attr: string | null, fallback = 0): number {
   return Number.isFinite(n) ? n : fallback
 }
 
-export class NuxySelectBoxElement extends HTMLElement {
-  private triggerBtn: HTMLButtonElement | null = null
-  private valueEl: HTMLSpanElement | null = null
+function getZoom(): number {
+  const z = document.documentElement.style.zoom
+  if (!z) return 1
+  if (z.endsWith('%')) return parseFloat(z) / 100
+  return parseFloat(z) || 1
+}
+
+@customElement('nuxy-select-box')
+export class NuxySelectBoxElement extends LitElement {
+  static styles = css`
+    :host {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .nuxy-select-box__trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 0;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: inherit;
+      color: var(--syntax-keyword);
+      cursor: pointer;
+      white-space: nowrap;
+      outline: none;
+      transition: color 120ms;
+    }
+
+    .nuxy-select-box__trigger:hover,
+    .nuxy-select-box__trigger--open {
+      color: var(--syntax-variable);
+    }
+
+    .nuxy-select-box__value {
+      line-height: 1;
+    }
+
+    .nuxy-select-box__chevron {
+      opacity: 0.4;
+      font-size: 9px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition:
+        transform 150ms,
+        opacity 150ms;
+    }
+
+    .nuxy-select-box__trigger:hover .nuxy-select-box__chevron,
+    .nuxy-select-box__trigger--open .nuxy-select-box__chevron {
+      opacity: 0.7;
+    }
+
+    .nuxy-select-box__chevron--open {
+      transform: rotate(180deg);
+    }
+  `
+
+  // Body-portal dropdown elements — kept imperative
   private dropdown: HTMLDivElement | null = null
   private searchInput: HTMLInputElement | null = null
   private optionsEl: HTMLDivElement | null = null
-  private searchQuery = ''
-  private internalFocused = 0
+  @state() private searchQuery = ''
+  @state() private internalFocused = 0
   private escapeHandler: ((e: KeyboardEvent) => void) | null = null
 
   static get observedAttributes(): string[] {
@@ -38,33 +104,39 @@ export class NuxySelectBoxElement extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.build()
-    this.sync()
-    if (this.isOpen()) this.onOpen()
-    this.triggerBtn?.addEventListener('mousedown', this.onTriggerMouseDown)
-    this.triggerBtn?.addEventListener('click', this.onTriggerClick)
+    super.connectedCallback()
+    if (this.isOpen()) {
+      this.onOpenTransition()
+    }
   }
 
   disconnectedCallback(): void {
-    this.triggerBtn?.removeEventListener('mousedown', this.onTriggerMouseDown)
-    this.triggerBtn?.removeEventListener('click', this.onTriggerClick)
+    super.disconnectedCallback()
     this.removeEscapeListener()
     this.detachDropdown()
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    super.attributeChangedCallback(name, oldValue, newValue)
     if (!this.isConnected) return
     if (name === 'open') {
       const wasOpen = oldValue !== null
       const isOpen = newValue !== null
-      if (isOpen && !wasOpen) this.onOpen()
-      else if (!isOpen && wasOpen) this.onClose()
-      this.syncOpenState()
-    } else if (name === 'options' || name === 'value' || name === 'focused-index') {
-      this.syncValueLabel()
-      if (this.isOpen()) this.renderDropdown()
-    } else {
-      this.sync()
+      if (isOpen && !wasOpen) this.onOpenTransition()
+      else if (!isOpen && wasOpen) this.onCloseTransition()
+    }
+    this.requestUpdate()
+  }
+
+  updated(changed: PropertyValues): void {
+    super.updated(changed)
+    // Re-render dropdown content when relevant state/attrs change
+    if (this.isOpen()) {
+      if (!this.dropdown || !this.dropdown.isConnected) {
+        this.mountDropdown()
+      } else {
+        this.renderDropdown()
+      }
     }
   }
 
@@ -103,7 +175,10 @@ export class NuxySelectBoxElement extends HTMLElement {
     } else {
       const options = this.getOptions()
       const value = this.getValue()
-      const idx = Math.max(0, options.findIndex((o) => o.value === value))
+      const idx = Math.max(
+        0,
+        options.findIndex((o) => o.value === value)
+      )
       this.dispatchEvent(
         new CustomEvent('nuxy-select-box-open-request', {
           detail: { startIndex: idx },
@@ -114,16 +189,19 @@ export class NuxySelectBoxElement extends HTMLElement {
     }
   }
 
-  private onOpen(): void {
+  private onOpenTransition(): void {
     const options = this.getOptions()
     const value = this.getValue()
-    this.internalFocused = Math.max(0, options.findIndex((o) => o.value === value))
+    this.internalFocused = Math.max(
+      0,
+      options.findIndex((o) => o.value === value)
+    )
     this.searchQuery = ''
     this.mountDropdown()
     this.addEscapeListener()
   }
 
-  private onClose(): void {
+  private onCloseTransition(): void {
     this.removeEscapeListener()
     this.detachDropdown()
     this.searchQuery = ''
@@ -148,48 +226,7 @@ export class NuxySelectBoxElement extends HTMLElement {
     this.escapeHandler = null
   }
 
-  private build(): void {
-    if (this.triggerBtn) return
-
-    this.triggerBtn = document.createElement('button')
-    this.triggerBtn.type = 'button'
-    this.triggerBtn.tabIndex = -1
-    this.triggerBtn.className = 'nuxy-select-box__trigger'
-
-    this.valueEl = document.createElement('span')
-    this.valueEl.className = 'nuxy-select-box__value'
-
-    const chevron = document.createElement('span')
-    chevron.className = 'nuxy-select-box__chevron'
-    chevron.textContent = '▾'
-
-    this.triggerBtn.append(this.valueEl, chevron)
-    this.appendChild(this.triggerBtn)
-  }
-
-  private sync(): void {
-    syncHostClasses(this, 'nuxy-select-box')
-    this.syncValueLabel()
-    this.syncOpenState()
-    if (this.isOpen()) this.renderDropdown()
-  }
-
-  private syncValueLabel(): void {
-    const options = this.getOptions()
-    const value = this.getValue()
-    const placeholder = this.getAttribute('placeholder') ?? '—'
-    const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder
-    if (this.valueEl) this.valueEl.textContent = currentLabel
-  }
-
-  private syncOpenState(): void {
-    const open = this.isOpen()
-    if (this.triggerBtn) {
-      this.triggerBtn.classList.toggle('nuxy-select-box__trigger--open', open)
-      const chevron = this.triggerBtn.querySelector('.nuxy-select-box__chevron')
-      chevron?.classList.toggle('nuxy-select-box__chevron--open', open)
-    }
-  }
+  // --- Body-portal dropdown: fully imperative ---
 
   private mountDropdown(): void {
     const options = this.getOptions()
@@ -240,25 +277,34 @@ export class NuxySelectBoxElement extends HTMLElement {
     this.dropdown?.remove()
   }
 
+  private getTriggerButton(): HTMLButtonElement | null {
+    return this.renderRoot.querySelector<HTMLButtonElement>('.nuxy-select-box__trigger')
+  }
+
   private positionDropdown(): void {
-    if (!this.dropdown || !this.triggerBtn) return
+    const triggerBtn = this.getTriggerButton()
+    if (!this.dropdown || !triggerBtn) return
 
-    this.triggerBtn.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+    triggerBtn.scrollIntoView({ block: 'nearest', inline: 'nearest' })
 
-    const r = this.triggerBtn.getBoundingClientRect()
+    const zoom = getZoom()
+    const r = triggerBtn.getBoundingClientRect()
     const w = this.dropdown.offsetWidth || 160
     const h = this.dropdown.offsetHeight || 200
     const gap = 4
     const margin = 8
 
+    const viewportHeight = window.innerHeight / zoom
+    const viewportWidth = window.innerWidth / zoom
+
     let top = r.bottom + gap
-    if (top + h > window.innerHeight - margin && r.top - gap - h >= margin) {
+    if (top + h > viewportHeight - margin && r.top - gap - h >= margin) {
       top = r.top - gap - h
     }
-    top = Math.max(margin, Math.min(top, window.innerHeight - h - margin))
+    top = Math.max(margin, Math.min(top, viewportHeight - h - margin))
 
     let left = r.right - w
-    left = Math.max(margin, Math.min(left, window.innerWidth - w - margin))
+    left = Math.max(margin, Math.min(left, viewportWidth - w - margin))
 
     this.dropdown.style.position = 'fixed'
     this.dropdown.style.top = `${top}px`
@@ -377,10 +423,36 @@ export class NuxySelectBoxElement extends HTMLElement {
 
     this.positionDropdown()
   }
-}
 
-if (!customElements.get('nuxy-select-box')) {
-  customElements.define('nuxy-select-box', NuxySelectBoxElement)
+  // --- Lit render: trigger button only ---
+
+  render(): TemplateResult {
+    const options = this.getOptions()
+    const value = this.getValue()
+    const placeholder = this.getAttribute('placeholder') ?? '—'
+    const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder
+    const open = this.isOpen()
+
+    return html`
+      <button
+        type="button"
+        tabindex="-1"
+        class=${['nuxy-select-box__trigger', open ? 'nuxy-select-box__trigger--open' : '']
+          .filter(Boolean)
+          .join(' ')}
+        @mousedown=${this.onTriggerMouseDown}
+        @click=${this.onTriggerClick}
+      >
+        <span class="nuxy-select-box__value">${currentLabel}</span>
+        <span
+          class=${['nuxy-select-box__chevron', open ? 'nuxy-select-box__chevron--open' : '']
+            .filter(Boolean)
+            .join(' ')}
+          >▾</span
+        >
+      </button>
+    `
+  }
 }
 
 declare global {

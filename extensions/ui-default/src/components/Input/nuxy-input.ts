@@ -1,4 +1,5 @@
-import './index.css'
+import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxy/core'
+import type { TemplateResult } from '@nuxy/core'
 
 const MIRROR_ATTRS = [
   'type',
@@ -21,53 +22,98 @@ const MIRROR_ATTRS = [
   'tabindex',
 ]
 
-export class NuxyInputElement extends HTMLElement {
-  private input: HTMLInputElement | null = null
-
-  static get observedAttributes(): string[] {
-    return ['class', ...MIRROR_ATTRS]
-  }
-
-  connectedCallback(): void {
-    this.style.display = 'contents'
-    this.ensureInput()
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    this.sync()
-  }
-
-  private ensureInput(): void {
-    if (this.input?.isConnected) return
-    this.input = document.createElement('input')
-    this.input.className = 'nuxy-input'
-    this.appendChild(this.input)
-  }
-
-  private sync(): void {
-    this.ensureInput()
-    const input = this.input!
-    const extraClass = this.getAttribute('class')
-    input.className = ['nuxy-input', extraClass ?? ''].filter(Boolean).join(' ')
-
-    for (const attr of MIRROR_ATTRS) {
-      if (this.hasAttribute(attr)) {
-        input.setAttribute(attr, this.getAttribute(attr) ?? '')
-      } else {
-        input.removeAttribute(attr)
-      }
+@customElement('nuxy-input')
+export class NuxyInputElement extends LitElement {
+  static styles = css`
+    :host {
+      display: contents;
     }
+
+    input {
+      display: flex;
+      height: 36px;
+      width: 100%;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--syntax-comment);
+      background: transparent;
+      padding: var(--space-1) var(--space-4);
+      font-size: var(--font-md);
+      color: var(--syntax-variable);
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      transition:
+        border-color 150ms,
+        box-shadow 150ms;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    input::placeholder {
+      color: color-mix(in srgb, var(--syntax-keyword) 60%, transparent);
+    }
+
+    input:focus-visible {
+      box-shadow: 0 0 0 1px var(--syntax-operator);
+    }
+
+    input:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  `
+
+  @property({ type: String }) type = ''
+  @property({ type: String }) name = ''
+  @property({ type: String }) value = ''
+  @property({ type: String }) placeholder = ''
+  @property({ type: Boolean }) disabled = false
+  @property({ type: Boolean }) readonly = false
+  @property({ type: Boolean }) required = false
+  @property({ type: String }) autocomplete = ''
+  @property({ type: Boolean }) autofocus = false
+  @property({ type: String }) min = ''
+  @property({ type: String }) max = ''
+  @property({ type: String }) step = ''
+  @property({ type: String }) pattern = ''
+  @property({ type: String }) inputmode = ''
+  @property({ type: String }) id = ''
+  @property({ attribute: 'aria-label', type: String }) ariaLabel = ''
+  @property({ attribute: 'aria-invalid', type: String }) ariaInvalid = ''
+  @property({ type: String }) tabindex = ''
+
+  private _inputRef: HTMLInputElement | null = null
+
+  private onInputRef = (el: Element | undefined): void => {
+    this._inputRef = (el as HTMLInputElement | null | undefined) ?? null
   }
 
-  /** Used by React ref forwarding */
   get nativeInput(): HTMLInputElement | null {
-    return this.input
+    return this._inputRef
   }
-}
 
-if (!customElements.get('nuxy-input')) {
-  customElements.define('nuxy-input', NuxyInputElement)
+  render(): TemplateResult {
+    return html`
+      <input
+        type=${this.type || nothing}
+        name=${this.name || nothing}
+        placeholder=${this.placeholder || nothing}
+        ?disabled=${this.disabled || this.hasAttribute('disabled')}
+        ?readonly=${this.readonly || this.hasAttribute('readonly')}
+        ?required=${this.required || this.hasAttribute('required')}
+        autocomplete=${this.autocomplete || nothing}
+        ?autofocus=${this.autofocus}
+        min=${this.min || nothing}
+        max=${this.max || nothing}
+        step=${this.step || nothing}
+        pattern=${this.pattern || nothing}
+        inputmode=${this.inputmode || nothing}
+        id=${this.id || nothing}
+        aria-label=${this.ariaLabel || nothing}
+        aria-invalid=${this.ariaInvalid || nothing}
+        tabindex=${this.tabindex || nothing}
+        ${ref(this.onInputRef)}
+      />
+    `
+  }
 }
 
 declare global {

@@ -4,25 +4,40 @@
     "ast_hash": "8f628e0b965277e19f6024946af0b80b",
     "semantic_hash": "8f628e0b965277e19f6024946af0b80b"
   },
+  "/home/xava/Documents/nuxy/eslint.config.js": {
+    "mtime": 1780945201.0092835,
+    "ast_hash": "b7461e9b9f99315894ebadf585ddf53e",
+    "semantic_hash": "b7461e9b9f99315894ebadf585ddf53e"
+  },
+  "/home/xava/Documents/nuxy/.fallowrc.json": {
+    "mtime": 1780945100.8660579,
+    "ast_hash": "fc4eb5d9c843a8d2b70e2489c38a352a",
+    "semantic_hash": "fc4eb5d9c843a8d2b70e2489c38a352a"
+  },
+  "/home/xava/Documents/nuxy/knip.json": {
+    "mtime": 1780573153.7508163,
+    "ast_hash": "d63ccc0f386c506b0ecf637c05a06f3d",
+    "semantic_hash": "d63ccc0f386c506b0ecf637c05a06f3d"
+  },
   "/home/xava/Documents/nuxy/scratch.js": {
     "mtime": 1780094051.5603917,
     "ast_hash": "1cd7a330bbb1bb6ccf3bce04a769a8a5",
     "semantic_hash": "1cd7a330bbb1bb6ccf3bce04a769a8a5"
   },
   "/home/xava/Documents/nuxy/tsconfig.json": {
-    "mtime": 1779834427.6339076,
-    "ast_hash": "c1b2212096a25e2685f1776a8758a8f9",
-    "semantic_hash": "c1b2212096a25e2685f1776a8758a8f9"
+    "mtime": 1780944856.50496,
+    "ast_hash": "ad15edcb5ecfa5a82806deb5e33656f9",
+    "semantic_hash": "ad15edcb5ecfa5a82806deb5e33656f9"
   },
   "/home/xava/Documents/nuxy/package.json": {
-    "mtime": 1780220049.0471625,
-    "ast_hash": "bd9bdb4d63e417483349855ac012a3cf",
-    "semantic_hash": "bd9bdb4d63e417483349855ac012a3cf"
+    "mtime": 1780955878.984641,
+    "ast_hash": "21bd0885d175148a87dd1f61e60a6c61",
+    "semantic_hash": "21bd0885d175148a87dd1f61e60a6c61"
   },
   "/home/xava/Documents/nuxy/.claude/settings.json": {
-    "mtime": 1779381828.821482,
-    "ast_hash": "607b6329b68a98c4f99e8d7c1d9f93c4",
-    "semantic_hash": "607b6329b68a98c4f99e8d7c1d9f93c4"
+    "mtime": 1780354719.4368913,
+    "ast_hash": "53c10d090367d14ee35a8138bac8087b",
+    "semantic_hash": "53c10d090367d14ee35a8138bac8087b"
   },
   "/home/xava/Documents/nuxy/.claude/settings.local.json": {
     "mtime": 1779396641.2408216,
@@ -35,19 +50,19 @@
     "semantic_hash": "10f00d2bfc2e81cdc485ea5d673ef6d2"
   },
   "/home/xava/Documents/nuxy/src/tsconfig.json": {
-    "mtime": 1779197400.9816456,
-    "ast_hash": "bd310450cd511c4a68aac511babc0a96",
-    "semantic_hash": "bd310450cd511c4a68aac511babc0a96"
+    "mtime": 1780945467.273904,
+    "ast_hash": "1f02209d2e6e220ee4463d734e59dbf7",
+    "semantic_hash": "1f02209d2e6e220ee4463d734e59dbf7"
   },
   "/home/xava/Documents/nuxy/src/vite.config.ts": {
-    "mtime": 1780220981.3055592,
-    "ast_hash": "cf32833c757def5679f139f063d437bb",
-    "semantic_hash": "cf32833c757def5679f139f063d437bb"
+    "mtime": 1780929160.5585458,
+    "ast_hash": "22d503c3508356ae35ec0bbd7a0fbe76",
+    "semantic_hash": "22d503c3508356ae35ec0bbd7a0fbe76"
   },
   "/home/xava/Documents/nuxy/src/playwright.config.ts": {
-    "mtime": 1780245972.015116,
-    "ast_hash": "5d07ca6294905157cc68e1b63a68cd11",
-    "semantic_hash": "5d07ca6294905157cc68e1b63a68cd11"
+    "mtime": 1780927113.9959438,
+    "ast_hash": "d4c1a0b046bc8c2c0b9b8562b5f96ec8",
+    "semantic_hash": "d4c1a0b046bc8c2c0b9b8562b5f96ec8"
   },
   "/home/xava/Documents/nuxy/src/verify-ext-settings.mjs": {
     "mtime": 1780154803.0354426,
@@ -60,44 +75,69 @@
     "semantic_hash": "1f0bd312727b98611d72ee388fe59443"
   },
   "/home/xava/Documents/nuxy/src/package.json": {
-    "mtime": 1780220050.9956002,
-    "ast_hash": "d8e79c3cf207a8680f6a3668ae3cab22",
-    "semantic_hash": "d8e79c3cf207a8680f6a3668ae3cab22"
+    "mtime": 1780944842.88467,
+    "ast_hash": "183d64a35631d6eaa476b9789f30e926",
+    "semantic_hash": "183d64a35631d6eaa476b9789f30e926"
   },
   "/home/xava/Documents/nuxy/src/e2e/unix-socket.spec.ts": {
-    "mtime": 1779568685.7422016,
-    "ast_hash": "d3bfce19965e82b3400f0d12ed18c5df",
-    "semantic_hash": "d3bfce19965e82b3400f0d12ed18c5df"
+    "mtime": 1780860671.7006497,
+    "ast_hash": "78e5cf598ffa6b968e2cdc8b60304963",
+    "semantic_hash": "78e5cf598ffa6b968e2cdc8b60304963"
   },
   "/home/xava/Documents/nuxy/src/e2e/media-bootstrap.spec.ts": {
-    "mtime": 1780094051.6123104,
-    "ast_hash": "a4ab10739a1436cfaa41c0af8175193a",
-    "semantic_hash": "a4ab10739a1436cfaa41c0af8175193a"
+    "mtime": 1780860671.6996498,
+    "ast_hash": "278e2442105e3b5abe7776c91efc9fef",
+    "semantic_hash": "278e2442105e3b5abe7776c91efc9fef"
   },
   "/home/xava/Documents/nuxy/src/e2e/extensions-integration.spec.ts": {
-    "mtime": 1779568685.7422016,
-    "ast_hash": "8f091dbb4ced1a9cca588216e15f7092",
-    "semantic_hash": "8f091dbb4ced1a9cca588216e15f7092"
+    "mtime": 1780929157.7145383,
+    "ast_hash": "45e76b1528e9432206fe94ed0aa3a89f",
+    "semantic_hash": "45e76b1528e9432206fe94ed0aa3a89f"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/shell-interaction.spec.ts": {
+    "mtime": 1780929345.2873304,
+    "ast_hash": "fed274c46b1fd1e18b107ac3a9edc57b",
+    "semantic_hash": "fed274c46b1fd1e18b107ac3a9edc57b"
   },
   "/home/xava/Documents/nuxy/src/e2e/kernel-channels.spec.ts": {
-    "mtime": 1779351886.6803863,
-    "ast_hash": "79943dbcc190e07866c9af94e195c562",
-    "semantic_hash": "79943dbcc190e07866c9af94e195c562"
+    "mtime": 1780927904.8608847,
+    "ast_hash": "b6653019274e3e64dff9764e4c4de41b",
+    "semantic_hash": "b6653019274e3e64dff9764e4c4de41b"
   },
   "/home/xava/Documents/nuxy/src/e2e/kernel.spec.ts": {
-    "mtime": 1780094051.6043105,
-    "ast_hash": "4f4e1c04a336e7675d9d1544658f9d58",
-    "semantic_hash": "4f4e1c04a336e7675d9d1544658f9d58"
+    "mtime": 1780927904.3348083,
+    "ast_hash": "06e2bc228537fbdcba849811b697e55c",
+    "semantic_hash": "06e2bc228537fbdcba849811b697e55c"
   },
   "/home/xava/Documents/nuxy/src/e2e/fixtures.ts": {
-    "mtime": 1780246487.692214,
-    "ast_hash": "2081ee418757f08a3d844e6d3fa2bebc",
-    "semantic_hash": "2081ee418757f08a3d844e6d3fa2bebc"
+    "mtime": 1780927899.4529543,
+    "ast_hash": "ac4422ec3d4549738fd418a426ebc107",
+    "semantic_hash": "ac4422ec3d4549738fd418a426ebc107"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/electron-require.ts": {
+    "mtime": 1780927903.9695292,
+    "ast_hash": "5040dec786cf2719e4d01265aa4b47dc",
+    "semantic_hash": "5040dec786cf2719e4d01265aa4b47dc"
   },
   "/home/xava/Documents/nuxy/src/e2e/ipc-bridge.spec.ts": {
-    "mtime": 1779495166.4597454,
-    "ast_hash": "d15aef777bb7b3cb252a457bca405ffe",
-    "semantic_hash": "d15aef777bb7b3cb252a457bca405ffe"
+    "mtime": 1780913833.1215637,
+    "ast_hash": "857cf8be2e1eaa50bd1dc066da62ce50",
+    "semantic_hash": "857cf8be2e1eaa50bd1dc066da62ce50"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/extension-resilience.spec.ts": {
+    "mtime": 1780573154.4670064,
+    "ast_hash": "c725c04680abdf6b7a2fe6c7ebb773c2",
+    "semantic_hash": "c725c04680abdf6b7a2fe6c7ebb773c2"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/theme-switching.spec.ts": {
+    "mtime": 1780396856.6682093,
+    "ast_hash": "27ea7569b908ca4a0c4976e23df151d1",
+    "semantic_hash": "27ea7569b908ca4a0c4976e23df151d1"
+  },
+  "/home/xava/Documents/nuxy/src/e2e/screenshot.js": {
+    "mtime": 1780955878.9856412,
+    "ast_hash": "87b8f48b9c303bc55f54f1dd0963ceec",
+    "semantic_hash": "87b8f48b9c303bc55f54f1dd0963ceec"
   },
   "/home/xava/Documents/nuxy/src/e2e/theme-zoom.spec.ts": {
     "mtime": 1779561914.9988995,
@@ -109,25 +149,30 @@
     "ast_hash": "c04607f6cf30a5d0a9b29fc3d022211a",
     "semantic_hash": "c04607f6cf30a5d0a9b29fc3d022211a"
   },
+  "/home/xava/Documents/nuxy/src/e2e/package.json": {
+    "mtime": 1780927897.6336482,
+    "ast_hash": "d0707362e90f00edd12435e9d3b9d71c",
+    "semantic_hash": "d0707362e90f00edd12435e9d3b9d71c"
+  },
   "/home/xava/Documents/nuxy/src/e2e/run-cached.js": {
-    "mtime": 1780154802.8163018,
-    "ast_hash": "5e9c773c3eea7c71e53df0ecc0bc7ddc",
-    "semantic_hash": "5e9c773c3eea7c71e53df0ecc0bc7ddc"
+    "mtime": 1780927916.8678546,
+    "ast_hash": "3ab0289a744fce1545cbc6adda30c537",
+    "semantic_hash": "3ab0289a744fce1545cbc6adda30c537"
   },
-  "/home/xava/Documents/nuxy/src/renderer/App.tsx": {
-    "mtime": 1780241690.040124,
-    "ast_hash": "baf404abbc29f895b32310aa0e10e12e",
-    "semantic_hash": "baf404abbc29f895b32310aa0e10e12e"
-  },
-  "/home/xava/Documents/nuxy/src/renderer/main.tsx": {
-    "mtime": 1780073741.3836508,
-    "ast_hash": "3aa9aee81ce150ed603f71a45d0f3653",
-    "semantic_hash": "3aa9aee81ce150ed603f71a45d0f3653"
+  "/home/xava/Documents/nuxy/src/renderer/main.ts": {
+    "mtime": 1780945497.7780535,
+    "ast_hash": "00870b96e0e67ac0afb6abfe83e906fc",
+    "semantic_hash": "00870b96e0e67ac0afb6abfe83e906fc"
   },
   "/home/xava/Documents/nuxy/src/renderer/env.d.ts": {
-    "mtime": 1779200586.3986633,
-    "ast_hash": "2a44023c07d77b2710f2b271c93388e9",
-    "semantic_hash": "2a44023c07d77b2710f2b271c93388e9"
+    "mtime": 1780923084.6696215,
+    "ast_hash": "0629750d4473c9b56b5a78db53fc9af1",
+    "semantic_hash": "0629750d4473c9b56b5a78db53fc9af1"
+  },
+  "/home/xava/Documents/nuxy/src/renderer/bootstrap.ts": {
+    "mtime": 1780921160.9306116,
+    "ast_hash": "e887e39ff4caddacec90cf5b513999ca",
+    "semantic_hash": "e887e39ff4caddacec90cf5b513999ca"
   },
   "/home/xava/Documents/nuxy/src/electron/icons/registry.test.ts": {
     "mtime": 1779494428.6979158,
@@ -140,19 +185,19 @@
     "semantic_hash": "fe99dff3a5b678ffe989291a8da36d36"
   },
   "/home/xava/Documents/nuxy/src/electron/security/sign-tool.ts": {
-    "mtime": 1780220973.5115483,
+    "mtime": 1780790990.1560745,
     "ast_hash": "a54308cdf80eeed6d684268454c4f1f6",
     "semantic_hash": "a54308cdf80eeed6d684268454c4f1f6"
   },
   "/home/xava/Documents/nuxy/src/electron/security/security.ts": {
-    "mtime": 1780220993.7695775,
-    "ast_hash": "b3bdcc12a23c34844d5ff972ae827e93",
-    "semantic_hash": "b3bdcc12a23c34844d5ff972ae827e93"
+    "mtime": 1780684436.9683216,
+    "ast_hash": "189e3fad5ead36d92c15478aff2531d1",
+    "semantic_hash": "189e3fad5ead36d92c15478aff2531d1"
   },
   "/home/xava/Documents/nuxy/src/electron/security/security.test.ts": {
-    "mtime": 1780221065.815702,
-    "ast_hash": "ab16e245b23f09b3284af8404abfeef7",
-    "semantic_hash": "ab16e245b23f09b3284af8404abfeef7"
+    "mtime": 1780573154.8093266,
+    "ast_hash": "55a34009ee08ca0da02697adabb77bfe",
+    "semantic_hash": "55a34009ee08ca0da02697adabb77bfe"
   },
   "/home/xava/Documents/nuxy/src/electron/dev/extensions.test.ts": {
     "mtime": 1779351886.7143862,
@@ -160,9 +205,9 @@
     "semantic_hash": "7d83d4074a40025dcab9fd71a0733132"
   },
   "/home/xava/Documents/nuxy/src/electron/dev/extensions.ts": {
-    "mtime": 1779351886.722896,
-    "ast_hash": "68791a3db63366f2829d0399f6cfe94b",
-    "semantic_hash": "68791a3db63366f2829d0399f6cfe94b"
+    "mtime": 1780924235.401734,
+    "ast_hash": "5a711ee007558f32666a38d186dd50aa",
+    "semantic_hash": "5a711ee007558f32666a38d186dd50aa"
   },
   "/home/xava/Documents/nuxy/src/electron/dev/globals.d.ts": {
     "mtime": 1779138733.8002703,
@@ -190,9 +235,9 @@
     "semantic_hash": "1aac26155e390a4d9edcad41b4357fce"
   },
   "/home/xava/Documents/nuxy/src/electron/themes/defaults.ts": {
-    "mtime": 1780220267.2914426,
-    "ast_hash": "f74e63e2b18203e9a100e922aaefe359",
-    "semantic_hash": "f74e63e2b18203e9a100e922aaefe359"
+    "mtime": 1780573154.8780043,
+    "ast_hash": "978304f6b98b7ce01a5b7d3f39062fad",
+    "semantic_hash": "978304f6b98b7ce01a5b7d3f39062fad"
   },
   "/home/xava/Documents/nuxy/src/electron/window/spring.test.ts": {
     "mtime": 1779493906.4143746,
@@ -205,54 +250,109 @@
     "semantic_hash": "0b6322b23870d2f37ccfd5c4081ffdc1"
   },
   "/home/xava/Documents/nuxy/src/electron/window/manager.ts": {
-    "mtime": 1780241734.065183,
-    "ast_hash": "2472db4abdd8d2c92fd9fb947d3aa620",
-    "semantic_hash": "2472db4abdd8d2c92fd9fb947d3aa620"
+    "mtime": 1780860671.70165,
+    "ast_hash": "1d5318582f9acc2507de4cf97967dd03",
+    "semantic_hash": "1d5318582f9acc2507de4cf97967dd03"
   },
   "/home/xava/Documents/nuxy/src/electron/window/spring.ts": {
-    "mtime": 1779207672.094484,
-    "ast_hash": "e9e4ce6ce91178cd494535926fc6ae6e",
-    "semantic_hash": "e9e4ce6ce91178cd494535926fc6ae6e"
+    "mtime": 1780684436.9743216,
+    "ast_hash": "09e17e2587b3f068beef6b6d8e52c082",
+    "semantic_hash": "09e17e2587b3f068beef6b6d8e52c082"
   },
   "/home/xava/Documents/nuxy/src/electron/window/manager.test.ts": {
-    "mtime": 1780241722.079167,
-    "ast_hash": "8b5b9ffaaf06f1a1891a64e90d4ccff9",
-    "semantic_hash": "8b5b9ffaaf06f1a1891a64e90d4ccff9"
+    "mtime": 1780573154.8900042,
+    "ast_hash": "0db47516e704db1522cfc4b90b426926",
+    "semantic_hash": "0db47516e704db1522cfc4b90b426926"
   },
   "/home/xava/Documents/nuxy/src/electron/spawn/active-workers.ts": {
-    "mtime": 1779197400.9816456,
-    "ast_hash": "999e04502e778689c8afc4a4d3214022",
-    "semantic_hash": "999e04502e778689c8afc4a4d3214022"
+    "mtime": 1780871392.1533227,
+    "ast_hash": "f6a4fc191b09798bd812f755508d4616",
+    "semantic_hash": "f6a4fc191b09798bd812f755508d4616"
+  },
+  "/home/xava/Documents/nuxy/src/electron/spawn/active-workers.test.ts": {
+    "mtime": 1780395818.1654387,
+    "ast_hash": "ec9c3628a3e8bcde258171227233e1ef",
+    "semantic_hash": "ec9c3628a3e8bcde258171227233e1ef"
   },
   "/home/xava/Documents/nuxy/src/electron/spawn/spawn.ts": {
-    "mtime": 1780243732.895573,
-    "ast_hash": "ad4e477ce4d55131b7bfc0b675369d96",
-    "semantic_hash": "ad4e477ce4d55131b7bfc0b675369d96"
+    "mtime": 1780924231.3577316,
+    "ast_hash": "63ff682a7db1e1151cdf5cfa729800f1",
+    "semantic_hash": "63ff682a7db1e1151cdf5cfa729800f1"
   },
   "/home/xava/Documents/nuxy/src/electron/spawn/migrate-data.ts": {
     "mtime": 1779351886.8163855,
     "ast_hash": "ec4075723dc0e74c8acca476001a3b20",
     "semantic_hash": "ec4075723dc0e74c8acca476001a3b20"
   },
+  "/home/xava/Documents/nuxy/src/electron/spawn/spawn.test.ts": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "9c423538f877a734ffd57139ab15371f",
+    "semantic_hash": "9c423538f877a734ffd57139ab15371f"
+  },
   "/home/xava/Documents/nuxy/src/electron/spawn/host-handlers.ts": {
-    "mtime": 1780221036.1646469,
-    "ast_hash": "736608c8c385513c68ff3d8cf85d322e",
-    "semantic_hash": "736608c8c385513c68ff3d8cf85d322e"
+    "mtime": 1780423187.1635613,
+    "ast_hash": "87fbe80c2b2d16819ffbd2d5473f3bbf",
+    "semantic_hash": "87fbe80c2b2d16819ffbd2d5473f3bbf"
+  },
+  "/home/xava/Documents/nuxy/src/electron/spawn/host-handlers.test.ts": {
+    "mtime": 1780573154.8443065,
+    "ast_hash": "5b74bc3c4ed495d0538788444b059fd3",
+    "semantic_hash": "5b74bc3c4ed495d0538788444b059fd3"
+  },
+  "/home/xava/Documents/nuxy/src/electron/spawn/migrate-data.test.ts": {
+    "mtime": 1780395818.1663413,
+    "ast_hash": "186f1efa66ca827165d79a2fa91aa2ff",
+    "semantic_hash": "186f1efa66ca827165d79a2fa91aa2ff"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/preload.test.ts": {
+    "mtime": 1780914650.7078998,
+    "ast_hash": "43956dcc40ef10526cfcfc2b125063f9",
+    "semantic_hash": "43956dcc40ef10526cfcfc2b125063f9"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/shell-bridge.ts": {
+    "mtime": 1780914064.522836,
+    "ast_hash": "c85b1edf6d1b5aba59873d1a2a16fd43",
+    "semantic_hash": "c85b1edf6d1b5aba59873d1a2a16fd43"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/composition-bridge.test.ts": {
+    "mtime": 1780913833.1215637,
+    "ast_hash": "ea7197ed1ccd7fcc3546b1dc4fb5e043",
+    "semantic_hash": "ea7197ed1ccd7fcc3546b1dc4fb5e043"
   },
   "/home/xava/Documents/nuxy/src/electron/bootstrap/main.ts": {
-    "mtime": 1780246648.5035653,
-    "ast_hash": "8214f5f0ea15c29308890a821dffb2ae",
-    "semantic_hash": "8214f5f0ea15c29308890a821dffb2ae"
+    "mtime": 1780924573.7222345,
+    "ast_hash": "63e3586ee5708c7c430868dff79cf634",
+    "semantic_hash": "63e3586ee5708c7c430868dff79cf634"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/events-bridge.test.ts": {
+    "mtime": 1780914600.8393292,
+    "ast_hash": "11a941f8934fbe5a260716a27f9d6b3e",
+    "semantic_hash": "11a941f8934fbe5a260716a27f9d6b3e"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/composition-bridge.ts": {
+    "mtime": 1780913833.1215637,
+    "ast_hash": "bda8d71ac80ae077e7a75ab0929ba2a4",
+    "semantic_hash": "bda8d71ac80ae077e7a75ab0929ba2a4"
   },
   "/home/xava/Documents/nuxy/src/electron/bootstrap/preload.ts": {
-    "mtime": 1780241679.3151095,
-    "ast_hash": "f0a50ce7423fc4119502974530528999",
-    "semantic_hash": "f0a50ce7423fc4119502974530528999"
+    "mtime": 1780914601.497351,
+    "ast_hash": "2de2db742826e94deb98a8d31d8a405e",
+    "semantic_hash": "2de2db742826e94deb98a8d31d8a405e"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/events-bridge.ts": {
+    "mtime": 1780914598.4302497,
+    "ast_hash": "5b65bc5c8f1076caf6d979645186de5d",
+    "semantic_hash": "5b65bc5c8f1076caf6d979645186de5d"
+  },
+  "/home/xava/Documents/nuxy/src/electron/bootstrap/shell-bridge.test.ts": {
+    "mtime": 1780914071.8091335,
+    "ast_hash": "18e46af64d57c4df0fdcf93f994bf526",
+    "semantic_hash": "18e46af64d57c4df0fdcf93f994bf526"
   },
   "/home/xava/Documents/nuxy/src/electron/protocol/register.ts": {
-    "mtime": 1780243538.0530202,
-    "ast_hash": "9144233d32a186cd6f0489c544562667",
-    "semantic_hash": "9144233d32a186cd6f0489c544562667"
+    "mtime": 1780955878.9856412,
+    "ast_hash": "3bc869cf187066a2a193a604bf7d20d7",
+    "semantic_hash": "3bc869cf187066a2a193a604bf7d20d7"
   },
   "/home/xava/Documents/nuxy/src/electron/protocol/resolve.test.ts": {
     "mtime": 1779351886.8053856,
@@ -260,9 +360,9 @@
     "semantic_hash": "ae73321f40047f01ccb2673c9539a345"
   },
   "/home/xava/Documents/nuxy/src/electron/protocol/resolve.ts": {
-    "mtime": 1780219516.0216434,
-    "ast_hash": "cdfb8fe2d52db5d389868363d085774a",
-    "semantic_hash": "cdfb8fe2d52db5d389868363d085774a"
+    "mtime": 1780860671.70165,
+    "ast_hash": "344ee7ddf771295f544e809e52aace9f",
+    "semantic_hash": "344ee7ddf771295f544e809e52aace9f"
   },
   "/home/xava/Documents/nuxy/src/electron/config/storage-path.ts": {
     "mtime": 1779197400.9816456,
@@ -275,19 +375,19 @@
     "semantic_hash": "377495941516fb26a4f0d483855e9f84"
   },
   "/home/xava/Documents/nuxy/src/electron/config/permissions.ts": {
-    "mtime": 1780256664.864009,
-    "ast_hash": "ca5e822cfd266851d0f430e914d7c4e0",
-    "semantic_hash": "ca5e822cfd266851d0f430e914d7c4e0"
+    "mtime": 1780258538.9218442,
+    "ast_hash": "f20bf654b4a5e0cc2e20bd9915649c9a",
+    "semantic_hash": "f20bf654b4a5e0cc2e20bd9915649c9a"
   },
   "/home/xava/Documents/nuxy/src/electron/config/nuxyconfig.test.ts": {
-    "mtime": 1780222101.0991614,
-    "ast_hash": "f4ab5e97d0913906fa490eb1b5a83c62",
-    "semantic_hash": "f4ab5e97d0913906fa490eb1b5a83c62"
+    "mtime": 1780871392.1536598,
+    "ast_hash": "6d12f8a9f2d774a62fe90618f1d42010",
+    "semantic_hash": "6d12f8a9f2d774a62fe90618f1d42010"
   },
   "/home/xava/Documents/nuxy/src/electron/config/paths.ts": {
-    "mtime": 1780220162.176556,
-    "ast_hash": "4cf1528ce7e892c2347c5dd4b15a3999",
-    "semantic_hash": "4cf1528ce7e892c2347c5dd4b15a3999"
+    "mtime": 1780684436.9863217,
+    "ast_hash": "f0d0f317f0e0bf9ada306a05e101e1ac",
+    "semantic_hash": "f0d0f317f0e0bf9ada306a05e101e1ac"
   },
   "/home/xava/Documents/nuxy/src/electron/config/permissions.test.ts": {
     "mtime": 1779351886.7043862,
@@ -295,54 +395,144 @@
     "semantic_hash": "b6f1d3719a5f4c02abe90f26ed7e3212"
   },
   "/home/xava/Documents/nuxy/src/electron/config/nuxyconfig.ts": {
-    "mtime": 1780222078.1123996,
-    "ast_hash": "fa2e72a34703ea10a50ec461a0853b8f",
-    "semantic_hash": "fa2e72a34703ea10a50ec461a0853b8f"
+    "mtime": 1780871392.1533227,
+    "ast_hash": "a9f04cd99c994ff761e3b5e5ba9aedc5",
+    "semantic_hash": "a9f04cd99c994ff761e3b5e5ba9aedc5"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/broker.ts": {
-    "mtime": 1779351886.749386,
-    "ast_hash": "55f0bb5fda4564af5932ce8689152187",
-    "semantic_hash": "55f0bb5fda4564af5932ce8689152187"
+    "mtime": 1780512007.1613457,
+    "ast_hash": "c18a0cd257899093014be57f94e019b6",
+    "semantic_hash": "c18a0cd257899093014be57f94e019b6"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/register.test.ts": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "03b2825bc71c400f94fa75bf37c485fa",
+    "semantic_hash": "03b2825bc71c400f94fa75bf37c485fa"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/validate.ts": {
-    "mtime": 1780221675.106627,
-    "ast_hash": "3807b86b54f45ae2e5d965352fae3ed0",
-    "semantic_hash": "3807b86b54f45ae2e5d965352fae3ed0"
+    "mtime": 1780913833.1215637,
+    "ast_hash": "2841ad6643375d152becaf9ed1155696",
+    "semantic_hash": "2841ad6643375d152becaf9ed1155696"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/composition.test.ts": {
+    "mtime": 1780913833.1215637,
+    "ast_hash": "b709dfd3ac4beca58e9fee4c66d9fe95",
+    "semantic_hash": "b709dfd3ac4beca58e9fee4c66d9fe95"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/worker-invoke.ts": {
-    "mtime": 1779351886.7700772,
-    "ast_hash": "073973084737ad947dbeeb2379b14f10",
-    "semantic_hash": "073973084737ad947dbeeb2379b14f10"
+    "mtime": 1780261342.1941912,
+    "ast_hash": "f66184f4a6823472c3462c94ca02a086",
+    "semantic_hash": "f66184f4a6823472c3462c94ca02a086"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/register.ts": {
-    "mtime": 1780256512.9678087,
-    "ast_hash": "ec7f665140d85910a5da05e99d7df78d",
-    "semantic_hash": "ec7f665140d85910a5da05e99d7df78d"
+    "mtime": 1780871392.1533227,
+    "ast_hash": "159aca306b94cdba2603598971a2a336",
+    "semantic_hash": "159aca306b94cdba2603598971a2a336"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/validate.test.ts": {
-    "mtime": 1780221717.0797954,
-    "ast_hash": "d0983ad1b93f545d62a8ec305bea71f8",
-    "semantic_hash": "d0983ad1b93f545d62a8ec305bea71f8"
+    "mtime": 1780913833.1215637,
+    "ast_hash": "8c7d463daa9ded53d990fb0fd4a49471",
+    "semantic_hash": "8c7d463daa9ded53d990fb0fd4a49471"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/extension-ops.ts": {
+    "mtime": 1780757642.552634,
+    "ast_hash": "012e1068ce231b0f0f1ec8ba08b343b1",
+    "semantic_hash": "012e1068ce231b0f0f1ec8ba08b343b1"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-channels.ts": {
+    "mtime": 1780913833.1215637,
+    "ast_hash": "a975d236d4cfbef139e3c7b41d13a8cd",
+    "semantic_hash": "a975d236d4cfbef139e3c7b41d13a8cd"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/list-by-type.test.ts": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "342ce8029d1b9f77e2fe52f0ad433d00",
+    "semantic_hash": "342ce8029d1b9f77e2fe52f0ad433d00"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/window-channels.ts": {
+    "mtime": 1780860671.70165,
+    "ast_hash": "49dc1e8a0944613db165f7a8e7ca85ff",
+    "semantic_hash": "49dc1e8a0944613db165f7a8e7ca85ff"
   },
   "/home/xava/Documents/nuxy/src/electron/ipc/broker.test.ts": {
-    "mtime": 1779494449.3409705,
-    "ast_hash": "53ac0e6939cb6428ad4114bb1f1090d1",
-    "semantic_hash": "53ac0e6939cb6428ad4114bb1f1090d1"
+    "mtime": 1780573154.710005,
+    "ast_hash": "96111ba8ac738db942dd16c2b5b32521",
+    "semantic_hash": "96111ba8ac738db942dd16c2b5b32521"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/list-by-type.ts": {
+    "mtime": 1780871392.1536598,
+    "ast_hash": "1ffc6b19d39ab89b631b6a4a0c30dd3d",
+    "semantic_hash": "1ffc6b19d39ab89b631b6a4a0c30dd3d"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-invokable.ts": {
+    "mtime": 1780757128.069638,
+    "ast_hash": "f51fe9e391817b129927fc457679f6a0",
+    "semantic_hash": "f51fe9e391817b129927fc457679f6a0"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/system.ts": {
+    "mtime": 1780757840.7960877,
+    "ast_hash": "5a1ef91f3e07ad473e48240b334980c9",
+    "semantic_hash": "5a1ef91f3e07ad473e48240b334980c9"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/extensions.ts": {
+    "mtime": 1780757801.649196,
+    "ast_hash": "412dbc184f6dcfb89b85ff7b71eb2e43",
+    "semantic_hash": "412dbc184f6dcfb89b85ff7b71eb2e43"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/themes.ts": {
+    "mtime": 1780757810.0031729,
+    "ast_hash": "61120f79023b9736cd11e15626676780",
+    "semantic_hash": "61120f79023b9736cd11e15626676780"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/i18n.ts": {
+    "mtime": 1780757830.1031172,
+    "ast_hash": "025925804c50bfc30711fe1eef27d18c",
+    "semantic_hash": "025925804c50bfc30711fe1eef27d18c"
+  },
+  "/home/xava/Documents/nuxy/src/electron/ipc/kernel-handlers/composition.ts": {
+    "mtime": 1780913833.1145637,
+    "ast_hash": "22e4e886a5955b6a7a01c33996b4d2ab",
+    "semantic_hash": "22e4e886a5955b6a7a01c33996b4d2ab"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/scanner.ts": {
-    "mtime": 1780243397.9665956,
-    "ast_hash": "32566f02d1745803d35a7ce107aaa2a1",
-    "semantic_hash": "32566f02d1745803d35a7ce107aaa2a1"
+    "mtime": 1780955878.9856412,
+    "ast_hash": "8ada3145c23a34806afd215e69498351",
+    "semantic_hash": "8ada3145c23a34806afd215e69498351"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/bundle-backend.test.ts": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "486ce75c8b73ddb10375959fbdc1cd0c",
+    "semantic_hash": "486ce75c8b73ddb10375959fbdc1cd0c"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/extension-reload.ts": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "d2bce52d29b17cd6a2744b87d67de318",
+    "semantic_hash": "d2bce52d29b17cd6a2744b87d67de318"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/disabled.ts": {
+    "mtime": 1780353120.5965557,
+    "ast_hash": "a0675f8cc845bd77248ab95f80fafca0",
+    "semantic_hash": "a0675f8cc845bd77248ab95f80fafca0"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/scanner.test.ts": {
-    "mtime": 1780225383.7144752,
-    "ast_hash": "8de3a82ced05c6969587fb5e866f1155",
-    "semantic_hash": "8de3a82ced05c6969587fb5e866f1155"
+    "mtime": 1780763294.0009024,
+    "ast_hash": "58de5c2ec9f8ad2a72b8808302607b81",
+    "semantic_hash": "58de5c2ec9f8ad2a72b8808302607b81"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/bundle-backend.ts": {
+    "mtime": 1780871392.1526597,
+    "ast_hash": "98dcd604cda304fde03a02f00c1694ec",
+    "semantic_hash": "98dcd604cda304fde03a02f00c1694ec"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/registry.test.ts": {
     "mtime": 1780225365.9514387,
     "ast_hash": "db93b67a42d98546dc505163726deaef",
     "semantic_hash": "db93b67a42d98546dc505163726deaef"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/rescan-hook.ts": {
+    "mtime": 1780683053.9700296,
+    "ast_hash": "c81c261191dfb004b7b69b700624c4ae",
+    "semantic_hash": "c81c261191dfb004b7b69b700624c4ae"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/seed-bundled.test.ts": {
     "mtime": 1779351886.738386,
@@ -350,9 +540,14 @@
     "semantic_hash": "94324df72129928973fddd675dd8000e"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/registry.ts": {
-    "mtime": 1780225347.5754008,
-    "ast_hash": "b529b9d31ebadd4dfdc339fb4dea0f72",
-    "semantic_hash": "b529b9d31ebadd4dfdc339fb4dea0f72"
+    "mtime": 1780871392.1533227,
+    "ast_hash": "9ef2769249ccbac755a553040b19d64d",
+    "semantic_hash": "9ef2769249ccbac755a553040b19d64d"
+  },
+  "/home/xava/Documents/nuxy/src/electron/extensions/extension-reload.test.ts": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "fe4d98c8854588f0a4db1e44c1b37e2e",
+    "semantic_hash": "fe4d98c8854588f0a4db1e44c1b37e2e"
   },
   "/home/xava/Documents/nuxy/src/electron/extensions/seed-bundled.ts": {
     "mtime": 1779197400.9816456,
@@ -365,9 +560,9 @@
     "semantic_hash": "0b289d35cb3f9fe46cb8eb9f66e78669"
   },
   "/home/xava/Documents/nuxy/src/electron/media/index.ts": {
-    "mtime": 1779351886.7720501,
-    "ast_hash": "6c6d323889c2c651bbbc9aa048016d73",
-    "semantic_hash": "6c6d323889c2c651bbbc9aa048016d73"
+    "mtime": 1780684522.9043932,
+    "ast_hash": "b641e5831b72340d6d14c467cf874145",
+    "semantic_hash": "b641e5831b72340d6d14c467cf874145"
   },
   "/home/xava/Documents/nuxy/src/electron/media/index.test.ts": {
     "mtime": 1779495553.5206099,
@@ -410,19 +605,24 @@
     "semantic_hash": "b1aba576c3ee51713c086d0579a61739"
   },
   "/home/xava/Documents/nuxy/src/electron/media/platforms/linux/mpris.ts": {
-    "mtime": 1779197401.058646,
-    "ast_hash": "284489d19d6b5fc3a849ede11fba9dca",
-    "semantic_hash": "284489d19d6b5fc3a849ede11fba9dca"
+    "mtime": 1780860671.70165,
+    "ast_hash": "ff81e44fc0f2a7f6369798136fd079f5",
+    "semantic_hash": "ff81e44fc0f2a7f6369798136fd079f5"
   },
   "/home/xava/Documents/nuxy/.vscode/settings.json": {
     "mtime": 1779382143.6912155,
     "ast_hash": "a71e71b9b59d62c22e702fe5375d8e1c",
     "semantic_hash": "a71e71b9b59d62c22e702fe5375d8e1c"
   },
-  "/home/xava/Documents/nuxy/packages/ext-template/frontend.tsx": {
-    "mtime": 1779833800.4832678,
-    "ast_hash": "c1fb51eb5296d4e6cdd9229b380168f7",
-    "semantic_hash": "c1fb51eb5296d4e6cdd9229b380168f7"
+  "/home/xava/Documents/nuxy/packages/ext-template/nuxy-tool-my-extension.ts": {
+    "mtime": 1780945379.4094365,
+    "ast_hash": "5e2d00e7a4df03d76ee835bc13a955f9",
+    "semantic_hash": "5e2d00e7a4df03d76ee835bc13a955f9"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-template/frontend.ts": {
+    "mtime": 1780945382.0134513,
+    "ast_hash": "971341742559e3007af189f27285f87e",
+    "semantic_hash": "971341742559e3007af189f27285f87e"
   },
   "/home/xava/Documents/nuxy/packages/ext-template/backend.ts": {
     "mtime": 1779833796.3222384,
@@ -430,34 +630,44 @@
     "semantic_hash": "3a28987f0a7f0cf871bc2890934545da"
   },
   "/home/xava/Documents/nuxy/packages/ext-template/manifest.json": {
-    "mtime": 1779197400.9816456,
-    "ast_hash": "6927c8e18868d774bde26e4c22947107",
-    "semantic_hash": "6927c8e18868d774bde26e4c22947107"
+    "mtime": 1780945386.4614763,
+    "ast_hash": "f3360c2a80eec460bc4c72d220637ce5",
+    "semantic_hash": "f3360c2a80eec460bc4c72d220637ce5"
   },
   "/home/xava/Documents/nuxy/packages/ext-template/package.json": {
     "mtime": 1779197400.9816456,
     "ast_hash": "9ffc0ebaf1993e7e7ce85f52fed1932b",
     "semantic_hash": "9ffc0ebaf1993e7e7ce85f52fed1932b"
   },
+  "/home/xava/Documents/nuxy/packages/nxt/package.json": {
+    "mtime": 1780860671.69865,
+    "ast_hash": "e3b32916256d26752a46f28b8b8dc904",
+    "semantic_hash": "e3b32916256d26752a46f28b8b8dc904"
+  },
+  "/home/xava/Documents/nuxy/packages/nxt/bin/nxt.js": {
+    "mtime": 1780860671.69865,
+    "ast_hash": "61b250971b911585615e78ba6f3a7a67",
+    "semantic_hash": "61b250971b911585615e78ba6f3a7a67"
+  },
   "/home/xava/Documents/nuxy/packages/extension-sdk/package.json": {
-    "mtime": 1779197400.9816456,
-    "ast_hash": "fb7b98973b69587206c5c29bc5c532bf",
-    "semantic_hash": "fb7b98973b69587206c5c29bc5c532bf"
+    "mtime": 1780398911.3851676,
+    "ast_hash": "aef7c2207b2208c4b623b1be83fb0792",
+    "semantic_hash": "aef7c2207b2208c4b623b1be83fb0792"
   },
   "/home/xava/Documents/nuxy/packages/extension-sdk/src/testing.ts": {
-    "mtime": 1780135646.520129,
-    "ast_hash": "a446a19f159b4d37f712f3fd6f0c16ce",
-    "semantic_hash": "a446a19f159b4d37f712f3fd6f0c16ce"
+    "mtime": 1780573153.8920093,
+    "ast_hash": "fae4145ea91cf8a13c335919242dc082",
+    "semantic_hash": "fae4145ea91cf8a13c335919242dc082"
   },
   "/home/xava/Documents/nuxy/packages/extension-sdk/src/index.ts": {
-    "mtime": 1780154802.5619853,
-    "ast_hash": "ba4607084afddf8c13c44580715aa385",
-    "semantic_hash": "ba4607084afddf8c13c44580715aa385"
+    "mtime": 1780439543.3061762,
+    "ast_hash": "fe8cd3353facf758c62eadc638d83433",
+    "semantic_hash": "fe8cd3353facf758c62eadc638d83433"
   },
   "/home/xava/Documents/nuxy/packages/core/package.json": {
-    "mtime": 1779201139.7730556,
-    "ast_hash": "c8330615865d668c24f2115c0112f693",
-    "semantic_hash": "c8330615865d668c24f2115c0112f693"
+    "mtime": 1780955878.984641,
+    "ast_hash": "8c1991feb2927d89970a4523fe2490b0",
+    "semantic_hash": "8c1991feb2927d89970a4523fe2490b0"
   },
   "/home/xava/Documents/nuxy/packages/core/src/logger.ts": {
     "mtime": 1780243727.9665594,
@@ -465,384 +675,444 @@
     "semantic_hash": "3bd74f1404bac5b0b3022eba751a00a1"
   },
   "/home/xava/Documents/nuxy/packages/core/src/host-channels.ts": {
-    "mtime": 1779315852.776642,
-    "ast_hash": "c7277974c97ef002431eb23ba122f163",
-    "semantic_hash": "c7277974c97ef002431eb23ba122f163"
+    "mtime": 1780354719.4407547,
+    "ast_hash": "a4abff187ea032f406b788242fc67661",
+    "semantic_hash": "a4abff187ea032f406b788242fc67661"
+  },
+  "/home/xava/Documents/nuxy/packages/core/src/shell.ts": {
+    "mtime": 1780913833.1215637,
+    "ast_hash": "1c658ea5729ba2c19bb3c5655d608b7d",
+    "semantic_hash": "1c658ea5729ba2c19bb3c5655d608b7d"
   },
   "/home/xava/Documents/nuxy/packages/core/src/index.ts": {
-    "mtime": 1780136505.2439706,
-    "ast_hash": "453cc895db9b5589d728248fe65ff24d",
-    "semantic_hash": "453cc895db9b5589d728248fe65ff24d"
+    "mtime": 1780955878.984641,
+    "ast_hash": "df1c4a5f6b40704a72e45d7cb7d161ee",
+    "semantic_hash": "df1c4a5f6b40704a72e45d7cb7d161ee"
+  },
+  "/home/xava/Documents/nuxy/packages/core/src/events.ts": {
+    "mtime": 1780914593.6987188,
+    "ast_hash": "197d564fa50d71013d2187bc73802082",
+    "semantic_hash": "197d564fa50d71013d2187bc73802082"
   },
   "/home/xava/Documents/nuxy/packages/core/src/media.ts": {
     "mtime": 1779197400.9816456,
     "ast_hash": "78948c47d5e5fdc71e879a099ef85477",
     "semantic_hash": "78948c47d5e5fdc71e879a099ef85477"
   },
+  "/home/xava/Documents/nuxy/packages/core/src/i18n.ts": {
+    "mtime": 1780573153.7770615,
+    "ast_hash": "b5cb4e4de76029ae635da288e2714cda",
+    "semantic_hash": "b5cb4e4de76029ae635da288e2714cda"
+  },
   "/home/xava/Documents/nuxy/packages/core/src/messages.ts": {
-    "mtime": 1779201769.2621634,
-    "ast_hash": "babb6a300c581c8b8d5f45184079c0d0",
-    "semantic_hash": "babb6a300c581c8b8d5f45184079c0d0"
+    "mtime": 1780573153.7920098,
+    "ast_hash": "bc7d44e420520f495a49a51434eeb163",
+    "semantic_hash": "bc7d44e420520f495a49a51434eeb163"
+  },
+  "/home/xava/Documents/nuxy/packages/core/src/composition.ts": {
+    "mtime": 1780913833.1215637,
+    "ast_hash": "34c2fb068337fae1d94cf4417defa90e",
+    "semantic_hash": "34c2fb068337fae1d94cf4417defa90e"
   },
   "/home/xava/Documents/nuxy/packages/core/src/types.ts": {
-    "mtime": 1780221664.6705854,
-    "ast_hash": "3d2869c25a8c710dbb6d510b86b276ec",
-    "semantic_hash": "3d2869c25a8c710dbb6d510b86b276ec"
+    "mtime": 1780913833.1215637,
+    "ast_hash": "7aa617fa419acba23b86eba7f54e814c",
+    "semantic_hash": "7aa617fa419acba23b86eba7f54e814c"
   },
   "/home/xava/Documents/nuxy/packages/ui/package.json": {
-    "mtime": 1779099289.9357154,
-    "ast_hash": "450ea900830f3faf938f6295995a210f",
-    "semantic_hash": "450ea900830f3faf938f6295995a210f"
+    "mtime": 1780923084.892498,
+    "ast_hash": "fee6a8aff1e38256d62cd7b90fc3ba94",
+    "semantic_hash": "fee6a8aff1e38256d62cd7b90fc3ba94"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/index.tsx": {
-    "mtime": 1780176871.4209893,
-    "ast_hash": "acea373b87af54eeff2a1566bef35a52",
-    "semantic_hash": "acea373b87af54eeff2a1566bef35a52"
+    "mtime": 1780763252.148126,
+    "ast_hash": "a65944284ca462048a80f14267d8ff8c",
+    "semantic_hash": "a65944284ca462048a80f14267d8ff8c"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Label/index.tsx": {
-    "mtime": 1780094051.4673107,
-    "ast_hash": "08e78fe9997808ec70728e64cfc1f78a",
-    "semantic_hash": "08e78fe9997808ec70728e64cfc1f78a"
+    "mtime": 1780923081.566186,
+    "ast_hash": "57429dad4864cdbda7724f4ff227f0bd",
+    "semantic_hash": "57429dad4864cdbda7724f4ff227f0bd"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/IconButton/index.tsx": {
-    "mtime": 1780094051.4593108,
-    "ast_hash": "8c1369cba48638818e2ab902aa4d7563",
-    "semantic_hash": "8c1369cba48638818e2ab902aa4d7563"
+    "mtime": 1780923081.566186,
+    "ast_hash": "eb3f91edd11882302900b69ea1160038",
+    "semantic_hash": "eb3f91edd11882302900b69ea1160038"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Modal/index.tsx": {
-    "mtime": 1780094051.4853108,
-    "ast_hash": "dc0d257720ea6c0fc3226c99b67109f8",
-    "semantic_hash": "dc0d257720ea6c0fc3226c99b67109f8"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "12b7e0ff6197687e5ca0569e081f5fb5",
+    "semantic_hash": "12b7e0ff6197687e5ca0569e081f5fb5"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Modal/AlertDialog.tsx": {
-    "mtime": 1780094051.4831336,
-    "ast_hash": "de3a660818a5930934eeac1c49a45304",
-    "semantic_hash": "de3a660818a5930934eeac1c49a45304"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "111666f199b69ad7ed4b549c16b87219",
+    "semantic_hash": "111666f199b69ad7ed4b549c16b87219"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/TwoPanel/index.tsx": {
-    "mtime": 1780094051.5413105,
-    "ast_hash": "a26c0e644026f90adacffc0dbccbb447",
-    "semantic_hash": "a26c0e644026f90adacffc0dbccbb447"
+    "mtime": 1780923081.569186,
+    "ast_hash": "6f2a59312bab8a300972f13518873fc9",
+    "semantic_hash": "6f2a59312bab8a300972f13518873fc9"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/RadioGroup/index.tsx": {
-    "mtime": 1780094051.4943106,
-    "ast_hash": "a2ca9174730f6caa925b1b2a6087a4d3",
-    "semantic_hash": "a2ca9174730f6caa925b1b2a6087a4d3"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "e56a88f06547364e114b12fd991e4206",
+    "semantic_hash": "e56a88f06547364e114b12fd991e4206"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Slider/index.tsx": {
-    "mtime": 1780094051.5093107,
-    "ast_hash": "ab618d1213d4e505f8cb9e9b4425a170",
-    "semantic_hash": "ab618d1213d4e505f8cb9e9b4425a170"
+    "mtime": 1780923081.568186,
+    "ast_hash": "082f1a721a2f08930080a88acbb45f00",
+    "semantic_hash": "082f1a721a2f08930080a88acbb45f00"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ItemLeading/index.tsx": {
-    "mtime": 1780094051.4633107,
-    "ast_hash": "28765520c51417daf115f0c7120d7c28",
-    "semantic_hash": "28765520c51417daf115f0c7120d7c28"
+    "mtime": 1780923081.566186,
+    "ast_hash": "13e5fa155e1a1ea4f50f81b579d13d2e",
+    "semantic_hash": "13e5fa155e1a1ea4f50f81b579d13d2e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ScrollArea/index.tsx": {
-    "mtime": 1780094051.4963107,
-    "ast_hash": "f75992c0f2b9076b503b66a9c1214251",
-    "semantic_hash": "f75992c0f2b9076b503b66a9c1214251"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "8cca05802390080df57b22119b0b8b84",
+    "semantic_hash": "8cca05802390080df57b22119b0b8b84"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tooltip/index.tsx": {
-    "mtime": 1780094051.5393107,
-    "ast_hash": "5a1a4e0a4148456796ff132b272ca8a8",
-    "semantic_hash": "5a1a4e0a4148456796ff132b272ca8a8"
+    "mtime": 1780923081.569186,
+    "ast_hash": "53f99b9031c526f7a57aed70a5f09e21",
+    "semantic_hash": "53f99b9031c526f7a57aed70a5f09e21"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/NumberInput/index.tsx": {
-    "mtime": 1780094051.4883106,
-    "ast_hash": "69643f84b1eb74f95a632f9cb1172716",
-    "semantic_hash": "69643f84b1eb74f95a632f9cb1172716"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "da036936d0b53baeee062dd06fcaf88a",
+    "semantic_hash": "da036936d0b53baeee062dd06fcaf88a"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/WizardSection/index.tsx": {
+    "mtime": 1780923081.569186,
+    "ast_hash": "4bfe94267860cf26ddf9367c0756fb23",
+    "semantic_hash": "4bfe94267860cf26ddf9367c0756fb23"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Breadcrumb/index.tsx": {
-    "mtime": 1780094051.4143107,
-    "ast_hash": "bae5f4a1ab137896952242c626edc7ee",
-    "semantic_hash": "bae5f4a1ab137896952242c626edc7ee"
+    "mtime": 1780923081.565186,
+    "ast_hash": "827d932f762a680562b4f73698c609e9",
+    "semantic_hash": "827d932f762a680562b4f73698c609e9"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Callout/index.tsx": {
-    "mtime": 1780094051.4183109,
-    "ast_hash": "8629cd47e04061e51db4fa537a1e74b7",
-    "semantic_hash": "8629cd47e04061e51db4fa537a1e74b7"
+    "mtime": 1780923081.565186,
+    "ast_hash": "0c9abe3264f0160a26110f2138b2a257",
+    "semantic_hash": "0c9abe3264f0160a26110f2138b2a257"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Stack/index.tsx": {
-    "mtime": 1780094051.5133107,
-    "ast_hash": "d38ba0a8604c2ed9fab8179021a80174",
-    "semantic_hash": "d38ba0a8604c2ed9fab8179021a80174"
+    "mtime": 1780923081.568186,
+    "ast_hash": "052567f1e6ad467738bfe991e803cfa4",
+    "semantic_hash": "052567f1e6ad467738bfe991e803cfa4"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Spinner/index.tsx": {
-    "mtime": 1780094051.5113106,
-    "ast_hash": "acc9b2162d6e68246739eef42eb96a2e",
-    "semantic_hash": "acc9b2162d6e68246739eef42eb96a2e"
+    "mtime": 1780923081.568186,
+    "ast_hash": "660523a0773319aa7dfa5c84f47c3035",
+    "semantic_hash": "660523a0773319aa7dfa5c84f47c3035"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/MarkdownText/index.tsx": {
-    "mtime": 1780176829.9449718,
-    "ast_hash": "549667b489c9aba702f0c3eb68df0b98",
-    "semantic_hash": "549667b489c9aba702f0c3eb68df0b98"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "983d3581d6cb587286988a9211b28d08",
+    "semantic_hash": "983d3581d6cb587286988a9211b28d08"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Divider/index.tsx": {
-    "mtime": 1780094051.4383109,
-    "ast_hash": "b0b64ff297c97e455c86dc4d5ea4a9f9",
-    "semantic_hash": "b0b64ff297c97e455c86dc4d5ea4a9f9"
+    "mtime": 1780923081.565186,
+    "ast_hash": "23f12e9161f2bf6f97cbcc52cf020713",
+    "semantic_hash": "23f12e9161f2bf6f97cbcc52cf020713"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/ChatMessage/index.tsx": {
+    "mtime": 1780923081.565186,
+    "ast_hash": "c1c7a7880eb86c2c7c02325e1979c27e",
+    "semantic_hash": "c1c7a7880eb86c2c7c02325e1979c27e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/List/index.tsx": {
-    "mtime": 1780094051.4713106,
-    "ast_hash": "384dfd89a39a518ec726fabe5c89c31d",
-    "semantic_hash": "384dfd89a39a518ec726fabe5c89c31d"
+    "mtime": 1780923081.566186,
+    "ast_hash": "d8a0ea0c7c4e010d8e775b9d310404f5",
+    "semantic_hash": "d8a0ea0c7c4e010d8e775b9d310404f5"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Switch/index.tsx": {
-    "mtime": 1780094051.5143106,
-    "ast_hash": "84d62ae0a3b35915ebb0e9905dea5056",
-    "semantic_hash": "84d62ae0a3b35915ebb0e9905dea5056"
+    "mtime": 1780923081.568186,
+    "ast_hash": "ed76e4236f58ed32fcebaa5a6037fee1",
+    "semantic_hash": "ed76e4236f58ed32fcebaa5a6037fee1"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItemText/index.tsx": {
-    "mtime": 1780094051.4803107,
-    "ast_hash": "dbb920b1ee19445b304e89ba80da2b70",
-    "semantic_hash": "dbb920b1ee19445b304e89ba80da2b70"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "ba45963fe021365e26518ef61629e153",
+    "semantic_hash": "ba45963fe021365e26518ef61629e153"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/EmptyState/index.tsx": {
-    "mtime": 1780094051.4443107,
-    "ast_hash": "c635c6de901e4a0bcbb25de402f9792c",
-    "semantic_hash": "c635c6de901e4a0bcbb25de402f9792c"
+    "mtime": 1780923106.5661232,
+    "ast_hash": "688f2f7bd10c32f9021aadf80cb4b5cc",
+    "semantic_hash": "688f2f7bd10c32f9021aadf80cb4b5cc"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Badge/index.tsx": {
-    "mtime": 1780094051.409794,
-    "ast_hash": "8f7191543aa22e47447e6bf6e38dc219",
-    "semantic_hash": "8f7191543aa22e47447e6bf6e38dc219"
+    "mtime": 1780923081.565186,
+    "ast_hash": "d0361713494e574f7f7c741eeed144fc",
+    "semantic_hash": "d0361713494e574f7f7c741eeed144fc"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tabs/Stepper.tsx": {
-    "mtime": 1780094051.5243106,
-    "ast_hash": "310d46e97f077dc7c591aba88a1e90b0",
-    "semantic_hash": "310d46e97f077dc7c591aba88a1e90b0"
+    "mtime": 1780923081.568186,
+    "ast_hash": "866ec4a77d83d63dafcd31fea8fab70c",
+    "semantic_hash": "866ec4a77d83d63dafcd31fea8fab70c"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tabs/index.tsx": {
-    "mtime": 1780094051.5223293,
-    "ast_hash": "20d8c6cda982f4effc147cf7eb744900",
-    "semantic_hash": "20d8c6cda982f4effc147cf7eb744900"
+    "mtime": 1780923081.568186,
+    "ast_hash": "eb384bb4fa0ddf9fbc566f4edef9728b",
+    "semantic_hash": "eb384bb4fa0ddf9fbc566f4edef9728b"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tabs/Pagination.tsx": {
-    "mtime": 1780094051.5223293,
-    "ast_hash": "09812c08eb824cb630b00a53df743425",
-    "semantic_hash": "09812c08eb824cb630b00a53df743425"
+    "mtime": 1780923081.568186,
+    "ast_hash": "cef312b1837bc8f6e6c46dc5ee378061",
+    "semantic_hash": "cef312b1837bc8f6e6c46dc5ee378061"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItemBody/index.tsx": {
-    "mtime": 1780094051.4763107,
-    "ast_hash": "96ad299a8501c717a25f5348ac312668",
-    "semantic_hash": "96ad299a8501c717a25f5348ac312668"
+    "mtime": 1780923081.566186,
+    "ast_hash": "1c500936732183234f1f6b9db8571c1d",
+    "semantic_hash": "1c500936732183234f1f6b9db8571c1d"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItem/index.tsx": {
-    "mtime": 1780094051.4733107,
-    "ast_hash": "11fd498889788df33a1f2a93929a71da",
-    "semantic_hash": "11fd498889788df33a1f2a93929a71da"
+    "mtime": 1780923081.566186,
+    "ast_hash": "dbfc769d0625c5931a5d8f7b565c233e",
+    "semantic_hash": "dbfc769d0625c5931a5d8f7b565c233e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Heading/index.tsx": {
-    "mtime": 1780094051.4503107,
-    "ast_hash": "c21773d3349d53d9f22435bac61a85e3",
-    "semantic_hash": "c21773d3349d53d9f22435bac61a85e3"
+    "mtime": 1780923081.566186,
+    "ast_hash": "774e9b44729ad9e7753a62e5fdf68d40",
+    "semantic_hash": "774e9b44729ad9e7753a62e5fdf68d40"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Collapsible/index.tsx": {
-    "mtime": 1780094051.4323108,
-    "ast_hash": "2b42d302539b6bb94ae4b2fb642c5608",
-    "semantic_hash": "2b42d302539b6bb94ae4b2fb642c5608"
+    "mtime": 1780923081.565186,
+    "ast_hash": "1784db960dfe79dea7bf2a3c5f53f62e",
+    "semantic_hash": "1784db960dfe79dea7bf2a3c5f53f62e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Box/index.tsx": {
-    "mtime": 1780094051.412499,
-    "ast_hash": "b6dc32603fdf61b98f622bb9f8e5b544",
-    "semantic_hash": "b6dc32603fdf61b98f622bb9f8e5b544"
+    "mtime": 1780923081.565186,
+    "ast_hash": "c2d8748ba0ee0d95b552172d9ed4790b",
+    "semantic_hash": "c2d8748ba0ee0d95b552172d9ed4790b"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Card/index.tsx": {
-    "mtime": 1780094051.4220963,
-    "ast_hash": "e890b2f8cc32410f92d1fbec4873d875",
-    "semantic_hash": "e890b2f8cc32410f92d1fbec4873d875"
+    "mtime": 1780923081.565186,
+    "ast_hash": "ea8a2d0842ec29fd3d57196b31430b96",
+    "semantic_hash": "ea8a2d0842ec29fd3d57196b31430b96"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Grid/index.tsx": {
-    "mtime": 1780094051.4483109,
-    "ast_hash": "f9dec949b71fb91ab4ae4e2627cb88cf",
-    "semantic_hash": "f9dec949b71fb91ab4ae4e2627cb88cf"
+    "mtime": 1780923081.566186,
+    "ast_hash": "b074f45abf97fbabe3194130e601ca07",
+    "semantic_hash": "b074f45abf97fbabe3194130e601ca07"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/DropdownMenu/index.tsx": {
-    "mtime": 1780094051.4413106,
-    "ast_hash": "0742f65189e3fb419576e3428a1af98a",
-    "semantic_hash": "0742f65189e3fb419576e3428a1af98a"
+    "mtime": 1780923081.566186,
+    "ast_hash": "e5ac69de4c788770c12f74a7c490ecda",
+    "semantic_hash": "e5ac69de4c788770c12f74a7c490ecda"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Input/index.tsx": {
-    "mtime": 1780094051.4613106,
-    "ast_hash": "753356e003bdf0fc9dce48c5af8bfd32",
-    "semantic_hash": "753356e003bdf0fc9dce48c5af8bfd32"
+    "mtime": 1780923081.566186,
+    "ast_hash": "f09c6f6e5967b32caa422a699ccc0e46",
+    "semantic_hash": "f09c6f6e5967b32caa422a699ccc0e46"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/TabBar/index.tsx": {
-    "mtime": 1780094051.5163107,
-    "ast_hash": "f50cbb749ef72927b59782ea2f52bb95",
-    "semantic_hash": "f50cbb749ef72927b59782ea2f52bb95"
+    "mtime": 1780923081.568186,
+    "ast_hash": "6d4d5703a5577f00a8cb8d1f70217e0c",
+    "semantic_hash": "6d4d5703a5577f00a8cb8d1f70217e0c"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/SearchInput/index.tsx": {
-    "mtime": 1780094051.4983106,
-    "ast_hash": "944fb686571ac22cf60e5a309f5ccd43",
-    "semantic_hash": "944fb686571ac22cf60e5a309f5ccd43"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "eed1ed2ad9f3b22ece88e5a1c6593c2f",
+    "semantic_hash": "eed1ed2ad9f3b22ece88e5a1c6593c2f"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Checkbox/index.tsx": {
-    "mtime": 1780094051.4233108,
-    "ast_hash": "249cfe828ea926f4c3bd706ffb1734ea",
-    "semantic_hash": "249cfe828ea926f4c3bd706ffb1734ea"
+    "mtime": 1780923081.565186,
+    "ast_hash": "92d7dc8f5c7b22c85948e12b18bde9fb",
+    "semantic_hash": "92d7dc8f5c7b22c85948e12b18bde9fb"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Button/index.tsx": {
-    "mtime": 1780094051.417111,
-    "ast_hash": "0d141d4930453fa5832a2d8695046f23",
-    "semantic_hash": "0d141d4930453fa5832a2d8695046f23"
+    "mtime": 1780923081.565186,
+    "ast_hash": "8afa9a84f3241ac5f5a84d11f4c76397",
+    "semantic_hash": "8afa9a84f3241ac5f5a84d11f4c76397"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/ConversionCard/index.tsx": {
+    "mtime": 1780923081.565186,
+    "ast_hash": "9760a1cb4d6eee2262f9e304e70eda12",
+    "semantic_hash": "9760a1cb4d6eee2262f9e304e70eda12"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItemMeta/index.tsx": {
-    "mtime": 1780094051.4783106,
-    "ast_hash": "befe61dfbc682e4e608851c453faa861",
-    "semantic_hash": "befe61dfbc682e4e608851c453faa861"
+    "mtime": 1780923081.566186,
+    "ast_hash": "55eb615c5d8a1dca2dd5e7f63f90d87e",
+    "semantic_hash": "55eb615c5d8a1dca2dd5e7f63f90d87e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ShortcutBar/index.tsx": {
-    "mtime": 1780094051.5033107,
-    "ast_hash": "a2a4551680922652b18b9b4bf7bb8112",
-    "semantic_hash": "a2a4551680922652b18b9b4bf7bb8112"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "59af7b72a7712a98274cd959a5c86b9f",
+    "semantic_hash": "59af7b72a7712a98274cd959a5c86b9f"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Link/index.tsx": {
-    "mtime": 1780094051.4683106,
-    "ast_hash": "4c1fa77d60a3a6a30c69e505531c0263",
-    "semantic_hash": "4c1fa77d60a3a6a30c69e505531c0263"
+    "mtime": 1780923081.566186,
+    "ast_hash": "69932af15f81b9f5544fe3654224b018",
+    "semantic_hash": "69932af15f81b9f5544fe3654224b018"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ShortcutHint/index.tsx": {
-    "mtime": 1780094051.5053105,
-    "ast_hash": "b1d231516d99c9fb7453e10b28cec9f4",
-    "semantic_hash": "b1d231516d99c9fb7453e10b28cec9f4"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "0f409b3631e575a0ba51719f4ad17d85",
+    "semantic_hash": "0f409b3631e575a0ba51719f4ad17d85"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ProgressBar/index.tsx": {
-    "mtime": 1780094051.4923108,
-    "ast_hash": "11b3a4d72beddaaa3cc8627265f899f7",
-    "semantic_hash": "11b3a4d72beddaaa3cc8627265f899f7"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "d48b505ce2104d903ee5ef300fc6d50c",
+    "semantic_hash": "d48b505ce2104d903ee5ef300fc6d50c"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/SelectBox/index.tsx": {
-    "mtime": 1780094051.5023108,
-    "ast_hash": "3bdc8e876eae72ef19e8c515e628a047",
-    "semantic_hash": "3bdc8e876eae72ef19e8c515e628a047"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "62f13965d4a6e202308ec6376545cfde",
+    "semantic_hash": "62f13965d4a6e202308ec6376545cfde"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Kbd/index.tsx": {
-    "mtime": 1780094051.4643106,
-    "ast_hash": "84d4d069df9fcb0576139db3fb6d837a",
-    "semantic_hash": "84d4d069df9fcb0576139db3fb6d837a"
+    "mtime": 1780923081.566186,
+    "ast_hash": "de244796622b6ce907543adc01bfdb84",
+    "semantic_hash": "de244796622b6ce907543adc01bfdb84"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Icon/index.tsx": {
-    "mtime": 1780094051.4584947,
-    "ast_hash": "b5853311f2e7c58cb6d4ba398285075d",
-    "semantic_hash": "b5853311f2e7c58cb6d4ba398285075d"
+    "mtime": 1780923106.1691241,
+    "ast_hash": "71854100856370543c1ea6cbda83c209",
+    "semantic_hash": "71854100856370543c1ea6cbda83c209"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/SectionHeader/index.tsx": {
-    "mtime": 1780094051.5003107,
-    "ast_hash": "b574b5611e0b10a73b0f9cb6cbeea5db",
-    "semantic_hash": "b574b5611e0b10a73b0f9cb6cbeea5db"
+    "mtime": 1780923103.7311301,
+    "ast_hash": "44f9ed70ca97372f487315aa0e604bd5",
+    "semantic_hash": "44f9ed70ca97372f487315aa0e604bd5"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Alert/index.tsx": {
-    "mtime": 1780094051.4043107,
-    "ast_hash": "187ab50860e8e688db46252a8ec2f3ea",
-    "semantic_hash": "187ab50860e8e688db46252a8ec2f3ea"
+    "mtime": 1780923081.5641859,
+    "ast_hash": "7177707e642691478a8bc5ed3fb4d9b7",
+    "semantic_hash": "7177707e642691478a8bc5ed3fb4d9b7"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/PropertiesPanel/index.tsx": {
+    "mtime": 1780923081.5671859,
+    "ast_hash": "1106e3419589f3434358498db85c49aa",
+    "semantic_hash": "1106e3419589f3434358498db85c49aa"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/CircularProgress/index.tsx": {
-    "mtime": 1780094051.427343,
-    "ast_hash": "f125ecac8579675d23758874113bb24e",
-    "semantic_hash": "f125ecac8579675d23758874113bb24e"
+    "mtime": 1780923081.565186,
+    "ast_hash": "a4ad5091f2277680d43615df27112338",
+    "semantic_hash": "a4ad5091f2277680d43615df27112338"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/CopyButton/index.tsx": {
-    "mtime": 1780094051.4343107,
-    "ast_hash": "839a20cf873196682908f28edcbbe9cd",
-    "semantic_hash": "839a20cf873196682908f28edcbbe9cd"
+    "mtime": 1780923081.565186,
+    "ast_hash": "179bea1c5c963cfe4e64dd04f2232b0e",
+    "semantic_hash": "179bea1c5c963cfe4e64dd04f2232b0e"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/PinInput/index.tsx": {
-    "mtime": 1780094051.4914753,
-    "ast_hash": "7f75f71dd76d4d9bf3071a7ef163b0c1",
-    "semantic_hash": "7f75f71dd76d4d9bf3071a7ef163b0c1"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "528d054211a74b14002dfcf8a1888815",
+    "semantic_hash": "528d054211a74b14002dfcf8a1888815"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Tag/index.tsx": {
-    "mtime": 1780094051.527144,
-    "ast_hash": "b7355f59866792c3f5b25554b87744c6",
-    "semantic_hash": "b7355f59866792c3f5b25554b87744c6"
+    "mtime": 1780923081.568186,
+    "ast_hash": "4af506fbf53f70ab86c0f1f62b0e3b80",
+    "semantic_hash": "4af506fbf53f70ab86c0f1f62b0e3b80"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/LoadingState/index.tsx": {
+    "mtime": 1780923081.5671859,
+    "ast_hash": "c5311faacdfe54f7026ccc70e7e85862",
+    "semantic_hash": "c5311faacdfe54f7026ccc70e7e85862"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/ListItemActions/index.tsx": {
-    "mtime": 1780094051.4753108,
-    "ast_hash": "1c469eac78adc0b4235ec4865ff977a5",
-    "semantic_hash": "1c469eac78adc0b4235ec4865ff977a5"
+    "mtime": 1780923081.566186,
+    "ast_hash": "09092250c010a4adaf5f5c849013a4f6",
+    "semantic_hash": "09092250c010a4adaf5f5c849013a4f6"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Avatar/index.tsx": {
-    "mtime": 1780094051.4073107,
-    "ast_hash": "997b2d05d1dfd3d1cc2acaef17388481",
-    "semantic_hash": "997b2d05d1dfd3d1cc2acaef17388481"
+    "mtime": 1780923081.5641859,
+    "ast_hash": "ab8dfab33eb28353e51ff17f20d40e8b",
+    "semantic_hash": "ab8dfab33eb28353e51ff17f20d40e8b"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Table/index.tsx": {
-    "mtime": 1780094051.5193107,
-    "ast_hash": "7003c29d5f20719381b3358592462a8b",
-    "semantic_hash": "7003c29d5f20719381b3358592462a8b"
+    "mtime": 1780923081.568186,
+    "ast_hash": "536a6283e3ca9411f839347d087b52c1",
+    "semantic_hash": "536a6283e3ca9411f839347d087b52c1"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Text/VisuallyHidden.tsx": {
-    "mtime": 1780094051.5313106,
-    "ast_hash": "8d9115322e5a6227534f0c9836340d59",
-    "semantic_hash": "8d9115322e5a6227534f0c9836340d59"
+    "mtime": 1780923081.568186,
+    "ast_hash": "a6938e4e843b2737ca0d0a86dbfc9da2",
+    "semantic_hash": "a6938e4e843b2737ca0d0a86dbfc9da2"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Text/Portal.tsx": {
-    "mtime": 1780094051.5303106,
-    "ast_hash": "9ee620f6ddd9b30f6c95b2cec47ef6ce",
-    "semantic_hash": "9ee620f6ddd9b30f6c95b2cec47ef6ce"
+    "mtime": 1780923081.568186,
+    "ast_hash": "34b6e6c7f5677be1a1bd675e5bf08275",
+    "semantic_hash": "34b6e6c7f5677be1a1bd675e5bf08275"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Text/index.tsx": {
-    "mtime": 1780094051.5293107,
-    "ast_hash": "ac28f73f799ce174f1699e49ff158e03",
-    "semantic_hash": "ac28f73f799ce174f1699e49ff158e03"
+    "mtime": 1780923081.568186,
+    "ast_hash": "b4bf35926efc434cfc245934bb6a580d",
+    "semantic_hash": "b4bf35926efc434cfc245934bb6a580d"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Text/AspectRatio.tsx": {
-    "mtime": 1780094051.5273106,
-    "ast_hash": "d5d8c91e83c030c1d69b3f11a17f4a2c",
-    "semantic_hash": "d5d8c91e83c030c1d69b3f11a17f4a2c"
+    "mtime": 1780923081.568186,
+    "ast_hash": "060d13467ff9d045b1b34d5252d49f9c",
+    "semantic_hash": "060d13467ff9d045b1b34d5252d49f9c"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/components/MediaPreview/index.tsx": {
+    "mtime": 1780923081.5671859,
+    "ast_hash": "cdd3369448665337a1e214d261486dad",
+    "semantic_hash": "cdd3369448665337a1e214d261486dad"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Textarea/index.tsx": {
-    "mtime": 1780094051.5333107,
-    "ast_hash": "5ef05302c9be4d5b32cf64a5c570a152",
-    "semantic_hash": "5ef05302c9be4d5b32cf64a5c570a152"
+    "mtime": 1780923081.569186,
+    "ast_hash": "0d23f363a300de55addda08eea15e727",
+    "semantic_hash": "0d23f363a300de55addda08eea15e727"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Code/index.tsx": {
-    "mtime": 1780094051.4293108,
-    "ast_hash": "be841dc04635fe29e66b23f1fa69554a",
-    "semantic_hash": "be841dc04635fe29e66b23f1fa69554a"
+    "mtime": 1780923081.565186,
+    "ast_hash": "6ae57b9db84c65428821241cfddc54dd",
+    "semantic_hash": "6ae57b9db84c65428821241cfddc54dd"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/FileInput/index.tsx": {
-    "mtime": 1780094051.4463108,
-    "ast_hash": "45d532ec92ad0981e1f6b83d8bc3f054",
-    "semantic_hash": "45d532ec92ad0981e1f6b83d8bc3f054"
+    "mtime": 1780923081.566186,
+    "ast_hash": "41d533c62cb85af0becb129639a46668",
+    "semantic_hash": "41d533c62cb85af0becb129639a46668"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Toaster/store.ts": {
-    "mtime": 1780094051.5383105,
-    "ast_hash": "f0153ed92959c2f96253eda8733286bd",
-    "semantic_hash": "f0153ed92959c2f96253eda8733286bd"
+    "mtime": 1780923081.569186,
+    "ast_hash": "db931df0517c5ebcfc2fdfb4483c4c6c",
+    "semantic_hash": "db931df0517c5ebcfc2fdfb4483c4c6c"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Toaster/index.tsx": {
-    "mtime": 1780094051.5363107,
-    "ast_hash": "42e887f4c85c9d919a5bfd7b9a06b08a",
-    "semantic_hash": "42e887f4c85c9d919a5bfd7b9a06b08a"
+    "mtime": 1780923081.569186,
+    "ast_hash": "923095e9ef4fdf6981123e420dc16a25",
+    "semantic_hash": "923095e9ef4fdf6981123e420dc16a25"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/components/Skeleton/index.tsx": {
-    "mtime": 1780094051.5073106,
-    "ast_hash": "4a6676d19b16121faa0f25dbd2e2eda8",
-    "semantic_hash": "4a6676d19b16121faa0f25dbd2e2eda8"
+    "mtime": 1780923081.5671859,
+    "ast_hash": "bb235fabfb82609ff3712f56ddf24fa8",
+    "semantic_hash": "bb235fabfb82609ff3712f56ddf24fa8"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/hooks/useToolKeyActions.ts": {
-    "mtime": 1780094051.5453105,
-    "ast_hash": "c0c98e4518319d39a9d9f42eb3c0bd53",
-    "semantic_hash": "c0c98e4518319d39a9d9f42eb3c0bd53"
+    "mtime": 1780923098.1556187,
+    "ast_hash": "7d8ece14318f94766c249c5eb2de5aee",
+    "semantic_hash": "7d8ece14318f94766c249c5eb2de5aee"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/hooks/useTwoPanelNav.ts": {
-    "mtime": 1780094051.5473106,
-    "ast_hash": "e4a1c676f5d5eb2dc94bd8b91f50a35e",
-    "semantic_hash": "e4a1c676f5d5eb2dc94bd8b91f50a35e"
+    "mtime": 1780923101.9011345,
+    "ast_hash": "3d4b2a9fadebbbcecdb04ec09f93c3d1",
+    "semantic_hash": "3d4b2a9fadebbbcecdb04ec09f93c3d1"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/hooks/useListNavigation.ts": {
-    "mtime": 1780094051.5433106,
-    "ast_hash": "379cac0d50ebf5b7b9ffeed8e3e4f9a0",
-    "semantic_hash": "379cac0d50ebf5b7b9ffeed8e3e4f9a0"
+    "mtime": 1780923099.7857273,
+    "ast_hash": "53c222d8c1b23d82f0124911e0b05f9a",
+    "semantic_hash": "53c222d8c1b23d82f0124911e0b05f9a"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/src/hooks/useTranslation.ts": {
+    "mtime": 1780923103.5901306,
+    "ast_hash": "92324d6d5fe6ac1ae99a0c655d4f7f8a",
+    "semantic_hash": "92324d6d5fe6ac1ae99a0c655d4f7f8a"
   },
   "/home/xava/Documents/nuxy/packages/ui/src/utils/scroll.ts": {
-    "mtime": 1780094051.5543106,
-    "ast_hash": "4d82ab1efc5f01200dfa101a9e39004a",
-    "semantic_hash": "4d82ab1efc5f01200dfa101a9e39004a"
+    "mtime": 1780763275.4930005,
+    "ast_hash": "76eed4a9ce5bb788a2ba0c8e728d5a92",
+    "semantic_hash": "76eed4a9ce5bb788a2ba0c8e728d5a92"
+  },
+  "/home/xava/Documents/nuxy/packages/ui/scripts/de-react-proxies.mjs": {
+    "mtime": 1780923072.3707294,
+    "ast_hash": "697473564251229a39920728543f1eb1",
+    "semantic_hash": "697473564251229a39920728543f1eb1"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/package.json": {
     "mtime": 1779197400.9816456,
@@ -850,14 +1120,19 @@
     "semantic_hash": "9691b927a845ecece3a7a9f0400bed52"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/src/core-proxy.ts": {
-    "mtime": 1780176871.4209893,
-    "ast_hash": "ab18f205b90c2783ab018cc06d24be9e",
-    "semantic_hash": "ab18f205b90c2783ab018cc06d24be9e"
+    "mtime": 1780860671.6976497,
+    "ast_hash": "013c12f272c58a1138fc1c56d9e1d44b",
+    "semantic_hash": "013c12f272c58a1138fc1c56d9e1d44b"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/src/load-extension.ts": {
-    "mtime": 1780094051.3903108,
-    "ast_hash": "8f2164893de68c6ac5adf2d0f1aa89c6",
-    "semantic_hash": "8f2164893de68c6ac5adf2d0f1aa89c6"
+    "mtime": 1780955878.984641,
+    "ast_hash": "ee708a1664b61d7ae28eb99b22072600",
+    "semantic_hash": "ee708a1664b61d7ae28eb99b22072600"
+  },
+  "/home/xava/Documents/nuxy/packages/extension-host/src/proxy-fs.ts": {
+    "mtime": 1780683527.0390205,
+    "ast_hash": "9d482f5dc7eda780f799723194dadbe2",
+    "semantic_hash": "9d482f5dc7eda780f799723194dadbe2"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/src/worker-log.ts": {
     "mtime": 1780243736.5475829,
@@ -865,9 +1140,89 @@
     "semantic_hash": "6e7045b1f77b34fc0fef823477251710"
   },
   "/home/xava/Documents/nuxy/packages/extension-host/src/index.ts": {
-    "mtime": 1780136531.3159568,
-    "ast_hash": "4ace453fb88283fd9e583ffa156d2579",
-    "semantic_hash": "4ace453fb88283fd9e583ffa156d2579"
+    "mtime": 1780264702.053986,
+    "ast_hash": "8e1041fdee1c159a9568f8e23628b3cf",
+    "semantic_hash": "8e1041fdee1c159a9568f8e23628b3cf"
+  },
+  "/home/xava/Documents/nuxy/packages/extension-host/src/proxy-shell.ts": {
+    "mtime": 1780683295.4293716,
+    "ast_hash": "02c05093e4a7a5d35f7b206feb2f2a50",
+    "semantic_hash": "02c05093e4a7a5d35f7b206feb2f2a50"
+  },
+  "/home/xava/Documents/nuxy/packages/extension-host/src/proxy-settings.ts": {
+    "mtime": 1780860671.6976497,
+    "ast_hash": "fc2565b3f3b18bdbd7ae712253dad6b0",
+    "semantic_hash": "fc2565b3f3b18bdbd7ae712253dad6b0"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/tsconfig.json": {
+    "mtime": 1780944873.660971,
+    "ast_hash": "d7de931f2e7243c27415298901803d87",
+    "semantic_hash": "d7de931f2e7243c27415298901803d87"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/vite.config.ts": {
+    "mtime": 1780944975.4490383,
+    "ast_hash": "99a685a2de16964f7ed7f69be482f78a",
+    "semantic_hash": "99a685a2de16964f7ed7f69be482f78a"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/package.json": {
+    "mtime": 1780944848.677955,
+    "ast_hash": "0d74f6d22d9e769a8e176d9bcf01259d",
+    "semantic_hash": "0d74f6d22d9e769a8e176d9bcf01259d"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/virtual.d.ts": {
+    "mtime": 1780945077.106108,
+    "ast_hash": "f326f8a3b9294da57cbf76ab38707b88",
+    "semantic_hash": "f326f8a3b9294da57cbf76ab38707b88"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/MockPanel.ts": {
+    "mtime": 1780945064.108099,
+    "ast_hash": "213ecedb7dbeea08d551048beb0b3789",
+    "semantic_hash": "213ecedb7dbeea08d551048beb0b3789"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/main.ts": {
+    "mtime": 1780944994.9830515,
+    "ast_hash": "4cab54e8b671f62a059ee1d81711613b",
+    "semantic_hash": "4cab54e8b671f62a059ee1d81711613b"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/DevShell.ts": {
+    "mtime": 1780945017.0800667,
+    "ast_hash": "fd9c9e02b78fb8c08763dcc9896cbc7f",
+    "semantic_hash": "fd9c9e02b78fb8c08763dcc9896cbc7f"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/src/mock-core.ts": {
+    "mtime": 1780573153.8140097,
+    "ast_hash": "863152677e81414077e379c638753af1",
+    "semantic_hash": "863152677e81414077e379c638753af1"
+  },
+  "/home/xava/Documents/nuxy/scripts/create-ext.mjs": {
+    "mtime": 1780573154.4500065,
+    "ast_hash": "8c93df7783f8b4336bb1b3a7058f4790",
+    "semantic_hash": "8c93df7783f8b4336bb1b3a7058f4790"
+  },
+  "/home/xava/Documents/nuxy/scripts/doctor.mjs": {
+    "mtime": 1780945558.965336,
+    "ast_hash": "83ef23dc1dfec3cf6c1732ce6741fc02",
+    "semantic_hash": "83ef23dc1dfec3cf6c1732ce6741fc02"
+  },
+  "/home/xava/Documents/nuxy/scripts/dev-ext.mjs": {
+    "mtime": 1780440302.7923207,
+    "ast_hash": "d77628c403432346479e15a95308583f",
+    "semantic_hash": "d77628c403432346479e15a95308583f"
+  },
+  "/home/xava/Documents/nuxy/website/package.json": {
+    "mtime": 1780487845.1503222,
+    "ast_hash": "654eaf97b41ac9c4d2a3b4c892e3af69",
+    "semantic_hash": "654eaf97b41ac9c4d2a3b4c892e3af69"
+  },
+  "/home/xava/Documents/nuxy/website/docs/.vitepress/config.ts": {
+    "mtime": 1780487858.6510632,
+    "ast_hash": "0cefa1047583f8aa06f0c3e622b56e4b",
+    "semantic_hash": "0cefa1047583f8aa06f0c3e622b56e4b"
+  },
+  "/home/xava/Documents/nuxy/scratch/test-cleanup.js": {
+    "mtime": 1780954717.931617,
+    "ast_hash": "531087f00797ed05b9c100a2107959f9",
+    "semantic_hash": "531087f00797ed05b9c100a2107959f9"
   },
   "/home/xava/Documents/nuxy/scratch/robust_reset_shell.js": {
     "mtime": 1780094051.5663106,
@@ -879,15 +1234,15 @@
     "ast_hash": "b0c2aa1068877b20ea98728500b0c172",
     "semantic_hash": "b0c2aa1068877b20ea98728500b0c172"
   },
+  "/home/xava/Documents/nuxy/scratch/test-angrysearch-dom.js": {
+    "mtime": 1780954613.6332662,
+    "ast_hash": "b661bb77e901e1c168185a96f3f7cd93",
+    "semantic_hash": "b661bb77e901e1c168185a96f3f7cd93"
+  },
   "/home/xava/Documents/nuxy/scratch/scan-extensions.js": {
     "mtime": 1780154802.7214406,
     "ast_hash": "04e1ad25654b9579ac5f45c37cc97672",
     "semantic_hash": "04e1ad25654b9579ac5f45c37cc97672"
-  },
-  "/home/xava/Documents/nuxy/scratch/test_transpile.js": {
-    "mtime": 1780175651.066553,
-    "ast_hash": "26b96bf15fa9ab7c21a0fd978b208b6a",
-    "semantic_hash": "26b96bf15fa9ab7c21a0fd978b208b6a"
   },
   "/home/xava/Documents/nuxy/scratch/scan-report.json": {
     "mtime": 1780154802.7277725,
@@ -899,40 +1254,50 @@
     "ast_hash": "f6143c92f166b26fa9868b2ddf6a340e",
     "semantic_hash": "f6143c92f166b26fa9868b2ddf6a340e"
   },
+  "/home/xava/Documents/nuxy/scratch/screenshot.js": {
+    "mtime": 1780955878.9856412,
+    "ast_hash": "4ce562d87634e21ccf94f6c393a828aa",
+    "semantic_hash": "4ce562d87634e21ccf94f6c393a828aa"
+  },
+  "/home/xava/Documents/nuxy/extensions/e2e-helpers.ts": {
+    "mtime": 1781038455.7189891,
+    "ast_hash": "f5637b2aecd95f886a1db4bf5cefd4b3",
+    "semantic_hash": "f5637b2aecd95f886a1db4bf5cefd4b3"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell-i18n.ts": {
+    "mtime": 1780943380.920082,
+    "ast_hash": "3649e2cbc756222f31055fe58d0afa28",
+    "semantic_hash": "3649e2cbc756222f31055fe58d0afa28"
+  },
+  "/home/xava/Documents/nuxy/extensions/two-panel-nav.ts": {
+    "mtime": 1780941758.3355455,
+    "ast_hash": "ff77d101a59a81511845c71c64c1b3a7",
+    "semantic_hash": "ff77d101a59a81511845c71c64c1b3a7"
+  },
   "/home/xava/Documents/nuxy/extensions/global.d.ts": {
-    "mtime": 1779833784.400154,
-    "ast_hash": "5837207175b8037842de96d0e6005f46",
-    "semantic_hash": "5837207175b8037842de96d0e6005f46"
+    "mtime": 1780955878.9822083,
+    "ast_hash": "ffa3f202ebfeeee1eebed8cd4eed3269",
+    "semantic_hash": "ffa3f202ebfeeee1eebed8cd4eed3269"
   },
   "/home/xava/Documents/nuxy/extensions/tsconfig.json": {
-    "mtime": 1780094050.700288,
-    "ast_hash": "63fd6d19ff2b42b889f80ddb1709a135",
-    "semantic_hash": "63fd6d19ff2b42b889f80ddb1709a135"
-  },
-  "/home/xava/Documents/nuxy/extensions/theme-ocean/theme.json": {
-    "mtime": 1779547940.7363818,
-    "ast_hash": "f1c79f9479455ee0e961a7475f734da5",
-    "semantic_hash": "f1c79f9479455ee0e961a7475f734da5"
-  },
-  "/home/xava/Documents/nuxy/extensions/theme-ocean/manifest.json": {
-    "mtime": 1779304792.1130674,
-    "ast_hash": "2815b40f0554a815da12439e4dc284e2",
-    "semantic_hash": "2815b40f0554a815da12439e4dc284e2"
+    "mtime": 1780955878.9826412,
+    "ast_hash": "0b1f4cabcffd39068e39958da8eb6dde",
+    "semantic_hash": "0b1f4cabcffd39068e39958da8eb6dde"
   },
   "/home/xava/Documents/nuxy/extensions/icons-default/icons.json": {
-    "mtime": 1779812715.172263,
-    "ast_hash": "0cbcb075d98a49304ee74b289fd54e73",
-    "semantic_hash": "0cbcb075d98a49304ee74b289fd54e73"
+    "mtime": 1780682285.2197642,
+    "ast_hash": "a7cb7a01a61d800694c43f250fe63447",
+    "semantic_hash": "a7cb7a01a61d800694c43f250fe63447"
   },
   "/home/xava/Documents/nuxy/extensions/icons-default/manifest.json": {
     "mtime": 1779304793.152066,
     "ast_hash": "9ba8d9558c2d69eba945323cbda92a15",
     "semantic_hash": "9ba8d9558c2d69eba945323cbda92a15"
   },
-  "/home/xava/Documents/nuxy/extensions/ui-default/frontend.js": {
-    "mtime": 1780253600.842393,
-    "ast_hash": "63d1f23f1368e97c03648de1e989358a",
-    "semantic_hash": "63d1f23f1368e97c03648de1e989358a"
+  "/home/xava/Documents/nuxy/extensions/icons-default/package.json": {
+    "mtime": 1780758116.7175782,
+    "ast_hash": "1d2db8e40e425fba8b86eafe106eaffb",
+    "semantic_hash": "1d2db8e40e425fba8b86eafe106eaffb"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/manifest.json": {
     "mtime": 1779834742.292786,
@@ -940,364 +1305,769 @@
     "semantic_hash": "dc8e9335af29df316d4e0476d3cfd8b6"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/vite.config.ts": {
-    "mtime": 1780094051.2538242,
-    "ast_hash": "a113e91f28c2b89e99426d230e4f3f6c",
-    "semantic_hash": "a113e91f28c2b89e99426d230e4f3f6c"
+    "mtime": 1780955878.984641,
+    "ast_hash": "36dbb97264ea7bd77b7c174a603522b9",
+    "semantic_hash": "36dbb97264ea7bd77b7c174a603522b9"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/package.json": {
-    "mtime": 1780090412.8854227,
-    "ast_hash": "02432512693f2eb0e01956535472020c",
-    "semantic_hash": "02432512693f2eb0e01956535472020c"
+    "mtime": 1780944835.981947,
+    "ast_hash": "40c3f6a0d0b9d7b222241df9c7fce157",
+    "semantic_hash": "40c3f6a0d0b9d7b222241df9c7fce157"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/h.ts": {
+    "mtime": 1780926468.9717638,
+    "ast_hash": "a8a08af7582a9682b9a4dc56e14bdd1b",
+    "semantic_hash": "a8a08af7582a9682b9a4dc56e14bdd1b"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/entry.ts": {
-    "mtime": 1780088753.007391,
-    "ast_hash": "bd04b4c292aa23d5b088be498f3d4c07",
-    "semantic_hash": "bd04b4c292aa23d5b088be498f3d4c07"
+    "mtime": 1780955878.984641,
+    "ast_hash": "270c176be529988bdb68d247c99644ea",
+    "semantic_hash": "270c176be529988bdb68d247c99644ea"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/index.tsx": {
-    "mtime": 1780176871.4202101,
-    "ast_hash": "48f76c3f5a6ff4508abe3b1e62f74ab6",
-    "semantic_hash": "48f76c3f5a6ff4508abe3b1e62f74ab6"
+    "mtime": 1780913833.1094553,
+    "ast_hash": "0c5174bf831dd68e33c16ae1e4d6a002",
+    "semantic_hash": "0c5174bf831dd68e33c16ae1e4d6a002"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/host.ts": {
+    "mtime": 1780922498.1927931,
+    "ast_hash": "7a0f50b9f41d33388302b5dd527c02cb",
+    "semantic_hash": "7a0f50b9f41d33388302b5dd527c02cb"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/types.ts": {
+    "mtime": 1780922498.1927931,
+    "ast_hash": "b3eb4551915481583831bc554142aaa1",
+    "semantic_hash": "b3eb4551915481583831bc554142aaa1"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Label/index.tsx": {
-    "mtime": 1780094050.9753115,
-    "ast_hash": "03652fc19e03f4e0aeda44d943279b7d",
-    "semantic_hash": "03652fc19e03f4e0aeda44d943279b7d"
+    "mtime": 1780922498.1887932,
+    "ast_hash": "9b627381e634cd7aa435f427d71e048b",
+    "semantic_hash": "9b627381e634cd7aa435f427d71e048b"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Label/nuxy-label.ts": {
+    "mtime": 1780999218.6769154,
+    "ast_hash": "fa4a84c321bcc88fde4f4aeff5954ff1",
+    "semantic_hash": "fa4a84c321bcc88fde4f4aeff5954ff1"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/IconButton/index.tsx": {
-    "mtime": 1780094050.9553115,
-    "ast_hash": "c0220aa37a8a578a579e52e33a436142",
-    "semantic_hash": "c0220aa37a8a578a579e52e33a436142"
+    "mtime": 1780922498.1887932,
+    "ast_hash": "84800fd3ad9aa0f8bc7ac9ee36c1eaf4",
+    "semantic_hash": "84800fd3ad9aa0f8bc7ac9ee36c1eaf4"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/IconButton/nuxy-icon-button.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "ce268c67035b1e307ed7cbf4e79c92c4",
+    "semantic_hash": "ce268c67035b1e307ed7cbf4e79c92c4"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Modal/nuxy-alert-dialog.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "66599ea68b2c6ade157aef4880831506",
+    "semantic_hash": "66599ea68b2c6ade157aef4880831506"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Modal/index.tsx": {
-    "mtime": 1780094051.016043,
-    "ast_hash": "0c9a4ad00dc23552030bf2525c266d96",
-    "semantic_hash": "0c9a4ad00dc23552030bf2525c266d96"
+    "mtime": 1780922527.2658596,
+    "ast_hash": "d0071d5e92bb21dcac67eef1533852e5",
+    "semantic_hash": "d0071d5e92bb21dcac67eef1533852e5"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Modal/nuxy-modal.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "c0ae72f796aec502b61ffbafd87856fd",
+    "semantic_hash": "c0ae72f796aec502b61ffbafd87856fd"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Modal/AlertDialog.tsx": {
-    "mtime": 1780094051.0063114,
-    "ast_hash": "2d0d127c2d5e8751d0ce604f4b0bbeab",
-    "semantic_hash": "2d0d127c2d5e8751d0ce604f4b0bbeab"
+    "mtime": 1780922530.7118673,
+    "ast_hash": "96367a357d40300f3599f7e194618edf",
+    "semantic_hash": "96367a357d40300f3599f7e194618edf"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/TwoPanel/index.tsx": {
-    "mtime": 1780088745.9147,
-    "ast_hash": "9ebb49865a457983e82a1842b46be8d0",
-    "semantic_hash": "9ebb49865a457983e82a1842b46be8d0"
+    "mtime": 1780922498.1927931,
+    "ast_hash": "2bc47f9b8ec33b6a40a67db0e07563b5",
+    "semantic_hash": "2bc47f9b8ec33b6a40a67db0e07563b5"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/TwoPanel/nuxy-two-panel.ts": {
+    "mtime": 1780999241.8627625,
+    "ast_hash": "d10eeaf30704e10bffaec88272b2adbc",
+    "semantic_hash": "d10eeaf30704e10bffaec88272b2adbc"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/RadioGroup/nuxy-radio-group.ts": {
+    "mtime": 1780955905.2386618,
+    "ast_hash": "d25552e47b15454953898531b54d9583",
+    "semantic_hash": "d25552e47b15454953898531b54d9583"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/RadioGroup/index.tsx": {
-    "mtime": 1780094051.0623114,
-    "ast_hash": "845059ef78e6ec4affae4a3685e3d8c1",
-    "semantic_hash": "845059ef78e6ec4affae4a3685e3d8c1"
+    "mtime": 1780922562.4119396,
+    "ast_hash": "5464e7d3d1f340e5872b7d6498af4354",
+    "semantic_hash": "5464e7d3d1f340e5872b7d6498af4354"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Slider/nuxy-slider.ts": {
+    "mtime": 1780955885.1425898,
+    "ast_hash": "46c14402ec424d455707cbee58fb6e2e",
+    "semantic_hash": "46c14402ec424d455707cbee58fb6e2e"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Slider/index.tsx": {
-    "mtime": 1780088745.9139893,
-    "ast_hash": "2500691e937c0f16aace3b9da6afd1a1",
-    "semantic_hash": "2500691e937c0f16aace3b9da6afd1a1"
+    "mtime": 1780922534.3038754,
+    "ast_hash": "e8a20e2a7d165c69e28a9babcc583d11",
+    "semantic_hash": "e8a20e2a7d165c69e28a9babcc583d11"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ItemLeading/nuxy-item-leading.ts": {
+    "mtime": 1780999199.1470466,
+    "ast_hash": "5cc48f81c14098adbdab7352a3e277a3",
+    "semantic_hash": "5cc48f81c14098adbdab7352a3e277a3"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ItemLeading/index.tsx": {
-    "mtime": 1780094050.9633114,
-    "ast_hash": "a1ac518aef4097f2231f05bf1e08ac36",
-    "semantic_hash": "a1ac518aef4097f2231f05bf1e08ac36"
+    "mtime": 1780922498.1887932,
+    "ast_hash": "7c4bd2ddfa02698fefccd56e6c516de2",
+    "semantic_hash": "7c4bd2ddfa02698fefccd56e6c516de2"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ScrollArea/nuxy-scroll-area.ts": {
+    "mtime": 1780999212.2389584,
+    "ast_hash": "5b976f399a327c73387a573fdc906c1f",
+    "semantic_hash": "5b976f399a327c73387a573fdc906c1f"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ScrollArea/index.tsx": {
-    "mtime": 1780094051.070445,
-    "ast_hash": "808bbc1bda66c39cc42a837e764f3b61",
-    "semantic_hash": "808bbc1bda66c39cc42a837e764f3b61"
+    "mtime": 1780922550.8119133,
+    "ast_hash": "3c33ff3095fe57c5be1ac7ec1bd2a684",
+    "semantic_hash": "3c33ff3095fe57c5be1ac7ec1bd2a684"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tooltip/nuxy-tooltip.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "fc498fffb5c9e1f2c3bc9bc8b4d8cc3f",
+    "semantic_hash": "fc498fffb5c9e1f2c3bc9bc8b4d8cc3f"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tooltip/index.tsx": {
-    "mtime": 1780088745.9146612,
-    "ast_hash": "bf441b62fe22a240363ffd10781b42b8",
-    "semantic_hash": "bf441b62fe22a240363ffd10781b42b8"
+    "mtime": 1780922573.6619654,
+    "ast_hash": "63228b9b6d4275af8cb54bf229dcf5d0",
+    "semantic_hash": "63228b9b6d4275af8cb54bf229dcf5d0"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/NumberInput/nuxy-number-input.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "68fc01b728d081bbac08daaa25dec9cf",
+    "semantic_hash": "68fc01b728d081bbac08daaa25dec9cf"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/NumberInput/index.tsx": {
-    "mtime": 1780088745.9134245,
-    "ast_hash": "df4186b15e09710ca0f2a37d2fe13a17",
-    "semantic_hash": "df4186b15e09710ca0f2a37d2fe13a17"
+    "mtime": 1780922540.186889,
+    "ast_hash": "f706ceb45f360c465d6eda57201d2529",
+    "semantic_hash": "f706ceb45f360c465d6eda57201d2529"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/WizardSection/nuxy-wizard-section.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "2b981047ad2649ec25ea4f38bf71f638",
+    "semantic_hash": "2b981047ad2649ec25ea4f38bf71f638"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/WizardSection/index.tsx": {
-    "mtime": 1780176871.4202101,
-    "ast_hash": "cec6fe2df2bb2a755cc46b00b341f4d9",
-    "semantic_hash": "cec6fe2df2bb2a755cc46b00b341f4d9"
+    "mtime": 1780922498.1927931,
+    "ast_hash": "0ac8892c17783c2135c2554b91105ce7",
+    "semantic_hash": "0ac8892c17783c2135c2554b91105ce7"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Breadcrumb/nuxy-breadcrumb.ts": {
+    "mtime": 1780955878.9826412,
+    "ast_hash": "fef489fcae9caee2c16bb0798374d20b",
+    "semantic_hash": "fef489fcae9caee2c16bb0798374d20b"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Breadcrumb/index.tsx": {
-    "mtime": 1780094050.8363118,
-    "ast_hash": "4f33d51f6807d094cb3c036bbc277423",
-    "semantic_hash": "4f33d51f6807d094cb3c036bbc277423"
+    "mtime": 1780922564.797945,
+    "ast_hash": "1eadd4d5207a1d51a9f60a7629e23f27",
+    "semantic_hash": "1eadd4d5207a1d51a9f60a7629e23f27"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Callout/nuxy-callout.ts": {
+    "mtime": 1780955878.9826412,
+    "ast_hash": "813aab5f13944e13fe0cfa67e2a9f795",
+    "semantic_hash": "813aab5f13944e13fe0cfa67e2a9f795"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Callout/index.tsx": {
-    "mtime": 1780094050.8453116,
-    "ast_hash": "349822ebe64b831ca84c438d3430e43c",
-    "semantic_hash": "349822ebe64b831ca84c438d3430e43c"
+    "mtime": 1780922498.1797931,
+    "ast_hash": "9393e43cdc6d3f91fc2b21e3bf925988",
+    "semantic_hash": "9393e43cdc6d3f91fc2b21e3bf925988"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Stack/nuxy-stack.ts": {
+    "mtime": 1780999158.3713272,
+    "ast_hash": "125620298333c8b2625a29e398a7209a",
+    "semantic_hash": "125620298333c8b2625a29e398a7209a"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Stack/index.tsx": {
-    "mtime": 1780094051.1263113,
-    "ast_hash": "0d6db6153695a074c3b5d91dd0c3ff98",
-    "semantic_hash": "0d6db6153695a074c3b5d91dd0c3ff98"
+    "mtime": 1780922498.1907933,
+    "ast_hash": "acf3d7934b70d27b598cd93de47cf7b3",
+    "semantic_hash": "acf3d7934b70d27b598cd93de47cf7b3"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Spinner/nuxy-spinner.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "c05f86c626ead63cfc5edaca40e44e36",
+    "semantic_hash": "c05f86c626ead63cfc5edaca40e44e36"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Spinner/index.tsx": {
-    "mtime": 1780094051.1197345,
-    "ast_hash": "1aee1ef779148c7ea3f547a27696938d",
-    "semantic_hash": "1aee1ef779148c7ea3f547a27696938d"
+    "mtime": 1780922408.7045891,
+    "ast_hash": "476fdfce476a550a2bdfd2e518b22ae0",
+    "semantic_hash": "476fdfce476a550a2bdfd2e518b22ae0"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MarkdownText/nuxy-markdown-text.ts": {
+    "mtime": 1780999291.4854443,
+    "ast_hash": "1e27a0dd1c6bd9cbf022ed25f3ca45cd",
+    "semantic_hash": "1e27a0dd1c6bd9cbf022ed25f3ca45cd"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MarkdownText/index.tsx": {
-    "mtime": 1780180072.0430415,
-    "ast_hash": "a1a195dcbac0731334086d3c6707b16f",
-    "semantic_hash": "a1a195dcbac0731334086d3c6707b16f"
+    "mtime": 1780922408.702589,
+    "ast_hash": "2b89ee655d53bdf9db5c3e3ae304fc60",
+    "semantic_hash": "2b89ee655d53bdf9db5c3e3ae304fc60"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MarkdownText/markdown.ts": {
+    "mtime": 1780918976.1537337,
+    "ast_hash": "0d9aa8e2fe60f6a2aba6fd3238b9d1f5",
+    "semantic_hash": "0d9aa8e2fe60f6a2aba6fd3238b9d1f5"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MarkdownText/render-markdown.ts": {
+    "mtime": 1780919002.5527952,
+    "ast_hash": "d82f65ce691df6a3ae3dc21bad5c575e",
+    "semantic_hash": "d82f65ce691df6a3ae3dc21bad5c575e"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Divider/index.tsx": {
-    "mtime": 1780094050.8982136,
-    "ast_hash": "6048892c8a6f9f6960d01bbafc07f14e",
-    "semantic_hash": "6048892c8a6f9f6960d01bbafc07f14e"
+    "mtime": 1780922498.180793,
+    "ast_hash": "215d13a93ddd832268feba12246b5592",
+    "semantic_hash": "215d13a93ddd832268feba12246b5592"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Divider/nuxy-divider.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "02c9e9d9c66cd08df998e04bf2cfa576",
+    "semantic_hash": "02c9e9d9c66cd08df998e04bf2cfa576"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ChatMessage/index.tsx": {
-    "mtime": 1780176871.419257,
-    "ast_hash": "8dc5d991efa0b9b4d5c4892a46eccfab",
-    "semantic_hash": "8dc5d991efa0b9b4d5c4892a46eccfab"
+    "mtime": 1780922408.688589,
+    "ast_hash": "df7b4e9f1949dc37bbd32cc927be0901",
+    "semantic_hash": "df7b4e9f1949dc37bbd32cc927be0901"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ChatMessage/nuxy-chat-message.ts": {
+    "mtime": 1780955878.9826412,
+    "ast_hash": "fd01461906825f780a2d211893064407",
+    "semantic_hash": "fd01461906825f780a2d211893064407"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/List/index.tsx": {
-    "mtime": 1780088745.9130278,
-    "ast_hash": "b8ee6d7160931cb0d2b61e9c32d33c3c",
-    "semantic_hash": "b8ee6d7160931cb0d2b61e9c32d33c3c"
+    "mtime": 1780922498.1887932,
+    "ast_hash": "e4f4f5c995524aa5556bf2dd44e6bd8e",
+    "semantic_hash": "e4f4f5c995524aa5556bf2dd44e6bd8e"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/List/nuxy-list.ts": {
+    "mtime": 1780999165.831275,
+    "ast_hash": "cbf2b2e0d970e270e6db0a87c5216897",
+    "semantic_hash": "cbf2b2e0d970e270e6db0a87c5216897"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Switch/index.tsx": {
-    "mtime": 1780094051.1323113,
-    "ast_hash": "634250522eae67fc9899931b1294ce6c",
-    "semantic_hash": "634250522eae67fc9899931b1294ce6c"
+    "mtime": 1780922523.541063,
+    "ast_hash": "d4e56c54e7d52ddfa05da89983d19373",
+    "semantic_hash": "d4e56c54e7d52ddfa05da89983d19373"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Switch/nuxy-switch.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "be7615c3224d0d81356e0d094afe7e6b",
+    "semantic_hash": "be7615c3224d0d81356e0d094afe7e6b"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemText/index.tsx": {
-    "mtime": 1780088745.9132812,
-    "ast_hash": "9d371cd3d33969761810731037ec7693",
-    "semantic_hash": "9d371cd3d33969761810731037ec7693"
+    "mtime": 1780922498.189793,
+    "ast_hash": "498eca0bdf10b778dde30e3781d403be",
+    "semantic_hash": "498eca0bdf10b778dde30e3781d403be"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemText/nuxy-list-item-text.ts": {
+    "mtime": 1780999196.2130663,
+    "ast_hash": "b7db1ae5aac0efb376fd0c29248dc041",
+    "semantic_hash": "b7db1ae5aac0efb376fd0c29248dc041"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/EmptyState/nuxy-empty-state.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "b629bebba220172cc55df0aec691e3a3",
+    "semantic_hash": "b629bebba220172cc55df0aec691e3a3"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/EmptyState/index.tsx": {
-    "mtime": 1780088745.912467,
-    "ast_hash": "3460c77fa70d2201f86d8f6e2df9bf34",
-    "semantic_hash": "3460c77fa70d2201f86d8f6e2df9bf34"
+    "mtime": 1780922649.8371391,
+    "ast_hash": "88e2b0e1220bbd8404dc6548bbdcb4b5",
+    "semantic_hash": "88e2b0e1220bbd8404dc6548bbdcb4b5"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Badge/nuxy-badge.ts": {
+    "mtime": 1780999154.4303548,
+    "ast_hash": "da4979f6fcf89a0be3268311d6c3c116",
+    "semantic_hash": "da4979f6fcf89a0be3268311d6c3c116"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Badge/index.tsx": {
-    "mtime": 1780088745.911793,
-    "ast_hash": "1901870c752bd17a5c81af186b4dd89d",
-    "semantic_hash": "1901870c752bd17a5c81af186b4dd89d"
+    "mtime": 1780922498.1797931,
+    "ast_hash": "09325fb87dcd4711a0db30a7dc0c5376",
+    "semantic_hash": "09325fb87dcd4711a0db30a7dc0c5376"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/nuxy-stepper.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "fc566eedd1361415b57c8732e6a98ffc",
+    "semantic_hash": "fc566eedd1361415b57c8732e6a98ffc"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/nuxy-tabs.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "7f10b9f67f1c7344a9ca581e08b5dc72",
+    "semantic_hash": "7f10b9f67f1c7344a9ca581e08b5dc72"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/Stepper.tsx": {
-    "mtime": 1780094051.1693113,
-    "ast_hash": "a26c3067e21de7879745c23020dada17",
-    "semantic_hash": "a26c3067e21de7879745c23020dada17"
+    "mtime": 1780922408.7045891,
+    "ast_hash": "3cb47e2d9cc9d08db2ec7cb79c42f00f",
+    "semantic_hash": "3cb47e2d9cc9d08db2ec7cb79c42f00f"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/index.tsx": {
-    "mtime": 1780094051.1623113,
-    "ast_hash": "d98a343cff838ade788bbfb4f83d40e5",
-    "semantic_hash": "d98a343cff838ade788bbfb4f83d40e5"
+    "mtime": 1780922558.5189307,
+    "ast_hash": "7ee6c0f9ffb9fad858250ea5595df2dc",
+    "semantic_hash": "7ee6c0f9ffb9fad858250ea5595df2dc"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/Pagination.tsx": {
-    "mtime": 1780094051.165311,
-    "ast_hash": "bcc9d7e16b07722dc013f9da0f427518",
-    "semantic_hash": "bcc9d7e16b07722dc013f9da0f427518"
+    "mtime": 1780922560.4739354,
+    "ast_hash": "1adcc7ecf3d88764d788af37d287ccbe",
+    "semantic_hash": "1adcc7ecf3d88764d788af37d287ccbe"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tabs/nuxy-pagination.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "1c63b7c3e273c78312190437b970ae7d",
+    "semantic_hash": "1c63b7c3e273c78312190437b970ae7d"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemBody/index.tsx": {
-    "mtime": 1780088745.913181,
-    "ast_hash": "f72bd3e112c4296fd1172d1eb2d91a6a",
-    "semantic_hash": "f72bd3e112c4296fd1172d1eb2d91a6a"
+    "mtime": 1780922408.702589,
+    "ast_hash": "575a1f94e25097925375256612469eb4",
+    "semantic_hash": "575a1f94e25097925375256612469eb4"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemBody/nuxy-list-item-body.ts": {
+    "mtime": 1780999190.8364809,
+    "ast_hash": "119dfe920413cdc143c88b03409c8ed4",
+    "semantic_hash": "119dfe920413cdc143c88b03409c8ed4"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItem/index.tsx": {
-    "mtime": 1780088745.9130783,
-    "ast_hash": "b54f549b08506b0e251ea04cf48dd947",
-    "semantic_hash": "b54f549b08506b0e251ea04cf48dd947"
+    "mtime": 1780922498.1887932,
+    "ast_hash": "5f1e0887a578e491a8ca85c325d58f67",
+    "semantic_hash": "5f1e0887a578e491a8ca85c325d58f67"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItem/nuxy-list-item.ts": {
+    "mtime": 1780999202.9520206,
+    "ast_hash": "458cc96ab922da074689279cc452ed74",
+    "semantic_hash": "458cc96ab922da074689279cc452ed74"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Heading/nuxy-heading.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "dca3dfdd5f8b5e4afd934625f24da78f",
+    "semantic_hash": "dca3dfdd5f8b5e4afd934625f24da78f"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Heading/index.tsx": {
-    "mtime": 1780088745.9126318,
-    "ast_hash": "3a97c730cf49cc85d454a43097e6dd70",
-    "semantic_hash": "3a97c730cf49cc85d454a43097e6dd70"
+    "mtime": 1780922498.1877933,
+    "ast_hash": "9ba02d1531e3566ec798fe53caef77d5",
+    "semantic_hash": "9ba02d1531e3566ec798fe53caef77d5"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Collapsible/nuxy-accordion.ts": {
+    "mtime": 1780999174.2922163,
+    "ast_hash": "1c9a9866c3fe250536a08ec574af2306",
+    "semantic_hash": "1c9a9866c3fe250536a08ec574af2306"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Collapsible/index.tsx": {
-    "mtime": 1780094050.8846543,
-    "ast_hash": "6e92adcd86fa8922ce0b3ab8147655b6",
-    "semantic_hash": "6e92adcd86fa8922ce0b3ab8147655b6"
+    "mtime": 1780922588.123346,
+    "ast_hash": "dbc81fd9eacb017a1eaaa6bcb5580b96",
+    "semantic_hash": "dbc81fd9eacb017a1eaaa6bcb5580b96"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Collapsible/nuxy-collapsible.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "0f57996468e578ce4179bb34332c7d22",
+    "semantic_hash": "0f57996468e578ce4179bb34332c7d22"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Box/nuxy-box.ts": {
+    "mtime": 1780999162.962295,
+    "ast_hash": "0a573aae9b872d215768f2f1cb12c237",
+    "semantic_hash": "0a573aae9b872d215768f2f1cb12c237"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Box/index.tsx": {
-    "mtime": 1780094050.8303118,
-    "ast_hash": "b138049bfb5bfad23c7f5d4911a1a683",
-    "semantic_hash": "b138049bfb5bfad23c7f5d4911a1a683"
+    "mtime": 1780922588.1219983,
+    "ast_hash": "8df118b3c5394d52cd8048421953dbd7",
+    "semantic_hash": "8df118b3c5394d52cd8048421953dbd7"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Card/nuxy-card.ts": {
+    "mtime": 1780999208.3119848,
+    "ast_hash": "ca0889201e963556c3d2f153a063c898",
+    "semantic_hash": "ca0889201e963556c3d2f153a063c898"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Card/index.tsx": {
-    "mtime": 1780094050.8513117,
-    "ast_hash": "694c43e4aa293c07273d1fe37ff4bdaa",
-    "semantic_hash": "694c43e4aa293c07273d1fe37ff4bdaa"
+    "mtime": 1780922498.180793,
+    "ast_hash": "04e25b55c36f2b092d81fcb6aa4e7b63",
+    "semantic_hash": "04e25b55c36f2b092d81fcb6aa4e7b63"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Grid/nuxy-grid.ts": {
+    "mtime": 1780999228.089545,
+    "ast_hash": "47ebd83b1526849c415ff952a199f678",
+    "semantic_hash": "47ebd83b1526849c415ff952a199f678"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Grid/index.tsx": {
-    "mtime": 1780088745.912578,
-    "ast_hash": "fcdb5228d52a26309ac815ffbdb332d8",
-    "semantic_hash": "fcdb5228d52a26309ac815ffbdb332d8"
+    "mtime": 1780922548.9189088,
+    "ast_hash": "08c7396ee381e919bd9d57f1f452afb0",
+    "semantic_hash": "08c7396ee381e919bd9d57f1f452afb0"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ToolHost/nuxy-tool-host.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "169155289fa89b108d434f9ee9bced30",
+    "semantic_hash": "169155289fa89b108d434f9ee9bced30"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/DropdownMenu/nuxy-dropdown-menu.ts": {
+    "mtime": 1780999234.909808,
+    "ast_hash": "39acea7a515dd3e48f7d9b66cdfd0b6c",
+    "semantic_hash": "39acea7a515dd3e48f7d9b66cdfd0b6c"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/DropdownMenu/index.tsx": {
-    "mtime": 1780094050.907759,
-    "ast_hash": "429d20dbf65dd33626dd3a0ae3635427",
-    "semantic_hash": "429d20dbf65dd33626dd3a0ae3635427"
+    "mtime": 1780922582.104539,
+    "ast_hash": "2ba20e6141dcea554e5d272010728149",
+    "semantic_hash": "2ba20e6141dcea554e5d272010728149"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Input/nuxy-input.ts": {
+    "mtime": 1780999276.575695,
+    "ast_hash": "f502724e84bae457256271d35be62e32",
+    "semantic_hash": "f502724e84bae457256271d35be62e32"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Input/index.tsx": {
-    "mtime": 1780088745.912781,
-    "ast_hash": "1a15c5f0143930366c430e11173bf43f",
-    "semantic_hash": "1a15c5f0143930366c430e11173bf43f"
+    "mtime": 1780922502.6248033,
+    "ast_hash": "9b3c89ff9b0b13db070c38e5400c5c8a",
+    "semantic_hash": "9b3c89ff9b0b13db070c38e5400c5c8a"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/TabBar/index.tsx": {
-    "mtime": 1780094051.1425488,
-    "ast_hash": "98c81355e48b4a18205f646a910320cc",
-    "semantic_hash": "98c81355e48b4a18205f646a910320cc"
+    "mtime": 1780922500.696755,
+    "ast_hash": "b2a32858c3735c66c8a54c279dcfb3bc",
+    "semantic_hash": "b2a32858c3735c66c8a54c279dcfb3bc"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/TabBar/nuxy-tab-bar.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "1cc8fa70eea8b957313eac976f481e92",
+    "semantic_hash": "1cc8fa70eea8b957313eac976f481e92"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SearchInput/index.tsx": {
-    "mtime": 1780094051.0753114,
-    "ast_hash": "5a6daf621dc53af17094e7bef9a33b56",
-    "semantic_hash": "5a6daf621dc53af17094e7bef9a33b56"
+    "mtime": 1780922538.2008843,
+    "ast_hash": "c0c40c8c54f9f0d7ca085bd87bac6f45",
+    "semantic_hash": "c0c40c8c54f9f0d7ca085bd87bac6f45"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SearchInput/nuxy-search-input.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "b0bd241db092c1dd3dffbafa246c6750",
+    "semantic_hash": "b0bd241db092c1dd3dffbafa246c6750"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Checkbox/index.tsx": {
-    "mtime": 1780094050.8583117,
-    "ast_hash": "ed7843828d6d6bced3ac19feffc40e10",
-    "semantic_hash": "ed7843828d6d6bced3ac19feffc40e10"
+    "mtime": 1780922525.2306666,
+    "ast_hash": "1846c19710e0473d836782be3c20629e",
+    "semantic_hash": "1846c19710e0473d836782be3c20629e"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Checkbox/nuxy-checkbox.ts": {
+    "mtime": 1780955878.9826412,
+    "ast_hash": "43f80f7e0bb74bfacfc102ace33beabc",
+    "semantic_hash": "43f80f7e0bb74bfacfc102ace33beabc"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Button/nuxy-button.ts": {
+    "mtime": 1780955878.9826412,
+    "ast_hash": "7f2639d3cd5e3fc8df4c6b7bf712f577",
+    "semantic_hash": "7f2639d3cd5e3fc8df4c6b7bf712f577"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Button/index.tsx": {
-    "mtime": 1780088745.9119496,
-    "ast_hash": "8309e4d191bb6e0a5bf1cb5c2af61d30",
-    "semantic_hash": "8309e4d191bb6e0a5bf1cb5c2af61d30"
+    "mtime": 1780922498.1797931,
+    "ast_hash": "9dcfdfad49bbf7c529f267f1f066e927",
+    "semantic_hash": "9dcfdfad49bbf7c529f267f1f066e927"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ConversionCard/index.tsx": {
-    "mtime": 1780176871.4193952,
-    "ast_hash": "353b402f447d9aceed89b4b6e7592e30",
-    "semantic_hash": "353b402f447d9aceed89b4b6e7592e30"
+    "mtime": 1780922498.180793,
+    "ast_hash": "e56f9ad02ec008e1d81b43553686e71b",
+    "semantic_hash": "e56f9ad02ec008e1d81b43553686e71b"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ConversionCard/nuxy-conversion-card.ts": {
+    "mtime": 1780999303.2533705,
+    "ast_hash": "c65b6a19f82ac8056c51159dc2a140a7",
+    "semantic_hash": "c65b6a19f82ac8056c51159dc2a140a7"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemMeta/nuxy-list-item-meta.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "ca0185991ad1282a5551c2cd82aa9a89",
+    "semantic_hash": "ca0185991ad1282a5551c2cd82aa9a89"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemMeta/index.tsx": {
-    "mtime": 1780088745.9132326,
-    "ast_hash": "5e45c524e8209006b31b456ae20b331e",
-    "semantic_hash": "5e45c524e8209006b31b456ae20b331e"
+    "mtime": 1780922408.702589,
+    "ast_hash": "00e89f599719985303cf37aa65cea949",
+    "semantic_hash": "00e89f599719985303cf37aa65cea949"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ShortcutBar/index.tsx": {
-    "mtime": 1780088745.9138253,
-    "ast_hash": "908b159a7f2af15e8435a5c0982594c3",
-    "semantic_hash": "908b159a7f2af15e8435a5c0982594c3"
+    "mtime": 1780922408.703589,
+    "ast_hash": "408239e0efe553eba268876d0e532592",
+    "semantic_hash": "408239e0efe553eba268876d0e532592"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ShortcutBar/nuxy-shortcut-bar.ts": {
+    "mtime": 1780999188.8361166,
+    "ast_hash": "7dbd70f83fcb1545a343dd0466fe6dc0",
+    "semantic_hash": "7dbd70f83fcb1545a343dd0466fe6dc0"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Link/index.tsx": {
-    "mtime": 1780088745.9129918,
-    "ast_hash": "be378f9672ac48a0e026047b357ad313",
-    "semantic_hash": "be378f9672ac48a0e026047b357ad313"
+    "mtime": 1780922498.1887932,
+    "ast_hash": "2c67738f0dcef664eb6ccb60e11f4be6",
+    "semantic_hash": "2c67738f0dcef664eb6ccb60e11f4be6"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Link/nuxy-link.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "8641d128bec46061f833f46947011c96",
+    "semantic_hash": "8641d128bec46061f833f46947011c96"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ShortcutHint/index.tsx": {
-    "mtime": 1780088745.9138782,
-    "ast_hash": "d66e2e75e687717ecc45710e1ef4df11",
-    "semantic_hash": "d66e2e75e687717ecc45710e1ef4df11"
+    "mtime": 1780922408.703589,
+    "ast_hash": "ca65f50c08cc8cc495c9406b40015e75",
+    "semantic_hash": "ca65f50c08cc8cc495c9406b40015e75"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ShortcutHint/nuxy-shortcut-hint.ts": {
+    "mtime": 1780999176.7041998,
+    "ast_hash": "32fe6d02c9bc345d4bec435e9abc2d83",
+    "semantic_hash": "32fe6d02c9bc345d4bec435e9abc2d83"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ProgressBar/nuxy-progress-bar.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "6b186d5761add4ec12c2b548b090bd70",
+    "semantic_hash": "6b186d5761add4ec12c2b548b090bd70"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ProgressBar/index.tsx": {
-    "mtime": 1780094051.0473113,
-    "ast_hash": "e53f1b15974a5607cf0eb2fd22aa21c1",
-    "semantic_hash": "e53f1b15974a5607cf0eb2fd22aa21c1"
+    "mtime": 1780922576.7189722,
+    "ast_hash": "5dc03d73733a6187d65810cef4fcf26d",
+    "semantic_hash": "5dc03d73733a6187d65810cef4fcf26d"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SelectBox/index.tsx": {
-    "mtime": 1780094051.0943112,
-    "ast_hash": "6a818cf88cb5d8c641f7b4c8b82bf767",
-    "semantic_hash": "6a818cf88cb5d8c641f7b4c8b82bf767"
+    "mtime": 1780922499.0854092,
+    "ast_hash": "0a351b4fad270287dacbb03df70e3147",
+    "semantic_hash": "0a351b4fad270287dacbb03df70e3147"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SelectBox/nuxy-select-box.ts": {
+    "mtime": 1780957311.59487,
+    "ast_hash": "4f70a9cf03abc41f79172879779a251c",
+    "semantic_hash": "4f70a9cf03abc41f79172879779a251c"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Kbd/index.tsx": {
-    "mtime": 1780088745.9128819,
-    "ast_hash": "11df13024d2d3f5a684efc67f6ac355d",
-    "semantic_hash": "11df13024d2d3f5a684efc67f6ac355d"
+    "mtime": 1780945141.6751533,
+    "ast_hash": "6b2d2036168b51d04b11e9cb06fde0ab",
+    "semantic_hash": "6b2d2036168b51d04b11e9cb06fde0ab"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Kbd/nuxy-kbd.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "61242fea984ed6a27c4cb106bae60814",
+    "semantic_hash": "61242fea984ed6a27c4cb106bae60814"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Icon/icon-paths.ts": {
+    "mtime": 1780918982.0737357,
+    "ast_hash": "70ba8a19f5b488078f8f0d31a65a7e61",
+    "semantic_hash": "70ba8a19f5b488078f8f0d31a65a7e61"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Icon/index.tsx": {
-    "mtime": 1780094050.9493115,
-    "ast_hash": "baf08985c7d826326ae53737a27b42d2",
-    "semantic_hash": "baf08985c7d826326ae53737a27b42d2"
+    "mtime": 1780922498.1877933,
+    "ast_hash": "dd2d41d12c2a8d34028c3cb4fd21c1f2",
+    "semantic_hash": "dd2d41d12c2a8d34028c3cb4fd21c1f2"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Icon/nuxy-icon.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "2b67bc665c7f1961e1a82bbd41b999aa",
+    "semantic_hash": "2b67bc665c7f1961e1a82bbd41b999aa"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SectionHeader/nuxy-section-header.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "70c9a839091dd5f9a188a64374432569",
+    "semantic_hash": "70c9a839091dd5f9a188a64374432569"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/SectionHeader/index.tsx": {
-    "mtime": 1780176871.4200602,
-    "ast_hash": "deb8ea7c10c893271861f9dd2b15c91d",
-    "semantic_hash": "deb8ea7c10c893271861f9dd2b15c91d"
+    "mtime": 1780922583.8829887,
+    "ast_hash": "3c263eabcf5f0162a96b5637dc41a582",
+    "semantic_hash": "3c263eabcf5f0162a96b5637dc41a582"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Alert/index.tsx": {
-    "mtime": 1780088745.9116673,
-    "ast_hash": "71d7af8a67af2fab10cea08c54aaf45e",
-    "semantic_hash": "71d7af8a67af2fab10cea08c54aaf45e"
+    "mtime": 1780922498.1797931,
+    "ast_hash": "9cda1e7b9637f728ea306651623341ee",
+    "semantic_hash": "9cda1e7b9637f728ea306651623341ee"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Alert/nuxy-alert.ts": {
+    "mtime": 1780999151.9660666,
+    "ast_hash": "76cdc6df4e48cc84e06fffe1b692d5da",
+    "semantic_hash": "76cdc6df4e48cc84e06fffe1b692d5da"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/PropertiesPanel/index.tsx": {
-    "mtime": 1780176871.4197106,
-    "ast_hash": "13d215c3f941e224de75f80d63584c2a",
-    "semantic_hash": "13d215c3f941e224de75f80d63584c2a"
+    "mtime": 1780922564.8917656,
+    "ast_hash": "471b714159597944dd922a371c02f007",
+    "semantic_hash": "471b714159597944dd922a371c02f007"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/PropertiesPanel/nuxy-properties-panel.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "a0ae513e124a517313379efa442fd0fb",
+    "semantic_hash": "a0ae513e124a517313379efa442fd0fb"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CircularProgress/nuxy-banner.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "a515b7f1e9bc1f5de8e0ef6e42cb9037",
+    "semantic_hash": "a515b7f1e9bc1f5de8e0ef6e42cb9037"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CircularProgress/nuxy-error-state.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "3a4545590acd64d26bc5e2e2484b0a18",
+    "semantic_hash": "3a4545590acd64d26bc5e2e2484b0a18"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CircularProgress/nuxy-circular-progress.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "e51af8a3c4acc59f6a6138044d943433",
+    "semantic_hash": "e51af8a3c4acc59f6a6138044d943433"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CircularProgress/index.tsx": {
-    "mtime": 1780094050.8683116,
-    "ast_hash": "e71f8575a876ae272a6b194186c31e57",
-    "semantic_hash": "e71f8575a876ae272a6b194186c31e57"
+    "mtime": 1780922579.8539793,
+    "ast_hash": "1274c59c67e5f5aa4c624623ade1a375",
+    "semantic_hash": "1274c59c67e5f5aa4c624623ade1a375"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CopyButton/index.tsx": {
-    "mtime": 1780094050.8893116,
-    "ast_hash": "29f3a5b7e5fa4f1a0e5a954266606cce",
-    "semantic_hash": "29f3a5b7e5fa4f1a0e5a954266606cce"
+    "mtime": 1780922408.6975892,
+    "ast_hash": "dceb721a84b1e9320f6ba8a31b0267e7",
+    "semantic_hash": "dceb721a84b1e9320f6ba8a31b0267e7"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/CopyButton/nuxy-copy-button.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "616a7c724c2a1d1fb27255428389c07a",
+    "semantic_hash": "616a7c724c2a1d1fb27255428389c07a"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/PinInput/index.tsx": {
-    "mtime": 1780094051.0353115,
-    "ast_hash": "6ef658771f4bfcebd3270d622dffc39e",
-    "semantic_hash": "6ef658771f4bfcebd3270d622dffc39e"
+    "mtime": 1780922542.6198945,
+    "ast_hash": "88f9895b845fa195918cd04f2458b77c",
+    "semantic_hash": "88f9895b845fa195918cd04f2458b77c"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/PinInput/nuxy-pin-input.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "0e2aafccfe321e9eb875cf7eaf96c5dc",
+    "semantic_hash": "0e2aafccfe321e9eb875cf7eaf96c5dc"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tag/nuxy-tag.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "1dbe0e55f764aa920152303e4850f4ee",
+    "semantic_hash": "1dbe0e55f764aa920152303e4850f4ee"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Tag/index.tsx": {
-    "mtime": 1780094051.1773112,
-    "ast_hash": "bdec2922cc432eb4433db0bc7f60d3f2",
-    "semantic_hash": "bdec2922cc432eb4433db0bc7f60d3f2"
+    "mtime": 1780922575.2259688,
+    "ast_hash": "b7eff2cf674bffe809baf85b1f763455",
+    "semantic_hash": "b7eff2cf674bffe809baf85b1f763455"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/LoadingState/nuxy-loading-state.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "e5dd5b634f332dbdbeba1279d828f6f4",
+    "semantic_hash": "e5dd5b634f332dbdbeba1279d828f6f4"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/LoadingState/index.tsx": {
-    "mtime": 1780176871.4193952,
-    "ast_hash": "8cffd48a2f0743b5e3a954375a523a6e",
-    "semantic_hash": "8cffd48a2f0743b5e3a954375a523a6e"
+    "mtime": 1780922408.702589,
+    "ast_hash": "a59ad80282c7232914711a1686f30080",
+    "semantic_hash": "a59ad80282c7232914711a1686f30080"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemActions/index.tsx": {
-    "mtime": 1780088745.91313,
-    "ast_hash": "4b9a4a2fa4d3eefb860f1883e88c1f53",
-    "semantic_hash": "4b9a4a2fa4d3eefb860f1883e88c1f53"
+    "mtime": 1780922408.702589,
+    "ast_hash": "ee4ddc801a98450b4e2df1a5b7a2af89",
+    "semantic_hash": "ee4ddc801a98450b4e2df1a5b7a2af89"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/ListItemActions/nuxy-list-item-actions.ts": {
+    "mtime": 1780999192.8330894,
+    "ast_hash": "d15c860e2b252ee2d05c9135eb63801a",
+    "semantic_hash": "d15c860e2b252ee2d05c9135eb63801a"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Avatar/nuxy-avatar.ts": {
+    "mtime": 1780955878.9826412,
+    "ast_hash": "d3eed6c83e5fe0a8d15a9fb09a28558c",
+    "semantic_hash": "d3eed6c83e5fe0a8d15a9fb09a28558c"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Avatar/nuxy-avatar-group.ts": {
+    "mtime": 1780999253.4266872,
+    "ast_hash": "0cdf694e2a9e6502968e21391e5d9fd3",
+    "semantic_hash": "0cdf694e2a9e6502968e21391e5d9fd3"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Avatar/index.tsx": {
-    "mtime": 1780094050.8234372,
-    "ast_hash": "1458b1b1f4b0fe2f0a6aa45cbb178a5a",
-    "semantic_hash": "1458b1b1f4b0fe2f0a6aa45cbb178a5a"
+    "mtime": 1780922498.1797931,
+    "ast_hash": "743618c5eb90edc7fc28c573e8476372",
+    "semantic_hash": "743618c5eb90edc7fc28c573e8476372"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Table/index.tsx": {
-    "mtime": 1780094051.1532722,
-    "ast_hash": "075c2858f1ad41abb1fab745cd7c57cc",
-    "semantic_hash": "075c2858f1ad41abb1fab745cd7c57cc"
+    "mtime": 1780922648.3457255,
+    "ast_hash": "824e6a6e815656c39b313c97d581836f",
+    "semantic_hash": "824e6a6e815656c39b313c97d581836f"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Table/nuxy-table.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "e1a8c0e711b47d39422430f8e5db9270",
+    "semantic_hash": "e1a8c0e711b47d39422430f8e5db9270"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/nuxy-text.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "a8785035fdabe13700ea623437dd0bfb",
+    "semantic_hash": "a8785035fdabe13700ea623437dd0bfb"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/nuxy-visually-hidden.ts": {
+    "mtime": 1780999172.33423,
+    "ast_hash": "37acbbd13970de567a96ec4074d6af2f",
+    "semantic_hash": "37acbbd13970de567a96ec4074d6af2f"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/VisuallyHidden.tsx": {
-    "mtime": 1780088745.9144619,
-    "ast_hash": "223500e482c3fc9a1b6782f30c1bbbd6",
-    "semantic_hash": "223500e482c3fc9a1b6782f30c1bbbd6"
+    "mtime": 1780922498.1917932,
+    "ast_hash": "1109c2edabd6cc908ba34f9062d5c48f",
+    "semantic_hash": "1109c2edabd6cc908ba34f9062d5c48f"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/Portal.tsx": {
-    "mtime": 1780088745.9144955,
-    "ast_hash": "ef40b6d60786c88212713a872308c0f0",
-    "semantic_hash": "ef40b6d60786c88212713a872308c0f0"
+    "mtime": 1780922498.1917932,
+    "ast_hash": "c9edd247b8e45f9a14ddd41274b0ba61",
+    "semantic_hash": "c9edd247b8e45f9a14ddd41274b0ba61"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/index.tsx": {
-    "mtime": 1780094051.185311,
-    "ast_hash": "f771cc8cb52273ed936f5ab8cf28331f",
-    "semantic_hash": "f771cc8cb52273ed936f5ab8cf28331f"
+    "mtime": 1780922498.1917932,
+    "ast_hash": "488b3163cecd9189a44922820ee7e278",
+    "semantic_hash": "488b3163cecd9189a44922820ee7e278"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/nuxy-aspect-ratio.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "28093bb65a6e8241cd18e54870212307",
+    "semantic_hash": "28093bb65a6e8241cd18e54870212307"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/nuxy-portal.ts": {
+    "mtime": 1780999417.1866877,
+    "ast_hash": "9e658b790a03040d3200d81b7081c9db",
+    "semantic_hash": "9e658b790a03040d3200d81b7081c9db"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Text/AspectRatio.tsx": {
-    "mtime": 1780088745.9144793,
-    "ast_hash": "61a7fb6c3394cc7fad5fb41fa354d4db",
-    "semantic_hash": "61a7fb6c3394cc7fad5fb41fa354d4db"
+    "mtime": 1780922498.1917932,
+    "ast_hash": "f18fa239639b910ab0ccab1c7bc36a90",
+    "semantic_hash": "f18fa239639b910ab0ccab1c7bc36a90"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MediaPreview/index.tsx": {
-    "mtime": 1780154750.550099,
-    "ast_hash": "3fcaf0a732be80d0ebfef4e515b2fb49",
-    "semantic_hash": "3fcaf0a732be80d0ebfef4e515b2fb49"
+    "mtime": 1780922645.3572712,
+    "ast_hash": "a2ec882dfecd9becdf6603000a074817",
+    "semantic_hash": "a2ec882dfecd9becdf6603000a074817"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/MediaPreview/nuxy-media-preview.ts": {
+    "mtime": 1780955878.9836411,
+    "ast_hash": "40d47078db0313032c954665f4770c83",
+    "semantic_hash": "40d47078db0313032c954665f4770c83"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Textarea/index.tsx": {
-    "mtime": 1780088745.9145465,
-    "ast_hash": "59493ed1040ed0349c9257f18974a30c",
-    "semantic_hash": "59493ed1040ed0349c9257f18974a30c"
+    "mtime": 1780922504.206807,
+    "ast_hash": "7c0fb426897771dc4eb58df8c04eba64",
+    "semantic_hash": "7c0fb426897771dc4eb58df8c04eba64"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Textarea/nuxy-textarea.ts": {
+    "mtime": 1780999284.713487,
+    "ast_hash": "e9a5c7f19120a1e84fa2651408734082",
+    "semantic_hash": "e9a5c7f19120a1e84fa2651408734082"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Code/index.tsx": {
-    "mtime": 1780177188.145384,
-    "ast_hash": "6a63d7bc939222f7bca79488ccc53635",
-    "semantic_hash": "6a63d7bc939222f7bca79488ccc53635"
+    "mtime": 1780922498.180793,
+    "ast_hash": "674f87ec612c63cd991e9fb66a0adc66",
+    "semantic_hash": "674f87ec612c63cd991e9fb66a0adc66"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Code/nuxy-code.ts": {
+    "mtime": 1780999186.3611333,
+    "ast_hash": "e50437c75553f54d1638243e2ac6346a",
+    "semantic_hash": "e50437c75553f54d1638243e2ac6346a"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Code/nuxy-code-block.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "5ff83dc4111bb249a2038e67ba81acef",
+    "semantic_hash": "5ff83dc4111bb249a2038e67ba81acef"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/FileInput/index.tsx": {
-    "mtime": 1780094050.9273117,
-    "ast_hash": "fe48b061af75a4271b802067d026bf68",
-    "semantic_hash": "fe48b061af75a4271b802067d026bf68"
+    "mtime": 1780922545.9349022,
+    "ast_hash": "fdacc65ef604b12d8ff2958221719c3c",
+    "semantic_hash": "fdacc65ef604b12d8ff2958221719c3c"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/FileInput/nuxy-file-input.ts": {
+    "mtime": 1780955878.983347,
+    "ast_hash": "b5aa5adc90bebeba1e2aaa1de242f1da",
+    "semantic_hash": "b5aa5adc90bebeba1e2aaa1de242f1da"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Toaster/nuxy-toaster.ts": {
+    "mtime": 1780955878.984641,
+    "ast_hash": "27c53cbdb9c6e242b59267a19d5b5045",
+    "semantic_hash": "27c53cbdb9c6e242b59267a19d5b5045"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Toaster/store.ts": {
     "mtime": 1780088745.91458,
@@ -1305,139 +2075,99 @@
     "semantic_hash": "edd801898090f1e7d37a4e104f49ba3a"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Toaster/index.tsx": {
-    "mtime": 1780094051.202311,
-    "ast_hash": "76fde23d008229ddb77262f909e34c1c",
-    "semantic_hash": "76fde23d008229ddb77262f909e34c1c"
+    "mtime": 1780922604.5130358,
+    "ast_hash": "09919e1f61a32e3d8eabe678173c7f18",
+    "semantic_hash": "09919e1f61a32e3d8eabe678173c7f18"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Skeleton/index.tsx": {
-    "mtime": 1780094051.1053114,
-    "ast_hash": "36e7c77de2bcc35c490f05c63b586939",
-    "semantic_hash": "36e7c77de2bcc35c490f05c63b586939"
+    "mtime": 1780922498.1907933,
+    "ast_hash": "659f9294f5211e022373a1b38e62fc04",
+    "semantic_hash": "659f9294f5211e022373a1b38e62fc04"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/components/Skeleton/nuxy-skeleton.ts": {
+    "mtime": 1780999169.6272488,
+    "ast_hash": "5ab665dc5329212fbb4818328c6e8d8d",
+    "semantic_hash": "5ab665dc5329212fbb4818328c6e8d8d"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/hooks/useToolKeyActions.ts": {
-    "mtime": 1780224821.5624297,
-    "ast_hash": "cf5049d3aadb7390fd2791985ba0b504",
-    "semantic_hash": "cf5049d3aadb7390fd2791985ba0b504"
+    "mtime": 1780930732.8645968,
+    "ast_hash": "481de1292f84cb1d735b32adc95c2130",
+    "semantic_hash": "481de1292f84cb1d735b32adc95c2130"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/hooks/useTwoPanelNav.ts": {
-    "mtime": 1780152504.8958719,
-    "ast_hash": "0606ef172706adfca01d51e4d80ec362",
-    "semantic_hash": "0606ef172706adfca01d51e4d80ec362"
+    "mtime": 1780922626.9630868,
+    "ast_hash": "6a86788334a2589e16f1c85001dafa30",
+    "semantic_hash": "6a86788334a2589e16f1c85001dafa30"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/hooks/useListNavigation.ts": {
-    "mtime": 1780224826.285437,
-    "ast_hash": "485b4a4fcc966e08248a848787ebadba",
-    "semantic_hash": "485b4a4fcc966e08248a848787ebadba"
+    "mtime": 1780922656.4821541,
+    "ast_hash": "b63ca42d38821e2b25ff1f5e59520a83",
+    "semantic_hash": "b63ca42d38821e2b25ff1f5e59520a83"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/src/hooks/useTranslation.ts": {
+    "mtime": 1780922607.6130428,
+    "ast_hash": "19e7dc9df322fcb559656a7a43f2f47c",
+    "semantic_hash": "19e7dc9df322fcb559656a7a43f2f47c"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/utils/scroll.ts": {
-    "mtime": 1780094051.249311,
-    "ast_hash": "4d82ab1efc5f01200dfa101a9e39004a",
-    "semantic_hash": "4d82ab1efc5f01200dfa101a9e39004a"
+    "mtime": 1780763256.7081013,
+    "ast_hash": "76eed4a9ce5bb788a2ba0c8e728d5a92",
+    "semantic_hash": "76eed4a9ce5bb788a2ba0c8e728d5a92"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/src/utils/highlight.ts": {
-    "mtime": 1780177179.1573706,
-    "ast_hash": "57410622dce3839e4c453a0be3daa732",
-    "semantic_hash": "57410622dce3839e4c453a0be3daa732"
+    "mtime": 1780573150.9222224,
+    "ast_hash": "c6788c44c3eb04f4a042269b6b3fa3ff",
+    "semantic_hash": "c6788c44c3eb04f4a042269b6b3fa3ff"
   },
   "/home/xava/Documents/nuxy/extensions/ui-default/scripts/inline-css.mjs": {
-    "mtime": 1779835187.8239782,
-    "ast_hash": "5d7651949220fa7c555c727b27a04e11",
-    "semantic_hash": "5d7651949220fa7c555c727b27a04e11"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/frontend.tsx": {
-    "mtime": 1780256518.5008159,
-    "ast_hash": "9f221ff3120915dcf7e5b56bb5dc488e",
-    "semantic_hash": "9f221ff3120915dcf7e5b56bb5dc488e"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/e2e.spec.ts": {
-    "mtime": 1780176871.417174,
-    "ast_hash": "f59f655e5439d14869afcbc355f6f8b7",
-    "semantic_hash": "f59f655e5439d14869afcbc355f6f8b7"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/backend.ts": {
-    "mtime": 1780094350.3278227,
-    "ast_hash": "20be77e01983c88b03bf3007e7e4d958",
-    "semantic_hash": "20be77e01983c88b03bf3007e7e4d958"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/manifest.json": {
-    "mtime": 1780094129.4041848,
-    "ast_hash": "96ca7d3a9fda509de83b9c25130602eb",
-    "semantic_hash": "96ca7d3a9fda509de83b9c25130602eb"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/backend.test.ts": {
-    "mtime": 1780095702.9645293,
-    "ast_hash": "6abd5ef5c2f6c2d6d35579ce90730b1b",
-    "semantic_hash": "6abd5ef5c2f6c2d6d35579ce90730b1b"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/types.ts": {
-    "mtime": 1779833898.2162514,
-    "ast_hash": "0c20eca0221c2cdd90a09ebfc355f4b1",
-    "semantic_hash": "0c20eca0221c2cdd90a09ebfc355f4b1"
-  },
-  "/home/xava/Documents/nuxy/extensions/n8n/package.json": {
-    "mtime": 1779696633.8932543,
-    "ast_hash": "1043a83c3403e7d523e2736ba1e2760c",
-    "semantic_hash": "1043a83c3403e7d523e2736ba1e2760c"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/frontend.tsx": {
-    "mtime": 1780245167.5975041,
-    "ast_hash": "5f6a929bba05702ad3bcc892bdbfcec6",
-    "semantic_hash": "5f6a929bba05702ad3bcc892bdbfcec6"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/settings.json": {
-    "mtime": 1780181068.336543,
-    "ast_hash": "56a8ab93bf044f048820dc72e4b2968f",
-    "semantic_hash": "56a8ab93bf044f048820dc72e4b2968f"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/backend.ts": {
-    "mtime": 1780181167.0028145,
-    "ast_hash": "53ad3724c63e74300cb11e8d1880680f",
-    "semantic_hash": "53ad3724c63e74300cb11e8d1880680f"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/manifest.json": {
-    "mtime": 1780176871.4175968,
-    "ast_hash": "0951e7d672a83ed771e008eae2c067a9",
-    "semantic_hash": "0951e7d672a83ed771e008eae2c067a9"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/backend.test.ts": {
-    "mtime": 1780180462.05209,
-    "ast_hash": "ef37108500c6fcd496af6800b74b8b0d",
-    "semantic_hash": "ef37108500c6fcd496af6800b74b8b0d"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/types.ts": {
-    "mtime": 1780180400.598773,
-    "ast_hash": "135d4eccb24ad6f0a5db04e2b75aca16",
-    "semantic_hash": "135d4eccb24ad6f0a5db04e2b75aca16"
-  },
-  "/home/xava/Documents/nuxy/extensions/ollama/package.json": {
-    "mtime": 1779695780.304641,
-    "ast_hash": "5b11ecae4628aff63bf658f307a3ab56",
-    "semantic_hash": "5b11ecae4628aff63bf658f307a3ab56"
+    "mtime": 1780763314.8047934,
+    "ast_hash": "387c390a0c76b51cc752593872e57d1d",
+    "semantic_hash": "387c390a0c76b51cc752593872e57d1d"
   },
   "/home/xava/Documents/nuxy/extensions/notes/frontend.tsx": {
-    "mtime": 1780247727.4842093,
-    "ast_hash": "a34628f4bfde75398693fee00fb9f02b",
-    "semantic_hash": "a34628f4bfde75398693fee00fb9f02b"
+    "mtime": 1780913861.4359899,
+    "ast_hash": "aac33ff205443d0baeb4a90a21e1cf50",
+    "semantic_hash": "aac33ff205443d0baeb4a90a21e1cf50"
   },
   "/home/xava/Documents/nuxy/extensions/notes/e2e.spec.ts": {
-    "mtime": 1780257396.4127295,
-    "ast_hash": "643397720e893296996fec27d744d1a6",
-    "semantic_hash": "643397720e893296996fec27d744d1a6"
+    "mtime": 1780935011.3992174,
+    "ast_hash": "d297699c9bed9f4a0aa5eb4f784bb980",
+    "semantic_hash": "d297699c9bed9f4a0aa5eb4f784bb980"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/settings.json": {
+    "mtime": 1780354719.4392123,
+    "ast_hash": "5ecd113e958ea0c5c305aff2fea70c50",
+    "semantic_hash": "5ecd113e958ea0c5c305aff2fea70c50"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/nuxy-tool-notes.test.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "db6e888f3c1851d2cad5db29028a736d",
+    "semantic_hash": "db6e888f3c1851d2cad5db29028a736d"
   },
   "/home/xava/Documents/nuxy/extensions/notes/backend.ts": {
-    "mtime": 1780246817.6759367,
-    "ast_hash": "0b939d725973b4af97fd50db4809d2cc",
-    "semantic_hash": "0b939d725973b4af97fd50db4809d2cc"
+    "mtime": 1780573149.1392248,
+    "ast_hash": "6ef474bad094194c12f833d3e39c8288",
+    "semantic_hash": "6ef474bad094194c12f833d3e39c8288"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/notes-controller.ts": {
+    "mtime": 1780943393.980058,
+    "ast_hash": "a2fe27668da53b9adce5b9f5ff633a5a",
+    "semantic_hash": "a2fe27668da53b9adce5b9f5ff633a5a"
   },
   "/home/xava/Documents/nuxy/extensions/notes/manifest.json": {
-    "mtime": 1780176871.4175968,
-    "ast_hash": "12f0dd73a315d69a01e68f7e4890769b",
-    "semantic_hash": "12f0dd73a315d69a01e68f7e4890769b"
+    "mtime": 1780913873.2773485,
+    "ast_hash": "040d4d5469ee85f038bdaa79d5cfc718",
+    "semantic_hash": "040d4d5469ee85f038bdaa79d5cfc718"
   },
   "/home/xava/Documents/nuxy/extensions/notes/backend.test.ts": {
-    "mtime": 1780154801.6591606,
-    "ast_hash": "c2b24bd187bc2b59ad3ace2a0f42d0c8",
-    "semantic_hash": "c2b24bd187bc2b59ad3ace2a0f42d0c8"
+    "mtime": 1780763289.9469237,
+    "ast_hash": "39b867e002f8beb7a70cce4eb5758bb7",
+    "semantic_hash": "39b867e002f8beb7a70cce4eb5758bb7"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/nuxy-tool-notes.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "9f87690280ca2a90510db2e7a91a3899",
+    "semantic_hash": "9f87690280ca2a90510db2e7a91a3899"
   },
   "/home/xava/Documents/nuxy/extensions/notes/types.ts": {
     "mtime": 1779833925.6656961,
@@ -1449,265 +2179,250 @@
     "ast_hash": "57515cb793040381398054442b809cad",
     "semantic_hash": "57515cb793040381398054442b809cad"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/backend.ts": {
-    "mtime": 1780176871.4148028,
-    "ast_hash": "9245445ff481f574b7efe87d7c8f4979",
-    "semantic_hash": "9245445ff481f574b7efe87d7c8f4979"
+  "/home/xava/Documents/nuxy/extensions/notes/locales/tr.json": {
+    "mtime": 1780354719.4392123,
+    "ast_hash": "02e9ad9c82249f8e3a2521db5974244b",
+    "semantic_hash": "02e9ad9c82249f8e3a2521db5974244b"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/manifest.json": {
-    "mtime": 1780094128.4511864,
-    "ast_hash": "e214fb63b6cafcec8245d0d832c5d12f",
-    "semantic_hash": "e214fb63b6cafcec8245d0d832c5d12f"
+  "/home/xava/Documents/nuxy/extensions/notes/locales/en.json": {
+    "mtime": 1780354719.4390738,
+    "ast_hash": "4e239bdf597d25b012fc370c3c580443",
+    "semantic_hash": "4e239bdf597d25b012fc370c3c580443"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/backend.test.ts": {
-    "mtime": 1780176871.4148028,
-    "ast_hash": "638bb6e4d388af0218fe9ef041645764",
-    "semantic_hash": "638bb6e4d388af0218fe9ef041645764"
+  "/home/xava/Documents/nuxy/extensions/notes/locales/ja.json": {
+    "mtime": 1780528396.7405984,
+    "ast_hash": "aff4dd94682344aae74cb336927b6fd6",
+    "semantic_hash": "aff4dd94682344aae74cb336927b6fd6"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/types.ts": {
-    "mtime": 1780176871.4149816,
-    "ast_hash": "3c6ec6ab8fa07f4c4cb3c381635bfeb7",
-    "semantic_hash": "3c6ec6ab8fa07f4c4cb3c381635bfeb7"
+  "/home/xava/Documents/nuxy/extensions/notes/utils/noteTitle.test.ts": {
+    "mtime": 1780452814.8125925,
+    "ast_hash": "03b61d8f46737697319ebc3cd2844f74",
+    "semantic_hash": "03b61d8f46737697319ebc3cd2844f74"
   },
-  "/home/xava/Documents/nuxy/extensions/ai-orchestrator/package.json": {
-    "mtime": 1779376636.516428,
-    "ast_hash": "ca4370866bd5eea8d780b53acf0fbd7a",
-    "semantic_hash": "ca4370866bd5eea8d780b53acf0fbd7a"
+  "/home/xava/Documents/nuxy/extensions/notes/utils/ipc.ts": {
+    "mtime": 1780488419.4614582,
+    "ast_hash": "69e1820af2ac5ae9f1cfc8acbf3c0d45",
+    "semantic_hash": "69e1820af2ac5ae9f1cfc8acbf3c0d45"
   },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/frontend.tsx": {
-    "mtime": 1780256525.3478248,
-    "ast_hash": "485dbc6c44ff0160f430a06698356c4c",
-    "semantic_hash": "485dbc6c44ff0160f430a06698356c4c"
+  "/home/xava/Documents/nuxy/extensions/notes/utils/noteTitle.ts": {
+    "mtime": 1780452807.6685343,
+    "ast_hash": "920812edcd3c11dbc99c8045f2120f88",
+    "semantic_hash": "920812edcd3c11dbc99c8045f2120f88"
   },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/e2e.spec.ts": {
-    "mtime": 1780176871.4204857,
-    "ast_hash": "657a0ec9163a97b816a4b5c0cff72aa6",
-    "semantic_hash": "657a0ec9163a97b816a4b5c0cff72aa6"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/settings.json": {
-    "mtime": 1780135682.609254,
-    "ast_hash": "7a4e852ebb54132c7647c122b96222ae",
-    "semantic_hash": "7a4e852ebb54132c7647c122b96222ae"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/backend.ts": {
-    "mtime": 1780154802.4260519,
-    "ast_hash": "8b565198d1b5187f73519b52d707bc75",
-    "semantic_hash": "8b565198d1b5187f73519b52d707bc75"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/manifest.json": {
-    "mtime": 1780176871.420742,
-    "ast_hash": "3d0d14cc6d2121cbdfc410e8b302c3af",
-    "semantic_hash": "3d0d14cc6d2121cbdfc410e8b302c3af"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/backend.test.ts": {
-    "mtime": 1780154802.4164386,
-    "ast_hash": "8b17af9f8564d935b0c5f5ff9c42b36f",
-    "semantic_hash": "8b17af9f8564d935b0c5f5ff9c42b36f"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/types.ts": {
-    "mtime": 1780154802.478259,
-    "ast_hash": "debfc9825cda628f214698ae6a7cbda1",
-    "semantic_hash": "debfc9825cda628f214698ae6a7cbda1"
-  },
-  "/home/xava/Documents/nuxy/extensions/video-downloader/package.json": {
-    "mtime": 1779695726.5950902,
-    "ast_hash": "c6e8f8c5823725b170ab117081a1e823",
-    "semantic_hash": "c6e8f8c5823725b170ab117081a1e823"
-  },
-  "/home/xava/Documents/nuxy/extensions/settings/frontend.tsx": {
-    "mtime": 1780176871.4182513,
-    "ast_hash": "62e3950286808666404b7b762b07d5f8",
-    "semantic_hash": "62e3950286808666404b7b762b07d5f8"
+  "/home/xava/Documents/nuxy/extensions/settings/settings-meta.ts": {
+    "mtime": 1780943259.192353,
+    "ast_hash": "56576ac73c45a9b7029b6b9d84cbf7c0",
+    "semantic_hash": "56576ac73c45a9b7029b6b9d84cbf7c0"
   },
   "/home/xava/Documents/nuxy/extensions/settings/e2e.spec.ts": {
-    "mtime": 1780176871.4181156,
-    "ast_hash": "e44858b099e1e17c74bfaa59b510002e",
-    "semantic_hash": "e44858b099e1e17c74bfaa59b510002e"
+    "mtime": 1780931578.018754,
+    "ast_hash": "51aa77db28542686e8eea893019c62d7",
+    "semantic_hash": "51aa77db28542686e8eea893019c62d7"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/frontend.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "39996a7883aa54eea206f8ac461b3143",
+    "semantic_hash": "39996a7883aa54eea206f8ac461b3143"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/settings-data.ts": {
+    "mtime": 1780922136.8684418,
+    "ast_hash": "4bf4a257170c4e604ccf9846e30dbd25",
+    "semantic_hash": "4bf4a257170c4e604ccf9846e30dbd25"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/frontend.test.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "aa159eb7c554ccab9ad1ffb692962724",
+    "semantic_hash": "aa159eb7c554ccab9ad1ffb692962724"
   },
   "/home/xava/Documents/nuxy/extensions/settings/backend.ts": {
-    "mtime": 1780176871.4179897,
-    "ast_hash": "03ed5ec4346726d63df4f5a19fed34fb",
-    "semantic_hash": "03ed5ec4346726d63df4f5a19fed34fb"
+    "mtime": 1780955878.9822083,
+    "ast_hash": "81db0d3cddc22c4a4e603de0262a49d8",
+    "semantic_hash": "81db0d3cddc22c4a4e603de0262a49d8"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/settings-actions.ts": {
+    "mtime": 1780943254.2413661,
+    "ast_hash": "f063629bc3195a4f572702cb2aa87374",
+    "semantic_hash": "f063629bc3195a4f572702cb2aa87374"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/settings-controller.ts": {
+    "mtime": 1780943384.635075,
+    "ast_hash": "063c96ac2a9c16bb46854723b988e6ff",
+    "semantic_hash": "063c96ac2a9c16bb46854723b988e6ff"
   },
   "/home/xava/Documents/nuxy/extensions/settings/manifest.json": {
-    "mtime": 1780136412.4129162,
-    "ast_hash": "4e2fdd8db6fa0d132a3f65f578875c3c",
-    "semantic_hash": "4e2fdd8db6fa0d132a3f65f578875c3c"
+    "mtime": 1780955878.9822083,
+    "ast_hash": "32dc3e2355670064e1c02d75c4563e10",
+    "semantic_hash": "32dc3e2355670064e1c02d75c4563e10"
   },
   "/home/xava/Documents/nuxy/extensions/settings/backend.test.ts": {
-    "mtime": 1780176871.4178758,
-    "ast_hash": "cc68fe13ffb7ec18b11db625b789cb81",
-    "semantic_hash": "cc68fe13ffb7ec18b11db625b789cb81"
+    "mtime": 1780955878.9822083,
+    "ast_hash": "c5e2f06d923c3f02f3e71efd066a6204",
+    "semantic_hash": "c5e2f06d923c3f02f3e71efd066a6204"
   },
   "/home/xava/Documents/nuxy/extensions/settings/types.ts": {
-    "mtime": 1780154701.6707788,
-    "ast_hash": "45c9dfef010d4dc113ba9582ea412916",
-    "semantic_hash": "45c9dfef010d4dc113ba9582ea412916"
+    "mtime": 1780943224.663447,
+    "ast_hash": "54864571a351f7113123853a4ba12f28",
+    "semantic_hash": "54864571a351f7113123853a4ba12f28"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/frontend.tsx": {
-    "mtime": 1780244671.326707,
-    "ast_hash": "fb4c14ed053b222d0580b6462f84ca10",
-    "semantic_hash": "fb4c14ed053b222d0580b6462f84ca10"
+  "/home/xava/Documents/nuxy/extensions/settings/package.json": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "579a9fe2ddd28cdc4bfed91298393ef7",
+    "semantic_hash": "579a9fe2ddd28cdc4bfed91298393ef7"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/backend.ts": {
-    "mtime": 1780154801.2004306,
-    "ast_hash": "0d629e25f549ec87bf38be8f397a9b64",
-    "semantic_hash": "0d629e25f549ec87bf38be8f397a9b64"
+  "/home/xava/Documents/nuxy/extensions/settings/locales/tr.json": {
+    "mtime": 1780943275.337486,
+    "ast_hash": "2c353be39924ba2bd8b597c64fa9132f",
+    "semantic_hash": "2c353be39924ba2bd8b597c64fa9132f"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/manifest.json": {
-    "mtime": 1780094050.0207026,
-    "ast_hash": "c745da44b56662dc617bd3e1594e9afe",
-    "semantic_hash": "c745da44b56662dc617bd3e1594e9afe"
+  "/home/xava/Documents/nuxy/extensions/settings/locales/en.json": {
+    "mtime": 1780943268.045664,
+    "ast_hash": "8d2053fd422bcfbdf84c87401df9f155",
+    "semantic_hash": "8d2053fd422bcfbdf84c87401df9f155"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/backend.test.ts": {
-    "mtime": 1780176871.4153225,
-    "ast_hash": "7e82152c198663f73b00ebc5bede537f",
-    "semantic_hash": "7e82152c198663f73b00ebc5bede537f"
+  "/home/xava/Documents/nuxy/extensions/settings/locales/ja.json": {
+    "mtime": 1780943281.9781606,
+    "ast_hash": "b0e8c6820f1984cff25fffa8a7438513",
+    "semantic_hash": "b0e8c6820f1984cff25fffa8a7438513"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/types.ts": {
-    "mtime": 1779833918.578773,
-    "ast_hash": "15abbf6ab878a92e3b0c68e9ece0b815",
-    "semantic_hash": "15abbf6ab878a92e3b0c68e9ece0b815"
+  "/home/xava/Documents/nuxy/extensions/settings/utils/settingsOptions.test.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "5e1fb9f0f73a5f9d39d1061b838a9953",
+    "semantic_hash": "5e1fb9f0f73a5f9d39d1061b838a9953"
   },
-  "/home/xava/Documents/nuxy/extensions/bitwarden/package.json": {
-    "mtime": 1779696632.0822542,
-    "ast_hash": "0452bd60e3c3098f6cc44a6124a83201",
-    "semantic_hash": "0452bd60e3c3098f6cc44a6124a83201"
+  "/home/xava/Documents/nuxy/extensions/settings/utils/settingsOptions.ts": {
+    "mtime": 1780943247.7553833,
+    "ast_hash": "6f263ec965a3f38d7b74cf6b5bc38314",
+    "semantic_hash": "6f263ec965a3f38d7b74cf6b5bc38314"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/frontend.tsx": {
-    "mtime": 1780176871.4167933,
-    "ast_hash": "1ab5a822e02fdec42f2208df56a6c24c",
-    "semantic_hash": "1ab5a822e02fdec42f2208df56a6c24c"
+  "/home/xava/Documents/nuxy/extensions/theme-sakura/theme.json": {
+    "mtime": 1780510100.180072,
+    "ast_hash": "3dfa0999feaeb7290088158031ab69ba",
+    "semantic_hash": "3dfa0999feaeb7290088158031ab69ba"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/e2e.spec.ts": {
-    "mtime": 1780095630.104654,
-    "ast_hash": "631f6891dc401d4f999dd5584eea32e4",
-    "semantic_hash": "631f6891dc401d4f999dd5584eea32e4"
+  "/home/xava/Documents/nuxy/extensions/theme-sakura/manifest.json": {
+    "mtime": 1780506605.3035715,
+    "ast_hash": "d59ca3106eeba93ebb9ec102f5918fac",
+    "semantic_hash": "d59ca3106eeba93ebb9ec102f5918fac"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/emojis.json": {
-    "mtime": 1780094050.2363126,
-    "ast_hash": "99a6a14ee6fe3d682ee2b99032a38782",
-    "semantic_hash": "99a6a14ee6fe3d682ee2b99032a38782"
+  "/home/xava/Documents/nuxy/extensions/theme-sakura/package.json": {
+    "mtime": 1780758117.0344007,
+    "ast_hash": "a908f887b48f09c394a1446b7ecb65da",
+    "semantic_hash": "a908f887b48f09c394a1446b7ecb65da"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/backend.ts": {
-    "mtime": 1780094050.1993127,
-    "ast_hash": "7ec3c265ba4bea9bce5850de381bd989",
-    "semantic_hash": "7ec3c265ba4bea9bce5850de381bd989"
+  "/home/xava/Documents/nuxy/extensions/nyaa/frontend.tsx": {
+    "mtime": 1780913872.7373514,
+    "ast_hash": "d80aff68722d628fa112a7b5767c0f1a",
+    "semantic_hash": "d80aff68722d628fa112a7b5767c0f1a"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/manifest.json": {
-    "mtime": 1780154244.3777893,
-    "ast_hash": "fc1247c2efac025589ddf420070fd210",
-    "semantic_hash": "fc1247c2efac025589ddf420070fd210"
+  "/home/xava/Documents/nuxy/extensions/nyaa/e2e.spec.ts": {
+    "mtime": 1780935654.5991895,
+    "ast_hash": "4d378e4cece501fddd2bba823408ccdb",
+    "semantic_hash": "4d378e4cece501fddd2bba823408ccdb"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/backend.test.ts": {
-    "mtime": 1780176871.4166589,
-    "ast_hash": "7489382fdbe378281213fd29570e4852",
-    "semantic_hash": "7489382fdbe378281213fd29570e4852"
+  "/home/xava/Documents/nuxy/extensions/nyaa/nuxy-tool-nyaa.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "c6f81f4daf0ac77f0d19cf792d854d68",
+    "semantic_hash": "c6f81f4daf0ac77f0d19cf792d854d68"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/types.ts": {
-    "mtime": 1779833895.1775565,
-    "ast_hash": "e70f64e1909935e8833134c958a195da",
-    "semantic_hash": "e70f64e1909935e8833134c958a195da"
+  "/home/xava/Documents/nuxy/extensions/nyaa/nyaa-controller.ts": {
+    "mtime": 1780943397.0750525,
+    "ast_hash": "e1dc3a94ad17b0719958e6b4cba9d996",
+    "semantic_hash": "e1dc3a94ad17b0719958e6b4cba9d996"
   },
-  "/home/xava/Documents/nuxy/extensions/emoji-picker/package.json": {
-    "mtime": 1779376636.5173895,
-    "ast_hash": "8e5ee6c15952141eb79a39d8456621aa",
-    "semantic_hash": "8e5ee6c15952141eb79a39d8456621aa"
+  "/home/xava/Documents/nuxy/extensions/nyaa/settings.json": {
+    "mtime": 1780557146.007328,
+    "ast_hash": "9137deedd719a22d2573e45aa99d3fbc",
+    "semantic_hash": "9137deedd719a22d2573e45aa99d3fbc"
   },
-  "/home/xava/Documents/nuxy/extensions/theme-glassmorphism/theme.json": {
-    "mtime": 1779547942.73938,
-    "ast_hash": "151a77160afb24439d4f01fa9ff4d450",
-    "semantic_hash": "151a77160afb24439d4f01fa9ff4d450"
+  "/home/xava/Documents/nuxy/extensions/nyaa/backend.ts": {
+    "mtime": 1780557415.3525457,
+    "ast_hash": "9c74475abefa8972260c02f709367a9e",
+    "semantic_hash": "9c74475abefa8972260c02f709367a9e"
   },
-  "/home/xava/Documents/nuxy/extensions/theme-glassmorphism/manifest.json": {
-    "mtime": 1779394241.4181697,
-    "ast_hash": "3c8218562cbb871f596b817b5df937be",
-    "semantic_hash": "3c8218562cbb871f596b817b5df937be"
+  "/home/xava/Documents/nuxy/extensions/nyaa/manifest.json": {
+    "mtime": 1780913874.289343,
+    "ast_hash": "b6a9dfa015ae0c3b22d125b56d3bfa09",
+    "semantic_hash": "b6a9dfa015ae0c3b22d125b56d3bfa09"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/backend.test.ts": {
+    "mtime": 1780573149.2200367,
+    "ast_hash": "8333fd1e53e015249eae83522414bfe5",
+    "semantic_hash": "8333fd1e53e015249eae83522414bfe5"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/nuxy-tool-nyaa.test.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "f5d6fc126ae88de6566327c090c1f68b",
+    "semantic_hash": "f5d6fc126ae88de6566327c090c1f68b"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/types.ts": {
+    "mtime": 1780557128.6777246,
+    "ast_hash": "f0151b97f8b99b017be7313666d80bf2",
+    "semantic_hash": "f0151b97f8b99b017be7313666d80bf2"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/package.json": {
+    "mtime": 1780935306.3485036,
+    "ast_hash": "1ae0f2566cf99c7ccdd2ce57fea29e17",
+    "semantic_hash": "1ae0f2566cf99c7ccdd2ce57fea29e17"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/locales/tr.json": {
+    "mtime": 1780557324.4606059,
+    "ast_hash": "0054a0c1006143ae9e9bde2e3d767d98",
+    "semantic_hash": "0054a0c1006143ae9e9bde2e3d767d98"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/locales/en.json": {
+    "mtime": 1780557312.6846378,
+    "ast_hash": "83601cbbcb5f5455bd9bffcac631e588",
+    "semantic_hash": "83601cbbcb5f5455bd9bffcac631e588"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/locales/ja.json": {
+    "mtime": 1780557334.9025834,
+    "ast_hash": "38dbd729b8db1857bf03a0ad1d8c6150",
+    "semantic_hash": "38dbd729b8db1857bf03a0ad1d8c6150"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/utils/parse.ts": {
+    "mtime": 1780508675.3591063,
+    "ast_hash": "1242402ad8939323773ad1b52c50efa3",
+    "semantic_hash": "1242402ad8939323773ad1b52c50efa3"
   },
   "/home/xava/Documents/nuxy/extensions/gradient/frontend.tsx": {
-    "mtime": 1780182494.6712892,
-    "ast_hash": "a857092728c963f894e3c9cb555440cf",
-    "semantic_hash": "a857092728c963f894e3c9cb555440cf"
+    "mtime": 1780930674.2190278,
+    "ast_hash": "3867d833c816351ef52a89dda23f3e59",
+    "semantic_hash": "3867d833c816351ef52a89dda23f3e59"
   },
   "/home/xava/Documents/nuxy/extensions/gradient/e2e.spec.ts": {
-    "mtime": 1780178088.7210631,
-    "ast_hash": "83016cc1e49bb3c971f13f268a2d6dc3",
-    "semantic_hash": "83016cc1e49bb3c971f13f268a2d6dc3"
+    "mtime": 1780930903.09268,
+    "ast_hash": "844a90e456dc29f4a1e7afec645941d7",
+    "semantic_hash": "844a90e456dc29f4a1e7afec645941d7"
   },
   "/home/xava/Documents/nuxy/extensions/gradient/gradient.ts": {
     "mtime": 1780176871.4170618,
     "ast_hash": "0f59d015775a9f9e06eca333a02a3e1a",
     "semantic_hash": "0f59d015775a9f9e06eca333a02a3e1a"
   },
+  "/home/xava/Documents/nuxy/extensions/gradient/nuxy-gradient-layer.ts": {
+    "mtime": 1780930947.2036908,
+    "ast_hash": "c126f03d08ef1e6de9d0a39e7f0574bf",
+    "semantic_hash": "c126f03d08ef1e6de9d0a39e7f0574bf"
+  },
   "/home/xava/Documents/nuxy/extensions/gradient/manifest.json": {
-    "mtime": 1780183048.1891336,
-    "ast_hash": "c55a889dc827cf21b3c7f5a772006786",
-    "semantic_hash": "c55a889dc827cf21b3c7f5a772006786"
+    "mtime": 1780913833.1215637,
+    "ast_hash": "8c21dcdff05d70f590da5e714e98867e",
+    "semantic_hash": "8c21dcdff05d70f590da5e714e98867e"
   },
-  "/home/xava/Documents/nuxy/extensions/calendar/frontend.tsx": {
-    "mtime": 1780244663.4176967,
-    "ast_hash": "a30034e7f2f0d8eeb79d4e83fa4a5222",
-    "semantic_hash": "a30034e7f2f0d8eeb79d4e83fa4a5222"
+  "/home/xava/Documents/nuxy/extensions/gradient/package.json": {
+    "mtime": 1780860671.6956499,
+    "ast_hash": "dc8dd4530d5d67f756c2bff84d5d425d",
+    "semantic_hash": "dc8dd4530d5d67f756c2bff84d5d425d"
   },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-key-conditions.test.ts": {
-    "mtime": 1780098766.9552693,
-    "ast_hash": "8032ba8e743aa35915f1122fe740fd4f",
-    "semantic_hash": "8032ba8e743aa35915f1122fe740fd4f"
+  "/home/xava/Documents/nuxy/extensions/gradient/utils/gradientColors.test.ts": {
+    "mtime": 1780573148.9850345,
+    "ast_hash": "9b79e8eb981f3150b235b94f5053ad40",
+    "semantic_hash": "9b79e8eb981f3150b235b94f5053ad40"
   },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-key-conditions.ts": {
-    "mtime": 1780154801.2914312,
-    "ast_hash": "9a095dc20a2025619746e53ddcde8a48",
-    "semantic_hash": "9a095dc20a2025619746e53ddcde8a48"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-utils.test.ts": {
-    "mtime": 1780154801.3184314,
-    "ast_hash": "d2527f43a50868b1e8864f537f323ae7",
-    "semantic_hash": "d2527f43a50868b1e8864f537f323ae7"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-create-form.test.ts": {
-    "mtime": 1780099246.537895,
-    "ast_hash": "d9a0fcb082d6e93e6201485592a6c6b6",
-    "semantic_hash": "d9a0fcb082d6e93e6201485592a6c6b6"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-create-form.ts": {
-    "mtime": 1780099260.928827,
-    "ast_hash": "fba70ecbb82d2d093c6c3553e2a0a0ff",
-    "semantic_hash": "fba70ecbb82d2d093c6c3553e2a0a0ff"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-key-exclusivity.test.ts": {
-    "mtime": 1780154801.3014312,
-    "ast_hash": "865c4e45d83267677a6b7fdb7a8b51ab",
-    "semantic_hash": "865c4e45d83267677a6b7fdb7a8b51ab"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/backend.ts": {
-    "mtime": 1780176871.4158962,
-    "ast_hash": "0db6a70172fa9f3718e3c02580dd8341",
-    "semantic_hash": "0db6a70172fa9f3718e3c02580dd8341"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/calendar-utils.ts": {
-    "mtime": 1780098127.6973672,
-    "ast_hash": "41744accb5ae010343b32431cc3b0513",
-    "semantic_hash": "41744accb5ae010343b32431cc3b0513"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/manifest.json": {
-    "mtime": 1780243998.7332785,
-    "ast_hash": "886109b935456cafe1ca635f2919e791",
-    "semantic_hash": "886109b935456cafe1ca635f2919e791"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/backend.test.ts": {
-    "mtime": 1780176871.4157815,
-    "ast_hash": "48a9228af7654a4c87ee5205ae588d98",
-    "semantic_hash": "48a9228af7654a4c87ee5205ae588d98"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/types.ts": {
-    "mtime": 1779833899.4664931,
-    "ast_hash": "3362d292524e7a2ea3fb3f124e63df8c",
-    "semantic_hash": "3362d292524e7a2ea3fb3f124e63df8c"
-  },
-  "/home/xava/Documents/nuxy/extensions/calendar/package.json": {
-    "mtime": 1779696802.7391994,
-    "ast_hash": "d4f0a1760c4213dadbcdeebefc91c04b",
-    "semantic_hash": "d4f0a1760c4213dadbcdeebefc91c04b"
+  "/home/xava/Documents/nuxy/extensions/gradient/utils/gradientColors.ts": {
+    "mtime": 1780452786.0203578,
+    "ast_hash": "b2a1018d821a0e970a952a9b47c0bb67",
+    "semantic_hash": "b2a1018d821a0e970a952a9b47c0bb67"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/safe-eval.test.ts": {
     "mtime": 1779833969.382177,
@@ -1720,19 +2435,19 @@
     "semantic_hash": "15a647c21c8f4177113598569702f746"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/backend.ts": {
-    "mtime": 1780176871.4155693,
-    "ast_hash": "e2efb7ec4dd186e9e32f2ab5e9d86f4e",
-    "semantic_hash": "e2efb7ec4dd186e9e32f2ab5e9d86f4e"
+    "mtime": 1780506321.6304884,
+    "ast_hash": "3fa38e05e839a5b514545e49bac7710a",
+    "semantic_hash": "3fa38e05e839a5b514545e49bac7710a"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/manifest.json": {
-    "mtime": 1779834264.7945051,
-    "ast_hash": "cb2890fa53670be2469ca33fae94b964",
-    "semantic_hash": "cb2890fa53670be2469ca33fae94b964"
+    "mtime": 1780573148.1366224,
+    "ast_hash": "e2a27fdcd65856a5a4c8a8b7865485a8",
+    "semantic_hash": "e2a27fdcd65856a5a4c8a8b7865485a8"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/backend.test.ts": {
-    "mtime": 1780095635.0576456,
-    "ast_hash": "b86e94bae482f76d90687678ca4e205f",
-    "semantic_hash": "b86e94bae482f76d90687678ca4e205f"
+    "mtime": 1780398911.3744867,
+    "ast_hash": "9f56a06b0f7126fad7d1984fc63fc6a8",
+    "semantic_hash": "9f56a06b0f7126fad7d1984fc63fc6a8"
   },
   "/home/xava/Documents/nuxy/extensions/calculator/types.ts": {
     "mtime": 1780176871.4156597,
@@ -1744,35 +2459,25 @@
     "ast_hash": "2f4f3d0f15b98654a906cd0e0cf5eee1",
     "semantic_hash": "2f4f3d0f15b98654a906cd0e0cf5eee1"
   },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/frontend.tsx": {
-    "mtime": 1780176871.418966,
-    "ast_hash": "8655d072a7e78f2ef5818e7eae2c014d",
-    "semantic_hash": "8655d072a7e78f2ef5818e7eae2c014d"
+  "/home/xava/Documents/nuxy/extensions/calculator/locales/tr.json": {
+    "mtime": 1780527137.4055746,
+    "ast_hash": "71703d0b9d9552ae125ccf93c4780d2d",
+    "semantic_hash": "71703d0b9d9552ae125ccf93c4780d2d"
   },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/backend.ts": {
-    "mtime": 1780176871.4188404,
-    "ast_hash": "e7cf3fe398ae7f03f33318f0d156d63f",
-    "semantic_hash": "e7cf3fe398ae7f03f33318f0d156d63f"
+  "/home/xava/Documents/nuxy/extensions/calculator/locales/en.json": {
+    "mtime": 1780527136.9935708,
+    "ast_hash": "934fd90f716a1c0e16c478f98ab6f30b",
+    "semantic_hash": "934fd90f716a1c0e16c478f98ab6f30b"
   },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/manifest.json": {
-    "mtime": 1779834366.503325,
-    "ast_hash": "2a1eb08407b405d85fede472c6a78aba",
-    "semantic_hash": "2a1eb08407b405d85fede472c6a78aba"
+  "/home/xava/Documents/nuxy/extensions/calculator/locales/ja.json": {
+    "mtime": 1780528352.5422888,
+    "ast_hash": "e259319301971a07bbedb56f54f3a70d",
+    "semantic_hash": "e259319301971a07bbedb56f54f3a70d"
   },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/backend.test.ts": {
-    "mtime": 1780095642.0106337,
-    "ast_hash": "92f4cdd95b4611b67b5361434ce9e142",
-    "semantic_hash": "92f4cdd95b4611b67b5361434ce9e142"
-  },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/types.ts": {
-    "mtime": 1779834210.1742985,
-    "ast_hash": "e5e074e47ad1761e29af2c492ab0b7c4",
-    "semantic_hash": "e5e074e47ad1761e29af2c492ab0b7c4"
-  },
-  "/home/xava/Documents/nuxy/extensions/time-calculator/package.json": {
-    "mtime": 1779376636.5173895,
-    "ast_hash": "80ce4fdbbeb930d86471362aca220c91",
-    "semantic_hash": "80ce4fdbbeb930d86471362aca220c91"
+  "/home/xava/Documents/nuxy/extensions/shell/shell-controller.test.ts": {
+    "mtime": 1780923135.986055,
+    "ast_hash": "cfe2cd5733976548dedee2666a1d76bd",
+    "semantic_hash": "cfe2cd5733976548dedee2666a1d76bd"
   },
   "/home/xava/Documents/nuxy/extensions/shell/utils.test.ts": {
     "mtime": 1780094050.643312,
@@ -1780,114 +2485,134 @@
     "semantic_hash": "0271eccf1e593d1167d5e0ea9d6f558b"
   },
   "/home/xava/Documents/nuxy/extensions/shell/frontend.tsx": {
-    "mtime": 1780245846.0408523,
-    "ast_hash": "5c748903ec65252410936208a43ece94",
-    "semantic_hash": "5c748903ec65252410936208a43ece94"
+    "mtime": 1780921161.9897451,
+    "ast_hash": "1eaac3706647d5f5f8662e2c76ac9a54",
+    "semantic_hash": "1eaac3706647d5f5f8662e2c76ac9a54"
   },
   "/home/xava/Documents/nuxy/extensions/shell/utils.ts": {
-    "mtime": 1779833984.9990914,
-    "ast_hash": "d77c6ebcf63f6fe0c257196d784498cf",
-    "semantic_hash": "d77c6ebcf63f6fe0c257196d784498cf"
+    "mtime": 1780763355.6725824,
+    "ast_hash": "e13fca840564cb5a682664dc4f5908c4",
+    "semantic_hash": "e13fca840564cb5a682664dc4f5908c4"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-result-card.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "c9f3590a5366a6c1ee1afa7232e50942",
+    "semantic_hash": "c9f3590a5366a6c1ee1afa7232e50942"
   },
   "/home/xava/Documents/nuxy/extensions/shell/e2e.spec.ts": {
-    "mtime": 1780257539.7640254,
-    "ast_hash": "37b499c4acb1bed0b955ac004e840b8a",
-    "semantic_hash": "37b499c4acb1bed0b955ac004e840b8a"
+    "mtime": 1780930674.6774485,
+    "ast_hash": "b13efac088fa34671c0f1074e8636416",
+    "semantic_hash": "b13efac088fa34671c0f1074e8636416"
   },
-  "/home/xava/Documents/nuxy/extensions/shell/hooks.tsx": {
-    "mtime": 1780246824.8809524,
-    "ast_hash": "1b4fd2453a39e484d779e25103d8334c",
-    "semantic_hash": "1b4fd2453a39e484d779e25103d8334c"
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-command-palette.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "0836dcb69189cfd6d0fc6f512a9ff676",
+    "semantic_hash": "0836dcb69189cfd6d0fc6f512a9ff676"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-compare-card.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "f83cd1d8ecaf1f517eda573da25097ec",
+    "semantic_hash": "f83cd1d8ecaf1f517eda573da25097ec"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell-skeleton-list.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "ca35c7bba3f8123d23e9ab3e84435f54",
+    "semantic_hash": "ca35c7bba3f8123d23e9ab3e84435f54"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell.ts": {
+    "mtime": 1780914615.3138,
+    "ast_hash": "05819cd8a50558a30c44ec1e65635526",
+    "semantic_hash": "05819cd8a50558a30c44ec1e65635526"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/shell-controller.ts": {
+    "mtime": 1780929268.1428294,
+    "ast_hash": "b8ccf86e219284fd67a8587a37934cae",
+    "semantic_hash": "b8ccf86e219284fd67a8587a37934cae"
   },
   "/home/xava/Documents/nuxy/extensions/shell/backend.ts": {
     "mtime": 1779833951.0013318,
     "ast_hash": "ef54447e8ae9886da9d20a2e285486d1",
     "semantic_hash": "ef54447e8ae9886da9d20a2e285486d1"
   },
-  "/home/xava/Documents/nuxy/extensions/shell/ResultCard.tsx": {
-    "mtime": 1780176871.4183729,
-    "ast_hash": "8e818b234871c4347c6d6aeb8cac80c1",
-    "semantic_hash": "8e818b234871c4347c6d6aeb8cac80c1"
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell-view.ts": {
+    "mtime": 1781039946.76956,
+    "ast_hash": "0f7cd2b211b65b3b706c43fe37506f20",
+    "semantic_hash": "0f7cd2b211b65b3b706c43fe37506f20"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-portal-host.ts": {
+    "mtime": 1780919883.946826,
+    "ast_hash": "aa2c6e6a5e453928612d8b19de490f55",
+    "semantic_hash": "aa2c6e6a5e453928612d8b19de490f55"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/shell-dom.ts": {
+    "mtime": 1781039934.438053,
+    "ast_hash": "63cb796cf5afaaf56aaff8877919df62",
+    "semantic_hash": "63cb796cf5afaaf56aaff8877919df62"
   },
   "/home/xava/Documents/nuxy/extensions/shell/manifest.json": {
-    "mtime": 1780176871.4186728,
-    "ast_hash": "4bda324604efca268e38ab3c00114e73",
-    "semantic_hash": "4bda324604efca268e38ab3c00114e73"
+    "mtime": 1780913833.1215637,
+    "ast_hash": "96b9739dcc8af708420048ba133d8fb5",
+    "semantic_hash": "96b9739dcc8af708420048ba133d8fb5"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell-resize-handles.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "fefb3e6679c169ba81f1179f3f44c692",
+    "semantic_hash": "fefb3e6679c169ba81f1179f3f44c692"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/nuxy-shell-omni-bar.ts": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "d35310d1755a0084edd51e1292a86021",
+    "semantic_hash": "d35310d1755a0084edd51e1292a86021"
   },
   "/home/xava/Documents/nuxy/extensions/shell/backend.test.ts": {
-    "mtime": 1780095714.8785088,
-    "ast_hash": "efce3aa94524bb68f76aa400e7232a03",
-    "semantic_hash": "efce3aa94524bb68f76aa400e7232a03"
-  },
-  "/home/xava/Documents/nuxy/extensions/shell/CommandPalette.tsx": {
-    "mtime": 1780245150.7634733,
-    "ast_hash": "0cf44c80fc4aaeb838f8a9351eeebe7d",
-    "semantic_hash": "0cf44c80fc4aaeb838f8a9351eeebe7d"
+    "mtime": 1780398911.3830323,
+    "ast_hash": "9f52c1ceb20e9eb46a8659c73e198e5e",
+    "semantic_hash": "9f52c1ceb20e9eb46a8659c73e198e5e"
   },
   "/home/xava/Documents/nuxy/extensions/shell/types.ts": {
-    "mtime": 1780245131.492438,
-    "ast_hash": "a7f1eee4666a05b4edd2dff7262448f7",
-    "semantic_hash": "a7f1eee4666a05b4edd2dff7262448f7"
+    "mtime": 1780871392.1536598,
+    "ast_hash": "f07b84eb64ff5dfa973216dd089b8416",
+    "semantic_hash": "f07b84eb64ff5dfa973216dd089b8416"
   },
   "/home/xava/Documents/nuxy/extensions/shell/package.json": {
     "mtime": 1779197400.9816456,
     "ast_hash": "eb4c349c9af8d4551f25aa5c55db7e7a",
     "semantic_hash": "eb4c349c9af8d4551f25aa5c55db7e7a"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/frontend.tsx": {
-    "mtime": 1780244653.978685,
-    "ast_hash": "6f9e6a0da718257c6602f9dcfa5aff6d",
-    "semantic_hash": "6f9e6a0da718257c6602f9dcfa5aff6d"
+  "/home/xava/Documents/nuxy/extensions/shell/locales/tr.json": {
+    "mtime": 1780571778.6322887,
+    "ast_hash": "c66e8a1203da5a6f99facadbb207683b",
+    "semantic_hash": "c66e8a1203da5a6f99facadbb207683b"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/backend.ts": {
-    "mtime": 1780176871.416281,
-    "ast_hash": "f8d369d8a78a325ccbfa72e1c2580d21",
-    "semantic_hash": "f8d369d8a78a325ccbfa72e1c2580d21"
+  "/home/xava/Documents/nuxy/extensions/shell/locales/en.json": {
+    "mtime": 1780571786.9012804,
+    "ast_hash": "b4a5e5595f4ad7525c9c56d38b012c54",
+    "semantic_hash": "b4a5e5595f4ad7525c9c56d38b012c54"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/manifest.json": {
-    "mtime": 1780176871.416532,
-    "ast_hash": "0d69de19058b651833e7ac658dd9c4c8",
-    "semantic_hash": "0d69de19058b651833e7ac658dd9c4c8"
+  "/home/xava/Documents/nuxy/extensions/shell/locales/ja.json": {
+    "mtime": 1780571792.7882745,
+    "ast_hash": "77fc82ff70b24e5178b1794f29d6e7c6",
+    "semantic_hash": "77fc82ff70b24e5178b1794f29d6e7c6"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/backend.test.ts": {
-    "mtime": 1780095649.0746214,
-    "ast_hash": "5a9c2488f15d0eaa3dd93f011eff9dc9",
-    "semantic_hash": "5a9c2488f15d0eaa3dd93f011eff9dc9"
+  "/home/xava/Documents/nuxy/extensions/shell/utils/zoom.ts": {
+    "mtime": 1780452839.4957936,
+    "ast_hash": "c422b0f99e673c5a041e61560a81bd32",
+    "semantic_hash": "c422b0f99e673c5a041e61560a81bd32"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/types.ts": {
-    "mtime": 1779833900.799077,
-    "ast_hash": "3d87157af8260235580bd943b4cbb45b",
-    "semantic_hash": "3d87157af8260235580bd943b4cbb45b"
+  "/home/xava/Documents/nuxy/extensions/shell/utils/zoom.test.ts": {
+    "mtime": 1780453145.439285,
+    "ast_hash": "6660202f1bc372a623307d1a54846912",
+    "semantic_hash": "6660202f1bc372a623307d1a54846912"
   },
-  "/home/xava/Documents/nuxy/extensions/clipboard/package.json": {
-    "mtime": 1779197400.9816456,
-    "ast_hash": "e6370167ea859eac902dddfd8371a8d9",
-    "semantic_hash": "e6370167ea859eac902dddfd8371a8d9"
+  "/home/xava/Documents/nuxy/extensions/shell/utils/listResults.ts": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "612abd4d2d57fe1fd5b7a30517234466",
+    "semantic_hash": "612abd4d2d57fe1fd5b7a30517234466"
   },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/frontend.tsx": {
-    "mtime": 1780244645.3376741,
-    "ast_hash": "471817eddea3bbea97b0e2687c117de8",
-    "semantic_hash": "471817eddea3bbea97b0e2687c117de8"
-  },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/backend.ts": {
-    "mtime": 1780244426.154346,
-    "ast_hash": "3913be960ea006f98ee282af2de79f12",
-    "semantic_hash": "3913be960ea006f98ee282af2de79f12"
-  },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/manifest.json": {
-    "mtime": 1780176871.4152014,
-    "ast_hash": "30400b23624494039251ff7341898358",
-    "semantic_hash": "30400b23624494039251ff7341898358"
-  },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/backend.test.ts": {
-    "mtime": 1780095711.0055153,
-    "ast_hash": "4dcbffe1b9627a3590d89d1b5ed1c382",
-    "semantic_hash": "4dcbffe1b9627a3590d89d1b5ed1c382"
-  },
-  "/home/xava/Documents/nuxy/extensions/angrysearch/types.ts": {
-    "mtime": 1779833912.9170625,
-    "ast_hash": "90dfe722124cdbde8ec37b330a4f0918",
-    "semantic_hash": "90dfe722124cdbde8ec37b330a4f0918"
+  "/home/xava/Documents/nuxy/extensions/shell/utils/listResults.test.ts": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "f14ebf84fd4fe946d9fcaa53461b56bd",
+    "semantic_hash": "f14ebf84fd4fe946d9fcaa53461b56bd"
   },
   "/home/xava/Documents/nuxy/features.md": {
     "mtime": 1779394447.3721774,
@@ -1895,9 +2620,9 @@
     "semantic_hash": "667b97a5371c206f9ddbeaca0fd4934f"
   },
   "/home/xava/Documents/nuxy/pnpm-workspace.yaml": {
-    "mtime": 1779197400.9816456,
-    "ast_hash": "ea29cc3bc66c74d0a375b2e0c21e6786",
-    "semantic_hash": "ea29cc3bc66c74d0a375b2e0c21e6786"
+    "mtime": 1780860671.6996498,
+    "ast_hash": "d1f9eb56a1116ff07884ec221439504c",
+    "semantic_hash": "d1f9eb56a1116ff07884ec221439504c"
   },
   "/home/xava/Documents/nuxy/agents.md": {
     "mtime": 1779351885.8673906,
@@ -1905,24 +2630,84 @@
     "semantic_hash": "f5ac3e886b6ae1c5a9870d17587ca966"
   },
   "/home/xava/Documents/nuxy/CLAUDE.md": {
-    "mtime": 1780094049.328314,
-    "ast_hash": "fca3c477b7a9535d55f0bb922f2ed4ef",
-    "semantic_hash": "fca3c477b7a9535d55f0bb922f2ed4ef"
+    "mtime": 1781041385.6848202,
+    "ast_hash": "542249ac69d0215836015a4cc16a3ec7",
+    "semantic_hash": "542249ac69d0215836015a4cc16a3ec7"
   },
   "/home/xava/Documents/nuxy/eksik.md": {
-    "mtime": 1780176871.414421,
-    "ast_hash": "d5fa5f6dd197352b34f4a9361012121b",
-    "semantic_hash": "d5fa5f6dd197352b34f4a9361012121b"
+    "mtime": 1780759256.7190118,
+    "ast_hash": "66e05ea12ff2d698e14f5289b083e576",
+    "semantic_hash": "66e05ea12ff2d698e14f5289b083e576"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_gradient_02-06-2026_011606.md": {
+    "mtime": 1780573154.1800077,
+    "ast_hash": "3c7a20e16d742bf737c072b7a72cec7b",
+    "semantic_hash": "3c7a20e16d742bf737c072b7a72cec7b"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_top8_02-06-2026_011131.md": {
+    "mtime": 1780573154.3710067,
+    "ast_hash": "80191e2c5659710733db83354a8060e0",
+    "semantic_hash": "80191e2c5659710733db83354a8060e0"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_video-downloader-frontend_02-06-2026_011606.md": {
+    "mtime": 1780573154.4040067,
+    "ast_hash": "b78bc85271d004810cc79f1e5410153d",
+    "semantic_hash": "b78bc85271d004810cc79f1e5410153d"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_shell-frontend_02-06-2026_011606.md": {
+    "mtime": 1780573154.323007,
+    "ast_hash": "ee960e49930433805d41fb33c032ca31",
+    "semantic_hash": "ee960e49930433805d41fb33c032ca31"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_scanner_02-06-2026_011606.md": {
+    "mtime": 1780573154.2560074,
+    "ast_hash": "c40b8bd8c8fe0839753a864240b5cd5e",
+    "semantic_hash": "c40b8bd8c8fe0839753a864240b5cd5e"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_calendar-frontend_02-06-2026_011606.md": {
+    "mtime": 1780573154.1170082,
+    "ast_hash": "e76967d18fd5b8bfd08e559763f3d65d",
+    "semantic_hash": "e76967d18fd5b8bfd08e559763f3d65d"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_notes-frontend_02-06-2026_011606.md": {
+    "mtime": 1780573154.2210076,
+    "ast_hash": "5559ec13f2179ef1f2b5f4ad8548db60",
+    "semantic_hash": "5559ec13f2179ef1f2b5f4ad8548db60"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_settings-frontend_02-06-2026_011606.md": {
+    "mtime": 1780573154.2850072,
+    "ast_hash": "2050fa93ea5d356dde6e950d69d7aa70",
+    "semantic_hash": "2050fa93ea5d356dde6e950d69d7aa70"
+  },
+  "/home/xava/Documents/nuxy/reports/refactor/refactor_clipboard-frontend_02-06-2026_011606.md": {
+    "mtime": 1780573154.1580079,
+    "ast_hash": "dcefbe631cff16a645ce9952ab256746",
+    "semantic_hash": "dcefbe631cff16a645ce9952ab256746"
+  },
+  "/home/xava/Documents/nuxy/.github/workflows/package.yml": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "698623bac340f9054d899dcd851835d0",
+    "semantic_hash": "698623bac340f9054d899dcd851835d0"
   },
   "/home/xava/Documents/nuxy/.github/workflows/ci.yml": {
-    "mtime": 1779197507.7710896,
-    "ast_hash": "00f0ec31f9efa26cf89cb7f0885d959f",
-    "semantic_hash": "00f0ec31f9efa26cf89cb7f0885d959f"
+    "mtime": 1780871392.1533227,
+    "ast_hash": "bb7f08cfd3a17165fcac94c0348a13b7",
+    "semantic_hash": "bb7f08cfd3a17165fcac94c0348a13b7"
+  },
+  "/home/xava/Documents/nuxy/.claude/commands/refactor/refactor-code.md": {
+    "mtime": 1780351650.7980998,
+    "ast_hash": "69537e4fb3a63fafa94210f8ec0704cb",
+    "semantic_hash": "69537e4fb3a63fafa94210f8ec0704cb"
+  },
+  "/home/xava/Documents/nuxy/.claude/skills/react-doctor/SKILL.md": {
+    "mtime": 1780860671.6954863,
+    "ast_hash": "ebb066d7ff85c05b21f4789c6b64bc5e",
+    "semantic_hash": "ebb066d7ff85c05b21f4789c6b64bc5e"
   },
   "/home/xava/Documents/nuxy/src/index.html": {
-    "mtime": 1779351886.8533854,
-    "ast_hash": "1406e8c284db049cf25ba277485e7262",
-    "semantic_hash": "1406e8c284db049cf25ba277485e7262"
+    "mtime": 1780921161.6777487,
+    "ast_hash": "cb4393a3613504bed3e13618427bbd0b",
+    "semantic_hash": "cb4393a3613504bed3e13618427bbd0b"
   },
   "/home/xava/Documents/nuxy/src/electron-builder.yml": {
     "mtime": 1779351886.684789,
@@ -1940,19 +2725,34 @@
     "semantic_hash": "c58751d7410c4ac8dc2e7ad78b7cd26f"
   },
   "/home/xava/Documents/nuxy/packages/ext-template/README.md": {
-    "mtime": 1779197400.9816456,
-    "ast_hash": "b7697ff7486039e87cd388fd34a94cf5",
-    "semantic_hash": "b7697ff7486039e87cd388fd34a94cf5"
+    "mtime": 1780756991.6003833,
+    "ast_hash": "bbaef966d2e6f658f76cb3eb671cded0",
+    "semantic_hash": "bbaef966d2e6f658f76cb3eb671cded0"
+  },
+  "/home/xava/Documents/nuxy/packages/nxt/README.md": {
+    "mtime": 1780860671.69865,
+    "ast_hash": "4bad12fc9528a63612dfa38a4ec08033",
+    "semantic_hash": "4bad12fc9528a63612dfa38a4ec08033"
+  },
+  "/home/xava/Documents/nuxy/packages/ext-devserver/index.html": {
+    "mtime": 1780944983.845044,
+    "ast_hash": "3bee717bba1bf14f9ccedd5bf2e8aea1",
+    "semantic_hash": "3bee717bba1bf14f9ccedd5bf2e8aea1"
+  },
+  "/home/xava/Documents/nuxy/docs/22-store-extension.md": {
+    "mtime": 1780573147.324043,
+    "ast_hash": "934d66f2701ce9765b51dc1f7cf311f9",
+    "semantic_hash": "934d66f2701ce9765b51dc1f7cf311f9"
   },
   "/home/xava/Documents/nuxy/docs/02-architecture.md": {
-    "mtime": 1779351885.9017513,
-    "ast_hash": "0f3afc32123edc121e2c525053a34b2b",
-    "semantic_hash": "0f3afc32123edc121e2c525053a34b2b"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "11a3aa00d0a6f30fe239b21a86cbcad7",
+    "semantic_hash": "11a3aa00d0a6f30fe239b21a86cbcad7"
   },
   "/home/xava/Documents/nuxy/docs/DOCUMENTATION.md": {
-    "mtime": 1779351886.2033887,
-    "ast_hash": "5986ace11ee74de9f21cb76d45e1e999",
-    "semantic_hash": "5986ace11ee74de9f21cb76d45e1e999"
+    "mtime": 1780573147.521042,
+    "ast_hash": "843b98444cb9b21b4dc710ebacc31477",
+    "semantic_hash": "843b98444cb9b21b4dc710ebacc31477"
   },
   "/home/xava/Documents/nuxy/docs/planned-extensions.md": {
     "mtime": 1780094049.7953134,
@@ -1960,9 +2760,9 @@
     "semantic_hash": "bed260485e9900b83594a2b4d371aa28"
   },
   "/home/xava/Documents/nuxy/docs/05-api-design.md": {
-    "mtime": 1779351885.9533901,
-    "ast_hash": "498b1cc9ee829640dcf767e17c1b7e86",
-    "semantic_hash": "498b1cc9ee829640dcf767e17c1b7e86"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "fb892010437445679308d342ae046968",
+    "semantic_hash": "fb892010437445679308d342ae046968"
   },
   "/home/xava/Documents/nuxy/docs/20-logging.md": {
     "mtime": 1780243745.5896077,
@@ -1970,34 +2770,49 @@
     "semantic_hash": "21d17471e6c77d0531ede0222b3da3b5"
   },
   "/home/xava/Documents/nuxy/docs/11-performance.md": {
-    "mtime": 1779351885.99839,
-    "ast_hash": "974bad6b238ff0d6006f6fe416f0834e",
-    "semantic_hash": "974bad6b238ff0d6006f6fe416f0834e"
+    "mtime": 1781041405.5617096,
+    "ast_hash": "4e993df221c72c18040a85ec5fc9bc0c",
+    "semantic_hash": "4e993df221c72c18040a85ec5fc9bc0c"
+  },
+  "/home/xava/Documents/nuxy/docs/comprehensive-overview.md": {
+    "mtime": 1780955878.9813643,
+    "ast_hash": "7035efb62ec49e0977e8f1f83d365f11",
+    "semantic_hash": "7035efb62ec49e0977e8f1f83d365f11"
+  },
+  "/home/xava/Documents/nuxy/docs/extension-simplification-report.md": {
+    "mtime": 1780573147.545731,
+    "ast_hash": "a10f4df915a249a104c398c9549d76c4",
+    "semantic_hash": "a10f4df915a249a104c398c9549d76c4"
   },
   "/home/xava/Documents/nuxy/docs/10-security.md": {
-    "mtime": 1779351885.9932482,
-    "ast_hash": "266b28084bf28725d02f682718193a84",
-    "semantic_hash": "266b28084bf28725d02f682718193a84"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "cb20c1f327990c3725f9e7e3669728a9",
+    "semantic_hash": "cb20c1f327990c3725f9e7e3669728a9"
   },
   "/home/xava/Documents/nuxy/docs/00-overview.md": {
-    "mtime": 1779351885.8913903,
-    "ast_hash": "e96dea7081eade6f5e36936a789e19a0",
-    "semantic_hash": "e96dea7081eade6f5e36936a789e19a0"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "d15205db4292c15ffce9e8dba2de7f3c",
+    "semantic_hash": "d15205db4292c15ffce9e8dba2de7f3c"
   },
   "/home/xava/Documents/nuxy/docs/01-system-analysis.md": {
-    "mtime": 1779351885.8978994,
-    "ast_hash": "b92065a7d6fe4393e3e09dd728bf389c",
-    "semantic_hash": "b92065a7d6fe4393e3e09dd728bf389c"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "6bb8e0a8730529db826f5697ffd1b661",
+    "semantic_hash": "6bb8e0a8730529db826f5697ffd1b661"
   },
   "/home/xava/Documents/nuxy/docs/14-rebuild-roadmap.md": {
-    "mtime": 1779351886.0193896,
-    "ast_hash": "fa87fb445a4eaddf294d4ff17c70efec",
-    "semantic_hash": "fa87fb445a4eaddf294d4ff17c70efec"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "0e0893f678576022ad55c42c1ad16c0d",
+    "semantic_hash": "0e0893f678576022ad55c42c1ad16c0d"
   },
   "/home/xava/Documents/nuxy/docs/18-advanced-capabilities.md": {
-    "mtime": 1779351886.0493896,
-    "ast_hash": "c74bf7cd9506a3079639b43b2b349b35",
-    "semantic_hash": "c74bf7cd9506a3079639b43b2b349b35"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "a24f4197b6c0098455ca1c3dd064d57a",
+    "semantic_hash": "a24f4197b6c0098455ca1c3dd064d57a"
+  },
+  "/home/xava/Documents/nuxy/docs/static-colors.md": {
+    "mtime": 1780573147.7650409,
+    "ast_hash": "86735da90afa8f9640a8e7113b88a3af",
+    "semantic_hash": "86735da90afa8f9640a8e7113b88a3af"
   },
   "/home/xava/Documents/nuxy/docs/redundant_tests_audit.md": {
     "mtime": 1780154801.0104294,
@@ -2005,89 +2820,94 @@
     "semantic_hash": "722b872e7734cc7da1b6d126fef39980"
   },
   "/home/xava/Documents/nuxy/docs/implementation-plan.md": {
-    "mtime": 1779142759.1613152,
-    "ast_hash": "ea93aa587f81987872ad7fa36ea09c58",
-    "semantic_hash": "ea93aa587f81987872ad7fa36ea09c58"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "904a13b53ac5f79386c2e0a79d8e367e",
+    "semantic_hash": "904a13b53ac5f79386c2e0a79d8e367e"
   },
   "/home/xava/Documents/nuxy/docs/mvp-plan.md": {
-    "mtime": 1779351886.2703884,
-    "ast_hash": "360b358c7b72a73cbf9f75a6a00d68e4",
-    "semantic_hash": "360b358c7b72a73cbf9f75a6a00d68e4"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "d629beadef4147598b5b0fd9b651181e",
+    "semantic_hash": "d629beadef4147598b5b0fd9b651181e"
   },
   "/home/xava/Documents/nuxy/docs/06-state-management.md": {
-    "mtime": 1779351885.96439,
-    "ast_hash": "2f4c51d5e137b86ffc50efb64b8fb635",
-    "semantic_hash": "2f4c51d5e137b86ffc50efb64b8fb635"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "d3b9073596452133a1f578b5c101159a",
+    "semantic_hash": "d3b9073596452133a1f578b5c101159a"
   },
   "/home/xava/Documents/nuxy/docs/13-deployment.md": {
-    "mtime": 1779351886.0144188,
-    "ast_hash": "5404c6c64677428df98b4460ed1147ea",
-    "semantic_hash": "5404c6c64677428df98b4460ed1147ea"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "3b9aee04c94ccdd9fb63fd804a933c6b",
+    "semantic_hash": "3b9aee04c94ccdd9fb63fd804a933c6b"
   },
   "/home/xava/Documents/nuxy/docs/15-modular-plugin-system.md": {
-    "mtime": 1779351886.0286527,
-    "ast_hash": "6c6c1a354870cc8ade86b50d8f822b2f",
-    "semantic_hash": "6c6c1a354870cc8ade86b50d8f822b2f"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "90eae50336c7486a3133f4ab4d1461ff",
+    "semantic_hash": "90eae50336c7486a3133f4ab4d1461ff"
   },
   "/home/xava/Documents/nuxy/docs/09-error-handling.md": {
-    "mtime": 1779351885.98439,
-    "ast_hash": "a7f67fe977fc708eae015aa801073bb2",
-    "semantic_hash": "a7f67fe977fc708eae015aa801073bb2"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "e848df6a3a6163887f915350cec454f8",
+    "semantic_hash": "e848df6a3a6163887f915350cec454f8"
   },
   "/home/xava/Documents/nuxy/docs/structure.md": {
-    "mtime": 1779197401.1976469,
-    "ast_hash": "683deb2b93a3ff92fb6565e46eec93cb",
-    "semantic_hash": "683deb2b93a3ff92fb6565e46eec93cb"
+    "mtime": 1780955878.9816413,
+    "ast_hash": "8aef8f32c9cf2811b0257d21ddf7dbbf",
+    "semantic_hash": "8aef8f32c9cf2811b0257d21ddf7dbbf"
   },
   "/home/xava/Documents/nuxy/docs/08-authentication.md": {
-    "mtime": 1779351885.9770508,
-    "ast_hash": "4e7c4cb8cccb5e19f50b8b3f294f7b28",
-    "semantic_hash": "4e7c4cb8cccb5e19f50b8b3f294f7b28"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "860d47aa9d61ab36927552c38fc92821",
+    "semantic_hash": "860d47aa9d61ab36927552c38fc92821"
   },
   "/home/xava/Documents/nuxy/docs/16-omni-input-system.md": {
-    "mtime": 1779351886.0363896,
-    "ast_hash": "294fe0a78307c78d7f44ee1cfa074a2b",
-    "semantic_hash": "294fe0a78307c78d7f44ee1cfa074a2b"
+    "mtime": 1780573147.2560434,
+    "ast_hash": "c14a9edb29cc39ff9272f6fbe722d35e",
+    "semantic_hash": "c14a9edb29cc39ff9272f6fbe722d35e"
   },
   "/home/xava/Documents/nuxy/docs/pain-points-plan.md": {
-    "mtime": 1779351886.2883883,
-    "ast_hash": "3c53ff583ec221aea89403f739647998",
-    "semantic_hash": "3c53ff583ec221aea89403f739647998"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "f0511e6eda1704bfa30c09b05f7d93e8",
+    "semantic_hash": "f0511e6eda1704bfa30c09b05f7d93e8"
   },
   "/home/xava/Documents/nuxy/docs/21-extension-access.md": {
-    "mtime": 1779351886.0823894,
-    "ast_hash": "4c3691384dd53131a9fdda5d181eff59",
-    "semantic_hash": "4c3691384dd53131a9fdda5d181eff59"
+    "mtime": 1780955878.9806411,
+    "ast_hash": "12d85814c5497ad73cb82166f321b922",
+    "semantic_hash": "12d85814c5497ad73cb82166f321b922"
   },
   "/home/xava/Documents/nuxy/docs/README.md": {
-    "mtime": 1780176871.4130032,
-    "ast_hash": "5d1b4e0b6a4a3dbc18596b9b8aa97960",
-    "semantic_hash": "5d1b4e0b6a4a3dbc18596b9b8aa97960"
+    "mtime": 1780943546.64577,
+    "ast_hash": "9c333b67cf4398a56451a0639491fc10",
+    "semantic_hash": "9c333b67cf4398a56451a0639491fc10"
+  },
+  "/home/xava/Documents/nuxy/docs/known-bugs.md": {
+    "mtime": 1780871392.1533227,
+    "ast_hash": "02636fc31cc4d0d5133831bba92709d2",
+    "semantic_hash": "02636fc31cc4d0d5133831bba92709d2"
   },
   "/home/xava/Documents/nuxy/docs/raw-html-elements-report.md": {
-    "mtime": 1780094049.8003135,
-    "ast_hash": "bb0dcba6beddd2c6705936f09091e638",
-    "semantic_hash": "bb0dcba6beddd2c6705936f09091e638"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "6f30d6e0058650c490daac0140270e97",
+    "semantic_hash": "6f30d6e0058650c490daac0140270e97"
   },
   "/home/xava/Documents/nuxy/docs/12-testing-strategy.md": {
-    "mtime": 1779351886.006933,
-    "ast_hash": "0da14b72b429a266d4a147faebfe3b4d",
-    "semantic_hash": "0da14b72b429a266d4a147faebfe3b4d"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "8883ad26b0834bf63dbc38683ad563a2",
+    "semantic_hash": "8883ad26b0834bf63dbc38683ad563a2"
   },
   "/home/xava/Documents/nuxy/docs/04-modules.md": {
-    "mtime": 1779351885.9108255,
-    "ast_hash": "9051211299b5a0681b78954048cd8d3f",
-    "semantic_hash": "9051211299b5a0681b78954048cd8d3f"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "68b08ff06f7876906f99ff3f4ded4e11",
+    "semantic_hash": "68b08ff06f7876906f99ff3f4ded4e11"
   },
   "/home/xava/Documents/nuxy/docs/17-frontend-extensions.md": {
-    "mtime": 1779351886.04571,
-    "ast_hash": "98049e9447076f87329d0e8fec4cac74",
-    "semantic_hash": "98049e9447076f87329d0e8fec4cac74"
+    "mtime": 1781041409.2346895,
+    "ast_hash": "e03c575d41ec43fdb0fd14407cb31b4d",
+    "semantic_hash": "e03c575d41ec43fdb0fd14407cb31b4d"
   },
   "/home/xava/Documents/nuxy/docs/03-data-flow.md": {
-    "mtime": 1779351885.9045327,
-    "ast_hash": "034ea61c534a0227670f21a1d1c6ec83",
-    "semantic_hash": "034ea61c534a0227670f21a1d1c6ec83"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "96ff9df18fe880496d7eef09d7278667",
+    "semantic_hash": "96ff9df18fe880496d7eef09d7278667"
   },
   "/home/xava/Documents/nuxy/docs/MASTER_CLEANUP_SUMMARY.md": {
     "mtime": 1779351886.2673883,
@@ -2095,9 +2915,9 @@
     "semantic_hash": "822d84d02650790c4b22964861a0a2a3"
   },
   "/home/xava/Documents/nuxy/docs/architecture.md": {
-    "mtime": 1779142759.1578884,
-    "ast_hash": "d624efe8f1e4a931608336dc4eba0398",
-    "semantic_hash": "d624efe8f1e4a931608336dc4eba0398"
+    "mtime": 1781041412.7886698,
+    "ast_hash": "6207fa32fac2c69e88ab0813fefda243",
+    "semantic_hash": "6207fa32fac2c69e88ab0813fefda243"
   },
   "/home/xava/Documents/nuxy/docs/hardcoded-px-report.md": {
     "mtime": 1780094049.6743135,
@@ -2105,14 +2925,29 @@
     "semantic_hash": "31c9bb849212d2bc97a1e72e09b66fdf"
   },
   "/home/xava/Documents/nuxy/docs/electron-fix-plan.md": {
-    "mtime": 1779351886.2073889,
-    "ast_hash": "b8f128769c14984b231ea9fbe7f62379",
-    "semantic_hash": "b8f128769c14984b231ea9fbe7f62379"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "6f575428ff1c1fdedf96dfbdea482886",
+    "semantic_hash": "6f575428ff1c1fdedf96dfbdea482886"
+  },
+  "/home/xava/Documents/nuxy/docs/open-issues.md": {
+    "mtime": 1780759264.1690006,
+    "ast_hash": "4e6b636d4dff08e942a4af3e0f6417e1",
+    "semantic_hash": "4e6b636d4dff08e942a4af3e0f6417e1"
+  },
+  "/home/xava/Documents/nuxy/docs/react-to-lit-migration.md": {
+    "mtime": 1780943641.649777,
+    "ast_hash": "3f49c84042a3da171fadbb85c1896bdc",
+    "semantic_hash": "3f49c84042a3da171fadbb85c1896bdc"
   },
   "/home/xava/Documents/nuxy/docs/19-mvp-roadmap.md": {
-    "mtime": 1779351886.0543895,
-    "ast_hash": "1d6a39403de0e323e481c3070057ebb3",
-    "semantic_hash": "1d6a39403de0e323e481c3070057ebb3"
+    "mtime": 1780955878.9796412,
+    "ast_hash": "264d4059b403867060d9f02359f35b01",
+    "semantic_hash": "264d4059b403867060d9f02359f35b01"
+  },
+  "/home/xava/Documents/nuxy/docs/test-roadmap.md": {
+    "mtime": 1780573147.7790697,
+    "ast_hash": "bfc67627ebbf587e98f950f9201fcc68",
+    "semantic_hash": "bfc67627ebbf587e98f950f9201fcc68"
   },
   "/home/xava/Documents/nuxy/docs/07-database-design.md": {
     "mtime": 1779351885.97239,
@@ -2120,14 +2955,14 @@
     "semantic_hash": "1ad6b25102403d06be772d4f8575c531"
   },
   "/home/xava/Documents/nuxy/docs/restructure-plan.md": {
-    "mtime": 1779351886.3253882,
-    "ast_hash": "779474e33143c674c3177758303d36f9",
-    "semantic_hash": "779474e33143c674c3177758303d36f9"
+    "mtime": 1780955878.9816413,
+    "ast_hash": "261781cb6a1f4d33a44f80a0a571e1aa",
+    "semantic_hash": "261781cb6a1f4d33a44f80a0a571e1aa"
   },
   "/home/xava/Documents/nuxy/docs/performance/performance-report.md": {
-    "mtime": 1779351886.3063881,
-    "ast_hash": "d540e3016f6d3933def9ad23b235317f",
-    "semantic_hash": "d540e3016f6d3933def9ad23b235317f"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "60528806acdfe4445a14796ef6b9c015",
+    "semantic_hash": "60528806acdfe4445a14796ef6b9c015"
   },
   "/home/xava/Documents/nuxy/docs/changelog/2026-05-18.md": {
     "mtime": 1779351886.1198537,
@@ -2140,9 +2975,9 @@
     "semantic_hash": "faef77afeeda7a4ecb47490d24cea3a7"
   },
   "/home/xava/Documents/nuxy/docs/cleanup/dependency-report.md": {
-    "mtime": 1779351886.1480002,
-    "ast_hash": "d07c04e9d4ac8cd101cec011a4d7fc05",
-    "semantic_hash": "d07c04e9d4ac8cd101cec011a4d7fc05"
+    "mtime": 1780955878.9806411,
+    "ast_hash": "12d37d62d688524e9bd3df9ea7e38cf5",
+    "semantic_hash": "12d37d62d688524e9bd3df9ea7e38cf5"
   },
   "/home/xava/Documents/nuxy/docs/cleanup/dead-code-report.md": {
     "mtime": 1779351886.129389,
@@ -2150,14 +2985,49 @@
     "semantic_hash": "0877e52c247ddc31aef02dfb374beeb1"
   },
   "/home/xava/Documents/nuxy/docs/cleanup/naming-report.md": {
-    "mtime": 1779351886.2012315,
-    "ast_hash": "36b21551565cc8ffde540b6c1166f8ba",
-    "semantic_hash": "36b21551565cc8ffde540b6c1166f8ba"
+    "mtime": 1780955878.9806411,
+    "ast_hash": "4f3e0463dfb1ae00b88b75f30833002f",
+    "semantic_hash": "4f3e0463dfb1ae00b88b75f30833002f"
   },
   "/home/xava/Documents/nuxy/docs/cleanup/documentation-audit-report.md": {
-    "mtime": 1779351886.1883888,
-    "ast_hash": "a85d2ee1273a989aabd5e5e76ae6fc62",
-    "semantic_hash": "a85d2ee1273a989aabd5e5e76ae6fc62"
+    "mtime": 1780955878.9806411,
+    "ast_hash": "7a2690f91338a7ce8fd4e88677803bf6",
+    "semantic_hash": "7a2690f91338a7ce8fd4e88677803bf6"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/00-genel-bakis.md": {
+    "mtime": 1781040863.1860843,
+    "ast_hash": "96efe451e57b1bfe945141937de53b37",
+    "semantic_hash": "96efe451e57b1bfe945141937de53b37"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/06-yeniden-yazirim-plani.md": {
+    "mtime": 1781041324.0951667,
+    "ast_hash": "cc74dd7715d8f87b11a9ac5ebf6f8055",
+    "semantic_hash": "cc74dd7715d8f87b11a9ac5ebf6f8055"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/02-ui-components.md": {
+    "mtime": 1781041027.3479633,
+    "ast_hash": "37470ed543ff4339de902bf090dbab85",
+    "semantic_hash": "37470ed543ff4339de902bf090dbab85"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/01-shell.md": {
+    "mtime": 1781040967.946356,
+    "ast_hash": "e0cba7c9dbeee63bf4c25423a6ffdb14",
+    "semantic_hash": "e0cba7c9dbeee63bf4c25423a6ffdb14"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/05-electron-renderer.md": {
+    "mtime": 1781041253.962571,
+    "ast_hash": "27a66bc7406bc04dc5c391562cb79ffc",
+    "semantic_hash": "27a66bc7406bc04dc5c391562cb79ffc"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/03-packages-core.md": {
+    "mtime": 1781041175.8340344,
+    "ast_hash": "2bae953de776509ac152893a7d290df9",
+    "semantic_hash": "2bae953de776509ac152893a7d290df9"
+  },
+  "/home/xava/Documents/nuxy/docs/lit-remake/04-extensions.md": {
+    "mtime": 1781041211.5628207,
+    "ast_hash": "33cbbc9429652f91ce4f2ad2be7cb699",
+    "semantic_hash": "33cbbc9429652f91ce4f2ad2be7cb699"
   },
   "/home/xava/Documents/nuxy/docs/ui/ui-cleanup-report.md": {
     "mtime": 1779351886.3773878,
@@ -2165,14 +3035,19 @@
     "semantic_hash": "f4ed6351de74e4610572bde021239512"
   },
   "/home/xava/Documents/nuxy/docs/architecture/extension-system-v2.md": {
-    "mtime": 1780094049.5533137,
-    "ast_hash": "b2dba6c4ed797a1eae84d0f0199c6027",
-    "semantic_hash": "b2dba6c4ed797a1eae84d0f0199c6027"
+    "mtime": 1780955878.9806411,
+    "ast_hash": "4218cc777e3bdef04683bc2d1c39a403",
+    "semantic_hash": "4218cc777e3bdef04683bc2d1c39a403"
   },
   "/home/xava/Documents/nuxy/docs/architecture/refactor-plan.md": {
-    "mtime": 1779351886.1163893,
-    "ast_hash": "03f39a1188c5913f1f43c60179f43c02",
-    "semantic_hash": "03f39a1188c5913f1f43c60179f43c02"
+    "mtime": 1780955878.9806411,
+    "ast_hash": "4f8f146df015e5415b52e0d97059d8cc",
+    "semantic_hash": "4f8f146df015e5415b52e0d97059d8cc"
+  },
+  "/home/xava/Documents/nuxy/docs/architecture/lit-renderer-composition.md": {
+    "mtime": 1780943568.4880872,
+    "ast_hash": "b052041fc788c7f0fe70be5d7b771aed",
+    "semantic_hash": "b052041fc788c7f0fe70be5d7b771aed"
   },
   "/home/xava/Documents/nuxy/docs/project-analysis/03-future-evolution.md": {
     "mtime": 1780176871.4143198,
@@ -2180,44 +3055,104 @@
     "semantic_hash": "777212bb8879232e42f0b6a7f501ecce"
   },
   "/home/xava/Documents/nuxy/docs/project-analysis/02-extensions-review.md": {
-    "mtime": 1780176871.4141104,
-    "ast_hash": "ed5ce7e9c1c76cb0505bf52c09f6a61e",
-    "semantic_hash": "ed5ce7e9c1c76cb0505bf52c09f6a61e"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "0df491da527b04acc4fcc03c053d5992",
+    "semantic_hash": "0df491da527b04acc4fcc03c053d5992"
   },
   "/home/xava/Documents/nuxy/docs/project-analysis/01-general-overview.md": {
-    "mtime": 1780176871.4130032,
-    "ast_hash": "383884ba251b7f84c30fa6a2fcf4f80b",
-    "semantic_hash": "383884ba251b7f84c30fa6a2fcf4f80b"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "41e1f148b0e5a71c14bb8dd1ba305343",
+    "semantic_hash": "41e1f148b0e5a71c14bb8dd1ba305343"
   },
   "/home/xava/Documents/nuxy/docs/types/type-safety-report.md": {
-    "mtime": 1779351886.3593879,
-    "ast_hash": "d5b0fbe5081e5c5d2a0a353f05a743f5",
-    "semantic_hash": "d5b0fbe5081e5c5d2a0a353f05a743f5"
+    "mtime": 1780955878.9816413,
+    "ast_hash": "7067958118159b719269f9689206b8ec",
+    "semantic_hash": "7067958118159b719269f9689206b8ec"
   },
   "/home/xava/Documents/nuxy/docs/implementation/02-core-infrastructure.md": {
-    "mtime": 1779351886.2273886,
-    "ast_hash": "f7a2efa665e6bc8b1ed8cbe6cf7bcaf4",
-    "semantic_hash": "f7a2efa665e6bc8b1ed8cbe6cf7bcaf4"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "3890d9c0957716792c6e32ac96fbb4ea",
+    "semantic_hash": "3890d9c0957716792c6e32ac96fbb4ea"
   },
   "/home/xava/Documents/nuxy/docs/implementation/01-setup.md": {
-    "mtime": 1779351886.2173886,
-    "ast_hash": "d9d60edd5d8f4a75c6fb394659308bbb",
-    "semantic_hash": "d9d60edd5d8f4a75c6fb394659308bbb"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "b4bfbfcd39bebc5c32bb48b2834e052c",
+    "semantic_hash": "b4bfbfcd39bebc5c32bb48b2834e052c"
   },
   "/home/xava/Documents/nuxy/docs/implementation/04-integration.md": {
-    "mtime": 1779351886.2433887,
-    "ast_hash": "e0c9d1f6fa3ec96f9fd3c0109ffb9202",
-    "semantic_hash": "e0c9d1f6fa3ec96f9fd3c0109ffb9202"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "49f3dcbe98e257de4963e8f0e57dafa5",
+    "semantic_hash": "49f3dcbe98e257de4963e8f0e57dafa5"
   },
   "/home/xava/Documents/nuxy/docs/implementation/03-feature-implementation.md": {
-    "mtime": 1779351886.2343886,
-    "ast_hash": "4dbc2d3d537f668ef14474d0f4f49e69",
-    "semantic_hash": "4dbc2d3d537f668ef14474d0f4f49e69"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "3a3bfc95b2e8c23779d78e736182e6f4",
+    "semantic_hash": "3a3bfc95b2e8c23779d78e736182e6f4"
   },
   "/home/xava/Documents/nuxy/docs/implementation/05-final-polish.md": {
-    "mtime": 1779351886.2493885,
-    "ast_hash": "7d5783527458938da6d4b08336e14ce0",
-    "semantic_hash": "7d5783527458938da6d4b08336e14ce0"
+    "mtime": 1780955878.9813643,
+    "ast_hash": "0c52a355e9eb6d08a40ccc9224111cda",
+    "semantic_hash": "0c52a355e9eb6d08a40ccc9224111cda"
+  },
+  "/home/xava/Documents/nuxy/website/docs/index.md": {
+    "mtime": 1780955878.9856412,
+    "ast_hash": "ea67081ea744c8c50905bd18f1e7e8e8",
+    "semantic_hash": "ea67081ea744c8c50905bd18f1e7e8e8"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/configuration.md": {
+    "mtime": 1780573155.0143452,
+    "ast_hash": "21392c14ab5ed8621fb68a461c3ae81f",
+    "semantic_hash": "21392c14ab5ed8621fb68a461c3ae81f"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/security.md": {
+    "mtime": 1780573155.0470033,
+    "ast_hash": "319a750c5ecf1bc0657792fa58f9aed1",
+    "semantic_hash": "319a750c5ecf1bc0657792fa58f9aed1"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/installation.md": {
+    "mtime": 1780487926.7766016,
+    "ast_hash": "d1c736710447628535aafc8a95c0bbb2",
+    "semantic_hash": "d1c736710447628535aafc8a95c0bbb2"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/extension-system.md": {
+    "mtime": 1780955878.9856412,
+    "ast_hash": "de64439b875f47ebae185b0e1d6b1899",
+    "semantic_hash": "de64439b875f47ebae185b0e1d6b1899"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/ipc-kernel.md": {
+    "mtime": 1780573155.0390034,
+    "ast_hash": "1d0da8cb991d55e3e8ea6225bfe42992",
+    "semantic_hash": "1d0da8cb991d55e3e8ea6225bfe42992"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/architecture.md": {
+    "mtime": 1780955878.9856412,
+    "ast_hash": "6f09a1cfeb4ed2b4508cc0d5f41f408e",
+    "semantic_hash": "6f09a1cfeb4ed2b4508cc0d5f41f408e"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/what-is-nuxy.md": {
+    "mtime": 1780955878.9856412,
+    "ast_hash": "8af520d041e8f94850ee8e42a0f2fa61",
+    "semantic_hash": "8af520d041e8f94850ee8e42a0f2fa61"
+  },
+  "/home/xava/Documents/nuxy/website/docs/guide/getting-started.md": {
+    "mtime": 1780573155.0260034,
+    "ast_hash": "3e4bff65b9936fd805fb994a29775da5",
+    "semantic_hash": "3e4bff65b9936fd805fb994a29775da5"
+  },
+  "/home/xava/Documents/nuxy/website/docs/extensions/first-extension.md": {
+    "mtime": 1781041416.4966493,
+    "ast_hash": "0822724020385d6f1b683aa8774cfd41",
+    "semantic_hash": "0822724020385d6f1b683aa8774cfd41"
+  },
+  "/home/xava/Documents/nuxy/website/docs/extensions/manifest.md": {
+    "mtime": 1780955878.9856412,
+    "ast_hash": "06cb67fdf179306bfc7a983cbfaef733",
+    "semantic_hash": "06cb67fdf179306bfc7a983cbfaef733"
+  },
+  "/home/xava/Documents/nuxy/website/docs/extensions/overview.md": {
+    "mtime": 1780955878.9856412,
+    "ast_hash": "7ae9f76e1d20091ba3b8ca534bc4c5f2",
+    "semantic_hash": "7ae9f76e1d20091ba3b8ca534bc4c5f2"
   },
   "/home/xava/Documents/nuxy/scratch/raw-html.txt": {
     "mtime": 1779400997.172022,
@@ -2229,19 +3164,74 @@
     "ast_hash": "18603ebad8b5d92079980552ef4969e1",
     "semantic_hash": "18603ebad8b5d92079980552ef4969e1"
   },
+  "/home/xava/Documents/nuxy/extensions/LIT_MIGRATION_GUIDE.md": {
+    "mtime": 1780954854.957048,
+    "ast_hash": "14b8ae71d3f662259655be06a3582a13",
+    "semantic_hash": "14b8ae71d3f662259655be06a3582a13"
+  },
+  "/home/xava/Documents/nuxy/extensions/EXTENSION_README_TEMPLATE.md": {
+    "mtime": 1780573148.8450353,
+    "ast_hash": "c4004e6a3c17ac6ff055d99f231412fa",
+    "semantic_hash": "c4004e6a3c17ac6ff055d99f231412fa"
+  },
+  "/home/xava/Documents/nuxy/extensions/FRONTEND_STRUCTURE_GUIDE.md": {
+    "mtime": 1781041395.5477653,
+    "ast_hash": "95488d827942eca4eb138a959c48f998",
+    "semantic_hash": "95488d827942eca4eb138a959c48f998"
+  },
   "/home/xava/Documents/nuxy/extensions/README.md": {
     "mtime": 1779351886.483062,
     "ast_hash": "de19e22b0e4818e8b91fd1803e22c82a",
     "semantic_hash": "de19e22b0e4818e8b91fd1803e22c82a"
   },
   "/home/xava/Documents/nuxy/extensions/EXTENSION_GUIDE.md": {
-    "mtime": 1780221698.0377185,
-    "ast_hash": "f998417bda377185c3a153fb885f5ed8",
-    "semantic_hash": "f998417bda377185c3a153fb885f5ed8"
+    "mtime": 1781041390.4797933,
+    "ast_hash": "64edc44151d14869da12ea1be02d2923",
+    "semantic_hash": "64edc44151d14869da12ea1be02d2923"
   },
   "/home/xava/Documents/nuxy/extensions/MANIFEST_GUIDE.md": {
-    "mtime": 1780221707.805758,
-    "ast_hash": "35844b6d7e2bcc9ee7e6c16781107b34",
-    "semantic_hash": "35844b6d7e2bcc9ee7e6c16781107b34"
+    "mtime": 1781041401.7627308,
+    "ast_hash": "a8a32bbb1eeb8c2d7bc66109eff3666b",
+    "semantic_hash": "a8a32bbb1eeb8c2d7bc66109eff3666b"
+  },
+  "/home/xava/Documents/nuxy/extensions/icons-default/README.md": {
+    "mtime": 1780573148.9953477,
+    "ast_hash": "096d80af054b00594130c89968eb6bda",
+    "semantic_hash": "096d80af054b00594130c89968eb6bda"
+  },
+  "/home/xava/Documents/nuxy/extensions/ui-default/README.md": {
+    "mtime": 1780955878.9826412,
+    "ast_hash": "7be223e171e4b937397ba864f4aea804",
+    "semantic_hash": "7be223e171e4b937397ba864f4aea804"
+  },
+  "/home/xava/Documents/nuxy/extensions/notes/README.md": {
+    "mtime": 1780573149.2040572,
+    "ast_hash": "7c9d3027a0c69975176b58b346fad7f4",
+    "semantic_hash": "7c9d3027a0c69975176b58b346fad7f4"
+  },
+  "/home/xava/Documents/nuxy/extensions/settings/README.md": {
+    "mtime": 1780955878.9822083,
+    "ast_hash": "c41572078227e30d23ae4f14a893901d",
+    "semantic_hash": "c41572078227e30d23ae4f14a893901d"
+  },
+  "/home/xava/Documents/nuxy/extensions/nyaa/README.md": {
+    "mtime": 1780573149.262116,
+    "ast_hash": "a72cf3b5a05e3e27f09b85e2c92f48e7",
+    "semantic_hash": "a72cf3b5a05e3e27f09b85e2c92f48e7"
+  },
+  "/home/xava/Documents/nuxy/extensions/gradient/README.md": {
+    "mtime": 1780573148.9826672,
+    "ast_hash": "be01bb3650238e15b0c41e835b32f0d3",
+    "semantic_hash": "be01bb3650238e15b0c41e835b32f0d3"
+  },
+  "/home/xava/Documents/nuxy/extensions/calculator/README.md": {
+    "mtime": 1780573148.143102,
+    "ast_hash": "8576ba4fe25cd6d8b0ae613e16688901",
+    "semantic_hash": "8576ba4fe25cd6d8b0ae613e16688901"
+  },
+  "/home/xava/Documents/nuxy/extensions/shell/README.md": {
+    "mtime": 1780573149.7460306,
+    "ast_hash": "d3b47c73f62992e97b8906a6bd6af4b7",
+    "semantic_hash": "d3b47c73f62992e97b8906a6bd6af4b7"
   }
 }

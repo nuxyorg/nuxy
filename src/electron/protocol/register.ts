@@ -13,6 +13,44 @@ export function registerProtocols() {
     const [extId, ...rest] = url.split('/')
     const filePath = rest.join('/')
 
+    if (extId === 'core') {
+      const coreVirtualScript = `
+        const NuxyCore = window.NuxyCore || {};
+        export const {
+          createLogger,
+          kernelLogger,
+          HostChannel,
+          resolveLocale,
+          flattenTranslations,
+          interpolate,
+          selectPlural,
+          getTextDirection,
+          resolveToolElementTag,
+          listCompositionProvides,
+          listCompositionClaims,
+          validateCompositionClaim,
+          LitElement,
+          html,
+          css,
+          nothing,
+          customElement,
+          property,
+          state,
+          query,
+          ref,
+          createRef,
+        } = NuxyCore;
+      `
+      return new Response(coreVirtualScript, {
+        headers: {
+          'Content-Type': 'application/javascript',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+          Pragma: 'no-cache',
+        },
+      })
+    }
+
     const resolved = resolveExtensionFile(extId, filePath)
     if (!resolved) {
       log.warn(`Blocked or missing nuxy-ext resource: ${extId}/${filePath}`)
@@ -42,13 +80,14 @@ export function registerProtocols() {
           })
         }
 
-        let code = fs.readFileSync(absolutePath, 'utf8')
+        const code = fs.readFileSync(absolutePath, 'utf8')
         const needsJsx =
           absolutePath.endsWith('.jsx') ||
           absolutePath.endsWith('.tsx') ||
           code.includes('React.createElement') ||
           /<[a-zA-Z]+/.test(code)
-        const needsTranspile = absolutePath.endsWith('.ts') || absolutePath.endsWith('.tsx') || needsJsx
+        const needsTranspile =
+          absolutePath.endsWith('.ts') || absolutePath.endsWith('.tsx') || needsJsx
 
         if (needsTranspile) {
           let ts: typeof import('typescript') | undefined
@@ -64,9 +103,14 @@ export function registerProtocols() {
                 jsx: needsJsx ? ts.JsxEmit.React : ts.JsxEmit.None,
                 module: ts.ModuleKind.ESNext,
                 target: ts.ScriptTarget.ESNext,
+                experimentalDecorators: true,
               },
             })
             let output = transpiled.outputText
+            output = output.replace(
+              /(from\s+['"])(@nuxy\/core|lit|lit\/decorators\.js|lit\/directives\/ref\.js)(['"])/g,
+              '$1nuxy-ext://core/index.js$3'
+            )
             transpileCache.set(absolutePath, { mtime, output })
             return new Response(output, {
               headers: {
@@ -80,7 +124,11 @@ export function registerProtocols() {
         }
 
         // Serve plain JS with application/javascript Content-Type
-        return new Response(code, {
+        const rewrittenCode = code.replace(
+          /(from\s+['"])(@nuxy\/core|lit|lit\/decorators\.js|lit\/directives\/ref\.js)(['"])/g,
+          '$1nuxy-ext://core/index.js$3'
+        )
+        return new Response(rewrittenCode, {
           headers: {
             'Content-Type': 'application/javascript',
             'Access-Control-Allow-Origin': '*',

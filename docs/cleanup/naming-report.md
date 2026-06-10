@@ -1,5 +1,7 @@
 # Nuxy — Naming Consistency Report
 
+> **Historical report** — reflects the codebase before the React→Lit/Web Components migration (completed 2026-06-09). React references below describe the old architecture.
+
 Generated: 2026-05-19  
 Scope: `src/electron/**/*.ts`, `src/renderer/**/*.tsx`, `packages/*/src/**/*.ts(x)`, `extensions/**/*.js`  
 Excluded: `node_modules`, `.git`, `src/release`, `src/dist*`
