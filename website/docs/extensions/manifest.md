@@ -20,7 +20,10 @@ Every extension must have a `manifest.json` file at its root. This file is the s
 | `permissions`  | `string[]` | No       | Host APIs the extension needs access to. See [Permissions](#permissions).                                                 |
 | `capabilities` | `object`   | No       | Cross-extension invocation rights. See [Capabilities](#capabilities).                                                     |
 | `priority`     | `number`   | No       | Load order for `uikit` extensions. Lower loads first (default: `100`).                                                    |
+| `queryAffinity`| `string[]` | No       | Query types this provider or tool handles best. Boosts results/actions when input matches. See [Query Affinity](#query-affinity). |
 | `locales`      | `object`   | No       | Internationalisation config. See [Locales](#locales).                                                                     |
+| `behavior`     | `object`   | No       | Tool lifecycle behavior (e.g. `onComplete`).                                                              |
+| `composition`  | `object`   | No       | UI composition slots this extension may provide or claim.                                                 |
 | `entry`        | `object`   | Yes      | Relative paths to entry files. See [Entry Points](#entry-points).                                                         |
 
 ## Extension Types
@@ -94,6 +97,7 @@ The `entry` object maps entry point names to relative file paths within the exte
 | ---------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `entry.backend`  | `tool`, `provider`, `orchestrator`, `helper` | Backend TypeScript module — must export `register(core: CoreContext)`                          |
 | `entry.frontend` | Optional for all                             | Frontend TypeScript file that registers the extension's custom element                         |
+| `entry.element`  | Optional                                     | Custom element tag for tool UI, e.g. "nuxy-tool-clipboard"                                     |
 | `entry.preload`  | Optional                                     | Runs in the Electron preload context at startup (clipboard watchers, early setup)              |
 | `entry.settings` | Optional                                     | Path to `settings.json` — declares user-configurable fields rendered by the Settings extension |
 | `entry.theme`    | `theme`                                      | Path to `theme.json` — CSS custom property value map                                           |
@@ -104,6 +108,7 @@ The `entry` object maps entry point names to relative file paths within the exte
   "entry": {
     "backend": "backend.ts",
     "frontend": "frontend.ts",
+    "element": "nuxy-tool-clipboard",
     "preload": "preload.ts",
     "settings": "settings.json"
   }
@@ -194,6 +199,7 @@ When `entry.settings` is declared, the Settings extension reads the schema and r
   "entry": {
     "backend": "backend.ts",
     "frontend": "frontend.ts",
+    "element": "nuxy-tool-my-tool",
     "settings": "settings.json"
   },
   "locales": {
@@ -202,6 +208,34 @@ When `entry.settings` is declared, the Settings extension reads the schema and r
   }
 }
 ```
+
+## Query Affinity
+
+Declare which omnibar input types your provider or tool handles best. The shell uses this information to boost your extension's results and actions when the detected `QueryContext` matches.
+
+| Field          | Type         | Required | Description                                                      |
+| -------------- | ------------ | -------- | ---------------------------------------------------------------- |
+| `queryAffinity`| `QueryType[]`| No       | One or more query types. Has no effect on `uikit`/`theme`/`iconpack` extensions. |
+
+Valid `QueryType` values: `"text"`, `"url"`, `"color"`, `"math"`, `"path"`, `"email"`, `"image"`, `"video"`, `"audio"`, `"pdf"`, `"archive"`.
+
+```json
+{
+  "id": "com.example.color-picker",
+  "type": "provider",
+  "queryAffinity": ["color"]
+}
+```
+
+```json
+{
+  "id": "com.example.downloader",
+  "type": "tool",
+  "queryAffinity": ["video", "audio", "url"]
+}
+```
+
+At runtime, tool actions can further declare `relevantFor` per-action for fine-grained boosting. See [Query Context → Tool actions](/api/query-context#tool-actions--relevantfor).
 
 ## Next steps
 

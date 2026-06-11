@@ -11,3 +11,6 @@ export const workerExitListeners = new Set<WorkerExitListener>()
 export type WorkerRegistryErrorListener = (extId: string) => void
 
 export const workerRegistryErrorListeners = new Set<WorkerRegistryErrorListener>()
+
+/** extIds whose non-zero exit is intentional (e.g. shell refresh). Suppresses WARN log and crash-restart. */
+export const suppressedWorkerExits = new Set<string>()

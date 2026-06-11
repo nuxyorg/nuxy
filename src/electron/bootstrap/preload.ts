@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('core', {
     resize: (width: number, height: number) => ipcRenderer.send('window:resize', width, height),
     hide: () => ipcRenderer.send('window:hide'),
     esc: () => ipcRenderer.send('window:esc'),
+    quit: () => ipcRenderer.send('window:quit'),
     center: () => ipcRenderer.send('window:center'),
     dragStart: () => ipcRenderer.send('window:drag-start'),
     dragMove: () => ipcRenderer.send('window:drag-move'),

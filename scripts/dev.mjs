@@ -109,13 +109,17 @@ function startDesktop() {
     cwd: path.join(ROOT, 'extensions/ui-default'),
   })
 
+  let shuttingDown = false
   const shutdown = () => {
+    if (shuttingDown) return
+    shuttingDown = true
     desktop.kill('SIGTERM')
     uikit.kill('SIGTERM')
     process.exit(0)
   }
   process.on('SIGINT', shutdown)
   process.on('SIGTERM', shutdown)
+  desktop.on('exit', shutdown)
 }
 
 console.log('')

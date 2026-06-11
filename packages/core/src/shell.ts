@@ -13,6 +13,12 @@ export interface ShellKeyAction {
 export interface ShellCommandAction {
   id: string
   label: string
+  /**
+   * Query types for which this action should be boosted to the top of the
+   * tool-actions list. The shell reorders actions at render time based on the
+   * current QueryContext — no polling or manual refresh needed.
+   */
+  relevantFor?: import('./query-context.js').QueryType[]
   onExecute?: () => void
   children?: ShellCommandAction[]
 }

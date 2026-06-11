@@ -130,6 +130,32 @@ export class NuxyShellViewElement extends LitElement {
 
     .nuxy-shell-results-panel {
       border-top: 1px solid var(--syntax-comment);
+      overflow-y: auto;
+      flex: 0 1 auto;
+      min-height: 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb, rgba(255, 255, 255, 0.15)) transparent;
+    }
+
+    .nuxy-zone {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 350ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .nuxy-zone[data-visible] {
+      grid-template-rows: 1fr;
+    }
+
+    .nuxy-zone-inner {
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .nuxy-zone[data-visible] + .nuxy-zone[data-visible],
+    .nuxy-zone[data-visible] + .nuxy-shell-results-section,
+    .nuxy-shell-results-section + .nuxy-zone[data-visible] {
+      border-top: 1px solid var(--syntax-comment);
     }
 
     .nuxy-shell-results-section + .nuxy-shell-results-section {
@@ -166,6 +192,11 @@ export class NuxyShellViewElement extends LitElement {
       flex-direction: column;
       animation: nuxy-slide-fade-in 250ms cubic-bezier(0.16, 1, 0.3, 1);
       transform-origin: top;
+    }
+
+    .nuxy-shell-footer {
+      position: relative;
+      flex-shrink: 0;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -378,37 +409,41 @@ export class NuxyShellViewElement extends LitElement {
   private renderOmnibarSections(
     sections: OmnibarSection[],
     selectedIndex: number,
-    isAnyListProviderLoading: boolean
+    isAnyListProviderLoading: boolean,
+    startIndex = 0
   ) {
-    let flatIndex = 0
+    let flatIndex = startIndex
 
     const renderedSections = sections.map((section) => {
       if (section.items.length === 0 && !section.loading) return nothing
 
+      const listItems = section.items.map((item) => {
+        const currentIndex = flatIndex++
+        const active = currentIndex === selectedIndex
+        return html`
+          <nuxy-list-item
+            .active=${active}
+            role="option"
+            aria-selected=${active ? 'true' : 'false'}
+            @click=${() => this.controller?.handleItemClick(item)}
+          >
+            <nuxy-list-item-body>
+              <nuxy-list-item-text>${item.title}</nuxy-list-item-text>
+              ${item.subtitle
+                ? html`<nuxy-list-item-meta>${item.subtitle}</nuxy-list-item-meta>`
+                : nothing}
+            </nuxy-list-item-body>
+          </nuxy-list-item>
+        `
+      })
+
+      const listEl = html`
+        <nuxy-list role="presentation" active-index=${selectedIndex}>${listItems}</nuxy-list>
+      `
+
       return html`
         <section class="nuxy-shell-results-section">
-          ${this.renderSectionHeader(section.label, section.loading)}
-          <nuxy-list role="presentation" active-index=${selectedIndex}>
-            ${section.items.map((item) => {
-              const currentIndex = flatIndex++
-              const active = currentIndex === selectedIndex
-              return html`
-                <nuxy-list-item
-                  .active=${active}
-                  role="option"
-                  aria-selected=${active ? 'true' : 'false'}
-                  @click=${() => this.controller?.handleItemClick(item)}
-                >
-                  <nuxy-list-item-body>
-                    <nuxy-list-item-text>${item.title}</nuxy-list-item-text>
-                    ${item.subtitle
-                      ? html`<nuxy-list-item-meta>${item.subtitle}</nuxy-list-item-meta>`
-                      : nothing}
-                  </nuxy-list-item-body>
-                </nuxy-list-item>
-              `
-            })}
-          </nuxy-list>
+          ${this.renderSectionHeader(section.label, section.loading)} ${listEl}
           ${section.loading && section.items.length === 0
             ? html`
                 <div class="nuxy-shell-results-section__skeletons">
@@ -453,23 +488,43 @@ export class NuxyShellViewElement extends LitElement {
     if (!ctrl) return nothing
 
     const hasProviderContent = this.hasVisibleProviderResults(providerStates)
-    const hasSectionContent =
-      sections.some((s) => s.items.length > 0 || s.loading) || isAnyListProviderLoading
+    const toolSections = sections.filter((section) => section.id === 'tools')
+    const listProviderSections = sections.filter((section) => section.id !== 'tools')
+    const hasToolsContent = toolSections.some((section) => section.items.length > 0)
+    const hasListProviderContent =
+      listProviderSections.some((section) => section.items.length > 0 || section.loading) ||
+      isAnyListProviderLoading
+    const toolsFlatCount = toolSections.reduce((count, section) => count + section.items.length, 0)
 
-    if (!hasProviderContent && !hasSectionContent) return nothing
+    if (!hasProviderContent && !hasToolsContent && !hasListProviderContent) return nothing
 
     return html`
-      <nuxy-scroll-area
-        max-height="350"
+      <div
         class="nuxy-shell-results-panel"
         role="listbox"
         aria-label=${ctrl.t.t('results.ariaLabel')}
       >
-        ${hasProviderContent ? this.renderProviderResults(providerStates, copiedId) : nothing}
-        ${hasSectionContent
-          ? this.renderOmnibarSections(sections, selectedIndex, isAnyListProviderLoading)
+        <div class="nuxy-zone" ?data-visible=${hasProviderContent}>
+          <div class="nuxy-zone-inner">
+            ${hasProviderContent ? this.renderProviderResults(providerStates, copiedId) : nothing}
+          </div>
+        </div>
+        ${hasToolsContent
+          ? this.renderOmnibarSections(toolSections, selectedIndex, false)
           : nothing}
-      </nuxy-scroll-area>
+        <div class="nuxy-zone" ?data-visible=${hasListProviderContent}>
+          <div class="nuxy-zone-inner">
+            ${hasListProviderContent
+              ? this.renderOmnibarSections(
+                  listProviderSections,
+                  selectedIndex,
+                  isAnyListProviderLoading,
+                  toolsFlatCount
+                )
+              : nothing}
+          </div>
+        </div>
+      </div>
     `
   }
 
@@ -628,11 +683,14 @@ export class NuxyShellViewElement extends LitElement {
                   )}
               <div class="nuxy-shell-tool-wrapper">${toolHostEl}</div>
             </div>
-            ${this.renderShortcutBar(
-              s.bridge.toolActions as never[],
-              s.bridge.keyActionHints as never[],
-              s.bridge.footerPortal
-            )}
+            <div class="nuxy-shell-footer">
+              ${this.renderShortcutBar(
+                s.bridge.toolActions as never[],
+                s.bridge.keyActionHints as never[],
+                s.bridge.footerPortal
+              )}
+              <nuxy-toaster></nuxy-toaster>
+            </div>
           </div>
         </nuxy-shell>
         ${s.showCommandPalette
@@ -646,7 +704,6 @@ export class NuxyShellViewElement extends LitElement {
               ></nuxy-command-palette>
             `
           : nothing}
-        <nuxy-toaster></nuxy-toaster>
       </div>
     `
   }

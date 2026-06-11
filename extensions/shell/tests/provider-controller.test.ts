@@ -114,6 +114,90 @@ describe('ProviderController', () => {
     expect(coreInvokeMock).toHaveBeenCalledWith('p2', 'eval', { text: 'hello' })
   })
 
+  it('syncActions clears action provider state without invoking when query is empty', async () => {
+    const host = makeHost()
+    const ctrl = new ProviderController(host)
+    ctrl.setProviders([
+      {
+        id: 'com.nuxy.notes',
+        manifest: {
+          id: 'com.nuxy.notes',
+          name: 'Notes',
+          version: '1',
+          type: 'provider',
+          providerGroup: 'actions',
+        },
+      } as Provider,
+    ])
+    coreInvokeMock.mockResolvedValue({
+      success: true,
+      data: { items: [{ id: 'note-action', title: 'Save as note' }] },
+    })
+
+    ctrl.syncActions('hello', null, [], [])
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(ctrl.providerStates['com.nuxy.notes']?.items).toHaveLength(1)
+
+    coreInvokeMock.mockClear()
+    ctrl.syncActions('', null, [], [])
+    expect(coreInvokeMock).not.toHaveBeenCalled()
+    expect(ctrl.providerStates['com.nuxy.notes']).toBeUndefined()
+    expect(ctrl.omnibarSections).toEqual([])
+  })
+
+  it('syncActions invokes action providers immediately without debounce', async () => {
+    const host = makeHost()
+    const ctrl = new ProviderController(host)
+    ctrl.setProviders([
+      {
+        id: 'com.nuxy.notes',
+        manifest: {
+          id: 'com.nuxy.notes',
+          name: 'Notes',
+          version: '1',
+          type: 'provider',
+          providerGroup: 'actions',
+        },
+      } as Provider,
+      makeProvider('p2'),
+    ])
+    coreInvokeMock.mockResolvedValue({ success: true, data: { items: [] } })
+
+    ctrl.syncActions('hello', null, [], [])
+    expect(coreInvokeMock).toHaveBeenCalledWith('com.nuxy.notes', 'eval', { text: 'hello' })
+    expect(coreInvokeMock).not.toHaveBeenCalledWith('p2', 'eval', expect.anything())
+
+    await Promise.resolve()
+    await Promise.resolve()
+  })
+
+  it('sync with skipActionProviders ignores action providers', async () => {
+    const host = makeHost()
+    const ctrl = new ProviderController(host)
+    ctrl.setProviders([
+      {
+        id: 'com.nuxy.notes',
+        manifest: {
+          id: 'com.nuxy.notes',
+          name: 'Notes',
+          version: '1',
+          type: 'provider',
+          providerGroup: 'actions',
+        },
+      } as Provider,
+      makeProvider('p2'),
+    ])
+    coreInvokeMock.mockResolvedValue({ success: true, data: { items: [] } })
+
+    ctrl.sync('hello', null, [], [], {}, { skipActionProviders: true })
+    vi.runAllTimers()
+    await Promise.resolve()
+
+    expect(coreInvokeMock).toHaveBeenCalledWith('p2', 'eval', { text: 'hello' })
+    expect(coreInvokeMock).not.toHaveBeenCalledWith('com.nuxy.notes', 'eval', expect.anything())
+  })
+
   it('sync sets loading state before IPC resolves', () => {
     const host = makeHost()
     const ctrl = new ProviderController(host)
@@ -142,6 +226,28 @@ describe('ProviderController', () => {
     expect(ctrl.providerStates['p1']?.loading).toBe(false)
     expect(ctrl.providerStates['p1']?.items).toEqual(items)
     expect(ctrl.isAnyListProviderLoading).toBe(false)
+  })
+
+  it('sync keeps stale provider items visible while fetching new results', async () => {
+    const host = makeHost()
+    const ctrl = new ProviderController(host)
+    ctrl.setProviders([makeProvider('p1')])
+    const staleItems = [{ id: 'r1', title: 'Result 1' }]
+    coreInvokeMock.mockResolvedValue({ success: true, data: { items: staleItems } })
+
+    ctrl.sync('hello', null, [], [])
+    vi.runAllTimers()
+    await Promise.resolve()
+    await Promise.resolve()
+    expect(ctrl.providerStates['p1']?.items).toEqual(staleItems)
+
+    coreInvokeMock.mockReturnValue(new Promise(() => {}))
+    ctrl.sync('hello2', null, [], [])
+    vi.advanceTimersByTime(50)
+
+    expect(ctrl.providerStates['p1']?.loading).toBe(true)
+    expect(ctrl.providerStates['p1']?.items).toEqual(staleItems)
+    expect(ctrl.listResults).toEqual(staleItems)
   })
 
   it('sync ignores stale responses when a newer query is issued', async () => {

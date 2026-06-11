@@ -276,10 +276,12 @@ export class NuxyCommandPaletteElement extends LitElement {
     const winWidth = this._container.offsetWidth
     const winHeight = this._container.offsetHeight
 
-    let left = this._position.x + winWidth - 350
+    const gap = 8
+
+    let left = this._position.x + winWidth - 350 - gap
     if (left < 12) left = 12
 
-    let bottom = cssWindowHeight - (this._position.y + winHeight)
+    let bottom = cssWindowHeight - (this._position.y + winHeight) + gap
     if (bottom < 12) bottom = 12
 
     this._panelEl.style.position = 'absolute'

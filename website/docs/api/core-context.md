@@ -23,12 +23,15 @@ Requires `clipboard` permission in `manifest.json`.
 ```ts
 core.fs.fileExists(path)              // → Promise<boolean>
 core.fs.readDir(path)                 // → Promise<DirEntry[]>
-core.fs.readFile(path, encoding?)      // → Promise<string | Buffer>
+core.fs.readFile(path, encoding?)     // → Promise<string>
+core.fs.readFileBinary(path)          // → Promise<Uint8Array>
 core.fs.writeFile(path, data)         // → Promise<void>
 core.fs.mkdir(path, opts?)            // → Promise<void>
 core.fs.rename(old, new)              // → Promise<void>
 core.fs.rm(path)                      // → Promise<void>
 core.fs.stat(path)                    // → Promise<FileStat>
+core.fs.homedir()                     // → string
+core.fs.tmpdir()                      // → string
 ```
 
 Requires `fs` permission.
@@ -57,9 +60,9 @@ Requires `db` permission.
 ## Shell
 
 ```ts
-core.shell.openPath(path) // open file/folder in OS default app
-core.shell.openExternal(url) // open URL in browser
-core.shell.exec(command) // run allowlisted command
+core.shell.open(pathOrUrl) // open file/folder or URL in OS default app/browser
+core.shell.exec(cmd, args, opts?) // run an executable with args, returning stdout/code
+core.shell.spawn(cmd, args) // spawn a long-running process, returning a handle
 ```
 
 Requires `shell` permission.
@@ -78,6 +81,8 @@ Requires `media` permission. Linux uses MPRIS via D-Bus.
 await core.settings.read<T>(key)
 await core.settings.write(key, value)
 await core.settings.readExtension?.(extId, key)
+await core.settings.writeExtension?.(extId, key, value)
+await core.settings.readAllExtension?.(extId)
 await core.settings.writeAllExtension?.(extId, values)
 ```
 
@@ -99,6 +104,27 @@ core.i18n.t(key) // → translated string
 core.i18n.t(key, vars) // → interpolated ("Hello, {name}!")
 core.i18n.t(key, vars, n) // → plural form
 ```
+
+## Extensions
+
+```ts
+const res = await core.extensions.invoke(targetId, channel, payload?)
+```
+
+Used to invoke other extensions' IPC handlers directly from backend. Requires `caller` capability.
+
+## Registry
+
+```ts
+core.registry.registerTool(config)
+core.registry.registerProvider(config)
+core.registry.registerOrchestrator(fn)
+core.registry.registerTheme(def)
+core.registry.registerIconPack(def)
+core.registry.getCallableTools()
+```
+
+Allows manual/dynamic registration of extensions and features.
 
 ## Related
 

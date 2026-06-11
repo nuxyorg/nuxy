@@ -4,7 +4,7 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { warn, createProgress, refresh } from './dev-log.mjs'
+import { warn, createProgress, refreshing, refreshDone } from './dev-log.mjs'
 
 const execFileAsync = promisify(execFile)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -134,12 +134,14 @@ export function startExtensionWatcher(paths) {
       setTimeout(() => {
         pendingDebounce.delete(folderName)
         void (async () => {
+          const label = extLabel(folderName)
+          const quiet = Date.now() < quietUntil
+          if (!quiet) refreshing(label)
           try {
             await packageAndInstall(extDir)
-            if (Date.now() >= quietUntil) {
-              refresh(`${extLabel(folderName)} has changes, refreshing...`)
-            }
+            if (!quiet) refreshDone(label)
           } catch (err) {
+            if (!quiet && process.stdout.isTTY) process.stdout.write('\r\x1b[2K')
             const msg = err instanceof Error ? err.message : String(err)
             process.stderr.write(`  ✘ ${folderName}: ${msg}\n`)
           }

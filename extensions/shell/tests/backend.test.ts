@@ -130,6 +130,87 @@ describe('shell backend', () => {
     })
   })
 
+  describe('recordToolUsed with { toolId, query } payload', () => {
+    it('accepts object payload and records tool', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      const result = await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: 'calc' })
+      expect(result).toContain('com.nuxy.calc')
+    })
+
+    it('ignores object payload missing toolId string', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      const result = await handlers.recordToolUsed({ toolId: 42, query: 'calc' })
+      expect(result).toEqual([])
+    })
+
+    it('persists usage-stats.json with count and query', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: 'calculator' })
+      expect(
+        (core.storage.write as ReturnType<typeof vi.fn>).mock.calls.some(
+          ([file, data]: [string, unknown]) =>
+            file === 'usage-stats.json' &&
+            data !== null &&
+            typeof data === 'object' &&
+            'com.nuxy.calc' in (data as object)
+        )
+      ).toBe(true)
+    })
+
+    it('deduplicates queries within the same tool', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: 'calc' })
+      await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: 'calc' })
+      const stats = await handlers.getUsageStats(undefined)
+      const entry = (stats as Record<string, { count: number; queries: string[] }>)['com.nuxy.calc']
+      expect(entry.count).toBe(2)
+      expect(entry.queries.filter((q: string) => q === 'calc')).toHaveLength(1)
+    })
+  })
+
+  describe('getUsageStats', () => {
+    it('returns empty object before any usage', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      expect(await handlers.getUsageStats(undefined)).toEqual({})
+    })
+
+    it('tracks count and queries per tool', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: 'calc' })
+      await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: 'math' })
+      const stats = await handlers.getUsageStats(undefined)
+      const entry = (stats as Record<string, { count: number; queries: string[] }>)['com.nuxy.calc']
+      expect(entry.count).toBe(2)
+      expect(entry.queries).toContain('calc')
+      expect(entry.queries).toContain('math')
+    })
+
+    it('ignores empty or whitespace-only queries', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: '   ' })
+      const stats = await handlers.getUsageStats(undefined)
+      const entry = (stats as Record<string, { count: number; queries: string[] }>)['com.nuxy.calc']
+      expect(entry.count).toBe(1)
+      expect(entry.queries).toHaveLength(0)
+    })
+
+    it('stores queries lowercase and trimmed', async () => {
+      const { core, handlers } = createCore()
+      register(core)
+      await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: '  CALC  ' })
+      const stats = await handlers.getUsageStats(undefined)
+      const entry = (stats as Record<string, { count: number; queries: string[] }>)['com.nuxy.calc']
+      expect(entry.queries[0]).toBe('calc')
+    })
+  })
+
   // Integration: simulate realistic usage flow
   describe('e2e: tool history lifecycle', () => {
     it('loads existing history, records new usage, deduplicates', async () => {

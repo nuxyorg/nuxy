@@ -21,12 +21,12 @@ Workspace aliases in `src/vite.config.ts` point to package source files directly
 
 ## Electron Main Process
 
-Located in `src/electron/`. Bootstrap order in `main.ts`:
+Located in `src/electron/`. Bootstrap order in `bootstrap/main.ts`:
 
 1. **Register `nuxy-ext://` protocol** — privileged custom protocol that serves extension assets (JS, CSS, images) from `~/.nuxy/extensions/<id>/`
 2. **Register IPC handlers** — all `ipcMain` handlers; `ext:invoke` routes calls to either kernel built-ins or worker extensions
 3. **Create main window** — frameless, transparent `BrowserWindow` via `window/manager.ts`
-4. **Scan and spawn extensions** — scanner crawls `~/.nuxy/extensions/`, spawns one Worker thread per extension with a backend entry point
+4. **Scan and spawn extensions** — scanner crawls `~/.nuxy/extensions/` (synced from `extensions/` during dev via `pnpm dev`), spawns one Worker thread per extension with a backend entry point
 
 ### Key Main-Process Modules
 

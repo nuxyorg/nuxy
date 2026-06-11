@@ -87,4 +87,71 @@ describe('nuxy-select-box', () => {
     el.open = false
     await el.updateComplete
   })
+
+  it('scrolls focused option to top of options list on open', async () => {
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      cb(0)
+      return 0
+    })
+
+    const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
+    el.options = JSON.stringify(
+      Array.from({ length: 30 }, (_, i) => ({ value: `v${i}`, label: `Option ${i}` }))
+    )
+    el.value = 'v15'
+    el.focusedIndex = 15
+    parent.appendChild(el)
+    await el.updateComplete
+
+    el.open = true
+    await el.updateComplete
+
+    const focusedOption = document.body.querySelector<HTMLElement>(
+      '.nuxy-select-box__option--focused'
+    )
+    const optionsEl = document.body.querySelector<HTMLElement>('.nuxy-select-box__options')
+    expect(focusedOption).toBeTruthy()
+    expect(optionsEl).toBeTruthy()
+    expect(focusedOption!.querySelector('.nuxy-select-box__option-label')!.textContent).toBe(
+      'Option 15'
+    )
+    expect(optionsEl!.scrollTop).toBe(focusedOption!.offsetTop)
+
+    el.open = false
+    await el.updateComplete
+  })
+
+  it('clears search input when reopened after close', async () => {
+    const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
+    el.options = JSON.stringify([
+      { value: 'a', label: 'Alpha' },
+      { value: 'b', label: 'Beta' },
+    ])
+    el.value = 'a'
+    el.searchable = true
+    parent.appendChild(el)
+    await el.updateComplete
+
+    el.open = true
+    await el.updateComplete
+
+    const searchInput = document.body.querySelector<HTMLInputElement>('.nuxy-select-box__search')!
+    expect(searchInput).toBeTruthy()
+    searchInput.value = 'alp'
+    searchInput.dispatchEvent(new Event('input'))
+    expect(searchInput.value).toBe('alp')
+
+    el.open = false
+    await el.updateComplete
+
+    el.open = true
+    await el.updateComplete
+
+    expect(document.body.querySelector<HTMLInputElement>('.nuxy-select-box__search')!.value).toBe(
+      ''
+    )
+
+    el.open = false
+    await el.updateComplete
+  })
 })

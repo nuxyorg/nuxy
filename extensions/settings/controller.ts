@@ -108,7 +108,6 @@ export class SettingsController {
     const prev = this.state.selectedRow
     const next = typeof index === 'function' ? index(prev) : index
     this.store.setState({ selectedRow: next })
-    this.scrollRowIntoView(next)
   }
 
   setActiveSelect(key: string | null): void {
@@ -147,25 +146,6 @@ export class SettingsController {
       t: this.t.t,
     })
     this.meta = filterSettingsByQuery(base, this.filterQuery)
-  }
-
-  private scrollRowIntoView(rowIdx: number): void {
-    if (rowIdx < 0 || !this.meta) return
-    const meta = this.meta
-    let offset = 0
-    for (const s of meta.navSections) {
-      if (rowIdx < offset + s.itemCount) {
-        const sectionEl = this.sectionRefs[s.id]
-        if (sectionEl) {
-          const smooth = (window.UI as { smoothScrollIntoViewIfNeeded?: (el: HTMLElement) => void })
-            ?.smoothScrollIntoViewIfNeeded
-          if (smooth) smooth(sectionEl)
-          else sectionEl.scrollIntoView({ block: 'nearest' })
-        }
-        break
-      }
-      offset += s.itemCount
-    }
   }
 
   private bindKeyActions(): void {

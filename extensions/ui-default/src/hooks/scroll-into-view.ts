@@ -57,14 +57,6 @@ export function smoothScrollIntoViewIfNeeded(el: HTMLElement) {
   let futureElTop = elRect.top + (parent.scrollTop - targetScrollTop)
   const futureElBottom = futureElTop + elRect.height
 
-  if (el.parentElement && !el.previousElementSibling) {
-    const listSibling = el.parentElement.previousElementSibling as HTMLElement
-    if (listSibling && listSibling.classList.contains('nuxy-section-header')) {
-      const headerHeight = listSibling.getBoundingClientRect().height
-      futureElTop -= headerHeight
-    }
-  }
-
   if (futureElBottom > parentRect.bottom) {
     targetScrollTop += futureElBottom - parentRect.bottom
   } else if (futureElTop < parentRect.top) {
@@ -81,11 +73,63 @@ export function smoothScrollIntoViewIfNeeded(el: HTMLElement) {
   }
 }
 
+function getZoom(): number {
+  const z = document.documentElement.style.zoom
+  if (!z) return 1
+  if (z.endsWith('%')) return parseFloat(z) / 100
+  return parseFloat(z) || 1
+}
+
+function scrollTopForElementStart(el: HTMLElement, parent: HTMLElement): number {
+  const zoom = getZoom()
+  const elRect = el.getBoundingClientRect()
+  const parentRect = parent.getBoundingClientRect()
+  return Math.max(
+    0,
+    Math.min(
+      (elRect.top - parentRect.top) / zoom + parent.scrollTop,
+      parent.scrollHeight - parent.clientHeight
+    )
+  )
+}
+
+/** Scroll so the element's top edge aligns with the scroll container's top. */
+export function smoothScrollElementToStart(el: HTMLElement, instant = false): void {
+  const parent = getScrollParent(el.parentElement)
+
+  if (!parent) {
+    el.scrollIntoView({ block: 'start' })
+    return
+  }
+
+  const targetScrollTop = scrollTopForElementStart(el, parent)
+
+  if (instant) {
+    if (currentContainer === parent) {
+      scrollAnimationId = null
+      currentTargetTop = null
+      currentContainer = null
+    }
+    parent.scrollTop = targetScrollTop
+    return
+  }
+
+  if (targetScrollTop !== parent.scrollTop || scrollAnimationId !== null) {
+    smoothScrollTo(parent, targetScrollTop)
+  }
+}
+
 /** Scroll a list's active item into view after layout settles. */
 export function scrollListActiveItem(listEl: HTMLElement, activeIndex: number): void {
   requestAnimationFrame(() => {
     let target: HTMLElement | null = null
-    if (activeIndex >= 0) {
+    if (activeIndex === 0) {
+      const prev = listEl.previousElementSibling as HTMLElement | null
+      target =
+        prev?.tagName.toLowerCase() === 'nuxy-section-header'
+          ? prev
+          : (listEl.querySelector('nuxy-list-item') as HTMLElement | null)
+    } else if (activeIndex > 0) {
       const items = listEl.querySelectorAll('nuxy-list-item')
       target = (items[activeIndex] as HTMLElement | undefined) ?? null
     } else {

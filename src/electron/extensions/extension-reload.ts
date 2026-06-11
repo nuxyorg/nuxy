@@ -3,6 +3,7 @@ import path from 'path'
 import AdmZip from 'adm-zip'
 import { EXTENSION_DIR, EXTRACTED_DIR } from '../config/paths.js'
 import { spawnExtension, activeWorkers } from '../spawn/spawn.js'
+import { suppressedWorkerExits } from '../spawn/active-workers.js'
 import {
   registerExtension,
   unregisterExtension,
@@ -27,8 +28,6 @@ const log = kernelLogger.child('ExtensionReload')
 const workerRestartTimers = new Map<string, ReturnType<typeof setTimeout>>()
 const folderReloadTimers = new Map<string, ReturnType<typeof setTimeout>>()
 
-/** Suppress crash-restart while intentionally terminating for hot reload. */
-const suppressWorkerRestart = new Set<string>()
 
 const activeExtensionWatchers = new Set<fs.FSWatcher>()
 const watchedExtensionFolders = new Set<string>()
@@ -233,7 +232,7 @@ export function startExtensionDirectoryWatcher(
 }
 
 export function onExtensionWorkerExit(extId: string, code: number): void {
-  if (code === 0 || suppressWorkerRestart.has(extId)) return
+  if (code === 0 || suppressedWorkerExits.has(extId)) return
   log.info(`Extension worker "${extId}" exited with code ${code} — scheduling restart`)
   scheduleWorkerRestart(extId)
 }
@@ -248,12 +247,12 @@ export function folderNameFromWatchFilename(filename: string): string | null {
 export async function terminateExtensionWorker(extId: string): Promise<void> {
   const worker = activeWorkers.get(extId)
   if (!worker) return
-  suppressWorkerRestart.add(extId)
+  suppressedWorkerExits.add(extId)
   try {
     await worker.terminate()
     activeWorkers.delete(extId)
   } finally {
-    setImmediate(() => suppressWorkerRestart.delete(extId))
+    setImmediate(() => suppressedWorkerExits.delete(extId))
   }
 }
 

@@ -83,3 +83,10 @@ export interface Size {
   width: number | null
   height: number | null
 }
+
+export interface UsageEntry {
+  count: number
+  queries: string[]
+}
+
+export type UsageStats = Record<string, UsageEntry>

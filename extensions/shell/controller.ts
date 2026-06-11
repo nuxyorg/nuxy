@@ -7,7 +7,7 @@ import { getDeepActiveElement, isWritingElement } from './utils/keyboard.ts'
 import { CommandPaletteController } from './controllers/command-palette-controller.ts'
 import { ToolController } from './controllers/tool-controller.ts'
 import { ProviderController } from './controllers/provider-controller.ts'
-import { WindowController } from './controllers/window-controller.ts'
+import { WindowController, TRANSITION_DURATION_MS } from './controllers/window-controller.ts'
 import type {
   CommandPaletteAction,
   KeyAction,
@@ -17,6 +17,7 @@ import type {
   ProviderState,
   ShellConfig,
   Tool,
+  UsageStats,
 } from './types.ts'
 import type { OmnibarSection } from './utils/listResults.ts'
 import { resolveOmniBarPlaceholder as computeOmniBarPlaceholder } from './utils/omniBarPlaceholder.ts'
@@ -100,6 +101,7 @@ export class ShellController {
   private cleanups: Array<() => void> = []
   private copiedTimer: ReturnType<typeof setTimeout> | null = null
   private initialLoadTimer: ReturnType<typeof setTimeout> | null = null
+  private _queryDebounceTimer: ReturnType<typeof setTimeout> | null = null
 
   constructor(private onUpdate: () => void) {
     this._host = {
@@ -121,7 +123,8 @@ export class ShellController {
           this.store.getState().savedQuery,
           toolId,
           this.tools.tools,
-          this.tools.recentToolIds
+          this.tools.recentToolIds,
+          this.tools.usageStats
         )
       },
     })
@@ -179,7 +182,7 @@ export class ShellController {
     this.bindSync()
     this.bindGlobalKeyboard()
     this.bindQuerySelectionSync()
-    this.providers.recompute(this.tools.tools, '', this.tools.recentToolIds)
+    this.providers.recompute(this.tools.tools, '', this.tools.recentToolIds, this.tools.usageStats)
     this.initialLoadTimer = setTimeout(() => {
       this.store.setState({ isInitialLoad: false })
     }, 500)
@@ -188,6 +191,7 @@ export class ShellController {
   disconnect(): void {
     if (this.copiedTimer) clearTimeout(this.copiedTimer)
     if (this.initialLoadTimer) clearTimeout(this.initialLoadTimer)
+    if (this._queryDebounceTimer !== null) clearTimeout(this._queryDebounceTimer)
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
     this.t.destroy()
@@ -236,8 +240,13 @@ export class ShellController {
   handleQueryChange(val: string): void {
     this.refs.selectionSource = 'type'
     this.store.setState({ query: val, savedQuery: val, selectedIndex: -1 })
-    this._syncProviders()
     this._recompute()
+    this._syncActionProviders()
+    if (this._queryDebounceTimer !== null) clearTimeout(this._queryDebounceTimer)
+    this._queryDebounceTimer = setTimeout(() => {
+      this._queryDebounceTimer = null
+      this._syncListProviders()
+    }, 200)
   }
 
   handleCopy(id: string): void {
@@ -247,10 +256,20 @@ export class ShellController {
   }
 
   openTool(toolId: string, initialQuery = ''): void {
+    const queryBeforeOpen = this.store.getState().savedQuery
+    const container = this.refs.container
+    if (container && !this.refs.hasDragged) {
+      const fromH = container.offsetHeight
+      // Only record resting height when not mid-animation (e.g. switching tools)
+      if (!this.win.isAnimatingHeight) this.win.recordRestingHeight(fromH)
+      const targetH = this.store.getState().settings.windowMaxHeight ?? 600
+      this.win.animateToHeight(targetH, fromH)
+      this._updatePosition(true, targetH)
+    }
     this.tools.setActiveTool(toolId)
     this.store.setState({ query: initialQuery, savedQuery: initialQuery })
     this.providers.clearProviderStates()
-    this._recordToolUsed(toolId)
+    this._recordToolUsed(toolId, queryBeforeOpen)
     this._syncProviders()
     this._recompute()
   }
@@ -374,6 +393,11 @@ export class ShellController {
 
   /** Deactivate the active tool and reset omnibar query to return to the main shell screen. */
   returnToShell(options?: { selectedIndex?: number }): void {
+    const container = this.refs.container
+    const fromH = container?.offsetHeight ?? 0
+    const toH = this.win.restingHeight
+    const shouldAnimate = container !== null && fromH > 0 && toH !== null && !this.refs.hasDragged
+
     this.tools.setActiveTool(null)
     this.store.setState({
       query: '',
@@ -383,7 +407,15 @@ export class ShellController {
     })
     this._syncProviders()
     this._recompute()
-    setTimeout(() => this.refs.input?.focus(), 50)
+
+    if (shouldAnimate) {
+      this._updatePosition(true, toH!)
+      this.win.animateToHeight(null, fromH, () => {
+        this.refs.input?.focus()
+      })
+    } else {
+      setTimeout(() => this.refs.input?.focus(), 50)
+    }
   }
 
   containerStyle(): Record<string, string | undefined> {
@@ -391,13 +423,21 @@ export class ShellController {
     return this.win.containerStyle(settings, this.tools.activeTool, isInitialLoad)
   }
 
-  private _recordToolUsed(toolId: string): void {
+  private _recordToolUsed(toolId: string, query = ''): void {
     window.core?.ipc
-      ?.invoke(SHELL_EXT_ID, 'recordToolUsed', toolId)
+      ?.invoke(SHELL_EXT_ID, 'recordToolUsed', { toolId, query })
       .then((res: unknown) => {
         const r = res as { success: boolean; data: string[] } | null
         if (r?.success && Array.isArray(r.data)) {
           this.tools.setRecentToolIds(r.data)
+          this._recompute()
+        }
+        return window.core?.ipc?.invoke(SHELL_EXT_ID, 'getUsageStats', {})
+      })
+      .then((statsRes: unknown) => {
+        const r = statsRes as { success: boolean; data: UsageStats } | null
+        if (r?.success && r.data) {
+          this.tools.setUsageStats(r.data)
           this._recompute()
         }
       })
@@ -406,7 +446,12 @@ export class ShellController {
 
   private _recompute(): void {
     const { savedQuery } = this.store.getState()
-    this.providers.recompute(this.tools.tools, savedQuery, this.tools.recentToolIds)
+    this.providers.recompute(
+      this.tools.tools,
+      savedQuery,
+      this.tools.recentToolIds,
+      this.tools.usageStats
+    )
   }
 
   private _syncProviders(): void {
@@ -415,7 +460,31 @@ export class ShellController {
       savedQuery,
       this.tools.activeTool,
       this.tools.tools,
-      this.tools.recentToolIds
+      this.tools.recentToolIds,
+      this.tools.usageStats
+    )
+  }
+
+  private _syncActionProviders(): void {
+    const { savedQuery } = this.store.getState()
+    this.providers.syncActions(
+      savedQuery,
+      this.tools.activeTool,
+      this.tools.tools,
+      this.tools.recentToolIds,
+      this.tools.usageStats
+    )
+  }
+
+  private _syncListProviders(): void {
+    const { savedQuery } = this.store.getState()
+    this.providers.sync(
+      savedQuery,
+      this.tools.activeTool,
+      this.tools.tools,
+      this.tools.recentToolIds,
+      this.tools.usageStats,
+      { skipActionProviders: true }
     )
   }
 
@@ -533,6 +602,17 @@ export class ShellController {
       })
       .catch(() => {})
 
+    window.core?.ipc
+      ?.invoke(SHELL_EXT_ID, 'getUsageStats', {})
+      .then((res: unknown) => {
+        const r = res as { success: boolean; data: UsageStats } | null
+        if (r?.success && r.data) {
+          this.tools.setUsageStats(r.data)
+          this._recompute()
+        }
+      })
+      .catch(() => {})
+
     const offLocale = window.core?.events?.on('locale-changed', () => {
       fetchAll()
       const toolId = this.tools.activeTool
@@ -597,16 +677,16 @@ export class ShellController {
     })
   }
 
-  private _updatePosition(force = false): void {
+  private _updatePosition(force = false, heightOverride?: number): void {
     if (!this.refs.cfg?.windowPosition || !this.refs.container) return
     if (!force && this.refs.hasDragged) return
     const parts = this.refs.cfg.windowPosition.split(/[\s,]+/)
     const winWidth = this.refs.container.offsetWidth
-    const winHeight = this.refs.container.offsetHeight
+    const winHeight = heightOverride ?? this.refs.container.offsetHeight
     const zoom = getZoom()
     const dw = window.innerWidth / zoom
     const dh = window.innerHeight / zoom
-    this.win.setPosition({
+    this.win.animatePosition({
       x: parseCoordinate(parts[0], dw, winWidth),
       y: parseCoordinate(parts.length >= 2 ? parts[1] : '', dh, winHeight),
     })
@@ -641,7 +721,8 @@ export class ShellController {
       this.commandPalette.close()
       this.providers.clearProviderStates()
       this.refs.hasDragged = false
-      this._updatePosition(true)
+      this.win.setDragging(false)
+      requestAnimationFrame(() => this._updatePosition(true))
       window.core?.shell?.resetToolState()
       this._syncProviders()
       this._recompute()
@@ -773,6 +854,12 @@ export class ShellController {
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       const { activeTool } = this.tools
       const showCommandPalette = this.commandPalette.showCommandPalette
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'q') {
+        e.preventDefault()
+        window.core?.window?.quit()
+        return
+      }
 
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()

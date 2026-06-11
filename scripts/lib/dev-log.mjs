@@ -9,6 +9,7 @@ export const log = {
   red: (s) => esc('31', s),
   cyan: (s) => esc('36', s),
   yellow: (s) => esc('33', s),
+  purple: (s) => esc('35', s),
 }
 
 export function banner(msg) {
@@ -20,11 +21,23 @@ export function ok(msg) {
 }
 
 export function watch(msg) {
-  console.log(`  👀 ${msg}`)
+  console.log(`  ${log.purple('✔')} ${msg}`)
 }
 
-export function refresh(msg) {
-  console.log(`  ↻ ${msg}`)
+export function refreshing(name) {
+  if (process.stdout.isTTY) {
+    process.stdout.write(`  ${esc('36', '↻')} ${name} refreshing...`)
+  } else {
+    console.log(`  ↻ ${name} refreshing...`)
+  }
+}
+
+export function refreshDone(name) {
+  if (process.stdout.isTTY) {
+    process.stdout.write(`\r\x1b[2K  ${esc('35', '✔')} ${name} has refreshed\n`)
+  } else {
+    console.log(`  ✔ ${name} has refreshed`)
+  }
 }
 
 export function fail(msg) {

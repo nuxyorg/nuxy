@@ -54,6 +54,10 @@ export function registerWindowChannels(): void {
     if (win) win.hide()
   })
 
+  ipcMain.on('window:quit', () => {
+    app.quit()
+  })
+
   ipcMain.on('window:esc', (event) => {
     const win = BrowserWindow.fromWebContents(event.sender)
     if (!win) return

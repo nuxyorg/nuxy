@@ -1,5 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from '@nuxy/core'
-import type { Tool, Orchestrator } from '../types.ts'
+import type { Tool, Orchestrator, UsageStats } from '../types.ts'
 
 export interface ToolControllerOptions {
   onToolChange?: (toolId: string | null) => void
@@ -10,6 +10,7 @@ export class ToolController implements ReactiveController {
   private _tools: Tool[] = []
   private _orchestrators: Orchestrator[] = []
   private _recentToolIds: string[] = []
+  private _usageStats: UsageStats = {}
 
   get activeTool(): string | null {
     return this._activeTool
@@ -22,6 +23,9 @@ export class ToolController implements ReactiveController {
   }
   get recentToolIds(): string[] {
     return this._recentToolIds
+  }
+  get usageStats(): UsageStats {
+    return this._usageStats
   }
 
   constructor(
@@ -43,6 +47,11 @@ export class ToolController implements ReactiveController {
 
   setRecentToolIds(ids: string[]): void {
     this._recentToolIds = ids
+    this.host.requestUpdate()
+  }
+
+  setUsageStats(stats: UsageStats): void {
+    this._usageStats = stats
     this.host.requestUpdate()
   }
 

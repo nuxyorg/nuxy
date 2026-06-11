@@ -1,18 +1,5 @@
 import { LitElement, html, css, customElement, state, type TemplateResult } from '@nuxy/core'
 
-const CHEVRON_SVG = html`<svg
-  width="14"
-  height="14"
-  viewBox="0 0 24 24"
-  fill="none"
-  stroke="currentColor"
-  stroke-width="2"
-  stroke-linecap="round"
-  stroke-linejoin="round"
->
-  <polyline points="6 9 12 15 18 9" />
-</svg>`
-
 @customElement('nuxy-collapsible')
 export class NuxyCollapsibleElement extends LitElement {
   static styles = css`
@@ -102,7 +89,9 @@ export class NuxyCollapsibleElement extends LitElement {
         @click=${this.onToggle}
       >
         <slot name="trigger"></slot>
-        <span class="nuxy-collapsible__chevron" aria-hidden="true"> ${CHEVRON_SVG} </span>
+        <span class="nuxy-collapsible__chevron" aria-hidden="true">
+          <nuxy-icon name="ChevronDown" size="14" opacity="1"></nuxy-icon>
+        </span>
       </button>
       <div class="nuxy-collapsible__content" aria-hidden=${String(!this.isOpen)}>
         <slot name="content"></slot>

@@ -54,7 +54,7 @@ describe('buildListResults', () => {
     expect(result[1].id).toBe('p1-item')
   })
 
-  it('skips provider items that are loading', () => {
+  it('keeps stale provider items visible while loading', () => {
     const tools: Tool[] = []
     const providerStates: Record<string, ProviderState> = {
       p1: {
@@ -65,7 +65,8 @@ describe('buildListResults', () => {
       },
     }
     const result = buildListResults(tools, '', providerStates, [])
-    expect(result).toHaveLength(0)
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe('p1-item')
   })
 
   it('skips non-list provider types', () => {
@@ -117,6 +118,52 @@ describe('buildListResults', () => {
   })
 })
 
+describe('buildListResults with usageStats affinity', () => {
+  it('boosts tools matching past query prefix to the top of filtered results', () => {
+    const tools = [
+      makeTool('com.nuxy.clipboard', 'Clipboard'),
+      makeTool('com.nuxy.calculator', 'Calculator'),
+    ]
+    const usageStats = {
+      'com.nuxy.calculator': { count: 5, queries: ['calc', 'calculator'] },
+    }
+    const result = buildListResults(tools, 'c', {}, [], usageStats)
+    expect(result[0].id).toBe('com.nuxy.calculator')
+    expect(result[1].id).toBe('com.nuxy.clipboard')
+  })
+
+  it('maintains original filter order when no usage data matches', () => {
+    const tools = [makeTool('t1', 'Alpha'), makeTool('t2', 'Algebra')]
+    const result = buildListResults(tools, 'al', {}, [], {})
+    expect(result.map((r) => r.id)).toEqual(['t1', 't2'])
+  })
+
+  it('uses prefix match: past query that starts with current query counts', () => {
+    const tools = [makeTool('t1', 'Notes'), makeTool('t2', 'Nyaa')]
+    const usageStats = {
+      t2: { count: 3, queries: ['nyaa', 'ny'] },
+    }
+    const result = buildListResults(tools, 'ny', {}, [], usageStats)
+    expect(result[0].id).toBe('t2')
+  })
+
+  it('uses prefix match: current query that starts with past query counts', () => {
+    const tools = [makeTool('t1', 'Calculator'), makeTool('t2', 'Clipboard')]
+    const usageStats = {
+      t1: { count: 2, queries: ['ca'] },
+    }
+    const result = buildListResults(tools, 'calc', {}, [], usageStats)
+    expect(result[0].id).toBe('t1')
+  })
+
+  it('does not affect empty-query ordering', () => {
+    const tools = [makeTool('t1', 'A'), makeTool('t2', 'B')]
+    const usageStats = { t2: { count: 10, queries: ['b'] } }
+    const result = buildListResults(tools, '', {}, [], usageStats)
+    expect(result.map((r) => r.id)).toEqual(['t1', 't2'])
+  })
+})
+
 describe('buildOmnibarSections', () => {
   it('puts tools in the first section and flatItems matches section items', () => {
     const tools = [makeTool('t1', 'Calculator'), makeTool('t2', 'Clipboard')]
@@ -128,6 +175,37 @@ describe('buildOmnibarSections', () => {
     })
     expect(sections[0].items).toHaveLength(2)
     expect(flatItems).toEqual(sections.flatMap((s) => s.items))
+  })
+
+  it('omits tools section when filter matches nothing', () => {
+    const tools = [makeTool('t1', 'Calculator')]
+    const { sections } = buildOmnibarSections(tools, 'xyz', {}, [], [])
+    expect(sections).toEqual([])
+  })
+
+  it('omits tools section when query is empty and would show all tools', () => {
+    const tools = [makeTool('t1', 'Calculator')]
+    const { sections } = buildOmnibarSections(tools, '', {}, [], [])
+    expect(sections[0].items).toHaveLength(1)
+  })
+
+  it('omits action provider sections when query is empty', () => {
+    const providerStates: Record<string, ProviderState> = {
+      p1: {
+        loading: false,
+        type: 'list',
+        name: 'Notes',
+        items: [{ id: 'a', title: 'Save as note' }],
+      },
+    }
+    const providers: Provider[] = [
+      {
+        id: 'p1',
+        manifest: { name: 'Notes', providerGroup: 'actions' } as Provider['manifest'],
+      },
+    ]
+    const { sections } = buildOmnibarSections([], '', providerStates, [], providers)
+    expect(sections).toEqual([])
   })
 
   it('creates one section per list provider with provider name as label', () => {

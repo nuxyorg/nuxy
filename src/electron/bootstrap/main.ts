@@ -79,16 +79,17 @@ if (!gotTheLock) {
     if (win && !win.isDestroyed()) {
       applyConfigToWindow(win)
 
-      if (!win.isVisible()) {
+      const wasVisible = win.isVisible()
+      if (!wasVisible) {
         positionWindowOnDisplay(win)
-        win.show()
+        win.show() // 'show' event in manager.ts sends window:show
       } else {
         positionWindowOnDisplay(win)
       }
 
       if (win.isMinimized()) win.restore()
       win.focus()
-      win.webContents.send('window:show')
+      if (wasVisible) win.webContents.send('window:show')
     }
   })
 
@@ -149,22 +150,22 @@ if (!gotTheLock) {
           } else {
             applyConfigToWindow(win)
             positionWindowOnDisplay(win)
-            win.show()
+            win.show() // 'show' event in manager.ts sends window:show
             if (win.isMinimized()) win.restore()
             win.focus()
-            win.webContents.send('window:show')
           }
         } else if (cmd === 'show') {
           applyConfigToWindow(win)
-          if (!win.isVisible()) {
+          const wasVisible = win.isVisible()
+          if (!wasVisible) {
             positionWindowOnDisplay(win)
-            win.show()
+            win.show() // 'show' event in manager.ts sends window:show
           } else {
             positionWindowOnDisplay(win)
           }
           if (win.isMinimized()) win.restore()
           win.focus()
-          win.webContents.send('window:show')
+          if (wasVisible) win.webContents.send('window:show')
         }
       })
     })

@@ -9,7 +9,7 @@ import {
   type PropertyValues,
   type TemplateResult,
 } from '@nuxy/core'
-import { smoothScrollIntoViewIfNeeded } from '../../hooks/scroll-into-view'
+import { smoothScrollElementToStart } from '../../hooks/scroll-into-view'
 
 export interface SelectOption {
   value: string
@@ -108,6 +108,8 @@ export class NuxySelectBoxElement extends LitElement {
   @state()
   declare private internalFocused: number
   private escapeHandler: ((e: KeyboardEvent) => void) | null = null
+  private scrollRaf: number | null = null
+  private instantScrollOnNextRender = false
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -120,6 +122,10 @@ export class NuxySelectBoxElement extends LitElement {
     super.disconnectedCallback()
     this.removeEscapeListener()
     this.detachDropdown()
+    if (this.scrollRaf !== null) {
+      cancelAnimationFrame(this.scrollRaf)
+      this.scrollRaf = null
+    }
   }
 
   updated(changed: PropertyValues): void {
@@ -196,6 +202,8 @@ export class NuxySelectBoxElement extends LitElement {
       options.findIndex((o) => o.value === value)
     )
     this.searchQuery = ''
+    if (this.searchInput) this.searchInput.value = ''
+    this.instantScrollOnNextRender = true
     this.mountDropdown()
     this.addEscapeListener()
   }
@@ -204,6 +212,10 @@ export class NuxySelectBoxElement extends LitElement {
     this.removeEscapeListener()
     this.detachDropdown()
     this.searchQuery = ''
+    if (this.scrollRaf !== null) {
+      cancelAnimationFrame(this.scrollRaf)
+      this.scrollRaf = null
+    }
   }
 
   private addEscapeListener(): void {
@@ -424,9 +436,24 @@ export class NuxySelectBoxElement extends LitElement {
     const focusedEl = this.optionsEl.querySelector(
       '.nuxy-select-box__option--focused'
     ) as HTMLElement | null
-    if (focusedEl) smoothScrollIntoViewIfNeeded(focusedEl)
+
+    if (this.scrollRaf !== null) {
+      cancelAnimationFrame(this.scrollRaf)
+      this.scrollRaf = null
+    }
 
     this.positionDropdown()
+
+    if (focusedEl) {
+      const instant = this.instantScrollOnNextRender
+      this.scrollRaf = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          smoothScrollElementToStart(focusedEl, instant)
+          if (instant) this.instantScrollOnNextRender = false
+          this.scrollRaf = null
+        })
+      })
+    }
   }
 
   // --- Lit render: trigger button only ---

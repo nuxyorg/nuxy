@@ -41,12 +41,6 @@ class ToastStore {
     this.toasts = [...this.toasts, toast]
     this.notify()
 
-    if (toast.duration && toast.duration > 0) {
-      setTimeout(() => {
-        this.remove(id)
-      }, toast.duration)
-    }
-
     return id
   }
 

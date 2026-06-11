@@ -9,6 +9,7 @@ import {
   activeWorkers,
   workerExitListeners,
   workerRegistryErrorListeners,
+  suppressedWorkerExits,
 } from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
 import { mergeRuntimeSync } from '../extensions/registry.js'
@@ -107,7 +108,7 @@ export async function spawnExtension(
   })
 
   worker.on('exit', (code) => {
-    if (code !== 0) {
+    if (code !== 0 && !suppressedWorkerExits.has(extId)) {
       log.warn(`Worker for "${extId}" exited with code ${code}`)
     } else {
       log.silly(`Worker for "${extId}" exited cleanly.`)

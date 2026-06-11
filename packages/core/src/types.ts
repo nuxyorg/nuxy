@@ -1,3 +1,5 @@
+import type { QueryType } from './query-context.js'
+
 export type ExtensionType =
   | 'tool'
   | 'provider'
@@ -80,6 +82,13 @@ export interface ExtensionManifest {
    * Only relevant when type is 'uikit'. Defaults to 100.
    */
   priority?: number
+  /**
+   * Query types this provider or tool handles best.
+   * The shell boosts this extension's results and actions when the omnibar
+   * input matches one of the declared types (e.g. ["color", "url"]).
+   * Has no effect on uikit, theme, or iconpack extensions.
+   */
+  queryAffinity?: QueryType[]
   /** Custom omnibar placeholder shown when this extension is active. */
   placeholder?: string
   /**

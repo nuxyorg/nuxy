@@ -17,9 +17,11 @@ declare global {
         invoke: (extId: string, channel: string, payload?: unknown) => Promise<unknown>
       }
       window: {
+        ready: () => void
         resize: (width: number, height: number) => void
         hide: () => void
         esc: () => void
+        quit: () => void
         center: () => void
         dragStart: () => void
         dragMove: () => void

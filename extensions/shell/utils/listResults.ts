@@ -1,4 +1,4 @@
-import type { Tool, ListItem, ProviderState, Provider } from '../types.ts'
+import type { Tool, ListItem, ProviderState, Provider, UsageStats } from '../types.ts'
 
 export interface OmnibarSection {
   id: string
@@ -16,7 +16,18 @@ const DEFAULT_GROUP_LABELS: Record<string, string> = {
   actions: 'Tool actions',
 }
 
-function filterTools(tools: Tool[], savedQuery: string, recentToolIds: string[]): ListItem[] {
+function affinityScore(toolId: string, query: string, usageStats: UsageStats): number {
+  const entry = usageStats[toolId]
+  if (!entry?.queries?.length) return 0
+  return entry.queries.filter((q) => q.startsWith(query) || query.startsWith(q)).length
+}
+
+function filterTools(
+  tools: Tool[],
+  savedQuery: string,
+  recentToolIds: string[],
+  usageStats: UsageStats = {}
+): ListItem[] {
   const toolItems: ListItem[] = tools.map((t) => ({
     id: t.id,
     title: t.manifest.name,
@@ -26,11 +37,18 @@ function filterTools(tools: Tool[], savedQuery: string, recentToolIds: string[])
   }))
 
   if (savedQuery.trim().length > 0) {
-    return toolItems.filter(
+    const filtered = toolItems.filter(
       (item) =>
         item.title.toLowerCase().includes(savedQuery.toLowerCase()) ||
         item.id.toLowerCase().includes(savedQuery.toLowerCase())
     )
+    if (Object.keys(usageStats).length > 0) {
+      const lq = savedQuery.trim().toLowerCase()
+      filtered.sort(
+        (a, b) => affinityScore(b.id, lq, usageStats) - affinityScore(a.id, lq, usageStats)
+      )
+    }
+    return filtered
   }
 
   if (recentToolIds.length > 0) {
@@ -66,12 +84,16 @@ export function buildOmnibarSections(
   savedQuery: string,
   providerStates: Record<string, ProviderState>,
   recentToolIds: string[],
-  providers: Provider[] = []
+  providers: Provider[] = [],
+  usageStats: UsageStats = {}
 ): OmnibarSectionsResult {
   const sections: OmnibarSection[] = []
   const seenKeys = new Set<string>()
 
-  const filteredTools = dedupeItems(filterTools(tools, savedQuery, recentToolIds), seenKeys)
+  const filteredTools = dedupeItems(
+    filterTools(tools, savedQuery, recentToolIds, usageStats),
+    seenKeys
+  )
   if (filteredTools.length > 0) {
     sections.push({ id: 'tools', label: 'Tools', items: filteredTools })
   }
@@ -85,6 +107,8 @@ export function buildOmnibarSections(
     if (!state || state.type !== 'list') continue
 
     const provider = providers.find((p) => p.id === provId)
+    if (savedQuery.trim().length === 0 && provider?.manifest?.providerGroup) continue
+
     const groupKey = provider?.manifest?.providerGroup
     const sectionKey = groupKey || provId
     const sectionLabel = groupKey
@@ -94,7 +118,7 @@ export function buildOmnibarSections(
     const hasItems = Boolean(state.items && state.items.length > 0)
     if (!state.loading && !hasItems) continue
 
-    const items = state.loading || !state.items ? [] : dedupeItems(state.items, seenKeys)
+    const items = hasItems ? dedupeItems(state.items!, seenKeys) : []
 
     let section = sectionByKey.get(sectionKey)
     if (!section) {
@@ -120,7 +144,9 @@ export function buildListResults(
   tools: Tool[],
   savedQuery: string,
   providerStates: Record<string, ProviderState>,
-  recentToolIds: string[]
+  recentToolIds: string[],
+  usageStats: UsageStats = {}
 ): ListItem[] {
-  return buildOmnibarSections(tools, savedQuery, providerStates, recentToolIds).flatItems
+  return buildOmnibarSections(tools, savedQuery, providerStates, recentToolIds, [], usageStats)
+    .flatItems
 }

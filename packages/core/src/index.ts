@@ -195,3 +195,5 @@ export type {
   CoreShell,
 } from './shell'
 export type { CoreEvents, NuxyRendererEvent, NuxyRendererEventMap } from './events'
+export { classifyQuery } from './query-context'
+export type { QueryType, QueryContext } from './query-context'

@@ -13,8 +13,26 @@ function getZoom(): number {
   }
 }
 
-const SPRING_TRANSITION =
-  'left 0.3s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s cubic-bezier(0.16, 1, 0.3, 1), width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1)'
+// CSS transition for properties not driven by JS spring (width, shadows, etc.)
+export const TRANSITION_DURATION_MS = 1500
+const STATIC_TRANSITION = `width ${TRANSITION_DURATION_MS}ms cubic-bezier(0.16, 1, 0.3, 1), max-width ${TRANSITION_DURATION_MS}ms cubic-bezier(0.16, 1, 0.3, 1), max-height ${TRANSITION_DURATION_MS}ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow ${TRANSITION_DURATION_MS + 1000}ms cubic-bezier(0.16, 1, 0.3, 1)`
+
+// Spring parameters — tune independently
+// v = (v + (target - x) * stiffness) * damping
+const HEIGHT_SPRING = { stiffness: 0.5, damping: 0.25 } // ~25 frames to rest
+const POSITION_SPRING = { stiffness: 0.5, damping: 0.25 }
+
+interface Spring1D {
+  value: number
+  velocity: number
+  target: number
+}
+
+function tickSpring(s: Spring1D, stiffness: number, damping: number): boolean {
+  s.velocity = (s.velocity + (s.target - s.value) * stiffness) * damping
+  s.value += s.velocity
+  return Math.abs(s.target - s.value) >= 0.5 || Math.abs(s.velocity) >= 0.5
+}
 
 export class WindowController implements ReactiveController {
   private _position: Position
@@ -22,6 +40,18 @@ export class WindowController implements ReactiveController {
   private _isDraggingState = false
   private _isDragging = false
   hasDragged = false
+
+  // Height spring
+  private _springHeight: number | null = null
+  private _heightSpring: Spring1D | null = null
+  private _restingHeight: number | null = null
+  private _onHeightComplete: (() => void) | null = null
+
+  // Position spring
+  private _posSpring: { x: Spring1D; y: Spring1D } | null = null
+
+  // Shared rAF handle
+  private _rafHandle: number | null = null
 
   get position(): Position {
     return this._position
@@ -31,6 +61,107 @@ export class WindowController implements ReactiveController {
   }
   get isDraggingState(): boolean {
     return this._isDraggingState
+  }
+  get restingHeight(): number | null {
+    return this._restingHeight
+  }
+  get isAnimatingHeight(): boolean {
+    return this._heightSpring !== null
+  }
+  get springHeight(): number | null {
+    return this._springHeight
+  }
+
+  recordRestingHeight(h: number): void {
+    this._restingHeight = h
+  }
+
+  animateToHeight(toH: number | null, fromH: number, onComplete?: () => void): void {
+    const target = toH ?? this._restingHeight ?? fromH
+    const startValue = this._heightSpring?.value ?? fromH
+    const startVelocity = this._heightSpring?.velocity ?? 0
+    const prevComplete = this._onHeightComplete
+
+    this._heightSpring = { value: startValue, velocity: startVelocity, target }
+    this._onHeightComplete = () => {
+      prevComplete?.()
+      onComplete?.()
+    }
+    this._springHeight = Math.round(startValue)
+    this._startTick()
+  }
+
+  animatePosition(pos: Position): void {
+    const startX = this._posSpring?.x.value ?? this._position.x
+    const startY = this._posSpring?.y.value ?? this._position.y
+    const velX = this._posSpring?.x.velocity ?? 0
+    const velY = this._posSpring?.y.velocity ?? 0
+
+    this._posSpring = {
+      x: { value: startX, velocity: velX, target: pos.x },
+      y: { value: startY, velocity: velY, target: pos.y },
+    }
+    this._startTick()
+  }
+
+  private _startTick(): void {
+    if (this._rafHandle !== null) return
+    this._rafHandle = requestAnimationFrame(() => this._tick())
+  }
+
+  private _tick(): void {
+    let moving = false
+
+    if (this._heightSpring) {
+      const still = tickSpring(this._heightSpring, HEIGHT_SPRING.stiffness, HEIGHT_SPRING.damping)
+      if (still) {
+        this._springHeight = Math.round(this._heightSpring.value)
+        moving = true
+      } else {
+        this._heightSpring = null
+        this._springHeight = null
+        const cb = this._onHeightComplete
+        this._onHeightComplete = null
+        cb?.()
+      }
+    }
+
+    if (this._posSpring) {
+      const xMoving = tickSpring(
+        this._posSpring.x,
+        POSITION_SPRING.stiffness,
+        POSITION_SPRING.damping
+      )
+      const yMoving = tickSpring(
+        this._posSpring.y,
+        POSITION_SPRING.stiffness,
+        POSITION_SPRING.damping
+      )
+      this._position = {
+        x: Math.round(this._posSpring.x.value),
+        y: Math.round(this._posSpring.y.value),
+      }
+      if (xMoving || yMoving) {
+        moving = true
+      } else {
+        this._posSpring = null
+      }
+    }
+
+    this.host.requestUpdate()
+
+    if (moving) {
+      this._rafHandle = requestAnimationFrame(() => this._tick())
+    } else {
+      this._rafHandle = null
+    }
+  }
+
+  hostDisconnected(): void {
+    if (this._rafHandle !== null) {
+      cancelAnimationFrame(this._rafHandle)
+      this._rafHandle = null
+    }
   }
 
   constructor(private readonly host: ReactiveControllerHost) {
@@ -42,6 +173,7 @@ export class WindowController implements ReactiveController {
   }
 
   setPosition(pos: Position): void {
+    this._posSpring = null
     this._position = pos
     this.host.requestUpdate()
   }
@@ -63,7 +195,7 @@ export class WindowController implements ReactiveController {
     isInitialLoad: boolean
   ): Record<string, string | undefined> {
     const { _position: position, _size: size, _isDraggingState: isDraggingState } = this
-    const transition = isDraggingState || isInitialLoad ? 'none' : SPRING_TRANSITION
+    const transition = isDraggingState || isInitialLoad ? 'none' : STATIC_TRANSITION
 
     return {
       left: `${position.x}px`,
@@ -73,11 +205,14 @@ export class WindowController implements ReactiveController {
         : settings?.windowWidth
           ? `${settings.windowWidth}px`
           : undefined,
-      height: size.height
-        ? `${size.height}px`
-        : activeTool
-          ? `${settings?.windowMaxHeight ?? 600}px`
-          : undefined,
+      height:
+        this._springHeight !== null
+          ? `${this._springHeight}px`
+          : size.height
+            ? `${size.height}px`
+            : activeTool
+              ? `${settings?.windowMaxHeight ?? 600}px`
+              : undefined,
       maxWidth: size.width
         ? 'none'
         : settings?.windowWidth
@@ -97,6 +232,8 @@ export class WindowController implements ReactiveController {
     this._isDragging = true
     this._isDraggingState = true
     this.hasDragged = true
+    // Cancel position spring — drag takes over
+    this._posSpring = null
     this.host.requestUpdate()
 
     const zoom = getZoom()

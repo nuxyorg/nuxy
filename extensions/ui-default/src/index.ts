@@ -102,4 +102,8 @@ export type {
 export { toast, toastStore } from './components/Toaster'
 export { useTranslation } from './hooks/useTranslation'
 export type { UseTranslationResult } from './hooks/useTranslation'
-export { smoothScrollIntoViewIfNeeded, scrollListActiveItem } from './hooks/scroll-into-view'
+export {
+  smoothScrollIntoViewIfNeeded,
+  smoothScrollElementToStart,
+  scrollListActiveItem,
+} from './hooks/scroll-into-view'
