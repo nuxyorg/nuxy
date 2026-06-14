@@ -27,7 +27,7 @@ function showLoading(message: string): void {
   root.appendChild(empty)
 }
 
-export async function bootstrapNuxy(): Promise<void> {
+async function bootstrapNuxy(): Promise<void> {
   const core = window.core
   showLoading('Loading Nuxy…')
 

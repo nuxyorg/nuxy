@@ -2,7 +2,7 @@
 
 const esc = (n, s) => `\x1b[${n}m${s}\x1b[0m`
 
-export const log = {
+const log = {
   bold: (s) => esc('1', s),
   dim: (s) => esc('2', s),
   green: (s) => esc('32', s),
@@ -44,7 +44,7 @@ export function fail(msg) {
   console.error(`  ${log.red('✘')} ${msg}`)
 }
 
-export function info(msg) {
+function info(msg) {
   console.log(`  ${log.dim(msg)}`)
 }
 
@@ -131,7 +131,7 @@ const QUIET_PATTERNS = [
 
 const ANSI_RE = new RegExp(`${String.fromCharCode(27)}\\[[0-9;]*m`, 'g')
 
-export function shouldQuietLine(line) {
+function shouldQuietLine(line) {
   const trimmed = line.replace(ANSI_RE, '').trimEnd()
   if (!trimmed) return true
   return QUIET_PATTERNS.some((re) => re.test(trimmed))
