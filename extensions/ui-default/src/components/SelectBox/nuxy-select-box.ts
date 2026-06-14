@@ -14,6 +14,7 @@ import {
   smoothScrollIntoViewIfNeeded,
   scrollBiasForIndexChange,
 } from '../../hooks/scroll-into-view'
+import { getZoom } from '../../utils/zoom'
 
 export interface SelectOption {
   value: string
@@ -28,13 +29,6 @@ function parseOptions(raw: string | null): SelectOption[] {
   } catch {
     return []
   }
-}
-
-function getZoom(): number {
-  const z = document.documentElement.style.zoom
-  if (!z) return 1
-  if (z.endsWith('%')) return parseFloat(z) / 100
-  return parseFloat(z) || 1
 }
 
 @customElement('nuxy-select-box')
