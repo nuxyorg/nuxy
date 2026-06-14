@@ -105,6 +105,7 @@ export function createNuxyCoreMock(actual: Record<string, unknown>): Record<stri
     },
     html: (strings: any, ..._values: any[]) => strings,
     css: (strings: any, ..._values: any[]) => strings,
+    render: vi.fn(),
     nothing: null,
     customElement: (tag: string) => (ctor: any) => {
       customElements.define(tag, ctor)

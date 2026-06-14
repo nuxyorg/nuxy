@@ -45,6 +45,7 @@ vi.mock('./active-workers.js', () => ({
   activeWorkers: new Map(),
   workerExitListeners: new Set(),
   workerRegistryErrorListeners: new Set(),
+  suppressedWorkerExits: new Set(),
 }))
 
 vi.mock('./migrate-data.js', () => ({
