@@ -2,12 +2,15 @@ import type { ShellBridgeSnapshot, ReactiveControllerHost } from '@nuxy/core'
 import { createStore, type Store } from '../store.ts'
 import { createTranslator, type Translator } from '../shell-i18n.ts'
 import { getZoom } from './utils/zoom.ts'
-import { parseCoordinate, SHELL_EXT_ID } from './utils.ts'
-import { getDeepActiveElement, isWritingElement } from './utils/keyboard.ts'
+import { SHELL_EXT_ID } from './utils.ts'
 import { CommandPaletteController } from './controllers/command-palette-controller.ts'
 import { ToolController } from './controllers/tool-controller.ts'
 import { ProviderController } from './controllers/provider-controller.ts'
-import { WindowController, TRANSITION_DURATION_MS } from './controllers/window-controller.ts'
+import { WindowController } from './controllers/window-controller.ts'
+import { KeyboardController } from './controllers/keyboard-controller.ts'
+import { InitController } from './controllers/init-controller.ts'
+import { SyncController, applySettingsToDOM } from './controllers/sync-controller.ts'
+import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
 import type {
   CommandPaletteAction,
   KeyAction,
@@ -21,7 +24,6 @@ import type {
 } from './types.ts'
 import type { OmnibarSection } from './utils/listResults.ts'
 import { resolveOmniBarPlaceholder as computeOmniBarPlaceholder } from './utils/omniBarPlaceholder.ts'
-import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
 
 export type { OmnibarSection }
 
@@ -41,11 +43,6 @@ const DEFAULT_SETTINGS: ShellConfig = {
   zoom: '100%',
   font: 'system',
   windowPosition: '1/2, 1/3',
-}
-
-const FONT_FAMILY_MAP: Record<string, string> = {
-  system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
-  monospace: 'monospace',
 }
 
 export interface ShellCoreState {
@@ -99,6 +96,9 @@ export class ShellController {
   readonly win: WindowController
 
   private readonly _host: ReactiveControllerHost
+  private readonly _keyboard: KeyboardController
+  private readonly _init: InitController
+  private readonly _sync: SyncController
   private cleanups: Array<() => void> = []
   private copiedTimer: ReturnType<typeof setTimeout> | null = null
   private initialLoadTimer: ReturnType<typeof setTimeout> | null = null
@@ -155,6 +155,63 @@ export class ShellController {
 
     this.t = createTranslator(SHELL_EXT_ID, () => this.onUpdate())
     this.store.subscribe(() => this.onUpdate())
+
+    // Wire up focused sub-controllers
+    this._keyboard = new KeyboardController({
+      isCommandPaletteOpen: () => this.commandPalette.showCommandPalette,
+      isToolActive: () => this.tools.activeTool !== null,
+      toggleCommandPalette: () => this.toggleCommandPalette(),
+      closeCommandPalette: () => this.closeCommandPalette(),
+      returnToShell: () => this.returnToShell({ selectedIndex: 0 }),
+      clearQueryAndEsc: () => {
+        this.store.setState({ query: '', savedQuery: '', selectedIndex: -1 })
+        window.core?.window?.esc?.()
+      },
+      setHoldMs: (ms) => this.store.setState({ holdMs: ms }),
+    })
+
+    this._init = new InitController({
+      getActiveTool: () => this.tools.activeTool,
+      applySettings: (s) => this._applySettings(s),
+      setSearchIcon: (svg) => this.store.setState({ searchIcon: svg }),
+      setTools: (tools) => this.tools.setTools(tools),
+      setProviders: (providers) => this.providers.setProviders(providers),
+      setOrchestrators: (orchestrators) => this.tools.setOrchestrators(orchestrators),
+      setRecentToolIds: (ids) => this.tools.setRecentToolIds(ids),
+      setUsageStats: (stats) => this.tools.setUsageStats(stats),
+      setThemeStyles: (styles) => this.store.setState({ themeStyles: styles }),
+      setCfg: (cfg) => { this.refs.cfg = cfg },
+      recompute: () => this._recompute(),
+      syncProviders: () => this._syncProviders(),
+    })
+
+    this._sync = new SyncController({
+      getContainer: () => this.refs.container,
+      getInput: () => this.refs.input,
+      getCfg: () => this.refs.cfg,
+      setCfg: (cfg) => { this.refs.cfg = cfg },
+      hasDragged: () => this.refs.hasDragged,
+      setHasDragged: (val) => { this.refs.hasDragged = val },
+      setDragging: (val) => this.win.setDragging(val),
+      animatePosition: (pos) => this.win.animatePosition(pos),
+      setBridge: (snapshot) => this.store.setState({ bridge: snapshot }),
+      getEmptyBridge: () => EMPTY_SNAPSHOT,
+      resetTool: () => {
+        this.tools.setActiveTool(null)
+        this.store.setState({
+          query: '',
+          savedQuery: '',
+          selectedIndex: -1,
+          showOmniBar: true,
+        })
+      },
+      closeCommandPalette: () => this.commandPalette.close(),
+      clearProviderStates: () => this.providers.clearProviderStates(),
+      syncProviders: () => this._syncProviders(),
+      recompute: () => this._recompute(),
+      returnToShell: () => this.returnToShell(),
+      applySettings: (s) => this._applySettings(s),
+    })
   }
 
   // Merged state view for backward-compat with shell-view
@@ -179,11 +236,13 @@ export class ShellController {
   }
 
   connect(): void {
-    this.bindInit()
-    this.bindBridge()
-    this.bindSync()
-    this.bindGlobalKeyboard()
-    this.bindQuerySelectionSync()
+    this._init.load()
+    this._sync.bindBridge()
+    this._sync.bindSync()
+    this._keyboard.bind()
+    this._bindQuerySelectionSync()
+    this._bindOmniBarControl()
+    this._bindPositionClamp()
     this.providers.recompute(this.tools.tools, '', this.tools.recentToolIds, this.tools.usageStats)
     this.initialLoadTimer = setTimeout(() => {
       this.store.setState({ isInitialLoad: false })
@@ -196,6 +255,9 @@ export class ShellController {
     if (this._queryDebounceTimer !== null) clearTimeout(this._queryDebounceTimer)
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
+    this._keyboard.destroy()
+    this._init.destroy()
+    this._sync.destroy()
     this.t.destroy()
     window.core?.shell?.resetToolState()
   }
@@ -266,7 +328,7 @@ export class ShellController {
       if (!this.win.isAnimatingHeight) this.win.recordRestingHeight(fromH)
       const targetH = this.store.getState().settings.windowMaxHeight ?? 600
       this.win.animateToHeight(targetH, fromH)
-      this._updatePosition(true, targetH)
+      this._sync.updatePosition(true, targetH)
     }
     this.tools.setActiveTool(toolId)
     this.store.setState({ query: initialQuery, savedQuery: initialQuery })
@@ -411,7 +473,7 @@ export class ShellController {
     this._recompute()
 
     if (shouldAnimate) {
-      this._updatePosition(true, toH!)
+      this._sync.updatePosition(true, toH!)
       this.win.animateToHeight(null, fromH, () => {
         this.refs.input?.focus()
       })
@@ -423,6 +485,11 @@ export class ShellController {
   containerStyle(): Record<string, string | undefined> {
     const { settings, isInitialLoad } = this.store.getState()
     return this.win.containerStyle(settings, this.tools.activeTool, isInitialLoad)
+  }
+
+  private _applySettings(s: ShellConfig): void {
+    this.store.setState({ settings: s })
+    applySettingsToDOM(s)
   }
 
   private _recordToolUsed(toolId: string, query = ''): void {
@@ -490,154 +557,7 @@ export class ShellController {
     )
   }
 
-  private applyTheme(name: string): void {
-    window.core?.ipc
-      ?.invoke('kernel', 'getThemeByName', { name })
-      .then((themeRes: unknown) => {
-        const tr = themeRes as {
-          success: boolean
-          data: { colors?: Record<string, string>; tokens?: Record<string, string> }
-        } | null
-        if (!tr?.success || !tr.data) return
-        const { colors, tokens } = tr.data
-        const root = document.documentElement
-        if (colors) Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
-        if (tokens) Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
-      })
-      .catch(() => {})
-  }
-
-  private applySettings(s: ShellConfig): void {
-    this.store.setState({ settings: s })
-    if (s.zoom) document.documentElement.style.zoom = s.zoom
-    if (s.font) document.body.style.fontFamily = FONT_FAMILY_MAP[s.font] || s.font
-    if (s.theme) this.applyTheme(s.theme)
-  }
-
-  private bindInit(): void {
-    window.core?.icons
-      ?.get('search')
-      .then((res: unknown) => {
-        const r = res as { success?: boolean; data?: string } | string | null
-        const svg = (r as { success?: boolean; data?: string })?.success
-          ? (r as { success: boolean; data: string }).data
-          : r
-        if (typeof svg === 'string') this.store.setState({ searchIcon: svg })
-      })
-      .catch(() => {})
-
-    const fetchProviders = () => {
-      window.core?.ipc?.invoke('kernel', 'listProviders', {}).then((res: unknown) => {
-        const r = res as { success: boolean; data: Provider[] }
-        if (r.success && r.data) {
-          this.providers.setProviders(r.data)
-          this._syncProviders()
-        }
-      })
-    }
-
-    const fetchOrchestrators = () => {
-      window.core?.ipc?.invoke('kernel', 'listOrchestrators', {}).then((res: unknown) => {
-        const r = res as { success: boolean; data: Orchestrator[] }
-        if (r.success && r.data) this.tools.setOrchestrators(r.data)
-      })
-    }
-
-    const fetchTools = () => {
-      window.core?.ipc?.invoke('kernel', 'listTools', {}).then((res: unknown) => {
-        const r = res as { success: boolean; data: Tool[] }
-        if (!r.success || !r.data) return
-        const filtered = r.data.filter((t) => t.id !== SHELL_EXT_ID)
-        this.tools.setTools(filtered)
-        this._recompute()
-      })
-    }
-
-    const fetchAll = () => {
-      fetchTools()
-      fetchProviders()
-      fetchOrchestrators()
-    }
-
-    window.core?.ipc?.invoke('kernel', 'getConfig', {}).then((res: unknown) => {
-      const r = res as { success: boolean; data: ShellConfig }
-      if (r.success && r.data) {
-        this.refs.cfg = r.data
-        this.applySettings(r.data)
-        window.dispatchEvent(new Event('resize'))
-      }
-    })
-
-    fetchAll()
-
-    window.core?.ipc?.invoke('kernel', 'getTheme', {}).then((res: unknown) => {
-      const r = res as {
-        success: boolean
-        data: { styles?: Record<string, string>; colors?: Record<string, string> }
-      }
-      if (r.success && r.data?.styles) this.store.setState({ themeStyles: r.data.styles })
-      if (r.success && r.data?.colors) {
-        const root = document.documentElement
-        Object.entries(r.data.colors).forEach(([key, val]) =>
-          root.style.setProperty(`--${key}`, val)
-        )
-      }
-    })
-
-    window.core?.ipc
-      ?.invoke('com.nuxy.settings', 'getSettings', {})
-      .then((res: unknown) => {
-        const r = res as { success: boolean; data: ShellConfig } | null
-        if (!r?.success || !r.data) return
-        this.applySettings(r.data)
-      })
-      .catch(() => {})
-
-    window.core?.ipc
-      ?.invoke(SHELL_EXT_ID, 'getRecentTools', {})
-      .then((res: unknown) => {
-        const r = res as { success: boolean; data: string[] } | null
-        if (r?.success && Array.isArray(r.data)) {
-          this.tools.setRecentToolIds(r.data)
-          this._recompute()
-        }
-      })
-      .catch(() => {})
-
-    window.core?.ipc
-      ?.invoke(SHELL_EXT_ID, 'getUsageStats', {})
-      .then((res: unknown) => {
-        const r = res as { success: boolean; data: UsageStats } | null
-        if (r?.success && r.data) {
-          this.tools.setUsageStats(r.data)
-          this._recompute()
-        }
-      })
-      .catch(() => {})
-
-    const offLocale = window.core?.events?.on('locale-changed', () => {
-      fetchAll()
-      const toolId = this.tools.activeTool
-      if (toolId) {
-        syncToolSearchPlaceholder(toolId, () => this.tools.activeTool === toolId)
-      }
-    })
-    if (offLocale) this.cleanups.push(offLocale)
-  }
-
-  private bindBridge(): void {
-    const shell = window.core?.shell
-    if (!shell) return
-
-    const sync = () => {
-      this.store.setState({ bridge: shell.getSnapshot() ?? EMPTY_SNAPSHOT })
-    }
-    sync()
-    const off = shell.subscribe(sync)
-    this.cleanups.push(off)
-  }
-
-  private bindQuerySelectionSync(): void {
+  private _bindQuerySelectionSync(): void {
     let prevSelected = this.store.getState().selectedIndex
     let prevSaved = this.store.getState().savedQuery
     let prevListLen = this.providers.listResults.length
@@ -679,110 +599,27 @@ export class ShellController {
     })
   }
 
-  private _updatePosition(force = false, heightOverride?: number): void {
-    if (!this.refs.cfg?.windowPosition || !this.refs.container) return
-    if (!force && this.refs.hasDragged) return
-    const parts = this.refs.cfg.windowPosition.split(/[\s,]+/)
-    const winWidth = this.refs.container.offsetWidth
-    const winHeight = heightOverride ?? this.refs.container.offsetHeight
-    const zoom = getZoom()
-    const dw = window.innerWidth / zoom
-    const dh = window.innerHeight / zoom
-    this.win.animatePosition({
-      x: parseCoordinate(parts[0], dw, winWidth),
-      y: parseCoordinate(parts.length >= 2 ? parts[1] : '', dh, winHeight),
+  /** Handle omnibar show/hide/clear actions from the shell bridge. */
+  private _bindOmniBarControl(): void {
+    const shell = window.core?.shell
+    if (!shell) return
+
+    const offOmni = shell.subscribeOmniBarControl((action) => {
+      if (action === 'hide') {
+        this.store.setState({ showOmniBar: false })
+        this.refs.input?.blur()
+      } else if (action === 'show') {
+        this.store.setState({ showOmniBar: true })
+        setTimeout(() => this.refs.input?.focus(), 50)
+      } else if (action === 'clear') {
+        this.store.setState({ query: '', savedQuery: '', selectedIndex: -1 })
+      }
     })
+    this.cleanups.push(offOmni)
   }
 
-  private bindSync(): void {
-    let lastZoom = document.documentElement.style.zoom || '100%'
-
-    const observer = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        if (m.attributeName === 'style') {
-          const currentZoom = document.documentElement.style.zoom || '100%'
-          if (currentZoom !== lastZoom) {
-            lastZoom = currentZoom
-            this.refs.hasDragged = false
-            setTimeout(() => this._updatePosition(true), 10)
-          }
-        }
-      }
-    })
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] })
-    this.cleanups.push(() => observer.disconnect())
-
-    const onReset = () => {
-      this.tools.setActiveTool(null)
-      this.store.setState({
-        query: '',
-        savedQuery: '',
-        selectedIndex: -1,
-        showOmniBar: true,
-      })
-      this.commandPalette.close()
-      this.providers.clearProviderStates()
-      this.refs.hasDragged = false
-      this.win.setDragging(false)
-      requestAnimationFrame(() => this._updatePosition(true))
-      window.core?.shell?.resetToolState()
-      this._syncProviders()
-      this._recompute()
-      setTimeout(() => this.refs.input?.focus(), 50)
-    }
-
-    const onFocus = () => {
-      const paletteInput = document
-        .querySelector('nuxy-command-palette')
-        ?.shadowRoot?.querySelector('.nuxy-command-palette__input')
-      if (paletteInput) {
-        ;(paletteInput as HTMLInputElement).focus()
-      } else {
-        this.refs.input?.focus()
-      }
-    }
-
-    const handleSettingsUpdate = (detail: Record<string, unknown>) => {
-      if (detail) {
-        this.applySettings(detail as ShellConfig)
-        if (this.refs.cfg) this.refs.cfg = { ...this.refs.cfg, ...(detail as ShellConfig) }
-        setTimeout(() => this._updatePosition(true), 0)
-      }
-    }
-
-    const onResize = () => this._updatePosition(false)
-
-    const offShellReset = window.core?.events?.on('shell-reset', onReset)
-    window.addEventListener('focus', onFocus)
-    window.addEventListener('resize', onResize)
-    const offSettings = window.core?.events?.on('settings-updated', handleSettingsUpdate)
-
-    this.cleanups.push(() => {
-      offShellReset?.()
-      window.removeEventListener('focus', onFocus)
-      window.removeEventListener('resize', onResize)
-      offSettings?.()
-    })
-
-    const shell = window.core?.shell
-    if (shell) {
-      const offReturn = shell.bindReturnToShell(() => this.returnToShell())
-      this.cleanups.push(offReturn)
-
-      const offOmni = shell.subscribeOmniBarControl((action) => {
-        if (action === 'hide') {
-          this.store.setState({ showOmniBar: false })
-          this.refs.input?.blur()
-        } else if (action === 'show') {
-          this.store.setState({ showOmniBar: true })
-          setTimeout(() => this.refs.input?.focus(), 50)
-        } else if (action === 'clear') {
-          this.store.setState({ query: '', savedQuery: '', selectedIndex: -1 })
-        }
-      })
-      this.cleanups.push(offOmni)
-    }
-
+  /** Clamp window position to viewport bounds whenever store updates. */
+  private _bindPositionClamp(): void {
     this.store.subscribe(() => {
       const el = this.refs.container
       if (!el) return
@@ -799,166 +636,6 @@ export class ShellController {
       if (clampedX !== x || clampedY !== y) {
         this.win.setPosition({ x: clampedX, y: clampedY })
       }
-    })
-  }
-
-  private bindGlobalKeyboard(): void {
-    let holdTimer: ReturnType<typeof setTimeout> | null = null
-
-    const clearHold = () => {
-      if (holdTimer !== null) {
-        clearTimeout(holdTimer)
-        holdTimer = null
-      }
-      this.store.setState({ holdMs: null })
-    }
-
-    const matchesAction = (action: KeyAction, e: KeyboardEvent): boolean => {
-      if (action.key.toLowerCase() !== e.key.toLowerCase()) return false
-      const mods = action.modifiers || []
-      if (mods.includes('ctrl') !== e.ctrlKey) return false
-      if (mods.includes('shift') !== e.shiftKey) return false
-      if (mods.includes('alt') !== e.altKey) return false
-      if (mods.includes('meta') !== e.metaKey) return false
-      return true
-    }
-
-    const startHold = (action: KeyAction, e: KeyboardEvent) => {
-      if (holdTimer !== null) return
-      const ms = action.holdMs ?? 600
-      this.store.setState({ holdMs: ms })
-      holdTimer = setTimeout(() => {
-        holdTimer = null
-        clearHold()
-        action.handler()
-        e.preventDefault()
-      }, ms)
-    }
-
-    const deactivateTool = () => {
-      clearHold()
-      this.returnToShell({ selectedIndex: 0 })
-    }
-
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      const { activeTool } = this.tools
-      const showCommandPalette = this.commandPalette.showCommandPalette
-
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'q') {
-        e.preventDefault()
-        window.core?.window?.quit()
-        return
-      }
-
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        if ((window.core?.shell?.getToolActions()?.length ?? 0) > 0) {
-          this.toggleCommandPalette()
-        }
-        return
-      }
-
-      if (e.key === 'Escape') {
-        if (showCommandPalette) {
-          this.closeCommandPalette()
-          return
-        }
-        if (activeTool) {
-          const actions = window.core?.shell?.getKeyActionsGetter()?.()
-          if (actions && actions.length > 0) {
-            const matched = actions.find((a) => {
-              if (!matchesAction(a, e)) return false
-              if (typeof a.activeOn === 'function' && !a.activeOn()) return false
-              return true
-            })
-            if (matched) {
-              if (matched.trigger === 'hold') {
-                if (!e.repeat) startHold(matched, e)
-                e.preventDefault()
-              } else {
-                matched.handler()
-                e.preventDefault()
-              }
-              return
-            }
-          }
-          deactivateTool()
-        } else {
-          clearHold()
-          this.store.setState({ query: '', savedQuery: '', selectedIndex: -1 })
-          window.core?.window?.esc?.()
-        }
-        return
-      }
-
-      if (showCommandPalette) return
-
-      if (activeTool) {
-        const target = (e.composedPath?.()[0] || e.target) as HTMLElement
-        const isInput = isWritingElement(target)
-        const isOmniBar = target?.classList?.contains('nuxy-shell-omni-bar__input')
-        const actions = window.core?.shell?.getKeyActionsGetter()?.()
-        if (actions && actions.length > 0) {
-          const matched = actions.find((a) => {
-            if (!matchesAction(a, e)) return false
-            if (e.repeat && !a.allowRepeat) return false
-            if (isInput) {
-              if (isOmniBar) {
-                if (!a.modifiers?.length && a.key.length === 1) return false
-              } else {
-                if (!a.modifiers?.length) return false
-              }
-            }
-            if (typeof a.activeOn === 'function' && !a.activeOn()) return false
-            return true
-          })
-          if (matched) {
-            if (matched.trigger === 'hold') {
-              if (!e.repeat) startHold(matched, e)
-              e.preventDefault()
-              return
-            }
-            matched.handler()
-            e.preventDefault()
-            return
-          }
-        }
-        if (!isInput) {
-          window.dispatchEvent(
-            new CustomEvent('nuxy-shell-omni-bar-keydown', {
-              detail: {
-                key: e.key,
-                code: e.code,
-                shiftKey: e.shiftKey,
-                altKey: e.altKey,
-                ctrlKey: e.ctrlKey,
-                metaKey: e.metaKey,
-              },
-            })
-          )
-          if (
-            ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Space'].includes(e.key)
-          ) {
-            e.preventDefault()
-          }
-        }
-      }
-    }
-
-    const handleGlobalKeyUp = (e: KeyboardEvent) => {
-      if (holdTimer !== null) {
-        const actions = window.core?.shell?.getKeyActionsGetter()?.()
-        const held = actions?.find((a) => a.trigger === 'hold' && matchesAction(a, e))
-        if (held) clearHold()
-      }
-    }
-
-    window.addEventListener('keydown', handleGlobalKeyDown)
-    window.addEventListener('keyup', handleGlobalKeyUp)
-    this.cleanups.push(() => {
-      window.removeEventListener('keydown', handleGlobalKeyDown)
-      window.removeEventListener('keyup', handleGlobalKeyUp)
-      clearHold()
     })
   }
 }
