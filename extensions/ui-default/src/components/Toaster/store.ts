@@ -30,7 +30,7 @@ class ToastStore {
   }
 
   add(options: ToastOptions) {
-    const id = options.id || Math.random().toString(36).substring(2, 9)
+    const id = options.id || crypto.randomUUID().slice(0, 8)
     const toast: Toast = {
       ...options,
       id,

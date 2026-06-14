@@ -118,7 +118,7 @@ export class NuxyRadioGroupElement extends LitElement {
     const disabled = this.disabled || this.hasAttribute('disabled')
 
     this.groupName =
-      this.getAttribute('name') ?? `nuxy-radio-${Math.random().toString(36).slice(2, 9)}`
+      this.getAttribute('name') ?? `nuxy-radio-${crypto.randomUUID().slice(0, 8)}`
 
     return html`
       ${options.map((opt) => {
