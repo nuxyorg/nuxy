@@ -1,19 +1,6 @@
-/**
- * Shared DOM stub helpers for extension frontend (LitElement custom element) unit tests.
- *
- * Usage inside vi.hoisted():
- *
- *   const hoisted = vi.hoisted(async () => {
- *     const h = await import('../../tests/frontend-test-helpers.ts')
- *     h.setupDomGlobals({ window: { core: { ... } } })
- *     return h
- *   })
- *
- *   vi.mock('@nuxy/core', async () => {
- *     const actual = await vi.importActual<typeof import('@nuxy/core')>('@nuxy/core')
- *     return (await hoisted).createNuxyCoreMock(actual)
- *   })
- */
+// Shared DOM stub helpers for extension frontend (LitElement custom element) unit tests.
+// Import path from an extension test: ../../tests/frontend-test-helpers.ts
+// Usage: call setupDomGlobals() inside vi.hoisted(), then createNuxyCoreMock() inside vi.mock('@nuxy/core').
 
 import { vi } from 'vitest'
 

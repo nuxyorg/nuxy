@@ -60,6 +60,12 @@ export class NuxyTwoPanelElement extends LitElement {
   @property({ type: Boolean, attribute: 'hide-left', reflect: true })
   declare hideLeft: boolean
 
+  @property({ type: Number, attribute: 'min-left' })
+  minLeft = 80
+
+  @property({ type: Number, attribute: 'min-right' })
+  minRight = 80
+
   private observer: MutationObserver | null = null
   private _dragging = false
   private _dragStartX = 0
@@ -110,7 +116,7 @@ export class NuxyTwoPanelElement extends LitElement {
   private _onPointerMove(e: PointerEvent): void {
     if (!this._dragging) return
     const delta = (e.clientX - this._dragStartX) / getZoom()
-    const newWidth = Math.max(80, Math.min(this.offsetWidth - 80, this._dragStartWidth + delta))
+    const newWidth = Math.max(this.minLeft, Math.min(this.offsetWidth - this.minRight, this._dragStartWidth + delta))
     const left = Array.from(this.children)[0] as HTMLElement | undefined
     const handle = this.shadowRoot?.querySelector<HTMLElement>('.handle')
     if (left) left.style.width = `${newWidth}px`
@@ -123,7 +129,10 @@ export class NuxyTwoPanelElement extends LitElement {
     document.body.style.cursor = ''
     document.body.style.userSelect = ''
     const left = Array.from(this.children)[0] as HTMLElement | undefined
-    if (left) this.split = `${left.offsetWidth}px`
+    if (!left) return
+    const newWidth = left.offsetWidth
+    this.split = `${newWidth}px`
+    this.dispatchEvent(new CustomEvent('split-change', { detail: { width: newWidth }, bubbles: true, composed: true }))
   }
 
   render() {
@@ -142,5 +151,8 @@ export class NuxyTwoPanelElement extends LitElement {
 declare global {
   interface HTMLElementTagNameMap {
     'nuxy-two-panel': NuxyTwoPanelElement
+  }
+  interface HTMLElementEventMap {
+    'split-change': CustomEvent<{ width: number }>
   }
 }
