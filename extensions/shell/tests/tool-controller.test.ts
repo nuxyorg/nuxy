@@ -1,15 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { ReactiveControllerHost } from '@nuxy/core'
 import type { Tool, Orchestrator } from '../types.ts'
-
-function makeHost(): ReactiveControllerHost & { requestUpdate: ReturnType<typeof vi.fn> } {
-  return {
-    addController: vi.fn(),
-    removeController: vi.fn(),
-    requestUpdate: vi.fn(),
-    updateComplete: Promise.resolve(true),
-  }
-}
+import { makeHost } from './helpers.ts'
 
 function makeTool(id: string, name: string, placeholder?: string): Tool {
   return {

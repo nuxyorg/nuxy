@@ -1,15 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { ReactiveControllerHost } from '@nuxy/core'
 import type { Provider, Tool, ProviderState } from '../types.ts'
-
-function makeHost(): ReactiveControllerHost & { requestUpdate: ReturnType<typeof vi.fn> } {
-  return {
-    addController: vi.fn(),
-    removeController: vi.fn(),
-    requestUpdate: vi.fn(),
-    updateComplete: Promise.resolve(true),
-  }
-}
+import { makeHost } from './helpers.ts'
 
 function makeProvider(id: string, type: ProviderState['type'] = 'list'): Provider {
   return {

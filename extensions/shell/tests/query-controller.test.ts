@@ -1,14 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import type { ReactiveControllerHost } from '@nuxy/core'
-
-function makeHost(): ReactiveControllerHost & { requestUpdate: ReturnType<typeof vi.fn> } {
-  return {
-    addController: vi.fn(),
-    removeController: vi.fn(),
-    requestUpdate: vi.fn(),
-    updateComplete: Promise.resolve(true),
-  }
-}
+import { makeHost } from './helpers.ts'
 
 describe('QueryController', () => {
   let QueryController: typeof import('../controllers/query-controller.ts').QueryController

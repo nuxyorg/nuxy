@@ -1,109 +1,39 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-vi.hoisted(() => {
-  class HTMLElementStub {
-    className = ''
-    style: Record<string, string> = {}
-    classList = { add: vi.fn() }
-    replaceChildren = vi.fn()
-    appendChild = vi.fn()
-    children: unknown[] = []
-  }
-  ;(globalThis as any).window = {
-    core: {
-      ipc: {
-        invoke: vi.fn(async (_ext: string, channel: string) => {
-          if (channel === 'getExtensionTranslations') {
-            return {
-              success: true,
-              data: {
-                locale: 'en',
-                dir: 'ltr',
-                translations: { 'search.placeholder': 'Search in settings' },
-              },
-            }
+const hoisted = vi.hoisted(async () => {
+  const h = await import('../../tests/frontend-test-helpers.ts')
+  h.setupDomGlobals({
+    ipc: {
+      invoke: vi.fn(async (_ext: string, channel: string) => {
+        if (channel === 'getExtensionTranslations') {
+          return {
+            success: true,
+            data: {
+              locale: 'en',
+              dir: 'ltr',
+              translations: { 'search.placeholder': 'Search in settings' },
+            },
           }
-          return { success: true, data: {} }
-        }),
-      },
-      themes: { list: vi.fn().mockResolvedValue({ success: true, data: [] }) },
-      icons: { listPacks: vi.fn().mockResolvedValue({ success: true, data: [] }) },
-      shell: {
-        registerKeyActions: vi.fn(),
-        refreshKeyHints: vi.fn(),
-        setSearchPlaceholder: vi.fn(),
-      },
-      events: { on: vi.fn(() => () => {}), emit: vi.fn() },
+        }
+        return { success: true, data: {} }
+      }),
     },
-    UI: {},
-  }
-  ;(globalThis as any).HTMLElement = HTMLElementStub
-  ;(globalThis as any).customElements = {
-    registry: new Map<string, CustomElementConstructor>(),
-    get(name: string) {
-      return this.registry.get(name)
+    themes: { list: vi.fn().mockResolvedValue({ success: true, data: [] }) },
+    icons: { listPacks: vi.fn().mockResolvedValue({ success: true, data: [] }) },
+    shell: {
+      registerKeyActions: vi.fn(),
+      refreshKeyHints: vi.fn(),
+      setSearchPlaceholder: vi.fn(),
     },
-    define(name: string, ctor: CustomElementConstructor) {
-      this.registry.set(name, ctor)
-    },
-  }
-  ;(globalThis as any).document = {
-    createTreeWalker: vi.fn(() => ({ nextNode: vi.fn() })),
-    createTextNode(text: string) {
-      return { nodeType: 3, textContent: text }
-    },
-    createElement(tag: string) {
-      const el: Record<string, unknown> = {
-        tagName: tag.toUpperCase(),
-        className: '',
-        classList: { add: vi.fn() },
-        children: [] as unknown[],
-        style: {},
-        appendChild(node: unknown) {
-          ;(el.children as unknown[]).push(node)
-        },
-        append(...nodes: unknown[]) {
-          ;(el.children as unknown[]).push(...nodes)
-        },
-        replaceChildren(...nodes: unknown[]) {
-          el.children = nodes
-        },
-        setAttribute: vi.fn(),
-        addEventListener: vi.fn(),
-        querySelector: vi.fn(() => null),
-      }
-      return el
-    },
-    createDocumentFragment() {
-      return { appendChild: vi.fn(), childNodes: [] }
-    },
-  }
+    events: { on: vi.fn(() => () => {}), emit: vi.fn() },
+  })
+  return h
 })
 
 // Mock @nuxy/core package
 vi.mock('@nuxy/core', async () => {
   const actual = await vi.importActual<typeof import('@nuxy/core')>('@nuxy/core')
-  return {
-    ...actual,
-    LitElement: class LitElementStub extends globalThis.HTMLElement {
-      requestUpdate = vi.fn()
-      updateComplete = Promise.resolve(true)
-      connectedCallback() {}
-      disconnectedCallback() {}
-    },
-    html: (strings: any, ...values: any[]) => strings,
-    css: (strings: any, ...values: any[]) => strings,
-    nothing: null,
-    customElement: (tag: string) => (ctor: any) => {
-      customElements.define(tag, ctor)
-      return ctor
-    },
-    property: () => () => {},
-    state: () => () => {},
-    query: () => () => {},
-    ref: (cb: any) => cb,
-    createRef: () => ({ current: null }),
-  }
+  return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
 import { resolveToolElementTag } from '@nuxy/core'
