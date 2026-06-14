@@ -1,8 +1,7 @@
 import type { ExtensionManifest, ShellKeyAction, TemplateResult } from '@nuxy/core'
 import { render, html } from '@nuxy/core'
-import { createStore, type Store } from '../store.ts'
-import { createTranslator, type Translator } from '../shell-i18n.ts'
 import { completeToolAction, setToolSearchPlaceholder } from '../tool-behavior.ts'
+import { BaseExtensionController } from '../base-controller.ts'
 import manifestJson from './manifest.json'
 import type { NyaaResult } from './types.ts'
 
@@ -23,18 +22,14 @@ export interface NyaaState {
   enterAction: EnterAction
 }
 
-export class NyaaController {
-  readonly store: Store<NyaaState>
-  readonly t: Translator
-
-  private cleanups: Array<() => void> = []
+export class NyaaController extends BaseExtensionController<NyaaState> {
   private searchTimer: ReturnType<typeof setTimeout> | null = null
   private searchGen = 0
   private copiedTimer: ReturnType<typeof setTimeout> | null = null
   private omniPortalHost: HTMLDivElement | null = null
 
-  constructor(private onUpdate: () => void) {
-    this.store = createStore<NyaaState>({
+  constructor(onUpdate: () => void) {
+    super(EXT_ID, {
       query: '',
       results: [],
       loading: false,
@@ -44,17 +39,7 @@ export class NyaaController {
       checkedIds: new Set(),
       copiedId: null,
       enterAction: 'copyMagnet',
-    })
-    this.t = createTranslator(EXT_ID, () => {
-      window.core?.shell?.refreshKeyHints()
-      this.syncSearchPlaceholder()
-      this.onUpdate()
-    })
-    this.store.subscribe(() => this.onUpdate())
-  }
-
-  get state(): NyaaState {
-    return this.store.getState()
+    }, onUpdate)
   }
 
   connect(): void {
@@ -98,7 +83,7 @@ export class NyaaController {
     window.core?.shell?.refreshKeyHints()
   }
 
-  private syncSearchPlaceholder(): void {
+  syncSearchPlaceholder(): void {
     setToolSearchPlaceholder(this.t.t, 'search.placeholder')
   }
 

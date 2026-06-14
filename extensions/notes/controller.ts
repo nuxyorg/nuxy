@@ -2,9 +2,8 @@ import type { ShellKeyAction } from '@nuxy/core'
 import type { Note } from './types.ts'
 import { deriveTitle } from './utils/noteTitle.ts'
 import { invoke } from './utils/ipc.ts'
-import { createStore, type Store } from '../store.ts'
-import { createTranslator, type Translator } from '../shell-i18n.ts'
 import { setToolSearchPlaceholder } from '../tool-behavior.ts'
+import { BaseExtensionController } from '../base-controller.ts'
 
 const EXT_ID = 'com.nuxy.notes'
 
@@ -21,18 +20,15 @@ export interface NotesState {
   filteredNotes: Note[]
 }
 
-export class NotesController {
-  readonly store: Store<NotesState>
-  readonly t: Translator
+export class NotesController extends BaseExtensionController<NotesState> {
   readonly textareaRef = { current: null as HTMLTextAreaElement | null }
 
-  private cleanups: Array<() => void> = []
   private mediaRecorder: MediaRecorder | null = null
   private audioChunks: Blob[] = []
   private prevQuery = ''
 
-  constructor(private onUpdate: () => void) {
-    this.store = createStore<NotesState>({
+  constructor(onUpdate: () => void) {
+    super(EXT_ID, {
       notes: [],
       fontSize: '14px',
       selected: null,
@@ -43,17 +39,7 @@ export class NotesController {
       transcribing: false,
       query: '',
       filteredNotes: [],
-    })
-    this.t = createTranslator(EXT_ID, () => {
-      window.core?.shell?.refreshKeyHints()
-      this.syncSearchPlaceholder()
-      this.onUpdate()
-    })
-    this.store.subscribe(() => this.onUpdate())
-  }
-
-  get state(): NotesState {
-    return this.store.getState()
+    }, onUpdate)
   }
 
   connect(): void {
@@ -82,7 +68,7 @@ export class NotesController {
     window.core?.shell?.registerKeyActions(null)
   }
 
-  private syncSearchPlaceholder(): void {
+  syncSearchPlaceholder(): void {
     setToolSearchPlaceholder(this.t.t, 'search.placeholder')
   }
 

@@ -1,6 +1,5 @@
 import type { ShellKeyAction } from '@nuxy/core'
-import { createStore, type Store } from '../store.ts'
-import { createTranslator, type Translator } from '../shell-i18n.ts'
+import { BaseExtensionController } from '../base-controller.ts'
 import { createSettingsActions, type SettingsActions } from './actions.ts'
 import { setToolSearchPlaceholder } from '../tool-behavior.ts'
 import { createDefaultSettingsData, loadSettingsData, type SettingsDataState } from './data.ts'
@@ -20,9 +19,7 @@ export interface SettingsUIState {
 
 export interface SettingsControllerState extends SettingsDataState, SettingsUIState {}
 
-export class SettingsController {
-  readonly store: Store<SettingsControllerState>
-  readonly t: Translator
+export class SettingsController extends BaseExtensionController<SettingsControllerState> {
   readonly inputRefs: Record<string, HTMLInputElement | null> = {}
 
   private actions: SettingsActions | null = null
@@ -30,24 +27,20 @@ export class SettingsController {
   private filterQuery = ''
   private dataCleanup: (() => void) | null = null
 
-  constructor(private onUpdate: () => void) {
-    this.store = createStore<SettingsControllerState>({
+  constructor(onUpdate: () => void) {
+    super(EXT_ID, {
       ...createDefaultSettingsData(),
       selectedRow: -1,
       activeSelect: null,
       selectFocused: 0,
       selectedSectionId: null,
       focusedPanel: 'right',
-    })
-    this.t = createTranslator(EXT_ID, () => {
-      window.core?.shell?.refreshKeyHints()
-      this.syncSearchPlaceholder()
-      this.onUpdate()
-    })
-    this.store.subscribe(() => {
-      this.recomputeMeta()
-      this.onUpdate()
-    })
+    }, onUpdate)
+  }
+
+  protected onStoreChange(): void {
+    this.recomputeMeta()
+    this.onUpdate()
   }
 
   get state(): SettingsControllerState {
@@ -103,7 +96,7 @@ export class SettingsController {
     this.recomputeMeta()
   }
 
-  private syncSearchPlaceholder(): void {
+  syncSearchPlaceholder(): void {
     setToolSearchPlaceholder(this.t.t, 'search.placeholder')
   }
 
