@@ -1,6 +1,7 @@
 import { protocol, net } from 'electron'
 import fs from 'fs'
 import { resolveExtensionFile } from './resolve.js'
+import { createJsonModuleResponse, MODULE_HEADERS } from './response.js'
 import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('Protocol')
@@ -41,14 +42,7 @@ export function registerProtocols() {
           createRef,
         } = NuxyCore;
       `
-      return new Response(coreVirtualScript, {
-        headers: {
-          'Content-Type': 'application/javascript',
-          'Access-Control-Allow-Origin': '*',
-          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-          Pragma: 'no-cache',
-        },
-      })
+      return new Response(coreVirtualScript, { headers: MODULE_HEADERS })
     }
 
     const resolved = resolveExtensionFile(extId, filePath)
@@ -70,14 +64,7 @@ export function registerProtocols() {
         const mtime = fs.statSync(absolutePath).mtimeMs
         const cached = transpileCache.get(absolutePath)
         if (cached && cached.mtime === mtime) {
-          return new Response(cached.output, {
-            headers: {
-              'Content-Type': 'application/javascript',
-              'Access-Control-Allow-Origin': '*',
-              'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-              Pragma: 'no-cache',
-            },
-          })
+          return new Response(cached.output, { headers: MODULE_HEADERS })
         }
 
         const code = fs.readFileSync(absolutePath, 'utf8')
@@ -112,14 +99,7 @@ export function registerProtocols() {
               '$1nuxy-ext://core/index.js$3'
             )
             transpileCache.set(absolutePath, { mtime, output })
-            return new Response(output, {
-              headers: {
-                'Content-Type': 'application/javascript',
-                'Access-Control-Allow-Origin': '*',
-                'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-                Pragma: 'no-cache',
-              },
-            })
+            return new Response(output, { headers: MODULE_HEADERS })
           }
         }
 
@@ -128,16 +108,18 @@ export function registerProtocols() {
           /(from\s+['"])(@nuxy\/core|lit|lit\/decorators\.js|lit\/directives\/ref\.js)(['"])/g,
           '$1nuxy-ext://core/index.js$3'
         )
-        return new Response(rewrittenCode, {
-          headers: {
-            'Content-Type': 'application/javascript',
-            'Access-Control-Allow-Origin': '*',
-            'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-            Pragma: 'no-cache',
-          },
-        })
+        return new Response(rewrittenCode, { headers: MODULE_HEADERS })
       } catch (err) {
         log.error(`Failed to transpile ${absolutePath}`, err)
+        return new Response('Internal Server Error', { status: 500 })
+      }
+    }
+
+    if (absolutePath.endsWith('.json')) {
+      try {
+        return createJsonModuleResponse(absolutePath)
+      } catch (err) {
+        log.error(`Failed to serve JSON module ${absolutePath}`, err)
         return new Response('Internal Server Error', { status: 500 })
       }
     }

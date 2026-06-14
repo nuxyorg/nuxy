@@ -5,7 +5,7 @@ import type { TemplateResult } from '@nuxy/core'
 export class NuxySectionHeaderElement extends LitElement {
   static styles = css`
     :host {
-      padding: 8px 12px 4px;
+      padding: 8px 12px 0;
       display: flex;
       align-items: center;
       gap: 8px;

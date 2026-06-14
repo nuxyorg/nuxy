@@ -59,6 +59,7 @@ export interface ShellCoreState {
   settings: ShellConfig
   searchIcon: string | null
   bridge: ShellBridgeSnapshot
+  holdMs: number | null
 }
 
 // Keep the old alias for any code that still reads ctrl.state
@@ -141,6 +142,7 @@ export class ShellController {
       settings: DEFAULT_SETTINGS,
       searchIcon: null,
       bridge: EMPTY_SNAPSHOT,
+      holdMs: null,
     })
 
     this.refs = {
@@ -802,17 +804,13 @@ export class ShellController {
 
   private bindGlobalKeyboard(): void {
     let holdTimer: ReturnType<typeof setTimeout> | null = null
-    let holdOverlay: HTMLElement | null = null
 
     const clearHold = () => {
       if (holdTimer !== null) {
         clearTimeout(holdTimer)
         holdTimer = null
       }
-      if (holdOverlay) {
-        holdOverlay.remove()
-        holdOverlay = null
-      }
+      this.store.setState({ holdMs: null })
     }
 
     const matchesAction = (action: KeyAction, e: KeyboardEvent): boolean => {
@@ -828,16 +826,7 @@ export class ShellController {
     const startHold = (action: KeyAction, e: KeyboardEvent) => {
       if (holdTimer !== null) return
       const ms = action.holdMs ?? 600
-      const omniBar = document.querySelector('.nuxy-shell-omni-bar')
-      if (omniBar) {
-        holdOverlay = document.createElement('div')
-        holdOverlay.className = 'nuxy-hold-progress'
-        const bar = document.createElement('div')
-        bar.className = 'nuxy-hold-progress__bar'
-        bar.style.setProperty('--nuxy-hold-ms', `${ms}ms`)
-        holdOverlay.appendChild(bar)
-        omniBar.appendChild(holdOverlay)
-      }
+      this.store.setState({ holdMs: ms })
       holdTimer = setTimeout(() => {
         holdTimer = null
         clearHold()

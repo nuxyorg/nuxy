@@ -14,20 +14,32 @@ import { NotesController } from './controller.ts'
 @customElement('nuxy-tool-notes')
 export class NuxyToolNotesElement extends LitElement implements NuxyToolElement {
   static styles = css`
-    :host {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-height: 0;
-      overflow: hidden;
-    }
-
     .nuxy-notes-app {
       height: 100%;
     }
 
-    .nuxy-notes-edit-mode .nuxy-two-panel__left {
-      display: none !important;
+    .nuxy-notes-panel-right--edit {
+      overflow: hidden;
+    }
+
+    .nuxy-notes-panel-right--edit nuxy-markdown-editor {
+      flex: 1;
+      min-height: 0;
+      font-size: var(--nuxy-notes-font-size, 14px);
+    }
+
+    .nuxy-notes-panel-right--read {
+      padding: var(--space-4);
+      overflow-y: auto;
+      color: var(--syntax-variable);
+      gap: var(--space-2);
+    }
+
+    .nuxy-notes-read-content {
+      flex: 1;
+      opacity: 0.8;
+      line-height: 1.5;
+      font-size: var(--nuxy-notes-font-size, 14px);
     }
   `
   @property({ type: String })
@@ -65,9 +77,12 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
   render(): TemplateResult | typeof nothing {
     if (!this.controller) return nothing
     const s = this.controller.state
+    this.style.setProperty('--nuxy-notes-font-size', s.fontSize || '14px')
     return html`
-      <div class="nuxy-notes-app${s.editMode ? ' nuxy-notes-edit-mode' : ''}">
-        <nuxy-two-panel> ${this.renderLeftPanel()} ${this.renderRightPanel()} </nuxy-two-panel>
+      <div class="nuxy-notes-app">
+        <nuxy-two-panel ?hide-left=${s.editMode}>
+          ${this.renderLeftPanel()} ${this.renderRightPanel()}
+        </nuxy-two-panel>
       </div>
     `
   }
@@ -113,16 +128,12 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
   }
 
   private renderRightPanel(): TemplateResult | typeof nothing {
-    const { selected, body, editMode, transcribing, fontSize } = this.controller!.state
+    const { selected, body, editMode, transcribing } = this.controller!.state
 
     if (editMode && selected) {
       return html`
-        <div
-          class="nuxy-two-panel__right"
-          style="display: flex; flex-direction: column; height: 100%; overflow: hidden;"
-        >
+        <div class="nuxy-two-panel__right nuxy-notes-panel-right--edit">
           <nuxy-markdown-editor
-            style="flex: 1; min-height: 0; font-size: ${fontSize};"
             .value=${body}
             placeholder=${transcribing ? 'Transcribing…' : 'Start writing…'}
             ${ref((el) => {
@@ -143,11 +154,8 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
 
     if (selected) {
       return html`
-        <div
-          class="nuxy-two-panel__right"
-          style="display: flex; flex-direction: column; height: 100%; padding: var(--space-4, 12px); overflow-y: auto; color: var(--text, #ffffff); gap: var(--space-2);"
-        >
-          <div style="flex: 1; opacity: 0.8; font-size: ${fontSize}; line-height: 1.5;">
+        <div class="nuxy-two-panel__right nuxy-notes-panel-right--read">
+          <div class="nuxy-notes-read-content">
             <nuxy-markdown-text content=${selected.body}></nuxy-markdown-text>
           </div>
         </div>

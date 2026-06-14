@@ -1,12 +1,5 @@
-import {
-  LitElement,
-  html,
-  css,
-  nothing,
-  customElement,
-  property,
-  type TemplateResult,
-} from '@nuxy/core'
+import { LitElement, html, css, nothing, type TemplateResult } from 'lit'
+import { customElement, property } from 'lit/decorators.js'
 
 export interface CompareMeta {
   left?: { text: string; badge: string }
@@ -54,6 +47,10 @@ export class NuxyCompareCardElement extends LitElement {
       font-weight: 500;
       color: var(--syntax-variable);
       word-break: break-word;
+    }
+
+    .nuxy-compare-panel__text--highlight {
+      color: var(--syntax-function);
     }
 
     .nuxy-compare-panel__badge {
@@ -146,7 +143,7 @@ export class NuxyCompareCardElement extends LitElement {
       </div>
       <div class="nuxy-compare-arrow">→</div>
       <div class="nuxy-compare-panel">
-        <div class="nuxy-compare-panel__text" style="color:var(--syntax-function)">
+        <div class="nuxy-compare-panel__text nuxy-compare-panel__text--highlight">
           ${meta.right.text}
         </div>
         <div class="nuxy-compare-panel__badge">${meta.right.badge}</div>

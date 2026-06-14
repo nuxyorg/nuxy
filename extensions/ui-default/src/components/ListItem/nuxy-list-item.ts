@@ -12,21 +12,10 @@ export class NuxyListItemElement extends LitElement {
       align-items: center;
       justify-content: space-between;
       cursor: pointer;
-      transition:
-        background-color 150ms,
-        border-color 150ms;
-      border-left: 2px solid transparent;
+      transition: background-color 150ms;
+      position: relative;
     }
 
-    :host([active]) {
-      background-color: var(--syntax-comment);
-      border-left-color: var(--syntax-operator);
-    }
-
-    :host(:not([active]):hover) {
-      background-color: var(--syntax-comment);
-      border-left-color: var(--syntax-comment);
-    }
   `
 
   render() {

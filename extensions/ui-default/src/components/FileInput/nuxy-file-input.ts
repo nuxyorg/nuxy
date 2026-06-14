@@ -1,12 +1,5 @@
-import {
-  LitElement,
-  html,
-  css,
-  nothing,
-  customElement,
-  state,
-  type TemplateResult,
-} from '@nuxy/core'
+import { LitElement, html, css, nothing, type TemplateResult } from 'lit'
+import { customElement, state } from 'lit/decorators.js'
 
 
 export interface FileMeta {

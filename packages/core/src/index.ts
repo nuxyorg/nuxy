@@ -193,6 +193,7 @@ export type {
   ShellBridgeSnapshot,
   OmniBarControlAction,
   CoreShell,
+  ResetToolStateOptions,
 } from './shell'
 export type { CoreEvents, NuxyRendererEvent, NuxyRendererEventMap } from './events'
 export { classifyQuery } from './query-context'

@@ -25,10 +25,10 @@ describe('extensionDataDir', () => {
 })
 
 describe('migrateLegacyData', () => {
-  let existsSyncSpy: ReturnType<typeof vi.spyOn>
-  let readdirSyncSpy: ReturnType<typeof vi.spyOn>
-  let mkdirSyncSpy: ReturnType<typeof vi.spyOn>
-  let cpSyncSpy: ReturnType<typeof vi.spyOn>
+  let existsSyncSpy: any
+  let readdirSyncSpy: any
+  let mkdirSyncSpy: any
+  let cpSyncSpy: any
 
   beforeEach(() => {
     existsSyncSpy = vi.spyOn(fs, 'existsSync')

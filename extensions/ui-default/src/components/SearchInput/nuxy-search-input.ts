@@ -67,6 +67,10 @@ export class NuxySearchInputElement extends LitElement {
     .nuxy-search-input__clear:hover {
       opacity: 1;
     }
+
+    .nuxy-search-input__clear[hidden] {
+      display: none;
+    }
   `
 
   @property({ type: String })
@@ -157,7 +161,7 @@ export class NuxySearchInputElement extends LitElement {
         type="button"
         class="nuxy-search-input__clear"
         aria-label="Clear search"
-        style=${!this.hasValue ? 'display:none' : ''}
+        ?hidden=${!this.hasValue}
         @click=${this.clear}
       >
         <svg

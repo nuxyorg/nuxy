@@ -11,6 +11,8 @@ export class CommandPaletteController implements ReactiveController {
     host.addController(this)
   }
 
+  hostConnected(): void {}
+
   toggle(): void {
     this._show = !this._show
     this.host.requestUpdate()

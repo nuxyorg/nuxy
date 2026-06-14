@@ -84,7 +84,7 @@ describe('createShellBridge', () => {
       { key: 'n', modifiers: ['ctrl'], label: 'New', hint: '⌃N', handler: newHandler },
     ])
 
-    await new Promise((resolve) => queueMicrotask(resolve))
+    await new Promise<void>((resolve) => queueMicrotask(() => resolve()))
 
     expect(bridge.getSnapshot().keyActionHints).toHaveLength(1)
     expect(bridge.getSnapshot().keyActionHints[0]?.label).toBe('New')

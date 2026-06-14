@@ -1,13 +1,39 @@
 const GRADIENT_EXT_ID = 'com.nuxy.gradient'
-const STYLE_ID = 'nuxy-gradient-layer-styles'
+let layerStylesAdopted = false
 
 function ensureLayerStyles(): void {
-  if (document.getElementById(STYLE_ID)) return
-  const link = document.createElement('link')
-  link.id = STYLE_ID
-  link.rel = 'stylesheet'
-  link.href = `nuxy-ext://${GRADIENT_EXT_ID}/layer.css`
-  document.head.appendChild(link)
+  if (layerStylesAdopted) return
+  layerStylesAdopted = true
+  const sheet = new CSSStyleSheet()
+  sheet.replaceSync(`
+    nuxy-gradient-layer {
+      display: block;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    .nuxy-shell-gradient-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius-xl);
+      pointer-events: none;
+      z-index: 0;
+      display: block;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      --gradient-color-1: var(--gradient-1, #c3e4f5);
+      --gradient-color-2: var(--gradient-2, #6ec3f4);
+      --gradient-color-3: var(--gradient-3, #eae2ff);
+      --gradient-color-4: var(--gradient-4, #b2c7f8);
+    }
+  `)
+  document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet]
 }
 
 export class NuxyGradientLayerElement extends HTMLElement {

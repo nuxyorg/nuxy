@@ -121,7 +121,7 @@ describe('shell backend', () => {
       await handlers.recordToolUsed('com.nuxy.calc')
       expect(
         (core.storage.write as ReturnType<typeof vi.fn>).mock.calls.some(
-          ([file, data]: [string, unknown]) =>
+          ([file, data]: any[]) =>
             file === 'tool-history.json' &&
             Array.isArray(data) &&
             (data as string[]).includes('com.nuxy.calc')
@@ -151,7 +151,7 @@ describe('shell backend', () => {
       await handlers.recordToolUsed({ toolId: 'com.nuxy.calc', query: 'calculator' })
       expect(
         (core.storage.write as ReturnType<typeof vi.fn>).mock.calls.some(
-          ([file, data]: [string, unknown]) =>
+          ([file, data]: any[]) =>
             file === 'usage-stats.json' &&
             data !== null &&
             typeof data === 'object' &&

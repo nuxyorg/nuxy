@@ -1,4 +1,5 @@
-import type { ExtensionManifest, ShellKeyAction } from '@nuxy/core'
+import type { ExtensionManifest, ShellKeyAction, TemplateResult } from '@nuxy/core'
+import { render, html } from '@nuxy/core'
 import { createStore, type Store } from '../store.ts'
 import { createTranslator, type Translator } from '../shell-i18n.ts'
 import { completeToolAction, setToolSearchPlaceholder } from '../tool-behavior.ts'
@@ -157,19 +158,22 @@ export class NyaaController {
       .catch(() => {})
   }
 
-  private setOmniBarPortal(node: HTMLElement | null): void {
+  private setOmniBarPortal(template: TemplateResult | null): void {
     const shell = window.core?.shell
     if (!shell) return
-    if (!node) {
-      shell.setOmniBarPortal(null)
-      this.omniPortalHost = null
+    if (!template) {
+      if (this.omniPortalHost) {
+        render(html``, this.omniPortalHost)
+        shell.setOmniBarPortal(null)
+        this.omniPortalHost = null
+      }
       return
     }
     if (!this.omniPortalHost) {
       this.omniPortalHost = document.createElement('div')
       shell.setOmniBarPortal(this.omniPortalHost)
     }
-    this.omniPortalHost.replaceChildren(node)
+    render(template, this.omniPortalHost)
   }
 
   private syncSearch(): void {
@@ -184,9 +188,7 @@ export class NyaaController {
 
     const generation = ++this.searchGen
     this.store.setState({ error: null, loading: true })
-    const spinner = document.createElement('nuxy-spinner')
-    spinner.setAttribute('size', 'sm')
-    this.setOmniBarPortal(spinner)
+    this.setOmniBarPortal(html`<nuxy-spinner size="sm"></nuxy-spinner>`)
 
     this.searchTimer = setTimeout(() => {
       if (generation !== this.searchGen) return

@@ -16,6 +16,8 @@ export class QueryController implements ReactiveController {
     host.addController(this)
   }
 
+  hostConnected(): void {}
+
   setQuery(val: string): void {
     this._query = val
     this.host.requestUpdate()

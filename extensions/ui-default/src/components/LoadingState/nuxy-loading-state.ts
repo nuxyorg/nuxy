@@ -13,6 +13,12 @@ export class NuxyLoadingStateElement extends LitElement {
       flex: 1;
       gap: var(--space-3);
     }
+
+    .nuxy-loading-state__message {
+      font-size: var(--font-sm);
+      color: var(--text-muted);
+      opacity: 0.75;
+    }
   `
 
   @property({ type: String })
@@ -36,9 +42,7 @@ export class NuxyLoadingStateElement extends LitElement {
     return html`
       <nuxy-spinner size=${this.size} aria-label=${this.message || 'Loading'}></nuxy-spinner>
       ${this.message
-        ? html`<span style="font-size: var(--font-sm); color: var(--text-muted); opacity: 0.75;"
-            >${this.message}</span
-          >`
+        ? html`<span class="nuxy-loading-state__message">${this.message}</span>`
         : nothing}
     `
   }

@@ -11,6 +11,8 @@ export class NavigationController implements ReactiveController {
     host.addController(this)
   }
 
+  hostConnected(): void {}
+
   setSelectedIndex(index: number | ((prev: number) => number)): void {
     const next = typeof index === 'function' ? index(this._selectedIndex) : index
     if (next === this._selectedIndex) return

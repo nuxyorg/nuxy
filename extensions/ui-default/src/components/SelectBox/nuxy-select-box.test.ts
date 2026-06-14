@@ -121,6 +121,38 @@ describe('nuxy-select-box', () => {
     await el.updateComplete
   })
 
+  it('preserves indicator element across focus changes so CSS transitions can run', async () => {
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      cb(0)
+      return 0
+    })
+
+    const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
+    el.options = JSON.stringify([
+      { value: 'a', label: 'Alpha' },
+      { value: 'b', label: 'Beta' },
+      { value: 'c', label: 'Gamma' },
+    ])
+    el.value = 'a'
+    el.focusedIndex = 0
+    parent.appendChild(el)
+    await el.updateComplete
+
+    el.open = true
+    await el.updateComplete
+
+    const indicator = document.body.querySelector('.nuxy-select-box__indicator')
+    expect(indicator).toBeTruthy()
+
+    el.focusedIndex = 1
+    await el.updateComplete
+
+    expect(document.body.querySelector('.nuxy-select-box__indicator')).toBe(indicator)
+
+    el.open = false
+    await el.updateComplete
+  })
+
   it('clears search input when reopened after close', async () => {
     const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
     el.options = JSON.stringify([

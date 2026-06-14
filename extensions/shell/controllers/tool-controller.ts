@@ -35,6 +35,8 @@ export class ToolController implements ReactiveController {
     host.addController(this)
   }
 
+  hostConnected(): void {}
+
   setTools(tools: Tool[]): void {
     this._tools = tools
     this.host.requestUpdate()

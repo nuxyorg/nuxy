@@ -121,8 +121,7 @@ export class NuxySliderElement extends LitElement {
   private clamp(value: number): number {
     const min = this.min
     const max = this.max
-    if (value < min) declare
-    value: unknown
+    if (value < min) value = min
     if (value > max) value = max
     return value
   }

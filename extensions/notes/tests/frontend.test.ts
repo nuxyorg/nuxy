@@ -131,11 +131,7 @@ describe('nuxy-tool-notes element', () => {
 
   it('forwards query property to controller on updates', async () => {
     const Ctor = customElements.get('nuxy-tool-notes')!
-    const el = new Ctor() as HTMLElement & {
-      query: string
-      committedQuery: string
-      extensionId: string
-    }
+    const el = new Ctor() as any
 
     el.connectedCallback()
     el.extensionId = 'com.nuxy.notes'
@@ -146,15 +142,15 @@ describe('nuxy-tool-notes element', () => {
     expect(el.query).toBe('todo')
     expect(el.committedQuery).toBe('todo list')
     expect(el.extensionId).toBe('com.nuxy.notes')
-    expect(window.core.shell.registerKeyActions).toHaveBeenCalled()
-    expect(window.core.shell.setSearchPlaceholder).toHaveBeenCalled()
+    expect(window.core.shell!.registerKeyActions).toHaveBeenCalled()
+    expect(window.core.shell!.setSearchPlaceholder).toHaveBeenCalled()
   })
 
   it('cleans up on disconnect', () => {
     const Ctor = customElements.get('nuxy-tool-notes')!
-    const el = new Ctor() as HTMLElement
+    const el = new Ctor() as any
     el.connectedCallback()
     el.disconnectedCallback()
-    expect(window.core.shell.registerActions).toHaveBeenCalledWith([])
+    expect(window.core.shell!.registerActions).toHaveBeenCalledWith([])
   })
 })

@@ -9,7 +9,11 @@ import {
   type PropertyValues,
   type TemplateResult,
 } from '@nuxy/core'
-import { smoothScrollElementToStart } from '../../hooks/scroll-into-view'
+import {
+  smoothScrollElementToStart,
+  smoothScrollIntoViewIfNeeded,
+  scrollBiasForIndexChange,
+} from '../../hooks/scroll-into-view'
 
 export interface SelectOption {
   value: string
@@ -98,11 +102,17 @@ export class NuxySelectBoxElement extends LitElement {
   declare searchable: boolean
   @property({ type: String })
   declare placeholder: string
+  @property({ type: Number, attribute: 'scroll-lookahead' })
+  declare scrollLookahead: number
+  @property({ type: Number, attribute: 'scroll-speed' })
+  declare scrollSpeed: number
 
   // Body-portal dropdown elements — kept imperative
   private dropdown: HTMLDivElement | null = null
   private searchInput: HTMLInputElement | null = null
   private optionsEl: HTMLDivElement | null = null
+  private indicator: HTMLDivElement | null = null
+  private _hoveredOptionEl: HTMLElement | null = null
   @state()
   declare private searchQuery: string
   @state()
@@ -110,6 +120,7 @@ export class NuxySelectBoxElement extends LitElement {
   private escapeHandler: ((e: KeyboardEvent) => void) | null = null
   private scrollRaf: number | null = null
   private instantScrollOnNextRender = false
+  private previousFocusedIndex: number | undefined = undefined
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -130,6 +141,9 @@ export class NuxySelectBoxElement extends LitElement {
 
   updated(changed: PropertyValues): void {
     super.updated(changed)
+    if (changed.has('focusedIndex') && this.isSearchable()) {
+      this.internalFocused = this.focusedIndex
+    }
     if (changed.has('open')) {
       if (this.open) this.onOpenTransition()
       else this.onCloseTransition()
@@ -212,6 +226,7 @@ export class NuxySelectBoxElement extends LitElement {
     this.removeEscapeListener()
     this.detachDropdown()
     this.searchQuery = ''
+    this.previousFocusedIndex = undefined
     if (this.scrollRaf !== null) {
       cancelAnimationFrame(this.scrollRaf)
       this.scrollRaf = null
@@ -268,16 +283,27 @@ export class NuxySelectBoxElement extends LitElement {
       this.optionsEl = document.createElement('div')
       this.optionsEl.className = 'nuxy-select-box__options'
       this.dropdown.appendChild(this.optionsEl)
+
+      this.indicator = document.createElement('div')
+      this.indicator.className = 'nuxy-select-box__indicator'
+      this.optionsEl.appendChild(this.indicator)
+
+      this.optionsEl.addEventListener('mouseover', this._onOptionMouseOver)
+      this.optionsEl.addEventListener('mouseleave', this._onOptionMouseLeave)
     }
 
     if (!this.dropdown.isConnected) {
       document.body.appendChild(this.dropdown)
     }
 
-    this.positionDropdown()
+    this.repositionDropdown()
     this.renderDropdown()
 
-    requestAnimationFrame(() => this.positionDropdown())
+    requestAnimationFrame(() => {
+      this.repositionDropdown()
+      const triggerBtn = this.getTriggerButton()
+      if (triggerBtn) smoothScrollIntoViewIfNeeded(triggerBtn)
+    })
 
     if (this.isSearchable() && this.searchInput) {
       setTimeout(() => this.searchInput?.focus(), 30)
@@ -286,17 +312,45 @@ export class NuxySelectBoxElement extends LitElement {
 
   private detachDropdown(): void {
     this.dropdown?.remove()
+    this._hoveredOptionEl = null
+  }
+
+  private _onOptionMouseOver = (e: MouseEvent): void => {
+    const el = (e.target as Element).closest<HTMLElement>('.nuxy-select-box__option')
+    if (!el) return
+    this._hoveredOptionEl = el
+    this._positionIndicatorToEl(el)
+  }
+
+  private _onOptionMouseLeave = (): void => {
+    this._hoveredOptionEl = null
+    const focused = this.optionsEl?.querySelector<HTMLElement>('.nuxy-select-box__option--focused')
+    if (focused) this._positionIndicatorToEl(focused)
+    else if (this.indicator) this.indicator.classList.remove('visible')
+  }
+
+  private _positionIndicatorToEl(el: HTMLElement): void {
+    const ind = this.indicator
+    if (!ind) return
+    ind.style.transform = `translateY(${el.offsetTop}px)`
+    ind.style.height = `${el.offsetHeight}px`
+    ind.classList.add('visible')
   }
 
   private getTriggerButton(): HTMLButtonElement | null {
     return this.renderRoot.querySelector<HTMLButtonElement>('.nuxy-select-box__trigger')
   }
 
-  private positionDropdown(): void {
+  private clearOptionElements(): void {
+    if (!this.optionsEl) return
+    for (const child of [...this.optionsEl.children]) {
+      if (child !== this.indicator) child.remove()
+    }
+  }
+
+  private repositionDropdown(): void {
     const triggerBtn = this.getTriggerButton()
     if (!this.dropdown || !triggerBtn) return
-
-    triggerBtn.scrollIntoView({ block: 'nearest', inline: 'nearest' })
 
     const zoom = getZoom()
     const r = triggerBtn.getBoundingClientRect()
@@ -387,13 +441,14 @@ export class NuxySelectBoxElement extends LitElement {
     const value = this.getValue()
     const focusedIndex = this.getFocusedIndex()
 
-    this.optionsEl.replaceChildren()
+    this.clearOptionElements()
 
     if (filtered.length === 0) {
       const noResults = document.createElement('div')
       noResults.className = 'nuxy-select-box__no-results'
       noResults.textContent = 'No results'
       this.optionsEl.appendChild(noResults)
+      if (this.indicator) this.indicator.classList.remove('visible')
       return
     }
 
@@ -442,18 +497,40 @@ export class NuxySelectBoxElement extends LitElement {
       this.scrollRaf = null
     }
 
-    this.positionDropdown()
+    this.repositionDropdown()
 
+    const instant = this.instantScrollOnNextRender
+    const scrollBias = scrollBiasForIndexChange(focusedIndex, this.previousFocusedIndex)
     if (focusedEl) {
-      const instant = this.instantScrollOnNextRender
       this.scrollRaf = requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          smoothScrollElementToStart(focusedEl, instant)
-          if (instant) this.instantScrollOnNextRender = false
-          this.scrollRaf = null
-        })
+        if (instant) {
+          smoothScrollElementToStart(focusedEl, true)
+        } else {
+          const scrollLookaheadPadding = Number.isFinite(this.scrollLookahead)
+            ? this.scrollLookahead
+            : undefined
+          const scrollSpeed = Number.isFinite(this.scrollSpeed) ? this.scrollSpeed : undefined
+          smoothScrollIntoViewIfNeeded(focusedEl, {
+            scrollBias,
+            scrollLookaheadPadding,
+            scrollSpeed,
+          })
+        }
+        if (instant) this.instantScrollOnNextRender = false
+
+        const indicatorTarget = this._hoveredOptionEl ?? focusedEl
+        if (indicatorTarget) this._positionIndicatorToEl(indicatorTarget)
+        else if (this.indicator) this.indicator.classList.remove('visible')
+
+        this.scrollRaf = null
       })
+    } else {
+      const indicatorTarget = this._hoveredOptionEl
+      if (indicatorTarget) this._positionIndicatorToEl(indicatorTarget)
+      else if (this.indicator) this.indicator.classList.remove('visible')
     }
+
+    this.previousFocusedIndex = focusedIndex
   }
 
   // --- Lit render: trigger button only ---

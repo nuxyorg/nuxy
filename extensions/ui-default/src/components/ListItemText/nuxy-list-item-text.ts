@@ -5,12 +5,14 @@ export class NuxyListItemTextElement extends LitElement {
   @property({ type: String, reflect: true })
   declare variant: string
 
+  @property({ type: Boolean, reflect: true })
+  declare active: boolean
+
   static styles = css`
     :host {
+      display: block;
+      min-width: 0;
       font-size: var(--font-md);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
       transition: color 150ms;
       color: var(--syntax-variable);
     }
@@ -18,10 +20,14 @@ export class NuxyListItemTextElement extends LitElement {
     :host([variant='success']) {
       color: var(--syntax-function);
     }
+
+    :host([variant='error']) {
+      color: var(--syntax-invalid);
+    }
   `
 
   render() {
-    return html`<slot></slot>`
+    return html`<nuxy-truncate ?active=${this.active}><slot></slot></nuxy-truncate>`
   }
 }
 

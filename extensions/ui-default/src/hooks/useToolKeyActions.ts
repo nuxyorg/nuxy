@@ -1,4 +1,4 @@
-import type { ReactiveController, ReactiveControllerHost } from '@nuxy/core'
+import type { ReactiveController, ReactiveControllerHost } from 'lit'
 
 export interface KeyAction {
   key: string

@@ -5,6 +5,14 @@ nuxy-tool-host {
   min-height: 0;
 }
 
+nuxy-tool-host > * {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
 nuxy-tool-host[loading] {
   flex: 1;
   min-height: 200px;

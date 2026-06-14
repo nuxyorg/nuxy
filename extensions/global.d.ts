@@ -1,4 +1,4 @@
-import type { CoreShell, CoreEvents } from '@nuxy/core'
+import type { CoreShell, CoreEvents, CoreComposition } from '@nuxy/core'
 
 declare global {
   interface CustomElementRegistry {
@@ -9,9 +9,9 @@ declare global {
 
   interface Window {
     /** Primary access path for the UI kit (window.UI). Set by the active uikit extension at runtime. */
-    UI: Record<string, unknown>
+    UI: Record<string, any>
     /** Legacy alias kept for backwards compat — prefer window.UI. */
-    ui: Record<string, unknown>
+    ui: Record<string, any>
     core: {
       ipc: {
         invoke: (extId: string, channel: string, payload?: unknown) => Promise<unknown>
@@ -35,6 +35,10 @@ declare global {
       themes: {
         list: () => Promise<unknown>
       }
+      tools?: {
+        resolveElementTag: (extId: string) => Promise<string | null>
+      }
+      composition?: CoreComposition
       shell?: CoreShell
       events?: CoreEvents
       /**

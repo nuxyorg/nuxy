@@ -1,19 +1,5 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxy/core'
 import type { NuxyToolElement, ToolActivateContext } from '@nuxy/core'
-
-declare global {
-  interface Window {
-    core?: {
-      tools?: {
-        resolveElementTag: (extId: string) => Promise<string | null>
-      }
-      composition?: Pick<ToolActivateContext['composition'], 'mount' | 'setState'>
-      shell?: {
-        refreshKeyHints(): void
-      }
-    }
-  }
-}
 
 async function loadFrontendModule(extId: string): Promise<void> {
   const dynamicImport = new Function('url', 'return import(url)')
@@ -32,9 +18,14 @@ export class NuxyToolHostElement extends LitElement {
   private _committedQuery = ''
   private toolEl: NuxyToolElement | null = null
   private swapGeneration = 0
+  private _loadingTimer: ReturnType<typeof setTimeout> | null = null
 
   @property({ type: Boolean, reflect: true })
   declare loading: boolean
+  @property({ attribute: 'loading-message' })
+  declare loadingMessage: string
+  @state()
+  private _showLoading = false
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -48,9 +39,34 @@ export class NuxyToolHostElement extends LitElement {
     this.teardown()
   }
 
+  protected updated(changed: Map<string, unknown>): void {
+    if (changed.has('loading')) {
+      if (this.loading) {
+        this._loadingTimer = setTimeout(() => {
+          this._loadingTimer = null
+          this._showLoading = true
+        }, 1000)
+      } else {
+        if (this._loadingTimer !== null) {
+          clearTimeout(this._loadingTimer)
+          this._loadingTimer = null
+        }
+        this._showLoading = false
+      }
+    }
+  }
+
   // Tool content is managed imperatively via swapTool (light DOM children shown via slot)
   render() {
-    return html`<slot></slot>`
+    return html`
+      ${this._showLoading
+        ? html`<nuxy-loading-state
+            message=${this.loadingMessage || 'Loading…'}
+            min-height="200px"
+          ></nuxy-loading-state>`
+        : nothing}
+      <slot></slot>
+    `
   }
 
   get extensionId(): string | null {
@@ -95,6 +111,11 @@ export class NuxyToolHostElement extends LitElement {
 
   private teardown() {
     this.swapGeneration += 1
+    if (this._loadingTimer !== null) {
+      clearTimeout(this._loadingTimer)
+      this._loadingTimer = null
+    }
+    this._showLoading = false
     this.toolEl?.onToolDeactivate?.()
     this.toolEl = null
     this.replaceChildren()

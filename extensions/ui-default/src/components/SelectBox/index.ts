@@ -12,5 +12,9 @@ export interface SelectBoxProps {
   onOpen?: (startIndex: number) => void
   placeholder?: string
   searchable?: boolean
+  /** Lookahead scroll padding in px for keyboard navigation. */
+  scrollLookahead?: number
+  /** Scroll animation speed (0–1, fraction per frame). Default 0.1. */
+  scrollSpeed?: number
   className?: string
 }

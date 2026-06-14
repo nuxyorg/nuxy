@@ -23,6 +23,7 @@ export default tseslint.config(
       '**/website/docs/.vitepress/dist/**',
       '**/website/docs/.vitepress/cache/**',
       '**/reports/**',
+      'extensions/ui-default/frontend.js',
     ],
   },
   {

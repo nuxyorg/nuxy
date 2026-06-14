@@ -14,6 +14,8 @@ export interface SettingsUIState {
   selectedRow: number
   activeSelect: string | null
   selectFocused: number
+  selectedSectionId: string | null
+  focusedPanel: 'left' | 'right'
 }
 
 export interface SettingsControllerState extends SettingsDataState, SettingsUIState {}
@@ -21,7 +23,6 @@ export interface SettingsControllerState extends SettingsDataState, SettingsUISt
 export class SettingsController {
   readonly store: Store<SettingsControllerState>
   readonly t: Translator
-  readonly sectionRefs: Record<string, HTMLDivElement | null> = {}
   readonly inputRefs: Record<string, HTMLInputElement | null> = {}
 
   private actions: SettingsActions | null = null
@@ -35,6 +36,8 @@ export class SettingsController {
       selectedRow: -1,
       activeSelect: null,
       selectFocused: 0,
+      selectedSectionId: null,
+      focusedPanel: 'right',
     })
     this.t = createTranslator(EXT_ID, () => {
       window.core?.shell?.refreshKeyHints()
@@ -96,7 +99,7 @@ export class SettingsController {
     const next = query ?? ''
     if (this.filterQuery === next) return
     this.filterQuery = next
-    this.store.setState({ selectedRow: -1, activeSelect: null })
+    this.store.setState({ selectedRow: -1, activeSelect: null, focusedPanel: 'right' })
     this.recomputeMeta()
   }
 
@@ -112,6 +115,18 @@ export class SettingsController {
 
   setActiveSelect(key: string | null): void {
     this.store.setState({ activeSelect: key })
+  }
+
+  get effectiveSectionId(): string | null {
+    const id = this.state.selectedSectionId
+    const sections = this.meta?.sectionsToRender ?? []
+    if (!sections.length) return null
+    if (id && sections.some((s) => s.id === id)) return id
+    return sections[0].id
+  }
+
+  setSelectedSection(id: string): void {
+    this.store.setState({ selectedSectionId: id, selectedRow: -1, activeSelect: null, focusedPanel: 'right' })
   }
 
   setSelectFocused(index: number | ((prev: number) => number)): void {
@@ -154,7 +169,72 @@ export class SettingsController {
 
   private buildKeyActions(): ShellKeyAction[] {
     const t = this.t.t
+    const { focusedPanel } = this.state
+
+    if (focusedPanel === 'left') {
+      return this.buildLeftPanelKeyActions(t)
+    }
+
+    return this.buildRightPanelKeyActions(t)
+  }
+
+  private buildLeftPanelKeyActions(t: (key: string) => string): ShellKeyAction[] {
+    const sections = this.meta?.sectionsToRender ?? []
+    const currentIdx = sections.findIndex((s) => s.id === this.effectiveSectionId)
+
+    const enterRight = () => {
+      const sectionId = this.effectiveSectionId
+      if (!sectionId) return
+      const start = this.meta?.sectionStartIndex[sectionId] ?? 0
+      this.store.setState({ focusedPanel: 'right', selectedRow: start })
+    }
+
+    return [
+      {
+        key: 'ArrowUp',
+        label: t('actions.previousSetting'),
+        hint: '↑↓',
+        allowRepeat: true,
+        handler: () => {
+          if (currentIdx > 0) {
+            this.store.setState({ selectedSectionId: sections[currentIdx - 1].id })
+          }
+        },
+      },
+      {
+        key: 'ArrowDown',
+        label: t('actions.nextSetting'),
+        allowRepeat: true,
+        handler: () => {
+          if (currentIdx < sections.length - 1) {
+            this.store.setState({ selectedSectionId: sections[currentIdx + 1].id })
+          }
+        },
+      },
+      {
+        key: 'ArrowRight',
+        label: '',
+        handler: enterRight,
+      },
+      {
+        key: 'Enter',
+        label: t('actions.openSetting'),
+        hint: '↵',
+        handler: enterRight,
+      },
+    ]
+  }
+
+  private buildRightPanelKeyActions(t: (key: string) => string): ShellKeyAction[] {
     const list: ShellKeyAction[] = [
+      {
+        key: 'ArrowLeft',
+        label: '',
+        handler: () => {
+          if (this.state.activeSelect !== null) return
+          this.store.setState({ focusedPanel: 'left', selectedRow: -1 })
+        },
+      },
       {
         key: 'ArrowUp',
         label: t('actions.previousSetting'),
@@ -165,10 +245,13 @@ export class SettingsController {
           if (activeSelect !== null) {
             this.setSelectFocused((i) => Math.max(i - 1, 0))
           } else {
+            const sectionId = this.effectiveSectionId
+            if (!sectionId) return
+            const start = this.meta?.sectionStartIndex[sectionId] ?? 0
             this.setSelectedRow((prev) => {
-              if (prev > 0) return prev - 1
-              if (prev === 0) return -1
-              return prev
+              if (prev < start) return prev
+              if (prev === start) return -1
+              return prev - 1
             })
           }
         },
@@ -183,10 +266,15 @@ export class SettingsController {
             const row = snap.allRows.find((r) => r.key === snap.activeSelect)
             if (row) this.setSelectFocused((i) => Math.min(i + 1, row.options.length - 1))
           } else {
+            const sectionId = this.effectiveSectionId
+            if (!sectionId) return
+            const section = snap.sectionsToRender.find((s) => s.id === sectionId)
+            if (!section) return
+            const start = this.meta?.sectionStartIndex[sectionId] ?? 0
+            const lastIdx = start + section.resolvedRows.length - 1
             this.setSelectedRow((prev) => {
-              if (prev < 0) return 0
-              if (prev < snap.allRows.length - 1) return prev + 1
-              return prev
+              if (prev < start) return start
+              return Math.min(prev + 1, lastIdx)
             })
           }
         },

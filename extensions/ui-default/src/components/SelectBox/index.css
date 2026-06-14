@@ -43,6 +43,27 @@
   overflow-y: overlay;
   flex: 1;
   padding: var(--space-1) 0;
+  position: relative;
+}
+
+.nuxy-select-box__indicator {
+  position: absolute;
+  left: var(--space-1);
+  right: var(--space-1);
+  top: 0;
+  background: var(--hover);
+  border-radius: var(--radius-md);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, height;
+  transition:
+    transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 120ms;
+}
+
+.nuxy-select-box__indicator.visible {
+  opacity: 1;
 }
 
 .nuxy-select-box__no-results {
@@ -61,12 +82,7 @@
   color: var(--syntax-variable);
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 60ms;
-}
-
-.nuxy-select-box__option:hover,
-.nuxy-select-box__option--focused {
-  background: var(--hover);
+  position: relative;
 }
 
 .nuxy-select-box__option-label {

@@ -39,6 +39,8 @@ export class ProviderController implements ReactiveController {
     host.addController(this)
   }
 
+  hostConnected(): void {}
+
   setProviders(providers: Provider[]): void {
     this._providers = providers
     this.host.requestUpdate()

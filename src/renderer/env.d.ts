@@ -4,6 +4,7 @@ import type { CoreComposition, CoreShell, CoreEvents } from '@nuxy/core'
 
 declare const __NUXY_DEV__: boolean
 
+declare global {
 interface Window {
   UI: typeof import('@nuxy/ui')
   __NUXY_DEV__: boolean
@@ -45,6 +46,7 @@ interface Window {
     shell: CoreShell
     events: CoreEvents
   }
+}
 }
 
 export {}

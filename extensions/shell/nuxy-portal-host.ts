@@ -2,7 +2,6 @@ export class NuxyPortalHostElement extends HTMLElement {
   private _portalElement: HTMLElement | null = null
 
   connectedCallback(): void {
-    this.classList.add('nuxy-portal-host')
     if (this._portalElement) this.mountPortal()
   }
 

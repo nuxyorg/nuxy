@@ -34,7 +34,7 @@ export async function typeInOmnibar(page: any, text: string): Promise<void> {
   await input.fill(text)
   await input.dispatchEvent('input', { bubbles: true })
   await page.waitForFunction(
-    (t) => {
+    (t: string) => {
       const view = document.querySelector('nuxy-shell-view')
       const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
       const inp = omni?.shadowRoot?.querySelector(
@@ -64,7 +64,7 @@ export async function submitOmnibar(page: any): Promise<void> {
 }
 
 export async function pressOmnibarKey(page: any, key: string): Promise<void> {
-  await page.evaluate((k) => {
+  await page.evaluate((k: string) => {
     const view = document.querySelector('nuxy-shell-view')
     const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
     const input = omni?.shadowRoot?.querySelector(
@@ -111,7 +111,7 @@ export async function resetShell(page: any) {
 export async function clickToolOption(page: any, name: string): Promise<void> {
   const pattern = toolNamePattern(name)
   await page.waitForFunction(
-    (toolName) => {
+    (toolName: string) => {
       const re = new RegExp(toolName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
       const view = document.querySelector('nuxy-shell-view')
       const root = view?.shadowRoot

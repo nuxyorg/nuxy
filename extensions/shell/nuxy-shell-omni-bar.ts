@@ -85,6 +85,41 @@ export class NuxyShellOmniBarElement extends LitElement {
       flex-shrink: 0;
       margin-left: auto;
     }
+
+    .nuxy-shell-omni-bar__icon-inner {
+      display: flex;
+      align-items: center;
+    }
+
+    @keyframes nuxy-hold-fill {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    .nuxy-shell-omni-bar__hold-progress {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: var(--z-1, 1);
+    }
+
+    .nuxy-shell-omni-bar__hold-progress-bar {
+      width: 100%;
+      height: 100%;
+      background: var(--color-accent, var(--syntax-operator));
+      transform: scaleX(0);
+      transform-origin: left center;
+      animation: nuxy-hold-fill var(--nuxy-hold-ms, 600ms) linear forwards;
+      border-radius: 0 2px 2px 0;
+    }
   `
 
   @property()
@@ -101,6 +136,8 @@ export class NuxyShellOmniBarElement extends LitElement {
   declare disabled: boolean
   @property({ type: Boolean })
   declare loading: boolean
+  @property({ type: Number, attribute: 'hold-ms' })
+  declare holdMs: number | null
 
   @state()
   declare private _searchIconHtml: string
@@ -127,7 +164,7 @@ export class NuxyShellOmniBarElement extends LitElement {
 
   private _renderIcon(): TemplateResult {
     if (this._searchIconHtml) {
-      return html`<span style="display:flex;align-items:center" .innerHTML=${this._searchIconHtml}></span>`
+      return html`<span class="nuxy-shell-omni-bar__icon-inner" .innerHTML=${this._searchIconHtml}></span>`
     }
     return html`<nuxy-icon name="Search" size="16" opacity="1"></nuxy-icon>`
   }
@@ -175,6 +212,16 @@ export class NuxyShellOmniBarElement extends LitElement {
         <slot></slot>
         ${this.loading ? html`<nuxy-spinner size="sm"></nuxy-spinner>` : nothing}
       </div>
+      ${this.holdMs != null
+        ? html`
+            <div class="nuxy-shell-omni-bar__hold-progress">
+              <div
+                class="nuxy-shell-omni-bar__hold-progress-bar"
+                style="--nuxy-hold-ms:${this.holdMs}ms"
+              ></div>
+            </div>
+          `
+        : nothing}
     `
   }
 }

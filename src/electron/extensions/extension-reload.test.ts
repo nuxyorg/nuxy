@@ -165,6 +165,7 @@ describe('reloadExtensionFolder', () => {
         id: folderName,
         name: 'Reload Test',
         version: '1.0.0',
+        type: 'tool',
         entry: { backend: 'backend.js' },
       },
     })
@@ -191,6 +192,7 @@ describe('restartExtensionWorker', () => {
         id: extId,
         name: 'Crash',
         version: '1.0.0',
+        type: 'tool',
         entry: { backend: 'backend.js' },
         permissions: ['clipboard'],
       },
@@ -210,6 +212,7 @@ describe('restartExtensionWorker', () => {
         id: 'com.nuxy.off',
         name: 'Off',
         version: '1.0.0',
+        type: 'tool',
         entry: { backend: 'backend.js' },
       },
       disabled: true,
@@ -238,6 +241,7 @@ describe('onExtensionWorkerExit', () => {
         id: 'com.nuxy.exit',
         name: 'Exit',
         version: '1.0.0',
+        type: 'tool',
         entry: { backend: 'backend.js' },
       },
     })
@@ -256,6 +260,7 @@ describe('onExtensionWorkerExit', () => {
         id: 'com.nuxy.clean',
         name: 'Clean',
         version: '1.0.0',
+        type: 'tool',
         entry: { backend: 'backend.js' },
       },
     })
@@ -273,6 +278,7 @@ describe('onExtensionWorkerExit', () => {
         id: 'com.nuxy.intentional',
         name: 'Intentional',
         version: '1.0.0',
+        type: 'tool',
         entry: { backend: 'backend.js' },
       },
     })
@@ -295,20 +301,20 @@ describe('startExtensionDirectoryWatcher (production)', () => {
   const EXTRACTED_DIR = path.join(mockHome, 'extracted')
   const folderName = 'com.nuxy.watchtest'
   let watchCallbacks: Array<{ dir: string; cb: (event: string, filename?: string) => void }> = []
-  let watchSpy: ReturnType<typeof vi.spyOn>
+  let watchSpy: any
 
   beforeEach(() => {
     fs.mkdirSync(mockHome, { recursive: true })
     fs.mkdirSync(EXTENSION_DIR, { recursive: true })
     fs.mkdirSync(EXTRACTED_DIR, { recursive: true })
     watchCallbacks = []
-    watchSpy = vi.spyOn(fs, 'watch').mockImplementation((dir, _opts, cb) => {
+    watchSpy = vi.spyOn(fs, 'watch').mockImplementation(((dir: any, _opts: any, cb: any) => {
       watchCallbacks.push({
         dir: dir as string,
         cb: cb as (event: string, filename?: string) => void,
       })
-      return { close: vi.fn() } as fs.FSWatcher
-    })
+      return { close: vi.fn() } as unknown as fs.FSWatcher
+    }) as any)
     vi.clearAllMocks()
     clearExtensionWatchers()
   })
@@ -363,6 +369,7 @@ describe('startExtensionDirectoryWatcher (production)', () => {
         id: folderName,
         name: 'Watch Test',
         version: '1.0.0',
+        type: 'tool',
         entry: { backend: 'backend.js' },
       },
     })
@@ -419,6 +426,7 @@ describe('scheduleWorkerRestart', () => {
         id: 'com.nuxy.debounce',
         name: 'Debounce',
         version: '1.0.0',
+        type: 'tool',
         entry: { backend: 'backend.js' },
       },
     })

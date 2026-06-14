@@ -18,7 +18,11 @@ interface ResultItem {
   }
 }
 
-function createToolHost(ctrl: ShellController): HTMLElement {
+function createToolHost(ctrl: ShellController): HTMLElement & {
+  extensionId: string
+  query: string
+  committedQuery: string
+} {
   const host = document.createElement('nuxy-tool-host') as HTMLElement & {
     extensionId: string
     query: string
@@ -27,42 +31,13 @@ function createToolHost(ctrl: ShellController): HTMLElement {
   host.extensionId = ctrl.state.activeTool ?? ''
   host.query = ctrl.state.query
   host.committedQuery = ctrl.state.savedQuery
+  host.setAttribute('loading-message', ctrl.t.t('loading'))
   return host
 }
 
 @customElement('nuxy-shell-view')
 export class NuxyShellViewElement extends LitElement {
   static styles = css`
-    @keyframes nuxy-hold-fill {
-      from {
-        transform: scaleX(0);
-      }
-      to {
-        transform: scaleX(1);
-      }
-    }
-
-    .nuxy-hold-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: var(--z-1, 1);
-    }
-
-    .nuxy-hold-progress__bar {
-      width: 100%;
-      height: 100%;
-      background: var(--color-accent, var(--syntax-operator));
-      transform: scaleX(0);
-      transform-origin: left center;
-      animation: nuxy-hold-fill var(--nuxy-hold-ms, 600ms) linear forwards;
-      border-radius: 0 2px 2px 0;
-    }
-
     @keyframes nuxy-slide-fade-in {
       from {
         opacity: 0;
@@ -199,6 +174,10 @@ export class NuxyShellViewElement extends LitElement {
       flex-shrink: 0;
     }
 
+    .nuxy-shell-footer nuxy-shortcut-bar {
+      justify-content: space-between;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .nuxy-shell-tool-loading {
         animation: none;
@@ -215,8 +194,6 @@ export class NuxyShellViewElement extends LitElement {
       })
     | null = null
   private lastActiveTool: string | null = null
-  private loadingTimer: ReturnType<typeof setTimeout> | null = null
-  private loadingObserver: MutationObserver | null = null
   private _inputEl: HTMLInputElement | null = null
 
   connectedCallback(): void {
@@ -228,7 +205,6 @@ export class NuxyShellViewElement extends LitElement {
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
-    this.clearToolLoading()
     this.controller?.disconnect()
     this.controller = null
     this._inputEl = null
@@ -282,6 +258,7 @@ export class NuxyShellViewElement extends LitElement {
         ?static=${!showOmniBar}
         ?disabled=${!showOmniBar}
         ?loading=${isLoading}
+        .holdMs=${ctrl.state.holdMs}
         .searchIconHtml=${searchIcon ?? ''}
         @mousedown=${(e: MouseEvent) => ctrl.handleDragMouseDown(e)}
         @click=${() => showOmniBar && ctrl.refs.input?.focus()}
@@ -542,7 +519,7 @@ export class NuxyShellViewElement extends LitElement {
       footerPortal != null || (activeTool != null && keyActionHints.length > 0)
 
     return html`
-      <nuxy-shortcut-bar style="justify-content: space-between">
+      <nuxy-shortcut-bar>
         <nuxy-shortcut-hint>
           ${hasFooterContent
             ? html`
@@ -609,35 +586,7 @@ export class NuxyShellViewElement extends LitElement {
           this.toolHostEl.remove()
           this.toolHostEl = null
         }
-        this.clearToolLoading()
-        const newHost = createToolHost(ctrl) as HTMLElement & {
-          extensionId: string
-          query: string
-          committedQuery: string
-        }
-
-        const observer = new MutationObserver(() => {
-          if (!newHost.hasAttribute('loading')) {
-            this.clearToolLoading()
-          }
-        })
-        this.loadingObserver = observer
-
-        this.loadingTimer = setTimeout(() => {
-          this.loadingTimer = null
-          if (newHost.hasAttribute('loading')) {
-            const loading = document.createElement('nuxy-loading-state')
-            loading.setAttribute('message', ctrl.t.t('loading'))
-            loading.setAttribute('min-height', '200px')
-            newHost.prepend(loading)
-          }
-        }, 1000)
-
-        observer.observe(newHost, { attributes: true, attributeFilter: ['loading'] })
-        if (!newHost.hasAttribute('loading')) {
-          this.clearToolLoading()
-        }
-
+        const newHost = createToolHost(ctrl)
         this.toolHostEl = newHost
         this.lastActiveTool = s.activeTool
       } else if (this.toolHostEl) {
@@ -647,7 +596,6 @@ export class NuxyShellViewElement extends LitElement {
       }
       toolHostEl = this.toolHostEl
     } else {
-      this.clearToolLoading()
       this.lastActiveTool = null
       this.toolHostEl = null
     }
@@ -681,7 +629,7 @@ export class NuxyShellViewElement extends LitElement {
                     s.isAnyListProviderLoading,
                     s.copiedId
                   )}
-              <div class="nuxy-shell-tool-wrapper">${toolHostEl}</div>
+              ${toolHostEl ? html`<div class="nuxy-shell-tool-wrapper">${toolHostEl}</div>` : nothing}
             </div>
             <div class="nuxy-shell-footer">
               ${this.renderShortcutBar(
@@ -708,15 +656,6 @@ export class NuxyShellViewElement extends LitElement {
     `
   }
 
-  private clearToolLoading(): void {
-    if (this.loadingTimer !== null) {
-      clearTimeout(this.loadingTimer)
-      this.loadingTimer = null
-    }
-    this.loadingObserver?.disconnect()
-    this.loadingObserver = null
-    this.toolHostEl?.querySelector('nuxy-loading-state')?.remove()
-  }
 }
 
 declare global {

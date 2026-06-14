@@ -19,7 +19,37 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
       min-height: 0;
       overflow: hidden;
     }
+
+    nuxy-two-panel {
+      flex: 1;
+      min-height: 0;
+    }
+
+    nuxy-scroll-area {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .nuxy-settings-language-hint {
+      padding: 2px 12px 10px;
+      font-size: 0.75em;
+      opacity: 0.45;
+    }
+
+    .nuxy-settings-remove-hint {
+      font-size: 0.75em;
+      opacity: 0.35;
+    }
+
+    .nuxy-settings-ext-description {
+      font-size: 0.75em;
+      opacity: 0.6;
+    }
+
+    nuxy-input.nuxy-settings-input--color { width: 2.5em; }
+    nuxy-input.nuxy-settings-input--text { width: 10em; }
   `
+
   @property({ type: String })
   declare committedQuery: string
   @property({ type: String })
@@ -58,38 +88,56 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
     const meta = this.controller.computedMeta
     if (!meta) return nothing
 
+    const effectiveSectionId = this.controller.effectiveSectionId
+    const sections = meta.sectionsToRender
+    const sectionIndex = sections.findIndex((s) => s.id === effectiveSectionId)
+    const selectedSection = sectionIndex >= 0 ? sections[sectionIndex] : null
+    const { focusedPanel } = this.controller.state
+
     return html`
-      <nuxy-scroll-area style="flex: 1; min-height: 0;">
-        ${meta.sectionsToRender.map((section) => {
-          const { selectedRow } = this.controller!.state
-          const start = meta.sectionStartIndex[section.id] ?? 0
-          const end = start + section.resolvedRows.length
-          const sectionActiveIndex =
-            selectedRow >= start && selectedRow < end ? selectedRow - start : -1
-          return html`
-            <nuxy-section-header
-              label=${section.label}
-              ${ref((el) => {
-                if (this.controller) {
-                  this.controller.sectionRefs[section.id] = el as HTMLDivElement | null
-                }
-              })}
-            ></nuxy-section-header>
+      <nuxy-two-panel split="130px">
+        <div>
+          <nuxy-list active-index=${focusedPanel === 'left' ? sectionIndex : -1}>
+            ${sections.map(
+              (section) => html`
+                <nuxy-list-item
+                  ?active=${focusedPanel === 'left' && section.id === effectiveSectionId}
+                  @click=${() => this.controller?.setSelectedSection(section.id)}
+                >
+                  <nuxy-list-item-body>
+                    <nuxy-list-item-text>${section.label}</nuxy-list-item-text>
+                  </nuxy-list-item-body>
+                </nuxy-list-item>
+              `
+            )}
+          </nuxy-list>
+        </div>
+        <nuxy-scroll-area>
+          ${selectedSection ? this.renderSection(selectedSection) : nothing}
+        </nuxy-scroll-area>
+      </nuxy-two-panel>
+    `
+  }
 
-            <nuxy-list active-index=${sectionActiveIndex}>
-              ${section.resolvedRows.map((row, i) => this.renderSettingRow(section, row, i))}
-            </nuxy-list>
+  private renderSection(section: RenderSection) {
+    if (!this.controller) return nothing
+    const meta = this.controller.computedMeta
+    if (!meta) return nothing
 
-            ${section.id === 'language'
-              ? html`
-                  <div style="padding: 2px 12px 10px; font-size: 0.75em; opacity: 0.45;">
-                    ${this.controller?.t.t('language.hint')}
-                  </div>
-                `
-              : nothing}
+    const { selectedRow } = this.controller.state
+    const start = meta.sectionStartIndex[section.id] ?? 0
+    const end = start + section.resolvedRows.length
+    const sectionActiveIndex = selectedRow >= start && selectedRow < end ? selectedRow - start : -1
+
+    return html`
+      <nuxy-list active-index=${sectionActiveIndex} scroll-speed="0.15">
+        ${section.resolvedRows.map((row, i) => this.renderSettingRow(section, row, i))}
+      </nuxy-list>
+      ${section.id === 'language'
+        ? html`
+            <div class="nuxy-settings-language-hint">${this.controller?.t.t('language.hint')}</div>
           `
-        )}
-      </nuxy-scroll-area>
+        : nothing}
     `
   }
 
@@ -123,7 +171,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
             <nuxy-list-item-text>${row.label}</nuxy-list-item-text>
           </nuxy-list-item-body>
           <nuxy-list-item-actions>
-            <span style="font-size: 0.75em; opacity: 0.35;">↵ remove</span>
+            <span class="nuxy-settings-remove-hint">↵ remove</span>
           </nuxy-list-item-actions>
         </nuxy-list-item>
       `
@@ -134,7 +182,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
         <nuxy-list-item-body>
           <nuxy-list-item-text>${row.label}</nuxy-list-item-text>
           ${row.isExtension && row.description
-            ? html`<span style="font-size: 0.75em; opacity: 0.6;">${row.description}</span>`
+            ? html`<span class="nuxy-settings-ext-description">${row.description}</span>`
             : nothing}
         </nuxy-list-item-body>
         <nuxy-list-item-actions>
@@ -145,6 +193,8 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
                   value=${currentValue !== undefined ? String(currentValue) : ''}
                   ?open=${activeSelect === row.key}
                   focused-index=${selectFocused}
+                  scroll-lookahead="48"
+                  scroll-speed="0.25"
                   placeholder=${options?.length === 0 ? '(none)' : '—'}
                   ?searchable=${isLanguageRow
                     ? true
@@ -164,7 +214,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
                     type=${row.type === 'color' ? 'color' : 'text'}
                     value=${currentValue !== undefined ? String(currentValue) : ''}
                     placeholder=${('placeholder' in row ? row.placeholder : '') || ''}
-                    style=${row.type === 'color' ? 'width: 2.5em' : 'width: 10em'}
+                    class=${row.type === 'color' ? 'nuxy-settings-input--color' : 'nuxy-settings-input--text'}
                     ${ref((el) => {
                       const nuxyInput = el as NuxyInputElement | null
                       if (nuxyInput) {

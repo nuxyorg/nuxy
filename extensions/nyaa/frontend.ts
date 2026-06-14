@@ -28,8 +28,55 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
   static styles = css`
     :host {
       display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+    }
+
+    nuxy-two-panel {
       flex: 1;
       min-height: 0;
+    }
+
+    .nuxy-nyaa-checkbox {
+      padding-right: var(--space-2);
+      flex-shrink: 0;
+    }
+
+    .nuxy-nyaa-multi-select-panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-5);
+      text-align: center;
+    }
+
+    .nuxy-nyaa-multi-select-panel nuxy-text.nuxy-nyaa-count--empty {
+      opacity: 0.4;
+    }
+
+    .nuxy-nyaa-detail-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding: var(--space-5);
+      overflow: hidden;
+      gap: var(--space-4);
+    }
+
+    .nuxy-nyaa-title-text {
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .nuxy-nyaa-magnet-text {
+      opacity: 0.35;
+      word-break: break-all;
+      overflow: hidden;
+      max-height: 3em;
     }
   `
   @property({ type: String })
@@ -67,9 +114,7 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
   render() {
     if (!this.controller) return nothing
     return html`
-      <nuxy-two-panel style="flex: 1; min-height: 0;">
-        ${this.renderLeft()} ${this.renderRight()}
-      </nuxy-two-panel>
+      <nuxy-two-panel split="50%"> ${this.renderLeft()} ${this.renderRight()} </nuxy-two-panel>
     `
   }
 
@@ -113,22 +158,18 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
             >
               ${multiSelectMode
                 ? html`
-                    <div
-                      style="display: flex; align-items: center; padding-right: var(--space-2); flex-shrink: 0;"
-                    >
-                      <input
-                        type="checkbox"
-                        .checked=${checkedIds.has(item.id)}
-                        aria-label=${item.title}
-                        style="width:14px;height:14px;cursor:pointer;accent-color:var(--color-accent, var(--color-primary));flex-shrink:0"
-                        @change=${() => this.controller?.toggleCheck(item.id)}
-                        @click=${(e: Event) => e.stopPropagation()}
-                      />
-                    </div>
+                    <nuxy-checkbox
+                      class="nuxy-nyaa-checkbox"
+                      ?checked=${checkedIds.has(item.id)}
+                      aria-label=${item.title}
+                      @nuxy-checkbox-change=${() => this.controller?.toggleCheck(item.id)}
+                      @click=${(e: Event) => e.stopPropagation()}
+                    ></nuxy-checkbox>
                   `
                 : nothing}
               <nuxy-list-item-body>
                 <nuxy-list-item-text
+                  ?active=${idx === selectedIndex}
                   variant=${copiedId === item.id
                     ? 'success'
                     : item.status === 'success'
@@ -160,35 +201,26 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
     if (multiSelectMode) {
       const count = checkedIds.size
       return html`
-        <div
-          style="display: flex; flex-direction: column; height: 100%; justify-content: center; align-items: center; gap: var(--space-3); padding: var(--space-5); text-align: center;"
-        >
-          <div
-            style="font-size: var(--font-lg, 1.25rem); font-weight: 700; color: ${count > 0
-              ? 'var(--color-accent, var(--color-primary))'
-              : 'inherit'}; opacity: ${count > 0 ? '1' : '0.4'};"
+        <div class="nuxy-nyaa-multi-select-panel">
+          <nuxy-text
+            size="lg"
+            bold
+            variant=${count > 0 ? 'accent' : 'default'}
+            class=${count > 0 ? '' : 'nuxy-nyaa-count--empty'}
           >
             ${count > 0
               ? t('item.selectedCount').replace('{count}', String(count))
               : t('item.selectPromptMulti')}
-          </div>
+          </nuxy-text>
           ${count > 0
-            ? html`<div style="font-size: var(--font-xs); opacity: 0.5;">
-                ${t('item.multiSelectHint')}
-              </div>`
+            ? html`<nuxy-text size="xs" variant="muted">${t('item.multiSelectHint')}</nuxy-text>`
             : nothing}
         </div>
       `
     }
 
     if (!selectedItem) {
-      return html`
-        <div
-          style="display: flex; height: 100%; justify-content: center; align-items: center; opacity: 0.4; font-size: var(--font-sm);"
-        >
-          ${t('item.selectPrompt')}
-        </div>
-      `
+      return html`<nuxy-empty-state message=${t('item.selectPrompt')}></nuxy-empty-state>`
     }
 
     const isCopied = copiedId === selectedItem.id
@@ -209,25 +241,22 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
     ]
 
     return html`
-      <div
-        style="display: flex; flex-direction: column; padding: var(--space-5); overflow: hidden; height: calc(100% - var(--space-6)); gap: var(--space-4);"
-      >
-        <div
-          style="font-size: var(--font-sm); font-weight: 600; line-height: 1.4; word-break: break-word; color: ${isCopied
-            ? 'var(--color-success)'
-            : 'inherit'};"
+      <div class="nuxy-nyaa-detail-panel">
+        <nuxy-text
+          size="sm"
+          bold
+          variant=${isCopied ? 'success' : 'default'}
+          class="nuxy-nyaa-title-text"
         >
           ${isCopied ? t('item.magnetCopied') : selectedItem.title}
-        </div>
+        </nuxy-text>
         <nuxy-properties-panel
           title=${t('details.title')}
           rows=${JSON.stringify(rows)}
         ></nuxy-properties-panel>
-        <div
-          style="font-size: var(--font-xs); opacity: 0.35; word-break: break-all; overflow: hidden; max-height: 3em; font-family: monospace;"
-        >
+        <nuxy-text size="xs" mono class="nuxy-nyaa-magnet-text">
           ${selectedItem.magnet.slice(0, 100)}${selectedItem.magnet.length > 100 ? '…' : ''}
-        </div>
+        </nuxy-text>
       </div>
     `
   }

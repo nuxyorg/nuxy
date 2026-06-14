@@ -107,3 +107,8 @@ export {
   smoothScrollElementToStart,
   scrollListActiveItem,
 } from './hooks/scroll-into-view'
+export type {
+  ScrollBias,
+  SmoothScrollIntoViewOptions,
+  ScrollListActiveItemOptions,
+} from './hooks/scroll-into-view'

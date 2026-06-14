@@ -13,6 +13,7 @@ export class NuxyScrollAreaElement extends LitElement {
     :host {
       overflow: auto;
       position: relative;
+      min-height: 0;
       scrollbar-width: thin;
       scrollbar-color: var(--scrollbar-thumb) transparent;
     }

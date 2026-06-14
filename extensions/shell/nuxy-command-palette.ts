@@ -177,6 +177,10 @@ export class NuxyCommandPaletteElement extends LitElement {
     if (changed.has('_menuStack') || changed.has('_actions')) {
       this._focusInput()
     }
+    this._updatePosition()
+    if (this._inputEl) {
+      this._inputEl.placeholder = this._translate('commandPalette.searchPlaceholder')
+    }
   }
 
   private _focusInput(): void {
@@ -208,13 +212,6 @@ export class NuxyCommandPaletteElement extends LitElement {
 
   set onClose(fn: (() => void) | null) {
     this._onClose = fn
-  }
-
-  updated(): void {
-    this._updatePosition()
-    if (this._inputEl) {
-      this._inputEl.placeholder = this._translate('commandPalette.searchPlaceholder')
-    }
   }
 
   private _resetStack(): void {

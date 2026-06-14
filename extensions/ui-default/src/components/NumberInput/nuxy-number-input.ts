@@ -101,8 +101,7 @@ export class NuxyNumberInputElement extends LitElement {
   private clamp(value: number): number {
     const min = this.min
     const max = this.max
-    if (min !== undefined && value < min) declare
-    value: unknown
+    if (min !== undefined && value < min) value = min
     if (max !== undefined && value > max) value = max
     return value
   }

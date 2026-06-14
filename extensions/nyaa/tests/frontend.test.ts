@@ -151,11 +151,7 @@ describe('nuxy-tool-nyaa element', () => {
 
   it('forwards query property to controller on updates', async () => {
     const Ctor = customElements.get('nuxy-tool-nyaa')!
-    const el = new Ctor() as HTMLElement & {
-      query: string
-      committedQuery: string
-      extensionId: string
-    }
+    const el = new Ctor() as any
 
     el.connectedCallback()
     el.extensionId = 'com.nuxy.nyaa'
@@ -165,15 +161,15 @@ describe('nuxy-tool-nyaa element', () => {
 
     expect(el.query).toBe('ubuntu')
     expect(el.committedQuery).toBe('ubuntu iso')
-    expect(window.core.shell.registerKeyActions).toHaveBeenCalled()
-    expect(window.core.shell.setSearchPlaceholder).toHaveBeenCalled()
+    expect(window.core.shell!.registerKeyActions).toHaveBeenCalled()
+    expect(window.core.shell!.setSearchPlaceholder).toHaveBeenCalled()
   })
 
   it('cleans up on disconnect', () => {
     const Ctor = customElements.get('nuxy-tool-nyaa')!
-    const el = new Ctor() as HTMLElement
+    const el = new Ctor() as any
     el.connectedCallback()
     el.disconnectedCallback()
-    expect(window.core.shell.registerActions).toHaveBeenCalledWith([])
+    expect(window.core.shell!.registerActions).toHaveBeenCalledWith([])
   })
 })
