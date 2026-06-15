@@ -18,8 +18,8 @@ export class NuxyShellOmniBarElement extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--space-2);
-      padding: 13px var(--space-5);
-      min-height: 52px;
+      padding: 10px var(--space-5);
+      min-height: 46px;
       cursor: grab;
     }
 

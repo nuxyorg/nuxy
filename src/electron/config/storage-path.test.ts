@@ -3,7 +3,7 @@ import path from 'path'
 import { resolveStoragePath } from './storage-path.js'
 
 describe('resolveStoragePath', () => {
-  const dataDir = '/home/user/.nuxy/data/com.nuxy.test'
+  const dataDir = '/home/user/.nxy/data/com.nuxy.test'
 
   it('resolves a normal file inside the data dir', () => {
     const resolved = resolveStoragePath(dataDir, 'history.json')

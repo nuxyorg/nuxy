@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS: NuxySettings = {
   opacity: 1,
   showInTaskbar: false,
   showOnStartup: false,
-  windowPosition: '1/2, 1/3',
+  windowPosition: '1/2, 1/2',
   preferredLanguages: [],
 }
 

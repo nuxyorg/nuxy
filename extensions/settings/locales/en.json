@@ -56,12 +56,14 @@
     "topCenter": "Top Center",
     "leftCenter": "Left Center",
     "screenCenter": "Screen Center",
+    "screenCenterDefault": "Screen Center (default)",
     "rightCenter": "Right Center",
     "bottomCenter": "Bottom Center",
     "topLeft": "Top Left",
     "topRight": "Top Right",
     "bottomLeft": "Bottom Left",
     "bottomRight": "Bottom Right",
+    "upperCenter": "Upper Center",
     "upperCenterDefault": "Upper Center (default)"
   },
   "backgroundBehavior": {

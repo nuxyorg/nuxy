@@ -1,7 +1,7 @@
 import type { ThemeDefinition, IpcResult } from '@nuxy/core'
 
 const BOOTSTRAP_ID = 'com.nuxy.shell'
-const EXTENSIONS_PATH = '~/.nuxy/extensions'
+const EXTENSIONS_PATH = '~/.nxy/extensions'
 
 const dynamicImport = new Function('url', 'return import(url)') as (url: string) => Promise<unknown>
 

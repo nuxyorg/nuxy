@@ -37,7 +37,7 @@ export default defineConfig({
         const execFileAsync = promisify(execFile)
         const nxtBin = path.resolve(repoRoot, 'packages/nxt/bin/nxt.js')
         const extensionsDir = path.resolve(repoRoot, 'extensions')
-        const nuxyExtDir = path.join(os.homedir(), '.nuxy', 'extensions')
+        const nuxyExtDir = path.join(os.homedir(), '.nxy', 'extensions')
         const skipDirs = new Set(['node_modules', '.git', 'dist'])
 
         if (fs.existsSync(nuxyExtDir) && fs.lstatSync(nuxyExtDir).isSymbolicLink()) {

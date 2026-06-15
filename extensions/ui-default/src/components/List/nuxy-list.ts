@@ -12,7 +12,7 @@ export class NuxyListElement extends LitElement {
   @property({ type: Number, attribute: 'scroll-speed' })
   declare scrollSpeed: number
 
-  private _hoveredIndex: number | null = null
+  private _indicatorWasHidden = true
 
   static styles = css`
     :host {
@@ -20,6 +20,7 @@ export class NuxyListElement extends LitElement {
       flex-direction: column;
       position: relative;
       padding-block: var(--space-2);
+      gap: var(--space-0);
     }
 
     :host([max-height='md']) {
@@ -47,18 +48,6 @@ export class NuxyListElement extends LitElement {
     }
   `
 
-  connectedCallback(): void {
-    super.connectedCallback()
-    this.addEventListener('mouseover', this._onMouseOver)
-    this.addEventListener('mouseleave', this._onMouseLeave)
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.removeEventListener('mouseover', this._onMouseOver)
-    this.removeEventListener('mouseleave', this._onMouseLeave)
-  }
-
   updated(changedProperties: Map<string, unknown>): void {
     if (changedProperties.has('activeIndex')) {
       const previousActiveIndex = changedProperties.get('activeIndex') as number
@@ -74,32 +63,41 @@ export class NuxyListElement extends LitElement {
     }
   }
 
-  private _onMouseOver = (e: MouseEvent): void => {
-    const item = (e.target as Element).closest('nuxy-list-item')
-    if (!item) return
-    const items = Array.from(this.querySelectorAll<HTMLElement>('nuxy-list-item'))
-    this._hoveredIndex = items.indexOf(item as HTMLElement)
-    this._updateIndicator()
-  }
-
-  private _onMouseLeave = (): void => {
-    this._hoveredIndex = null
-    this._updateIndicator()
+  private _resetIndicatorPosition(indicator: HTMLElement): void {
+    indicator.style.transition = 'none'
+    indicator.style.transform = 'translateY(0px)'
+    indicator.style.height = '0px'
+    void indicator.offsetHeight
+    indicator.style.transition = ''
+    this._indicatorWasHidden = true
   }
 
   private _updateIndicator(): void {
     const items = Array.from(this.querySelectorAll<HTMLElement>('nuxy-list-item'))
-    const idx = this._hoveredIndex !== null ? this._hoveredIndex : (this.activeIndex ?? null)
-    const target = idx !== null && !isNaN(idx) ? items[idx] : null
+    const idx = this.activeIndex ?? null
+    const target = idx !== null && !isNaN(idx) && idx >= 0 ? items[idx] : null
     const indicator = this.shadowRoot?.querySelector<HTMLElement>('.indicator')
     if (!indicator) return
     if (!target) {
       indicator.classList.remove('visible')
+      this._resetIndicatorPosition(indicator)
       return
     }
+
+    const snap = this._indicatorWasHidden
+    if (snap) {
+      indicator.style.transition = 'none'
+      this._indicatorWasHidden = false
+    }
+
     indicator.style.transform = `translateY(${target.offsetTop}px)`
     indicator.style.height = `${target.offsetHeight}px`
     indicator.classList.add('visible')
+
+    if (snap) {
+      void indicator.offsetHeight
+      indicator.style.transition = ''
+    }
   }
 
   render() {

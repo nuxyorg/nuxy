@@ -18,9 +18,9 @@ const cacheDir = path.resolve(srcE2eDir, '.cache')
 const cacheFile = path.resolve(cacheDir, 'e2e-cache.json')
 const tempReportFile = path.resolve(cacheDir, 'temp-report.json')
 
-/** Copy loose shared modules (ce-utils.ts, etc.) into ~/.nuxy for e2e. */
+/** Copy loose shared modules (ce-utils.ts, etc.) into ~/.nxy for e2e. */
 function syncSharedExtensionFiles() {
-  const nuxyHome = path.join(process.env.HOME ?? '', '.nuxy')
+  const nuxyHome = path.join(process.env.HOME ?? '', '.nxy')
   const targets = [path.join(nuxyHome, 'extensions'), path.join(nuxyHome, 'extracted')]
   if (!fs.existsSync(extensionsDir)) return
   for (const name of fs.readdirSync(extensionsDir)) {

@@ -42,7 +42,7 @@ const DEFAULT_SETTINGS: ShellConfig = {
   theme: 'dark',
   zoom: '100%',
   font: 'system',
-  windowPosition: '1/2, 1/3',
+  windowPosition: '1/2, 1/2',
 }
 
 export interface ExtensionSummary {

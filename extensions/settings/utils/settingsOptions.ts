@@ -58,14 +58,14 @@ export const WINDOW_MAX_HEIGHT_OPTIONS: SelectOption<number>[] = [
 export const WINDOW_POSITION_OPTIONS: SelectOption<string>[] = [
   { value: '1/2, 1/6', label: 'Top Center' },
   { value: '1/6, 1/2', label: 'Left Center' },
-  { value: '1/2, 1/2', label: 'Screen Center' },
+  { value: '1/2, 1/2', label: 'Screen Center (default)' },
   { value: '5/6, 1/2', label: 'Right Center' },
   { value: '1/2, 5/6', label: 'Bottom Center' },
   { value: '1/6, 1/6', label: 'Top Left' },
   { value: '5/6, 1/6', label: 'Top Right' },
   { value: '1/6, 5/6', label: 'Bottom Left' },
   { value: '5/6, 5/6', label: 'Bottom Right' },
-  { value: '1/2, 1/3', label: 'Upper Center (default)' },
+  { value: '1/2, 1/3', label: 'Upper Center' },
 ]
 
 export const OPACITY_OPTIONS: SelectOption<number>[] = [
@@ -137,7 +137,7 @@ export const DEFAULT_SETTINGS: NuxySettings = {
   opacity: 1,
   showInTaskbar: false,
   showOnStartup: false,
-  windowPosition: '1/2, 1/3',
+  windowPosition: '1/2, 1/2',
   preferredLanguages: [],
 }
 

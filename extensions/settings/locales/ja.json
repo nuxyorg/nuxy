@@ -56,12 +56,14 @@
     "topCenter": "上部中央",
     "leftCenter": "左中央",
     "screenCenter": "画面中央",
+    "screenCenterDefault": "画面中央（デフォルト）",
     "rightCenter": "右中央",
     "bottomCenter": "下部中央",
     "topLeft": "左上",
     "topRight": "右上",
     "bottomLeft": "左下",
     "bottomRight": "右下",
+    "upperCenter": "上部中央",
     "upperCenterDefault": "上部中央（デフォルト）"
   },
   "backgroundBehavior": {

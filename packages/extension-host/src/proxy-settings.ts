@@ -5,7 +5,7 @@ import path from 'path'
 import type { CoreContext } from '@nuxy/core'
 
 function getTargetExtDir(targetExtId: string): string {
-  const baseDir = process.env.NUXY_DATA_DIR || path.join(os.homedir(), '.nuxy', 'data')
+  const baseDir = process.env.NUXY_DATA_DIR || path.join(os.homedir(), '.nxy', 'data')
   return path.join(baseDir, targetExtId)
 }
 

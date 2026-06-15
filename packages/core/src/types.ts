@@ -147,7 +147,7 @@ export interface ExtensionRuntimeMeta {
 export interface LoadedExtension {
   /** Canonical extension id from manifest.id */
   id: string
-  /** Directory name under ~/.nuxy/extensions/ */
+  /** Directory name under ~/.nxy/extensions/ */
   folderName: string
   manifest: ExtensionManifest
   runtime?: ExtensionRuntimeMeta

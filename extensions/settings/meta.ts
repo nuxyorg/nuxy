@@ -75,14 +75,14 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
           const keyMap: Record<string, string> = {
             '1/2, 1/6': 'topCenter',
             '1/6, 1/2': 'leftCenter',
-            '1/2, 1/2': 'screenCenter',
+            '1/2, 1/2': 'screenCenterDefault',
             '5/6, 1/2': 'rightCenter',
             '1/2, 5/6': 'bottomCenter',
             '1/6, 1/6': 'topLeft',
             '5/6, 1/6': 'topRight',
             '1/6, 5/6': 'bottomLeft',
             '5/6, 5/6': 'bottomRight',
-            '1/2, 1/3': 'upperCenterDefault',
+            '1/2, 1/3': 'upperCenter',
           }
           const k = keyMap[String(opt.value)]
           if (k) optLabel = t('windowPosition.' + k)

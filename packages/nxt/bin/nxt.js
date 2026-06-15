@@ -4,7 +4,7 @@
  *
  * Commands:
  *   nxt package            Bundle backend + sign → .nuxyext file
- *   nxt install            Copy .nuxyext to ~/.nuxy/extensions/ (local dev / CI)
+ *   nxt install            Copy .nuxyext to ~/.nxy/extensions/ (local dev / CI)
  *   nxt keys               Generate a new RSA developer key pair
  *   nxt info               Show manifest details
  *   nxt publish            (stub) Publish to the Nuxy registry
@@ -186,7 +186,7 @@ async function bundleBackend(cwd, manifest) {
 
 const SKIP_DIRS = new Set(['node_modules', '.git', 'tests', 'dist'])
 const SKIP_FILES = new Set(['.DS_Store', 'Thumbs.db'])
-const NUXY_EXT_DIR = path.join(os.homedir(), '.nuxy', 'extensions')
+const NUXY_EXT_DIR = path.join(os.homedir(), '.nxy', 'extensions')
 
 // ─── CLI ──────────────────────────────────────────────────────────────────────
 
@@ -307,7 +307,7 @@ program
 // ── nxt install ──────────────────────────────────────────────────────────────
 program
   .command('install')
-  .description('Install the packaged .nuxyext into ~/.nuxy/extensions/')
+  .description('Install the packaged .nuxyext into ~/.nxy/extensions/')
   .option('--file <path>', 'Explicit path to a .nuxyext file (auto-detected if omitted)')
   .action((opts) => {
     const cwd = process.cwd()
@@ -329,7 +329,7 @@ program
       fail(`Extension file not found: ${nuxyextPath}\nRun ${pc.bold('nxt package')} first.`)
     }
 
-    // Ensure ~/.nuxy/extensions/ is a real directory (not a symlink from old dev setup)
+    // Ensure ~/.nxy/extensions/ is a real directory (not a symlink from old dev setup)
     if (fs.existsSync(NUXY_EXT_DIR)) {
       if (fs.lstatSync(NUXY_EXT_DIR).isSymbolicLink()) {
         fs.unlinkSync(NUXY_EXT_DIR)

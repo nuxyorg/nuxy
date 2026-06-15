@@ -213,7 +213,11 @@ export class SettingsController extends BaseExtensionController<SettingsControll
         allowRepeat: true,
         handler: () => {
           if (currentIdx > 0) {
-            this.store.setState({ selectedSectionId: sections[currentIdx - 1].id })
+            this.store.setState({
+              selectedSectionId: sections[currentIdx - 1].id,
+              selectedRow: -1,
+              activeSelect: null,
+            })
           }
         },
       },
@@ -223,7 +227,11 @@ export class SettingsController extends BaseExtensionController<SettingsControll
         allowRepeat: true,
         handler: () => {
           if (currentIdx < sections.length - 1) {
-            this.store.setState({ selectedSectionId: sections[currentIdx + 1].id })
+            this.store.setState({
+              selectedSectionId: sections[currentIdx + 1].id,
+              selectedRow: -1,
+              activeSelect: null,
+            })
           }
         },
       },
