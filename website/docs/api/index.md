@@ -23,12 +23,12 @@ Nuxy exposes two API surfaces for extension authors:
 
 ## Renderer
 
-| API                                      | Page                              |
-| ---------------------------------------- | --------------------------------- |
-| Window resize, hide, drag, themes, icons | [Window](/api/window)             |
-| `core.ipc.invoke` from frontend          | [IPC](/api/ipc)                   |
-| Dynamic UI slot injection                | [Composition](/api/composition)   |
-| Global frontend-to-frontend broadcasting | [Events](/api/events)             |
+| API                                      | Page                                |
+| ---------------------------------------- | ----------------------------------- |
+| Window resize, hide, drag, themes, icons | [Window](/api/window)               |
+| `core.ipc.invoke` from frontend          | [IPC](/api/ipc)                     |
+| Dynamic UI slot injection                | [Composition](/api/composition)     |
+| Global frontend-to-frontend broadcasting | [Events](/api/events)               |
 | Omnibar input classification             | [Query Context](/api/query-context) |
 
 ## Permissions

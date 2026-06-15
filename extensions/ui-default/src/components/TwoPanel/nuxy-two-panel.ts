@@ -116,7 +116,10 @@ export class NuxyTwoPanelElement extends LitElement {
   private _onPointerMove(e: PointerEvent): void {
     if (!this._dragging) return
     const delta = (e.clientX - this._dragStartX) / getZoom()
-    const newWidth = Math.max(this.minLeft, Math.min(this.offsetWidth - this.minRight, this._dragStartWidth + delta))
+    const newWidth = Math.max(
+      this.minLeft,
+      Math.min(this.offsetWidth - this.minRight, this._dragStartWidth + delta)
+    )
     const left = Array.from(this.children)[0] as HTMLElement | undefined
     const handle = this.shadowRoot?.querySelector<HTMLElement>('.handle')
     if (left) left.style.width = `${newWidth}px`
@@ -132,7 +135,13 @@ export class NuxyTwoPanelElement extends LitElement {
     if (!left) return
     const newWidth = left.offsetWidth
     this.split = `${newWidth}px`
-    this.dispatchEvent(new CustomEvent('split-change', { detail: { width: newWidth }, bubbles: true, composed: true }))
+    this.dispatchEvent(
+      new CustomEvent('split-change', {
+        detail: { width: newWidth },
+        bubbles: true,
+        composed: true,
+      })
+    )
   }
 
   render() {

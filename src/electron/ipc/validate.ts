@@ -12,6 +12,7 @@ const KERNEL_CHANNELS = new Set([
   'listThemes',
   'getThemeByName',
   'getIcon',
+  'getIconPack',
   'listIconPacks',
   'listSystemFonts',
   'getExtensionSettingsSchemas',

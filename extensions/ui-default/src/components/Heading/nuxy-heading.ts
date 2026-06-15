@@ -46,12 +46,18 @@ export class NuxyHeadingElement extends LitElement {
     const level = Math.min(6, Math.max(1, Number(levelRaw.replace('h', '')) || 2)) as HeadingLevel
     const className = `nuxy-heading nuxy-heading--${level}`
     switch (level) {
-      case 1: return html`<h1 class="${className}"><slot></slot></h1>`
-      case 3: return html`<h3 class="${className}"><slot></slot></h3>`
-      case 4: return html`<h4 class="${className}"><slot></slot></h4>`
-      case 5: return html`<h5 class="${className}"><slot></slot></h5>`
-      case 6: return html`<h6 class="${className}"><slot></slot></h6>`
-      default: return html`<h2 class="${className}"><slot></slot></h2>`
+      case 1:
+        return html`<h1 class="${className}"><slot></slot></h1>`
+      case 3:
+        return html`<h3 class="${className}"><slot></slot></h3>`
+      case 4:
+        return html`<h4 class="${className}"><slot></slot></h4>`
+      case 5:
+        return html`<h5 class="${className}"><slot></slot></h5>`
+      case 6:
+        return html`<h6 class="${className}"><slot></slot></h6>`
+      default:
+        return html`<h2 class="${className}"><slot></slot></h2>`
     }
   }
 }

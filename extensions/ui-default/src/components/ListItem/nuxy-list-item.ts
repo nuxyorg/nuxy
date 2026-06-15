@@ -15,7 +15,6 @@ export class NuxyListItemElement extends LitElement {
       transition: background-color 150ms;
       position: relative;
     }
-
   `
 
   render() {

@@ -81,7 +81,9 @@ export class NuxyErrorStateElement extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <span class="nuxy-error-state__icon" aria-hidden="true"><nuxy-icon name="AlertCircle" size="32" opacity="1"></nuxy-icon></span>
+      <span class="nuxy-error-state__icon" aria-hidden="true"
+        ><nuxy-icon name="AlertCircle" size="32" opacity="1"></nuxy-icon
+      ></span>
       <h3 class="nuxy-error-state__title">${this.title}</h3>
       <p class="nuxy-error-state__message">${this.message}</p>
       ${this.retryLabel !== null

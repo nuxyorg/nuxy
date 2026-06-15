@@ -1,7 +1,6 @@
 import { LitElement, html, css, nothing, type TemplateResult } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 
-
 export interface FileMeta {
   name: string
   size: number
@@ -252,7 +251,9 @@ export class NuxyFileInputElement extends LitElement {
                 class="nuxy-file-input__remove"
                 data-index=${String(idx)}
                 aria-label=${`Remove ${file.name}`}
-              ><nuxy-icon name="Close" size="14" opacity="1"></nuxy-icon></button>
+              >
+                <nuxy-icon name="Close" size="14" opacity="1"></nuxy-icon>
+              </button>
             `
           : nothing}
       </div>

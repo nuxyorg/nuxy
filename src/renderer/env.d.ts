@@ -5,48 +5,48 @@ import type { CoreComposition, CoreShell, CoreEvents } from '@nuxy/core'
 declare const __NUXY_DEV__: boolean
 
 declare global {
-interface Window {
-  UI: typeof import('@nuxy/ui')
-  __NUXY_DEV__: boolean
-  core?: {
-    ipc: {
-      invoke: <R = unknown>(
-        extId: string,
-        channel: string,
-        payload?: unknown
-      ) => Promise<{
-        success: boolean
-        data?: R
-        error?: string
-        code?: string
-      }>
+  interface Window {
+    UI: typeof import('@nuxy/ui')
+    __NUXY_DEV__: boolean
+    core?: {
+      ipc: {
+        invoke: <R = unknown>(
+          extId: string,
+          channel: string,
+          payload?: unknown
+        ) => Promise<{
+          success: boolean
+          data?: R
+          error?: string
+          code?: string
+        }>
+      }
+      window: {
+        ready: () => void
+        resize: (width: number, height: number) => void
+        hide: () => void
+        esc: () => void
+        center: () => void
+        dragStart: () => void
+        dragMove: () => void
+        dragEnd: () => void
+        onShow: (callback: () => void) => () => void
+      }
+      icons: {
+        get: (name: string, pack?: string) => Promise<unknown>
+        listPacks: () => Promise<unknown>
+      }
+      themes: {
+        list: () => Promise<unknown>
+      }
+      tools: {
+        resolveElementTag: (extId: string) => Promise<string | null>
+      }
+      composition: CoreComposition
+      shell: CoreShell
+      events: CoreEvents
     }
-    window: {
-      ready: () => void
-      resize: (width: number, height: number) => void
-      hide: () => void
-      esc: () => void
-      center: () => void
-      dragStart: () => void
-      dragMove: () => void
-      dragEnd: () => void
-      onShow: (callback: () => void) => () => void
-    }
-    icons: {
-      get: (name: string, pack?: string) => Promise<unknown>
-      listPacks: () => Promise<unknown>
-    }
-    themes: {
-      list: () => Promise<unknown>
-    }
-    tools: {
-      resolveElementTag: (extId: string) => Promise<string | null>
-    }
-    composition: CoreComposition
-    shell: CoreShell
-    events: CoreEvents
   }
-}
 }
 
 export {}

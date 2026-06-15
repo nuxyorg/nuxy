@@ -3,7 +3,7 @@
   "name": "Gradient",
   "version": "1.0.0",
   "type": "helper",
-  "icon": "gradient",
+  "icon": "circle",
   "permissions": [],
   "capabilities": {
     "callable": false,

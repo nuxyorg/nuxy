@@ -29,17 +29,21 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
   private omniPortalHost: HTMLDivElement | null = null
 
   constructor(onUpdate: () => void) {
-    super(EXT_ID, {
-      query: '',
-      results: [],
-      loading: false,
-      error: null,
-      selectedIndex: -1,
-      multiSelectMode: false,
-      checkedIds: new Set(),
-      copiedId: null,
-      enterAction: 'copyMagnet',
-    }, onUpdate)
+    super(
+      EXT_ID,
+      {
+        query: '',
+        results: [],
+        loading: false,
+        error: null,
+        selectedIndex: -1,
+        multiSelectMode: false,
+        checkedIds: new Set(),
+        copiedId: null,
+        enterAction: 'copyMagnet',
+      },
+      onUpdate
+    )
   }
 
   connect(): void {

@@ -25,7 +25,18 @@ export interface QueryContext {
   fileExt?: string
 }
 
-const IMAGE_EXTS = new Set(['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'bmp', 'ico', 'avif', 'tiff'])
+const IMAGE_EXTS = new Set([
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'svg',
+  'webp',
+  'bmp',
+  'ico',
+  'avif',
+  'tiff',
+])
 const VIDEO_EXTS = new Set(['mp4', 'avi', 'mkv', 'mov', 'webm', 'flv', 'wmv', 'm4v', 'mpeg'])
 const AUDIO_EXTS = new Set(['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'opus', 'wma'])
 const ARCHIVE_EXTS = new Set(['zip', 'tar', 'gz', 'bz2', 'xz', '7z', 'rar', 'tgz'])
@@ -89,11 +100,7 @@ export function classifyQuery(raw: string): QueryContext {
   }
 
   // Math — digits + operators, at least one operator present, no URL
-  if (
-    !types.includes('url') &&
-    /^[\d\s+\-*/^%().]+$/.test(text) &&
-    /[+\-*/^%]/.test(text)
-  ) {
+  if (!types.includes('url') && /^[\d\s+\-*/^%().]+$/.test(text) && /[+\-*/^%]/.test(text)) {
     types.push('math')
   }
 

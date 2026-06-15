@@ -11,11 +11,11 @@ The shell classifies every omnibar keystroke into a `QueryContext` and passes it
 ```ts
 interface QueryContext {
   raw: string
-  types: QueryType[]   // ordered by confidence, always ends with 'text'
-  url?: URL            // present when types includes 'url'
-  color?: string       // normalized lowercase, e.g. "#ff6600"
-  filePath?: string    // present when types includes 'path'
-  fileExt?: string     // extension without dot, e.g. "mp4"
+  types: QueryType[] // ordered by confidence, always ends with 'text'
+  url?: URL // present when types includes 'url'
+  color?: string // normalized lowercase, e.g. "#ff6600"
+  filePath?: string // present when types includes 'path'
+  fileExt?: string // extension without dot, e.g. "mp4"
 }
 ```
 
@@ -25,17 +25,17 @@ interface QueryContext {
 
 ```ts
 type QueryType =
-  | 'text'     // plain search query (always present as fallback)
-  | 'url'      // http/https/ftp URL or www. prefix
-  | 'color'    // #hex, rgb(), rgba(), hsl(), hsla()
-  | 'math'     // arithmetic expression, e.g. "12 * 3 + 4"
-  | 'path'     // filesystem path starting with / or ~/
-  | 'email'    // email address
-  | 'image'    // URL or path with image extension
-  | 'video'    // URL or path with video extension, or known streaming host
-  | 'audio'    // URL or path with audio extension
-  | 'pdf'      // URL or path ending in .pdf
-  | 'archive'  // URL or path with archive extension (zip, tar, gz…)
+  | 'text' // plain search query (always present as fallback)
+  | 'url' // http/https/ftp URL or www. prefix
+  | 'color' // #hex, rgb(), rgba(), hsl(), hsla()
+  | 'math' // arithmetic expression, e.g. "12 * 3 + 4"
+  | 'path' // filesystem path starting with / or ~/
+  | 'email' // email address
+  | 'image' // URL or path with image extension
+  | 'video' // URL or path with video extension, or known streaming host
+  | 'audio' // URL or path with audio extension
+  | 'pdf' // URL or path ending in .pdf
+  | 'archive' // URL or path with archive extension (zip, tar, gz…)
 ```
 
 A single query can map to multiple types. A YouTube URL produces `['url', 'video', 'text']`; a path to a zip file produces `['path', 'archive', 'text']`.
@@ -81,13 +81,17 @@ core.shell.registerActions([
     id: 'download-video',
     label: 'Download video',
     relevantFor: ['video'],
-    onExecute: () => { /* … */ },
+    onExecute: () => {
+      /* … */
+    },
   },
   {
     id: 'open-link',
     label: 'Open in browser',
     relevantFor: ['url'],
-    onExecute: () => { /* … */ },
+    onExecute: () => {
+      /* … */
+    },
   },
 ])
 ```

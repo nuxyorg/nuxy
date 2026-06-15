@@ -48,6 +48,11 @@ export class NotesController extends BaseExtensionController<NotesState> {
     invoke<Note[]>('notes:list', {})
       .then((notes) => {
         this.store.setState({ notes, filteredNotes: notes })
+        const q = this.state.query
+        if (q.startsWith('select:')) {
+          this.prevQuery = ''
+          this.setQuery(q)
+        }
       })
       .catch(() => {})
 
@@ -96,9 +101,9 @@ export class NotesController extends BaseExtensionController<NotesState> {
           selected: note,
           body: note.body ?? '',
           selectedIndex: idx !== -1 ? idx + 1 : s.selectedIndex,
-          editMode: false,
         })
         window.core?.shell?.controlOmniBar('clear')
+        this.setEditMode(true)
       }
     }
   }
@@ -219,6 +224,12 @@ export class NotesController extends BaseExtensionController<NotesState> {
     }
   }
 
+  private isDirty(): boolean {
+    const { selected, body } = this.state
+    if (!selected) return body !== ''
+    return body !== (selected.body ?? '')
+  }
+
   private filterNotes(notes: Note[], query: string): Note[] {
     if (!query.trim() || query.startsWith('select:')) return notes
     const q = query.toLowerCase()
@@ -254,6 +265,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         modifiers: ['ctrl'],
         label: t('actions.newNote'),
         hint: '⌃N',
+        activeOn: () => !editMode,
         handler: () => void this.handleNew(),
       },
       {
@@ -277,22 +289,27 @@ export class NotesController extends BaseExtensionController<NotesState> {
         hint: '↵',
         activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex <= filteredNotes.length,
         handler: () => {
-          if (selectedIndex === 0) {
-            void this.handleNew()
-          } else {
-            const note = filteredNotes[selectedIndex - 1]
-            if (note) {
-              this.store.setState({ selected: note, body: note.body ?? '' })
-              this.setEditMode(true)
-            }
+          const note = filteredNotes[selectedIndex - 1]
+          if (note) {
+            this.store.setState({ selected: note, body: note.body ?? '' })
+            this.setEditMode(true)
           }
         },
       },
       {
         key: 'Escape',
+        label: 'Hold Esc to exit',
+        hint: 'hold Esc',
+        trigger: 'hold',
+        holdMs: 800,
+        activeOn: () => editMode && this.isDirty(),
+        handler: () => this.setEditMode(false),
+      },
+      {
+        key: 'Escape',
         label: t('actions.focusSearchExitEdit'),
         hint: 'Esc',
-        activeOn: () => editMode,
+        activeOn: () => editMode && !this.isDirty(),
         handler: () => {
           this.setEditMode(false)
         },
@@ -304,7 +321,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         activeOn: () => !editMode,
         handler: () => {
           this.setSelectedIndex((prev) => {
-            if (prev <= 0) {
+            if (prev <= 1) {
               window.core?.shell?.controlOmniBar('show')
               return -1
             }
@@ -321,7 +338,10 @@ export class NotesController extends BaseExtensionController<NotesState> {
           this.setSelectedIndex((prev) => {
             const maxIdx = filteredNotes.length
             if (prev < maxIdx) {
-              if (prev === -1) window.core?.shell?.controlOmniBar('hide')
+              if (prev === -1) {
+                window.core?.shell?.controlOmniBar('hide')
+                return 1
+              }
               return prev + 1
             }
             return prev
@@ -333,6 +353,14 @@ export class NotesController extends BaseExtensionController<NotesState> {
 
   private bindKeyboard(): void {
     window.core?.shell?.registerKeyActions(() => this.getKeyActions())
+
+    const handleDirtyEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !e.repeat && this.state.editMode && this.isDirty()) {
+        window.UI?.toast?.('Unsaved — hold Esc to exit', { type: 'warning' })
+      }
+    }
+    window.addEventListener('keydown', handleDirtyEsc)
+    this.cleanups.push(() => window.removeEventListener('keydown', handleDirtyEsc))
 
     const registerActions = () => {
       const { selected, recording } = this.state

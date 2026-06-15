@@ -46,8 +46,12 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
       opacity: 0.6;
     }
 
-    nuxy-input.nuxy-settings-input--color { width: 2.5em; }
-    nuxy-input.nuxy-settings-input--text { width: 10em; }
+    nuxy-input.nuxy-settings-input--color {
+      width: 2.5em;
+    }
+    nuxy-input.nuxy-settings-input--text {
+      width: 10em;
+    }
   `
 
   @property({ type: String })
@@ -195,61 +199,63 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
                 ></nuxy-switch>
               `
             : isSelectType
-            ? html`
-                <nuxy-select-box
-                  options=${JSON.stringify(options)}
-                  value=${currentValue !== undefined ? String(currentValue) : ''}
-                  ?open=${activeSelect === row.key}
-                  focused-index=${selectFocused}
-                  scroll-lookahead="48"
-                  scroll-speed="0.25"
-                  placeholder=${options?.length === 0 ? '(none)' : '—'}
-                  ?searchable=${isLanguageRow
-                    ? true
-                    : row.isExtension
-                      ? false
-                      : ('searchable' in row ? row.searchable : false) || false}
-                  @nuxy-select-box-select=${(e: CustomEvent<{ value: string }>) =>
-                    this.controller?.handleRowSelect(row, e.detail.value)}
-                  @nuxy-select-box-close-request=${() => this.controller?.setActiveSelect(null)}
-                  @nuxy-select-box-open-request=${(e: CustomEvent<{ startIndex: number }>) =>
-                    this.controller?.onSelectOpen(row.key, globalIdx, e.detail.startIndex)}
-                ></nuxy-select-box>
-              `
-            : row.isExtension
               ? html`
-                  <nuxy-input
-                    type=${row.type === 'color' ? 'color' : 'text'}
+                  <nuxy-select-box
+                    options=${JSON.stringify(options)}
                     value=${currentValue !== undefined ? String(currentValue) : ''}
-                    placeholder=${('placeholder' in row ? row.placeholder : '') || ''}
-                    class=${row.type === 'color' ? 'nuxy-settings-input--color' : 'nuxy-settings-input--text'}
-                    ${ref((el) => {
-                      const nuxyInput = el as NuxyInputElement | null
-                      if (nuxyInput) {
-                        const input = nuxyInput.nativeInput || nuxyInput.querySelector('input')
-                        if (this.controller) {
-                          this.controller.inputRefs[row.key] = input
-                          if (input) {
-                            input.oninput = () =>
-                              this.controller?.handleExtInputChange(row, input.value)
-                            input.onblur = () =>
-                              this.controller?.handleExtInputBlur(row, input.value)
-                            input.onkeydown = (e: KeyboardEvent) => {
-                              if (e.key === 'Enter' || e.key === 'Escape') {
-                                input.blur()
+                    ?open=${activeSelect === row.key}
+                    focused-index=${selectFocused}
+                    scroll-lookahead="48"
+                    scroll-speed="0.25"
+                    placeholder=${options?.length === 0 ? '(none)' : '—'}
+                    ?searchable=${isLanguageRow
+                      ? true
+                      : row.isExtension
+                        ? false
+                        : ('searchable' in row ? row.searchable : false) || false}
+                    @nuxy-select-box-select=${(e: CustomEvent<{ value: string }>) =>
+                      this.controller?.handleRowSelect(row, e.detail.value)}
+                    @nuxy-select-box-close-request=${() => this.controller?.setActiveSelect(null)}
+                    @nuxy-select-box-open-request=${(e: CustomEvent<{ startIndex: number }>) =>
+                      this.controller?.onSelectOpen(row.key, globalIdx, e.detail.startIndex)}
+                  ></nuxy-select-box>
+                `
+              : row.isExtension
+                ? html`
+                    <nuxy-input
+                      type=${row.type === 'color' ? 'color' : 'text'}
+                      value=${currentValue !== undefined ? String(currentValue) : ''}
+                      placeholder=${('placeholder' in row ? row.placeholder : '') || ''}
+                      class=${row.type === 'color'
+                        ? 'nuxy-settings-input--color'
+                        : 'nuxy-settings-input--text'}
+                      ${ref((el) => {
+                        const nuxyInput = el as NuxyInputElement | null
+                        if (nuxyInput) {
+                          const input = nuxyInput.nativeInput || nuxyInput.querySelector('input')
+                          if (this.controller) {
+                            this.controller.inputRefs[row.key] = input
+                            if (input) {
+                              input.oninput = () =>
+                                this.controller?.handleExtInputChange(row, input.value)
+                              input.onblur = () =>
+                                this.controller?.handleExtInputBlur(row, input.value)
+                              input.onkeydown = (e: KeyboardEvent) => {
+                                if (e.key === 'Enter' || e.key === 'Escape') {
+                                  input.blur()
+                                }
                               }
                             }
                           }
+                        } else {
+                          if (this.controller) {
+                            this.controller.inputRefs[row.key] = null
+                          }
                         }
-                      } else {
-                        if (this.controller) {
-                          this.controller.inputRefs[row.key] = null
-                        }
-                      }
-                    })}
-                  ></nuxy-input>
-                `
-              : nothing}
+                      })}
+                    ></nuxy-input>
+                  `
+                : nothing}
         </nuxy-list-item-actions>
       </nuxy-list-item>
     `

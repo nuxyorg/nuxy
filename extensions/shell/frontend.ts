@@ -259,7 +259,6 @@ export class NuxyShellViewElement extends LitElement {
         ?disabled=${!showOmniBar}
         ?loading=${isLoading}
         .holdMs=${ctrl.state.holdMs}
-
         @mousedown=${(e: MouseEvent) => ctrl.handleDragMouseDown(e)}
         @click=${() => showOmniBar && ctrl.refs.input?.focus()}
         @nuxy-omni-input=${(e: CustomEvent<{ value: string }>) => {
@@ -394,6 +393,8 @@ export class NuxyShellViewElement extends LitElement {
     const renderedSections = sections.map((section) => {
       if (section.items.length === 0 && !section.loading) return nothing
 
+      const sectionStart = flatIndex
+
       const listItems = section.items.map((item) => {
         const currentIndex = flatIndex++
         const active = currentIndex === selectedIndex
@@ -414,8 +415,14 @@ export class NuxyShellViewElement extends LitElement {
         `
       })
 
+      const sectionEnd = flatIndex
+      const localActiveIndex =
+        selectedIndex >= sectionStart && selectedIndex < sectionEnd
+          ? selectedIndex - sectionStart
+          : -1
+
       const listEl = html`
-        <nuxy-list role="presentation" active-index=${selectedIndex}>${listItems}</nuxy-list>
+        <nuxy-list role="presentation" active-index=${localActiveIndex}>${listItems}</nuxy-list>
       `
 
       return html`
@@ -629,7 +636,9 @@ export class NuxyShellViewElement extends LitElement {
                     s.isAnyListProviderLoading,
                     s.copiedId
                   )}
-              ${toolHostEl ? html`<div class="nuxy-shell-tool-wrapper">${toolHostEl}</div>` : nothing}
+              ${toolHostEl
+                ? html`<div class="nuxy-shell-tool-wrapper">${toolHostEl}</div>`
+                : nothing}
             </div>
             <div class="nuxy-shell-footer">
               ${this.renderShortcutBar(
@@ -655,7 +664,6 @@ export class NuxyShellViewElement extends LitElement {
       </div>
     `
   }
-
 }
 
 declare global {

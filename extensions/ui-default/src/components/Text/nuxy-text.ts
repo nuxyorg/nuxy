@@ -72,13 +72,20 @@ export class NuxyTextElement extends LitElement {
       .join(' ')
 
     switch (tag) {
-      case 'span': return html`<span class="${className}"><slot></slot></span>`
-      case 'div': return html`<div class="${className}"><slot></slot></div>`
-      case 'label': return html`<label class="${className}"><slot></slot></label>`
-      case 'small': return html`<small class="${className}"><slot></slot></small>`
-      case 'strong': return html`<strong class="${className}"><slot></slot></strong>`
-      case 'em': return html`<em class="${className}"><slot></slot></em>`
-      default: return html`<p class="${className}"><slot></slot></p>`
+      case 'span':
+        return html`<span class="${className}"><slot></slot></span>`
+      case 'div':
+        return html`<div class="${className}"><slot></slot></div>`
+      case 'label':
+        return html`<label class="${className}"><slot></slot></label>`
+      case 'small':
+        return html`<small class="${className}"><slot></slot></small>`
+      case 'strong':
+        return html`<strong class="${className}"><slot></slot></strong>`
+      case 'em':
+        return html`<em class="${className}"><slot></slot></em>`
+      default:
+        return html`<p class="${className}"><slot></slot></p>`
     }
   }
 }

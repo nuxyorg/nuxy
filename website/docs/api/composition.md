@@ -8,9 +8,9 @@ The Composition API enables dynamic UI injection into the Nuxy shell. It allows 
 
 ## Core Concepts
 
-*   **Provides**: An extension declares in its `manifest.json` that it provides a specific composition slot (e.g., `shell.header`, `shell.sidebar`).
-*   **Claims**: Other extensions declare in their `manifest.json` that they intend to mount UI into a specific slot.
-*   **Mount**: At runtime, an extension can mount its UI component (Custom Element) into a claimed slot using the `window.core.composition` bridge.
+- **Provides**: An extension declares in its `manifest.json` that it provides a specific composition slot (e.g., `shell.header`, `shell.sidebar`).
+- **Claims**: Other extensions declare in their `manifest.json` that they intend to mount UI into a specific slot.
+- **Mount**: At runtime, an extension can mount its UI component (Custom Element) into a claimed slot using the `window.core.composition` bridge.
 
 ## Frontend Usage
 
@@ -19,7 +19,7 @@ Extensions mount their UI into slots via `window.core.composition`.
 ```ts
 // 1. Mount a custom element into the 'shell.header' slot
 const handle = await window.core.composition.mount('shell.header', 'com.nuxy.my-extension', {
-  props: { title: 'My Custom Header' }
+  props: { title: 'My Custom Header' },
 })
 
 // 2. Later, unmount it if needed

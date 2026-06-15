@@ -10,7 +10,6 @@ import {
   type TemplateResult,
 } from '@nuxy/core'
 
-
 @customElement('nuxy-shell-omni-bar')
 export class NuxyShellOmniBarElement extends LitElement {
   static styles = css`
@@ -164,7 +163,10 @@ export class NuxyShellOmniBarElement extends LitElement {
 
   private _renderIcon(): TemplateResult {
     if (this._searchIconHtml) {
-      return html`<span class="nuxy-shell-omni-bar__icon-inner" .innerHTML=${this._searchIconHtml}></span>`
+      return html`<span
+        class="nuxy-shell-omni-bar__icon-inner"
+        .innerHTML=${this._searchIconHtml}
+      ></span>`
     }
     return html`<nuxy-icon name="Search" size="16" opacity="1"></nuxy-icon>`
   }

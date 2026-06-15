@@ -26,6 +26,10 @@ function makeMockDb(allRows: Record<string, unknown>[] = []): MockDb {
   return { db, mockPrepare, preparedStmt }
 }
 
+function noteToMd(note: Note): string {
+  return `---\nid: ${note.id}\ntitle: ${note.title}\ncreatedAt: ${note.createdAt}\nupdatedAt: ${note.updatedAt}\n---\n\n${note.body}`
+}
+
 function createCore(dbArg: MockDb | null = null): {
   core: CoreContext
   handlers: Record<string, (payload: unknown) => unknown>
@@ -39,7 +43,9 @@ function createCore(dbArg: MockDb | null = null): {
     fs: {
       mkdir: vi.fn().mockResolvedValue(undefined),
       readDir: vi.fn().mockResolvedValue([]),
-      readFile: vi.fn().mockResolvedValue('{}'),
+      readFile: vi
+        .fn()
+        .mockResolvedValue('---\nid: x\ntitle: \ncreatedAt: 0\nupdatedAt: 0\n---\n\n'),
       writeFile: vi.fn().mockResolvedValue(undefined),
       rm: vi.fn().mockResolvedValue(undefined),
     },
@@ -70,7 +76,7 @@ describe('notes backend', () => {
   })
 
   describe('notes:create', () => {
-    it('writes a JSON file with correct fields', async () => {
+    it('writes a .md file with correct fields', async () => {
       const register = await freshBackend()
       const { core, handlers } = createCore()
       await register(core)
@@ -92,8 +98,8 @@ describe('notes backend', () => {
       expect(typeof note.createdAt).toBe('number')
       expect(typeof note.updatedAt).toBe('number')
       expect(core.fs.writeFile as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
-        expect.stringContaining(`${note.id}.json`),
-        expect.any(String)
+        expect.stringContaining(`${note.id}.md`),
+        expect.stringContaining('---')
       )
     })
 
@@ -115,19 +121,19 @@ describe('notes backend', () => {
   })
 
   describe('notes:list', () => {
-    it('reads all .json files from data dir and returns them sorted by updatedAt desc', async () => {
-      const note1 = { id: 'a', title: 'A', body: '', createdAt: 100, updatedAt: 200 }
-      const note2 = { id: 'b', title: 'B', body: '', createdAt: 50, updatedAt: 300 }
+    it('reads all .md files from data dir and returns them sorted by updatedAt desc', async () => {
+      const note1: Note = { id: 'a', title: 'A', body: '', createdAt: 100, updatedAt: 200 }
+      const note2: Note = { id: 'b', title: 'B', body: '', createdAt: 50, updatedAt: 300 }
 
       const register = await freshBackend()
       const { core, handlers } = createCore()
       ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { name: 'a.json', isDir: false },
-        { name: 'b.json', isDir: false },
+        { name: 'a.md', isDir: false },
+        { name: 'b.md', isDir: false },
       ])
       ;(core.fs.readFile as ReturnType<typeof vi.fn>)
-        .mockResolvedValueOnce(JSON.stringify(note1))
-        .mockResolvedValueOnce(JSON.stringify(note2))
+        .mockResolvedValueOnce(noteToMd(note1))
+        .mockResolvedValueOnce(noteToMd(note2))
       await register(core)
 
       const notes = await (handlers['notes:list'] as (p: unknown) => Promise<{ id: string }[]>)({})
@@ -137,15 +143,15 @@ describe('notes backend', () => {
       expect(notes[1].id).toBe('a')
     })
 
-    it('normalizes notes missing body or title fields', async () => {
-      const legacy = { id: 'legacy', createdAt: 10, updatedAt: 20 }
+    it('normalizes notes missing body field', async () => {
+      const md = '---\nid: legacy\ncreatedAt: 10\nupdatedAt: 20\ntitle: \n---\n\n'
 
       const register = await freshBackend()
       const { core, handlers } = createCore()
       ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { name: 'legacy.json', isDir: false },
+        { name: 'legacy.md', isDir: false },
       ])
-      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(JSON.stringify(legacy))
+      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(md)
       await register(core)
 
       const notes = await (handlers['notes:list'] as (p: unknown) => Promise<Note[]>)({})
@@ -153,11 +159,30 @@ describe('notes backend', () => {
       expect(notes).toHaveLength(1)
       expect(notes[0]).toMatchObject({ id: 'legacy', title: '', body: '' })
     })
+
+    it('skips non-.md files', async () => {
+      const note: Note = { id: 'a', title: 'A', body: 'b', createdAt: 1, updatedAt: 1 }
+
+      const register = await freshBackend()
+      const { core, handlers } = createCore()
+      ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockResolvedValue([
+        { name: 'a.md', isDir: false },
+        { name: 'ext-settings.json', isDir: false },
+        { name: 'other.json', isDir: false },
+      ])
+      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(noteToMd(note))
+      await register(core)
+
+      const notes = await (handlers['notes:list'] as (p: unknown) => Promise<Note[]>)({})
+
+      expect(notes).toHaveLength(1)
+      expect(notes[0].id).toBe('a')
+    })
   })
 
   describe('notes:update', () => {
     it('updates existing file and FTS entry', async () => {
-      const existing = {
+      const existing: Note = {
         id: 'note-1',
         title: 'Old',
         body: 'Old body',
@@ -167,7 +192,7 @@ describe('notes backend', () => {
 
       const register = await freshBackend()
       const { core, handlers, preparedStmt } = createCore()
-      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(JSON.stringify(existing))
+      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(noteToMd(existing))
       await register(core)
 
       const updated = await (
@@ -180,15 +205,15 @@ describe('notes backend', () => {
       expect(updated.body).toBe('Old body')
       expect(updated.updatedAt).toBeGreaterThanOrEqual(existing.updatedAt)
       expect(core.fs.writeFile as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
-        expect.stringContaining('note-1.json'),
-        expect.any(String)
+        expect.stringContaining('note-1.md'),
+        expect.stringContaining('---')
       )
       expect(preparedStmt.run as ReturnType<typeof vi.fn>).toHaveBeenCalled()
     })
   })
 
   describe('notes:delete', () => {
-    it('removes the file and FTS entry', async () => {
+    it('removes the .md file and FTS entry', async () => {
       const register = await freshBackend()
       const { core, handlers, preparedStmt } = createCore()
       await register(core)
@@ -196,7 +221,7 @@ describe('notes backend', () => {
       await (handlers['notes:delete'] as (p: unknown) => Promise<void>)({ id: 'note-xyz' })
 
       expect(core.fs.rm as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
-        expect.stringContaining('note-xyz.json')
+        expect.stringContaining('note-xyz.md')
       )
       expect(preparedStmt.run as ReturnType<typeof vi.fn>).toHaveBeenCalled()
     })
@@ -206,18 +231,17 @@ describe('notes backend', () => {
     it('queries FTS5 and returns matching notes', async () => {
       const ftsRow = { id: 'note-abc', title: 'Test Note', body: 'content' }
       const dbMock = makeMockDb([ftsRow])
+      const note: Note = {
+        id: 'note-abc',
+        title: 'Test Note',
+        body: 'content',
+        createdAt: 1,
+        updatedAt: 1,
+      }
 
       const register = await freshBackend()
       const { core, handlers } = createCore(dbMock)
-      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(
-        JSON.stringify({
-          id: 'note-abc',
-          title: 'Test Note',
-          body: 'content',
-          createdAt: 1,
-          updatedAt: 1,
-        })
-      )
+      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(noteToMd(note))
       await register(core)
 
       const results = await (handlers['notes:search'] as (p: unknown) => Promise<unknown[]>)({
@@ -237,6 +261,52 @@ describe('notes backend', () => {
         query: '',
       })
       expect(results).toEqual([])
+    })
+  })
+
+  describe('startup migration', () => {
+    it('converts existing .json notes to .md on startup', async () => {
+      const existing: Note = {
+        id: 'old-note',
+        title: 'Old Title',
+        body: 'Old body',
+        createdAt: 100,
+        updatedAt: 200,
+      }
+
+      const register = await freshBackend()
+      const { core } = createCore()
+      ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockResolvedValue([
+        { name: 'old-note.json', isDir: false },
+      ])
+      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue(JSON.stringify(existing))
+      await register(core)
+
+      expect(core.fs.writeFile as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+        expect.stringContaining('old-note.md'),
+        expect.stringContaining('---')
+      )
+      expect(core.fs.rm as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+        expect.stringContaining('old-note.json')
+      )
+    })
+
+    it('skips non-note .json files during migration', async () => {
+      const register = await freshBackend()
+      const { core } = createCore()
+      ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockResolvedValue([
+        { name: 'ext-settings.json', isDir: false },
+      ])
+      ;(core.fs.readFile as ReturnType<typeof vi.fn>).mockResolvedValue('{"openaiApiKey":""}')
+      await register(core)
+
+      expect(core.fs.writeFile as ReturnType<typeof vi.fn>).not.toHaveBeenCalledWith(
+        expect.stringContaining('.md'),
+        expect.anything()
+      )
+      expect(core.fs.rm as ReturnType<typeof vi.fn>).not.toHaveBeenCalledWith(
+        expect.stringContaining('ext-settings.json')
+      )
     })
   })
 

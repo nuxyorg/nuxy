@@ -40,6 +40,8 @@ export function registerProtocols() {
           query,
           ref,
           createRef,
+          unsafeHTML,
+          unsafeSVG,
         } = NuxyCore;
       `
       return new Response(coreVirtualScript, { headers: MODULE_HEADERS })
@@ -91,6 +93,7 @@ export function registerProtocols() {
                 module: ts.ModuleKind.ESNext,
                 target: ts.ScriptTarget.ESNext,
                 experimentalDecorators: true,
+                useDefineForClassFields: false,
               },
             })
             let output = transpiled.outputText

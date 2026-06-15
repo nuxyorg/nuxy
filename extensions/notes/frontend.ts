@@ -14,8 +14,24 @@ import { NotesController } from './controller.ts'
 @customElement('nuxy-tool-notes')
 export class NuxyToolNotesElement extends LitElement implements NuxyToolElement {
   static styles = css`
-    .nuxy-notes-app {
+    :host {
+      display: flex;
+      flex-direction: column;
       height: 100%;
+      overflow: hidden;
+    }
+
+    .nuxy-notes-app {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .nuxy-notes-app nuxy-two-panel {
+      flex: 1;
+      min-height: 0;
     }
 
     .nuxy-notes-panel-right--edit {
@@ -93,15 +109,6 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
       <div class="nuxy-two-panel__left">
         <nuxy-section-header label="Notes"></nuxy-section-header>
         <nuxy-list active-index=${selectedIndex}>
-          <nuxy-list-item
-            .active=${selectedIndex === 0}
-            @click=${() => this.controller?.setSelectedIndex(0)}
-          >
-            <nuxy-list-item-body>
-              <nuxy-list-item-text>New Note</nuxy-list-item-text>
-              <nuxy-list-item-meta>Create a new note</nuxy-list-item-meta>
-            </nuxy-list-item-body>
-          </nuxy-list-item>
           ${filteredNotes.length === 0
             ? html`
                 <nuxy-empty-state
@@ -138,10 +145,19 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
             placeholder=${transcribing ? 'Transcribing…' : 'Start writing…'}
             ${ref((el) => {
               const editor = el as
-                | (HTMLElement & { nativeTextarea?: HTMLTextAreaElement | null })
+                | (HTMLElement & {
+                    nativeTextarea?: HTMLTextAreaElement | null
+                    updateComplete?: Promise<boolean>
+                  })
                 | null
                 | undefined
-              this.controller!.textareaRef.current = editor?.nativeTextarea ?? null
+              if (!editor) {
+                this.controller!.textareaRef.current = null
+                return
+              }
+              void (editor.updateComplete ?? Promise.resolve(true)).then(() => {
+                this.controller!.textareaRef.current = editor.nativeTextarea ?? null
+              })
             })}
             @input=${(e: Event) => {
               const editor = e.currentTarget as HTMLElement & { value: string }

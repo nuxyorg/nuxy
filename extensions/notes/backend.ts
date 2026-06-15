@@ -17,10 +17,41 @@ let db: ReturnType<CoreContext['db']['open']> | null = null
 let extDataDir: string | null = null
 
 function notePath(id: string): string {
-  return `${extDataDir}/${id}.json`
+  return `${extDataDir}/${id}.md`
+}
+
+function parseFrontMatter(text: string): { meta: Record<string, unknown>; body: string } {
+  const match = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/)
+  if (!match) return { meta: {}, body: text }
+
+  const meta: Record<string, unknown> = {}
+  for (const line of match[1].split('\n')) {
+    const colon = line.indexOf(':')
+    if (colon < 1) continue
+    const key = line.slice(0, colon).trim()
+    const rawVal = line.slice(colon + 1).trim()
+    const num = Number(rawVal)
+    meta[key] = rawVal !== '' && Number.isFinite(num) ? num : rawVal
+  }
+
+  return { meta, body: match[2].replace(/^\n/, '') }
+}
+
+function serializeNote(note: Note): string {
+  return [
+    '---',
+    `id: ${note.id}`,
+    `title: ${note.title}`,
+    `createdAt: ${note.createdAt}`,
+    `updatedAt: ${note.updatedAt}`,
+    '---',
+    '',
+    note.body,
+  ].join('\n')
 }
 
 function normalizeNote(raw: Partial<Note> & { id: string }): Note {
+  if (!raw.id || typeof raw.id !== 'string') throw new Error('Invalid note: missing id')
   return {
     id: raw.id,
     title: raw.title ?? '',
@@ -32,11 +63,18 @@ function normalizeNote(raw: Partial<Note> & { id: string }): Note {
 
 async function readNote(core: CoreContext, id: string): Promise<Note> {
   const text = await core.fs.readFile(notePath(id))
-  return normalizeNote(JSON.parse(text) as Partial<Note> & { id: string })
+  const { meta, body } = parseFrontMatter(text)
+  return normalizeNote({
+    id: (meta.id as string | undefined) ?? id,
+    title: meta.title as string | undefined,
+    createdAt: meta.createdAt as number | undefined,
+    updatedAt: meta.updatedAt as number | undefined,
+    body,
+  })
 }
 
 async function writeNote(core: CoreContext, note: Note): Promise<void> {
-  await core.fs.writeFile(notePath(note.id), JSON.stringify(note))
+  await core.fs.writeFile(notePath(note.id), serializeNote(note))
 }
 
 function upsertFts(note: Note): void {
@@ -49,6 +87,31 @@ function upsertFts(note: Note): void {
 function deleteFts(id: string): void {
   const del = db!.prepare('DELETE FROM notes_fts WHERE id = ?')
   del.run(id)
+}
+
+async function migrateJsonToMd(core: CoreContext): Promise<void> {
+  let entries: { name: string; isDir: boolean }[]
+  try {
+    entries = await core.fs.readDir(extDataDir!)
+  } catch {
+    return
+  }
+
+  for (const entry of entries) {
+    if (entry.isDir || !entry.name.endsWith('.json')) continue
+    const jsonPath = `${extDataDir}/${entry.name}`
+    try {
+      const text = await core.fs.readFile(jsonPath)
+      const raw = JSON.parse(text) as Partial<Note>
+      if (!raw.id || typeof raw.id !== 'string') continue
+      const note = normalizeNote(raw as Partial<Note> & { id: string })
+      await core.fs.writeFile(notePath(note.id), serializeNote(note))
+      await core.fs.rm(jsonPath)
+      upsertFts(note)
+    } catch {
+      // Leave file in place if migration fails
+    }
+  }
 }
 
 async function whisperTranscribe(
@@ -82,6 +145,8 @@ export async function register(core: CoreContext): Promise<void> {
 
   db = core.db.open('fts')
   db.exec('CREATE VIRTUAL TABLE IF NOT EXISTS notes_fts USING fts5(id, title, body)')
+
+  await migrateJsonToMd(core)
 
   core.registry.registerTool({ name: 'notes' })
   core.registry.registerProvider({ name: 'notes' })
@@ -153,11 +218,14 @@ export async function register(core: CoreContext): Promise<void> {
 
   core.ipc.handle('notes:list', async (): Promise<Note[]> => {
     const entries = await core.fs.readDir(extDataDir!)
-    const notes = await Promise.all(
+    const results = await Promise.allSettled(
       entries
-        .filter((e) => !e.isDir && e.name.endsWith('.json'))
-        .map((e) => readNote(core, e.name.replace('.json', '')))
+        .filter((e) => !e.isDir && e.name.endsWith('.md'))
+        .map((e) => readNote(core, e.name.slice(0, -3)))
     )
+    const notes = results
+      .filter((r): r is PromiseFulfilledResult<Note> => r.status === 'fulfilled')
+      .map((r) => r.value)
     return notes.sort((a, b) => b.updatedAt - a.updatedAt)
   })
 

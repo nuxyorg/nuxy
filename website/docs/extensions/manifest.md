@@ -8,23 +8,23 @@ Every extension must have a `manifest.json` file at its root. This file is the s
 
 ## Top-Level Fields
 
-| Field          | Type       | Required | Description                                                                                                               |
-| -------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `id`           | `string`   | Yes      | Unique reverse-DNS identifier. Convention: `com.<domain>.<name>`. Must be globally unique.                                |
-| `name`         | `string`   | Yes      | Human-readable display name shown in the launcher tool list.                                                              |
-| `version`      | `string`   | Yes      | Semantic version string (e.g. `"1.0.0"`).                                                                                 |
-| `type`         | `string`   | Yes      | Extension type. See [Extension Types](#extension-types) below.                                                            |
-| `icon`         | `string`   | No       | Name of the Lucide icon representing the tool in the tool list.                                                           |
-| `bootstrap`    | `boolean`  | No       | If `true`, this extension's frontend is loaded at app startup and excluded from `listTools`. Used by the shell extension. |
-| `placeholder`  | `string`   | No       | Custom placeholder text for the omnibar when this tool is active. Falls back to `"Search <name>"` if omitted.             |
-| `permissions`  | `string[]` | No       | Host APIs the extension needs access to. See [Permissions](#permissions).                                                 |
-| `capabilities` | `object`   | No       | Cross-extension invocation rights. See [Capabilities](#capabilities).                                                     |
-| `priority`     | `number`   | No       | Load order for `uikit` extensions. Lower loads first (default: `100`).                                                    |
-| `queryAffinity`| `string[]` | No       | Query types this provider or tool handles best. Boosts results/actions when input matches. See [Query Affinity](#query-affinity). |
-| `locales`      | `object`   | No       | Internationalisation config. See [Locales](#locales).                                                                     |
-| `behavior`     | `object`   | No       | Tool lifecycle behavior (e.g. `onComplete`).                                                              |
-| `composition`  | `object`   | No       | UI composition slots this extension may provide or claim.                                                 |
-| `entry`        | `object`   | Yes      | Relative paths to entry files. See [Entry Points](#entry-points).                                                         |
+| Field           | Type       | Required | Description                                                                                                                       |
+| --------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `id`            | `string`   | Yes      | Unique reverse-DNS identifier. Convention: `com.<domain>.<name>`. Must be globally unique.                                        |
+| `name`          | `string`   | Yes      | Human-readable display name shown in the launcher tool list.                                                                      |
+| `version`       | `string`   | Yes      | Semantic version string (e.g. `"1.0.0"`).                                                                                         |
+| `type`          | `string`   | Yes      | Extension type. See [Extension Types](#extension-types) below.                                                                    |
+| `icon`          | `string`   | No       | Name of the Lucide icon representing the tool in the tool list.                                                                   |
+| `bootstrap`     | `boolean`  | No       | If `true`, this extension's frontend is loaded at app startup and excluded from `listTools`. Used by the shell extension.         |
+| `placeholder`   | `string`   | No       | Custom placeholder text for the omnibar when this tool is active. Falls back to `"Search <name>"` if omitted.                     |
+| `permissions`   | `string[]` | No       | Host APIs the extension needs access to. See [Permissions](#permissions).                                                         |
+| `capabilities`  | `object`   | No       | Cross-extension invocation rights. See [Capabilities](#capabilities).                                                             |
+| `priority`      | `number`   | No       | Load order for `uikit` extensions. Lower loads first (default: `100`).                                                            |
+| `queryAffinity` | `string[]` | No       | Query types this provider or tool handles best. Boosts results/actions when input matches. See [Query Affinity](#query-affinity). |
+| `locales`       | `object`   | No       | Internationalisation config. See [Locales](#locales).                                                                             |
+| `behavior`      | `object`   | No       | Tool lifecycle behavior (e.g. `onComplete`).                                                                                      |
+| `composition`   | `object`   | No       | UI composition slots this extension may provide or claim.                                                                         |
+| `entry`         | `object`   | Yes      | Relative paths to entry files. See [Entry Points](#entry-points).                                                                 |
 
 ## Extension Types
 
@@ -213,9 +213,9 @@ When `entry.settings` is declared, the Settings extension reads the schema and r
 
 Declare which omnibar input types your provider or tool handles best. The shell uses this information to boost your extension's results and actions when the detected `QueryContext` matches.
 
-| Field          | Type         | Required | Description                                                      |
-| -------------- | ------------ | -------- | ---------------------------------------------------------------- |
-| `queryAffinity`| `QueryType[]`| No       | One or more query types. Has no effect on `uikit`/`theme`/`iconpack` extensions. |
+| Field           | Type          | Required | Description                                                                      |
+| --------------- | ------------- | -------- | -------------------------------------------------------------------------------- |
+| `queryAffinity` | `QueryType[]` | No       | One or more query types. Has no effect on `uikit`/`theme`/`iconpack` extensions. |
 
 Valid `QueryType` values: `"text"`, `"url"`, `"color"`, `"math"`, `"path"`, `"email"`, `"image"`, `"video"`, `"audio"`, `"pdf"`, `"archive"`.
 

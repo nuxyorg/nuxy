@@ -2,7 +2,9 @@ export interface IconProps extends Record<string, unknown> {
   size?: number | string
   opacity?: number
 }
+
 export type IconName =
+  | 'AlertCircle'
   | 'Archive'
   | 'ArrowLeft'
   | 'ArrowRight'
@@ -33,6 +35,7 @@ export type IconName =
   | 'Pin'
   | 'Plus'
   | 'Refresh'
+  | 'Search'
   | 'Send'
   | 'Smile'
   | 'Star'

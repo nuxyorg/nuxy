@@ -163,6 +163,9 @@ export class ShellController {
       returnToShell: () => this.returnToShell({ selectedIndex: 0 }),
       clearQueryAndEsc: () => {
         this.store.setState({ query: '', savedQuery: '', selectedIndex: -1 })
+        this.providers.clearProviderStates()
+        this._syncProviders()
+        this._recompute()
         window.core?.window?.esc?.()
       },
       setHoldMs: (ms) => this.store.setState({ holdMs: ms }),
@@ -177,7 +180,9 @@ export class ShellController {
       setRecentToolIds: (ids) => this.tools.setRecentToolIds(ids),
       setUsageStats: (stats) => this.tools.setUsageStats(stats),
       setThemeStyles: (styles) => this.store.setState({ themeStyles: styles }),
-      setCfg: (cfg) => { this.refs.cfg = cfg },
+      setCfg: (cfg) => {
+        this.refs.cfg = cfg
+      },
       recompute: () => this._recompute(),
       syncProviders: () => this._syncProviders(),
     })
@@ -186,9 +191,13 @@ export class ShellController {
       getContainer: () => this.refs.container,
       getInput: () => this.refs.input,
       getCfg: () => this.refs.cfg,
-      setCfg: (cfg) => { this.refs.cfg = cfg },
+      setCfg: (cfg) => {
+        this.refs.cfg = cfg
+      },
       hasDragged: () => this.refs.hasDragged,
-      setHasDragged: (val) => { this.refs.hasDragged = val },
+      setHasDragged: (val) => {
+        this.refs.hasDragged = val
+      },
       setDragging: (val) => this.win.setDragging(val),
       animatePosition: (pos) => this.win.animatePosition(pos),
       setBridge: (snapshot) => this.store.setState({ bridge: snapshot }),
@@ -610,6 +619,9 @@ export class ShellController {
         setTimeout(() => this.refs.input?.focus(), 50)
       } else if (action === 'clear') {
         this.store.setState({ query: '', savedQuery: '', selectedIndex: -1 })
+        this.providers.clearProviderStates()
+        this._syncProviders()
+        this._recompute()
       }
     })
     this.cleanups.push(offOmni)

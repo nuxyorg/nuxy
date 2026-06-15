@@ -6,7 +6,11 @@ export abstract class BaseExtensionController<S extends object> {
   readonly t: Translator
   protected cleanups: Array<() => void> = []
 
-  constructor(extId: string, initialState: S, protected onUpdate: () => void) {
+  constructor(
+    extId: string,
+    initialState: S,
+    protected onUpdate: () => void
+  ) {
     this.store = createStore<S>(initialState)
     this.t = createTranslator(extId, () => {
       window.core?.shell?.refreshKeyHints()

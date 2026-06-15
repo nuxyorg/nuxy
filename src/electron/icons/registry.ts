@@ -14,7 +14,9 @@ export function getIcon(name: string, packName?: string): string | null {
     : defaultPackName
       ? packs.get(defaultPackName)
       : undefined
-  return pack?.icons[name] ?? null
+  if (!pack) return null
+  if (Array.isArray(pack.icons)) return null
+  return (pack.icons as Record<string, string>)[name] ?? null
 }
 
 export function getIconPack(packName?: string): IconPackDefinition | null {

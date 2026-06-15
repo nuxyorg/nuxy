@@ -164,9 +164,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
   const extToggleRows: ExtToggleRow[] = installedExtensions
     .filter(
       (ext) =>
-        !ext.manifest.bootstrap &&
-        ext.id !== 'com.nuxy.settings' &&
-        ext.manifest.type !== 'uikit'
+        !ext.manifest.bootstrap && ext.id !== 'com.nuxy.settings' && ext.manifest.type !== 'uikit'
     )
     .map((ext) => ({
       key: `ext-toggle:${ext.id}`,

@@ -70,7 +70,6 @@ export class NuxyTagElement extends LitElement {
   `
 
   @property({ type: String, reflect: true })
-
   declare variant: string
   @property({ type: Boolean, reflect: true })
   declare removable: boolean

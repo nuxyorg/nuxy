@@ -240,23 +240,75 @@ export class NuxyMarkdownEditorElement extends LitElement {
   render(): TemplateResult {
     return html`
       <div class="nuxy-md-editor__toolbar" @mousedown=${(e: MouseEvent) => e.preventDefault()}>
-        <button class="nuxy-md-editor__btn" title="Heading 1 (Ctrl+H)" @click=${() => this._prependLine('#')}>H1</button>
-        <button class="nuxy-md-editor__btn" title="Heading 2" @click=${() => this._prependLine('##')}>H2</button>
-        <button class="nuxy-md-editor__btn" title="Heading 3" @click=${() => this._prependLine('###')}>H3</button>
+        <button
+          class="nuxy-md-editor__btn"
+          title="Heading 1 (Ctrl+H)"
+          @click=${() => this._prependLine('#')}
+        >
+          H1
+        </button>
+        <button
+          class="nuxy-md-editor__btn"
+          title="Heading 2"
+          @click=${() => this._prependLine('##')}
+        >
+          H2
+        </button>
+        <button
+          class="nuxy-md-editor__btn"
+          title="Heading 3"
+          @click=${() => this._prependLine('###')}
+        >
+          H3
+        </button>
         <div class="nuxy-md-editor__divider"></div>
-        <button class="nuxy-md-editor__btn" title="Bold (Ctrl+B)" @click=${() => this._wrapSelection('**')}><strong>B</strong></button>
-        <button class="nuxy-md-editor__btn" title="Italic (Ctrl+I)" @click=${() => this._wrapSelection('_')}><em>I</em></button>
+        <button
+          class="nuxy-md-editor__btn"
+          title="Bold (Ctrl+B)"
+          @click=${() => this._wrapSelection('**')}
+        >
+          <strong>B</strong>
+        </button>
+        <button
+          class="nuxy-md-editor__btn"
+          title="Italic (Ctrl+I)"
+          @click=${() => this._wrapSelection('_')}
+        >
+          <em>I</em>
+        </button>
         <div class="nuxy-md-editor__divider"></div>
-        <button class="nuxy-md-editor__btn" title="Link (Ctrl+L)" @click=${this._onLinkClick}>🔗</button>
-        <button class="nuxy-md-editor__btn" title="Unordered list (Ctrl+U)" @click=${() => this._prependLine('-')}>• —</button>
-        <button class="nuxy-md-editor__btn" title="Ordered list (Ctrl+O)" @click=${() => this._prependLine('1.')}>1.</button>
+        <button class="nuxy-md-editor__btn" title="Link (Ctrl+L)" @click=${this._onLinkClick}>
+          🔗
+        </button>
+        <button
+          class="nuxy-md-editor__btn"
+          title="Unordered list (Ctrl+U)"
+          @click=${() => this._prependLine('-')}
+        >
+          • —
+        </button>
+        <button
+          class="nuxy-md-editor__btn"
+          title="Ordered list (Ctrl+O)"
+          @click=${() => this._prependLine('1.')}
+        >
+          1.
+        </button>
         <div class="nuxy-md-editor__divider"></div>
         <button
           class="nuxy-md-editor__btn"
           title="Table (Ctrl+T)"
           @click=${() => this._insertTemplate('| A | B |\n| --- | --- |\n| a | b |')}
-        >⊞</button>
-        <button class="nuxy-md-editor__btn" title="Horizontal rule" @click=${() => this._insertTemplate('---')}>—</button>
+        >
+          ⊞
+        </button>
+        <button
+          class="nuxy-md-editor__btn"
+          title="Horizontal rule"
+          @click=${() => this._insertTemplate('---')}
+        >
+          —
+        </button>
       </div>
       <textarea
         class="nuxy-md-editor__textarea"

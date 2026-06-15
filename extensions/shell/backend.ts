@@ -50,10 +50,10 @@ export function register(core: CoreContext): void {
     usageStats[toolId].count++
     if (query?.trim()) {
       const q = query.trim().toLowerCase()
-      usageStats[toolId].queries = [
-        q,
-        ...usageStats[toolId].queries.filter((x) => x !== q),
-      ].slice(0, 50)
+      usageStats[toolId].queries = [q, ...usageStats[toolId].queries.filter((x) => x !== q)].slice(
+        0,
+        50
+      )
     }
 
     try {

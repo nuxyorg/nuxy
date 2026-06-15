@@ -1,0 +1,17 @@
+{
+  "id": "com.nuxy.icon-browser",
+  "name": "Icon Browser",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "search",
+  "permissions": [],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-icon-browser"
+  }
+}

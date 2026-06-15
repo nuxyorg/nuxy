@@ -28,7 +28,6 @@ const log = kernelLogger.child('ExtensionReload')
 const workerRestartTimers = new Map<string, ReturnType<typeof setTimeout>>()
 const folderReloadTimers = new Map<string, ReturnType<typeof setTimeout>>()
 
-
 const activeExtensionWatchers = new Set<fs.FSWatcher>()
 const watchedExtensionFolders = new Set<string>()
 let devWatchDebounce: ReturnType<typeof setTimeout> | null = null

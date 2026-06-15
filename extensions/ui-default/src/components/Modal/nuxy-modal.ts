@@ -1,7 +1,6 @@
 import './index.css'
 import { LitElement, customElement, type PropertyValues } from '@nuxy/core'
 
-
 @customElement('nuxy-modal')
 export class NuxyModalElement extends LitElement {
   private backdrop: HTMLDivElement | null = null

@@ -303,6 +303,8 @@ importers:
 
   extensions/gradient: {}
 
+  extensions/icon-browser: {}
+
   extensions/icons-default: {}
 
   extensions/notes:

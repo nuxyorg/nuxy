@@ -35,9 +35,9 @@ window.core.events.off('custom-event', handleMyEvent)
 
 The Nuxy shell emits specific standard events that frontend tools can hook into:
 
-| Event Name | Payload | Description |
-| :--- | :--- | :--- |
+| Event Name        | Payload              | Description                                                                                                         |
+| :---------------- | :------------------- | :------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
 | `omniBar-keydown` | `KeyboardEvent` data | Fired when keyboard input happens while the omnibar is hidden. Useful for global keyboard shortcuts within the app. |
-| `omniBar-control` | `{ action: 'show' | 'hide' }` | Fired when a tool requests to programmatically show or hide the omnibar. |
+| `omniBar-control` | `{ action: 'show'    | 'hide' }`                                                                                                           | Fired when a tool requests to programmatically show or hide the omnibar. |
 
 For IPC communication between the backend and frontend, see the [IPC API](/api/ipc). The Events API is intended for frontend-to-frontend broadcasting.

@@ -180,8 +180,16 @@ export interface IconPackMeta {
 export interface IconPackDefinition {
   version: number
   name: string
-  /** Map of logical icon name → inner SVG path string (no outer <svg> wrapper). */
-  icons: Record<string, string>
+  /**
+   * Extension ID used to construct nuxy-ext:// URLs for file-based packs (v3+).
+   * When present, icons are individual SVG files served via the protocol handler.
+   */
+  extId?: string
+  /**
+   * v2: map of icon name → inner SVG path string (no outer <svg> wrapper).
+   * v3+: array of available icon names (kebab-case); files live at nuxy-ext://{extId}/icons/{name}.svg.
+   */
+  icons: Record<string, string> | string[]
   /** Per-icon rendering overrides (opacity, color). */
   meta?: Record<string, IconPackMeta>
 }

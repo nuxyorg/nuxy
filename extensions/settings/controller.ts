@@ -29,14 +29,18 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   private pendingExtToggles = new Map<string, boolean>()
 
   constructor(onUpdate: () => void) {
-    super(EXT_ID, {
-      ...createDefaultSettingsData(),
-      selectedRow: -1,
-      activeSelect: null,
-      selectFocused: 0,
-      selectedSectionId: null,
-      focusedPanel: 'right',
-    }, onUpdate)
+    super(
+      EXT_ID,
+      {
+        ...createDefaultSettingsData(),
+        selectedRow: -1,
+        activeSelect: null,
+        selectFocused: 0,
+        selectedSectionId: null,
+        focusedPanel: 'right',
+      },
+      onUpdate
+    )
   }
 
   protected onStoreChange(): void {
@@ -133,7 +137,12 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   setSelectedSection(id: string): void {
-    this.store.setState({ selectedSectionId: id, selectedRow: -1, activeSelect: null, focusedPanel: 'right' })
+    this.store.setState({
+      selectedSectionId: id,
+      selectedRow: -1,
+      activeSelect: null,
+      focusedPanel: 'right',
+    })
   }
 
   setSelectFocused(index: number | ((prev: number) => number)): void {
