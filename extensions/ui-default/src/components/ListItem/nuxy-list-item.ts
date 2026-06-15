@@ -11,6 +11,7 @@ export class NuxyListItemElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: var(--space-3);
       cursor: pointer;
       transition: background-color 150ms;
       position: relative;

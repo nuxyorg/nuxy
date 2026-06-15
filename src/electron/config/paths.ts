@@ -5,6 +5,7 @@ import os from 'os'
 const NUXY_HOME = path.join(os.homedir(), '.nxy')
 
 export const CONFIG_DIR = NUXY_HOME
+export const SECURITY_DIR = path.join(NUXY_HOME, 'security')
 export const EXTENSION_DIR = path.join(NUXY_HOME, 'extensions')
 export const EXTRACTED_DIR = path.join(NUXY_HOME, 'extracted')
 /** Override with NUXY_DATA_DIR env var to isolate settings in tests without affecting extensions. */

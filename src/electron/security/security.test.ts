@@ -10,6 +10,7 @@ vi.mock('../config/paths.js', () => {
   const mockHome = path.join(os.tmpdir(), 'nuxy-security-test-home')
   return {
     CONFIG_DIR: mockHome,
+    SECURITY_DIR: path.join(mockHome, 'security'),
     DATA_DIR: path.join(mockHome, 'data'),
     EXTRACTED_DIR: path.join(mockHome, 'extracted'),
     EXTENSION_DIR: path.join(mockHome, 'extensions'),
@@ -36,7 +37,7 @@ describe('Security and Code Signing Suite', () => {
   beforeEach(() => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'nuxy-security-test-'))
     try {
-      fs.mkdirSync(mockHome, { recursive: true })
+      fs.mkdirSync(path.join(mockHome, 'security'), { recursive: true })
     } catch {}
     clearTrustedKeys()
   })
@@ -138,7 +139,7 @@ describe('Security and Code Signing Suite', () => {
         revokedKeys: [],
       }
 
-      fs.writeFileSync(path.join(mockHome, 'revoked-extensions.json'), JSON.stringify(blacklist))
+      fs.writeFileSync(path.join(mockHome, 'security', 'revoked-extensions.json'), JSON.stringify(blacklist))
 
       expect(isRevoked('bad-ext', 'good-hash', keys.publicKey)).toBe(true)
       expect(isRevoked('good-ext', 'bad-hash-xyz', keys.publicKey)).toBe(true)

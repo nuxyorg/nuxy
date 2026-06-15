@@ -119,8 +119,8 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
             : filteredNotes.map(
                 (note, idx) => html`
                   <nuxy-list-item
-                    .active=${idx + 1 === selectedIndex}
-                    @click=${() => this.controller?.setSelectedIndex(idx + 1)}
+                    .active=${idx === selectedIndex}
+                    @click=${() => this.controller?.setSelectedIndex(idx)}
                   >
                     <nuxy-list-item-body>
                       <nuxy-list-item-text>${note.title}</nuxy-list-item-text>

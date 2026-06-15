@@ -39,6 +39,7 @@ export interface ListItem {
   id: string
   title: string
   subtitle?: string
+  icon?: string
   isTool?: boolean
   value?: string
   execute?: {

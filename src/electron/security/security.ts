@@ -1,23 +1,62 @@
 import crypto from 'crypto'
 import fs from 'fs'
 import path from 'path'
-import { CONFIG_DIR } from '../config/paths.js'
+import { CONFIG_DIR, SECURITY_DIR } from '../config/paths.js'
 import { computeDirectoryIntegrity, sha256 } from './sign-tool.js'
 import { kernelLogger } from '@nuxy/core'
 
 const log = kernelLogger.child('Security')
 
-const TRUSTED_KEYS_PATH = path.join(CONFIG_DIR, 'trusted-keys.json')
-const STATE_CACHE_PATH = path.join(CONFIG_DIR, 'extensions-state.json')
-const STATE_SECRET_PATH = path.join(CONFIG_DIR, 'state-secret.key')
-const REVOCATION_LIST_PATH = path.join(CONFIG_DIR, 'revoked-extensions.json')
+const TRUSTED_KEYS_PATH = path.join(SECURITY_DIR, 'trusted-keys.json')
+const STATE_CACHE_PATH = path.join(SECURITY_DIR, 'extensions-state.json')
+const STATE_SECRET_PATH = path.join(SECURITY_DIR, 'state-secret.key')
+const REVOCATION_LIST_PATH = path.join(SECURITY_DIR, 'revoked-extensions.json')
+const README_PATH = path.join(SECURITY_DIR, 'READ_ME_IMPORTANT.md')
 
 const REVOCATION_LIST_URL =
   'https://raw.githubusercontent.com/atagulalan/nuxy-assets/main/revoked-extensions.json'
 
-// Ensure CONFIG_DIR exists
+const README_CONTENT = `# Nuxy Security Files — DO NOT DELETE OR MODIFY
+
+Bu klasör Nuxy'nin güvenlik altyapısına ait dosyaları içerir.
+Bu dosyaları silmek veya değiştirmek, eklentilerin doğrulama sürecini bozabilir.
+
+## Dosyalar
+
+### state-secret.key
+HMAC imzalama için kullanılan kriptografik anahtar. Silinirse extensions-state.json
+geçersiz hale gelir ve tüm eklentiler sıfırdan doğrulanmak zorunda kalır.
+**Bu dosyayı kesinlikle paylaşmayın — cihazınıza özgüdür.**
+
+### extensions-state.json
+Doğrulanmış eklentilerin bütünlük hash'lerinin HMAC imzalı önbelleği.
+Silinirse zararsızdır — yeniden oluşturulur; ancak tüm eklentiler yeniden taranır.
+
+### trusted-keys.json
+Güvenilir eklenti yayıncılarının public key listesi.
+Değiştirirseniz kendi eklentileriniz yüklenmeyebilir.
+
+### revoked-extensions.json
+GitHub'dan indirilen iptal listesi (kara liste). Silinirse güncellenir.
+`
+
+// Migrate legacy files from CONFIG_DIR root, then ensure SECURITY_DIR exists
 try {
-  fs.mkdirSync(CONFIG_DIR, { recursive: true })
+  const isNew = !fs.existsSync(SECURITY_DIR)
+  fs.mkdirSync(SECURITY_DIR, { recursive: true })
+
+  for (const file of ['trusted-keys.json', 'extensions-state.json', 'state-secret.key', 'revoked-extensions.json']) {
+    const oldPath = path.join(CONFIG_DIR, file)
+    const newPath = path.join(SECURITY_DIR, file)
+    if (fs.existsSync(oldPath) && !fs.existsSync(newPath)) {
+      fs.renameSync(oldPath, newPath)
+      log.info(`Migrated ${file} → security/${file}`)
+    }
+  }
+
+  if (isNew || !fs.existsSync(README_PATH)) {
+    fs.writeFileSync(README_PATH, README_CONTENT)
+  }
 } catch {}
 
 /**
