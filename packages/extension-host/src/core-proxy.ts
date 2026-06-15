@@ -45,7 +45,7 @@ export function createCoreProxy(
 
   const dataDir = process.env.NUXY_DATA_DIR
     ? path.join(process.env.NUXY_DATA_DIR, extId)
-    : path.join(os.homedir(), '.nuxy', 'data', extId)
+    : path.join(os.homedir(), '.nxy', 'data', extId)
   const extSettingsFile = path.join(dataDir, 'ext-settings.json')
 
   let i18nLocale = 'en'
@@ -65,7 +65,7 @@ export function createCoreProxy(
 
       const globalSettings = process.env.NUXY_DATA_DIR
         ? path.join(process.env.NUXY_DATA_DIR, 'com.nuxy.settings', 'settings.json')
-        : path.join(os.homedir(), '.nuxy', 'data', 'com.nuxy.settings', 'settings.json')
+        : path.join(os.homedir(), '.nxy', 'data', 'com.nuxy.settings', 'settings.json')
       let preferredLanguages: string[] = []
       try {
         const raw = await fsPromises.readFile(globalSettings, 'utf8')

@@ -140,7 +140,7 @@ async function whisperTranscribe(
 }
 
 export async function register(core: CoreContext): Promise<void> {
-  extDataDir = `${core.fs.homedir()}/.nuxy/data/com.nuxy.notes`
+  extDataDir = `${core.fs.homedir()}/.nxy/data/com.nuxy.notes`
   await core.fs.mkdir(extDataDir, { recursive: true })
 
   db = core.db.open('fts')

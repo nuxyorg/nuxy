@@ -47,7 +47,7 @@ function isExtensionsRoot(dir: string): boolean {
   }
 }
 
-/** pnpm workspace symlinks under node_modules break copyFile and are useless in ~/.nuxy */
+/** pnpm workspace symlinks under node_modules break copyFile and are useless in ~/.nxy */
 const SKIP_DIR_NAMES = new Set(['node_modules', '.git'])
 
 export function shouldSyncPath(absolutePath: string): boolean {

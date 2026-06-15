@@ -24,7 +24,7 @@ export function bundledExtensionsDir(): string | null {
   return isExtensionsRoot(dir) ? dir : null
 }
 
-/** Copy shipped extensions into ~/.nuxy/extensions when missing (first install). */
+/** Copy shipped extensions into ~/.nxy/extensions when missing (first install). */
 export function seedBundledExtensions(): void {
   const bundled = bundledExtensionsDir()
   if (!bundled) return

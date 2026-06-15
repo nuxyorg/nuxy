@@ -231,7 +231,7 @@ test.describe('registry', () => {
 })
 
 test.describe('resolveStoragePath', () => {
-  const base = '/home/user/.nuxy/data/com.nuxy.test'
+  const base = '/home/user/.nxy/data/com.nuxy.test'
 
   test('resolves file inside the directory', () => {
     const r = resolveStoragePath(base, 'data.json')

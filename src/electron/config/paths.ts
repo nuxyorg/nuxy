@@ -1,8 +1,8 @@
 import path from 'path'
 import os from 'os'
 
-/** Root Nuxy user directory (~/.nuxy). */
-const NUXY_HOME = path.join(os.homedir(), '.nuxy')
+/** Root Nuxy user directory (~/.nxy). */
+const NUXY_HOME = path.join(os.homedir(), '.nxy')
 
 export const CONFIG_DIR = NUXY_HOME
 export const EXTENSION_DIR = path.join(NUXY_HOME, 'extensions')

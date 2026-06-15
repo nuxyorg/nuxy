@@ -22,8 +22,8 @@ function extLabel(folderName) {
 
 export function getPaths() {
   const extensionsDir = path.resolve(repoRoot, 'extensions')
-  const nuxyExtDir = path.join(os.homedir(), '.nuxy', 'extensions')
-  const extractedDir = path.join(os.homedir(), '.nuxy', 'extracted')
+  const nuxyExtDir = path.join(os.homedir(), '.nxy', 'extensions')
+  const extractedDir = path.join(os.homedir(), '.nxy', 'extracted')
   return { extensionsDir, nuxyExtDir, extractedDir, repoRoot }
 }
 
