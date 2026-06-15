@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "downloadDir",
+      "label": "Download Location",
+      "type": "location",
+      "default": "~/Downloads",
+      "placeholder": "~/Downloads",
+      "description": "Folder where received files are saved"
+    },
+    {
+      "key": "maxFileSizeMb",
+      "label": "Maximum File Size (MB)",
+      "type": "select",
+      "default": 512,
+      "options": [
+        { "value": 64, "label": "64 MB" },
+        { "value": 256, "label": "256 MB" },
+        { "value": 512, "label": "512 MB" },
+        { "value": 1024, "label": "1 GB" }
+      ]
+    },
+    {
+      "key": "signalingHost",
+      "label": "Signaling Server Host",
+      "type": "text",
+      "default": "0.peerjs.com",
+      "description": "PeerServer Cloud host for WebRTC handshake (not file data)"
+    },
+    {
+      "key": "signalingPort",
+      "label": "Signaling Server Port",
+      "type": "select",
+      "default": 443,
+      "options": [
+        { "value": 443, "label": "443 (TLS)" },
+        { "value": 9000, "label": "9000 (self-hosted)" }
+      ]
+    },
+    {
+      "key": "stunServer",
+      "label": "STUN Server",
+      "type": "text",
+      "default": "stun:stun.l.google.com:19302",
+      "description": "ICE STUN server for NAT traversal"
+    }
+  ]
+}

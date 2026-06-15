@@ -7,6 +7,19 @@ export function getToolOnComplete(manifest: ExtensionManifest): ToolOnCompleteBe
   return manifest.behavior?.onComplete ?? 'stay'
 }
 
+export function shouldSuppressBlurHide(manifest: ExtensionManifest): boolean {
+  return manifest.behavior?.suppressBlurHide === true
+}
+
+/** Sync kernel blur-hide suppression for the active tool (manifest-driven). */
+export function syncBlurSuppression(
+  toolId: string | null,
+  manifest: ExtensionManifest | null | undefined
+): void {
+  const suppress = Boolean(toolId && manifest && shouldSuppressBlurHide(manifest))
+  window.core?.window?.setBlurSuppressed?.(suppress)
+}
+
 /** Set omnibar placeholder for the active tool from its locale file. */
 export function setToolSearchPlaceholder(t: TranslateFn, key: string): void {
   const translated = t(key)

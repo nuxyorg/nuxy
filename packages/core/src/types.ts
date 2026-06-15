@@ -104,6 +104,11 @@ export interface ExtensionManifest {
   behavior?: {
     /** What happens after the tool's primary action completes (e.g. Enter on a result). */
     onComplete?: 'stay' | 'returnToShell' | 'hide' | 'returnToShellAndHide'
+    /**
+     * When true, the shell asks the kernel to ignore blurAction while this tool is active
+     * (e.g. native file dialogs that steal focus).
+     */
+    suppressBlurHide?: boolean
   }
   /**
    * Composition slots this extension may provide (shell) or claim (overlays).

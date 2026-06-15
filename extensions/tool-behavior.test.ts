@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { completeToolAction, getToolOnComplete, setToolSearchPlaceholder } from './tool-behavior.ts'
+import {
+  completeToolAction,
+  getToolOnComplete,
+  setToolSearchPlaceholder,
+  shouldSuppressBlurHide,
+  syncBlurSuppression,
+} from './tool-behavior.ts'
 import type { ExtensionManifest } from '@nuxy/core'
 
 describe('tool-behavior', () => {
@@ -46,5 +52,48 @@ describe('tool-behavior', () => {
     vi.advanceTimersByTime(150)
     expect(window.core!.window!.hide).toHaveBeenCalledOnce()
     vi.useRealTimers()
+  })
+
+  it('shouldSuppressBlurHide reads manifest behavior flag', () => {
+    expect(
+      shouldSuppressBlurHide({
+        id: 'x',
+        name: 'X',
+        version: '1',
+        type: 'tool',
+      } as ExtensionManifest)
+    ).toBe(false)
+    expect(
+      shouldSuppressBlurHide({
+        id: 'x',
+        name: 'X',
+        version: '1',
+        type: 'tool',
+        behavior: { suppressBlurHide: true },
+      } as ExtensionManifest)
+    ).toBe(true)
+  })
+
+  it('syncBlurSuppression toggles window API from active tool manifest', () => {
+    const setBlurSuppressed = vi.fn()
+    vi.stubGlobal('window', {
+      core: {
+        shell: { returnToShell: vi.fn(), setSearchPlaceholder: vi.fn() },
+        window: { hide: vi.fn(), setBlurSuppressed },
+      },
+    })
+    const manifest = {
+      id: 'com.nuxy.file-transfer',
+      name: 'File Transfer',
+      version: '1',
+      type: 'tool',
+      behavior: { suppressBlurHide: true },
+    } as ExtensionManifest
+
+    syncBlurSuppression('com.nuxy.file-transfer', manifest)
+    expect(setBlurSuppressed).toHaveBeenCalledWith(true)
+
+    syncBlurSuppression(null, null)
+    expect(setBlurSuppressed).toHaveBeenCalledWith(false)
   })
 })

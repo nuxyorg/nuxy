@@ -25,6 +25,8 @@ contextBridge.exposeInMainWorld('core', {
         ipcRenderer.off('window:show', listener)
       }
     },
+    setBlurSuppressed: (suppressed: boolean) =>
+      ipcRenderer.send('window:set-blur-suppressed', suppressed),
   },
   icons: {
     get: (name: string, pack?: string) =>
