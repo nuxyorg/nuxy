@@ -1,0 +1,26 @@
+{
+  "id": "com.nuxy.file-transfer",
+  "name": "File Transfer",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "file",
+  "permissions": ["fs", "clipboard", "storage"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "behavior": {
+    "onComplete": "stay",
+    "suppressBlurHide": true
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-file-transfer",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
+  }
+}

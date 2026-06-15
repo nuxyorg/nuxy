@@ -5,13 +5,17 @@ import {
   createMainWindow,
   getMainWindow,
   onRendererReady,
+  setBlurSuppressed,
 } from './manager.js'
 import { getConfig } from '../config/nuxyconfig.js'
 
 const onceHandlers: Record<string, () => void> = {}
+const eventHandlers: Record<string, () => void> = {}
 
 const makeMockWin = () => ({
-  on: vi.fn(),
+  on: vi.fn((event: string, handler: () => void) => {
+    eventHandlers[event] = handler
+  }),
   once: vi.fn((event: string, handler: () => void) => {
     onceHandlers[event] = handler
   }),
@@ -20,6 +24,8 @@ const makeMockWin = () => ({
   isDestroyed: vi.fn(() => false),
   isVisible: vi.fn(() => false),
   show: vi.fn(),
+  hide: vi.fn(),
+  minimize: vi.fn(),
   destroy: vi.fn(),
   webContents: { send: vi.fn() },
 })
@@ -35,6 +41,7 @@ vi.mock('../config/nuxyconfig.js', () => ({
     alwaysOnTop: false,
     showInTaskbar: false,
     showOnStartup: true,
+    blurAction: 'hide',
   })),
 }))
 
@@ -46,7 +53,9 @@ vi.mock('./runtime.js', () => ({
 describe('Window Manager - Preloads Load Guard', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    setBlurSuppressed(false)
     Object.keys(onceHandlers).forEach((k) => delete onceHandlers[k])
+    Object.keys(eventHandlers).forEach((k) => delete eventHandlers[k])
   })
 
   it('initially preloadsLoaded is false', () => {
@@ -97,5 +106,20 @@ describe('Window Manager - Preloads Load Guard', () => {
     onRendererReady()
 
     expect(win?.show).not.toHaveBeenCalled()
+  })
+
+  it('blur handler hides window by default', () => {
+    createMainWindow()
+    const win = getMainWindow()
+    eventHandlers['blur']?.()
+    expect(win?.hide).toHaveBeenCalled()
+  })
+
+  it('blur handler is ignored while suppression is active', () => {
+    createMainWindow()
+    const win = getMainWindow()
+    setBlurSuppressed(true)
+    eventHandlers['blur']?.()
+    expect(win?.hide).not.toHaveBeenCalled()
   })
 })

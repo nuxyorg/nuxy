@@ -11,6 +11,7 @@ import { KeyboardController } from './controllers/keyboard-controller.ts'
 import { InitController } from './controllers/init-controller.ts'
 import { SyncController, applySettingsToDOM } from './controllers/sync-controller.ts'
 import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
+import { syncBlurSuppression } from '../tool-behavior.ts'
 import type {
   CommandPaletteAction,
   KeyAction,
@@ -123,6 +124,8 @@ export class ShellController {
     this.win = new WindowController(this._host)
     this.tools = new ToolController(this._host, {
       onToolChange: (toolId) => {
+        const manifest = toolId ? this.tools.tools.find((t) => t.id === toolId)?.manifest : null
+        syncBlurSuppression(toolId, manifest)
         window.core?.shell?.resetToolState({ clearSearchPlaceholder: toolId === null })
         if (toolId) {
           syncToolSearchPlaceholder(toolId, () => this.tools.activeTool === toolId)

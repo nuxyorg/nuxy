@@ -3,7 +3,7 @@ import { kernelLogger } from '@nuxy/core'
 import { getConfig } from '../config/nuxyconfig.js'
 import { positionWindowOnDisplay } from '../window/runtime.js'
 import { getOrCreateSpring } from '../window/spring.js'
-import { onPreloadsLoaded, onRendererReady } from '../window/manager.js'
+import { onPreloadsLoaded, onRendererReady, setBlurSuppressed } from '../window/manager.js'
 
 const log = kernelLogger.child('WindowChannels')
 
@@ -86,5 +86,10 @@ export function registerWindowChannels(): void {
   ipcMain.on('window:ready', () => {
     // log.info(`[FLASH-DEBUG] window:ready received at ${Date.now()}`)
     onRendererReady()
+  })
+
+  ipcMain.on('window:set-blur-suppressed', (_event, suppressed: unknown) => {
+    setBlurSuppressed(suppressed === true)
+    log.silly('blur suppression updated', { suppressed: suppressed === true })
   })
 }

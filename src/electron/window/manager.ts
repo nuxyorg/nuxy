@@ -11,6 +11,15 @@ let mainWindow: BrowserWindow | null = null
 let readyToShowFired = false
 let rendererReady = false
 let showOnStartup = false
+let blurSuppressed = false
+
+export function setBlurSuppressed(suppressed: boolean): void {
+  blurSuppressed = suppressed
+}
+
+export function isBlurSuppressed(): boolean {
+  return blurSuppressed
+}
 
 export function getMainWindow(): BrowserWindow | null {
   return mainWindow
@@ -80,6 +89,7 @@ export function createMainWindow() {
   })
 
   mainWindow.on('blur', () => {
+    if (blurSuppressed) return
     const { blurAction } = getConfig()
     switch (blurAction) {
       case 'minimize':
