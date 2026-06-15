@@ -51,6 +51,10 @@ describe('settings backend', () => {
       register(core)
       const result = await (handlers['getSettings'] as (p: unknown) => Promise<NuxySettings>)({})
       expect(result).toStrictEqual(DEFAULT_SETTINGS)
+      expect(core.storage.write as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
+        'settings.json',
+        DEFAULT_SETTINGS
+      )
     })
   })
 

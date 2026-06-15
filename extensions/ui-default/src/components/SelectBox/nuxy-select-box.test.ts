@@ -153,6 +153,47 @@ describe('nuxy-select-box', () => {
     await el.updateComplete
   })
 
+  it('matches numeric option values against string value attribute', async () => {
+    const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
+    el.options = JSON.stringify([
+      { value: 800, label: '800px' },
+      { value: 900, label: '900px' },
+    ])
+    el.value = '800'
+    parent.appendChild(el)
+    await el.updateComplete
+
+    expect(el.shadowRoot?.textContent).toContain('800px')
+  })
+
+  it('matches boolean false option values', async () => {
+    const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
+    el.options = JSON.stringify([
+      { value: true, label: 'Yes' },
+      { value: false, label: 'No' },
+    ])
+    el.value = 'false'
+    parent.appendChild(el)
+    await el.updateComplete
+
+    expect(el.shadowRoot?.textContent).toContain('No')
+  })
+
+  it('shows label for empty-string option value instead of placeholder', async () => {
+    const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
+    el.options = JSON.stringify([
+      { value: '', label: 'Default pack' },
+      { value: 'custom', label: 'Custom pack' },
+    ])
+    el.value = ''
+    el.placeholder = '—'
+    parent.appendChild(el)
+    await el.updateComplete
+
+    expect(el.shadowRoot?.textContent).toContain('Default pack')
+    expect(el.shadowRoot?.textContent).not.toContain('—')
+  })
+
   it('clears search input when reopened after close', async () => {
     const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
     el.options = JSON.stringify([

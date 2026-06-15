@@ -263,6 +263,7 @@ describe('config validation', () => {
     expect(cfg.zoom).toBe('100%')
     expect(cfg.font).toBe('system')
     expect(cfg.backgroundBehavior).toBe('reset-on-show')
+    expect(cfg.windowPosition).toBe('1/2, 1/2')
   })
 
   it('applies valid backgroundBehavior resume-session', () => {

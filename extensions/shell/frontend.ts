@@ -195,6 +195,7 @@ export class NuxyShellViewElement extends LitElement {
     | null = null
   private lastActiveTool: string | null = null
   private _inputEl: HTMLInputElement | null = null
+  private _didInitialPosition = false
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -208,6 +209,7 @@ export class NuxyShellViewElement extends LitElement {
     this.controller?.disconnect()
     this.controller = null
     this._inputEl = null
+    this._didInitialPosition = false
   }
 
   protected updated(): void {
@@ -216,6 +218,10 @@ export class NuxyShellViewElement extends LitElement {
     const s = ctrl.state
 
     ctrl.refs.container = this.shadowRoot!.querySelector('nuxy-shell') as HTMLElement | null
+    if (ctrl.refs.container && !this._didInitialPosition) {
+      this._didInitialPosition = true
+      ctrl.syncInitialPosition()
+    }
 
     const omniEl = this.shadowRoot!.querySelector('nuxy-shell-omni-bar') as HTMLElement & {
       nativeInput?: HTMLInputElement
@@ -560,16 +566,32 @@ export class NuxyShellViewElement extends LitElement {
                   <span>
                     ${[
                       extensionSummary.tools > 0
-                        ? t('footer.tools', { count: extensionSummary.tools }, extensionSummary.tools)
+                        ? t(
+                            'footer.tools',
+                            { count: extensionSummary.tools },
+                            extensionSummary.tools
+                          )
                         : null,
                       extensionSummary.themes > 0
-                        ? t('footer.themes', { count: extensionSummary.themes }, extensionSummary.themes)
+                        ? t(
+                            'footer.themes',
+                            { count: extensionSummary.themes },
+                            extensionSummary.themes
+                          )
                         : null,
                       extensionSummary.iconpacks > 0
-                        ? t('footer.iconpacks', { count: extensionSummary.iconpacks }, extensionSummary.iconpacks)
+                        ? t(
+                            'footer.iconpacks',
+                            { count: extensionSummary.iconpacks },
+                            extensionSummary.iconpacks
+                          )
                         : null,
                       extensionSummary.uikit > 0
-                        ? t('footer.uikit', { count: extensionSummary.uikit }, extensionSummary.uikit)
+                        ? t(
+                            'footer.uikit',
+                            { count: extensionSummary.uikit },
+                            extensionSummary.uikit
+                          )
                         : null,
                     ]
                       .filter(Boolean)

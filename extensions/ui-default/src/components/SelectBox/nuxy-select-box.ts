@@ -164,9 +164,12 @@ export class NuxySelectBoxElement extends LitElement {
     return parseOptions(this.options)
   }
 
-  private getValue(): string | undefined {
-    const v = this.value
-    return v === undefined || v === '' ? undefined : v
+  private getValue(): string {
+    return this.value ?? ''
+  }
+
+  private valueMatches(optionValue: unknown, current: string): boolean {
+    return String(optionValue) === current
   }
 
   private getFocusedIndex(): number {
@@ -449,7 +452,7 @@ export class NuxySelectBoxElement extends LitElement {
     for (let i = 0; i < filtered.length; i++) {
       const option = filtered[i]
       const isFocused = i === focusedIndex
-      const isSelected = option.value === value
+      const isSelected = this.valueMatches(option.value, value)
 
       const el = document.createElement('div')
       el.setAttribute('role', 'option')
@@ -533,7 +536,8 @@ export class NuxySelectBoxElement extends LitElement {
     const options = this.getOptions()
     const value = this.getValue()
     const placeholder = this.placeholder || '—'
-    const currentLabel = options.find((o) => o.value === value)?.label ?? placeholder
+    const currentLabel =
+      options.find((o) => this.valueMatches(o.value, value))?.label ?? placeholder
     const open = this.isOpen()
 
     return html`

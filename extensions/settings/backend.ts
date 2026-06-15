@@ -26,7 +26,11 @@ const DEFAULT: NuxySettings = {
 export function register(core: CoreContext): void {
   core.ipc.handle('getSettings', async (): Promise<NuxySettings> => {
     const saved = await core.storage.read<Partial<NuxySettings>>('settings.json')
-    return { ...DEFAULT, ...(saved || {}) }
+    if (!saved) {
+      await core.storage.write('settings.json', DEFAULT)
+      return DEFAULT
+    }
+    return { ...DEFAULT, ...saved }
   })
 
   core.ipc.handle('saveSettings', async (payload: unknown): Promise<NuxySettings> => {

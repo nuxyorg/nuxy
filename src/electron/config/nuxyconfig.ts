@@ -37,6 +37,7 @@ const DEFAULTS: NuxyConfig = {
   opacity: 1,
   showInTaskbar: false,
   showOnStartup: false,
+  windowPosition: '1/2, 1/2',
   theme: 'dark',
   zoom: '100%',
   font: 'system',

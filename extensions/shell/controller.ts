@@ -191,7 +191,7 @@ export class ShellController {
       setThemeStyles: (styles) => this.store.setState({ themeStyles: styles }),
       setExtensionSummary: (summary) => this.store.setState({ extensionSummary: summary }),
       setCfg: (cfg) => {
-        this.refs.cfg = cfg
+        this.refs.cfg = { ...(this.refs.cfg ?? {}), ...cfg }
       },
       recompute: () => this._recompute(),
       syncProviders: () => this._syncProviders(),
@@ -201,8 +201,9 @@ export class ShellController {
       getContainer: () => this.refs.container,
       getInput: () => this.refs.input,
       getCfg: () => this.refs.cfg,
+      getSettings: () => this.store.getState().settings,
       setCfg: (cfg) => {
-        this.refs.cfg = cfg
+        this.refs.cfg = { ...(this.refs.cfg ?? {}), ...cfg }
       },
       hasDragged: () => this.refs.hasDragged,
       setHasDragged: (val) => {
@@ -503,9 +504,17 @@ export class ShellController {
     return this.win.containerStyle(settings, this.tools.activeTool, isInitialLoad)
   }
 
+  syncInitialPosition(): void {
+    const settings = this.store.getState().settings
+    this.refs.cfg = { ...(this.refs.cfg ?? {}), ...settings }
+    requestAnimationFrame(() => this._sync.updatePosition(true))
+  }
+
   private _applySettings(s: ShellConfig): void {
     this.store.setState({ settings: s })
+    this.refs.cfg = { ...(this.refs.cfg ?? {}), ...s }
     applySettingsToDOM(s)
+    requestAnimationFrame(() => this._sync.updatePosition(true))
   }
 
   private _recordToolUsed(toolId: string, query = ''): void {

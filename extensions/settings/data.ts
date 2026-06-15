@@ -1,5 +1,6 @@
 import type { NuxySettings, SelectOption, ExtSettingsInfo } from './types.ts'
 import { DEFAULT_SETTINGS } from './utils/settingsOptions.ts'
+import { buildIconPackOptions, resolveSingleIconPack } from './utils/iconPackDefaults.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 const OLLAMA_EXT_ID = 'com.nuxy.ollama'
@@ -45,12 +46,20 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
     .then((res) => {
       const r = res as { success: boolean; data?: unknown[] }
       if (r?.success && Array.isArray(r.data)) {
-        onPatch({
-          iconPacks: [
-            { value: '', label: '' },
-            ...r.data.map((name) => ({ value: name as string, label: name as string })),
-          ],
-        })
+        const packNames = r.data.map((name) => String(name))
+        onPatch({ iconPacks: buildIconPackOptions(packNames) })
+        window.core.ipc
+          .invoke(EXT_ID, 'getSettings', {})
+          .then((settingsRes) => {
+            const sr = settingsRes as { success: boolean; data?: NuxySettings }
+            if (!sr?.success || !sr.data) return
+            const resolved = resolveSingleIconPack(sr.data, packNames)
+            if (!resolved) return
+            onPatch({ settings: resolved })
+            window.core?.events?.emit('settings-updated', resolved as Record<string, unknown>)
+            window.core.ipc.invoke(EXT_ID, 'saveSettings', resolved).catch(() => {})
+          })
+          .catch(() => {})
       }
     })
     .catch(() => {})

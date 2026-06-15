@@ -12,6 +12,7 @@ export interface SyncControllerCallbacks {
   getContainer: () => HTMLElement | null
   getInput: () => HTMLInputElement | null
   getCfg: () => ShellConfig | null
+  getSettings: () => ShellConfig
   setCfg: (cfg: ShellConfig) => void
   hasDragged: () => boolean
   setHasDragged: (val: boolean) => void
@@ -118,7 +119,7 @@ export class SyncController {
   }
 
   updatePosition(force = false, heightOverride?: number): void {
-    const cfg = this.callbacks.getCfg()
+    const cfg = this.callbacks.getCfg() ?? this.callbacks.getSettings()
     const container = this.callbacks.getContainer()
     if (!cfg?.windowPosition || !container) return
     if (!force && this.callbacks.hasDragged()) return
