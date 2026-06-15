@@ -20,6 +20,7 @@ export class NuxyListElement extends LitElement {
       flex-direction: column;
       position: relative;
       padding-block: var(--space-2);
+      gap: var(--space-0);
     }
 
     :host([max-height='md']) {

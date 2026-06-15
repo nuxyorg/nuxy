@@ -1,6 +1,7 @@
 .nuxy-list {
   display: flex;
   flex-direction: column;
+  gap: var(--space-0);
 }
 
 .nuxy-list::-webkit-scrollbar {

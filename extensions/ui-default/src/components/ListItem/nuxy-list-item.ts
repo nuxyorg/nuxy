@@ -7,7 +7,7 @@ export class NuxyListItemElement extends LitElement {
 
   static styles = css`
     :host {
-      padding: var(--space-4) var(--space-5);
+      padding: calc(var(--space-4) - 2px) var(--space-5);
       display: flex;
       align-items: center;
       justify-content: space-between;
