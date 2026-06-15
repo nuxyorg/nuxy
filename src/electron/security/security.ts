@@ -18,26 +18,26 @@ const REVOCATION_LIST_URL =
 
 const README_CONTENT = `# Nuxy Security Files — DO NOT DELETE OR MODIFY
 
-Bu klasör Nuxy'nin güvenlik altyapısına ait dosyaları içerir.
-Bu dosyaları silmek veya değiştirmek, eklentilerin doğrulama sürecini bozabilir.
+This folder contains files for Nuxy's security infrastructure.
+Deleting or modifying these files may break the extension verification process.
 
-## Dosyalar
+## Files
 
 ### state-secret.key
-HMAC imzalama için kullanılan kriptografik anahtar. Silinirse extensions-state.json
-geçersiz hale gelir ve tüm eklentiler sıfırdan doğrulanmak zorunda kalır.
-**Bu dosyayı kesinlikle paylaşmayın — cihazınıza özgüdür.**
+Cryptographic key used for HMAC signing. If deleted, extensions-state.json
+becomes invalid and all extensions must be verified from scratch.
+**Never share this file — it is unique to your device.**
 
 ### extensions-state.json
-Doğrulanmış eklentilerin bütünlük hash'lerinin HMAC imzalı önbelleği.
-Silinirse zararsızdır — yeniden oluşturulur; ancak tüm eklentiler yeniden taranır.
+HMAC-signed cache of integrity hashes for verified extensions.
+Safe to delete — it will be recreated; however, all extensions will be rescanned.
 
 ### trusted-keys.json
-Güvenilir eklenti yayıncılarının public key listesi.
-Değiştirirseniz kendi eklentileriniz yüklenmeyebilir.
+List of public keys for trusted extension publishers.
+If modified, your own extensions may fail to load.
 
 ### revoked-extensions.json
-GitHub'dan indirilen iptal listesi (kara liste). Silinirse güncellenir.
+Revocation list (blacklist) downloaded from GitHub. If deleted, it will be updated.
 `
 
 // Migrate legacy files from CONFIG_DIR root, then ensure SECURITY_DIR exists
@@ -45,7 +45,12 @@ try {
   const isNew = !fs.existsSync(SECURITY_DIR)
   fs.mkdirSync(SECURITY_DIR, { recursive: true })
 
-  for (const file of ['trusted-keys.json', 'extensions-state.json', 'state-secret.key', 'revoked-extensions.json']) {
+  for (const file of [
+    'trusted-keys.json',
+    'extensions-state.json',
+    'state-secret.key',
+    'revoked-extensions.json',
+  ]) {
     const oldPath = path.join(CONFIG_DIR, file)
     const newPath = path.join(SECURITY_DIR, file)
     if (fs.existsSync(oldPath) && !fs.existsSync(newPath)) {
