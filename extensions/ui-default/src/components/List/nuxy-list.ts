@@ -12,6 +12,8 @@ export class NuxyListElement extends LitElement {
   @property({ type: Number, attribute: 'scroll-speed' })
   declare scrollSpeed: number
 
+  private _indicatorWasHidden = true
+
   static styles = css`
     :host {
       display: flex;
@@ -60,6 +62,15 @@ export class NuxyListElement extends LitElement {
     }
   }
 
+  private _resetIndicatorPosition(indicator: HTMLElement): void {
+    indicator.style.transition = 'none'
+    indicator.style.transform = 'translateY(0px)'
+    indicator.style.height = '0px'
+    void indicator.offsetHeight
+    indicator.style.transition = ''
+    this._indicatorWasHidden = true
+  }
+
   private _updateIndicator(): void {
     const items = Array.from(this.querySelectorAll<HTMLElement>('nuxy-list-item'))
     const idx = this.activeIndex ?? null
@@ -68,11 +79,24 @@ export class NuxyListElement extends LitElement {
     if (!indicator) return
     if (!target) {
       indicator.classList.remove('visible')
+      this._resetIndicatorPosition(indicator)
       return
     }
+
+    const snap = this._indicatorWasHidden
+    if (snap) {
+      indicator.style.transition = 'none'
+      this._indicatorWasHidden = false
+    }
+
     indicator.style.transform = `translateY(${target.offsetTop}px)`
     indicator.style.height = `${target.offsetHeight}px`
     indicator.classList.add('visible')
+
+    if (snap) {
+      void indicator.offsetHeight
+      indicator.style.transition = ''
+    }
   }
 
   render() {
