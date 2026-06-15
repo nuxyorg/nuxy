@@ -45,6 +45,13 @@ const DEFAULT_SETTINGS: ShellConfig = {
   windowPosition: '1/2, 1/3',
 }
 
+export interface ExtensionSummary {
+  tools: number
+  themes: number
+  uikit: number
+  iconpacks: number
+}
+
 export interface ShellCoreState {
   query: string
   savedQuery: string
@@ -56,6 +63,7 @@ export interface ShellCoreState {
   settings: ShellConfig
   bridge: ShellBridgeSnapshot
   holdMs: number | null
+  extensionSummary: ExtensionSummary | null
 }
 
 // Keep the old alias for any code that still reads ctrl.state
@@ -141,6 +149,7 @@ export class ShellController {
       settings: DEFAULT_SETTINGS,
       bridge: EMPTY_SNAPSHOT,
       holdMs: null,
+      extensionSummary: null,
     })
 
     this.refs = {
@@ -180,6 +189,7 @@ export class ShellController {
       setRecentToolIds: (ids) => this.tools.setRecentToolIds(ids),
       setUsageStats: (stats) => this.tools.setUsageStats(stats),
       setThemeStyles: (styles) => this.store.setState({ themeStyles: styles }),
+      setExtensionSummary: (summary) => this.store.setState({ extensionSummary: summary }),
       setCfg: (cfg) => {
         this.refs.cfg = cfg
       },

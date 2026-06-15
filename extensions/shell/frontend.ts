@@ -522,7 +522,7 @@ export class NuxyShellViewElement extends LitElement {
   ) {
     const ctrl = this.controller
     if (!ctrl) return nothing
-    const { tools, activeTool, selectedIndex, listResults } = ctrl.state
+    const { tools, activeTool, selectedIndex, listResults, extensionSummary } = ctrl.state
     const t = ctrl.t.t
 
     const hasFooterContent =
@@ -555,7 +555,28 @@ export class NuxyShellViewElement extends LitElement {
                     )
                   : nothing}
               `
-            : html` <span>${t('footer.extensionsLoaded', { count: tools.length + 1 })}</span> `}
+            : extensionSummary
+              ? html`
+                  <span>
+                    ${[
+                      extensionSummary.tools > 0
+                        ? t('footer.tools', { count: extensionSummary.tools }, extensionSummary.tools)
+                        : null,
+                      extensionSummary.themes > 0
+                        ? t('footer.themes', { count: extensionSummary.themes }, extensionSummary.themes)
+                        : null,
+                      extensionSummary.iconpacks > 0
+                        ? t('footer.iconpacks', { count: extensionSummary.iconpacks }, extensionSummary.iconpacks)
+                        : null,
+                      extensionSummary.uikit > 0
+                        ? t('footer.uikit', { count: extensionSummary.uikit }, extensionSummary.uikit)
+                        : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </span>
+                `
+              : html` <span>${t('footer.extensionsLoaded', { count: tools.length + 1 })}</span> `}
         </nuxy-shortcut-hint>
 
         <nuxy-shortcut-hint>

@@ -24,3 +24,15 @@ export function listExtensionsByKind(kind: ListableKind): LoadedExtension[] {
       manifest: { ...ext.manifest, name: getDisplayName(ext) },
     }))
 }
+
+/** Returns all active uikit + helper extensions that have a frontend, sorted by priority. */
+export function listUikitExtensions(): LoadedExtension[] {
+  return loadedExtensions
+    .filter(
+      (ext) =>
+        !ext.disabled &&
+        (ext.manifest.type === 'uikit' || ext.manifest.type === 'helper') &&
+        ext.manifest.entry?.frontend
+    )
+    .sort((a, b) => (a.manifest.priority ?? 100) - (b.manifest.priority ?? 100))
+}

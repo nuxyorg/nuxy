@@ -52,6 +52,26 @@ export function listExtensionDirs(extensionsDir) {
     .filter((d) => fs.existsSync(path.join(d, 'manifest.json')))
 }
 
+export function groupExtensionsByCategory(extDirs) {
+  const counts = { tools: 0, shell: 0, themes: 0, icons: 0, uikit: 0, helpers: 0 }
+  for (const extDir of extDirs) {
+    try {
+      const manifest = JSON.parse(fs.readFileSync(path.join(extDir, 'manifest.json'), 'utf8'))
+      const type = manifest.type
+      if (type === 'tool' || type === 'provider' || type === 'orchestrator') {
+        if (manifest.bootstrap) counts.shell++
+        else counts.tools++
+      } else if (type === 'theme') counts.themes++
+      else if (type === 'iconpack') counts.icons++
+      else if (type === 'uikit') counts.uikit++
+      else if (type === 'helper') counts.helpers++
+    } catch {
+      /* skip unreadable manifests */
+    }
+  }
+  return counts
+}
+
 async function packageAndInstall(extDir) {
   const name = path.basename(extDir)
   await execFileAsync('node', [nxtBin, 'package'], { cwd: extDir })

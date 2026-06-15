@@ -12,6 +12,14 @@
   },
   "footer": {
     "extensionsLoaded": "{count} uzantı yüklendi",
+    "tools__one": "{count} araç",
+    "tools__other": "{count} araç",
+    "themes__one": "{count} tema",
+    "themes__other": "{count} tema",
+    "iconpacks__one": "{count} ikon paketi",
+    "iconpacks__other": "{count} ikon paketi",
+    "uikit__one": "{count} ui kit",
+    "uikit__other": "{count} ui kit",
     "pressToRun": "Çalıştırmak için",
     "toRun": "tuşuna basın",
     "toActions": "işlemler için"

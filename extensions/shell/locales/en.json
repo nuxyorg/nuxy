@@ -12,6 +12,14 @@
   },
   "footer": {
     "extensionsLoaded": "{count} extensions loaded",
+    "tools__one": "{count} tool",
+    "tools__other": "{count} tools",
+    "themes__one": "{count} theme",
+    "themes__other": "{count} themes",
+    "iconpacks__one": "{count} icon pack",
+    "iconpacks__other": "{count} icon packs",
+    "uikit__one": "{count} ui kit",
+    "uikit__other": "{count} ui kits",
     "pressToRun": "Press",
     "toRun": "to run",
     "toActions": "to actions"

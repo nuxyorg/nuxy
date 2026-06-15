@@ -1,4 +1,5 @@
 import type { ShellConfig, Tool, Provider, Orchestrator, UsageStats } from '../types.ts'
+import type { ExtensionSummary } from '../controller.ts'
 import { SHELL_EXT_ID } from '../utils.ts'
 import { syncToolSearchPlaceholder } from '../utils/toolSearchPlaceholder.ts'
 
@@ -11,6 +12,7 @@ export interface InitControllerCallbacks {
   setRecentToolIds: (ids: string[]) => void
   setUsageStats: (stats: UsageStats) => void
   setThemeStyles: (styles: Record<string, string>) => void
+  setExtensionSummary: (summary: ExtensionSummary) => void
   setCfg: (cfg: ShellConfig) => void
   recompute: () => void
   syncProviders: () => void
@@ -28,6 +30,7 @@ export class InitController {
     this._fetchUserSettings()
     this._fetchRecentTools()
     this._fetchUsageStats()
+    this._fetchExtensionSummary()
     this._bindLocaleChange()
   }
 
@@ -129,6 +132,16 @@ export class InitController {
           this.callbacks.setUsageStats(r.data)
           this.callbacks.recompute()
         }
+      })
+      .catch(() => {})
+  }
+
+  private _fetchExtensionSummary(): void {
+    window.core?.ipc
+      ?.invoke('kernel', 'getExtensionSummary', {})
+      .then((res: unknown) => {
+        const r = res as { success: boolean; data: ExtensionSummary } | null
+        if (r?.success && r.data) this.callbacks.setExtensionSummary(r.data)
       })
       .catch(() => {})
   }

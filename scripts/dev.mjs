@@ -18,6 +18,7 @@ import {
   packageAllExtensions,
   startExtensionWatcher,
   listExtensionDirs,
+  groupExtensionsByCategory,
 } from './lib/dev-extensions.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -74,7 +75,7 @@ async function buildUIKit() {
       cwd: path.join(ROOT, 'extensions/ui-default'),
       quiet: true,
     })
-    ok('UIKit loaded')
+    ok('Built UI kit')
   } catch (err) {
     fail(err instanceof Error ? err.message : String(err))
     process.exit(1)
@@ -85,11 +86,18 @@ async function packageExtensions() {
   const paths = getPaths()
   ensureExtensionDirs(paths)
 
-  const total = listExtensionDirs(paths.extensionsDir).length
+  const extDirs = listExtensionDirs(paths.extensionsDir)
   const failures = await packageAllExtensions(paths)
 
   if (failures.length === 0) {
-    ok(`${total} extensions installed`)
+    const pl = (n, s) => `${n} ${s}${n === 1 ? '' : 's'}`
+    const counts = groupExtensionsByCategory(extDirs)
+    if (counts.shell > 0) ok(pl(counts.shell, 'shell'))
+    if (counts.tools > 0) ok(pl(counts.tools, 'tool'))
+    if (counts.themes > 0) ok(pl(counts.themes, 'theme'))
+    if (counts.icons > 0) ok(pl(counts.icons, 'icon pack'))
+    if (counts.uikit > 0) ok(pl(counts.uikit, 'ui kit'))
+    if (counts.helpers > 0) ok(pl(counts.helpers, 'helper'))
   } else {
     fail(`${failures.length} failed: ${failures.join(', ')}`)
   }

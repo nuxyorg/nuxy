@@ -12,6 +12,10 @@
   },
   "footer": {
     "extensionsLoaded": "{count}個の拡張機能が読み込まれました",
+    "tools__other": "{count}個のツール",
+    "themes__other": "{count}個のテーマ",
+    "iconpacks__other": "{count}個のアイコンパック",
+    "uikit__other": "{count}個のUIキット",
     "pressToRun": "押して",
     "toRun": "実行",
     "toActions": "アクション"

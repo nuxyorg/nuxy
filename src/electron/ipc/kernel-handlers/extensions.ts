@@ -1,23 +1,15 @@
+import { kernelLogger, type IpcResult } from '@nuxy/core'
 import { loadedExtensions } from '../../extensions/scanner.js'
 import { setExtensionEnabled } from '../../extensions/disabled.js'
 import { invokeRescan } from '../../extensions/rescan-hook.js'
 import { getDisplayName } from '../../extensions/registry.js'
-import { listExtensionsByKind } from '../list-by-type.js'
-import { kernelLogger } from '@nuxy/core'
-import type { IpcResult } from '@nuxy/core'
+import { listExtensionsByKind, listUikitExtensions } from '../list-by-type.js'
 import { kernelInstallExtension, kernelUninstallExtension } from '../extension-ops.js'
 
 const log = kernelLogger.child('KernelExtensions')
 
-function listUikitExtensions(): typeof loadedExtensions {
-  return loadedExtensions
-    .filter(
-      (ext) =>
-        !ext.disabled &&
-        (ext.manifest.type === 'uikit' || ext.manifest.type === 'helper') &&
-        ext.manifest.entry?.frontend
-    )
-    .sort((a, b) => (a.manifest.priority ?? 100) - (b.manifest.priority ?? 100))
+function countByType(type: string): number {
+  return loadedExtensions.filter((ext) => !ext.disabled && ext.manifest.type === type).length
 }
 
 type Handler = (payload: unknown) => IpcResult | Promise<IpcResult>
@@ -27,6 +19,16 @@ export const extensionHandlers: Record<string, Handler> = {
   listProviders: () => ({ success: true, data: listExtensionsByKind('provider') }),
   listOrchestrators: () => ({ success: true, data: listExtensionsByKind('orchestrator') }),
   listUikitExtensions: () => ({ success: true, data: listUikitExtensions() }),
+
+  getExtensionSummary: () => ({
+    success: true,
+    data: {
+      tools: listExtensionsByKind('tool').length,
+      themes: countByType('theme'),
+      uikit: countByType('uikit'),
+      iconpacks: countByType('iconpack'),
+    },
+  }),
 
   listInstalledExtensions: () => ({
     success: true,
