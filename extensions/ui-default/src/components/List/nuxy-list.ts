@@ -12,8 +12,6 @@ export class NuxyListElement extends LitElement {
   @property({ type: Number, attribute: 'scroll-speed' })
   declare scrollSpeed: number
 
-  private _hoveredIndex: number | null = null
-
   static styles = css`
     :host {
       display: flex;
@@ -47,18 +45,6 @@ export class NuxyListElement extends LitElement {
     }
   `
 
-  connectedCallback(): void {
-    super.connectedCallback()
-    this.addEventListener('mouseover', this._onMouseOver)
-    this.addEventListener('mouseleave', this._onMouseLeave)
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.removeEventListener('mouseover', this._onMouseOver)
-    this.removeEventListener('mouseleave', this._onMouseLeave)
-  }
-
   updated(changedProperties: Map<string, unknown>): void {
     if (changedProperties.has('activeIndex')) {
       const previousActiveIndex = changedProperties.get('activeIndex') as number
@@ -74,23 +60,10 @@ export class NuxyListElement extends LitElement {
     }
   }
 
-  private _onMouseOver = (e: MouseEvent): void => {
-    const item = (e.target as Element).closest('nuxy-list-item')
-    if (!item) return
-    const items = Array.from(this.querySelectorAll<HTMLElement>('nuxy-list-item'))
-    this._hoveredIndex = items.indexOf(item as HTMLElement)
-    this._updateIndicator()
-  }
-
-  private _onMouseLeave = (): void => {
-    this._hoveredIndex = null
-    this._updateIndicator()
-  }
-
   private _updateIndicator(): void {
     const items = Array.from(this.querySelectorAll<HTMLElement>('nuxy-list-item'))
-    const idx = this._hoveredIndex !== null ? this._hoveredIndex : (this.activeIndex ?? null)
-    const target = idx !== null && !isNaN(idx) ? items[idx] : null
+    const idx = this.activeIndex ?? null
+    const target = idx !== null && !isNaN(idx) && idx >= 0 ? items[idx] : null
     const indicator = this.shadowRoot?.querySelector<HTMLElement>('.indicator')
     if (!indicator) return
     if (!target) {

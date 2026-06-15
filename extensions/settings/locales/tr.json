@@ -56,12 +56,14 @@
     "topCenter": "Üst Orta",
     "leftCenter": "Sol Orta",
     "screenCenter": "Ekran Merkezi",
+    "screenCenterDefault": "Ekran Merkezi (varsayılan)",
     "rightCenter": "Sağ Orta",
     "bottomCenter": "Alt Orta",
     "topLeft": "Sol Üst",
     "topRight": "Sağ Üst",
     "bottomLeft": "Sol Alt",
     "bottomRight": "Sağ Alt",
+    "upperCenter": "Üst Orta",
     "upperCenterDefault": "Üst Orta (varsayılan)"
   },
   "backgroundBehavior": {

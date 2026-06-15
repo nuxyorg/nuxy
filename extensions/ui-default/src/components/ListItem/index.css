@@ -4,18 +4,24 @@
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition:
-    background-color 150ms,
-    border-color 150ms;
-  border-left: 2px solid transparent;
+  position: relative;
 }
 
-.nuxy-list-item--active {
+.nuxy-list-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--space-2);
+  right: var(--space-2);
   background-color: var(--syntax-comment);
-  border-left-color: var(--syntax-operator);
+  border-radius: var(--radius-md);
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nuxy-list-item:not(.nuxy-list-item--active):hover {
-  background-color: var(--syntax-comment);
-  border-left-color: var(--syntax-comment);
+.nuxy-list-item:not(.nuxy-list-item--active):hover::before {
+  opacity: 1;
 }

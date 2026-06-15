@@ -11,10 +11,28 @@ export class NuxyListItemElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--space-3);
+      gap: var(--space-4);
       cursor: pointer;
-      transition: background-color 150ms;
       position: relative;
+    }
+
+    :host::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--space-2);
+      right: var(--space-2);
+      background-color: var(--syntax-comment);
+      border-radius: var(--radius-md);
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 120ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    :host(:hover:not([active]))::before {
+      opacity: 1;
     }
   `
 
