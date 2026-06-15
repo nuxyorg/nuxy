@@ -46,7 +46,10 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
       const r = res as { success: boolean; data?: unknown[] }
       if (r?.success && Array.isArray(r.data)) {
         onPatch({
-          iconPacks: r.data.map((name) => ({ value: name as string, label: name as string })),
+          iconPacks: [
+            { value: '', label: '' },
+            ...r.data.map((name) => ({ value: name as string, label: name as string })),
+          ],
         })
       }
     })

@@ -17,6 +17,11 @@ export function getIcon(name: string, packName?: string): string | null {
   return pack?.icons[name] ?? null
 }
 
+export function getIconPack(packName?: string): IconPackDefinition | null {
+  const name = packName ?? defaultPackName
+  return (name ? packs.get(name) : undefined) ?? null
+}
+
 export function listIconPacks(): string[] {
   return [...packs.keys()]
 }

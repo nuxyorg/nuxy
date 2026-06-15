@@ -54,7 +54,6 @@ export interface ShellCoreState {
   copiedId: string | null
   themeStyles: Record<string, string> | null
   settings: ShellConfig
-  searchIcon: string | null
   bridge: ShellBridgeSnapshot
   holdMs: number | null
 }
@@ -140,7 +139,6 @@ export class ShellController {
       copiedId: null,
       themeStyles: null,
       settings: DEFAULT_SETTINGS,
-      searchIcon: null,
       bridge: EMPTY_SNAPSHOT,
       holdMs: null,
     })
@@ -173,7 +171,6 @@ export class ShellController {
     this._init = new InitController({
       getActiveTool: () => this.tools.activeTool,
       applySettings: (s) => this._applySettings(s),
-      setSearchIcon: (svg) => this.store.setState({ searchIcon: svg }),
       setTools: (tools) => this.tools.setTools(tools),
       setProviders: (providers) => this.providers.setProviders(providers),
       setOrchestrators: (orchestrators) => this.tools.setOrchestrators(orchestrators),

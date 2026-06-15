@@ -69,6 +69,9 @@ export const extensionHandlers: Record<string, Handler> = {
     if (ext?.manifest.bootstrap) {
       return { success: false, error: 'Cannot disable bootstrap extension', code: 'FORBIDDEN' }
     }
+    if (ext?.manifest.type === 'uikit') {
+      return { success: false, error: 'Cannot disable uikit extension', code: 'FORBIDDEN' }
+    }
     setExtensionEnabled(extId, enabled)
     setTimeout(() => void invokeRescan(), 100)
     return { success: true }

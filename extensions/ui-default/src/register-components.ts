@@ -1,4 +1,5 @@
 /** Side-effect imports — registers all ui-default custom elements. */
+import { loadIconCache } from './icon-cache.ts'
 import './components/Alert/nuxy-alert.ts'
 import './components/Avatar/nuxy-avatar-group.ts'
 import './components/Avatar/nuxy-avatar.ts'
@@ -75,3 +76,10 @@ import './components/ToolHost/nuxy-tool-host.ts'
 import './components/Tooltip/nuxy-tooltip.ts'
 import './components/TwoPanel/nuxy-two-panel.ts'
 import './components/WizardSection/nuxy-wizard-section.ts'
+
+// Load icon cache once at startup; reload when icon pack setting changes
+void loadIconCache()
+window.core?.events?.on('settings-updated', (settings) => {
+  const s = settings as Record<string, unknown>
+  void loadIconCache(s.iconPack ? String(s.iconPack) : undefined)
+})

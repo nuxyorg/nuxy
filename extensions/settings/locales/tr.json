@@ -8,6 +8,9 @@
     "language": "Dil",
     "extensions": "Uzantılar"
   },
+  "iconPack": {
+    "default": "Varsayılan"
+  },
   "general": {
     "theme": "Tema",
     "iconPack": "Simge Paketi",

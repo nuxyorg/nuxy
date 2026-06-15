@@ -5,7 +5,6 @@ import { syncToolSearchPlaceholder } from '../utils/toolSearchPlaceholder.ts'
 export interface InitControllerCallbacks {
   getActiveTool: () => string | null
   applySettings: (s: ShellConfig) => void
-  setSearchIcon: (svg: string) => void
   setTools: (tools: Tool[]) => void
   setProviders: (providers: Provider[]) => void
   setOrchestrators: (orchestrators: Orchestrator[]) => void
@@ -23,7 +22,6 @@ export class InitController {
   constructor(private readonly callbacks: InitControllerCallbacks) {}
 
   load(): void {
-    this._fetchSearchIcon()
     this._fetchConfig()
     this._fetchAll()
     this._fetchTheme()
@@ -36,19 +34,6 @@ export class InitController {
   destroy(): void {
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
-  }
-
-  private _fetchSearchIcon(): void {
-    window.core?.icons
-      ?.get('search')
-      .then((res: unknown) => {
-        const r = res as { success?: boolean; data?: string } | string | null
-        const svg = (r as { success?: boolean; data?: string })?.success
-          ? (r as { success: boolean; data: string }).data
-          : r
-        if (typeof svg === 'string') this.callbacks.setSearchIcon(svg)
-      })
-      .catch(() => {})
   }
 
   private _fetchTools(): void {

@@ -8,6 +8,9 @@
     "language": "言語",
     "extensions": "拡張機能"
   },
+  "iconPack": {
+    "default": "デフォルト"
+  },
   "general": {
     "theme": "テーマ",
     "iconPack": "アイコンパック",

@@ -1,6 +1,6 @@
 import { loadTheme } from '../../themes/install.js'
 import { listExtensionThemeNames } from '../../themes/extension-themes.js'
-import { getIcon, listIconPacks } from '../../icons/registry.js'
+import { getIcon, getIconPack, listIconPacks } from '../../icons/registry.js'
 import type { IpcResult } from '@nuxy/core'
 
 type Handler = (payload: unknown) => IpcResult | Promise<IpcResult>
@@ -36,4 +36,11 @@ export const themeHandlers: Record<string, Handler> = {
   },
 
   listIconPacks: () => ({ success: true, data: listIconPacks() }),
+
+  getIconPack: (payload) => {
+    const args = payload as { name?: string } | undefined
+    const pack = getIconPack(args?.name)
+    if (!pack) return { success: false, error: 'No icon pack loaded', code: 'NOT_FOUND' }
+    return { success: true, data: pack }
+  },
 }

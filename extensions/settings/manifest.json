@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "settings",
-  "permissions": ["storage", "settings.read", "settings.write"],
+  "permissions": ["storage", "settings.read", "settings.write", "extensions.manage"],
   "capabilities": {
     "callable": false,
     "caller": false

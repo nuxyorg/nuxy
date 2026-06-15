@@ -186,7 +186,15 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
             : nothing}
         </nuxy-list-item-body>
         <nuxy-list-item-actions>
-          ${isSelectType
+          ${isExtToggleRow
+            ? html`
+                <nuxy-switch
+                  ?checked=${Boolean(currentValue)}
+                  @nuxy-switch-change=${(e: CustomEvent<{ checked: boolean }>) =>
+                    this.controller?.handleRowSelect(row, e.detail.checked)}
+                ></nuxy-switch>
+              `
+            : isSelectType
             ? html`
                 <nuxy-select-box
                   options=${JSON.stringify(options)}

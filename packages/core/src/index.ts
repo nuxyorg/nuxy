@@ -1,5 +1,5 @@
 import type { NowPlaying } from './media'
-import type { IpcResult, ThemeDefinition, IconPackDefinition } from './types'
+import type { IpcResult, ThemeDefinition, IconPackDefinition, IconPackMeta } from './types'
 
 export type { NowPlaying } from './media'
 
@@ -155,6 +155,7 @@ export type {
   RegistryEntry,
   ThemeDefinition,
   IconPackDefinition,
+  IconPackMeta,
   ExtensionSettingType,
   ExtensionSettingField,
   ExtensionSettingsSchema,

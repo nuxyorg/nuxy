@@ -8,6 +8,9 @@
     "language": "Language",
     "extensions": "Extensions"
   },
+  "iconPack": {
+    "default": "Default"
+  },
   "general": {
     "theme": "Theme",
     "iconPack": "Icon Pack",

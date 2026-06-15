@@ -172,9 +172,16 @@ export interface ThemeDefinition {
   styles?: Record<string, string>
 }
 
+export interface IconPackMeta {
+  defaultOpacity?: number
+  defaultColor?: string
+}
+
 export interface IconPackDefinition {
   version: number
   name: string
-  /** Map of logical icon name → SVG string. */
+  /** Map of logical icon name → inner SVG path string (no outer <svg> wrapper). */
   icons: Record<string, string>
+  /** Per-icon rendering overrides (opacity, color). */
+  meta?: Record<string, IconPackMeta>
 }

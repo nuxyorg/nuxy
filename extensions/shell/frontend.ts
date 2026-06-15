@@ -242,7 +242,7 @@ export class NuxyShellViewElement extends LitElement {
   private renderOmniBar() {
     const ctrl = this.controller
     if (!ctrl) return nothing
-    const { query, showOmniBar, searchIcon, bridge } = ctrl.state
+    const { query, showOmniBar, bridge } = ctrl.state
     const activeToolName = ctrl.activeToolName
     const t = ctrl.t.t
     const isLoading = Object.values(ctrl.state.providerStates).some((s) => s.loading)
@@ -259,7 +259,7 @@ export class NuxyShellViewElement extends LitElement {
         ?disabled=${!showOmniBar}
         ?loading=${isLoading}
         .holdMs=${ctrl.state.holdMs}
-        .searchIconHtml=${searchIcon ?? ''}
+
         @mousedown=${(e: MouseEvent) => ctrl.handleDragMouseDown(e)}
         @click=${() => showOmniBar && ctrl.refs.input?.focus()}
         @nuxy-omni-input=${(e: CustomEvent<{ value: string }>) => {

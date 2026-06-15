@@ -55,6 +55,7 @@ const ALLOWED_PERMISSIONS = new Set([
   'fs',
   'settings.read',
   'settings.write',
+  'extensions.manage',
 ])
 
 const BUILTIN_LIST = new Set([

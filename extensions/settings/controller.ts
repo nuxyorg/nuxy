@@ -26,6 +26,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   private meta: SettingsMeta | null = null
   private filterQuery = ''
   private dataCleanup: (() => void) | null = null
+  private pendingExtToggles = new Map<string, boolean>()
 
   constructor(onUpdate: () => void) {
     super(EXT_ID, {
@@ -81,11 +82,24 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   disconnect(): void {
+    for (const [extId, enabled] of this.pendingExtToggles) {
+      window.core?.ipc?.invoke('kernel', 'setExtensionEnabled', { extId, enabled }).catch(() => {})
+    }
+    this.pendingExtToggles.clear()
     this.dataCleanup?.()
     this.dataCleanup = null
     this.filterQuery = ''
     this.t.destroy()
     window.core?.shell?.registerKeyActions(null)
+  }
+
+  toggleExtPending(extId: string, enabled: boolean): void {
+    this.pendingExtToggles.set(extId, enabled)
+    this.store.setState((prev) => ({
+      installedExtensions: prev.installedExtensions.map((ext) =>
+        ext.id === extId ? { ...ext, disabled: !enabled } : ext
+      ),
+    }))
   }
 
   setFilterQuery(query: string): void {
@@ -293,6 +307,14 @@ export class SettingsController extends BaseExtensionController<SettingsControll
               this.actions?.removeLanguage((row as { langCode: string }).langCode)
               return
             }
+            const isExtToggle = 'isExtToggle' in row && row.isExtToggle
+            if (isExtToggle) {
+              const currentEnabled = !(
+                this.state.installedExtensions.find((e) => e.id === row.extId)?.disabled ?? false
+              )
+              this.toggleExtPending(row.extId, !currentEnabled)
+              return
+            }
             const isLang = 'isLanguage' in row && row.isLanguage
             if (!isLang && row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
               const focusInput = () => {
@@ -341,6 +363,10 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   handleRowSelect(row: AnyRow, value: unknown): void {
+    if ('isExtToggle' in row && row.isExtToggle) {
+      this.toggleExtPending(row.extId, value as boolean)
+      return
+    }
     this.actions?.handleRowSelect(row, value)
   }
 

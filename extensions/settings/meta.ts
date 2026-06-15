@@ -95,6 +95,8 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
           else if (opt.value === 'monospace') optLabel = t('font.monospace')
         } else if (r.key === 'fontWeight') {
           optLabel = t('fontWeight.' + opt.value)
+        } else if (r.key === 'iconPack' && opt.value === '') {
+          optLabel = t('iconPack.default')
         }
         return { ...opt, label: optLabel }
       })
@@ -160,7 +162,12 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
   }))
 
   const extToggleRows: ExtToggleRow[] = installedExtensions
-    .filter((ext) => !ext.manifest.bootstrap && ext.id !== 'com.nuxy.settings')
+    .filter(
+      (ext) =>
+        !ext.manifest.bootstrap &&
+        ext.id !== 'com.nuxy.settings' &&
+        ext.manifest.type !== 'uikit'
+    )
     .map((ext) => ({
       key: `ext-toggle:${ext.id}`,
       label: ext.manifest.name,

@@ -2,9 +2,20 @@ import fs from 'fs'
 import path from 'path'
 import { DATA_DIR } from '../config/paths.js'
 
-const DISABLED_FILE = path.join(DATA_DIR, 'com.nuxy.settings', 'disabled-extensions.json')
+const DISABLED_FILE = path.join(DATA_DIR, 'disabled-extensions.json')
+const LEGACY_DISABLED_FILE = path.join(DATA_DIR, 'com.nuxy.settings', 'disabled-extensions.json')
+
+function migrateIfNeeded(): void {
+  if (fs.existsSync(DISABLED_FILE) || !fs.existsSync(LEGACY_DISABLED_FILE)) return
+  try {
+    fs.mkdirSync(path.dirname(DISABLED_FILE), { recursive: true })
+    fs.copyFileSync(LEGACY_DISABLED_FILE, DISABLED_FILE)
+    fs.rmSync(LEGACY_DISABLED_FILE)
+  } catch {}
+}
 
 export function readDisabledList(): Set<string> {
+  migrateIfNeeded()
   try {
     const raw = fs.readFileSync(DISABLED_FILE, 'utf8')
     const parsed = JSON.parse(raw)
@@ -20,7 +31,6 @@ export function setExtensionEnabled(extId: string, enabled: boolean): void {
   } else {
     list.add(extId)
   }
-  const dir = path.dirname(DISABLED_FILE)
-  fs.mkdirSync(dir, { recursive: true })
+  fs.mkdirSync(path.dirname(DISABLED_FILE), { recursive: true })
   fs.writeFileSync(DISABLED_FILE, JSON.stringify([...list], null, 2), 'utf8')
 }

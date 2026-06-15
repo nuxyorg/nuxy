@@ -1,6 +1,6 @@
-import { ICON_PATHS } from './icon-paths'
 import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
 import type { TemplateResult } from '@nuxy/core'
+import { getIconPaths, getIconMeta } from '../../icon-cache.ts'
 
 const DEFAULT_SIZE = 18
 const DEFAULT_OPACITY = 0.65
@@ -30,16 +30,33 @@ export class NuxyIconElement extends LitElement {
   @property({ type: String })
   declare color: string
 
+  connectedCallback(): void {
+    super.connectedCallback()
+    this._onIconsUpdated = () => this.requestUpdate()
+    document.addEventListener('nuxy-icons-updated', this._onIconsUpdated)
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+    document.removeEventListener('nuxy-icons-updated', this._onIconsUpdated!)
+    this._onIconsUpdated = null
+  }
+
+  private _onIconsUpdated: (() => void) | null = null
+
   render(): TemplateResult {
     if (!this.name) return html`${nothing}`
 
-    const def = ICON_PATHS[this.name]
-    if (!def) return html`${nothing}`
+    const paths = getIconPaths(this.name)
+    if (!paths) return html`${nothing}`
 
+    const meta = getIconMeta(this.name)
     const size = resolveSize(this.size)
     const opacity =
-      this.opacity !== '' ? Number(this.opacity) : (def.defaultOpacity ?? DEFAULT_OPACITY)
-    const color = this.color || def.defaultColor || 'currentColor'
+      this.opacity !== '' && this.opacity !== undefined
+        ? Number(this.opacity)
+        : (meta?.defaultOpacity ?? DEFAULT_OPACITY)
+    const color = this.color || meta?.defaultColor || 'currentColor'
 
     const colorStyle = color !== 'currentColor' ? `color: ${color};` : ''
     const style = `opacity: ${opacity}; ${colorStyle}`
@@ -55,9 +72,8 @@ export class NuxyIconElement extends LitElement {
         stroke-linecap="round"
         stroke-linejoin="round"
         style=${style}
-      >
-        ${def.paths}
-      </svg>
+        .innerHTML=${paths}
+      ></svg>
     `
   }
 }
