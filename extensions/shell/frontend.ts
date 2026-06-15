@@ -405,6 +405,9 @@ export class NuxyShellViewElement extends LitElement {
             aria-selected=${active ? 'true' : 'false'}
             @click=${() => this.controller?.handleItemClick(item)}
           >
+            ${item.icon
+              ? html`<nuxy-icon name=${item.icon} size="16" style="flex-shrink:0"></nuxy-icon>`
+              : nothing}
             <nuxy-list-item-body>
               <nuxy-list-item-text>${item.title}</nuxy-list-item-text>
               ${item.subtitle

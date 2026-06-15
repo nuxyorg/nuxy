@@ -32,6 +32,7 @@ function filterTools(
     id: t.id,
     title: t.manifest.name,
     subtitle: (t.manifest as { id?: string }).id || 'Tool',
+    icon: t.manifest.icon,
     isTool: true,
     value: t.manifest.name,
   }))

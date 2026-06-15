@@ -100,7 +100,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         this.store.setState({
           selected: note,
           body: note.body ?? '',
-          selectedIndex: idx !== -1 ? idx + 1 : s.selectedIndex,
+          selectedIndex: idx !== -1 ? idx : s.selectedIndex,
         })
         window.core?.shell?.controlOmniBar('clear')
         this.setEditMode(true)
@@ -143,7 +143,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
       filteredNotes: this.filterNotes(updated, this.state.query),
       selected: note,
       body: '',
-      selectedIndex: 1,
+      selectedIndex: 0,
     })
     this.setEditMode(true)
   }
@@ -160,14 +160,14 @@ export class NotesController extends BaseExtensionController<NotesState> {
       selected: updated,
       notes: list,
       filteredNotes: filtered,
-      selectedIndex: newIdx !== -1 ? newIdx + 1 : this.state.selectedIndex,
+      selectedIndex: newIdx !== -1 ? newIdx : this.state.selectedIndex,
     })
     window.UI?.toast?.('Note saved!', { type: 'success' })
   }
 
   async handleDelete(): Promise<void> {
     const { selectedIndex, filteredNotes, selected } = this.state
-    const noteToDelete = selectedIndex > 0 ? filteredNotes[selectedIndex - 1] : selected
+    const noteToDelete = selectedIndex >= 0 ? filteredNotes[selectedIndex] : selected
     if (!noteToDelete) return
     await invoke('notes:delete', { id: noteToDelete.id })
     const list = await invoke<Note[]>('notes:list', {})
@@ -176,7 +176,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
       filteredNotes: this.filterNotes(list, this.state.query),
       selected: null,
       body: '',
-      selectedIndex: 0,
+      selectedIndex: -1,
       editMode: false,
     })
     window.UI?.toast?.('Note deleted', { type: 'info' })
@@ -245,8 +245,8 @@ export class NotesController extends BaseExtensionController<NotesState> {
   private syncSelectionFromIndex(): void {
     const { selectedIndex, filteredNotes, editMode } = this.state
     if (editMode) return
-    if (selectedIndex > 0 && selectedIndex <= filteredNotes.length) {
-      const note = filteredNotes[selectedIndex - 1]
+    if (selectedIndex >= 0 && selectedIndex < filteredNotes.length) {
+      const note = filteredNotes[selectedIndex]
       if (note) {
         this.store.setState({ selected: note, body: note.body ?? '' })
         return
@@ -280,16 +280,16 @@ export class NotesController extends BaseExtensionController<NotesState> {
         key: 'Delete',
         label: t('actions.deleteNote'),
         hint: 'Del',
-        activeOn: () => !editMode && selectedIndex > 0 && selectedIndex <= filteredNotes.length,
+        activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex < filteredNotes.length,
         handler: () => void this.handleDelete(),
       },
       {
         key: 'Enter',
         label: t('actions.editNote'),
         hint: '↵',
-        activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex <= filteredNotes.length,
+        activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex < filteredNotes.length,
         handler: () => {
-          const note = filteredNotes[selectedIndex - 1]
+          const note = filteredNotes[selectedIndex]
           if (note) {
             this.store.setState({ selected: note, body: note.body ?? '' })
             this.setEditMode(true)
@@ -321,7 +321,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         activeOn: () => !editMode,
         handler: () => {
           this.setSelectedIndex((prev) => {
-            if (prev <= 1) {
+            if (prev <= 0) {
               window.core?.shell?.controlOmniBar('show')
               return -1
             }
@@ -336,12 +336,8 @@ export class NotesController extends BaseExtensionController<NotesState> {
         activeOn: () => !editMode,
         handler: () => {
           this.setSelectedIndex((prev) => {
-            const maxIdx = filteredNotes.length
-            if (prev < maxIdx) {
-              if (prev === -1) {
-                window.core?.shell?.controlOmniBar('hide')
-                return 1
-              }
+            if (prev + 1 < filteredNotes.length) {
+              if (prev === -1) window.core?.shell?.controlOmniBar('hide')
               return prev + 1
             }
             return prev
