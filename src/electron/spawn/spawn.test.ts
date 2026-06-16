@@ -30,7 +30,7 @@ vi.mock('../config/paths.js', () => ({
   EXTRACTED_DIR: '/fake/extracted',
 }))
 
-vi.mock('@nuxy/core', () => ({
+vi.mock('@nuxyorg/core', () => ({
   kernelLogger: {
     child: vi.fn(() => ({
       info: vi.fn(),

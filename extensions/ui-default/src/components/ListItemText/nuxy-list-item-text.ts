@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 
 @customElement('nuxy-list-item-text')
 export class NuxyListItemTextElement extends LitElement {

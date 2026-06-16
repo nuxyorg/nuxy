@@ -4,7 +4,7 @@
  */
 import { test, expect } from '@playwright/test'
 import { electronRequire } from './electron-require.js'
-import type { LoadedExtension } from '@nuxy/core'
+import type { LoadedExtension } from '@nuxyorg/core'
 
 const { validateExtInvokeArgs, validateWindowResize } = electronRequire(
   '../electron/ipc/validate.js'

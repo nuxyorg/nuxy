@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { extensionMatchesListKind, listExtensionsByKind } from './list-by-type.js'
 import { clearRegistry, registerExtension, mergeRuntimeSync } from '../extensions/registry.js'
-import type { LoadedExtension } from '@nuxy/core'
+import type { LoadedExtension } from '@nuxyorg/core'
 
 const makeExt = (
   id: string,

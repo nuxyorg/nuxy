@@ -1,13 +1,13 @@
 {
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
-  "publicPackages": ["@nuxy/ui"],
+  "publicPackages": ["@nuxyorg/ui"],
   "dynamicallyLoaded": [
     "extensions/**",
     "src/electron/spawn/worker/**",
     "src/electron/bootstrap/main.ts",
     "src/electron/protocol/register.ts"
   ],
-  "ignoreDependencies": ["@nuxy/extension-host", "@nuxy/extension-sdk", "@nuxy/ui", "~ext", "lit"],
+  "ignoreDependencies": ["@nuxyorg/extension-host", "@nuxyorg/extension-sdk", "@nuxyorg/ui", "~ext", "lit"],
   "ignorePatterns": [
     "website/**",
     ".claude/**",

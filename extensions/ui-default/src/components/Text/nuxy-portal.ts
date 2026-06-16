@@ -1,4 +1,4 @@
-import { LitElement, nothing, customElement, property } from '@nuxy/core'
+import { LitElement, nothing, customElement, property } from '@nuxyorg/core'
 
 @customElement('nuxy-portal')
 export class NuxyPortalElement extends LitElement {

@@ -1,5 +1,5 @@
 import type {} from '../../../global'
-import type { ShellKeyAction } from '@nuxy/core'
+import type { ShellKeyAction } from '@nuxyorg/core'
 
 const BUILTIN_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter'])
 

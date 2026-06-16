@@ -128,7 +128,7 @@ function findRepoRoot(start) {
 /**
  * esbuild-bundle the extension backend into a single self-contained .mjs.
  * - Resolves npm deps from the extension's own node_modules
- * - Aliases @nuxy/* workspace packages to their TS source (monorepo mode)
+ * - Aliases @nuxyorg/* workspace packages to their TS source (monorepo mode)
  * - Node built-ins and electron are kept external
  * Returns the output path on success, null on skip / error.
  */
@@ -140,7 +140,7 @@ async function bundleBackend(cwd, manifest) {
   try {
     esbuild = (await import('esbuild')).default ?? (await import('esbuild'))
   } catch {
-    warn('esbuild not available — skipping backend bundling. Run: npm install -g @nuxy/nxt')
+    warn('esbuild not available — skipping backend bundling. Run: npm install -g @nuxyorg/nxt')
     return null
   }
 
@@ -155,8 +155,8 @@ async function bundleBackend(cwd, manifest) {
   const alias = {}
   if (repoRoot) {
     const map = {
-      '@nuxy/extension-sdk': path.join(repoRoot, 'packages/extension-sdk/src/index.ts'),
-      '@nuxy/core': path.join(repoRoot, 'packages/core/src/index.ts'),
+      '@nuxyorg/extension-sdk': path.join(repoRoot, 'packages/extension-sdk/src/index.ts'),
+      '@nuxyorg/core': path.join(repoRoot, 'packages/core/src/index.ts'),
     }
     for (const [name, src] of Object.entries(map)) {
       if (fs.existsSync(src)) alias[name] = src
@@ -203,6 +203,7 @@ program
   .option('--keys <path>', 'Path to developer keys JSON', '.nxt-keys.json')
   .option('--out <dir>', 'Output directory for the .nuxyext file', 'dist')
   .option('--no-sign', 'Skip code signing (not recommended for distribution)')
+  .option('--force', 'Overwrite existing .nuxyext file if it already exists')
   .action(async (opts) => {
     const cwd = process.cwd()
 
@@ -296,7 +297,12 @@ program
     // 6. Write output
     const outDir = path.resolve(cwd, opts.out)
     fs.mkdirSync(outDir, { recursive: true })
-    const outFile = path.join(outDir, `${extId}.nuxyext`)
+    const outFile = path.join(outDir, `${extId}-${version}.nuxyext`)
+
+    if (fs.existsSync(outFile) && !opts.force) {
+      fail(`${path.basename(outFile)} already exists. Bump the version or use --force to overwrite.`)
+    }
+
     zip.writeZip(outFile)
 
     const sizeKb = (fs.statSync(outFile).size / 1024).toFixed(1)
@@ -321,8 +327,10 @@ program
       }
       const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
       const extId = manifest.id || path.basename(cwd)
-      const inDist = path.join(cwd, 'dist', `${extId}.nuxyext`)
-      nuxyextPath = fs.existsSync(inDist) ? inDist : path.join(cwd, `${extId}.nuxyext`)
+      const version = manifest.version || '1.0.0'
+      const filename = `${extId}-${version}.nuxyext`
+      const inDist = path.join(cwd, 'dist', filename)
+      nuxyextPath = fs.existsSync(inDist) ? inDist : path.join(cwd, filename)
     }
 
     if (!fs.existsSync(nuxyextPath)) {
@@ -339,7 +347,17 @@ program
       fs.mkdirSync(NUXY_EXT_DIR, { recursive: true })
     }
 
-    const dest = path.join(NUXY_EXT_DIR, path.basename(nuxyextPath))
+    // Remove old versions of the same extension before installing
+    const incomingBase = path.basename(nuxyextPath)
+    const extIdFromFile = incomingBase.replace(/-[^-]+\.nuxyext$/, '')
+    for (const existing of fs.readdirSync(NUXY_EXT_DIR)) {
+      if (existing !== incomingBase && existing.startsWith(`${extIdFromFile}-`) && existing.endsWith('.nuxyext')) {
+        fs.rmSync(path.join(NUXY_EXT_DIR, existing), { force: true })
+        info(`Removed old version: ${existing}`)
+      }
+    }
+
+    const dest = path.join(NUXY_EXT_DIR, incomingBase)
     const tmpDest = `${dest}.tmp`
     fs.copyFileSync(nuxyextPath, tmpDest)
     fs.renameSync(tmpDest, dest)

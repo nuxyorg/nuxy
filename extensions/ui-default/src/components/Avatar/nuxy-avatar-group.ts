@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 
 const OVERFLOW_SIZES: Record<string, { width: number; height: number; fontSize: number }> = {
   xs: { width: 20, height: 20, fontSize: 9 },

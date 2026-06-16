@@ -1,4 +1,4 @@
-import type { WorkerToHostMessage } from '@nuxy/core'
+import type { WorkerToHostMessage } from '@nuxyorg/core'
 
 const HOST_CALL_TIMEOUT_MS = 30_000
 

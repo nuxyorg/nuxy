@@ -8,7 +8,7 @@ import {
   state,
   type PropertyValues,
   type TemplateResult,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 import {
   smoothScrollElementToStart,
   smoothScrollIntoViewIfNeeded,

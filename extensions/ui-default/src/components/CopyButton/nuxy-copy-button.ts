@@ -1,5 +1,5 @@
-import { LitElement, html, css, customElement, property, state } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, customElement, property, state } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 
 const COPY_ICON: TemplateResult = html`<svg
   width="12"

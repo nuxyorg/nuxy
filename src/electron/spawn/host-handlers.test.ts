@@ -24,7 +24,7 @@ vi.mock('electron', () => ({
   },
 }))
 
-vi.mock('@nuxy/core', () => ({
+vi.mock('@nuxyorg/core', () => ({
   HostChannel: {
     CLIPBOARD_READ: 'clipboard:readText',
     CLIPBOARD_WRITE: 'clipboard:writeText',

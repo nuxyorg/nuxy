@@ -1,5 +1,5 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 
 type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 

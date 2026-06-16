@@ -6,7 +6,7 @@ import {
   customElement,
   state,
   type TemplateResult,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 import { toastStore, type Toast, type ToastType } from './store'
 
 const EXIT_MS = 220

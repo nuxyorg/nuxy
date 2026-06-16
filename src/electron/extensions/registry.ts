@@ -1,4 +1,4 @@
-import type { ExtensionRuntimeMeta, LoadedExtension } from '@nuxy/core'
+import type { ExtensionRuntimeMeta, LoadedExtension } from '@nuxyorg/core'
 import fs from 'fs'
 import path from 'path'
 import electron from 'electron'

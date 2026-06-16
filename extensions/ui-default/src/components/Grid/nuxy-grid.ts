@@ -1,5 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 import { smoothScrollIntoViewIfNeeded } from '../../hooks/scroll-into-view'
 
 @customElement('nuxy-grid')

@@ -297,7 +297,7 @@ importers:
 
   extensions/calculator:
     dependencies:
-      '@nuxy/extension-sdk':
+      '@nuxyorg/extension-sdk':
         specifier: workspace:*
         version: link:../../packages/extension-sdk
 
@@ -309,7 +309,7 @@ importers:
 
   extensions/notes:
     dependencies:
-      '@nuxy/extension-sdk':
+      '@nuxyorg/extension-sdk':
         specifier: workspace:*
         version: link:../../packages/extension-sdk
 
@@ -329,6 +329,9 @@ importers:
 
   extensions/ui-default:
     dependencies:
+      '@nuxyorg/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       lit:
         specifier: ^3.0.0
         version: 3.3.3
@@ -355,23 +358,31 @@ importers:
 
   packages/ext-devserver:
     dependencies:
+      '@nuxyorg/core':
+        specifier: workspace:*
+        version: link:../core
+      '@nuxyorg/extension-sdk':
+        specifier: workspace:*
+        version: link:../extension-sdk
+      '@nuxyorg/ui-default':
+        specifier: workspace:*
+        version: link:../../extensions/ui-default
       lit:
         specifier: ^3.0.0
         version: 3.3.3
-    devDependencies:
       vite:
         specifier: ^4.4.5
         version: 4.5.14(@types/node@25.8.0)
 
   packages/ext-template:
     dependencies:
-      '@nuxy/extension-sdk':
+      '@nuxyorg/extension-sdk':
         specifier: workspace:*
         version: link:../extension-sdk
 
   packages/extension-host:
     dependencies:
-      '@nuxy/core':
+      '@nuxyorg/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -381,7 +392,7 @@ importers:
 
   packages/extension-sdk:
     dependencies:
-      '@nuxy/core':
+      '@nuxyorg/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -422,13 +433,13 @@ importers:
         specifier: ^5.9.0
         version: 5.9.3
     devDependencies:
-      '@nuxy/core':
+      '@nuxyorg/core':
         specifier: workspace:*
         version: link:../packages/core
-      '@nuxy/extension-host':
+      '@nuxyorg/extension-host':
         specifier: workspace:*
         version: link:../packages/extension-host
-      '@nuxy/extension-sdk':
+      '@nuxyorg/extension-sdk':
         specifier: workspace:*
         version: link:../packages/extension-sdk
       '@playwright/test':

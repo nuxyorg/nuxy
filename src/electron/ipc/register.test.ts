@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { registerIpc } from './register.js'
 import { ipcMain } from 'electron'
 import { invokeRescan } from '../extensions/rescan-hook.js'
-import type { LoadedExtension } from '@nuxy/core'
+import type { LoadedExtension } from '@nuxyorg/core'
 import fs from 'fs'
 import path from 'path'
 

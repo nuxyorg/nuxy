@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 import { ipcMain } from 'electron'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import { validateExtInvokeArgs } from './validate.js'
 import { handleKernelChannel } from './kernel-channels.js'
 import { registerWindowChannels } from './window-channels.js'

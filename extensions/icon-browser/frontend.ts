@@ -7,8 +7,8 @@ import {
   property,
   state,
   unsafeSVG,
-} from '@nuxy/core'
-import type { NuxyToolElement } from '@nuxy/core'
+} from '@nuxyorg/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 
 @customElement('nuxy-tool-icon-browser')
 export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolElement {

@@ -121,8 +121,8 @@ vi.mock('lit', () => ({
   nothing: null,
 }))
 
-vi.mock('@nuxy/core', async () => {
-  const actual = await vi.importActual<typeof import('@nuxy/core')>('@nuxy/core')
+vi.mock('@nuxyorg/core', async () => {
+  const actual = await vi.importActual<typeof import('@nuxyorg/core')>('@nuxyorg/core')
   return {
     ...actual,
     LitElement: class LitElementStub extends (globalThis as any).HTMLElement {

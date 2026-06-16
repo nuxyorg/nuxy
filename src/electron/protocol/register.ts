@@ -2,7 +2,7 @@ import { protocol, net } from 'electron'
 import fs from 'fs'
 import { resolveExtensionFile } from './resolve.js'
 import { createJsonModuleResponse, MODULE_HEADERS } from './response.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 
 const log = kernelLogger.child('Protocol')
 

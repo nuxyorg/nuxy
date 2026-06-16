@@ -1,4 +1,4 @@
-import type { ShellBridgeSnapshot } from '@nuxy/core'
+import type { ShellBridgeSnapshot } from '@nuxyorg/core'
 import type { ShellConfig } from '../types.ts'
 import { getZoom } from '../utils/zoom.ts'
 import { parseCoordinate } from '../utils.ts'

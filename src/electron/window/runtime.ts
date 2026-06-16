@@ -1,6 +1,6 @@
 import { BrowserWindow, screen } from 'electron'
 import { getConfig } from '../config/nuxyconfig.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 
 const log = kernelLogger.child('ConfigRuntime')
 

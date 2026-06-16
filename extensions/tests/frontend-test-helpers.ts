@@ -1,6 +1,6 @@
 // Shared DOM stub helpers for extension frontend (LitElement custom element) unit tests.
 // Import path from an extension test: ../../tests/frontend-test-helpers.ts
-// Usage: call setupDomGlobals() inside vi.hoisted(), then createNuxyCoreMock() inside vi.mock('@nuxy/core').
+// Usage: call setupDomGlobals() inside vi.hoisted(), then createNuxyCoreMock() inside vi.mock('@nuxyorg/core').
 
 import { vi } from 'vitest'
 
@@ -78,8 +78,8 @@ export function setupDomGlobals(windowCore: WindowCoreConfig): void {
 }
 
 /**
- * Returns the standard @nuxy/core mock object for LitElement frontend tests.
- * Pass the result of `vi.importActual('@nuxy/core')` as `actual`.
+ * Returns the standard @nuxyorg/core mock object for LitElement frontend tests.
+ * Pass the result of `vi.importActual('@nuxyorg/core')` as `actual`.
  */
 export function createNuxyCoreMock(actual: Record<string, unknown>): Record<string, unknown> {
   return {

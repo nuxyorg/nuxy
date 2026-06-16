@@ -1,4 +1,4 @@
-import { kernelLogger, type IpcResult } from '@nuxy/core'
+import { kernelLogger, type IpcResult } from '@nuxyorg/core'
 import { loadedExtensions } from '../../extensions/scanner.js'
 import { setExtensionEnabled } from '../../extensions/disabled.js'
 import { invokeRescan } from '../../extensions/rescan-hook.js'

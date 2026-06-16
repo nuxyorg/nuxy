@@ -1,5 +1,5 @@
-import { kernelLogger } from '@nuxy/core'
-import type { IpcResult } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
+import type { IpcResult } from '@nuxyorg/core'
 import { activeWorkers } from '../spawn/active-workers.js'
 
 const log = kernelLogger.child('WorkerInvoke')

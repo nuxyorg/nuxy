@@ -1,5 +1,5 @@
 import { execFile, spawn as nodeSpawn } from 'child_process'
-import type { CoreContext, SpawnHandle } from '@nuxy/core'
+import type { CoreContext, SpawnHandle } from '@nuxyorg/core'
 
 function createSpawnHandle(cmd: string, args: string[]): SpawnHandle {
   const proc = nodeSpawn(cmd, args)

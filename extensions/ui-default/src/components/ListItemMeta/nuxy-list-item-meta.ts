@@ -1,5 +1,5 @@
-import { LitElement, html, css, customElement } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, customElement } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-list-item-meta')
 export class NuxyListItemMetaElement extends LitElement {

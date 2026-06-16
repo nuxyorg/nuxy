@@ -1,5 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxy/core'
-import type { NuxyToolElement } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxyorg/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import { SettingsController } from './controller.ts'
 import type { AnyRow, RenderSection } from './types.ts'
 

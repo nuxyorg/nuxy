@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { ReactiveControllerHost } from '@nuxy/core'
+import type { ReactiveControllerHost } from '@nuxyorg/core'
 import type { ShellConfig } from '../types.ts'
 
 function makeHost(): ReactiveControllerHost & { requestUpdate: ReturnType<typeof vi.fn> } {

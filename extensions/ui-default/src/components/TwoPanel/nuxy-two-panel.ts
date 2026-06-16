@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import { getZoom } from '../../utils/zoom'
 
 @customElement('nuxy-two-panel')

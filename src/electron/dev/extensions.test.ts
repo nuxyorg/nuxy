@@ -15,7 +15,7 @@ describe('findWorkspaceExtensionsDir', () => {
 
 describe('shouldSyncPath', () => {
   it('excludes node_modules (pnpm workspace symlinks)', () => {
-    expect(shouldSyncPath('/repo/extensions/calculator/node_modules/@nuxy/extension-sdk')).toBe(
+    expect(shouldSyncPath('/repo/extensions/calculator/node_modules/@nuxyorg/extension-sdk')).toBe(
       false
     )
   })

@@ -5,7 +5,7 @@ import {
   listExtensionThemeNames,
   clearExtensionThemes,
 } from './extension-themes.js'
-import type { ThemeDefinition } from '@nuxy/core'
+import type { ThemeDefinition } from '@nuxyorg/core'
 
 const ocean: ThemeDefinition = {
   name: 'ocean',

@@ -3,7 +3,7 @@ import path from 'path'
 import { getConfig } from '../config/nuxyconfig.js'
 import { applyConfigToWindow, positionWindowOnDisplay } from './runtime.js'
 import { resolvePreloadScriptPath } from './preload-path.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 
 const log = kernelLogger.child('Window')
 

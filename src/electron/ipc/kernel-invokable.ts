@@ -1,5 +1,5 @@
 import { loadedExtensions } from '../extensions/registry.js'
-import type { IpcResult } from '@nuxy/core'
+import type { IpcResult } from '@nuxyorg/core'
 import { kernelInstallExtension, kernelUninstallExtension } from './extension-ops.js'
 
 /**

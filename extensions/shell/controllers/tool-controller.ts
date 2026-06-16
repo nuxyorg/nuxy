@@ -1,4 +1,4 @@
-import type { ReactiveController, ReactiveControllerHost } from '@nuxy/core'
+import type { ReactiveController, ReactiveControllerHost } from '@nuxyorg/core'
 import type { Tool, Orchestrator, UsageStats } from '../types.ts'
 
 export interface ToolControllerOptions {

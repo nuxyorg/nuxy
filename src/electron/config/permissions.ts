@@ -1,5 +1,5 @@
-import type { ExtensionManifest, ExtensionPermission, IpcResult } from '@nuxy/core'
-import { HostChannel } from '@nuxy/core'
+import type { ExtensionManifest, ExtensionPermission, IpcResult } from '@nuxyorg/core'
+import { HostChannel } from '@nuxyorg/core'
 
 const HOST_CHANNEL_PERMISSION: Partial<Record<string, ExtensionPermission>> = {
   [HostChannel.CLIPBOARD_READ]: 'clipboard',

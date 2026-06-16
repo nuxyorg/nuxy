@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
+import { type CoreContext } from '@nuxyorg/extension-sdk'
+import { createMockCore } from '@nuxyorg/extension-sdk/testing'
 import { register } from '../backend.ts'
 import type { NyaaResult } from '../types.ts'
 

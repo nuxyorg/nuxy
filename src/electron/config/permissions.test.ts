@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { assertHostPermission, effectivePermissions } from './permissions.js'
-import { HostChannel } from '@nuxy/core'
-import type { ExtensionManifest } from '@nuxy/core'
+import { HostChannel } from '@nuxyorg/core'
+import type { ExtensionManifest } from '@nuxyorg/core'
 
 const base: ExtensionManifest = {
   id: 'com.nuxy.test',

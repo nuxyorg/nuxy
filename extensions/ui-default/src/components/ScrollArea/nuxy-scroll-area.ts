@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 
 @customElement('nuxy-scroll-area')
 export class NuxyScrollAreaElement extends LitElement {

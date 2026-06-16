@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 
 @customElement('nuxy-item-leading')
 export class NuxyItemLeadingElement extends LitElement {

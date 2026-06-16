@@ -1,4 +1,4 @@
-import type { IconPackDefinition } from '@nuxy/core'
+import type { IconPackDefinition } from '@nuxyorg/core'
 
 const packs = new Map<string, IconPackDefinition>()
 let defaultPackName: string | undefined

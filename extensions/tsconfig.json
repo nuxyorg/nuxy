@@ -16,9 +16,9 @@
     "typeRoots": ["../src/node_modules/@types"],
     "baseUrl": ".",
     "paths": {
-      "@nuxy/extension-sdk": ["../packages/extension-sdk/src/index.ts"],
-      "@nuxy/core": ["../packages/core/src/renderer.ts"],
-      "@nuxy/ui": ["../extensions/ui-default/src/index.ts"],
+      "@nuxyorg/extension-sdk": ["../packages/extension-sdk/src/index.ts"],
+      "@nuxyorg/core": ["../packages/core/src/renderer.ts"],
+      "@nuxyorg/ui": ["../extensions/ui-default/src/index.ts"],
       "vitest": ["../src/node_modules/vitest/dist/index.d.ts"],
       "vitest/*": ["../src/node_modules/vitest/dist/*"],
       "@playwright/test": [

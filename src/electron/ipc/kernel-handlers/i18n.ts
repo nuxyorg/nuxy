@@ -4,8 +4,8 @@ import { app } from 'electron'
 import { loadedExtensions } from '../../extensions/scanner.js'
 import { getExtensionById, getDisplayName, getPreferredLocale } from '../../extensions/registry.js'
 import { EXTRACTED_DIR, DATA_DIR } from '../../config/paths.js'
-import { kernelLogger, resolveLocale, flattenTranslations, getTextDirection } from '@nuxy/core'
-import type { IpcResult } from '@nuxy/core'
+import { kernelLogger, resolveLocale, flattenTranslations, getTextDirection } from '@nuxyorg/core'
+import type { IpcResult } from '@nuxyorg/core'
 
 const log = kernelLogger.child('KernelI18n')
 

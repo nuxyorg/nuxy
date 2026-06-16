@@ -1,5 +1,5 @@
 import { ipcMain, app, screen, BrowserWindow } from 'electron'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import { getConfig } from '../config/nuxyconfig.js'
 import { positionWindowOnDisplay } from '../window/runtime.js'
 import { getOrCreateSpring } from '../window/spring.js'

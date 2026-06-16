@@ -5,7 +5,16 @@ import os from 'os'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const repoRoot = path.resolve(__dirname, '../..')
+
+// Detect monorepo by checking for the workspace root above this package.
+// When installed from npm, __dirname is inside node_modules and the workspace
+// file won't be found two levels up.
+const possibleRepoRoot = path.resolve(__dirname, '../..')
+const isMonorepo =
+  fs.existsSync(path.join(possibleRepoRoot, 'pnpm-workspace.yaml')) &&
+  fs.existsSync(path.join(possibleRepoRoot, 'packages/core/src/index.ts'))
+
+const fsAllow: string[] = []
 
 const EXT_PATH = process.env.NUXY_EXT_PATH
 if (!EXT_PATH) {
@@ -34,7 +43,13 @@ function createServerCore(handlers: Record<string, (p?: unknown) => Promise<unkn
       },
       broadcast: () => {},
     },
-    storage: { read: async () => null, write: async () => {} },
+    storage: (() => {
+      const store = new Map<string, unknown>()
+      return {
+        read: async (key: string) => store.get(key) ?? null,
+        write: async (key: string, value: unknown) => { store.set(key, value) },
+      }
+    })(),
     clipboard: {
       readText: async () => '',
       writeText: async () => {},
@@ -63,6 +78,35 @@ function createServerCore(handlers: Record<string, (p?: unknown) => Promise<unkn
     db: { open: async () => null },
     shell: { open: async () => {}, exec: async () => '', spawn: async () => null },
     media: { getNowPlaying: async () => null },
+  }
+}
+
+// Build Vite alias map.
+// Monorepo: resolve @nuxyorg/* from TypeScript source for fast HMR.
+// Standalone (installed via npm): let Vite resolve @nuxyorg/core and
+// @nuxyorg/extension-sdk from node_modules; alias @nuxyorg/ui to the
+// bundled ui-default package so extension frontends have real components.
+const alias: Record<string, string> = { '~ext': EXT_PATH }
+
+if (isMonorepo) {
+  alias['@nuxyorg/ui'] = path.resolve(possibleRepoRoot, 'extensions/ui-default/src/index.ts')
+  alias['@nuxyorg/core'] = path.resolve(possibleRepoRoot, 'packages/core/src/index.ts')
+  alias['@nuxyorg/extension-sdk'] = path.resolve(possibleRepoRoot, 'packages/extension-sdk/src/index.ts')
+  fsAllow.push(possibleRepoRoot)
+} else {
+  // @nuxyorg/ui-default is a dependency of this package; alias @nuxyorg/ui to it
+  // so extension frontends can use UI components without extra configuration.
+  try {
+    const uiDefaultPkg = path.resolve(__dirname, '..', 'ui-default', 'package.json')
+    const flatNodeModules = path.resolve(__dirname, '../../@nuxyorg/ui-default')
+    const candidate = fs.existsSync(uiDefaultPkg)
+      ? path.resolve(__dirname, '..', 'ui-default', 'src', 'index.ts')
+      : path.resolve(flatNodeModules, 'src', 'index.ts')
+    if (fs.existsSync(candidate)) {
+      alias['@nuxyorg/ui'] = candidate
+    }
+  } catch {
+    // ui-default not resolvable — @nuxyorg/ui will fall back to node_modules or stub
   }
 }
 
@@ -151,16 +195,7 @@ export default defineConfig({
     __EXT_NAME__: JSON.stringify(EXT_NAME),
   },
 
-  resolve: {
-    alias: {
-      '~ext': EXT_PATH,
-      // Use ui-default's real implementations — packages/ui hooks delegate to window.UI
-      // which would cause infinite recursion if window.UI is set from the same package.
-      '@nuxy/ui': path.resolve(repoRoot, 'extensions/ui-default/src/index.ts'),
-      '@nuxy/core': path.resolve(repoRoot, 'packages/core/src/index.ts'),
-      '@nuxy/extension-sdk': path.resolve(repoRoot, 'packages/extension-sdk/src/index.ts'),
-    },
-  },
+  resolve: { alias },
 
   optimizeDeps: {
     exclude: ['~ext'],
@@ -169,6 +204,6 @@ export default defineConfig({
   server: {
     port: 5174,
     open: true,
-    fs: { allow: [repoRoot] },
+    fs: { allow: fsAllow.length ? fsAllow : undefined },
   },
 })

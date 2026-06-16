@@ -29,7 +29,7 @@ import {
   makeDirectoryReadOnly,
   updateRevocationList,
 } from '../security/security.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import { readDisabledList } from './disabled.js'
 import AdmZip from 'adm-zip'
 import type {
@@ -38,7 +38,7 @@ import type {
   ThemeDefinition,
   IconPackDefinition,
   ExtensionSettingsSchema,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 
 export { loadedExtensions } from './registry.js'
 

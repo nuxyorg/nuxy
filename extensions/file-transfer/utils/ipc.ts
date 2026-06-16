@@ -1,4 +1,4 @@
-import type { TypedInvoker } from '@nuxy/extension-sdk'
+import type { TypedInvoker } from '@nuxyorg/extension-sdk'
 import type { IpcChannels } from '../types.ts'
 
 const EXT_ID = 'com.nuxy.file-transfer'

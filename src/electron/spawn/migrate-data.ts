@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { DATA_DIR, LEGACY_DATA_DIR } from '../config/paths.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 
 const log = kernelLogger.child('MigrateData')
 

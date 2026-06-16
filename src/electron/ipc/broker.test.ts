@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { invokeExtension } from './broker.js'
 import { registerExtension, clearRegistry, setExtensionChannels } from '../extensions/registry.js'
-import type { LoadedExtension } from '@nuxy/core'
+import type { LoadedExtension } from '@nuxyorg/core'
 
 vi.mock('./worker-invoke.js', () => ({
   invokeWorker: vi.fn(async () => ({ success: true, data: { ok: true } })),

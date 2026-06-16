@@ -1,5 +1,5 @@
 {
-  "name": "@nuxy/extension-test-helpers",
+  "name": "@nuxyorg/extension-test-helpers",
   "version": "0.0.0",
   "private": true,
   "type": "module"

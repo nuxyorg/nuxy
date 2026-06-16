@@ -1,4 +1,4 @@
-import type { CoreContext } from '@nuxy/extension-sdk'
+import type { CoreContext } from '@nuxyorg/extension-sdk'
 
 export function register(core: CoreContext): void {
   core.registry.registerTool({ name: 'my-extension' })

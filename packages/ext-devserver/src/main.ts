@@ -1,4 +1,4 @@
-import * as UI from '@nuxy/ui'
+import * as UI from '@nuxyorg/ui'
 import { setupMockCore } from './mock-core'
 import './DevShell'
 

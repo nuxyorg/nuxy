@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
+import { type CoreContext } from '@nuxyorg/extension-sdk'
+import { createMockCore } from '@nuxyorg/extension-sdk/testing'
 import { register } from '../backend.ts'
 
 function createCore(storageData: unknown = null) {

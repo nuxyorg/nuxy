@@ -1,4 +1,4 @@
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import type { NowPlaying } from '../../types.js'
 import { parseMprisPlayer, pickBestMprisPlayer } from '../../parse-mpris.js'
 

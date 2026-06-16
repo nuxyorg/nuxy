@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { validateExtInvokeArgs, validateWindowResize } from './validate.js'
 import { registerExtension, clearRegistry, setExtensionChannels } from '../extensions/registry.js'
-import type { LoadedExtension } from '@nuxy/core'
+import type { LoadedExtension } from '@nuxyorg/core'
 
 const sampleExt: LoadedExtension = {
   id: 'com.nuxy.test',

@@ -1,7 +1,7 @@
 import fsPromises from 'fs/promises'
 import os from 'os'
-import type { CoreContext } from '@nuxy/core'
-import { HostChannel } from '@nuxy/core'
+import type { CoreContext } from '@nuxyorg/core'
+import { HostChannel } from '@nuxyorg/core'
 
 export function buildFsApi(
   checkPermission: (permission: string, apiName: string) => void,

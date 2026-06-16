@@ -5,7 +5,7 @@ import type {
   ShellBridgeSnapshot,
   ShellCommandAction,
   ShellKeyAction,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 
 function computeHints(getter: (() => ShellKeyAction[]) | null): ShellKeyAction[] {
   if (!getter) return []

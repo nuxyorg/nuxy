@@ -1,4 +1,4 @@
-import type { ExtensionManifest } from '@nuxy/extension-sdk'
+import type { ExtensionManifest } from '@nuxyorg/extension-sdk'
 
 export interface Tool {
   id: string

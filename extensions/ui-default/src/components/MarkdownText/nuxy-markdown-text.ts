@@ -1,5 +1,5 @@
-import { LitElement, html, css, customElement, property, ref } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, customElement, property, ref } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 import { renderMarkdownTo } from './render-markdown'
 
 @customElement('nuxy-markdown-text')

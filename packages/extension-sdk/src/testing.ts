@@ -1,5 +1,5 @@
 import { vi } from 'vitest'
-import type { CoreContext } from '@nuxy/core'
+import type { CoreContext } from '@nuxyorg/core'
 
 /**
  * Creates a mocked `CoreContext` for use in Vitest tests.

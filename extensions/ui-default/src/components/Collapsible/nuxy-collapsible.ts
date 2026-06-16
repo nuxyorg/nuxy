@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, state, type TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, customElement, state, type TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-collapsible')
 export class NuxyCollapsibleElement extends LitElement {

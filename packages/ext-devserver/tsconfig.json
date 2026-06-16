@@ -8,9 +8,9 @@
     "noUnusedLocals": false,
     "types": ["vite/client"],
     "paths": {
-      "@nuxy/core": ["../../packages/core/src/index.ts"],
-      "@nuxy/ui": ["../../extensions/ui-default/src/index.ts"],
-      "@nuxy/extension-sdk": ["../../packages/extension-sdk/src/index.ts"]
+      "@nuxyorg/core": ["../../packages/core/src/index.ts"],
+      "@nuxyorg/ui": ["../../extensions/ui-default/src/index.ts"],
+      "@nuxyorg/extension-sdk": ["../../packages/extension-sdk/src/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

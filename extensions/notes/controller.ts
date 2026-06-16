@@ -1,4 +1,4 @@
-import type { ShellKeyAction } from '@nuxy/core'
+import type { ShellKeyAction } from '@nuxyorg/core'
 import type { Note } from './types.ts'
 import { deriveTitle } from './utils/noteTitle.ts'
 import { invoke } from './utils/ipc.ts'

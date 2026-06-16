@@ -1,7 +1,7 @@
 import { BrowserWindow } from 'electron'
 import { execFile } from 'child_process'
-import { kernelLogger } from '@nuxy/core'
-import type { IpcResult } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
+import type { IpcResult } from '@nuxyorg/core'
 import { getConfig, reloadConfig } from '../../config/nuxyconfig.js'
 import { applyConfigToWindow } from '../../window/runtime.js'
 

@@ -62,8 +62,8 @@ export async function bundleExtensionBackend(entryPath: string, extDir: string):
       external: ['electron', ...BUILTIN_MODULES],
       logLevel: 'warning',
       alias: {
-        '@nuxy/extension-sdk': path.join(repoRoot, 'packages/extension-sdk/src/index.ts'),
-        '@nuxy/core': path.join(repoRoot, 'packages/core/src/index.ts'),
+        '@nuxyorg/extension-sdk': path.join(repoRoot, 'packages/extension-sdk/src/index.ts'),
+        '@nuxyorg/core': path.join(repoRoot, 'packages/core/src/index.ts'),
       },
       loader: { '.ts': 'ts', '.tsx': 'tsx' },
       // Resolve npm deps from the extension's own node_modules first.

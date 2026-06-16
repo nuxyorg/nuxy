@@ -1,7 +1,7 @@
 import { loadTheme } from '../../themes/install.js'
 import { listExtensionThemeNames } from '../../themes/extension-themes.js'
 import { getIcon, getIconPack, listIconPacks } from '../../icons/registry.js'
-import type { IpcResult } from '@nuxy/core'
+import type { IpcResult } from '@nuxyorg/core'
 
 type Handler = (payload: unknown) => IpcResult | Promise<IpcResult>
 

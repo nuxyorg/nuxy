@@ -1,4 +1,4 @@
-import type { ThemeDefinition } from '@nuxy/core'
+import type { ThemeDefinition } from '@nuxyorg/core'
 
 export const DEFAULT_DARK_THEME: ThemeDefinition = {
   version: 1,

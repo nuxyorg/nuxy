@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit'
 import { customElement, state, query } from 'lit/decorators.js'
-import type { NuxyToolElement } from '@nuxy/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import './MockPanel'
 
 declare const __EXT_NAME__: string
@@ -109,6 +109,12 @@ export class DevShell extends LitElement {
     if (this.toolEl) this.toolEl.query = this.query
   }
 
+  private handleKeydown(e: KeyboardEvent) {
+    if (e.key === 'Enter' && this.toolEl) {
+      this.toolEl.committedQuery = this.query
+    }
+  }
+
   render() {
     return html`
       <div class="badge-row">
@@ -117,7 +123,7 @@ export class DevShell extends LitElement {
       </div>
       <div class="window">
         <div class="omnibar">
-          <input .value=${this.query} @input=${this.handleInput} placeholder="Search…" />
+          <input .value=${this.query} @input=${this.handleInput} @keydown=${this.handleKeydown} placeholder="Search…" />
         </div>
         ${this.loading
           ? html`<div class="loading-hint">Loading…</div>`

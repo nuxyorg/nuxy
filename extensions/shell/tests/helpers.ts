@@ -1,5 +1,5 @@
 import { vi } from 'vitest'
-import type { ReactiveControllerHost } from '@nuxy/core'
+import type { ReactiveControllerHost } from '@nuxyorg/core'
 
 /**
  * Creates a minimal ReactiveControllerHost mock for controller unit tests.

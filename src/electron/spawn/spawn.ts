@@ -4,7 +4,7 @@ import fs from 'fs'
 import { pathToFileURL, fileURLToPath } from 'url'
 import { EXTRACTED_DIR } from '../config/paths.js'
 import { bundleExtensionBackend } from '../extensions/bundle-backend.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import {
   activeWorkers,
   workerExitListeners,
@@ -14,13 +14,13 @@ import {
 import { migrateLegacyData } from './migrate-data.js'
 import { mergeRuntimeSync } from '../extensions/registry.js'
 import { handleHostCall } from './host-handlers.js'
-import type { WorkerToHostMessage } from '@nuxy/core'
+import type { WorkerToHostMessage } from '@nuxyorg/core'
 
 export { activeWorkers } from './active-workers.js'
 
 const log = kernelLogger.child('Spawn')
 
-/** dist-electron/worker/extension-host.js (built from @nuxy/extension-host) */
+/** dist-electron/worker/extension-host.js (built from @nuxyorg/extension-host) */
 const hostScript = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   'worker',

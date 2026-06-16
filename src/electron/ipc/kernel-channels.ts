@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import type { IpcResult } from '@nuxy/core'
+import type { IpcResult } from '@nuxyorg/core'
 import { extensionHandlers } from './kernel-handlers/extensions.js'
 import { compositionHandlers } from './kernel-handlers/composition.js'
 import { themeHandlers } from './kernel-handlers/themes.js'

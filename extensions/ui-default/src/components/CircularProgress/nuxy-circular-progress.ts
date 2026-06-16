@@ -1,5 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-circular-progress')
 export class NuxyCircularProgressElement extends LitElement {

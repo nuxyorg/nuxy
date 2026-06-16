@@ -1,4 +1,4 @@
-import type { CoreContext } from '@nuxy/extension-sdk'
+import type { CoreContext } from '@nuxyorg/extension-sdk'
 import { safeEvalMath } from './safe-eval.ts'
 import type { EvalResult } from './types.ts'
 

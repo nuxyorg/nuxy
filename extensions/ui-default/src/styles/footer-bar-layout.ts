@@ -1,4 +1,4 @@
-import { css } from '@nuxy/core'
+import { css } from '@nuxyorg/core'
 
 /** Shadow :host chrome for nuxy-shortcut-bar */
 export const footerBarHostStyles = css`

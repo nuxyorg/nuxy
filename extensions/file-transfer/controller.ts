@@ -1,4 +1,4 @@
-import type { ShellKeyAction } from '@nuxy/core'
+import type { ShellKeyAction } from '@nuxyorg/core'
 import { setToolSearchPlaceholder } from '../tool-behavior.ts'
 import { BaseExtensionController } from '../base-controller.ts'
 import { createInvoker } from './utils/ipc.ts'

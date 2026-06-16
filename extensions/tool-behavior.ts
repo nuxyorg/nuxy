@@ -1,4 +1,4 @@
-import type { ExtensionManifest } from '@nuxy/core'
+import type { ExtensionManifest } from '@nuxyorg/core'
 import type { TranslateFn } from './shell-i18n.ts'
 
 export type ToolOnCompleteBehavior = 'stay' | 'returnToShell' | 'hide' | 'returnToShellAndHide'

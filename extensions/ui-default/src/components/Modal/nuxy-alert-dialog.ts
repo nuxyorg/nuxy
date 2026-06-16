@@ -1,6 +1,6 @@
 import '../Modal/index.css'
 import './nuxy-modal.ts'
-import { LitElement, customElement } from '@nuxy/core'
+import { LitElement, customElement } from '@nuxyorg/core'
 
 @customElement('nuxy-alert-dialog')
 export class NuxyAlertDialogElement extends LitElement {

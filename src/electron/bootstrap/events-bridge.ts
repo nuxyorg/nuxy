@@ -1,4 +1,4 @@
-import type { CoreEvents, NuxyRendererEvent } from '@nuxy/core'
+import type { CoreEvents, NuxyRendererEvent } from '@nuxyorg/core'
 
 export function createEventsBridge(): CoreEvents {
   const listeners = new Map<NuxyRendererEvent, Set<(detail: unknown) => void>>()

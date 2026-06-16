@@ -1,4 +1,4 @@
-import type { ThemeDefinition } from '@nuxy/core'
+import type { ThemeDefinition } from '@nuxyorg/core'
 
 const byName = new Map<string, ThemeDefinition>()
 

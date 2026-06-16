@@ -1,4 +1,4 @@
-import type { CoreShell, CoreEvents, CoreComposition } from '@nuxy/core'
+import type { CoreShell, CoreEvents, CoreComposition } from '@nuxyorg/core'
 
 declare global {
   interface CustomElementRegistry {

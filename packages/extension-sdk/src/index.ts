@@ -1,4 +1,4 @@
-import type { CoreContext } from '@nuxy/core'
+import type { CoreContext } from '@nuxyorg/core'
 
 export type {
   CoreContext,
@@ -7,9 +7,9 @@ export type {
   IpcResult,
   HostChannelName,
   LoadedExtension,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 
-export { HostChannel } from '@nuxy/core'
+export { HostChannel } from '@nuxyorg/core'
 
 /** Extension backend entry — implement and export from `backend.js` / `backend.ts`. */
 export interface ExtensionModule {
@@ -21,7 +21,7 @@ export interface ExtensionModule {
  *
  * @example
  * ```ts
- * import { defineExtension } from '@nuxy/extension-sdk'
+ * import { defineExtension } from '@nuxyorg/extension-sdk'
  *
  * export default defineExtension({
  *   register(core) {
@@ -33,8 +33,6 @@ export interface ExtensionModule {
 export function defineExtension(module: ExtensionModule): ExtensionModule {
   return module
 }
-
-export { createMockCore } from './testing.js'
 
 /**
  * Shape of a single IPC channel: what it accepts and what it returns.
@@ -55,7 +53,7 @@ export type IpcChannelMap = Record<string, { input: unknown; output: unknown }>
  *
  * Usage in `frontend.ts`:
  * ```ts
- * import type { TypedInvoker } from '@nuxy/extension-sdk'
+ * import type { TypedInvoker } from '@nuxyorg/extension-sdk'
  * import type { IpcChannels } from './types.ts'
  *
  * const invoke: TypedInvoker<IpcChannels> = async (channel, ...args) => {

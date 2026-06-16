@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { createMockCore } from '@nuxy/extension-sdk'
+import { createMockCore } from '@nuxyorg/extension-sdk/testing'
 import { register } from '../backend.ts'
 
 describe('calculator backend', () => {

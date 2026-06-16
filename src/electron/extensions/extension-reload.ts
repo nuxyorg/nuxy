@@ -13,14 +13,14 @@ import {
 import { registerExtensionTheme } from '../themes/extension-themes.js'
 import { registerIconPack } from '../icons/registry.js'
 import { readDisabledList } from './disabled.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import {
   verifyDirectoryIntegrity,
   isKeyTrusted,
   isRevoked,
   makeDirectoryReadOnly,
 } from '../security/security.js'
-import type { ExtensionManifest, LoadedExtension, ExtensionSettingsSchema } from '@nuxy/core'
+import type { ExtensionManifest, LoadedExtension, ExtensionSettingsSchema } from '@nuxyorg/core'
 
 const log = kernelLogger.child('ExtensionReload')
 

@@ -14,8 +14,8 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@nuxy/core": ["../core/src/renderer.ts"],
-      "@nuxy/extension-sdk": ["../extension-sdk/src/index.ts"]
+      "@nuxyorg/core": ["../core/src/renderer.ts"],
+      "@nuxyorg/extension-sdk": ["../extension-sdk/src/index.ts"]
     }
   },
   "include": ["./**/*.ts", "../../extensions/global.d.ts"]

@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxyorg/core'
 
 function fmtDuration(sec: number): string {
   const hrs = Math.floor(sec / 3600)

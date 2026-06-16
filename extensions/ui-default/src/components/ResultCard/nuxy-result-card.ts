@@ -6,7 +6,7 @@ import {
   customElement,
   property,
   type TemplateResult,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 import '../Tag/nuxy-tag.ts'
 
 @customElement('nuxy-result-card')

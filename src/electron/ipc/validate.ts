@@ -1,4 +1,4 @@
-import type { IpcResult } from '@nuxy/core'
+import type { IpcResult } from '@nuxyorg/core'
 import { getExtensionById, isChannelAllowed } from '../extensions/registry.js'
 
 const KERNEL_CHANNELS = new Set([

@@ -1,4 +1,4 @@
-import type { IconPackDefinition, IconPackMeta } from '@nuxy/core'
+import type { IconPackDefinition, IconPackMeta } from '@nuxyorg/core'
 
 const svgCache = new Map<string, string>()
 const metaCache = new Map<string, IconPackMeta>()

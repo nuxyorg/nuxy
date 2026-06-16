@@ -1,4 +1,4 @@
-import type { ThemeDefinition, IpcResult } from '@nuxy/core'
+import type { ThemeDefinition, IpcResult } from '@nuxyorg/core'
 
 const BOOTSTRAP_ID = 'com.nuxy.shell'
 const EXTENSIONS_PATH = '~/.nxy/extensions'

@@ -1,5 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property, state, ref } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property, state, ref } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 
 const MIRROR_ATTRS = [
   'placeholder',

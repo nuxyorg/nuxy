@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'f
 import { tmpdir } from 'os'
 import { join, dirname, basename, relative } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
-import type { CoreContext } from '@nuxy/core'
+import type { CoreContext } from '@nuxyorg/core'
 import type { WorkerLogger } from './worker-log.js'
 
 interface ExtensionModule {

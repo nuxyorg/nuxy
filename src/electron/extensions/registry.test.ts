@@ -11,7 +11,7 @@ import {
   mergeRuntimeSync,
   getDisplayName,
 } from './registry.js'
-import type { LoadedExtension } from '@nuxy/core'
+import type { LoadedExtension } from '@nuxyorg/core'
 
 const ext: LoadedExtension = {
   id: 'com.nuxy.clipboard',

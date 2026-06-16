@@ -1,4 +1,4 @@
-import type { ShellBridgeSnapshot } from '@nuxy/core'
+import type { ShellBridgeSnapshot } from '@nuxyorg/core'
 import type { TranslateFn } from '../../shell-i18n.ts'
 
 export function resolveOmniBarPlaceholder(

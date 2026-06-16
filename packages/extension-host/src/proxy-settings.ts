@@ -2,7 +2,7 @@ import fs from 'fs'
 import fsPromises from 'fs/promises'
 import os from 'os'
 import path from 'path'
-import type { CoreContext } from '@nuxy/core'
+import type { CoreContext } from '@nuxyorg/core'
 
 function getTargetExtDir(targetExtId: string): string {
   const baseDir = process.env.NUXY_DATA_DIR || path.join(os.homedir(), '.nxy', 'data')

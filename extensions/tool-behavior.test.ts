@@ -6,7 +6,7 @@ import {
   shouldSuppressBlurHide,
   syncBlurSuppression,
 } from './tool-behavior.ts'
-import type { ExtensionManifest } from '@nuxy/core'
+import type { ExtensionManifest } from '@nuxyorg/core'
 
 describe('tool-behavior', () => {
   beforeEach(() => {

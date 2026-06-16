@@ -67,13 +67,13 @@ const files = {
       version: '1.0.0',
       private: true,
       type: 'module',
-      dependencies: { '@nuxy/extension-sdk': 'workspace:*' },
+      dependencies: { '@nuxyorg/extension-sdk': 'workspace:*' },
     },
     null,
     2
   ),
 
-  'types.ts': `import type { IpcChannelMap } from '@nuxy/extension-sdk'
+  'types.ts': `import type { IpcChannelMap } from '@nuxyorg/extension-sdk'
 
 export interface ${componentName}Item {
   id: string
@@ -85,7 +85,7 @@ export interface IpcChannels extends IpcChannelMap {
 }
 `,
 
-  'backend.ts': `import type { CoreContext } from '@nuxy/extension-sdk'
+  'backend.ts': `import type { CoreContext } from '@nuxyorg/extension-sdk'
 import type { ${componentName}Item, IpcChannels } from './types.ts'
 
 export function register(core: CoreContext): void {
@@ -100,7 +100,7 @@ export function register(core: CoreContext): void {
 `,
 
   'backend.test.ts': `import { describe, it, expect, beforeEach } from 'vitest'
-import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxyorg/extension-sdk'
 import { register } from './backend.ts'
 
 describe('${name} backend', () => {
@@ -126,7 +126,7 @@ describe('${name} backend', () => {
   'frontend.tsx': `const React = window.React
 const { useState, useEffect } = React
 
-import type { TypedInvoker } from '@nuxy/extension-sdk'
+import type { TypedInvoker } from '@nuxyorg/extension-sdk'
 import type { ${componentName}Item, IpcChannels } from './types.ts'
 
 const EXT_ID = '${id}'

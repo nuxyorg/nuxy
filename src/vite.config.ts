@@ -7,9 +7,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 
 const workspaceAliases = {
-  '@nuxy/core': path.resolve(repoRoot, 'packages/core/src/index.ts'),
-  '@nuxy/extension-host': path.resolve(repoRoot, 'packages/extension-host/src/index.ts'),
-  '@nuxy/extension-sdk': path.resolve(repoRoot, 'packages/extension-sdk/src/index.ts'),
+  '@nuxyorg/core': path.resolve(repoRoot, 'packages/core/src/index.ts'),
+  '@nuxyorg/extension-host': path.resolve(repoRoot, 'packages/extension-host/src/index.ts'),
+  '@nuxyorg/extension-sdk': path.resolve(repoRoot, 'packages/extension-sdk/src/index.ts'),
 }
 
 const extensionsReady = process.env.NUXY_EXTENSIONS_READY === '1'

@@ -1,4 +1,4 @@
-import type { LoadedExtension, RegistryEntry } from '@nuxy/core'
+import type { LoadedExtension, RegistryEntry } from '@nuxyorg/core'
 import { getDisplayName, isBootstrapExtension } from '../extensions/registry.js'
 import { loadedExtensions } from '../extensions/scanner.js'
 

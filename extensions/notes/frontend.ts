@@ -7,8 +7,8 @@ import {
   property,
   ref,
   type TemplateResult,
-} from '@nuxy/core'
-import type { NuxyToolElement } from '@nuxy/core'
+} from '@nuxyorg/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import { NotesController } from './controller.ts'
 
 @customElement('nuxy-tool-notes')

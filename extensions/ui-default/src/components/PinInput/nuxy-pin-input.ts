@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-pin-input')
 export class NuxyPinInputElement extends LitElement {

@@ -1,5 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property, state } from '@nuxy/core'
-import type { NuxyToolElement, ToolActivateContext } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxyorg/core'
+import type { NuxyToolElement, ToolActivateContext } from '@nuxyorg/core'
 
 async function loadFrontendModule(extId: string): Promise<void> {
   const dynamicImport = new Function('url', 'return import(url)')

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import fs from 'fs'
 import path from 'path'
 
-vi.mock('@nuxy/core', () => ({
+vi.mock('@nuxyorg/core', () => ({
   kernelLogger: {
     child: vi.fn(() => ({ info: vi.fn(), error: vi.fn() })),
   },

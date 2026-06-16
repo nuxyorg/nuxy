@@ -58,6 +58,10 @@ export default withMermaid(
               { text: 'Security', link: '/guide/security' },
             ],
           },
+          {
+            text: 'Tooling',
+            items: [{ text: 'MCP Server', link: '/guide/mcp-server' }],
+          },
         ],
         '/extensions/': [
           {
@@ -76,6 +80,14 @@ export default withMermaid(
               { text: 'Development Guide', link: '/extensions/development-guide' },
               { text: 'Access & Permissions', link: '/extensions/extension-access' },
               { text: 'Built-in Extensions', link: '/extensions/built-in' },
+            ],
+          },
+          {
+            text: 'Tooling',
+            items: [
+              { text: 'Simulator', link: '/extensions/simulator' },
+              { text: 'Linter', link: '/extensions/linting' },
+              { text: 'Packaging', link: '/extensions/packaging' },
             ],
           },
         ],

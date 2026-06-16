@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { CONFIG_DIR, SECURITY_DIR } from '../config/paths.js'
 import { computeDirectoryIntegrity, sha256 } from './sign-tool.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 
 const log = kernelLogger.child('Security')
 

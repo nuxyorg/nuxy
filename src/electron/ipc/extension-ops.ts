@@ -3,8 +3,8 @@ import path from 'path'
 import { loadedExtensions } from '../extensions/registry.js'
 import { invokeRescan } from '../extensions/rescan-hook.js'
 import { EXTENSION_DIR } from '../config/paths.js'
-import { kernelLogger } from '@nuxy/core'
-import type { IpcResult } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
+import type { IpcResult } from '@nuxyorg/core'
 
 const log = kernelLogger.child('ExtensionOps')
 

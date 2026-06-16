@@ -4,7 +4,7 @@ import os from 'os'
 import path from 'path'
 import { resolveExtensionFile } from './resolve.js'
 import { registerExtension, clearRegistry } from '../extensions/registry.js'
-import type { LoadedExtension } from '@nuxy/core'
+import type { LoadedExtension } from '@nuxyorg/core'
 
 describe('resolveExtensionFile', () => {
   let tmpRoot: string

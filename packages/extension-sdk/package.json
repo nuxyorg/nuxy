@@ -1,15 +1,40 @@
 {
-  "name": "@nuxy/extension-sdk",
+  "name": "@nuxyorg/extension-sdk",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./testing": {
+      "import": "./dist/testing.js",
+      "types": "./dist/testing.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
+  },
   "dependencies": {
-    "@nuxy/core": "workspace:*"
+    "@nuxyorg/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "vitest": "*"
+  },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "typescript": "^5.0.0",
     "vitest": "*"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

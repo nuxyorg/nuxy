@@ -25,9 +25,9 @@
     "typescript": "^5.9.0"
   },
   "devDependencies": {
-    "@nuxy/core": "workspace:*",
-    "@nuxy/extension-host": "workspace:*",
-    "@nuxy/extension-sdk": "workspace:*",
+    "@nuxyorg/core": "workspace:*",
+    "@nuxyorg/extension-host": "workspace:*",
+    "@nuxyorg/extension-sdk": "workspace:*",
     "@playwright/test": "^1.51.0",
     "@types/adm-zip": "^0.5.8",
     "autoprefixer": "^10.4.0",

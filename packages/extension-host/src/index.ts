@@ -3,7 +3,7 @@ import { createCoreProxy } from './core-proxy.js'
 import { loadExtensionModule } from './load-extension.js'
 import { createWorkerLogger } from './worker-log.js'
 import { createCallHost, resolveHostReply } from './call-host.js'
-import type { HostToWorkerMessage, WorkerToHostMessage } from '@nuxy/core'
+import type { HostToWorkerMessage, WorkerToHostMessage } from '@nuxyorg/core'
 
 interface WorkerData {
   extId: string

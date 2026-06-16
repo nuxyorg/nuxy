@@ -8,7 +8,7 @@ import {
   state,
   query as queryDecorator,
   type TemplateResult,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 
 @customElement('nuxy-shell-omni-bar')
 export class NuxyShellOmniBarElement extends LitElement {

@@ -1,5 +1,5 @@
-import { LitElement, html, css, customElement, property, state } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, customElement, property, state } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 
 const MIRROR_ATTRS = ['disabled', 'type', 'aria-label', 'aria-disabled', 'tabindex', 'title']
 

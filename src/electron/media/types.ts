@@ -1,4 +1,4 @@
-import type { NowPlaying } from '@nuxy/core'
+import type { NowPlaying } from '@nuxyorg/core'
 
 export type { NowPlaying }
 

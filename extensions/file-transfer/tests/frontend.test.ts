@@ -45,12 +45,12 @@ const hoisted = vi.hoisted(async () => {
   return h
 })
 
-vi.mock('@nuxy/core', async () => {
-  const actual = await vi.importActual<typeof import('@nuxy/core')>('@nuxy/core')
+vi.mock('@nuxyorg/core', async () => {
+  const actual = await vi.importActual<typeof import('@nuxyorg/core')>('@nuxyorg/core')
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
-import { resolveToolElementTag } from '@nuxy/core'
+import { resolveToolElementTag } from '@nuxyorg/core'
 import manifest from '../manifest.json'
 
 describe('file-transfer manifest', () => {

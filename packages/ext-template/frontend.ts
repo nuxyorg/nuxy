@@ -1,5 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
-import type { NuxyToolElement, TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxyorg/core'
+import type { NuxyToolElement, TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-tool-my-extension')
 export class NuxyToolMyExtensionElement extends LitElement implements NuxyToolElement {

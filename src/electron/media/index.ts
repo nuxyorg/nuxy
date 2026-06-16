@@ -1,4 +1,4 @@
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import type { MediaPlatform, NowPlaying } from './types.js'
 import { createPlatformMediaProvider } from './platforms/index.js'
 

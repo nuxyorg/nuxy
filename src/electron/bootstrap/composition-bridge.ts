@@ -3,7 +3,7 @@ import type {
   CompositionMountOptions,
   CompositionSlotDeclaration,
   CoreComposition,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 import type { IpcRenderer } from 'electron'
 
 interface MountRecord {

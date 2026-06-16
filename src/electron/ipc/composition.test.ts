@@ -3,8 +3,8 @@ import {
   resolveToolElementTag,
   validateCompositionClaim,
   listCompositionProvides,
-} from '@nuxy/core'
-import type { ExtensionManifest } from '@nuxy/core'
+} from '@nuxyorg/core'
+import type { ExtensionManifest } from '@nuxyorg/core'
 
 const shellManifest: ExtensionManifest = {
   id: 'com.nuxy.shell',

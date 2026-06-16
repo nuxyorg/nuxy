@@ -7,7 +7,7 @@ import {
   state,
   ref,
   type TemplateResult,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 import type { CommandPaletteAction, Position } from './types.ts'
 
 const MAX_DEPTH = 10

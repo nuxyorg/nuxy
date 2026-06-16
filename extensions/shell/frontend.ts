@@ -1,4 +1,4 @@
-import { LitElement, html, nothing, customElement, css } from '@nuxy/core'
+import { LitElement, html, nothing, customElement, css } from '@nuxyorg/core'
 import { ShellController } from './controller.ts'
 import './nuxy-shell.ts'
 import './nuxy-portal-host.ts'

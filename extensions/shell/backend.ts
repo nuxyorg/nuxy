@@ -1,4 +1,4 @@
-import type { CoreContext } from '@nuxy/extension-sdk'
+import type { CoreContext } from '@nuxyorg/extension-sdk'
 import type { UsageStats } from './types.ts'
 
 export function register(core: CoreContext): void {

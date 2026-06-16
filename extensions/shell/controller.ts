@@ -1,4 +1,4 @@
-import type { ShellBridgeSnapshot, ReactiveControllerHost } from '@nuxy/core'
+import type { ShellBridgeSnapshot, ReactiveControllerHost } from '@nuxyorg/core'
 import { createStore, type Store } from '../store.ts'
 import { createTranslator, type Translator } from '../shell-i18n.ts'
 import { getZoom } from './utils/zoom.ts'

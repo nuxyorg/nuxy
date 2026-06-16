@@ -30,13 +30,13 @@ const hoisted = vi.hoisted(async () => {
   return h
 })
 
-// Mock @nuxy/core package
-vi.mock('@nuxy/core', async () => {
-  const actual = await vi.importActual<typeof import('@nuxy/core')>('@nuxy/core')
+// Mock @nuxyorg/core package
+vi.mock('@nuxyorg/core', async () => {
+  const actual = await vi.importActual<typeof import('@nuxyorg/core')>('@nuxyorg/core')
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
-import { resolveToolElementTag } from '@nuxy/core'
+import { resolveToolElementTag } from '@nuxyorg/core'
 import settingsManifest from '../manifest.json'
 
 describe('settings tool element manifest', () => {

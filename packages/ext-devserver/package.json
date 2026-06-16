@@ -1,15 +1,20 @@
 {
-  "name": "@nuxy/ext-devserver",
+  "name": "@nuxyorg/ext-devserver",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
+  "description": "Vite-based dev server for building and testing Nuxy extensions",
+  "files": ["src", "vite.config.ts", "tsconfig.json"],
   "scripts": {
     "dev": "vite"
   },
   "dependencies": {
-    "lit": "^3.0.0"
-  },
-  "devDependencies": {
+    "@nuxyorg/core": "workspace:*",
+    "@nuxyorg/extension-sdk": "workspace:*",
+    "@nuxyorg/ui-default": "workspace:*",
+    "lit": "^3.0.0",
     "vite": "^4.4.5"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

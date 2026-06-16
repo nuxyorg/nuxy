@@ -1,7 +1,8 @@
 // fallow-ignore-file code-duplication
 import { describe, it, expect, vi } from 'vitest'
 import { register } from '../backend.ts'
-import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
+import { type CoreContext } from '@nuxyorg/extension-sdk'
+import { createMockCore } from '@nuxyorg/extension-sdk/testing'
 import type { NuxySettings } from '../types.ts'
 
 const DEFAULT_SETTINGS: NuxySettings = {

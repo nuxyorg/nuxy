@@ -1,4 +1,4 @@
-import type { ReactiveController, ReactiveControllerHost } from '@nuxy/core'
+import type { ReactiveController, ReactiveControllerHost } from '@nuxyorg/core'
 import type { Provider, Tool, ProviderState, ListItem, UsageStats } from '../types.ts'
 import { buildOmnibarSections, type OmnibarSection } from '../utils/listResults.ts'
 

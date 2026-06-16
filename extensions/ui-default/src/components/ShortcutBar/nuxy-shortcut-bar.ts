@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement } from '@nuxy/core'
+import { LitElement, html, css, customElement } from '@nuxyorg/core'
 import { footerBarHostStyles } from '../../styles/footer-bar-layout.ts'
 
 @customElement('nuxy-shortcut-bar')

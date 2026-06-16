@@ -1,5 +1,5 @@
 import './index.css'
-import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxyorg/core'
 
 const TABLE_HOST_ATTRS = new Set(['container-class', 'class', 'style'])
 

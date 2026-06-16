@@ -1,4 +1,4 @@
-import type { IpcChannelMap } from '@nuxy/extension-sdk'
+import type { IpcChannelMap } from '@nuxyorg/extension-sdk'
 
 export type TransferMode = 'menu' | 'send' | 'receive'
 export type TransferPhase = 'idle' | 'waiting' | 'connecting' | 'transferring' | 'done' | 'error'

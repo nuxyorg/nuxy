@@ -6,8 +6,8 @@ import {
   customElement,
   property,
   type TemplateResult,
-} from '@nuxy/core'
-import type { NuxyToolElement } from '@nuxy/core'
+} from '@nuxyorg/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import { NyaaController } from './controller.ts'
 
 function formatDate(iso: string): string {

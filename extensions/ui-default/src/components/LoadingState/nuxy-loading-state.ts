@@ -1,6 +1,6 @@
 import '../Spinner/nuxy-spinner.ts'
-import { LitElement, html, css, nothing, customElement, property } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-loading-state')
 export class NuxyLoadingStateElement extends LitElement {

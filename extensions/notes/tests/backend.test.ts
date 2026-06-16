@@ -1,7 +1,8 @@
 // fallow-ignore-file code-duplication
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
-import type { DbHandle, PreparedStatement } from '@nuxy/core'
+import { type CoreContext } from '@nuxyorg/extension-sdk'
+import { createMockCore } from '@nuxyorg/extension-sdk/testing'
+import type { DbHandle, PreparedStatement } from '@nuxyorg/core'
 import type { Note } from '../types.ts'
 
 interface MockDb {

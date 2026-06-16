@@ -7,8 +7,8 @@ import {
   property,
   state,
   unsafeSVG,
-} from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+} from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 import { getIconSvg, getIconMeta, iconCacheReady } from '../../icon-cache.ts'
 
 const DEFAULT_SIZE = 18

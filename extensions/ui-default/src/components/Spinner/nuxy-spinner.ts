@@ -1,5 +1,5 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 
 const SIZES: Record<string, number> = { sm: 16, md: 24, lg: 36 }
 

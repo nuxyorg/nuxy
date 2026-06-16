@@ -12,7 +12,7 @@ import type {
   IconPackDefinition,
   DbHandle,
   ExtensionManifest,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 import {
   HostChannel,
   resolveLocale,
@@ -20,7 +20,7 @@ import {
   interpolate,
   selectPlural,
   getTextDirection,
-} from '@nuxy/core'
+} from '@nuxyorg/core'
 import type { WorkerLogger } from './worker-log.js'
 import { buildFsApi } from './proxy-fs.js'
 import { buildShellApi } from './proxy-shell.js'

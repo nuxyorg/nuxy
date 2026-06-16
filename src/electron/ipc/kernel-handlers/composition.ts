@@ -3,8 +3,8 @@ import {
   resolveToolElementTag,
   listCompositionProvides,
   validateCompositionClaim,
-} from '@nuxy/core'
-import type { IpcResult } from '@nuxy/core'
+} from '@nuxyorg/core'
+import type { IpcResult } from '@nuxyorg/core'
 
 function getShellManifest() {
   return loadedExtensions.find((ext) => ext.manifest.bootstrap)?.manifest

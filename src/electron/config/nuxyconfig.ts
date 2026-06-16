@@ -2,7 +2,7 @@
 import fs from 'fs'
 import fsPromises from 'fs/promises'
 import path from 'path'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import { DATA_DIR, CONFIG_DIR } from './paths.js'
 
 const log = kernelLogger.child('NuxyConfig')

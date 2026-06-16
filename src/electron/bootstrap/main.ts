@@ -10,7 +10,7 @@ import { registerProtocols } from '../protocol/register.js'
 import { registerIpc } from '../ipc/register.js'
 import { scanExtensions } from '../extensions/scanner.js'
 import { reloadConfig, setSettingsReloadCallback } from '../config/nuxyconfig.js'
-import { kernelLogger } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
 import { platformId, getNowPlaying } from '../media/index.js'
 
 // Linux: disable Vulkan (breaks on Wayland). Do not force X11 or disable GPU by default —

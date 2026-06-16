@@ -1,5 +1,5 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
-import type { CompositionSlotDeclaration } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
+import type { CompositionSlotDeclaration } from '@nuxyorg/core'
 
 export const SHELL_COMPOSITION_SLOTS: CompositionSlotDeclaration[] = [
   {

@@ -1,4 +1,4 @@
-import type { ReactiveController, ReactiveControllerHost } from '@nuxy/core'
+import type { ReactiveController, ReactiveControllerHost } from '@nuxyorg/core'
 
 export class QueryController implements ReactiveController {
   private _query = ''

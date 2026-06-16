@@ -1,5 +1,5 @@
-import { LitElement, html, css, customElement, property } from '@nuxy/core'
-import type { TemplateResult } from '@nuxy/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
+import type { TemplateResult } from '@nuxyorg/core'
 import { repeat } from 'lit/directives/repeat.js'
 
 const KEY_ICON_NAMES: Record<string, string> = {

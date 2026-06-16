@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement } from '@nuxy/core'
+import { LitElement, html, css, customElement } from '@nuxyorg/core'
 
 @customElement('nuxy-visually-hidden')
 export class NuxyVisuallyHiddenElement extends LitElement {

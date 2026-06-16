@@ -1,14 +1,29 @@
 {
-  "name": "@nuxy/core",
+  "name": "@nuxyorg/core",
   "version": "1.0.0",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./lit": "./src/lit.ts",
-    "./renderer": "./src/renderer.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./lit": {
+      "import": "./dist/lit.js",
+      "types": "./dist/lit.d.ts"
+    },
+    "./renderer": {
+      "import": "./dist/renderer.js",
+      "types": "./dist/renderer.d.ts"
+    }
   },
+  "files": ["dist"],
   "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm build"
+  },
   "dependencies": {
     "@lit/reactive-element": "^2.1.2",
     "lit": "^3.0.0",
@@ -16,5 +31,8 @@
   },
   "devDependencies": {
     "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

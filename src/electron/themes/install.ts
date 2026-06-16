@@ -1,5 +1,5 @@
-import { kernelLogger } from '@nuxy/core'
-import type { ThemeDefinition } from '@nuxy/core'
+import { kernelLogger } from '@nuxyorg/core'
+import type { ThemeDefinition } from '@nuxyorg/core'
 import { getExtensionTheme } from './extension-themes.js'
 import { DEFAULT_DARK_THEME, DEFAULT_LIGHT_THEME } from './defaults.js'
 
