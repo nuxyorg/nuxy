@@ -16,6 +16,12 @@ const README_PATH = path.join(SECURITY_DIR, 'READ_ME_IMPORTANT.md')
 const REVOCATION_LIST_URL =
   'https://raw.githubusercontent.com/nuxyorg/nuxy-assets/main/revoked-extensions.json'
 
+function bundledRevocationListPath(): string | null {
+  if (!process.resourcesPath) return null
+  const p = path.join(process.resourcesPath, 'assets', 'revoked-extensions.json')
+  return fs.existsSync(p) ? p : null
+}
+
 const README_CONTENT = `# Nuxy Security Files — DO NOT DELETE OR MODIFY
 
 This folder contains files for Nuxy's security infrastructure.
@@ -61,6 +67,15 @@ try {
 
   if (isNew || !fs.existsSync(README_PATH)) {
     fs.writeFileSync(README_PATH, README_CONTENT)
+  }
+
+  // Seed bundled revocation list on first install (before first network update)
+  if (!fs.existsSync(REVOCATION_LIST_PATH)) {
+    const bundled = bundledRevocationListPath()
+    if (bundled) {
+      fs.copyFileSync(bundled, REVOCATION_LIST_PATH)
+      log.info('Seeded revocation list from bundled copy.')
+    }
   }
 } catch {}
 
@@ -187,6 +202,14 @@ export async function updateRevocationList(): Promise<void> {
     }
   } catch (err) {
     log.silly('Could not update revocation list (offline or timeout):', err)
+    // Seed from bundled if no file exists yet (first run, offline)
+    if (!fs.existsSync(REVOCATION_LIST_PATH)) {
+      const bundled = bundledRevocationListPath()
+      if (bundled) {
+        fs.copyFileSync(bundled, REVOCATION_LIST_PATH)
+        log.info('Seeded revocation list from bundled copy (offline fallback).')
+      }
+    }
   }
 }
 

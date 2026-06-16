@@ -21,6 +21,10 @@ extraResources:
     filter:
       - '**/*'
       - '!**/node_modules/**'
+  - from: ../assets/nuxy-assets
+    to: assets
+    filter:
+      - '**/*'
 linux:
   target:
     - AppImage
