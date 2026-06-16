@@ -50,7 +50,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git subtree split --prefix=${{ matrix.prefix }} -b sync-${{ matrix.repo }}
           git push \
-            https://x-access-token:${TOKEN}@github.com/${{ matrix.repo }}.git \
+            https://oauth2:${TOKEN}@github.com/${{ matrix.repo }}.git \
             sync-${{ matrix.repo }}:main \
             --force
           git branch -D sync-${{ matrix.repo }}
