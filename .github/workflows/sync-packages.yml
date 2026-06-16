@@ -50,6 +50,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           BRANCH="sync-$(echo '${{ matrix.repo }}' | tr '/' '-')"
           git subtree split --prefix=${{ matrix.prefix }} -b "$BRANCH"
+          echo "--- ls-remote test ---"
+          git ls-remote https://x-access-token:${TOKEN}@github.com/${{ matrix.repo }}.git HEAD || echo "ls-remote failed"
+          echo "--- dry-run push ---"
+          git push --dry-run https://x-access-token:${TOKEN}@github.com/${{ matrix.repo }}.git "$BRANCH":main || echo "dry-run failed"
+          echo "--- real push ---"
           git remote add target https://x-access-token:${TOKEN}@github.com/${{ matrix.repo }}.git
           git push target "$BRANCH":main --force
           git remote remove target
