@@ -1,6 +1,7 @@
 name: Sync packages to org repos
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
