@@ -11,6 +11,7 @@ const KEY_ICON_NAMES: Record<string, string> = {
   '⏎': 'kbd-enter',
   '⇧': 'kbd-shift',
   '⌃': 'kbd-ctrl',
+  '⌘': 'kbd-cmd',
   '⌥': 'kbd-option',
   '⌫': 'kbd-backspace',
   '⎋': 'kbd-escape',
@@ -43,8 +44,32 @@ export class NuxyKbdElement extends LitElement {
   @property({ type: String, attribute: 'keys' })
   declare keys: string
 
+  private _onSchemeUpdated: (() => void) | null = null
+
+  connectedCallback(): void {
+    super.connectedCallback()
+    this._onSchemeUpdated = () => this.requestUpdate()
+    document.addEventListener('nuxy-kbd-scheme-updated', this._onSchemeUpdated)
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+    if (this._onSchemeUpdated) {
+      document.removeEventListener('nuxy-kbd-scheme-updated', this._onSchemeUpdated)
+      this._onSchemeUpdated = null
+    }
+  }
+
+  private _getIconName(key: string): string | undefined {
+    if (key === '⌃') {
+      const isMacScheme = document.documentElement.getAttribute('data-kbd-scheme') === 'mac'
+      return isMacScheme ? 'kbd-cmd' : 'kbd-ctrl'
+    }
+    return KEY_ICON_NAMES[key]
+  }
+
   private _renderKey(ch: string): TemplateResult {
-    const iconName = KEY_ICON_NAMES[ch]
+    const iconName = this._getIconName(ch)
     if (iconName) {
       return html`<span class="nuxy-kbd-icon"
         ><nuxy-icon name=${iconName} size="0.9em" opacity="1" stroke-width="2.5"></nuxy-icon
@@ -55,7 +80,18 @@ export class NuxyKbdElement extends LitElement {
 
   render(): TemplateResult {
     const keys = this.keys
-    const wholeIconName = KEY_ICON_NAMES[keys]
+    const isMacScheme = document.documentElement.getAttribute('data-kbd-scheme') === 'mac'
+
+    if (
+      isMacScheme &&
+      (keys.toLowerCase() === 'ctrl' || keys.toLowerCase() === 'control' || keys === '⌃')
+    ) {
+      return html`<span class="nuxy-kbd-icon"
+        ><nuxy-icon name="kbd-cmd" size="0.9em" opacity="1"></nuxy-icon
+      ></span>`
+    }
+
+    const wholeIconName = this._getIconName(keys)
     if (wholeIconName) {
       return html`<span class="nuxy-kbd-icon"
         ><nuxy-icon name=${wholeIconName} size="0.9em" opacity="1"></nuxy-icon

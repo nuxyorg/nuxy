@@ -34,6 +34,7 @@
     "info",
     "kbd-backspace",
     "kbd-ctrl",
+    "kbd-cmd",
     "kbd-enter",
     "kbd-escape",
     "kbd-option",

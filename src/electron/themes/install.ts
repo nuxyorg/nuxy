@@ -1,10 +1,6 @@
 import { kernelLogger } from '@nuxyorg/core'
 import type { ThemeDefinition } from '@nuxyorg/core'
-import {
-  getExtensionTheme,
-  getDefaultTheme,
-  getDefaultThemeName,
-} from './extension-themes.js'
+import { getExtensionTheme, getDefaultTheme, getDefaultThemeName } from './extension-themes.js'
 
 const log = kernelLogger.child('Themes')
 

@@ -49,7 +49,7 @@ The backend runs in a dedicated worker thread. It uses the `CoreContext` SDK to 
 Create `backend.ts`:
 
 ```typescript
-import type { CoreContext } from '@nuxy/extension-sdk'
+import type { CoreContext } from '@nuxyorg/extension-sdk'
 
 export function register(core: CoreContext): void {
   // Register an IPC handler that the frontend can call
@@ -81,7 +81,7 @@ Create `nuxy-tool-hello-world.ts`:
 
 ```typescript
 // nuxy-tool-hello-world.ts
-import type { NuxyToolElement } from '@nuxy/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import { h } from '../ui-default/src/h.ts'
 
 export class NuxyToolHelloWorldElement extends HTMLElement implements NuxyToolElement {

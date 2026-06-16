@@ -45,4 +45,36 @@ describe('nuxy-kbd', () => {
     expect(kbd.shadowRoot?.textContent).toBe('Del')
     expect(kbd.shadowRoot?.querySelector('.nuxy-kbd-icon')).toBeNull()
   })
+
+  it('adapts shortcut modifier icons based on data-kbd-scheme', async () => {
+    const host = document.createElement('nuxy-kbd') as NuxyKbdElement
+    parent.appendChild(host)
+
+    // Default or PC: '⌃' -> 'kbd-ctrl'
+    host.keys = '⌃'
+    await host.updateComplete
+    expect(host.shadowRoot?.querySelector('nuxy-icon')?.getAttribute('name')).toBe('kbd-ctrl')
+
+    // Default or PC: 'Ctrl' -> plain text
+    host.keys = 'Ctrl'
+    await host.updateComplete
+    expect(host.shadowRoot?.querySelector('nuxy-icon')).toBeNull()
+    expect(host.shadowRoot?.textContent?.trim()).toBe('Ctrl')
+
+    // Switch to Mac scheme
+    document.documentElement.setAttribute('data-kbd-scheme', 'mac')
+    document.dispatchEvent(new CustomEvent('nuxy-kbd-scheme-updated'))
+    await host.updateComplete
+
+    // Now 'Ctrl' -> 'kbd-cmd' icon
+    expect(host.shadowRoot?.querySelector('nuxy-icon')?.getAttribute('name')).toBe('kbd-cmd')
+
+    // '⌃' -> 'kbd-cmd' icon
+    host.keys = '⌃'
+    await host.updateComplete
+    expect(host.shadowRoot?.querySelector('nuxy-icon')?.getAttribute('name')).toBe('kbd-cmd')
+
+    // Cleanup
+    document.documentElement.removeAttribute('data-kbd-scheme')
+  })
 })

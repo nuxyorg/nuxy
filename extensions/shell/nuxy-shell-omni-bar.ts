@@ -90,6 +90,20 @@ export class NuxyShellOmniBarElement extends LitElement {
       align-items: center;
     }
 
+    .nuxy-shell-omni-bar__spinner-wrap {
+      display: inline-flex;
+      opacity: 0;
+      scale: 0.7;
+      transition:
+        opacity 200ms ease,
+        scale 200ms ease;
+    }
+
+    :host([loading]) .nuxy-shell-omni-bar__spinner-wrap {
+      opacity: 1;
+      scale: 1;
+    }
+
     @keyframes nuxy-hold-fill {
       from {
         transform: scaleX(0);
@@ -186,6 +200,7 @@ export class NuxyShellOmniBarElement extends LitElement {
       <input
         class="nuxy-shell-omni-bar__input"
         autofocus
+        spellcheck="false"
         .value=${this.query}
         .placeholder=${this.placeholder}
         aria-label=${this.ariaLabel || nothing}
@@ -212,7 +227,9 @@ export class NuxyShellOmniBarElement extends LitElement {
       />
       <div class="nuxy-shell-omni-bar__portal">
         <slot></slot>
-        ${this.loading ? html`<nuxy-spinner size="sm"></nuxy-spinner>` : nothing}
+        <span class="nuxy-shell-omni-bar__spinner-wrap" aria-hidden="true">
+          <nuxy-spinner size="sm"></nuxy-spinner>
+        </span>
       </div>
       ${this.holdMs != null
         ? html`

@@ -16,7 +16,8 @@
     "iconPack": "Icon Pack",
     "zoom": "Zoom",
     "font": "Font",
-    "fontWeight": "Font Weight"
+    "fontWeight": "Font Weight",
+    "kbdScheme": "Keyboard Shortcut Style"
   },
   "window": {
     "escAction": "Esc Key Action",
@@ -86,5 +87,10 @@
   },
   "search": {
     "placeholder": "Filter settings"
+  },
+  "kbdScheme": {
+    "auto": "Auto (detect OS)",
+    "mac": "Mac (⌘ Command)",
+    "windows": "PC (Ctrl)"
   }
 }

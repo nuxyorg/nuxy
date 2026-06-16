@@ -383,6 +383,7 @@ export class NuxyCommandPaletteElement extends LitElement {
             <input
               class="nuxy-command-palette__input"
               autofocus
+              spellcheck="false"
               .value=${this._query}
               @input=${this._onInputInput}
               ${ref((el) => {

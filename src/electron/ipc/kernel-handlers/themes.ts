@@ -1,8 +1,5 @@
 import { loadTheme } from '../../themes/install.js'
-import {
-  listExtensionThemeNames,
-  getDefaultThemeName,
-} from '../../themes/extension-themes.js'
+import { listExtensionThemeNames, getDefaultThemeName } from '../../themes/extension-themes.js'
 import { getIcon, getIconPack, listIconPacks } from '../../icons/registry.js'
 import type { IpcResult } from '@nuxyorg/core'
 

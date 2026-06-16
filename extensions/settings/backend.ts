@@ -21,6 +21,8 @@ const DEFAULT: NuxySettings = {
   windowPosition: '1/2, 1/2',
   // Language
   preferredLanguages: [],
+  // Keyboard
+  kbdScheme: 'auto',
 }
 
 export function register(core: CoreContext): void {

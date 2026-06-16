@@ -113,7 +113,7 @@ export class NotesController {
 > This pattern is deprecated. The `ce-utils.ts` module has been removed. The `h()` helper lives in `extensions/ui-default/src/h.ts` but is also deprecated. All new extension UIs must be built using `LitElement` (Pattern 2 below).
 
 ```typescript
-import type { NuxyToolElement } from '@nuxy/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import { h } from '../ui-default/src/h.ts'
 import { MyController } from './my-controller.ts'
 
@@ -166,9 +166,8 @@ customElements.define('nuxy-tool-my-extension', NuxyToolMyExtensionElement)
 Use when fine-grained reactive updates are worth the extra dependency. `@state()` properties trigger `render()` automatically.
 
 ```typescript
-import { LitElement, html, css } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
-import type { NuxyToolElement } from '@nuxy/core'
+import { LitElement, html, css, customElement, state } from '@nuxyorg/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 
 @customElement('nuxy-tool-my-extension')
 export class NuxyToolMyExtensionElement extends LitElement implements NuxyToolElement {
@@ -241,18 +240,14 @@ export class NuxyToolMyExtensionElement extends LitElement implements NuxyToolEl
 
 ```
 extensions/notes/
-  frontend.ts                   ← entry point (imports nuxy-tool-notes.ts)
+  frontend.ts                   ← entry point & @customElement('nuxy-tool-notes')
   backend.ts
-  notes-controller.ts           ← state, IPC calls, business logic
-  notes-dom.ts                  ← render helpers using h()
-  nuxy-tool-notes.ts            ← HTMLElement custom element
-  nuxy-tool-notes.test.ts       ← element unit tests
+  controller.ts                 ← state, IPC calls, business logic
   types.ts
   utils/
 ```
 
-`nuxy-tool-notes.ts` after refactor:
+`frontend.ts` after refactor:
 
-- Owns: `connectedCallback`/`disconnectedCallback` lifecycle, property setters (`query`, `committedQuery`, `extensionId`), `render()` delegation
-- Delegates data loading, filtering, and mutations to `NotesController`
-- Delegates DOM construction to helpers in `notes-dom.ts`
+- Owns: `connectedCallback`/`disconnectedCallback` lifecycle, property setters (`query`, `committedQuery`, `extensionId`), and renders the UI template via `html` using component definitions destructuring from `window.UI`.
+- Delegates data loading, filtering, and mutations to `controller.ts` (the Notes controller).

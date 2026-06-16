@@ -35,12 +35,30 @@ export function getPreferredLocale(): string {
 }
 
 export function registerExtension(ext: LoadedExtension): void {
-  if (byId.has(ext.id)) {
-    return
+  const existing = byId.get(ext.id)
+  if (existing) {
+    const existingPath = path.join(EXTRACTED_DIR, existing.folderName)
+    const newPath = path.join(EXTRACTED_DIR, ext.folderName)
+    const existingScore = scoreExtractFolder(existingPath, existing.folderName)
+    const newScore = scoreExtractFolder(newPath, ext.folderName)
+    if (newScore <= existingScore) return
+    unregisterExtension(ext.id)
   }
   byId.set(ext.id, ext)
   folderToId.set(ext.folderName, ext.id)
   loadedExtensions.push(ext)
+}
+
+function scoreExtractFolder(folderPath: string, folderName: string): number {
+  let score = 0
+  if (fs.existsSync(path.join(folderPath, '_frontend.bundle.mjs'))) score += 100
+  if (/-\d/.test(folderName)) score += 10
+  try {
+    score += fs.statSync(folderPath).mtimeMs / 1e15
+  } catch {
+    /* ignore */
+  }
+  return score
 }
 
 export function getExtensionById(id: string): LoadedExtension | undefined {

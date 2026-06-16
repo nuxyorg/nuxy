@@ -123,4 +123,3 @@ describe('default theme behavior', () => {
     expect(getDefaultThemeName()).toBeUndefined()
   })
 })
-

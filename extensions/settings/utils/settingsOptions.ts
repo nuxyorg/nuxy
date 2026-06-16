@@ -1,4 +1,11 @@
-import type { NuxySettings, SelectOption, SectionDef, AnyRow, StateSnapshot } from '../types.ts'
+import type {
+  NuxySettings,
+  SelectOption,
+  SectionDef,
+  AnyRow,
+  StateSnapshot,
+  KbdScheme,
+} from '../types.ts'
 
 // ---------------------------------------------------------------------------
 // Static option arrays
@@ -80,6 +87,12 @@ export const BOOL_OPTIONS: SelectOption<boolean>[] = [
   { value: false, label: 'No' },
 ]
 
+export const KBD_SCHEME_OPTIONS: SelectOption<KbdScheme>[] = [
+  { value: 'auto', label: 'Auto (detect OS)' },
+  { value: 'mac', label: 'Mac (⌘ Command)' },
+  { value: 'windows', label: 'PC (Ctrl)' },
+]
+
 export const LANGUAGE_OPTIONS: SelectOption<string>[] = [
   { value: '', label: '— (none)' },
   { value: 'ar', label: 'Arabic (العربية)' },
@@ -139,6 +152,7 @@ export const DEFAULT_SETTINGS: NuxySettings = {
   showOnStartup: false,
   windowPosition: '1/2, 1/2',
   preferredLanguages: [],
+  kbdScheme: 'auto',
 }
 
 // ---------------------------------------------------------------------------
@@ -155,6 +169,7 @@ export const SECTIONS: SectionDef[] = [
       { key: 'zoom', label: 'Zoom', options: ZOOM_OPTIONS },
       { key: 'font', label: 'Font', options: fontOptions, searchable: true },
       { key: 'fontWeight', label: 'Font Weight', options: FONT_WEIGHT_OPTIONS },
+      { key: 'kbdScheme', label: 'Keyboard Shortcut Style', options: KBD_SCHEME_OPTIONS },
     ],
   },
   {

@@ -62,6 +62,14 @@ export default withMermaid(
             text: 'Tooling',
             items: [{ text: 'MCP Server', link: '/guide/mcp-server' }],
           },
+          {
+            text: 'Internal Reference',
+            items: [
+              { text: 'Core Package', link: '/guide/core-package' },
+              { text: 'Shell Extension', link: '/guide/shell-extension' },
+              { text: 'Refactoring Roadmap', link: '/guide/refactoring-roadmap' },
+            ],
+          },
         ],
         '/extensions/': [
           {

@@ -58,7 +58,7 @@ For Electron main-process modules, mock `electron` and any modules that do file 
 
 **Playwright e2e tests** live in `src/e2e/`. Two kinds:
 
-- _Unit-style_ (no Electron app): import TypeScript modules directly, use `@playwright/test`. Avoid importing modules that transitively import `@nuxy/core` value exports (only type imports work without Vite alias resolution).
+- _Unit-style_ (no Electron app): import TypeScript modules directly, use `@playwright/test`. Avoid importing modules that transitively import `@nuxyorg/core` value exports (only type imports work without Vite alias resolution).
 - _Full UI_ (Electron app launch): use the worker-scoped `electronApp`/`appPage` fixtures from `fixtures.ts`.
 
 ## Architecture
@@ -68,10 +68,10 @@ Nuxy is a frameless, transparent Electron launcher — a popup shell that extens
 ### Monorepo layout
 
 ```
-packages/core          → @nuxy/core      — shared types, logger, IPC message types
-packages/ui            → @nuxy/ui        — custom element stubs (type-only, framework-agnostic)
-packages/extension-host→ @nuxy/extension-host — worker runner that loads backend extensions
-packages/extension-sdk → @nuxy/extension-sdk  — extension authoring API (re-exports @nuxy/core)
+packages/core          → @nuxyorg/core      — shared types, logger, IPC message types
+packages/ui            → @nuxyorg/ui        — custom element stubs (type-only, framework-agnostic)
+packages/extension-host→ @nuxyorg/extension-host — worker runner that loads backend extensions
+packages/extension-sdk → @nuxyorg/extension-sdk  — extension authoring API (re-exports @nuxyorg/core)
 extensions/            → bundled extensions (shell, clipboard, calculator, angrysearch)
 src/                   → Electron + Vite app (renderer + main process)
 ```
@@ -108,7 +108,7 @@ Vanilla Web Components bootstrap — no React. `main.ts` sets `window.UI = {}` a
 - `core.window.*` → resize, hide, esc, drag, center, onShow
 - `core.events.*` → namespaced event bus (`emit`, `on`)
 
-### `@nuxy/ui` — two-layer component system
+### `@nuxyorg/ui` — two-layer component system
 
 `packages/ui/src/` and `extensions/ui-default/src/` are **not duplicates**. They form a deliberate two-layer design:
 
@@ -120,7 +120,7 @@ Vanilla Web Components bootstrap — no React. `main.ts` sets `window.UI = {}` a
   }
   ```
 
-  This layer provides TypeScript types and import aliases (`@nuxy/ui`) without shipping CSS or real DOM. The stubs are framework-agnostic — callers may be React during migration or vanilla JS.
+  This layer provides TypeScript types and import aliases (`@nuxyorg/ui`) without shipping CSS or real DOM. The stubs are framework-agnostic — callers are vanilla JS / LitElement.
 
 - **`extensions/ui-default/src/components/`** — real custom element implementations (`nuxy-button`, `nuxy-card`, etc.). Built into `extensions/ui-default/frontend.js`, which registers custom elements and sets `window.UI = { Button, Card, … }` factory functions at runtime. This layer owns the visual design; swapping it changes the entire UI without touching any consumer code.
 
@@ -134,13 +134,13 @@ Vanilla Web Components bootstrap — no React. `main.ts` sets `window.UI = {}` a
 
 **Extension format** (place under `~/.nuxy/extensions/<folder>/`):
 
-- `manifest.json` — required; fields: `id`, `name`, `version`, `type` (`tool`|`provider`|`orchestrator`), `bootstrap`, `permissions`, `entry.backend`, `entry.frontend`, `entry.element`
+- `manifest.json` — required; fields: `id`, `name`, `version`, `type` (`tool`|`provider`|`orchestrator`|`helper`), `bootstrap`, `permissions`, `behavior` (e.g. `suppressBlurHide`), `entry.backend`, `entry.frontend`, `entry.element`
 - `backend.js` — runs in a Worker thread; receives a `CoreContext` proxy
 - `frontend.js` — registers a `nuxy-tool-<name>` custom element; loaded by the shell via `nuxy-ext://`. Declare `entry.element: "nuxy-tool-<name>"` in the manifest so the tool host can mount it.
 
-Tool custom elements implement `NuxyToolElement` from `@nuxy/core`: `connectedCallback`, `disconnectedCallback`, and `query`/`committedQuery`/`extensionId` property setters. LitElement with `html` template literals is the standard framework for UI components. The legacy `h()` helper from `extensions/ce-utils.ts` is deprecated and scheduled for removal.
+Tool custom elements implement `NuxyToolElement` from `@nuxyorg/core`: `connectedCallback`, `disconnectedCallback`, and `query`/`committedQuery`/`extensionId` property setters. LitElement with `html` template literals is the standard framework for UI components. The legacy `h()` helper from `extensions/ce-utils.ts` is deprecated and scheduled for removal.
 
-**Backend API** (`CoreContext` from `@nuxy/extension-sdk`):
+**Backend API** (`CoreContext` from `@nuxyorg/extension-sdk`):
 
 - `core.registry.registerTool/registerProvider/registerOrchestrator` — register with the kernel
 - `core.ipc.handle(channel, handler)` — expose a channel callable via `ext:invoke`
@@ -173,6 +173,6 @@ Plain key=value format, auto-created on first run. Key options:
 - `window.core.icons.get(name, pack?)` — SVG string for an icon
 - `window.core.icons.listPacks()` — all loaded icon pack names
 
-**`@nuxy/ui` SelectBox component**: keyboard-controlled dropdown placed in `ListItemActions`. Parent manages `open`, `focusedIndex`, `onSelect`, `onClose`, `onOpen` — component is fully controlled. Used by the Settings tool for theme/icon/zoom/font pickers.
+**`@nuxyorg/ui` SelectBox component**: keyboard-controlled dropdown placed in `ListItemActions`. Parent manages `open`, `focusedIndex`, `onSelect`, `onClose`, `onOpen` — component is fully controlled. Used by the Settings tool for theme/icon/zoom/font pickers.
 
 JSON theme files live in `src/themes/` and are copied to `~/.nuxy/themes/` on startup. Theme variables are applied as CSS custom properties on `document.documentElement`.

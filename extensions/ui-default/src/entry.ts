@@ -10,11 +10,9 @@ import './styles/base.css'
 import './components/ToolHost/index.css'
 import './register-components.ts'
 import * as UI from './index.ts'
-import * as NuxyCore from '@nuxyorg/core'
 
 const merged = {
   ...window.UI,
   ...UI,
 }
 ;(window as any).UI = merged
-;(window as any).NuxyCore = NuxyCore

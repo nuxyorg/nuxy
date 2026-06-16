@@ -14,7 +14,7 @@ When modifying or generating code for this repository, you **MUST** strictly adh
 
 ## 2. Extension Architecture (Gnome-Style)
 
-- Extensions live in `~/.nuxy/extensions/` and run in completely isolated **Node.js Worker Threads** (`src/electron/worker/`).
+- Extensions live in `~/.nuxy/extensions/` and run in completely isolated **Node.js Worker Threads** (`src/electron/spawn/`).
 - Extensions **NEVER** use raw `require()`, `fs`, `http`, or `child_process`. They must use the secure, injected `CoreContext` proxy.
 - Extensions are full-stack (React Frontend + Node.js Backend). UI is loaded via `nuxy-ext://<manifest.id>/…`.
 - **Before writing any extension**, read [`rules/EXTENSION_GUIDE.md`](EXTENSION_GUIDE.md) in full.
@@ -79,11 +79,11 @@ Files under `extensions/shared/` are cross-extension utilities. Import from ther
 ## 7. UI Components
 
 - Use **LitElement** with `html\`\`` for all new extension frontends.
-- The legacy `h()` / `host()` DOM factories in ui-default have been **removed**. Use Lit `<nuxy-*>` tags or `@nuxy/core` `html` templates.
+- The legacy `h()` / `host()` DOM factories in ui-default have been **removed**. Use Lit `<nuxy-*>` tags or `@nuxyorg/core` `html` templates.
 - `ce-utils.ts` has been **removed** — do not reference it anywhere.
-- All Lit imports must come from `@nuxy/core`, never directly from `lit`.
+- All Lit imports must come from `@nuxyorg/core`, never directly from `lit`.
 - Light DOM is **mandatory**: every tool element must override `createRenderRoot()` to return `this`.
-- **Never use `unsafeCSS`** (or any other `unsafe*` Lit API). Use the `css` tagged template literal from `@nuxy/core` only. If you need the same declarations in two selectors, duplicate them — do not interpolate a shared string via `unsafeCSS`.
+- **Never use `unsafeCSS`** (or any other `unsafe*` Lit API). Use the `css` tagged template literal from `@nuxyorg/core` only. If you need the same declarations in two selectors, duplicate them — do not interpolate a shared string via `unsafeCSS`.
 
 ---
 
@@ -91,9 +91,15 @@ Files under `extensions/shared/` are cross-extension utilities. Import from ther
 
 This `rules/` directory contains all AI agent guidance:
 
-| File              | Purpose                                      |
-| ----------------- | -------------------------------------------- |
-| `rules/AGENTS.md` | This file — architecture and behaviour rules |
+| File                                 | Purpose                                                |
+| ------------------------------------ | ------------------------------------------------------ |
+| `rules/AGENTS.md`                    | This file — architecture and behaviour rules           |
+| `rules/EXTENSION_GUIDE.md`           | Comprehensive extension development guide              |
+| `rules/LIT_MIGRATION_GUIDE.md`       | Converting legacy h() extensions to LitElement         |
+| `rules/FRONTEND_STRUCTURE_GUIDE.md`  | UI vs Controller vs Viewmodel split                    |
+| `rules/MANIFEST_GUIDE.md`            | Extension manifest rules and schema reference          |
+| `rules/EXTENSIONS_README.md`         | High-level roadmap and checklist for extension authors |
+| `rules/EXTENSION_README_TEMPLATE.md` | Markdown template for individual extension READMEs     |
 
 The `.agents/skills/` directory contains Antigravity skill definitions:
 

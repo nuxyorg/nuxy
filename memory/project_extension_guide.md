@@ -5,11 +5,11 @@ metadata:
   type: project
 ---
 
-Extension development guide created at `extensions/EXTENSION_GUIDE.md` and referenced in `CLAUDE.md`. All AI agents must read it before writing or reviewing extensions.
+Extension development guide created at `rules/EXTENSION_GUIDE.md` and referenced in `CLAUDE.md`. All AI agents must read it before writing or reviewing extensions.
 
 **Why:** Extensions were being written at varying quality — some used direct Node.js imports, hardcoded colors, mouse-only interactions, and custom UI components outside the UI kit.
 
-**How to apply:** Before writing any extension code, read `extensions/EXTENSION_GUIDE.md`. Flag any violation found during review.
+**How to apply:** Before writing any extension code, read `rules/EXTENSION_GUIDE.md`. Flag any violation found during review.
 
 ## Known violations in bundled extensions (as of 2026-05-25)
 
@@ -37,11 +37,11 @@ Extension development guide created at `extensions/EXTENSION_GUIDE.md` and refer
 - `onClick={() => setSelectedRow(i)}` on `ListItem` — acceptable since keyboard nav also works
 - Emoji icons (`⚙️`, `🪟`) in SECTIONS config
 
-## Core API gaps (must be implemented before fixing angrysearch)
+## Core APIs (Implemented)
 
-These do not yet exist in `CoreContext` / `packages/core`:
+These APIs have been implemented in `packages/core` and are accessible in `CoreContext`:
 
-- `core.fs.readDir`, `readFile`, `writeFile`, `mkdir`, `rename`, `rm`, `stat`
-- `core.db.open(name)` — sandboxed SQLite
-- `core.shell.open(pathOrUrl)` — xdg-open equivalent
-- `core.shell.exec(cmd, args)` — requires new `shell` permission type
+- `core.fs` — sandboxed and full file system operations (`fileExists`, `readDir`, `readFile`, `writeFile`, etc.)
+- `core.db.open(name)` — sandboxed SQLite database
+- `core.shell.open` — opens files / URLs via system handler
+- `core.shell.exec` / `core.shell.spawn` — runs subprocesses with shell capability

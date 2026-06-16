@@ -4,6 +4,7 @@ import path from 'path'
 import module from 'module'
 import { dialog } from 'electron'
 import { EXTENSION_DIR, EXTRACTED_DIR } from '../config/paths.js'
+import { scoreExtensionFolder } from '../protocol/resolve.js'
 import { spawnExtension, activeWorkers } from '../spawn/spawn.js'
 import { workerExitListeners, workerRegistryErrorListeners } from '../spawn/active-workers.js'
 import {
@@ -184,6 +185,42 @@ function restoreWritable(p: string): void {
       }
     }
   } catch {}
+}
+
+function dedupeExtractedByManifestId(activeFolders: Set<string>): void {
+  const byExtId = new Map<string, Array<{ folderName: string; score: number }>>()
+
+  for (const folderName of activeFolders) {
+    const itemPath = path.join(EXTRACTED_DIR, folderName)
+    const manifestPath = path.join(itemPath, 'manifest.json')
+    if (!fs.existsSync(manifestPath)) continue
+    try {
+      const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as { id?: string }
+      const extId = manifest.id || folderName
+      const score = scoreExtensionFolder(itemPath, folderName)
+      const list = byExtId.get(extId) ?? []
+      list.push({ folderName, score })
+      byExtId.set(extId, list)
+    } catch {
+      /* skip unreadable manifests */
+    }
+  }
+
+  for (const folders of byExtId.values()) {
+    if (folders.length <= 1) continue
+    folders.sort((a, b) => b.score - a.score)
+    for (const loser of folders.slice(1)) {
+      const fullPath = path.join(EXTRACTED_DIR, loser.folderName)
+      try {
+        restoreWritable(fullPath)
+        fs.rmSync(fullPath, { recursive: true, force: true })
+        activeFolders.delete(loser.folderName)
+        log.info(`Removed duplicate extract folder: ${loser.folderName}`)
+      } catch (err) {
+        log.warn(`Failed to remove duplicate extract folder: ${loser.folderName}`, err)
+      }
+    }
+  }
 }
 
 /**
@@ -473,6 +510,9 @@ export async function scanExtensions(): Promise<void> {
       log.error(`Failed to process extension item ${itemName}:`, err)
     }
   }
+
+  // When both legacy (com.nuxy.foo) and versioned (com.nuxy.foo-1.0.0) extracts exist, keep the best one.
+  dedupeExtractedByManifestId(activeFolders)
 
   // Clean stale/removed directories in EXTRACTED_DIR (including leftover .tmp_ folders)
   try {

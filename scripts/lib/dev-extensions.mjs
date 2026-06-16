@@ -12,7 +12,7 @@ const repoRoot = path.resolve(__dirname, '../..')
 const nxtBin = path.resolve(repoRoot, 'packages/nxt/bin/nxt.js')
 
 const skipDirs = new Set(['node_modules', '.git', 'dist'])
-const skipWatchFiles = new Set(['_backend.bundle.mjs', 'style.css'])
+const skipWatchFiles = new Set(['_backend.bundle.mjs', '_frontend.bundle.mjs', 'style.css'])
 
 const EXT_LABELS = { 'ui-default': 'UIKit' }
 

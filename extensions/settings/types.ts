@@ -5,6 +5,7 @@ export type Theme = string
 export type ZoomLevel = string
 export type FontFamily = string
 export type FontWeight = string
+export type KbdScheme = 'auto' | 'mac' | 'windows'
 
 export interface NuxySettings {
   theme: Theme
@@ -24,6 +25,8 @@ export interface NuxySettings {
   windowPosition: string
   /** Ordered list of BCP 47 locale codes (most preferred first). */
   preferredLanguages: string[]
+  /** Controls how modifier keys are displayed in keyboard shortcut hints. */
+  kbdScheme: KbdScheme
   [key: string]: unknown
 }
 

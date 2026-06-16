@@ -7,7 +7,8 @@
     "nxt": "./bin/nxt.js"
   },
   "files": [
-    "bin"
+    "bin",
+    "lib"
   ],
   "repository": {
     "type": "git",

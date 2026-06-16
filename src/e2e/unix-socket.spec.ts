@@ -11,7 +11,10 @@ test.describe('UNIX socket server', () => {
     expect(fs.existsSync(socketPath)).toBe(true)
   })
 
-  test('"show" command via socket makes window visible', async ({ socketPath, appPage: _appPage }) => {
+  test('"show" command via socket makes window visible', async ({
+    socketPath,
+    appPage: _appPage,
+  }) => {
     const result = await new Promise<boolean>((resolve) => {
       const client = net.createConnection(socketPath, () => {
         client.write('show')

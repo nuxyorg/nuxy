@@ -12,14 +12,14 @@ The vanilla pattern (`HTMLElement` + `*-dom.ts` + `h()`) replaces the entire DOM
 
 ## Import source
 
-Lit is re-exported from `@nuxy/core`. Never import from `lit` directly.
+Lit is re-exported from `@nuxyorg/core`. Never import from `lit` directly.
 
 ```typescript
 // CORRECT — single source of truth
-import { LitElement, html, nothing, css } from '@nuxy/core'
-import { customElement, property, state } from '@nuxy/core'
-import { ref } from '@nuxy/core'
-import type { NuxyToolElement } from '@nuxy/core'
+import { LitElement, html, nothing, css } from '@nuxyorg/core'
+import { customElement, property, state } from '@nuxyorg/core'
+import { ref } from '@nuxyorg/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 
 // WRONG — direct Lit import bypasses workspace resolution
 import { LitElement } from 'lit'
@@ -50,7 +50,7 @@ protected createRenderRoot(): HTMLElement {
 
 ```typescript
 // nuxy-tool-example.ts
-import type { NuxyToolElement } from '@nuxy/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import { ExampleController } from './example-controller.ts'
 import { renderExampleApp } from './example-dom.ts'
 
@@ -113,8 +113,8 @@ if (!customElements.get(TAG)) customElements.define(TAG, NuxyToolExampleElement)
 
 ```typescript
 // nuxy-tool-example.ts
-import { LitElement, html, nothing, customElement, property } from '@nuxy/core'
-import type { NuxyToolElement } from '@nuxy/core'
+import { LitElement, html, nothing, customElement, property } from '@nuxyorg/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import { ExampleController } from './example-controller.ts'
 
 @customElement('nuxy-tool-example')
@@ -251,7 +251,7 @@ render() {
 For complex renders, split into private methods that return `TemplateResult`:
 
 ```typescript
-import { html, nothing, type TemplateResult } from '@nuxy/core'
+import { html, nothing, type TemplateResult } from '@nuxyorg/core'
 
 render() {
   if (!this.controller) return nothing
@@ -336,7 +336,7 @@ html`
 Use the `ref()` directive when you need a reference to a DOM element after render:
 
 ```typescript
-import { ref, type RefOrCallback } from '@nuxy/core'
+import { ref, type RefOrCallback } from '@nuxyorg/core'
 
 private scrollAreaRef: HTMLElement | null = null
 
@@ -372,7 +372,7 @@ The controller class itself is unchanged — it still calls `onUpdate` when stat
 Use `@state()` for element-local state that does not come from the controller. Avoid it for data that belongs in the controller — keep the controller as the single source of truth.
 
 ```typescript
-import { state } from '@nuxy/core'
+import { state } from '@nuxyorg/core'
 
 @customElement('nuxy-tool-example')
 export class NuxyToolExampleElement extends LitElement implements NuxyToolElement {
@@ -449,7 +449,7 @@ import { LitElement, html } from 'lit'
 import { customElement } from 'lit/decorators.js'
 
 // CORRECT
-import { LitElement, html, customElement } from '@nuxy/core'
+import { LitElement, html, customElement } from '@nuxyorg/core'
 ```
 
 ### D. Shadow DOM (omitting createRenderRoot)
@@ -523,7 +523,7 @@ set query(value: string) {
 - [ ] Private `render()` → replaced by public Lit `render()` returning `html\`\``
 - [ ] `*-dom.ts` file deleted; its logic moved into the element's render methods
 - [ ] `committedQuery` and `extensionId` use `@property`; `query` keeps manual setter
-- [ ] No `import { ... } from 'lit'` — all imports from `@nuxy/core`
+- [ ] No `import { ... } from 'lit'` — all imports from `@nuxyorg/core`
 - [ ] No `static styles = css\`...\``— structural styles applied in`connectedCallback`
 - [ ] No `replaceChildren()` / `appendChild()` calls outside `connectedCallback`
 - [ ] Hardcoded colors replaced with `var(--token)` CSS custom properties

@@ -22,6 +22,7 @@ const DEFAULT_SETTINGS: NuxySettings = {
   showOnStartup: false,
   windowPosition: '1/2, 1/2',
   preferredLanguages: [],
+  kbdScheme: 'auto',
 }
 
 function createCore(storageData: Partial<NuxySettings> | null | undefined = null): {

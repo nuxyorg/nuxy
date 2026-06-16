@@ -11,13 +11,9 @@ pnpm docs:build  # production build
 
 This folder holds internal engineering notes only — not published on the website:
 
-| Folder / file                              | Purpose                                         |
-| ------------------------------------------ | ----------------------------------------------- |
-| `cleanup/`                                 | Dependency, naming, and dead-code audit reports |
-| `lit-remake/`                              | Turkish internal analysis (Lit migration notes) |
-| `project-analysis/`                        | Turkish project analysis series                 |
-| `changelog/`                               | Dated change logs                               |
-| `performance/`, `types/`, `ui/`            | Audit reports                                   |
-| `*-report.md`, `MASTER_CLEANUP_SUMMARY.md` | One-off audits                                  |
+| Folder / file | Purpose                                           |
+| ------------- | ------------------------------------------------- |
+| `changelog/`  | Dated change logs                                 |
+| `roadmap.md`  | Technical roadmap & outstanding refactoring tasks |
 
 Edit public docs in `website/docs/`, not here.

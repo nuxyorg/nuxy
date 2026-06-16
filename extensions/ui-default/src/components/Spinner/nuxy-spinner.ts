@@ -16,6 +16,19 @@ export class NuxySpinnerElement extends LitElement {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      animation: nuxy-spin-fade-in 180ms ease both;
+      animation-delay: 150ms;
+    }
+
+    @keyframes nuxy-spin-fade-in {
+      from {
+        opacity: 0;
+        scale: 0.7;
+      }
+      to {
+        opacity: 1;
+        scale: 1;
+      }
     }
 
     .nuxy-spinner__svg {

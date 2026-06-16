@@ -162,4 +162,18 @@ export function applySettingsToDOM(s: ShellConfig): void {
   if (s.zoom) document.documentElement.style.zoom = s.zoom
   if (s.font) document.body.style.fontFamily = FONT_FAMILY_MAP[s.font] || s.font
   if (s.theme) applyThemeByName(s.theme)
+
+  if (s.kbdScheme) {
+    let scheme = s.kbdScheme
+    if (scheme === 'auto') {
+      const isMac =
+        typeof navigator !== 'undefined' &&
+        (/Mac|iPad|iPhone|iPod/.test(navigator.platform) ||
+          /Mac|iPad|iPhone|iPod/.test(navigator.userAgent))
+      scheme = isMac ? 'mac' : 'windows'
+    }
+    const attrValue = scheme === 'mac' ? 'mac' : 'pc'
+    document.documentElement.setAttribute('data-kbd-scheme', attrValue)
+    document.dispatchEvent(new CustomEvent('nuxy-kbd-scheme-updated'))
+  }
 }

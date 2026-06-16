@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
-import { resolveExtensionFile } from './resolve.js'
+import { resolveExtensionFile, pickBestExtractFolder, scoreExtensionFolder } from './resolve.js'
 import { registerExtension, clearRegistry } from '../extensions/registry.js'
 import type { LoadedExtension } from '@nuxyorg/core'
 
@@ -40,6 +40,38 @@ describe('resolveExtensionFile', () => {
     expect(r).not.toBeNull()
     expect(r!.extensionId).toBe('com.nuxy.clipboard')
     expect(r!.absolutePath).toBe(path.join(tmpRoot, 'clipboard', 'frontend.js'))
+    expect(r!.extDir).toBe(path.join(tmpRoot, 'clipboard'))
+  })
+
+  it('prefers _frontend.bundle.mjs when frontend.js is missing', () => {
+    fs.rmSync(path.join(tmpRoot, 'clipboard', 'frontend.js'))
+    fs.writeFileSync(path.join(tmpRoot, 'clipboard', '_frontend.bundle.mjs'), 'export {}')
+
+    const r = resolveExtensionFile('com.nuxy.clipboard', 'frontend.js', tmpRoot)
+    expect(r).not.toBeNull()
+    expect(r!.absolutePath).toBe(path.join(tmpRoot, 'clipboard', '_frontend.bundle.mjs'))
+  })
+
+  it('pickBestExtractFolder prefers versioned extract with frontend bundle', () => {
+    const legacyDir = path.join(tmpRoot, 'com.nuxy.clipboard')
+    const versionedDir = path.join(tmpRoot, 'com.nuxy.clipboard-1.0.0')
+    fs.rmSync(legacyDir, { recursive: true, force: true })
+    fs.mkdirSync(legacyDir)
+    fs.mkdirSync(versionedDir)
+    fs.writeFileSync(
+      path.join(legacyDir, 'manifest.json'),
+      JSON.stringify({ id: 'com.nuxy.clipboard', version: '0.9.0' })
+    )
+    fs.writeFileSync(
+      path.join(versionedDir, 'manifest.json'),
+      JSON.stringify({ id: 'com.nuxy.clipboard', version: '1.0.0' })
+    )
+    fs.writeFileSync(path.join(versionedDir, '_frontend.bundle.mjs'), 'export {}')
+
+    expect(pickBestExtractFolder('com.nuxy.clipboard', tmpRoot)).toBe('com.nuxy.clipboard-1.0.0')
+    expect(scoreExtensionFolder(versionedDir, 'com.nuxy.clipboard-1.0.0')).toBeGreaterThan(
+      scoreExtensionFolder(legacyDir, 'com.nuxy.clipboard')
+    )
   })
 
   it('resolves by folder name', () => {

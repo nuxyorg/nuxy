@@ -27,7 +27,7 @@ Before writing or reviewing any Nuxy extension, read the following documents in 
 - **`frontend.ts`** is the bootstrap file — see three shapes below
 - **Pure entry** (tool): `import './nuxy-tool-<name>.ts'` — only registers the element
 - **Viewmodel** (helper/theme): `import { XViewModel } from './x-viewmodel.ts'; new XViewModel().mount()` — lifecycle logic in the viewmodel class, renderer in a separate element or none
-- **Custom element** file: `nuxy-tool-<name>.ts` implementing `NuxyToolElement` from `@nuxy/core`
+- **Custom element** file: `nuxy-tool-<name>.ts` implementing `NuxyToolElement` from `@nuxyorg/core`
 - **Controller** class: owns state, IPC calls, business logic — custom element delegates to it
 
 ### Manifest
@@ -40,8 +40,8 @@ Before writing or reviewing any Nuxy extension, read the following documents in 
 ### Frontend (LitElement — mandatory for new code)
 
 ```typescript
-import { LitElement, html, nothing, customElement } from '@nuxy/core'
-// NOT from 'lit' — always from '@nuxy/core'
+import { LitElement, html, nothing, customElement } from '@nuxyorg/core'
+// NOT from 'lit' — always from '@nuxyorg/core'
 
 @customElement('nuxy-tool-my-extension')
 export class NuxyToolMyExtensionElement extends LitElement implements NuxyToolElement {
@@ -73,7 +73,7 @@ export function register(core: CoreContext): void {
 
 ### Forbidden
 
-- ❌ `import { ... } from 'lit'` — use `@nuxy/core`
+- ❌ `import { ... } from 'lit'` — use `@nuxyorg/core`
 - ❌ `import { h } from '../ce-utils.ts'` — `ce-utils.ts` is deleted
 - ❌ `import fs from 'fs'` — use `core.fs.*`
 - ❌ `import child_process` — use `core.shell.*`

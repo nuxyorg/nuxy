@@ -5,10 +5,10 @@ Sample extensions synced to `~/.nuxy/extensions/` when you run `pnpm dev`.
 ## Authoring
 
 1. Add a folder with `manifest.json` and `backend.js` (plus optional `frontend.js`).
-2. Depend on `@nuxy/extension-sdk` for types and `defineExtension`:
+2. Depend on `@nuxyorg/extension-sdk` for types and `defineExtension`:
 
 ```js
-/** @typedef {import('@nuxy/extension-sdk').CoreContext} CoreContext */
+/** @typedef {import('@nuxyorg/extension-sdk').CoreContext} CoreContext */
 
 export function register(core) {
   core.registry.registerTool({ name: 'my-tool' })
@@ -18,7 +18,7 @@ export function register(core) {
 Or with TypeScript (`backend.ts`):
 
 ```ts
-import { defineExtension } from '@nuxy/extension-sdk'
+import { defineExtension } from '@nuxyorg/extension-sdk'
 
 export default defineExtension({
   register(core) {

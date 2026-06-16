@@ -16,7 +16,8 @@
     "iconPack": "Simge Paketi",
     "zoom": "Yakınlaştırma",
     "font": "Yazı Tipi",
-    "fontWeight": "Yazı Ağırlığı"
+    "fontWeight": "Yazı Ağırlığı",
+    "kbdScheme": "Klavye Kısayol Stili"
   },
   "window": {
     "escAction": "Esc Tuşu Eylemi",
@@ -83,5 +84,10 @@
     "nextSetting": "Sonraki ayar",
     "openSetting": "Ayarı aç",
     "closeSetting": "Ayarı kapat"
+  },
+  "kbdScheme": {
+    "auto": "Otomatik (sistemi algıla)",
+    "mac": "Mac (⌘ Command)",
+    "windows": "PC (Ctrl)"
   }
 }

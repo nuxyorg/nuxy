@@ -51,5 +51,3 @@ const SKIP_DIR_NAMES = new Set(['node_modules', '.git'])
 export function shouldSyncPath(absolutePath: string): boolean {
   return !absolutePath.split(path.sep).some((part) => SKIP_DIR_NAMES.has(part))
 }
-
-

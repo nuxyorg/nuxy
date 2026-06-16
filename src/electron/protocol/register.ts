@@ -2,11 +2,12 @@ import { protocol, net } from 'electron'
 import fs from 'fs'
 import { resolveExtensionFile } from './resolve.js'
 import { createJsonModuleResponse, MODULE_HEADERS } from './response.js'
+import { bundleExtensionFrontend } from '../extensions/bundle-frontend.js'
 import { kernelLogger } from '@nuxyorg/core'
 
 const log = kernelLogger.child('Protocol')
 
-const transpileCache = new Map<string, { mtime: number; output: string }>()
+const bundleCache = new Map<string, { mtime: number; output: string }>()
 
 export function registerProtocols() {
   protocol.handle('nuxy-ext', async (request) => {
@@ -47,73 +48,58 @@ export function registerProtocols() {
       return new Response(coreVirtualScript, { headers: MODULE_HEADERS })
     }
 
+    if (extId === 'sdk') {
+      const sdkVirtualScript = `
+        const NuxySdk = window.NuxySdk || {};
+        export const {
+          createStore,
+          createTranslator,
+          BaseExtensionController,
+          getToolOnComplete,
+          shouldSuppressBlurHide,
+          syncBlurSuppression,
+          setToolSearchPlaceholder,
+          completeToolAction,
+          defineExtension,
+          HostChannel,
+        } = NuxySdk;
+      `
+      return new Response(sdkVirtualScript, { headers: MODULE_HEADERS })
+    }
+
     const resolved = resolveExtensionFile(extId, filePath)
     if (!resolved) {
       log.warn(`Blocked or missing nuxy-ext resource: ${extId}/${filePath}`)
       return new Response('Forbidden', { status: 403 })
     }
 
-    const { absolutePath } = resolved
+    const { absolutePath, extDir } = resolved
 
     const isScript =
       absolutePath.endsWith('.js') ||
       absolutePath.endsWith('.jsx') ||
+      absolutePath.endsWith('.mjs') ||
       absolutePath.endsWith('.ts') ||
       absolutePath.endsWith('.tsx')
 
     if (isScript) {
       try {
+        if (absolutePath.endsWith('.js') || absolutePath.endsWith('.mjs')) {
+          const code = fs.readFileSync(absolutePath, 'utf8')
+          return new Response(code, { headers: MODULE_HEADERS })
+        }
+
         const mtime = fs.statSync(absolutePath).mtimeMs
-        const cached = transpileCache.get(absolutePath)
+        const cached = bundleCache.get(absolutePath)
         if (cached && cached.mtime === mtime) {
           return new Response(cached.output, { headers: MODULE_HEADERS })
         }
 
-        const code = fs.readFileSync(absolutePath, 'utf8')
-        const needsJsx =
-          absolutePath.endsWith('.jsx') ||
-          absolutePath.endsWith('.tsx') ||
-          code.includes('React.createElement') ||
-          /<[a-zA-Z]+/.test(code)
-        const needsTranspile =
-          absolutePath.endsWith('.ts') || absolutePath.endsWith('.tsx') || needsJsx
-
-        if (needsTranspile) {
-          let ts: typeof import('typescript') | undefined
-          try {
-            ts = await import('typescript')
-          } catch {
-            log.warn('TypeScript not available for transpilation — serving raw file')
-          }
-
-          if (ts) {
-            const transpiled = ts.transpileModule(code, {
-              compilerOptions: {
-                jsx: needsJsx ? ts.JsxEmit.React : ts.JsxEmit.None,
-                module: ts.ModuleKind.ESNext,
-                target: ts.ScriptTarget.ESNext,
-                experimentalDecorators: true,
-                useDefineForClassFields: false,
-              },
-            })
-            let output = transpiled.outputText
-            output = output.replace(
-              /(from\s+['"])(@nuxy\/core|lit|lit\/decorators\.js|lit\/directives\/ref\.js)(['"])/g,
-              '$1nuxy-ext://core/index.js$3'
-            )
-            transpileCache.set(absolutePath, { mtime, output })
-            return new Response(output, { headers: MODULE_HEADERS })
-          }
-        }
-
-        // Serve plain JS with application/javascript Content-Type
-        const rewrittenCode = code.replace(
-          /(from\s+['"])(@nuxy\/core|lit|lit\/decorators\.js|lit\/directives\/ref\.js)(['"])/g,
-          '$1nuxy-ext://core/index.js$3'
-        )
-        return new Response(rewrittenCode, { headers: MODULE_HEADERS })
+        const output = await bundleExtensionFrontend(absolutePath, extDir)
+        bundleCache.set(absolutePath, { mtime, output })
+        return new Response(output, { headers: MODULE_HEADERS })
       } catch (err) {
-        log.error(`Failed to transpile ${absolutePath}`, err)
+        log.error(`Failed to bundle ${absolutePath}`, err)
         return new Response('Internal Server Error', { status: 500 })
       }
     }

@@ -33,6 +33,7 @@ export interface ShellConfig {
   theme?: string
   zoom?: string
   font?: string
+  kbdScheme?: string
 }
 
 export interface ListItem {

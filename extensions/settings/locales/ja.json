@@ -16,7 +16,8 @@
     "iconPack": "アイコンパック",
     "zoom": "ズーム",
     "font": "フォント",
-    "fontWeight": "フォントウェイト"
+    "fontWeight": "フォントウェイト",
+    "kbdScheme": "キーボードショートカットのスタイル"
   },
   "window": {
     "escAction": "Escキーの動作",
@@ -86,5 +87,10 @@
   },
   "search": {
     "placeholder": "設定を検索"
+  },
+  "kbdScheme": {
+    "auto": "自動 (OSを検出)",
+    "mac": "Mac (⌘ Command)",
+    "windows": "PC (Ctrl)"
   }
 }

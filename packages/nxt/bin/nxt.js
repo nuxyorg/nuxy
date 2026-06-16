@@ -16,6 +16,7 @@ import path from 'path'
 import fs from 'fs'
 import os from 'os'
 import crypto from 'crypto'
+import { FRONTEND_RUNTIME_ALIASES } from '../lib/frontend-runtime.mjs'
 
 const require = createRequire(import.meta.url)
 const AdmZip = require('adm-zip')
@@ -179,6 +180,54 @@ async function bundleBackend(cwd, manifest) {
   return bundleOut
 }
 
+function shouldSkipFrontendBundle(manifest) {
+  const entry = manifest.entry?.frontend
+  if (!entry) return true
+  if (manifest.type === 'theme' || manifest.type === 'iconpack') return true
+  if (entry.endsWith('.js')) return true
+  return false
+}
+
+/**
+ * esbuild-bundle the extension frontend for the renderer.
+ * Shared runtime deps (@nuxyorg/core, @nuxyorg/extension-sdk) stay external via
+ * explicit nuxy-ext:// aliases defined in frontend-runtime.mjs.
+ */
+async function bundleFrontend(cwd, manifest) {
+  if (shouldSkipFrontendBundle(manifest)) return null
+
+  let esbuild
+  try {
+    esbuild = (await import('esbuild')).default ?? (await import('esbuild'))
+  } catch {
+    warn('esbuild not available — skipping frontend bundling. Run: npm install -g @nuxyorg/nxt')
+    return null
+  }
+
+  const entryPath = path.join(cwd, manifest.entry.frontend)
+  if (!fs.existsSync(entryPath)) {
+    warn(`Frontend entry not found: ${manifest.entry.frontend}`)
+    return null
+  }
+
+  const bundleOut = path.join(cwd, '_frontend.bundle.mjs')
+
+  await esbuild.build({
+    entryPoints: [entryPath],
+    bundle: true,
+    platform: 'browser',
+    format: 'esm',
+    outfile: bundleOut,
+    absWorkingDir: cwd,
+    alias: { ...FRONTEND_RUNTIME_ALIASES },
+    external: Object.values(FRONTEND_RUNTIME_ALIASES),
+    logLevel: 'warning',
+    loader: { '.ts': 'ts', '.tsx': 'tsx', '.json': 'json' },
+  })
+
+  return bundleOut
+}
+
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const SKIP_DIRS = new Set(['node_modules', '.git', 'tests', 'dist'])
@@ -228,6 +277,19 @@ program
       }
     }
 
+    // 2b. Bundle the frontend (TypeScript entries → self-contained ESM)
+    let frontendBundlePath = null
+    if (manifest.entry?.frontend && !shouldSkipFrontendBundle(manifest)) {
+      info('Bundling frontend…')
+      try {
+        frontendBundlePath = await bundleFrontend(cwd, manifest)
+        if (frontendBundlePath) ok('Frontend bundled')
+      } catch (err) {
+        warn(`Frontend bundling failed: ${err.message}`)
+        frontendBundlePath = null
+      }
+    }
+
     // 3. Load/generate signing keys
     let keys = null
     if (opts.sign !== false) {
@@ -255,6 +317,7 @@ program
         if (SKIP_DIRS.has(entry.name)) continue
         if (SKIP_FILES.has(entry.name)) continue
         if (entry.name === '_backend.bundle.mjs') continue // added explicitly below
+        if (entry.name === '_frontend.bundle.mjs') continue // added explicitly below
         const full = path.join(dir, entry.name)
         const zipEntry = zipBase ? `${zipBase}/${entry.name}` : entry.name
         if (entry.isDirectory()) {
@@ -272,6 +335,11 @@ program
       zip.addLocalFile(bundlePath, '')
     }
 
+    // Add the pre-bundled frontend if available
+    if (frontendBundlePath && fs.existsSync(frontendBundlePath)) {
+      zip.addLocalFile(frontendBundlePath, '')
+    }
+
     // 5. Sign (before cleaning up bundle so _backend.bundle.mjs is included in the hash)
     if (keys) {
       info('Signing…')
@@ -284,11 +352,12 @@ program
       }
     }
 
-    // Clean up temp bundle artifact after signing
+    // Clean up temp bundle artifacts after signing
     if (bundlePath && fs.existsSync(bundlePath)) {
       fs.rmSync(bundlePath, { force: true })
-    } else {
-      warn('Skipping code signing — extension will require manual trust on first install.')
+    }
+    if (frontendBundlePath && fs.existsSync(frontendBundlePath)) {
+      fs.rmSync(frontendBundlePath, { force: true })
     }
 
     // 6. Write output
@@ -349,12 +418,13 @@ program
     // Remove old versions of the same extension before installing
     const incomingBase = path.basename(nuxyextPath)
     const extIdFromFile = incomingBase.replace(/-[^-]+\.nuxyext$/, '')
+    const legacyFile = `${extIdFromFile}.nuxyext`
     for (const existing of fs.readdirSync(NUXY_EXT_DIR)) {
-      if (
-        existing !== incomingBase &&
-        existing.startsWith(`${extIdFromFile}-`) &&
-        existing.endsWith('.nuxyext')
-      ) {
+      if (existing === incomingBase) continue
+      if (!existing.endsWith('.nuxyext')) continue
+      const isVersionedSibling = existing.startsWith(`${extIdFromFile}-`) && existing !== legacyFile
+      const isLegacyDuplicate = existing === legacyFile && incomingBase !== legacyFile
+      if (isVersionedSibling || isLegacyDuplicate) {
         fs.rmSync(path.join(NUXY_EXT_DIR, existing), { force: true })
         info(`Removed old version: ${existing}`)
       }

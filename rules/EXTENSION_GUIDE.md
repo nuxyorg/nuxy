@@ -91,6 +91,9 @@ Nyaa does **not** use a separate `nuxy-tool-nyaa.ts` — the element lives in `f
     "callable": true,
     "caller": false
   },
+  "behavior": {
+    "suppressBlurHide": true
+  },
   "entry": {
     "preload": "preload.js",
     "backend": "backend.js",
@@ -122,6 +125,13 @@ Using a `core.*` API without declaring the matching permission is a bug. The ker
 
 - `callable: true` — other extensions may invoke this one via `core.extensions.invoke`
 - `caller: true` — this extension calls other extensions. Only set when necessary.
+
+### Behavior
+
+Configure optional shell/runtime integration behaviors:
+
+- `onComplete`: `"hide"` | `"stay"` — action to take when the tool completes.
+- `suppressBlurHide`: `true` | `false` — if `true`, the shell will not auto-hide/close when focus is lost (blur), e.g., when opening a native file picker dialogue or sub-window. Used in `com.nuxy.file-transfer`.
 
 ### UIKit Extensions (`type: "uikit"`)
 
@@ -453,7 +463,7 @@ const result = await core.extensions.invoke('com.nuxy.other-ext', 'someChannel',
 ### 4.8 Backend entry point
 
 ```ts
-import type { CoreContext } from '@nuxy/extension-sdk'
+import type { CoreContext } from '@nuxyorg/extension-sdk'
 import type { MyItem } from './types.ts'
 
 export function register(core: CoreContext): void {
@@ -501,7 +511,7 @@ The custom element itself lives in `nuxy-tool-<name>.ts`. Use vanilla `HTMLEleme
 **Vanilla HTMLElement pattern:**
 
 ```typescript
-import type { NuxyToolElement } from '@nuxy/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 import { MyController } from './my-controller.ts'
 
 const TAG = 'nuxy-tool-my-extension'
@@ -561,9 +571,8 @@ customElements.define(TAG, NuxyToolMyExtensionElement)
 **LitElement pattern (also valid):**
 
 ```typescript
-import { LitElement, html, css } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
-import type { NuxyToolElement } from '@nuxy/core'
+import { LitElement, html, css, customElement, state } from '@nuxyorg/core'
+import type { NuxyToolElement } from '@nuxyorg/core'
 
 @customElement('nuxy-tool-my-extension')
 export class NuxyToolMyExtensionElement extends LitElement implements NuxyToolElement {
@@ -630,7 +639,7 @@ Relative imports from `utils/` work via `nuxy-ext://` resolution — the protoco
 
 ### 5.2 UI Kit only — no custom components
 
-All UI must be built exclusively with `@nuxy/ui` components accessed via `window.UI`. If a component you need does not exist, **add it to `packages/ui`** before using it. Do not implement it inline in the extension.
+All UI must be built exclusively with `@nuxyorg/ui` components accessed via `window.UI`. If a component you need does not exist, **add it to `packages/ui`** before using it. Do not implement it inline in the extension.
 
 ```typescript
 // WRONG — custom component in extension
@@ -1013,7 +1022,7 @@ Extension's declared default locale
 `core.i18n` is populated before `register()` is called. No async setup needed.
 
 ```ts
-import type { CoreContext } from '@nuxy/extension-sdk'
+import type { CoreContext } from '@nuxyorg/extension-sdk'
 
 export function register(core: CoreContext): void {
   core.ipc.handle('getSomething', async () => {
@@ -1119,7 +1128,7 @@ export interface UpdatePayload {
 ### 6.3 Backend typing
 
 ```ts
-import type { CoreContext } from '@nuxy/extension-sdk'
+import type { CoreContext } from '@nuxyorg/extension-sdk'
 import type { MyItem, CreatePayload } from './types.ts'
 
 export function register(core: CoreContext): void {
@@ -1150,7 +1159,7 @@ Define your IPC channel contract in `types.ts` using `IpcChannelMap`, then use `
 
 ```ts
 // types.ts
-import type { IpcChannelMap } from '@nuxy/extension-sdk'
+import type { IpcChannelMap } from '@nuxyorg/extension-sdk'
 
 export interface MyItem {
   id: string
@@ -1168,7 +1177,7 @@ export interface IpcChannels extends IpcChannelMap {
 In a controller class, use `TypedInvoker` for typed IPC:
 
 ```typescript
-import type { TypedInvoker } from '@nuxy/extension-sdk'
+import type { TypedInvoker } from '@nuxyorg/extension-sdk'
 import type { MyItem, IpcChannels } from './types.ts'
 
 export class MyController {
@@ -1198,7 +1207,7 @@ Extensions are covered by `extensions/tsconfig.json`. The config:
 
 - Uses `"jsx": "preserve"` (`.tsx` files are valid but JSX is not used — all DOM is built with `h()` or Lit `html\`\``)
 - Enables `"experimentalDecorators": true` for Lit `@customElement`, `@state()`, etc.
-- Resolves `@nuxy/extension-sdk`, `@nuxy/core`, `@nuxy/ui` from the workspace packages
+- Resolves `@nuxyorg/extension-sdk`, `@nuxyorg/core`, `@nuxyorg/ui` from the workspace packages
 - Does **not** emit files — transpilation is done at runtime by the protocol server
 - Includes a path alias for `vitest` pointing to `src/node_modules/vitest`
 
@@ -1206,7 +1215,7 @@ Extensions are covered by `extensions/tsconfig.json`. The config:
 
 `extensions/global.d.ts` declares the runtime globals available to all frontends:
 
-- `window.UI` — all exports from `@nuxy/ui`
+- `window.UI` — all exports from `@nuxyorg/ui`
 - `window.core.ipc`, `window.core.window`, `window.core.icons`, `window.core.themes`
 
 This file is picked up automatically by `extensions/tsconfig.json`.
@@ -1255,11 +1264,11 @@ core.i18n.t(key, vars, count)         // → plural-form string ("3 items")
 
 Every extension with a `backend.ts` must have a corresponding `tests/backend.test.ts`.
 
-Use `createMockCore` from `@nuxy/extension-sdk` — it sets up all `CoreContext` mocks and captures IPC handlers automatically. Never hand-roll a `makeCore` function.
+Use `createMockCore` from `@nuxyorg/extension-sdk` — it sets up all `CoreContext` mocks and captures IPC handlers automatically. Never hand-roll a `makeCore` function.
 
 ```ts
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { type CoreContext, createMockCore } from '@nuxy/extension-sdk'
+import { type CoreContext, createMockCore } from '@nuxyorg/extension-sdk'
 import { register } from './backend.ts'
 
 describe('my-extension backend', () => {
@@ -1645,7 +1654,7 @@ Before submitting or merging an extension, verify every item:
 **TypeScript**
 
 - [ ] All source files use `.ts` or `.tsx` — no `.js` extension files
-- [ ] `backend.ts` imports `CoreContext` from `@nuxy/extension-sdk`
+- [ ] `backend.ts` imports `CoreContext` from `@nuxyorg/extension-sdk`
 - [ ] `register` function is typed: `export function register(core: CoreContext): void`
 - [ ] IPC handler payloads typed as `unknown`, cast before use
 - [ ] `types.ts` exists with all extension-specific interfaces

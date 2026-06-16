@@ -97,6 +97,8 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
           optLabel = t('fontWeight.' + opt.value)
         } else if (r.key === 'iconPack' && opt.value === '') {
           optLabel = t('iconPack.default')
+        } else if (r.key === 'kbdScheme') {
+          optLabel = t('kbdScheme.' + opt.value)
         }
         return { ...opt, label: optLabel }
       })
