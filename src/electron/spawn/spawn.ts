@@ -89,7 +89,7 @@ export async function spawnExtension(
     if (msg.type !== 'host:call') return
     const { id, channel, payload } = msg
     const reply = await handleHostCall(extId, channel, payload)
-    worker.postMessage({ type: 'host:reply', id, ...reply })
+    worker.postMessage({ kind: 'reply', type: 'host:reply', id, ...reply })
   })
 
   worker.on('error', (err: Error) => {

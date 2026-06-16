@@ -24,7 +24,7 @@ export interface CoreComposition {
   declareSlots(slots: CompositionSlotDeclaration[]): void
   mount(
     slotName: string,
-    element: HTMLElement,
+    element: unknown,
     opts?: CompositionMountOptions
   ): Promise<CompositionHandle>
   setState(slotName: string, state: Record<string, unknown>): void
@@ -38,7 +38,7 @@ export interface ToolActivateContext {
 }
 
 /** Contract for Lit (or native) tool custom elements mounted by nuxy-tool-host. */
-export interface NuxyToolElement extends HTMLElement {
+export interface NuxyToolElement {
   query: string
   committedQuery: string
   extensionId: string

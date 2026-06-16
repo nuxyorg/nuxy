@@ -43,6 +43,6 @@ export function invokeWorker(extId: string, channel: string, payload: unknown): 
     }
 
     worker.on('message', listener)
-    worker.postMessage({ id: msgId, channel, payload })
+    worker.postMessage({ kind: 'call', id: msgId, channel, payload })
   })
 }

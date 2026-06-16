@@ -8,7 +8,10 @@ import { ProviderController } from './controllers/provider-controller.ts'
 import { WindowController } from './controllers/window-controller.ts'
 import { KeyboardController } from './controllers/keyboard-controller.ts'
 import { InitController } from './controllers/init-controller.ts'
-import { SyncController, applySettingsToDOM } from './controllers/sync-controller.ts'
+import { SyncController } from './controllers/sync-controller.ts'
+import { QueryController } from './controllers/query-controller.ts'
+import { NavigationController } from './controllers/navigation-controller.ts'
+import { SettingsController } from './controllers/settings-controller.ts'
 import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
 import { syncBlurSuppression } from '@nuxyorg/extension-sdk'
 import type {
@@ -99,6 +102,9 @@ export class ShellController {
   readonly tools: ToolController
   readonly providers: ProviderController
   readonly win: WindowController
+  readonly query: QueryController
+  readonly navigation: NavigationController
+  readonly settings: SettingsController
 
   private readonly _host: ReactiveControllerHost
   private readonly _keyboard: KeyboardController
@@ -119,6 +125,9 @@ export class ShellController {
 
     this.commandPalette = new CommandPaletteController(this._host)
     this.win = new WindowController(this._host)
+    this.query = new QueryController(this._host)
+    this.navigation = new NavigationController(this._host)
+    this.settings = new SettingsController(this._host)
     this.tools = new ToolController(this._host, {
       onToolChange: (toolId) => {
         const manifest = toolId ? this.tools.tools.find((t) => t.id === toolId)?.manifest : null
@@ -152,6 +161,8 @@ export class ShellController {
       extensionSummary: null,
     })
 
+    ;(this._host as any).store = this.store
+
     this.refs = {
       container: null,
       input: null,
@@ -171,7 +182,8 @@ export class ShellController {
       closeCommandPalette: () => this.closeCommandPalette(),
       returnToShell: () => this.returnToShell({ selectedIndex: 0 }),
       clearQueryAndEsc: () => {
-        this.store.setState({ query: '', savedQuery: '', selectedIndex: -1 })
+        this.query.reset()
+        this.navigation.reset()
         this.providers.clearProviderStates()
         this._syncProviders()
         this._recompute()
@@ -215,10 +227,9 @@ export class ShellController {
       getEmptyBridge: () => EMPTY_SNAPSHOT,
       resetTool: () => {
         this.tools.setActiveTool(null)
+        this.query.reset()
+        this.navigation.reset()
         this.store.setState({
-          query: '',
-          savedQuery: '',
-          selectedIndex: -1,
           showOmniBar: true,
         })
       },
@@ -236,6 +247,9 @@ export class ShellController {
     const core = this.store.getState()
     return {
       ...core,
+      query: this.query.query,
+      savedQuery: this.query.savedQuery,
+      selectedIndex: this.navigation.selectedIndex,
       activeTool: this.tools.activeTool,
       showCommandPalette: this.commandPalette.showCommandPalette,
       position: this.win.position,
@@ -297,19 +311,17 @@ export class ShellController {
   }
 
   setQuery(val: string): void {
-    this.store.setState({ query: val })
+    this.query.setQuery(val)
   }
 
   setSavedQuery(val: string): void {
-    this.store.setState({ savedQuery: val })
+    this.query.setSavedQuery(val)
     this._syncProviders()
     this._recompute()
   }
 
   setSelectedIndex(index: number | ((prev: number) => number)): void {
-    const prev = this.store.getState().selectedIndex
-    const next = typeof index === 'function' ? index(prev) : index
-    this.store.setState({ selectedIndex: next })
+    this.navigation.setSelectedIndex(index)
   }
 
   setActiveTool(toolId: string | null): void {
@@ -320,7 +332,8 @@ export class ShellController {
 
   handleQueryChange(val: string): void {
     this.refs.selectionSource = 'type'
-    this.store.setState({ query: val, savedQuery: val, selectedIndex: -1 })
+    this.query.handleChange(val)
+    this.navigation.reset()
     this._recompute()
     this._syncActionProviders()
     if (this._queryDebounceTimer !== null) clearTimeout(this._queryDebounceTimer)
@@ -348,7 +361,8 @@ export class ShellController {
       this._sync.updatePosition(true, targetH)
     }
     this.tools.setActiveTool(toolId)
-    this.store.setState({ query: initialQuery, savedQuery: initialQuery })
+    this.query.handleChange(initialQuery)
+    this.navigation.reset()
     this.providers.clearProviderStates()
     this._recordToolUsed(toolId, queryBeforeOpen)
     this._syncProviders()
@@ -480,10 +494,9 @@ export class ShellController {
     const shouldAnimate = container !== null && fromH > 0 && toH !== null && !this.refs.hasDragged
 
     this.tools.setActiveTool(null)
+    this.query.reset()
+    this.navigation.setSelectedIndex(options?.selectedIndex ?? -1)
     this.store.setState({
-      query: '',
-      savedQuery: '',
-      selectedIndex: options?.selectedIndex ?? -1,
       showOmniBar: true,
     })
     this._syncProviders()
@@ -513,7 +526,7 @@ export class ShellController {
   private _applySettings(s: ShellConfig): void {
     this.store.setState({ settings: s })
     this.refs.cfg = { ...(this.refs.cfg ?? {}), ...s }
-    applySettingsToDOM(s)
+    this.settings.applySettings(s)
     requestAnimationFrame(() => this._sync.updatePosition(true))
   }
 
@@ -616,10 +629,10 @@ export class ShellController {
       prevListLen = listResults.length
 
       if (selectedIndex === -1 || this.refs.selectionSource === 'type') {
-        if (this.store.getState().query !== savedQuery) this.store.setState({ query: savedQuery })
+        if (this.query.query !== savedQuery) this.query.setQuery(savedQuery)
       } else if (listResults[selectedIndex]) {
         const title = listResults[selectedIndex].title
-        if (this.store.getState().query !== title) this.store.setState({ query: title })
+        if (this.query.query !== title) this.query.setQuery(title)
       }
     })
   }
@@ -637,7 +650,8 @@ export class ShellController {
         this.store.setState({ showOmniBar: true })
         setTimeout(() => this.refs.input?.focus(), 50)
       } else if (action === 'clear') {
-        this.store.setState({ query: '', savedQuery: '', selectedIndex: -1 })
+        this.query.reset()
+        this.navigation.reset()
         this.providers.clearProviderStates()
         this._syncProviders()
         this._recompute()

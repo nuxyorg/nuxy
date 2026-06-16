@@ -4,7 +4,8 @@ export class NavigationController implements ReactiveController {
   private _selectedIndex = -1
 
   get selectedIndex(): number {
-    return this._selectedIndex
+    const store = (this.host as any).store
+    return store ? store.getState().selectedIndex : this._selectedIndex
   }
 
   constructor(private readonly host: ReactiveControllerHost) {
@@ -14,31 +15,57 @@ export class NavigationController implements ReactiveController {
   hostConnected(): void {}
 
   setSelectedIndex(index: number | ((prev: number) => number)): void {
-    const next = typeof index === 'function' ? index(this._selectedIndex) : index
-    if (next === this._selectedIndex) return
-    this._selectedIndex = next
-    this.host.requestUpdate()
+    const store = (this.host as any).store
+    const current = store ? store.getState().selectedIndex : this._selectedIndex
+    const next = typeof index === 'function' ? index(current) : index
+    if (next === current) return
+
+    if (store) {
+      store.setState({ selectedIndex: next })
+    } else {
+      this._selectedIndex = next
+      this.host.requestUpdate()
+    }
   }
 
   moveDown(listLength: number): void {
-    const next = this._selectedIndex + 1
+    const store = (this.host as any).store
+    const current = store ? store.getState().selectedIndex : this._selectedIndex
+    const next = current + 1
     if (next < listLength) {
-      this._selectedIndex = next
-      this.host.requestUpdate()
+      if (store) {
+        store.setState({ selectedIndex: next })
+      } else {
+        this._selectedIndex = next
+        this.host.requestUpdate()
+      }
     }
   }
 
   moveUp(): void {
-    const next = this._selectedIndex - 1
+    const store = (this.host as any).store
+    const current = store ? store.getState().selectedIndex : this._selectedIndex
+    const next = current - 1
     if (next >= -1) {
-      this._selectedIndex = next
-      this.host.requestUpdate()
+      if (store) {
+        store.setState({ selectedIndex: next })
+      } else {
+        this._selectedIndex = next
+        this.host.requestUpdate()
+      }
     }
   }
 
   reset(): void {
-    if (this._selectedIndex === -1) return
-    this._selectedIndex = -1
-    this.host.requestUpdate()
+    const store = (this.host as any).store
+    const current = store ? store.getState().selectedIndex : this._selectedIndex
+    if (current === -1) return
+
+    if (store) {
+      store.setState({ selectedIndex: -1 })
+    } else {
+      this._selectedIndex = -1
+      this.host.requestUpdate()
+    }
   }
 }

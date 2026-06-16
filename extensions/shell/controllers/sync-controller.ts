@@ -3,11 +3,6 @@ import type { ShellConfig } from '../types.ts'
 import { getZoom } from '../utils/zoom.ts'
 import { parseCoordinate } from '../utils.ts'
 
-const FONT_FAMILY_MAP: Record<string, string> = {
-  system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
-  monospace: 'monospace',
-}
-
 export interface SyncControllerCallbacks {
   getContainer: () => HTMLElement | null
   getInput: () => HTMLInputElement | null
@@ -141,39 +136,3 @@ export class SyncController {
   }
 }
 
-export function applyThemeByName(name: string): void {
-  window.core?.ipc
-    ?.invoke('kernel', 'getThemeByName', { name })
-    .then((themeRes: unknown) => {
-      const tr = themeRes as {
-        success: boolean
-        data: { colors?: Record<string, string>; tokens?: Record<string, string> }
-      } | null
-      if (!tr?.success || !tr.data) return
-      const { colors, tokens } = tr.data
-      const root = document.documentElement
-      if (colors) Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
-      if (tokens) Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
-    })
-    .catch(() => {})
-}
-
-export function applySettingsToDOM(s: ShellConfig): void {
-  if (s.zoom) document.documentElement.style.zoom = s.zoom
-  if (s.font) document.body.style.fontFamily = FONT_FAMILY_MAP[s.font] || s.font
-  if (s.theme) applyThemeByName(s.theme)
-
-  if (s.kbdScheme) {
-    let scheme = s.kbdScheme
-    if (scheme === 'auto') {
-      const isMac =
-        typeof navigator !== 'undefined' &&
-        (/Mac|iPad|iPhone|iPod/.test(navigator.platform) ||
-          /Mac|iPad|iPhone|iPod/.test(navigator.userAgent))
-      scheme = isMac ? 'mac' : 'windows'
-    }
-    const attrValue = scheme === 'mac' ? 'mac' : 'pc'
-    document.documentElement.setAttribute('data-kbd-scheme', attrValue)
-    document.dispatchEvent(new CustomEvent('nuxy-kbd-scheme-updated'))
-  }
-}

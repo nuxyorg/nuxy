@@ -5,11 +5,13 @@ export class QueryController implements ReactiveController {
   private _savedQuery = ''
 
   get query(): string {
-    return this._query
+    const store = (this.host as any).store
+    return store ? store.getState().query : this._query
   }
 
   get savedQuery(): string {
-    return this._savedQuery
+    const store = (this.host as any).store
+    return store ? store.getState().savedQuery : this._savedQuery
   }
 
   constructor(private readonly host: ReactiveControllerHost) {
@@ -19,24 +21,44 @@ export class QueryController implements ReactiveController {
   hostConnected(): void {}
 
   setQuery(val: string): void {
-    this._query = val
-    this.host.requestUpdate()
+    const store = (this.host as any).store
+    if (store) {
+      store.setState({ query: val })
+    } else {
+      this._query = val
+      this.host.requestUpdate()
+    }
   }
 
   setSavedQuery(val: string): void {
-    this._savedQuery = val
-    this.host.requestUpdate()
+    const store = (this.host as any).store
+    if (store) {
+      store.setState({ savedQuery: val })
+    } else {
+      this._savedQuery = val
+      this.host.requestUpdate()
+    }
   }
 
   handleChange(val: string): void {
-    this._query = val
-    this._savedQuery = val
-    this.host.requestUpdate()
+    const store = (this.host as any).store
+    if (store) {
+      store.setState({ query: val, savedQuery: val })
+    } else {
+      this._query = val
+      this._savedQuery = val
+      this.host.requestUpdate()
+    }
   }
 
   reset(): void {
-    this._query = ''
-    this._savedQuery = ''
-    this.host.requestUpdate()
+    const store = (this.host as any).store
+    if (store) {
+      store.setState({ query: '', savedQuery: '' })
+    } else {
+      this._query = ''
+      this._savedQuery = ''
+      this.host.requestUpdate()
+    }
   }
 }

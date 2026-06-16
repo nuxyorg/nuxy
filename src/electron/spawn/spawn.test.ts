@@ -231,6 +231,7 @@ describe('spawnExtension', () => {
 
     expect(lastWorker.postMessage).toHaveBeenCalledOnce()
     expect(lastWorker.postMessage).toHaveBeenCalledWith({
+      kind: 'reply',
       type: 'host:reply',
       id: 'call-42',
       result: 'ok',

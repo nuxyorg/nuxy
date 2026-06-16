@@ -52,13 +52,10 @@ parentPort!.on('message', (msg: HostToWorkerMessage) => {
     void (async () => {
       try {
         const res = await handler(msg.payload)
-        parentPort!.postMessage({ id: msg.id, result: res } satisfies Omit<
-          WorkerToHostMessage & object,
-          'type'
-        >)
+        parentPort!.postMessage({ kind: 'reply', id: msg.id, result: res } as WorkerToHostMessage)
       } catch (e) {
         const err = e as Error
-        parentPort!.postMessage({ id: msg.id, error: err.message })
+        parentPort!.postMessage({ kind: 'reply', id: msg.id, error: err.message } as WorkerToHostMessage)
       }
     })()
   }
@@ -90,6 +87,7 @@ void (async () => {
     await initI18n()
     await loadExtensionModule(absolutePath, core, logger)
     const syncMsg: WorkerToHostMessage = {
+      kind: 'event',
       type: 'registry:sync',
       ...getSyncPayload(),
     }
@@ -99,7 +97,7 @@ void (async () => {
     logger.log('error', 'Worker', 'Extension failed to load: ' + err.message, {
       stack: err.stack,
     })
-    const errMsg: WorkerToHostMessage = { type: 'registry:error', error: err.message }
+    const errMsg: WorkerToHostMessage = { kind: 'event', type: 'registry:error', error: err.message }
     parentPort!.postMessage(errMsg)
   }
 })()

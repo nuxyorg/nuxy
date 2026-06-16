@@ -22,7 +22,7 @@ export function createCallHost(
         }
       }, HOST_CALL_TIMEOUT_MS)
       pendingHostCalls.set(id, { resolve, reject, timer })
-      postMessage({ type: 'host:call', id, channel, payload })
+      postMessage({ kind: 'call', type: 'host:call', id, channel, payload })
     })
   }
 }
