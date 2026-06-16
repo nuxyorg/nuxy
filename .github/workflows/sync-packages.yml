@@ -59,7 +59,7 @@ jobs:
             repo: nuxyorg/ui-default
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -72,6 +72,25 @@ jobs:
             -H "Authorization: Bearer $TOKEN" \
             https://api.github.com/repos/nuxyorg/core)
           echo "GitHub API response for nuxyorg/core: $status"
+
+      - name: Ensure repo ${{ matrix.repo }} exists
+        env:
+          TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $TOKEN" \
+            https://api.github.com/repos/${{ matrix.repo }})
+          if [ "$status" = "404" ]; then
+            REPO_NAME=$(echo '${{ matrix.repo }}' | cut -d'/' -f2)
+            curl -s -X POST \
+              -H "Authorization: Bearer $TOKEN" \
+              -H "Content-Type: application/json" \
+              https://api.github.com/orgs/nuxyorg/repos \
+              -d "{\"name\": \"$REPO_NAME\", \"private\": false, \"auto_init\": false}"
+            echo "Created repo ${{ matrix.repo }}"
+          else
+            echo "Repo ${{ matrix.repo }} already exists (HTTP $status)"
+          fi
 
       - name: Push subtree to ${{ matrix.repo }}
         env:
