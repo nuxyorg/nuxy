@@ -50,8 +50,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           BRANCH="sync-$(echo '${{ matrix.repo }}' | tr '/' '-')"
           git subtree split --prefix=${{ matrix.prefix }} -b "$BRANCH"
-          git -c credential.helper='' push \
-            https://oauth2:${TOKEN}@github.com/${{ matrix.repo }}.git \
-            "$BRANCH":main \
-            --force
+          git remote add target https://x-access-token:${TOKEN}@github.com/${{ matrix.repo }}.git
+          git push target "$BRANCH":main --force
+          git remote remove target
           git branch -D "$BRANCH"
