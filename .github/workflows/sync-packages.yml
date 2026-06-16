@@ -82,12 +82,18 @@ jobs:
             https://api.github.com/repos/${{ matrix.repo }})
           if [ "$status" = "404" ]; then
             REPO_NAME=$(echo '${{ matrix.repo }}' | cut -d'/' -f2)
-            curl -s -X POST \
+            response=$(curl -s -w "\n%{http_code}" -X POST \
               -H "Authorization: Bearer $TOKEN" \
               -H "Content-Type: application/json" \
               https://api.github.com/orgs/nuxyorg/repos \
-              -d "{\"name\": \"$REPO_NAME\", \"private\": false, \"auto_init\": false}"
-            echo "Created repo ${{ matrix.repo }}"
+              -d "{\"name\": \"$REPO_NAME\", \"private\": false, \"auto_init\": false}")
+            create_status=$(echo "$response" | tail -1)
+            if [ "$create_status" = "201" ]; then
+              echo "Created repo ${{ matrix.repo }}"
+            else
+              echo "Failed to create repo ${{ matrix.repo }}: $(echo "$response" | head -n -1)"
+              exit 1
+            fi
           else
             echo "Repo ${{ matrix.repo }} already exists (HTTP $status)"
           fi
