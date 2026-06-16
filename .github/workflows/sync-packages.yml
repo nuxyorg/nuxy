@@ -48,9 +48,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git subtree split --prefix=${{ matrix.prefix }} -b sync-${{ matrix.repo }}
+          git config --global --unset-all credential.helper || true
+          BRANCH="sync-$(echo '${{ matrix.repo }}' | tr '/' '-')"
+          git subtree split --prefix=${{ matrix.prefix }} -b "$BRANCH"
           git push \
             https://oauth2:${TOKEN}@github.com/${{ matrix.repo }}.git \
-            sync-${{ matrix.repo }}:main \
+            "$BRANCH":main \
             --force
-          git branch -D sync-${{ matrix.repo }}
+          git branch -D "$BRANCH"
