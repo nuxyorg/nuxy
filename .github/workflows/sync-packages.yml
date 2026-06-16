@@ -1,0 +1,46 @@
+name: Sync packages to org repos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/core/**'
+      - 'packages/extension-sdk/**'
+      - 'packages/ext-devserver/**'
+      - 'packages/nxt/**'
+      - 'extensions/ui-default/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - prefix: packages/core
+            repo: nuxyorg/core
+          - prefix: packages/extension-sdk
+            repo: nuxyorg/extension-sdk
+          - prefix: packages/ext-devserver
+            repo: nuxyorg/ext-devserver
+          - prefix: packages/nxt
+            repo: nuxyorg/nxt
+          - prefix: extensions/ui-default
+            repo: nuxyorg/ui-default
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push subtree to ${{ matrix.repo }}
+        env:
+          TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git subtree split --prefix=${{ matrix.prefix }} -b sync-${{ matrix.repo }}
+          git push \
+            https://x-access-token:${TOKEN}@github.com/${{ matrix.repo }}.git \
+            sync-${{ matrix.repo }}:main \
+            --force
+          git branch -D sync-${{ matrix.repo }}

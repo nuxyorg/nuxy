@@ -14,7 +14,7 @@ const REVOCATION_LIST_PATH = path.join(SECURITY_DIR, 'revoked-extensions.json')
 const README_PATH = path.join(SECURITY_DIR, 'READ_ME_IMPORTANT.md')
 
 const REVOCATION_LIST_URL =
-  'https://raw.githubusercontent.com/atagulalan/nuxy-assets/main/revoked-extensions.json'
+  'https://raw.githubusercontent.com/nuxyorg/nuxy-assets/main/revoked-extensions.json'
 
 const README_CONTENT = `# Nuxy Security Files — DO NOT DELETE OR MODIFY
 

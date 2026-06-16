@@ -1,24 +1,26 @@
 {
   "name": "@nuxyorg/extension-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "description": "Authoring API for building Nuxy extensions",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./testing": {
-      "import": "./dist/testing.js",
-      "types": "./dist/testing.d.ts"
-    }
+    ".": "./src/index.ts",
+    "./testing": "./src/testing.ts"
   },
   "files": ["dist"],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nuxyorg/extension-sdk.git"
+  },
+  "homepage": "https://github.com/nuxyorg/extension-sdk#readme",
+  "bugs": "https://github.com/nuxyorg/extension-sdk/issues",
+  "license": "MIT",
   "dependencies": {
     "@nuxyorg/core": "workspace:*"
   },
@@ -35,6 +37,18 @@
     "vitest": "*"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts"
+      },
+      "./testing": {
+        "import": "./dist/testing.js",
+        "types": "./dist/testing.d.ts"
+      }
+    }
   }
 }

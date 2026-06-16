@@ -1,12 +1,19 @@
 {
   "name": "@nuxyorg/nxt",
-  "version": "0.1.0",
-  "description": "Nuxy Extension Tooling — package, install, and publish .nuxyext extensions",
+  "version": "0.1.1",
+  "description": "CLI to package, sign, and install Nuxy extensions",
   "type": "module",
   "bin": {
     "nxt": "./bin/nxt.js"
   },
   "files": ["bin"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nuxyorg/nxt.git"
+  },
+  "homepage": "https://github.com/nuxyorg/nxt#readme",
+  "bugs": "https://github.com/nuxyorg/nxt/issues",
+  "license": "MIT",
   "dependencies": {
     "adm-zip": "^0.5.16",
     "commander": "^13.1.0",
