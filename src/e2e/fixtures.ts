@@ -129,7 +129,7 @@ type ElectronTestFixtures = {
 
 export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
   socketPath: [
-    async (_worker, use) => {
+    async ({}, use) => {
       const socketName = `nuxy-test-${Math.random().toString(36).substring(2, 9)}.sock`
       const socketPath = resolve(tmpdir(), socketName)
       await use(socketPath)
@@ -158,6 +158,67 @@ export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
   appPage: [
     async ({ electronApp, socketPath }, use) => {
       const page = await getAppPage(electronApp, socketPath)
+      const injectScript = () => {
+        function getDeepText(node: Node): string {
+          if (node.nodeType === Node.TEXT_NODE) {
+            return node.nodeValue ?? ''
+          }
+          let text = ''
+          if (node instanceof HTMLElement && node.shadowRoot) {
+            for (const child of node.shadowRoot.childNodes) {
+              text += getDeepText(child)
+            }
+          }
+          for (const child of node.childNodes) {
+            text += getDeepText(child)
+          }
+          return text
+        }
+
+        Object.defineProperty(HTMLBodyElement.prototype, 'innerText', {
+          get() {
+            return getDeepText(this)
+          },
+          configurable: true,
+        })
+
+        function querySelectorAllDeep(selector: string, root: Node): Element[] {
+          const elements: Element[] = []
+          function traverse(node: Node) {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              const el = node as Element
+              if (el.matches(selector)) {
+                elements.push(el)
+              }
+            }
+            if (node instanceof HTMLElement && node.shadowRoot) {
+              for (const child of node.shadowRoot.childNodes) {
+                traverse(child)
+              }
+            }
+            for (const child of node.childNodes) {
+              traverse(child)
+            }
+          }
+          traverse(root)
+          return elements
+        }
+
+        const overrideQuery = (proto: any) => {
+          proto.querySelectorAll = function(selector: string) {
+            return querySelectorAllDeep(selector, this)
+          }
+          proto.querySelector = function(selector: string) {
+            return querySelectorAllDeep(selector, this)[0] || null
+          }
+        }
+
+        overrideQuery(Document.prototype)
+        overrideQuery(Element.prototype)
+        overrideQuery(DocumentFragment.prototype)
+      }
+      await page.addInitScript(injectScript)
+      await page.evaluate(injectScript)
       await use(page)
     },
     { scope: 'worker' },

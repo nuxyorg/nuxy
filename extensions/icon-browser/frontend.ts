@@ -20,22 +20,6 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
       min-height: 0;
     }
 
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--space-3) var(--space-4);
-      border-bottom: 1px solid var(--color-border);
-      flex-shrink: 0;
-      gap: var(--space-2);
-    }
-
-    .count {
-      font-size: var(--font-size-xs);
-      opacity: 0.45;
-      white-space: nowrap;
-    }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
@@ -111,6 +95,7 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
   private _rawQuery = ''
   private _extId: string | null = null
   private _svgCache = new Map<string, string>()
+  private _footerEl = document.createElement('span')
 
   set query(value: string) {
     this._rawQuery = value ?? ''
@@ -123,11 +108,30 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
 
   connectedCallback(): void {
     super.connectedCallback()
+    window.core?.shell?.setFooterPortal(this._footerEl)
+    this._updateFooter()
     void this._load()
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
+    window.core?.shell?.setFooterPortal(null)
+  }
+
+  protected updated(changedProperties: Map<PropertyKey, unknown>): void {
+    super.updated(changedProperties)
+    this._updateFooter()
+  }
+
+  private _updateFooter(): void {
+    if (!window.core?.shell) return
+    const all = this._icons ?? []
+    const icons = this._filter ? all.filter((n) => n.includes(this._filter)) : all
+    if (this._ready) {
+      this._footerEl.textContent = `${icons.length} / ${all.length} icons`
+    } else {
+      this._footerEl.textContent = 'Loading…'
+    }
   }
 
   private async _load(): Promise<void> {
@@ -176,11 +180,6 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
     const icons = this._filter ? all.filter((n) => n.includes(this._filter)) : all
 
     return html`
-      <div class="toolbar">
-        <span class="count"
-          >${this._ready ? `${icons.length} / ${all.length} icons` : nothing}</span
-        >
-      </div>
       ${!this._ready
         ? html`<div class="empty">Loading…</div>`
         : this._filter && icons.length === 0
@@ -206,3 +205,4 @@ declare global {
     'nuxy-tool-icon-browser': NuxyToolIconBrowserElement
   }
 }
+

@@ -105,6 +105,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
             ${sections.map(
               (section) => html`
                 <nuxy-list-item
+                  class="nuxy-tab"
                   ?active=${focusedPanel === 'left' && section.id === effectiveSectionId}
                   @click=${() => this.controller?.setSelectedSection(section.id)}
                 >

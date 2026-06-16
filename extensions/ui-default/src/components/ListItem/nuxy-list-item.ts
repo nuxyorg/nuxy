@@ -5,6 +5,18 @@ export class NuxyListItemElement extends LitElement {
   @property({ type: Boolean, reflect: true })
   declare active: boolean
 
+  protected updated(changedProperties: Map<string, any>) {
+    super.updated(changedProperties)
+    if (changedProperties.has('active')) {
+      console.log('E2E Debug: list-item active changed to', this.active, 'for text', this.textContent?.trim())
+      if (this.active) {
+        this.classList.add('nuxy-list-item--active')
+      } else {
+        this.classList.remove('nuxy-list-item--active')
+      }
+    }
+  }
+
   static styles = css`
     :host {
       padding: calc(var(--space-4) - 2px) var(--space-5);

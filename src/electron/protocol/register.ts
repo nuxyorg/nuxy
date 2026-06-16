@@ -35,6 +35,8 @@ export function registerProtocols() {
           html,
           css,
           nothing,
+          render,
+          svg,
           customElement,
           property,
           state,

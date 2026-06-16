@@ -4,7 +4,7 @@
  * cross-extension IPC interactions.
  */
 import { test, expect } from './fixtures.js'
-import { resetShell, typeInOmnibar } from '../../extensions/e2e-helpers.js'
+import { resetShell, typeInOmnibar } from '../../extensions/tests/e2e-helpers.js'
 
 test.describe('angrysearch extension', () => {
   test('getStatus returns expected shape', async ({ appPage }) => {

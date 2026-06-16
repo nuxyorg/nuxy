@@ -93,14 +93,14 @@ export async function clickToolOption(page: any, name: string): Promise<void> {
         console.log('E2E Debug: no nuxy-shell-view or shadowRoot found')
         return false
       }
-      const sections = root.querySelectorAll('.nuxy-provider-section')
+      const sections = root.querySelectorAll('.nuxy-shell-results-section')
       console.log('E2E Debug: sections count =', sections.length)
       console.log('E2E Debug: controller query =', (view as any).controller?.state?.query)
       console.log('E2E Debug: controller savedQuery =', (view as any).controller?.state?.savedQuery)
       for (const section of sections) {
         console.log('E2E Debug: section HTML =', section.innerHTML)
-        const headerEl = section.querySelector('.nuxy-provider-section__header span')
-        const header = headerEl?.textContent ?? ''
+        const headerEl = section.querySelector('nuxy-section-header')
+        const header = headerEl?.getAttribute('label') ?? ''
         console.log('E2E Debug: found section header =', header.trim())
         if (!/^Tools$/i.test(header.trim())) continue
         const options = section.querySelectorAll('[role="option"]')
@@ -116,8 +116,8 @@ export async function clickToolOption(page: any, name: string): Promise<void> {
     name,
     { timeout: 3000 }
   )
-  const toolsSection = page.locator('.nuxy-provider-section').filter({
-    has: page.locator('.nuxy-provider-section__header span', { hasText: /^Tools$/i }),
+  const toolsSection = page.locator('.nuxy-shell-results-section').filter({
+    has: page.locator('nuxy-section-header[label="Tools"]'),
   })
   await toolsSection.locator('[role="option"]').filter({ hasText: pattern }).first().click()
 }

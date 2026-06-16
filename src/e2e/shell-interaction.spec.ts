@@ -9,7 +9,7 @@ import {
   pressOmnibarKey,
   waitForToolMounted,
   clickToolOption,
-} from '../../extensions/e2e-helpers.js'
+} from '../../extensions/tests/e2e-helpers.js'
 
 test.describe('omnibar input', () => {
   test.beforeEach(async ({ appPage }) => {
@@ -24,18 +24,18 @@ test.describe('omnibar input', () => {
 
   test('typing in the input shows the command palette', async ({ appPage }) => {
     await typeInOmnibar(appPage, 'notes')
-    await appPage.waitForSelector('.nuxy-shell-results-list', { timeout: 2000 })
-    await expect(appPage.locator('.nuxy-shell-results-list')).toBeVisible()
+    await appPage.waitForSelector('.nuxy-shell-results-panel', { timeout: 2000 })
+    await expect(appPage.locator('.nuxy-shell-results-panel')).toBeVisible()
   })
 
   test('typing a non-matching query shows no tool options', async ({ appPage }) => {
     await typeInOmnibar(appPage, 'zzznomatch')
-    await appPage.waitForSelector('.nuxy-shell-results-list', { timeout: 1000 }).catch(() => {})
-    const resultsList = appPage.locator('.nuxy-shell-results-list')
+    await appPage.waitForSelector('.nuxy-shell-results-panel', { timeout: 1000 }).catch(() => {})
+    const resultsList = appPage.locator('.nuxy-shell-results-panel')
     const listVisible = await resultsList.isVisible().catch(() => false)
     if (listVisible) {
-      const toolSection = resultsList.locator('.nuxy-provider-section').filter({
-        has: appPage.locator('.nuxy-provider-section__header', { hasText: 'Tools' }),
+      const toolSection = resultsList.locator('.nuxy-shell-results-section').filter({
+        has: appPage.locator('nuxy-section-header[label="Tools"]'),
       })
       await expect(toolSection).toHaveCount(0)
     } else {
@@ -186,7 +186,7 @@ test.describe('keyboard navigation', () => {
     await pressOmnibarKey(appPage, 'ArrowDown')
     const firstOption = appPage.locator('[role="option"]').first()
     await expect(firstOption).toBeVisible()
-    await expect(appPage.locator('.nuxy-shell-results-list')).toBeVisible()
+    await expect(appPage.locator('.nuxy-shell-results-panel')).toBeVisible()
   })
 
   test('Enter key on a focused option selects it and loads the tool', async ({ appPage }) => {
