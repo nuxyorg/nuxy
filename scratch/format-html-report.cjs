@@ -46,7 +46,7 @@ for (const [file, occurrences] of Object.entries(files)) {
   md += `| Line | Element(s) | Code Snippet |\n`
   md += `|------|------------|--------------|\n`
   for (const occ of occurrences) {
-    const elements = occ.tags.map((t) => '\`<' + t + '>\`').join(', ')
+    const elements = occ.tags.map((t) => '`<' + t + '>`').join(', ')
     md += `| ${occ.line} | ${elements} | \`${occ.content.replace(/`/g, "'")}\` |\n`
   }
   md += `\n`

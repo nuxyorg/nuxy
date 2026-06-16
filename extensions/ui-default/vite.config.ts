@@ -17,6 +17,7 @@ export default defineConfig({
     alias: {
       '@nuxyorg/ui': path.resolve(__dirname, 'src/index.ts'),
       '@nuxyorg/core': path.resolve(repoRoot, 'packages/core/src/renderer.ts'),
+      '@nuxyorg/extension-sdk': path.resolve(repoRoot, 'packages/extension-sdk/src/index.ts'),
     },
   },
   plugins: [

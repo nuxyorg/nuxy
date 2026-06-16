@@ -27,18 +27,22 @@ export class NotesController extends BaseExtensionController<NotesState> {
   private prevQuery = ''
 
   constructor(onUpdate: () => void) {
-    super(EXT_ID, {
-      notes: [],
-      fontSize: '14px',
-      selected: null,
-      body: '',
-      editMode: false,
-      selectedIndex: -1,
-      recording: false,
-      transcribing: false,
-      query: '',
-      filteredNotes: [],
-    }, onUpdate)
+    super(
+      EXT_ID,
+      {
+        notes: [],
+        fontSize: '14px',
+        selected: null,
+        body: '',
+        editMode: false,
+        selectedIndex: -1,
+        recording: false,
+        transcribing: false,
+        query: '',
+        filteredNotes: [],
+      },
+      onUpdate
+    )
   }
 
   connect(): void {

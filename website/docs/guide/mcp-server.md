@@ -57,11 +57,11 @@ Scaffold a new extension with the standard file structure.
 
 **Input:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `name` | string | Extension folder name (e.g. `my-tool`) |
-| `type` | string | `tool` \| `provider` \| `orchestrator` |
-| `id` | string | Optional. Reverse-DNS ID. Defaults to `com.nuxy.<name>` |
+| Parameter | Type   | Description                                             |
+| --------- | ------ | ------------------------------------------------------- |
+| `name`    | string | Extension folder name (e.g. `my-tool`)                  |
+| `type`    | string | `tool` \| `provider` \| `orchestrator`                  |
+| `id`      | string | Optional. Reverse-DNS ID. Defaults to `com.nuxy.<name>` |
 
 **Output:** List of created files and their paths.
 
@@ -73,9 +73,9 @@ Run the extension linter and return structured results.
 
 **Input:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `path` | string | Absolute path to the extension folder |
+| Parameter | Type   | Description                           |
+| --------- | ------ | ------------------------------------- |
+| `path`    | string | Absolute path to the extension folder |
 
 **Output:** JSON lint report — score, violations list, lit-analyzer results. Same format as `pnpm lint-ext --json`.
 
@@ -87,8 +87,8 @@ Validate a `manifest.json` object against the Nuxy manifest schema without runni
 
 **Input:**
 
-| Parameter | Type | Description |
-|---|---|---|
+| Parameter  | Type   | Description                 |
+| ---------- | ------ | --------------------------- |
 | `manifest` | object | The parsed manifest content |
 
 **Output:** `{ valid: boolean, errors: string[] }`
@@ -111,8 +111,8 @@ Return structured documentation for the `CoreContext` API.
 
 **Input:**
 
-| Parameter | Type | Description |
-|---|---|---|
+| Parameter | Type   | Description                                                                                                                                               |
+| --------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `section` | string | Optional. Filter to a specific section: `ipc`, `storage`, `clipboard`, `fs`, `db`, `shell`, `registry`, `i18n`, `events`, `media`, `config`, `extensions` |
 
 **Output:** Markdown string for the requested section (or the full reference if omitted).
@@ -125,9 +125,9 @@ List all extensions in the monorepo (or a specified directory).
 
 **Input:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `dir` | string | Optional. Directory to scan. Defaults to `extensions/` in `NUXY_ROOT` |
+| Parameter | Type   | Description                                                           |
+| --------- | ------ | --------------------------------------------------------------------- |
+| `dir`     | string | Optional. Directory to scan. Defaults to `extensions/` in `NUXY_ROOT` |
 
 **Output:** Array of `{ id, name, version, type, path }` objects.
 
@@ -149,9 +149,9 @@ Return the IPC channels registered by a specific extension's backend, by statica
 
 **Input:**
 
-| Parameter | Type | Description |
-|---|---|---|
-| `path` | string | Absolute path to the extension folder |
+| Parameter | Type   | Description                           |
+| --------- | ------ | ------------------------------------- |
+| `path`    | string | Absolute path to the extension folder |
 
 **Output:** Array of channel names found in `core.ipc.handle(...)` calls.
 
@@ -169,20 +169,20 @@ The AI calls `nuxy_get_extension_guide` to read the rules, then `nuxy_create_ext
 
 When the MCP server is active, a set of Claude Code skills wraps the raw tools into higher-level workflows:
 
-| Skill | Trigger | What it does |
-|---|---|---|
-| `/nuxy new <name>` | `nuxy new bookmarks` | Scaffold + open in editor |
-| `/nuxy lint [name]` | `nuxy lint clipboard` | Run linter, show violations inline |
-| `/nuxy guide` | `nuxy guide` | Load extension guide into context |
-| `/nuxy api [section]` | `nuxy api storage` | Load CoreContext API docs for a section |
-| `/nuxy pack <name>` | `nuxy pack clipboard` | Package extension for distribution |
+| Skill                 | Trigger               | What it does                            |
+| --------------------- | --------------------- | --------------------------------------- |
+| `/nuxy new <name>`    | `nuxy new bookmarks`  | Scaffold + open in editor               |
+| `/nuxy lint [name]`   | `nuxy lint clipboard` | Run linter, show violations inline      |
+| `/nuxy guide`         | `nuxy guide`          | Load extension guide into context       |
+| `/nuxy api [section]` | `nuxy api storage`    | Load CoreContext API docs for a section |
+| `/nuxy pack <name>`   | `nuxy pack clipboard` | Package extension for distribution      |
 
 Skills are installed automatically when the MCP server is configured.
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
-| `NUXY_ROOT` | Path to the Nuxy monorepo root. Required. |
+| Variable              | Description                                                       |
+| --------------------- | ----------------------------------------------------------------- |
+| `NUXY_ROOT`           | Path to the Nuxy monorepo root. Required.                         |
 | `NUXY_EXTENSIONS_DIR` | Path to scan for extensions. Defaults to `$NUXY_ROOT/extensions`. |
-| `NUXY_LOG_LEVEL` | `silent` \| `info` \| `debug`. Defaults to `silent`. |
+| `NUXY_LOG_LEVEL`      | `silent` \| `info` \| `debug`. Defaults to `silent`.              |

@@ -1,4 +1,3 @@
-import type { FileMeta } from './nuxy-file-input.ts'
 export interface FileInputProps {
   onChange?: (files: File[]) => void
   onRemove?: (index: number) => void

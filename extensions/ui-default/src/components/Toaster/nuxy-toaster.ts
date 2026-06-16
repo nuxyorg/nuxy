@@ -7,7 +7,7 @@ import {
   state,
   type TemplateResult,
 } from '@nuxyorg/core'
-import { toastStore, type Toast, type ToastType } from './store'
+import { toastStore, type Toast } from './store'
 
 const EXIT_MS = 220
 

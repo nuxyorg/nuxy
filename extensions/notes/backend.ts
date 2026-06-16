@@ -7,7 +7,6 @@ import type {
   NotesSearchPayload,
   NotesTranscribePayload,
   NotesConfigurePayload,
-  NotesConfig,
   TranscribeResult,
   FtsRow,
 } from './types.ts'

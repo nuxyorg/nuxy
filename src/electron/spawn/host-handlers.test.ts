@@ -90,7 +90,7 @@ import { invokeExtension } from '../ipc/broker.js'
 import { assertHostPermission } from '../config/permissions.js'
 import { registerExtensionTheme } from '../themes/extension-themes.js'
 import { registerIconPack } from '../icons/registry.js'
-import { clipboard, nativeImage, BrowserWindow } from 'electron'
+import { clipboard, nativeImage } from 'electron'
 import fs from 'fs'
 import fsPromises from 'fs/promises'
 

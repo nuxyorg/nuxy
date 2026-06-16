@@ -44,7 +44,7 @@ export function fail(msg) {
   console.error(`  ${log.red('✘')} ${msg}`)
 }
 
-function info(msg) {
+export function info(msg) {
   console.log(`  ${log.dim(msg)}`)
 }
 

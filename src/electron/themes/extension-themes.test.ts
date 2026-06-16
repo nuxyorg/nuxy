@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import {
   registerExtensionTheme,
   getExtensionTheme,
+  getDefaultTheme,
+  getDefaultThemeName,
   listExtensionThemeNames,
   clearExtensionThemes,
 } from './extension-themes.js'
@@ -85,4 +87,40 @@ describe('clearExtensionThemes', () => {
     expect(listExtensionThemeNames()).toEqual([])
     expect(getExtensionTheme('ocean')).toBeUndefined()
   })
+
+  it('resets the default theme', () => {
+    registerExtensionTheme(ocean)
+    clearExtensionThemes()
+    expect(getDefaultThemeName()).toBeUndefined()
+    expect(getDefaultTheme()).toBeUndefined()
+  })
 })
+
+describe('default theme behavior', () => {
+  beforeEach(() => clearExtensionThemes())
+
+  it('first registered theme becomes default', () => {
+    registerExtensionTheme(ocean)
+    expect(getDefaultThemeName()).toBe('ocean')
+    expect(getDefaultTheme()).toBe(ocean)
+  })
+
+  it('subsequent registration does not override default', () => {
+    registerExtensionTheme(ocean)
+    registerExtensionTheme(forest)
+    expect(getDefaultThemeName()).toBe('ocean')
+  })
+
+  it('isDefault flag overrides the current default', () => {
+    registerExtensionTheme(ocean)
+    registerExtensionTheme(forest, true)
+    expect(getDefaultThemeName()).toBe('forest')
+    expect(getDefaultTheme()).toBe(forest)
+  })
+
+  it('returns undefined when no themes registered', () => {
+    expect(getDefaultTheme()).toBeUndefined()
+    expect(getDefaultThemeName()).toBeUndefined()
+  })
+})
+

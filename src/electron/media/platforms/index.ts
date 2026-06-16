@@ -1,4 +1,4 @@
-import type { MediaPlatform, MediaPlatformProvider } from '../types.js'
+import type { MediaPlatformProvider } from '../types.js'
 import { createLinuxMediaProvider } from './linux/index.js'
 import { createDarwinMediaProvider } from './darwin/index.js'
 import { createWin32MediaProvider } from './win32/index.js'

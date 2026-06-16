@@ -15,7 +15,9 @@
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm build"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/nuxyorg/core.git"

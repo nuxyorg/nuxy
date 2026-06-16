@@ -139,7 +139,10 @@ describe('Security and Code Signing Suite', () => {
         revokedKeys: [],
       }
 
-      fs.writeFileSync(path.join(mockHome, 'security', 'revoked-extensions.json'), JSON.stringify(blacklist))
+      fs.writeFileSync(
+        path.join(mockHome, 'security', 'revoked-extensions.json'),
+        JSON.stringify(blacklist)
+      )
 
       expect(isRevoked('bad-ext', 'good-hash', keys.publicKey)).toBe(true)
       expect(isRevoked('good-ext', 'bad-hash-xyz', keys.publicKey)).toBe(true)

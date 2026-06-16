@@ -1,29 +1,3 @@
-/** Browser-side shell tool state (CE keeps tool-name node in DOM, toggles hidden). */
-
-function getShellViewShadow(): ShadowRoot | null {
-  return document.querySelector('nuxy-shell-view')?.shadowRoot ?? null
-}
-
-function getOmniBarInput(): HTMLInputElement | null {
-  return (
-    getShellViewShadow()
-      ?.querySelector('nuxy-shell-omni-bar')
-      ?.shadowRoot?.querySelector('.nuxy-shell-omni-bar__input') ?? null
-  )
-}
-
-function getOmniBarToolName(): HTMLElement | null {
-  return (
-    getShellViewShadow()
-      ?.querySelector('nuxy-shell-omni-bar')
-      ?.shadowRoot?.querySelector('.nuxy-shell-omni-bar__tool-name') ?? null
-  )
-}
-
-function getCommandPalette(): HTMLElement | null {
-  return getShellViewShadow()?.querySelector('nuxy-command-palette') ?? null
-}
-
 function toolNamePattern(name: string): RegExp {
   return new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
 }

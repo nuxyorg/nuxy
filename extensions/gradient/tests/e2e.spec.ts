@@ -1,14 +1,6 @@
 // fallow-ignore-file code-duplication
 import { test, expect } from '../../../src/e2e/fixtures.js'
-import {
-  resetShell,
-  openTool,
-  typeInOmnibar,
-  submitOmnibar,
-  waitForToolMounted,
-} from '../../tests/e2e-helpers.js'
-
-const openGradient = (page: any) => openTool(page, 'gradient')
+import { resetShell, openTool, typeInOmnibar, submitOmnibar } from '../../tests/e2e-helpers.js'
 
 test.describe('gradient extension', () => {
   test('shell gradient canvas element is present in the DOM', async ({ appPage }) => {
@@ -86,7 +78,7 @@ async function installOllamaMock(appPage: any, electronApp: any) {
       // Replace handler directly in map to avoid removeHandler unregistering the IPC channel
       ;(ipcMain as any)._invokeHandlers?.set?.(
         'ext:invoke',
-        async (_ev: any, extId: string, channel: string, payload: any) => {
+        async (_ev: any, extId: string, channel: string, _payload: any) => {
           if (extId === 'com.nuxy.ollama') {
             if (channel === 'models') {
               return { success: true, data: ['llama3'] }

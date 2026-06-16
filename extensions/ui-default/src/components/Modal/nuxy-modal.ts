@@ -1,5 +1,5 @@
 import './index.css'
-import { LitElement, customElement, type PropertyValues } from '@nuxyorg/core'
+import { LitElement, customElement } from '@nuxyorg/core'
 
 @customElement('nuxy-modal')
 export class NuxyModalElement extends LitElement {

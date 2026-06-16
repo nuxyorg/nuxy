@@ -72,9 +72,10 @@ export function groupExtensionsByCategory(extDirs) {
   return counts
 }
 
-async function packageAndInstall(extDir) {
+async function packageAndInstall(extDir, { force = false } = {}) {
   const name = path.basename(extDir)
-  await execFileAsync('node', [nxtBin, 'package'], { cwd: extDir })
+  const packageArgs = ['package', ...(force ? ['--force'] : [])]
+  await execFileAsync('node', [nxtBin, ...packageArgs], { cwd: extDir })
   await execFileAsync('node', [nxtBin, 'install'], { cwd: extDir })
   return name
 }
@@ -91,7 +92,7 @@ export async function packageAllExtensions(paths) {
     extDirs.map(async (extDir) => {
       const name = path.basename(extDir)
       try {
-        await packageAndInstall(extDir)
+        await packageAndInstall(extDir, { force: true })
         progress.tick()
       } catch {
         progress.tick()
@@ -158,7 +159,7 @@ export function startExtensionWatcher(paths) {
           const quiet = Date.now() < quietUntil
           if (!quiet) refreshing(label)
           try {
-            await packageAndInstall(extDir)
+            await packageAndInstall(extDir, { force: true })
             if (!quiet) refreshDone(label)
           } catch (err) {
             if (!quiet && process.stdout.isTTY) process.stdout.write('\r\x1b[2K')

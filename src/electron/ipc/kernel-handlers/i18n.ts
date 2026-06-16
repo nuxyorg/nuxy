@@ -4,10 +4,8 @@ import { app } from 'electron'
 import { loadedExtensions } from '../../extensions/scanner.js'
 import { getExtensionById, getDisplayName, getPreferredLocale } from '../../extensions/registry.js'
 import { EXTRACTED_DIR, DATA_DIR } from '../../config/paths.js'
-import { kernelLogger, resolveLocale, flattenTranslations, getTextDirection } from '@nuxyorg/core'
+import { resolveLocale, flattenTranslations, getTextDirection } from '@nuxyorg/core'
 import type { IpcResult } from '@nuxyorg/core'
-
-const log = kernelLogger.child('KernelI18n')
 
 function translateSettingsSchema(ext: any, resolvedLocale: string): any {
   if (!ext.settingsSchema) return undefined
@@ -15,7 +13,7 @@ function translateSettingsSchema(ext: any, resolvedLocale: string): any {
   const localesConfig = ext.manifest.locales
   if (!localesConfig) return ext.settingsSchema
 
-  const { supported, default: defaultLocale, dir: localesDir = 'locales' } = localesConfig
+  const { default: defaultLocale, dir: localesDir = 'locales' } = localesConfig
   const extFolder = path.join(EXTRACTED_DIR, ext.folderName)
 
   const tryLoadTranslations = (locale: string): any => {

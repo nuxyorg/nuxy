@@ -1,11 +1,9 @@
 import { _electron as electron } from '@playwright/test'
-import { resolve, dirname } from 'node:path'
+import { resolve } from 'node:path'
 import { tmpdir } from 'node:os'
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
 import { createRequire } from 'node:module'
-import { fileURLToPath } from 'node:url'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
 const PROJECT_ROOT = '/home/xava/Documents/nuxy'
 const APP_DIR = resolve(PROJECT_ROOT, 'src')
@@ -13,7 +11,7 @@ const APP_DIR = resolve(PROJECT_ROOT, 'src')
 function findElectronBin() {
   try {
     return require('electron')
-  } catch (e) {
+  } catch {
     return resolve(
       PROJECT_ROOT,
       'node_modules/.pnpm/electron@42.1.0/node_modules/electron/dist/electron'

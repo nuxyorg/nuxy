@@ -26,7 +26,7 @@ try {
 // 2. Watcher like vite.config.ts
 const watchRecursiveVite = (dir, callback) => {
   try {
-    const watcher = fs.watch(dir, { recursive: false }, (event, filename) => {
+    fs.watch(dir, { recursive: false }, (event, filename) => {
       if (filename) callback(event, path.join(dir, filename))
     })
   } catch (e) {
@@ -42,7 +42,7 @@ const watchRecursiveVite = (dir, callback) => {
         watchRecursiveVite(fullPath, callback)
       }
     }
-  } catch (e) {}
+  } catch {}
 }
 
 watchRecursiveVite(sourceDir, (event, filepath) => {
@@ -61,7 +61,7 @@ console.log('Resolved dir for scanner watch:', resolvedDir)
 
 const watchRecursiveScanner = (dir) => {
   try {
-    const watcher = fs.watch(dir, { recursive: false }, (event, filename) => {
+    fs.watch(dir, { recursive: false }, (event, filename) => {
       console.log(`[Scanner Watch Event] ${event} on file in ${dir} (filename: ${filename})`)
     })
   } catch (err) {

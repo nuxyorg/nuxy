@@ -1,0 +1,10 @@
+{
+  "id": "com.nuxy.theme-light",
+  "name": "Light Theme",
+  "version": "1.0.0",
+  "type": "theme",
+  "permissions": [],
+  "entry": {
+    "theme": "theme.json"
+  }
+}

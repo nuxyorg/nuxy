@@ -116,7 +116,7 @@ vi.mock('lit', () => ({
     connectedCallback() {}
     disconnectedCallback() {}
   },
-  html: (strings: any, ...values: any[]) => strings,
+  html: (strings: any, ..._values: any[]) => strings,
   css: (strings: any) => strings.join(''),
   nothing: null,
 }))
@@ -131,8 +131,8 @@ vi.mock('@nuxyorg/core', async () => {
       connectedCallback() {}
       disconnectedCallback() {}
     },
-    html: (strings: any, ...values: any[]) => strings,
-    css: (strings: any, ...values: any[]) => strings,
+    html: (strings: any, ..._values: any[]) => strings,
+    css: (strings: any, ..._values: any[]) => strings,
     nothing: null,
     customElement: (tag: string) => (ctor: CustomElementConstructor) => {
       customElements.define(tag, ctor)

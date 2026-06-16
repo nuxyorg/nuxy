@@ -17,11 +17,6 @@ const DEFAULTS: SpringConfig = {
   intervalMs: 16,
 }
 
-const CRITICAL_DAMPING: Partial<SpringConfig> = {
-  stiffness: 0.14,
-  damping: 0.88,
-}
-
 interface State {
   w: number
   h: number

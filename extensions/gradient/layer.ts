@@ -1,4 +1,3 @@
-const GRADIENT_EXT_ID = 'com.nuxy.gradient'
 let layerStylesAdopted = false
 
 function ensureLayerStyles(): void {

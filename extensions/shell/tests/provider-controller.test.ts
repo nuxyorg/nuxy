@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import type { Provider, Tool, ProviderState } from '../types.ts'
+import type { Provider, ProviderState } from '../types.ts'
 import { makeHost } from './helpers.ts'
 
 function makeProvider(id: string, type: ProviderState['type'] = 'list'): Provider {
@@ -7,10 +7,6 @@ function makeProvider(id: string, type: ProviderState['type'] = 'list'): Provide
     id,
     manifest: { id, name: id, version: '1', type: 'provider', providerType: type },
   } as Provider
-}
-
-function makeTool(id: string): Tool {
-  return { id, manifest: { id, name: id, version: '1', type: 'tool' } } as Tool
 }
 
 describe('ProviderController', () => {

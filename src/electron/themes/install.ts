@@ -1,16 +1,25 @@
 import { kernelLogger } from '@nuxyorg/core'
 import type { ThemeDefinition } from '@nuxyorg/core'
-import { getExtensionTheme } from './extension-themes.js'
-import { DEFAULT_DARK_THEME, DEFAULT_LIGHT_THEME } from './defaults.js'
+import {
+  getExtensionTheme,
+  getDefaultTheme,
+  getDefaultThemeName,
+} from './extension-themes.js'
 
 const log = kernelLogger.child('Themes')
 
-export { DEFAULT_DARK_THEME, DEFAULT_LIGHT_THEME } from './defaults.js'
-
+/**
+ * Load a theme by name from the extension registry.
+ * Falls back to the default theme (first registered) if the named theme is not found.
+ */
 export function loadTheme(name: string): ThemeDefinition {
-  const extTheme = getExtensionTheme(name)
-  if (extTheme) return extTheme
-
-  if (name === 'light') return DEFAULT_LIGHT_THEME
-  return DEFAULT_DARK_THEME
+  const theme = getExtensionTheme(name) ?? getDefaultTheme()
+  if (!theme) {
+    log.warn(`Theme "${name}" not found and no default theme registered — returning empty shell`)
+    return { version: 1, name, colors: {}, tokens: {} }
+  }
+  if (!getExtensionTheme(name)) {
+    log.warn(`Theme "${name}" not found — falling back to default: "${getDefaultThemeName()}"`)
+  }
+  return theme
 }

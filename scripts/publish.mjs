@@ -24,10 +24,10 @@ const BUMP = ['patch', 'minor', 'major'].find((b) => process.argv.includes(b))
 // Publish order matters: dependencies must be published before dependents.
 // Each package's prepublishOnly handles its own build step.
 const PACKAGES = [
-  { name: '@nuxyorg/core',          dir: 'packages/core' },
+  { name: '@nuxyorg/core', dir: 'packages/core' },
   { name: '@nuxyorg/extension-sdk', dir: 'packages/extension-sdk' },
-  { name: '@nuxyorg/ui-default',    dir: 'extensions/ui-default' },
-  { name: '@nuxyorg/nxt',           dir: 'packages/nxt' },
+  { name: '@nuxyorg/ui-default', dir: 'extensions/ui-default' },
+  { name: '@nuxyorg/nxt', dir: 'packages/nxt' },
   { name: '@nuxyorg/ext-devserver', dir: 'packages/ext-devserver' },
 ]
 

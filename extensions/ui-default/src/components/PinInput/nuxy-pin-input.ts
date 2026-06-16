@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, type TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-pin-input')
 export class NuxyPinInputElement extends LitElement {
@@ -119,7 +119,7 @@ export class NuxyPinInputElement extends LitElement {
     }
   }
 
-  private renderCell(idx: number, currentVal: string, length: number): TemplateResult {
+  private renderCell(idx: number, currentVal: string, _length: number): TemplateResult {
     const disabled = this.hasAttribute('disabled')
     const error = this.hasAttribute('error')
     const mask = this.hasAttribute('mask')

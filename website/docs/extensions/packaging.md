@@ -20,12 +20,12 @@ npm install -g @nuxy/nxt
 
 All commands run from inside an extension directory (where `manifest.json` lives).
 
-| Command | Description |
-| --- | --- |
-| `nxt info` | Show extension metadata from `manifest.json` |
-| `nxt package` | Bundle backend + sign → `.nuxyext` file |
-| `nxt install` | Copy `.nuxyext` to `~/.nxy/extensions/` |
-| `nxt keys` | Generate a new RSA developer key pair |
+| Command       | Description                                  |
+| ------------- | -------------------------------------------- |
+| `nxt info`    | Show extension metadata from `manifest.json` |
+| `nxt package` | Bundle backend + sign → `.nuxyext` file      |
+| `nxt install` | Copy `.nuxyext` to `~/.nxy/extensions/`      |
+| `nxt keys`    | Generate a new RSA developer key pair        |
 | `nxt publish` | _(coming soon)_ Publish to the Nuxy registry |
 
 ## Workflow

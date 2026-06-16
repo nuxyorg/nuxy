@@ -12,8 +12,6 @@ import { SyncController, applySettingsToDOM } from './controllers/sync-controlle
 import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
 import { syncBlurSuppression } from '@nuxyorg/extension-sdk'
 import type {
-  CommandPaletteAction,
-  KeyAction,
   ListItem,
   Orchestrator,
   Provider,

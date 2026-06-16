@@ -9,7 +9,10 @@
     "./register": "./src/register-components.ts",
     "./entry": "./src/entry.ts"
   },
-  "files": ["src", "frontend.js"],
+  "files": [
+    "src",
+    "frontend.js"
+  ],
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch --mode development",
@@ -24,6 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "@nuxyorg/core": "workspace:*",
+    "@nuxyorg/extension-sdk": "workspace:*",
     "lit": "^3.0.0"
   },
   "devDependencies": {

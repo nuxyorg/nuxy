@@ -9,7 +9,9 @@
     ".": "./src/index.ts",
     "./testing": "./src/testing.ts"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "pnpm build"

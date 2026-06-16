@@ -47,7 +47,9 @@ function createServerCore(handlers: Record<string, (p?: unknown) => Promise<unkn
       const store = new Map<string, unknown>()
       return {
         read: async (key: string) => store.get(key) ?? null,
-        write: async (key: string, value: unknown) => { store.set(key, value) },
+        write: async (key: string, value: unknown) => {
+          store.set(key, value)
+        },
       }
     })(),
     clipboard: {
@@ -91,7 +93,10 @@ const alias: Record<string, string> = { '~ext': EXT_PATH }
 if (isMonorepo) {
   alias['@nuxyorg/ui'] = path.resolve(possibleRepoRoot, 'extensions/ui-default/src/index.ts')
   alias['@nuxyorg/core'] = path.resolve(possibleRepoRoot, 'packages/core/src/index.ts')
-  alias['@nuxyorg/extension-sdk'] = path.resolve(possibleRepoRoot, 'packages/extension-sdk/src/index.ts')
+  alias['@nuxyorg/extension-sdk'] = path.resolve(
+    possibleRepoRoot,
+    'packages/extension-sdk/src/index.ts'
+  )
   fsAllow.push(possibleRepoRoot)
 } else {
   // @nuxyorg/ui-default is a dependency of this package; alias @nuxyorg/ui to it

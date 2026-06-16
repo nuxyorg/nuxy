@@ -11,6 +11,7 @@ export default tseslint.config(
   wcPlugin.configs['flat/recommended'],
   {
     ignores: [
+      'scratch.js',
       '**/dist/**',
       '**/dist-electron/**',
       '**/out/**',

@@ -32,43 +32,43 @@ Exit code is `0` when no violations are found (score 100), `1` when violations e
 
 ### Manifest (`manifest.json`)
 
-| Check | Penalty |
-|---|---|
-| Missing required field (`id`, `name`, `version`, `type`) | −15 per field |
-| `id` does not match reverse-DNS format | −10 |
-| `entry.element` does not match `nuxy-tool-<name>` pattern | −10 |
-| `type` is not one of `tool`, `provider`, `orchestrator`, `theme`, `iconpack`, `helper` | −15 |
-| `version` is not valid semver | −5 |
+| Check                                                                                  | Penalty       |
+| -------------------------------------------------------------------------------------- | ------------- |
+| Missing required field (`id`, `name`, `version`, `type`)                               | −15 per field |
+| `id` does not match reverse-DNS format                                                 | −10           |
+| `entry.element` does not match `nuxy-tool-<name>` pattern                              | −10           |
+| `type` is not one of `tool`, `provider`, `orchestrator`, `theme`, `iconpack`, `helper` | −15           |
+| `version` is not valid semver                                                          | −5            |
 
 ### Frontend files (`frontend.ts`, `controller.ts`, and any `.ts` not in `tests/`)
 
-| Check | Penalty |
-|---|---|
-| Inline SVG (`<svg` tag literal in template) | −15 |
-| Hardcoded color (`#rgb`, `#rrggbb`, `rgba(`, `rgb(`, `hsl(`) | −10 per occurrence, max −20 |
-| Hardcoded spacing / font size (`padding: '16px'`, `'margin-top': '8px'`) | −10 per occurrence, max −20 |
-| Node.js built-in import (`import fs`, `import os`, `import path`, `import child_process`) | −20 |
-| `eval()` usage | −25 |
-| `innerHTML =` assignment (not in Lit template) | −15 |
-| `dangerouslySetInnerHTML` | −15 |
-| Lit `@property` or `@state` class-field initializer (`@property() label = ''`) | −10 per occurrence |
-| File in a forbidden subfolder (`styles/`, `components/`, `hooks/`) | −5 per file |
+| Check                                                                                     | Penalty                     |
+| ----------------------------------------------------------------------------------------- | --------------------------- |
+| Inline SVG (`<svg` tag literal in template)                                               | −15                         |
+| Hardcoded color (`#rgb`, `#rrggbb`, `rgba(`, `rgb(`, `hsl(`)                              | −10 per occurrence, max −20 |
+| Hardcoded spacing / font size (`padding: '16px'`, `'margin-top': '8px'`)                  | −10 per occurrence, max −20 |
+| Node.js built-in import (`import fs`, `import os`, `import path`, `import child_process`) | −20                         |
+| `eval()` usage                                                                            | −25                         |
+| `innerHTML =` assignment (not in Lit template)                                            | −15                         |
+| `dangerouslySetInnerHTML`                                                                 | −15                         |
+| Lit `@property` or `@state` class-field initializer (`@property() label = ''`)            | −10 per occurrence          |
+| File in a forbidden subfolder (`styles/`, `components/`, `hooks/`)                        | −5 per file                 |
 
 ### Backend (`backend.ts`)
 
-| Check | Penalty |
-|---|---|
-| Direct Node.js built-in import instead of `core.*` equivalent | −20 |
-| No `register` export | −20 |
-| `eval()` usage | −25 |
+| Check                                                         | Penalty |
+| ------------------------------------------------------------- | ------- |
+| Direct Node.js built-in import instead of `core.*` equivalent | −20     |
+| No `register` export                                          | −20     |
+| `eval()` usage                                                | −25     |
 
 ### Lit templates (via `lit-analyzer`)
 
 The linter runs `lit-analyzer` and promotes its errors to violations:
 
-| Severity | Penalty |
-|---|---|
-| `error` | −10 per error |
+| Severity  | Penalty        |
+| --------- | -------------- |
+| `error`   | −10 per error  |
 | `warning` | −3 per warning |
 
 ## Score Breakdown

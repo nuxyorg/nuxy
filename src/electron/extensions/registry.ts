@@ -60,10 +60,6 @@ export function isBootstrapExtension(ext: LoadedExtension): boolean {
   return ext.manifest.bootstrap === true
 }
 
-function getBootstrapExtension(): LoadedExtension | undefined {
-  return loadedExtensions.find(isBootstrapExtension)
-}
-
 export function setExtensionChannels(extId: string, channels: string[]): void {
   ipcChannelsByExtId.set(extId, new Set(channels))
 }

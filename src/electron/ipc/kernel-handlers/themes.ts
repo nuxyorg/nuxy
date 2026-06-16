@@ -1,25 +1,34 @@
 import { loadTheme } from '../../themes/install.js'
-import { listExtensionThemeNames } from '../../themes/extension-themes.js'
+import {
+  listExtensionThemeNames,
+  getDefaultThemeName,
+} from '../../themes/extension-themes.js'
 import { getIcon, getIconPack, listIconPacks } from '../../icons/registry.js'
 import type { IpcResult } from '@nuxyorg/core'
 
 type Handler = (payload: unknown) => IpcResult | Promise<IpcResult>
 
 export const themeHandlers: Record<string, Handler> = {
-  getTheme: () => ({ success: true, data: loadTheme('dark') }),
+  getTheme: () => ({ success: true, data: loadTheme(getDefaultThemeName() ?? '') }),
 
   getThemeByName: (payload) => {
     const args = payload as { name?: string } | undefined
     const name = args?.name
+    // Empty/missing name → return default theme
     if (!name || typeof name !== 'string') {
-      return { success: false, error: 'Missing theme name', code: 'INVALID_ARGS' }
+      return { success: true, data: loadTheme(getDefaultThemeName() ?? '') }
     }
     return { success: true, data: loadTheme(name) }
   },
 
+  getDefaultThemeName: () => {
+    const name = getDefaultThemeName()
+    if (!name) return { success: false, error: 'No themes registered', code: 'NOT_FOUND' }
+    return { success: true, data: name }
+  },
+
   listThemes: () => {
-    const extNames = listExtensionThemeNames()
-    return { success: true, data: [...new Set(['dark', 'light', ...extNames])] }
+    return { success: true, data: listExtensionThemeNames() }
   },
 
   getIcon: (payload) => {

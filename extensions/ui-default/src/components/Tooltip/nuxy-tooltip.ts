@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, property, state } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property, state } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 const PLACEMENTS = new Set(['top', 'bottom', 'left', 'right'])

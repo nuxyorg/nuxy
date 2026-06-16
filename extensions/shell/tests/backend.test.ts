@@ -1,5 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { type CoreContext } from '@nuxyorg/extension-sdk'
+import { describe, it, expect, vi } from 'vitest'
 import { createMockCore } from '@nuxyorg/extension-sdk/testing'
 import { register } from '../backend.ts'
 

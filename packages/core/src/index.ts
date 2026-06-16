@@ -1,5 +1,5 @@
 import type { NowPlaying } from './media'
-import type { IpcResult, ThemeDefinition, IconPackDefinition, IconPackMeta } from './types'
+import type { IpcResult, ThemeDefinition, IconPackDefinition } from './types'
 
 export type { NowPlaying } from './media'
 

@@ -2,9 +2,8 @@
 
 import type { CoreComposition, CoreShell, CoreEvents } from '@nuxyorg/core'
 
-declare const __NUXY_DEV__: boolean
-
 declare global {
+  const __NUXY_DEV__: boolean
   interface Window {
     UI: typeof import('@nuxyorg/ui')
     __NUXY_DEV__: boolean

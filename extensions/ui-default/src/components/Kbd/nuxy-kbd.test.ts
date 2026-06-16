@@ -19,9 +19,9 @@ describe('nuxy-kbd', () => {
 
     host.keys = '↵'
     await host.updateComplete
-    expect(
-      host.shadowRoot?.querySelector('.nuxy-kbd-icon nuxy-icon')?.getAttribute('name')
-    ).toBe('kbd-enter')
+    expect(host.shadowRoot?.querySelector('.nuxy-kbd-icon nuxy-icon')?.getAttribute('name')).toBe(
+      'kbd-enter'
+    )
 
     host.keys = 'Del'
     await host.updateComplete

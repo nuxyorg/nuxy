@@ -79,7 +79,7 @@ function computeHashForFiles(files) {
     try {
       const content = fs.readFileSync(file)
       hash.update(content)
-    } catch (e) {
+    } catch {
       // Ignore read errors
     }
   }
@@ -212,7 +212,7 @@ async function run() {
   if (fs.existsSync(cacheFile)) {
     try {
       cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8'))
-    } catch (e) {
+    } catch {
       // Invalid cache JSON, proceed with default
     }
   }
@@ -277,7 +277,7 @@ async function run() {
   if (fs.existsSync(tempReportFile)) {
     try {
       fs.unlinkSync(tempReportFile)
-    } catch (e) {}
+    } catch {}
   }
 
   const playwrightArgs = [
@@ -350,7 +350,7 @@ async function run() {
       } finally {
         try {
           fs.unlinkSync(tempReportFile)
-        } catch (e) {}
+        } catch {}
       }
     } else {
       console.log('No Playwright JSON report found. Cache not updated.')

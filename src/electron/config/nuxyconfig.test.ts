@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import fs from 'fs'
 
 vi.mock('../themes/install.js', () => ({
@@ -157,7 +157,7 @@ describe('getWindowPosition', () => {
 
     it('0.25 positions at quarter', () => {
       setupConfig('0.25 0.25')
-      const { x, y } = getWindowPosition(WIN_W, WIN_H, DISPLAY)
+      const { x } = getWindowPosition(WIN_W, WIN_H, DISPLAY)
       expect(x).toBe(Math.round(1920 * 0.25 - 800 / 2))
     })
 

@@ -325,6 +325,12 @@ importers:
 
   extensions/tests: {}
 
+  extensions/theme-black: {}
+
+  extensions/theme-dark: {}
+
+  extensions/theme-light: {}
+
   extensions/theme-sakura: {}
 
   extensions/ui-default:
@@ -332,6 +338,9 @@ importers:
       '@nuxyorg/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@nuxyorg/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
       lit:
         specifier: ^3.0.0
         version: 3.3.3

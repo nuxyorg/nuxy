@@ -12,7 +12,6 @@
 
 import { createRequire } from 'module'
 import { builtinModules } from 'module'
-import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 import os from 'os'
@@ -22,8 +21,6 @@ const require = createRequire(import.meta.url)
 const AdmZip = require('adm-zip')
 const { Command } = require('commander')
 const pc = require('picocolors')
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // ─── Logging ──────────────────────────────────────────────────────────────────
 
@@ -300,7 +297,9 @@ program
     const outFile = path.join(outDir, `${extId}-${version}.nuxyext`)
 
     if (fs.existsSync(outFile) && !opts.force) {
-      fail(`${path.basename(outFile)} already exists. Bump the version or use --force to overwrite.`)
+      fail(
+        `${path.basename(outFile)} already exists. Bump the version or use --force to overwrite.`
+      )
     }
 
     zip.writeZip(outFile)
@@ -351,7 +350,11 @@ program
     const incomingBase = path.basename(nuxyextPath)
     const extIdFromFile = incomingBase.replace(/-[^-]+\.nuxyext$/, '')
     for (const existing of fs.readdirSync(NUXY_EXT_DIR)) {
-      if (existing !== incomingBase && existing.startsWith(`${extIdFromFile}-`) && existing.endsWith('.nuxyext')) {
+      if (
+        existing !== incomingBase &&
+        existing.startsWith(`${extIdFromFile}-`) &&
+        existing.endsWith('.nuxyext')
+      ) {
         fs.rmSync(path.join(NUXY_EXT_DIR, existing), { force: true })
         info(`Removed old version: ${existing}`)
       }

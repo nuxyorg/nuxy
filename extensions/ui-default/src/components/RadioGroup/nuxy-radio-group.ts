@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, property } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 export interface RadioGroupOption {

@@ -11,6 +11,7 @@ const KERNEL_CHANNELS = new Set([
   'getTheme',
   'listThemes',
   'getThemeByName',
+  'getDefaultThemeName',
   'getIcon',
   'getIconPack',
   'listIconPacks',

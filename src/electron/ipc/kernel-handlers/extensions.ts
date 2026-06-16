@@ -1,12 +1,10 @@
-import { kernelLogger, type IpcResult } from '@nuxyorg/core'
+import type { IpcResult } from '@nuxyorg/core'
 import { loadedExtensions } from '../../extensions/scanner.js'
 import { setExtensionEnabled } from '../../extensions/disabled.js'
 import { invokeRescan } from '../../extensions/rescan-hook.js'
 import { getDisplayName } from '../../extensions/registry.js'
 import { listExtensionsByKind, listUikitExtensions } from '../list-by-type.js'
 import { kernelInstallExtension, kernelUninstallExtension } from '../extension-ops.js'
-
-const log = kernelLogger.child('KernelExtensions')
 
 function countByType(type: string): number {
   return loadedExtensions.filter((ext) => !ext.disabled && ext.manifest.type === type).length

@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing } from 'lit'
+import { LitElement, html, css } from 'lit'
 import { customElement, state, query } from 'lit/decorators.js'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import './MockPanel'
@@ -123,7 +123,12 @@ export class DevShell extends LitElement {
       </div>
       <div class="window">
         <div class="omnibar">
-          <input .value=${this.query} @input=${this.handleInput} @keydown=${this.handleKeydown} placeholder="Search…" />
+          <input
+            .value=${this.query}
+            @input=${this.handleInput}
+            @keydown=${this.handleKeydown}
+            placeholder="Search…"
+          />
         </div>
         ${this.loading
           ? html`<div class="loading-hint">Loading…</div>`

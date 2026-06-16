@@ -1,27 +1,6 @@
 import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
-const MIRROR_ATTRS = [
-  'type',
-  'name',
-  'value',
-  'placeholder',
-  'disabled',
-  'readonly',
-  'required',
-  'autocomplete',
-  'autofocus',
-  'min',
-  'max',
-  'step',
-  'pattern',
-  'inputmode',
-  'id',
-  'aria-label',
-  'aria-invalid',
-  'tabindex',
-]
-
 @customElement('nuxy-input')
 export class NuxyInputElement extends LitElement {
   static styles = css`

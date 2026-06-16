@@ -1,4 +1,11 @@
-import { LitElement, html, nothing, customElement, property, type TemplateResult } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  nothing,
+  customElement,
+  property,
+  type TemplateResult,
+} from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { FileTransferController } from './controller.ts'
 import { formatBytes, formatEta, formatSpeed } from './utils/transfer-stats.ts'

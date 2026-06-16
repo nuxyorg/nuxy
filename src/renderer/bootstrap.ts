@@ -36,7 +36,17 @@ async function bootstrapNuxy(): Promise<void> {
     const config = configRes as
       | IpcResult<{ zoom?: string; font?: string; theme?: string; backgroundBehavior?: string }>
       | undefined
-    const themeName = config?.success && config.data?.theme ? config.data.theme : 'dark'
+    const configTheme = config?.success && config.data?.theme ? config.data.theme : null
+    let themeName: string
+    if (configTheme) {
+      themeName = configTheme
+    } else {
+      const defaultRes = await core?.ipc
+        ?.invoke('kernel', 'getDefaultThemeName', {})
+        .catch(() => null)
+      const defaultTheme = defaultRes as { success: boolean; data?: string } | null
+      themeName = defaultTheme?.success && defaultTheme.data ? defaultTheme.data : 'dark'
+    }
 
     if (config?.success && config.data) {
       const { zoom, font } = config.data

@@ -1,15 +1,5 @@
-import { LitElement, html, css, nothing, customElement, property, state, ref } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property, state, ref } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
-
-const MIRROR_ATTRS = [
-  'placeholder',
-  'disabled',
-  'name',
-  'autocomplete',
-  'autofocus',
-  'aria-label',
-  'tabindex',
-]
 
 @customElement('nuxy-search-input')
 export class NuxySearchInputElement extends LitElement {

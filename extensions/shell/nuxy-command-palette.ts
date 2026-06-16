@@ -2,7 +2,6 @@ import {
   LitElement,
   html,
   css,
-  nothing,
   customElement,
   state,
   ref,

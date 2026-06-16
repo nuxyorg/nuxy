@@ -330,7 +330,7 @@ function resolveExtensionDirItem(folderName: string): string | null {
 
 async function syncExtensionItem(
   itemName: string,
-  opts: { bypassCache?: boolean } = {}
+  _opts: { bypassCache?: boolean } = {}
 ): Promise<boolean> {
   const itemPath = path.join(EXTENSION_DIR, itemName)
   if (!fs.existsSync(itemPath)) return false

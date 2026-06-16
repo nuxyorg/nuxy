@@ -7,11 +7,11 @@ import fs from 'node:fs'
 import net from 'node:net'
 
 test.describe('UNIX socket server', () => {
-  test('socket file exists after app startup', async ({ socketPath, appPage }) => {
+  test('socket file exists after app startup', async ({ socketPath, appPage: _appPage }) => {
     expect(fs.existsSync(socketPath)).toBe(true)
   })
 
-  test('"show" command via socket makes window visible', async ({ socketPath, appPage }) => {
+  test('"show" command via socket makes window visible', async ({ socketPath, appPage: _appPage }) => {
     const result = await new Promise<boolean>((resolve) => {
       const client = net.createConnection(socketPath, () => {
         client.write('show')
@@ -45,7 +45,7 @@ test.describe('UNIX socket server', () => {
   test('"toggle" changes window visibility (hide then restore)', async ({
     socketPath,
     electronApp,
-    appPage,
+    appPage: _appPage,
   }) => {
     const sendCommand = async (cmd: string) => {
       return new Promise<boolean>((resolve) => {

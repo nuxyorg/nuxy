@@ -53,18 +53,18 @@ The extension name must match a folder under `extensions/` in the monorepo. Exte
 
 The simulator injects a full `window.core` object before your frontend code runs:
 
-| Property | Mock behavior |
-|---|---|
+| Property                                   | Mock behavior                                    |
+| ------------------------------------------ | ------------------------------------------------ |
 | `core.ipc.invoke(extId, channel, payload)` | Routes through the 4-layer mock resolution above |
-| `core.window.hide()` | No-op |
-| `core.window.resize(h)` | No-op |
-| `core.window.center()` | No-op |
-| `core.window.drag()` | No-op |
-| `core.window.onShow(cb)` | Returns a no-op unsubscribe function |
-| `core.window.esc()` | No-op |
-| `core.icons.get(name, pack?)` | Returns `''` (empty string) |
-| `core.icons.listPacks()` | Returns `[]` |
-| `core.themes.list()` | Returns `[]` |
+| `core.window.hide()`                       | No-op                                            |
+| `core.window.resize(h)`                    | No-op                                            |
+| `core.window.center()`                     | No-op                                            |
+| `core.window.drag()`                       | No-op                                            |
+| `core.window.onShow(cb)`                   | Returns a no-op unsubscribe function             |
+| `core.window.esc()`                        | No-op                                            |
+| `core.icons.get(name, pack?)`              | Returns `''` (empty string)                      |
+| `core.icons.listPacks()`                   | Returns `[]`                                     |
+| `core.themes.list()`                       | Returns `[]`                                     |
 
 ### `window.UI`
 
@@ -72,11 +72,11 @@ The UI kit (`extensions/ui-default`) is loaded directly — you get real `nuxy-b
 
 ### Kernel IPC channels
 
-| Channel | Mock return |
-|---|---|
+| Channel                             | Mock return            |
+| ----------------------------------- | ---------------------- |
 | `kernel / getExtensionTranslations` | `{ translations: {} }` |
-| `kernel / getThemeByName` | `null` |
-| Any other kernel channel | `null` |
+| `kernel / getThemeByName`           | `null`                 |
+| Any other kernel channel            | `null`                 |
 
 ## File-Based Mocks (`dev/mocks.ts`)
 
@@ -100,6 +100,7 @@ export default {
 ```
 
 File mocks are only used when:
+
 - The channel has no runtime mock set in the MockPanel
 - The real backend either has no handler for this channel or the dev server is unavailable
 
@@ -108,6 +109,7 @@ File mocks are only used when:
 The MockPanel appears below the simulated window. It auto-discovers channels as your extension makes IPC calls and shows one row per channel.
 
 Each row displays:
+
 - Channel name (highlighted when an active mock is applied)
 - Last call timestamp and **source badge** (`backend` / `file` / `ui` / `null`)
 - A textarea pre-filled with the last returned value

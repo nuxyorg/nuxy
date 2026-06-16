@@ -4,7 +4,6 @@ import { ipcMain } from 'electron'
 import { invokeRescan } from '../extensions/rescan-hook.js'
 import type { LoadedExtension } from '@nuxyorg/core'
 import fs from 'fs'
-import path from 'path'
 
 const mockHandlers: Record<string, Function> = {}
 

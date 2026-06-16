@@ -7,7 +7,13 @@
     "src/electron/bootstrap/main.ts",
     "src/electron/protocol/register.ts"
   ],
-  "ignoreDependencies": ["@nuxyorg/extension-host", "@nuxyorg/extension-sdk", "@nuxyorg/ui", "~ext", "lit"],
+  "ignoreDependencies": [
+    "@nuxyorg/extension-host",
+    "@nuxyorg/extension-sdk",
+    "@nuxyorg/ui",
+    "~ext",
+    "lit"
+  ],
   "ignorePatterns": [
     "website/**",
     ".claude/**",
