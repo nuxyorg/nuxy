@@ -33,6 +33,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Verify token
+        env:
+          TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $TOKEN" \
+            https://api.github.com/repos/nuxyorg/core)
+          echo "GitHub API response for nuxyorg/core: $status"
+
       - name: Push subtree to ${{ matrix.repo }}
         env:
           TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
