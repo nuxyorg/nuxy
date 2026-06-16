@@ -48,10 +48,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global --unset-all credential.helper || true
           BRANCH="sync-$(echo '${{ matrix.repo }}' | tr '/' '-')"
           git subtree split --prefix=${{ matrix.prefix }} -b "$BRANCH"
-          git push \
+          git -c credential.helper='' push \
             https://oauth2:${TOKEN}@github.com/${{ matrix.repo }}.git \
             "$BRANCH":main \
             --force
