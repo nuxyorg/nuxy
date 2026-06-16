@@ -5,7 +5,7 @@ import {
   notesTextarea,
   typeInOmnibar,
   waitForToolMounted,
-} from '../../e2e-helpers.js'
+} from '../../tests/e2e-helpers.js'
 
 async function deleteAllNotes(page: any) {
   await page.evaluate(async () => {

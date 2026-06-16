@@ -31,6 +31,7 @@ declare global {
         dragMove: () => void
         dragEnd: () => void
         onShow: (callback: () => void) => () => void
+        setBlurSuppressed: (suppressed: boolean) => void
       }
       icons: {
         get: (name: string, pack?: string) => Promise<unknown>

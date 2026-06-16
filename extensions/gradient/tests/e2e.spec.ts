@@ -6,7 +6,7 @@ import {
   typeInOmnibar,
   submitOmnibar,
   waitForToolMounted,
-} from '../../e2e-helpers.js'
+} from '../../tests/e2e-helpers.js'
 
 const openGradient = (page: any) => openTool(page, 'gradient')
 

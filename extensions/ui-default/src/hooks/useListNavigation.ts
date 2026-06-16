@@ -1,4 +1,4 @@
-import { createStore } from '../../../store'
+import { createStore } from '@nuxyorg/extension-sdk'
 import { useToolKeyActions, type KeyAction } from './useToolKeyActions'
 import { useTranslation } from './useTranslation'
 

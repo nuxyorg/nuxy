@@ -9,6 +9,16 @@ on:
       - 'packages/extension-sdk/**'
       - 'packages/ext-devserver/**'
       - 'packages/nxt/**'
+      - 'extensions/calculator/**'
+      - 'extensions/file-transfer/**'
+      - 'extensions/gradient/**'
+      - 'extensions/icon-browser/**'
+      - 'extensions/icons-default/**'
+      - 'extensions/notes/**'
+      - 'extensions/nyaa/**'
+      - 'extensions/settings/**'
+      - 'extensions/shell/**'
+      - 'extensions/theme-sakura/**'
       - 'extensions/ui-default/**'
 
 jobs:
@@ -25,6 +35,26 @@ jobs:
             repo: nuxyorg/ext-devserver
           - prefix: packages/nxt
             repo: nuxyorg/nxt
+          - prefix: extensions/calculator
+            repo: nuxyorg/ext-calculator
+          - prefix: extensions/file-transfer
+            repo: nuxyorg/ext-file-transfer
+          - prefix: extensions/gradient
+            repo: nuxyorg/ext-gradient
+          - prefix: extensions/icon-browser
+            repo: nuxyorg/ext-icon-browser
+          - prefix: extensions/icons-default
+            repo: nuxyorg/ext-icons-default
+          - prefix: extensions/notes
+            repo: nuxyorg/ext-notes
+          - prefix: extensions/nyaa
+            repo: nuxyorg/ext-nyaa
+          - prefix: extensions/settings
+            repo: nuxyorg/ext-settings
+          - prefix: extensions/shell
+            repo: nuxyorg/ext-shell
+          - prefix: extensions/theme-sakura
+            repo: nuxyorg/ext-theme-sakura
           - prefix: extensions/ui-default
             repo: nuxyorg/ui-default
 

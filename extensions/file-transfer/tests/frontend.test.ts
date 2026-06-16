@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 const hoisted = vi.hoisted(async () => {
-  const h = await import('../../tests/frontend-test-helpers.ts')
+  const h = await import('@nuxyorg/extension-sdk/testing')
   h.setupDomGlobals({
     ipc: {
       invoke: vi.fn(async (_ext: string, channel: string) => {

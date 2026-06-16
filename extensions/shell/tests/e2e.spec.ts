@@ -9,7 +9,7 @@ import {
   openTool,
   openCommandPalette,
   typeInCommandPalette,
-} from '../../e2e-helpers.js'
+} from '../../tests/e2e-helpers.js'
 
 // ---------------------------------------------------------------------------
 // App launch

@@ -1,5 +1,5 @@
 import type { ExtensionManifest } from '@nuxyorg/core'
-import type { TranslateFn } from './shell-i18n.ts'
+import type { TranslateFn } from './frontend-i18n'
 
 export type ToolOnCompleteBehavior = 'stay' | 'returnToShell' | 'hide' | 'returnToShellAndHide'
 
@@ -11,7 +11,6 @@ export function shouldSuppressBlurHide(manifest: ExtensionManifest): boolean {
   return manifest.behavior?.suppressBlurHide === true
 }
 
-/** Sync kernel blur-hide suppression for the active tool (manifest-driven). */
 export function syncBlurSuppression(
   toolId: string | null,
   manifest: ExtensionManifest | null | undefined
@@ -20,14 +19,12 @@ export function syncBlurSuppression(
   window.core?.window?.setBlurSuppressed?.(suppress)
 }
 
-/** Set omnibar placeholder for the active tool from its locale file. */
 export function setToolSearchPlaceholder(t: TranslateFn, key: string): void {
   const translated = t(key)
   if (!translated || translated === key) return
   window.core?.shell?.setSearchPlaceholder(translated)
 }
 
-/** Run the manifest-declared completion behavior after a tool primary action. */
 export function completeToolAction(manifest: ExtensionManifest): void {
   switch (getToolOnComplete(manifest)) {
     case 'returnToShell':

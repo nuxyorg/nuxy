@@ -18,6 +18,7 @@ vi.hoisted(() => {
   }
   ;(globalThis as any).document = {
     documentElement: { style: { zoom: '' } },
+    createTreeWalker: vi.fn(() => ({ nextNode: vi.fn() })),
   }
 })
 

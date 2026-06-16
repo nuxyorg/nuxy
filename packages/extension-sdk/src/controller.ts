@@ -1,5 +1,5 @@
-import { createStore, type Store } from './store.ts'
-import { createTranslator, type Translator } from './shell-i18n.ts'
+import { createStore, type Store } from './store'
+import { createTranslator, type Translator } from './frontend-i18n'
 
 export abstract class BaseExtensionController<S extends object> {
   readonly store: Store<S>
@@ -26,10 +26,6 @@ export abstract class BaseExtensionController<S extends object> {
     return this.store.getState()
   }
 
-  /**
-   * Called on every store update. Override to add extra logic before
-   * or after `onUpdate()`. The default implementation just calls `onUpdate()`.
-   */
   protected onStoreChange(): void {
     this.onUpdate()
   }

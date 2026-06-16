@@ -17,6 +17,7 @@
     "baseUrl": ".",
     "paths": {
       "@nuxyorg/extension-sdk": ["../packages/extension-sdk/src/index.ts"],
+      "@nuxyorg/extension-sdk/testing": ["../packages/extension-sdk/src/testing.ts"],
       "@nuxyorg/core": ["../packages/core/src/renderer.ts"],
       "@nuxyorg/ui": ["../extensions/ui-default/src/index.ts"],
       "vitest": ["../src/node_modules/vitest/dist/index.d.ts"],
@@ -26,6 +27,6 @@
       ]
     }
   },
-  "include": ["./**/*.ts", "./**/*.tsx", "./global.d.ts"],
+  "include": ["./**/*.ts", "./**/*.tsx", "../packages/core/src/global.d.ts"],
   "exclude": ["../node_modules", "../src"]
 }

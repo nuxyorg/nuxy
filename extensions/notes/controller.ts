@@ -2,8 +2,7 @@ import type { ShellKeyAction } from '@nuxyorg/core'
 import type { Note } from './types.ts'
 import { deriveTitle } from './utils/noteTitle.ts'
 import { invoke } from './utils/ipc.ts'
-import { setToolSearchPlaceholder } from '../tool-behavior.ts'
-import { BaseExtensionController } from '../base-controller.ts'
+import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 
 const EXT_ID = 'com.nuxy.notes'
 

@@ -1,5 +1,22 @@
 import type { CoreContext } from '@nuxyorg/core'
 
+export { createStore } from './store'
+export type { Store, Unsubscribe } from './store'
+
+export { createTranslator } from './frontend-i18n'
+export type { TranslateFn, Translator } from './frontend-i18n'
+
+export { BaseExtensionController } from './controller'
+
+export {
+  getToolOnComplete,
+  shouldSuppressBlurHide,
+  syncBlurSuppression,
+  setToolSearchPlaceholder,
+  completeToolAction,
+} from './tool-behavior'
+export type { ToolOnCompleteBehavior } from './tool-behavior'
+
 export type {
   CoreContext,
   ExtensionManifest,

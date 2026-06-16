@@ -1,6 +1,6 @@
 // fallow-ignore-file code-duplication
 import { test, expect } from '../../../src/e2e/fixtures.js'
-import { resetShell, openTool, typeInOmnibar, waitForToolMounted } from '../../e2e-helpers.js'
+import { resetShell, openTool, typeInOmnibar, waitForToolMounted } from '../../tests/e2e-helpers.js'
 
 const MOCK_RESULTS = [
   {

@@ -20,8 +20,8 @@ describe('nuxy-kbd', () => {
     host.keys = '↵'
     await host.updateComplete
     expect(
-      host.shadowRoot?.querySelector('.nuxy-kbd-icon svg polyline')?.getAttribute('points')
-    ).toBe('9 10 4 15 9 20')
+      host.shadowRoot?.querySelector('.nuxy-kbd-icon nuxy-icon')?.getAttribute('name')
+    ).toBe('kbd-enter')
 
     host.keys = 'Del'
     await host.updateComplete

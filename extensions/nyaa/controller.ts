@@ -1,7 +1,6 @@
 import type { ExtensionManifest, ShellKeyAction, TemplateResult } from '@nuxyorg/core'
 import { render, html } from '@nuxyorg/core'
-import { completeToolAction, setToolSearchPlaceholder } from '../tool-behavior.ts'
-import { BaseExtensionController } from '../base-controller.ts'
+import { completeToolAction, setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 import manifestJson from './manifest.json'
 import type { NyaaResult } from './types.ts'
 

@@ -23,5 +23,5 @@
       "@nuxyorg/extension-sdk": ["packages/extension-sdk/src/index.ts"]
     }
   },
-  "exclude": ["extensions/global.d.ts"]
+  "exclude": []
 }

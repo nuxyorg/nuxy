@@ -1,6 +1,6 @@
 // fallow-ignore-file code-duplication
 import { test, expect, type Page } from '../../../src/e2e/fixtures.js'
-import { openTool } from '../../e2e-helpers.js'
+import { openTool } from '../../tests/e2e-helpers.js'
 
 async function openSettings(page: Page) {
   await openTool(page, 'settings')

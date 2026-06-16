@@ -1,6 +1,5 @@
 import type { ShellBridgeSnapshot, ReactiveControllerHost } from '@nuxyorg/core'
-import { createStore, type Store } from '../store.ts'
-import { createTranslator, type Translator } from '../shell-i18n.ts'
+import { createStore, type Store, createTranslator, type Translator } from '@nuxyorg/extension-sdk'
 import { getZoom } from './utils/zoom.ts'
 import { SHELL_EXT_ID } from './utils.ts'
 import { CommandPaletteController } from './controllers/command-palette-controller.ts'
@@ -11,7 +10,7 @@ import { KeyboardController } from './controllers/keyboard-controller.ts'
 import { InitController } from './controllers/init-controller.ts'
 import { SyncController, applySettingsToDOM } from './controllers/sync-controller.ts'
 import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
-import { syncBlurSuppression } from '../tool-behavior.ts'
+import { syncBlurSuppression } from '@nuxyorg/extension-sdk'
 import type {
   CommandPaletteAction,
   KeyAction,

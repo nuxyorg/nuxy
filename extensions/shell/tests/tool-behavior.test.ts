@@ -5,7 +5,7 @@ import {
   setToolSearchPlaceholder,
   shouldSuppressBlurHide,
   syncBlurSuppression,
-} from './tool-behavior.ts'
+} from '@nuxyorg/extension-sdk'
 import type { ExtensionManifest } from '@nuxyorg/core'
 
 describe('tool-behavior', () => {

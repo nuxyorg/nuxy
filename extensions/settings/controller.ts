@@ -1,7 +1,6 @@
 import type { ShellKeyAction } from '@nuxyorg/core'
-import { BaseExtensionController } from '../base-controller.ts'
+import { BaseExtensionController, setToolSearchPlaceholder } from '@nuxyorg/extension-sdk'
 import { createSettingsActions, type SettingsActions } from './actions.ts'
-import { setToolSearchPlaceholder } from '../tool-behavior.ts'
 import { createDefaultSettingsData, loadSettingsData, type SettingsDataState } from './data.ts'
 import { computeSettingsMeta, filterSettingsByQuery, type SettingsMeta } from './meta.ts'
 import type { AnyRow, NuxySettings, SelectOption, StateSnapshot } from './types.ts'

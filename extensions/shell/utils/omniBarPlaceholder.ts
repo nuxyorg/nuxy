@@ -1,5 +1,5 @@
 import type { ShellBridgeSnapshot } from '@nuxyorg/core'
-import type { TranslateFn } from '../../shell-i18n.ts'
+import type { TranslateFn } from '@nuxyorg/extension-sdk'
 
 export function resolveOmniBarPlaceholder(
   bridge: ShellBridgeSnapshot,
