@@ -20,6 +20,7 @@ export function createShellBridge(): CoreShell {
   let footerPortal: HTMLElement | null = null
   let searchPlaceholder: string | null = null
   let returnToShellHandler: (() => void) | null = null
+  let shellResetPaused = false
   const listeners = new Set<() => void>()
   const omniBarControlListeners = new Set<(action: OmniBarControlAction) => void>()
 
@@ -122,6 +123,14 @@ export function createShellBridge(): CoreShell {
       return () => {
         if (returnToShellHandler === handler) returnToShellHandler = null
       }
+    },
+
+    setShellResetPaused(paused) {
+      shellResetPaused = paused
+    },
+
+    isShellResetPaused() {
+      return shellResetPaused
     },
   }
 

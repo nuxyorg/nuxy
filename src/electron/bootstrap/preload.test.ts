@@ -141,10 +141,13 @@ describe('core.window.*', () => {
     expect(mockSend).toHaveBeenCalledWith('window:drag-end')
   })
 
-  it('setBlurSuppressed(true) → ipcRenderer.send("window:set-blur-suppressed", true)', () => {
+  it('setBlurSuppressed(true) → ipcRenderer.send("window:set-blur-suppressed", {...})', () => {
     const { window } = getExposedCore()
     window.setBlurSuppressed(true)
-    expect(mockSend).toHaveBeenCalledWith('window:set-blur-suppressed', true)
+    expect(mockSend).toHaveBeenCalledWith('window:set-blur-suppressed', {
+      suppressed: true,
+      source: 'tool',
+    })
   })
 })
 

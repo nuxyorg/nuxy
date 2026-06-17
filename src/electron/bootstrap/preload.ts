@@ -25,8 +25,14 @@ contextBridge.exposeInMainWorld('core', {
         ipcRenderer.off('window:show', listener)
       }
     },
-    setBlurSuppressed: (suppressed: boolean) =>
-      ipcRenderer.send('window:set-blur-suppressed', suppressed),
+    setBlurSuppressed: (suppressed: boolean, source?: 'manifest' | 'tool') =>
+      ipcRenderer.send('window:set-blur-suppressed', { suppressed, source: source ?? 'tool' }),
+    setBlurSuppressedSync: (suppressed: boolean, source?: 'manifest' | 'tool') =>
+      ipcRenderer.invoke('window:set-blur-suppressed-sync', {
+        suppressed,
+        source: source ?? 'tool',
+      }) as Promise<{ suppressed: boolean }>,
+    clearBlurSuppressed: () => ipcRenderer.send('window:set-blur-suppressed', 'clear'),
   },
   icons: {
     get: (name: string, pack?: string) =>

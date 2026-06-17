@@ -10,6 +10,12 @@ const hoisted = vi.hoisted(async () => {
       refreshKeyHints: vi.fn(),
       controlOmniBar: vi.fn(),
       setSearchPlaceholder: vi.fn(),
+      setShellResetPaused: vi.fn(),
+    },
+    window: {
+      setBlurSuppressed: vi.fn(),
+      setBlurSuppressedSync: vi.fn().mockResolvedValue({ suppressed: true }),
+      clearBlurSuppressed: vi.fn(),
     },
     events: { on: vi.fn(() => () => {}) },
   })
@@ -27,6 +33,56 @@ import { NotesController } from '../controller.ts'
 function makeNote(id: string): Note {
   return { id, title: id, body: '', createdAt: 0, updatedAt: 0 } as Note
 }
+
+describe('NotesController.setEditMode', () => {
+  let setBlurSuppressedMock: ReturnType<typeof vi.fn>
+  let setBlurSuppressedSyncMock: ReturnType<typeof vi.fn>
+  let setShellResetPausedMock: ReturnType<typeof vi.fn>
+
+  beforeEach(() => {
+    setBlurSuppressedMock = window.core!.window!.setBlurSuppressed as ReturnType<typeof vi.fn>
+    setBlurSuppressedSyncMock = window.core!.window!.setBlurSuppressedSync as ReturnType<
+      typeof vi.fn
+    >
+    setShellResetPausedMock = window.core!.shell!.setShellResetPaused as ReturnType<typeof vi.fn>
+    setBlurSuppressedMock.mockReset()
+    setBlurSuppressedSyncMock.mockReset().mockResolvedValue({ suppressed: true })
+    setShellResetPausedMock.mockReset()
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0)
+      return 0
+    })
+  })
+
+  it('suppresses blur hide while editing', async () => {
+    const controller = new NotesController(() => {})
+    controller.setEditMode(true)
+    await Promise.resolve()
+    expect(setBlurSuppressedSyncMock).toHaveBeenCalledWith(true, 'tool')
+    expect(setShellResetPausedMock).toHaveBeenCalledWith(true)
+  })
+
+  it('restores blur hide after leaving edit mode', async () => {
+    const controller = new NotesController(() => {})
+    controller.setEditMode(true)
+    await Promise.resolve()
+    controller.setEditMode(false)
+    await Promise.resolve()
+    expect(setBlurSuppressedMock).toHaveBeenLastCalledWith(false, 'tool')
+    expect(setShellResetPausedMock).toHaveBeenLastCalledWith(false)
+  })
+
+  it('clears tool blur suppression on disconnect', async () => {
+    const controller = new NotesController(() => {})
+    controller.setEditMode(true)
+    await Promise.resolve()
+    setBlurSuppressedMock.mockClear()
+    setShellResetPausedMock.mockClear()
+    controller.disconnect()
+    expect(setBlurSuppressedMock).toHaveBeenCalledWith(false, 'tool')
+    expect(setShellResetPausedMock).toHaveBeenCalledWith(false)
+  })
+})
 
 describe('NotesController.handleDelete', () => {
   let invokeMock: ReturnType<typeof vi.fn>

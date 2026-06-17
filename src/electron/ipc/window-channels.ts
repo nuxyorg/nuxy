@@ -3,7 +3,15 @@ import { kernelLogger } from '@nuxyorg/core'
 import { getConfig } from '../config/nuxyconfig.js'
 import { positionWindowOnDisplay } from '../window/runtime.js'
 import { getOrCreateSpring } from '../window/spring.js'
-import { onPreloadsLoaded, onRendererReady, setBlurSuppressed } from '../window/manager.js'
+import {
+  onPreloadsLoaded,
+  onRendererReady,
+  setBlurSuppressed,
+  clearBlurSuppressed,
+  tryHideMainWindow,
+  isBlurSuppressed,
+  type BlurSuppressSource,
+} from '../window/manager.js'
 
 const log = kernelLogger.child('WindowChannels')
 
@@ -51,7 +59,7 @@ export function registerWindowChannels(): void {
 
   ipcMain.on('window:hide', (event) => {
     const win = BrowserWindow.fromWebContents(event.sender)
-    if (win) win.hide()
+    if (win) tryHideMainWindow('ipc-window-hide', () => win.hide())
   })
 
   ipcMain.on('window:quit', () => {
@@ -73,7 +81,7 @@ export function registerWindowChannels(): void {
         break
       case 'hide':
       default:
-        win.hide()
+        tryHideMainWindow('ipc-window-esc', () => win.hide())
         break
     }
   })
@@ -88,8 +96,27 @@ export function registerWindowChannels(): void {
     onRendererReady()
   })
 
-  ipcMain.on('window:set-blur-suppressed', (_event, suppressed: unknown) => {
-    setBlurSuppressed(suppressed === true)
-    log.silly('blur suppression updated', { suppressed: suppressed === true })
+  ipcMain.on('window:set-blur-suppressed', (_event, payload: unknown) => {
+    if (payload === 'clear') {
+      clearBlurSuppressed()
+      log.silly('blur suppression cleared (manifest only)')
+      return
+    }
+    if (typeof payload === 'boolean') {
+      setBlurSuppressed(payload, 'tool')
+      log.silly('blur suppression updated (legacy)', { suppressed: payload })
+      return
+    }
+    const msg = payload as { suppressed?: unknown; source?: BlurSuppressSource }
+    const source: BlurSuppressSource = msg.source === 'manifest' ? 'manifest' : 'tool'
+    setBlurSuppressed(msg.suppressed === true, source)
+    log.silly('blur suppression updated', { suppressed: msg.suppressed === true, source })
+  })
+
+  ipcMain.handle('window:set-blur-suppressed-sync', (_event, payload: unknown) => {
+    const msg = payload as { suppressed?: unknown; source?: BlurSuppressSource }
+    const source: BlurSuppressSource = msg.source === 'manifest' ? 'manifest' : 'tool'
+    setBlurSuppressed(msg.suppressed === true, source)
+    return { suppressed: isBlurSuppressed() }
   })
 }

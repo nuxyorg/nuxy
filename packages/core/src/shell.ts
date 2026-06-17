@@ -68,4 +68,11 @@ export interface CoreShell {
 
   /** @internal Registered by the shell extension during bootstrap. */
   bindReturnToShell(handler: () => void): () => void
+
+  /**
+   * When true, `shell-reset` (e.g. on window show) skips deactivating the active tool.
+   * Tools use this while a sub-mode must survive focus-out (e.g. notes edit mode).
+   */
+  setShellResetPaused(paused: boolean): void
+  isShellResetPaused(): boolean
 }

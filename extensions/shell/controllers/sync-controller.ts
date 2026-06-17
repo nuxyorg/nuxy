@@ -63,6 +63,7 @@ export class SyncController {
     this.cleanups.push(() => observer.disconnect())
 
     const onReset = () => {
+      if (window.core?.shell?.isShellResetPaused?.()) return
       this.callbacks.resetTool()
       this.callbacks.closeCommandPalette()
       this.callbacks.clearProviderStates()

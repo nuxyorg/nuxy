@@ -66,6 +66,16 @@ export class NotesController extends BaseExtensionController<NotesState> {
       .catch(() => {})
 
     this.bindKeyboard()
+    if (this.state.editMode) {
+      this.syncEditBlurGuard()
+    }
+
+    const offShow = window.core?.window?.onShow?.(() => this.syncEditBlurGuard())
+    if (offShow) this.cleanups.push(offShow)
+
+    const onFocus = () => this.syncEditBlurGuard()
+    window.addEventListener('focus', onFocus)
+    this.cleanups.push(() => window.removeEventListener('focus', onFocus))
   }
 
   disconnect(): void {
@@ -74,7 +84,8 @@ export class NotesController extends BaseExtensionController<NotesState> {
     this.t.destroy()
     window.core?.shell?.registerActions([])
     window.core?.shell?.registerKeyActions(null)
-    window.core?.window?.setBlurSuppressed?.(false)
+    window.core?.window?.setBlurSuppressed?.(false, 'tool')
+    window.core?.shell?.setShellResetPaused?.(false)
   }
 
   syncSearchPlaceholder(): void {
@@ -134,7 +145,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
 
   setEditMode(editMode: boolean): void {
     this.store.setState({ editMode })
-    window.core?.window?.setBlurSuppressed?.(editMode)
+    void this.applyEditBlurGuard(editMode)
     if (editMode) {
       requestAnimationFrame(() => {
         const ta = this.textareaRef.current
@@ -144,6 +155,23 @@ export class NotesController extends BaseExtensionController<NotesState> {
       })
     }
     window.core?.shell?.refreshKeyHints()
+  }
+
+  /** Sync blur guard to main process; uses invoke when enabling for immediate effect. */
+  private async applyEditBlurGuard(editMode: boolean): Promise<void> {
+    window.core?.shell?.setShellResetPaused?.(editMode)
+    const sync = window.core?.window?.setBlurSuppressedSync
+    if (editMode && sync) {
+      await sync(true, 'tool').catch(() => null)
+      return
+    }
+    window.core?.window?.setBlurSuppressed?.(editMode, 'tool')
+  }
+
+  /** Re-apply edit-mode blur guard after focus/show cycles that may clear suppression. */
+  private syncEditBlurGuard(): void {
+    if (!this.state.editMode) return
+    void this.applyEditBlurGuard(true)
   }
 
   async handleNew(): Promise<void> {
@@ -199,7 +227,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
       selectedIndex: newIndex,
       editMode: false,
     })
-    window.core?.window?.setBlurSuppressed?.(false)
+    window.core?.window?.setBlurSuppressed?.(false, 'tool')
     window.UI?.toast?.('Note deleted', { type: 'info' })
     window.core?.shell?.refreshKeyHints()
     if (newIndex === -1) window.core?.shell?.controlOmniBar('show')
@@ -371,6 +399,15 @@ export class NotesController extends BaseExtensionController<NotesState> {
 
   private bindKeyboard(): void {
     window.core?.shell?.registerKeyActions(() => this.getKeyActions())
+
+    const handleEditEscCapture = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || !this.state.editMode || this.isDirty()) return
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      this.setEditMode(false)
+    }
+    window.addEventListener('keydown', handleEditEscCapture, true)
+    this.cleanups.push(() => window.removeEventListener('keydown', handleEditEscCapture, true))
 
     const handleDirtyEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && !e.repeat && this.state.editMode && this.isDirty()) {

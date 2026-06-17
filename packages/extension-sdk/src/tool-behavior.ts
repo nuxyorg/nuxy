@@ -15,8 +15,12 @@ export function syncBlurSuppression(
   toolId: string | null,
   manifest: ExtensionManifest | null | undefined
 ): void {
-  const suppress = Boolean(toolId && manifest && shouldSuppressBlurHide(manifest))
-  window.core?.window?.setBlurSuppressed?.(suppress)
+  if (!toolId) {
+    window.core?.window?.setBlurSuppressed?.(false, 'manifest')
+    return
+  }
+  const suppress = manifest ? shouldSuppressBlurHide(manifest) : false
+  window.core?.window?.setBlurSuppressed?.(suppress, 'manifest')
 }
 
 export function setToolSearchPlaceholder(t: TranslateFn, key: string): void {

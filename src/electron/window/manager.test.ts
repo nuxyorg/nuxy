@@ -6,6 +6,7 @@ import {
   getMainWindow,
   onRendererReady,
   setBlurSuppressed,
+  clearBlurSuppressed,
 } from './manager.js'
 import { getConfig } from '../config/nuxyconfig.js'
 
@@ -53,7 +54,7 @@ vi.mock('./runtime.js', () => ({
 describe('Window Manager - Preloads Load Guard', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    setBlurSuppressed(false)
+    clearBlurSuppressed()
     Object.keys(onceHandlers).forEach((k) => delete onceHandlers[k])
     Object.keys(eventHandlers).forEach((k) => delete eventHandlers[k])
   })
@@ -118,8 +119,36 @@ describe('Window Manager - Preloads Load Guard', () => {
   it('blur handler is ignored while suppression is active', () => {
     createMainWindow()
     const win = getMainWindow()
-    setBlurSuppressed(true)
+    setBlurSuppressed(true, 'tool')
     eventHandlers['blur']?.()
     expect(win?.hide).not.toHaveBeenCalled()
+  })
+
+  it('blur handler is ignored when only tool-layer suppression is active', () => {
+    createMainWindow()
+    const win = getMainWindow()
+    setBlurSuppressed(false, 'manifest')
+    setBlurSuppressed(true, 'tool')
+    eventHandlers['blur']?.()
+    expect(win?.hide).not.toHaveBeenCalled()
+  })
+
+  it('clearBlurSuppressed clears manifest layer only', () => {
+    createMainWindow()
+    setBlurSuppressed(true, 'tool')
+    setBlurSuppressed(true, 'manifest')
+    clearBlurSuppressed()
+    const win = getMainWindow()
+    eventHandlers['blur']?.()
+    expect(win?.hide).not.toHaveBeenCalled()
+  })
+
+  it('blur handler hides when manifest suppression is cleared but tool is false', () => {
+    createMainWindow()
+    const win = getMainWindow()
+    setBlurSuppressed(false, 'manifest')
+    setBlurSuppressed(false, 'tool')
+    eventHandlers['blur']?.()
+    expect(win?.hide).toHaveBeenCalled()
   })
 })

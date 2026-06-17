@@ -4,7 +4,12 @@ import os from 'os'
 import fs from 'fs'
 import path from 'path'
 
-import { createMainWindow, getMainWindow, isPreloadsLoaded } from '../window/manager.js'
+import {
+  createMainWindow,
+  getMainWindow,
+  isPreloadsLoaded,
+  tryHideMainWindow,
+} from '../window/manager.js'
 import { applyConfigToWindow, positionWindowOnDisplay } from '../window/runtime.js'
 import { registerProtocols } from '../protocol/register.js'
 import { registerIpc } from '../ipc/register.js'
@@ -146,7 +151,7 @@ if (!gotTheLock) {
 
         if (cmd === 'toggle') {
           if (win.isVisible()) {
-            win.hide()
+            tryHideMainWindow('socket-toggle', () => win.hide())
           } else {
             applyConfigToWindow(win)
             positionWindowOnDisplay(win)

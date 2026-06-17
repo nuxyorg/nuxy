@@ -91,9 +91,28 @@ describe('tool-behavior', () => {
     } as ExtensionManifest
 
     syncBlurSuppression('com.nuxy.file-transfer', manifest)
-    expect(setBlurSuppressed).toHaveBeenCalledWith(true)
+    expect(setBlurSuppressed).toHaveBeenCalledWith(true, 'manifest')
 
     syncBlurSuppression(null, null)
-    expect(setBlurSuppressed).toHaveBeenCalledWith(false)
+    expect(setBlurSuppressed).toHaveBeenCalledWith(false, 'manifest')
+  })
+
+  it('syncBlurSuppression does not clear tool-layer suppression for notes', () => {
+    const setBlurSuppressed = vi.fn()
+    vi.stubGlobal('window', {
+      core: {
+        shell: { returnToShell: vi.fn(), setSearchPlaceholder: vi.fn() },
+        window: { hide: vi.fn(), setBlurSuppressed },
+      },
+    })
+    const manifest = {
+      id: 'com.nuxy.notes',
+      name: 'Notes',
+      version: '1',
+      type: 'tool',
+    } as ExtensionManifest
+
+    syncBlurSuppression('com.nuxy.notes', manifest)
+    expect(setBlurSuppressed).toHaveBeenCalledWith(false, 'manifest')
   })
 })

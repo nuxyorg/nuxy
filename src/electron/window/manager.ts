@@ -7,18 +7,33 @@ import { kernelLogger } from '@nuxyorg/core'
 
 const log = kernelLogger.child('Window')
 
+export type BlurSuppressSource = 'manifest' | 'tool'
+
 let mainWindow: BrowserWindow | null = null
 let readyToShowFired = false
 let rendererReady = false
 let showOnStartup = false
-let blurSuppressed = false
+let manifestBlurSuppressed = false
+let toolBlurSuppressed = false
 
-export function setBlurSuppressed(suppressed: boolean): void {
-  blurSuppressed = suppressed
+export function setBlurSuppressed(suppressed: boolean, source: BlurSuppressSource = 'tool'): void {
+  if (source === 'manifest') manifestBlurSuppressed = suppressed
+  else toolBlurSuppressed = suppressed
+}
+
+/** Clears manifest-layer suppression only; tool-layer (e.g. notes edit mode) is untouched. */
+export function clearBlurSuppressed(): void {
+  manifestBlurSuppressed = false
 }
 
 export function isBlurSuppressed(): boolean {
-  return blurSuppressed
+  return manifestBlurSuppressed || toolBlurSuppressed
+}
+
+/** Hide only when blur suppression is inactive. */
+export function tryHideMainWindow(reason: string, hide: () => void): void {
+  if (isBlurSuppressed()) return
+  hide()
 }
 
 export function getMainWindow(): BrowserWindow | null {
@@ -89,22 +104,23 @@ export function createMainWindow() {
   })
 
   mainWindow.on('blur', () => {
-    if (blurSuppressed) return
     const { blurAction } = getConfig()
-    switch (blurAction) {
-      case 'minimize':
-        mainWindow?.minimize()
-        break
-      case 'quit':
-        app.quit()
-        break
-      case 'none':
-        break
-      case 'hide':
-      default:
-        mainWindow?.hide()
-        break
-    }
+    tryHideMainWindow('blur', () => {
+      switch (blurAction) {
+        case 'minimize':
+          mainWindow?.minimize()
+          break
+        case 'quit':
+          app.quit()
+          break
+        case 'none':
+          break
+        case 'hide':
+        default:
+          mainWindow?.hide()
+          break
+      }
+    })
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
