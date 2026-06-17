@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
+import { LitElement, html, css, nothing, customElement, property, state } from '@nuxyorg/core'
 
 const OVERFLOW_SIZES: Record<string, { width: number; height: number; fontSize: number }> = {
   xs: { width: 20, height: 20, fontSize: 9 },
@@ -41,7 +41,9 @@ export class NuxyAvatarGroupElement extends LitElement {
   @property({ type: String })
   declare size: string
 
-  private overflowEl: HTMLSpanElement | null = null
+  @state()
+  private overflowCount = 0
+
   private observer = new MutationObserver(() => {
     if (this.isConnected) this.sync()
   })
@@ -79,26 +81,26 @@ export class NuxyAvatarGroupElement extends LitElement {
       avatar.style.display = idx >= visibleCount ? 'none' : ''
     })
 
-    if (overflow > 0) {
-      if (!this.overflowEl) {
-        this.overflowEl = document.createElement('span')
-        this.overflowEl.className = 'nuxy-avatar-group__overflow'
-        this.appendChild(this.overflowEl)
-      }
-      const style = OVERFLOW_SIZES[size] ?? OVERFLOW_SIZES.md
-      this.overflowEl.style.width = `${style.width}px`
-      this.overflowEl.style.height = `${style.height}px`
-      this.overflowEl.style.fontSize = `${style.fontSize}px`
-      this.overflowEl.textContent = `+${overflow}`
-      this.overflowEl.title = `${overflow} more`
-      this.overflowEl.hidden = false
-    } else if (this.overflowEl) {
-      this.overflowEl.hidden = true
-    }
+    this.overflowCount = overflow > 0 ? overflow : 0
   }
 
   render() {
-    return html`<slot></slot>`
+    const size = this.size
+    const style = OVERFLOW_SIZES[size] ?? OVERFLOW_SIZES.md
+    return html`
+      <slot></slot>
+      ${this.overflowCount > 0
+        ? html`
+            <span
+              class="nuxy-avatar-group__overflow"
+              style="width: ${style.width}px; height: ${style.height}px; font-size: ${style.fontSize}px"
+              title="${this.overflowCount} more"
+            >
+              +${this.overflowCount}
+            </span>
+          `
+        : nothing}
+    `
   }
 }
 

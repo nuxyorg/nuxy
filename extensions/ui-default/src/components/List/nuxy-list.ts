@@ -1,5 +1,12 @@
 import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import { scrollListActiveItem } from '../../hooks/scroll-into-view'
+import {
+  createListIndicatorState,
+  findListIndicatorElement,
+  resolveActiveItem,
+  updateListIndicatorElement,
+  type ListIndicatorState,
+} from '../../hooks/list-indicator'
 
 @customElement('nuxy-list')
 export class NuxyListElement extends LitElement {
@@ -12,7 +19,35 @@ export class NuxyListElement extends LitElement {
   @property({ type: Number, attribute: 'scroll-speed' })
   declare scrollSpeed: number
 
-  private _indicatorWasHidden = true
+  private _indicatorState: ListIndicatorState = createListIndicatorState()
+  private _visibilityObserver: IntersectionObserver | null = null
+  private _observersAttached = false
+
+  disconnectedCallback(): void {
+    this._visibilityObserver?.disconnect()
+    this._visibilityObserver = null
+    this._observersAttached = false
+    super.disconnectedCallback()
+  }
+
+  protected firstUpdated(): void {
+    this._attachObservers()
+  }
+
+  private _attachObservers(): void {
+    if (this._observersAttached) return
+    this._observersAttached = true
+
+    this._visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting) && this.activeIndex >= 0) {
+          requestAnimationFrame(() => this._updateIndicator())
+        }
+      },
+      { threshold: 0 }
+    )
+    this._visibilityObserver.observe(this)
+  }
 
   static styles = css`
     :host {
@@ -63,41 +98,13 @@ export class NuxyListElement extends LitElement {
     }
   }
 
-  private _resetIndicatorPosition(indicator: HTMLElement): void {
-    indicator.style.transition = 'none'
-    indicator.style.transform = 'translateY(0px)'
-    indicator.style.height = '0px'
-    void indicator.offsetHeight
-    indicator.style.transition = ''
-    this._indicatorWasHidden = true
-  }
-
   private _updateIndicator(): void {
-    const items = Array.from(this.querySelectorAll<HTMLElement>('nuxy-list-item'))
-    const idx = this.activeIndex ?? null
-    const target = idx !== null && !isNaN(idx) && idx >= 0 ? items[idx] : null
-    const indicator = this.shadowRoot?.querySelector<HTMLElement>('.indicator')
+    if (this.offsetHeight === 0) return
+    const target = resolveActiveItem(this, this.activeIndex, 'nuxy-list-item')
+    if (target && target.offsetHeight === 0) return
+    const indicator = findListIndicatorElement(this)
     if (!indicator) return
-    if (!target) {
-      indicator.classList.remove('visible')
-      this._resetIndicatorPosition(indicator)
-      return
-    }
-
-    const snap = this._indicatorWasHidden
-    if (snap) {
-      indicator.style.transition = 'none'
-      this._indicatorWasHidden = false
-    }
-
-    indicator.style.transform = `translateY(${target.offsetTop}px)`
-    indicator.style.height = `${target.offsetHeight}px`
-    indicator.classList.add('visible')
-
-    if (snap) {
-      void indicator.offsetHeight
-      indicator.style.transition = ''
-    }
+    this._indicatorState = updateListIndicatorElement(indicator, target, this._indicatorState)
   }
 
   render() {

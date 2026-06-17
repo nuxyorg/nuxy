@@ -54,6 +54,7 @@ vi.mock('./migrate-data.js', () => ({
 
 vi.mock('../extensions/registry.js', () => ({
   mergeRuntimeSync: vi.fn(),
+  clearFailed: vi.fn(),
 }))
 
 vi.mock('./host-handlers.js', () => ({
@@ -73,7 +74,7 @@ import {
   workerRegistryErrorListeners,
 } from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
-import { mergeRuntimeSync } from '../extensions/registry.js'
+import { mergeRuntimeSync, clearFailed } from '../extensions/registry.js'
 import { handleHostCall } from './host-handlers.js'
 import { bundleExtensionBackend } from '../extensions/bundle-backend.js'
 
@@ -172,6 +173,7 @@ describe('spawnExtension', () => {
       ipcChannels: ['foo', 'bar'],
       displayName: 'Test Extension',
     })
+    expect(clearFailed).toHaveBeenCalledWith(extId)
   })
 
   it('defaults ipcChannels to [] when missing in registry:sync', async () => {

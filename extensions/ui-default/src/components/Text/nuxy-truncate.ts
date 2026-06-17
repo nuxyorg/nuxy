@@ -1,4 +1,11 @@
-import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  css,
+  customElement,
+  property,
+  query as queryDecorator,
+} from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-truncate')
@@ -42,9 +49,12 @@ export class NuxyTruncateElement extends LitElement {
   @property({ type: Boolean, reflect: true })
   declare active: boolean
 
+  @queryDecorator('.t')
+  private textEl!: HTMLElement
+
   protected updated(): void {
     if (!this.active) return
-    const t = this.shadowRoot?.querySelector<HTMLElement>('.t')
+    const t = this.textEl
     if (!t) return
     const overflow = t.offsetWidth - this.offsetWidth
     if (overflow > 0) {

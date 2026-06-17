@@ -131,6 +131,20 @@ export function getDisplayName(ext: LoadedExtension): string {
   return ext.manifest.name
 }
 
+export function markFailed(extId: string, error: string): void {
+  const ext = byId.get(extId)
+  if (!ext) return
+  ext.status = 'failed'
+  ext.lastError = error
+}
+
+export function clearFailed(extId: string): void {
+  const ext = byId.get(extId)
+  if (!ext) return
+  delete ext.status
+  delete ext.lastError
+}
+
 export function unregisterExtension(extId: string): void {
   const ext = byId.get(extId)
   if (!ext) return

@@ -5,6 +5,7 @@ import {
   customElement,
   state,
   ref,
+  trapTabKey,
   type TemplateResult,
 } from '@nuxyorg/core'
 import type { CommandPaletteAction, Position } from './types.ts'
@@ -38,7 +39,7 @@ export class NuxyCommandPaletteElement extends LitElement {
       background-color: var(--bg-base);
       border: 1px solid var(--syntax-comment);
       border-radius: var(--radius-xl);
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 40px -10px var(--shadow-dark, rgba(0, 0, 0, 0.5));
       overflow: hidden;
       animation: slide-up 150ms ease-out;
     }
@@ -73,8 +74,8 @@ export class NuxyCommandPaletteElement extends LitElement {
     }
 
     .nuxy-command-palette__list {
-      max-height: 300px;
-      overflow-y: overlay;
+      max-height: var(--nuxy-command-palette-list-max-height, 300px);
+      overflow-y: auto;
       padding: 0;
     }
 
@@ -151,6 +152,10 @@ export class NuxyCommandPaletteElement extends LitElement {
   private _panelEl: HTMLDivElement | null = null
   private _inputEl: HTMLInputElement | null = null
   private _keyHandler: ((e: KeyboardEvent) => void) | null = null
+
+  get nativeInput(): HTMLInputElement | null {
+    return this._inputEl ?? null
+  }
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -288,6 +293,9 @@ export class NuxyCommandPaletteElement extends LitElement {
   }
 
   private _onKeyDown(e: KeyboardEvent): void {
+    if (this._panelEl) trapTabKey(this._panelEl, e)
+    if (e.defaultPrevented) return
+
     const filtered = this._filteredActions()
 
     if (e.key === 'Escape') {
@@ -367,6 +375,9 @@ export class NuxyCommandPaletteElement extends LitElement {
       >
         <div
           class="nuxy-command-palette"
+          role="dialog"
+          aria-modal="true"
+          aria-label=${this._translate('commandPalette.searchPlaceholder')}
           ${ref((el) => {
             this._panelEl = el as HTMLDivElement | null
           })}

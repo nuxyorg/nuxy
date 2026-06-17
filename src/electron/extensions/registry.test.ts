@@ -10,6 +10,8 @@ import {
   isChannelAllowed,
   mergeRuntimeSync,
   getDisplayName,
+  markFailed,
+  clearFailed,
 } from './registry.js'
 import type { LoadedExtension } from '@nuxyorg/core'
 
@@ -59,6 +61,26 @@ describe('registry', () => {
     })
     const loaded = getExtensionById('com.nuxy.clipboard')!
     expect(getDisplayName(loaded)).toBe('Clip')
+  })
+
+  it('marks an extension as failed with a reason', () => {
+    markFailed('com.nuxy.clipboard', 'worker crashed')
+    const ext = getExtensionById('com.nuxy.clipboard')!
+    expect(ext.status).toBe('failed')
+    expect(ext.lastError).toBe('worker crashed')
+  })
+
+  it('clears a failed status', () => {
+    markFailed('com.nuxy.clipboard', 'worker crashed')
+    clearFailed('com.nuxy.clipboard')
+    const ext = getExtensionById('com.nuxy.clipboard')!
+    expect(ext.status).toBeUndefined()
+    expect(ext.lastError).toBeUndefined()
+  })
+
+  it('is a no-op for an unknown extension id', () => {
+    expect(() => markFailed('unknown', 'oops')).not.toThrow()
+    expect(() => clearFailed('unknown')).not.toThrow()
   })
 
   it('prefers a higher-scored duplicate registration for the same extension id', () => {

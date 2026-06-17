@@ -1,5 +1,13 @@
-import { LitElement, html, css, nothing, type TemplateResult } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import {
+  LitElement,
+  html,
+  css,
+  nothing,
+  customElement,
+  state,
+  query as queryDecorator,
+  type TemplateResult,
+} from '@nuxyorg/core'
 
 export interface FileMeta {
   name: string
@@ -136,6 +144,9 @@ export class NuxyFileInputElement extends LitElement {
   @state()
   declare private internalFiles: File[]
 
+  @queryDecorator('.nuxy-file-input__native')
+  private nativeFileInput!: HTMLInputElement
+
   static get observedAttributes(): string[] {
     return ['files-meta', 'multiple', 'accept', 'disabled', 'label', 'hint', 'id']
   }
@@ -185,16 +196,14 @@ export class NuxyFileInputElement extends LitElement {
 
   private onZoneClick = (): void => {
     if (!this.isDisabled()) {
-      const input = this.renderRoot.querySelector<HTMLInputElement>('.nuxy-file-input__native')
-      input?.click()
+      this.nativeFileInput?.click()
     }
   }
 
   private onZoneKeyDown = (e: KeyboardEvent): void => {
     if ((e.key === 'Enter' || e.key === ' ') && !this.isDisabled()) {
       e.preventDefault()
-      const input = this.renderRoot.querySelector<HTMLInputElement>('.nuxy-file-input__native')
-      input?.click()
+      this.nativeFileInput?.click()
     }
   }
 

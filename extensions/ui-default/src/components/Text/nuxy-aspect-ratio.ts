@@ -25,11 +25,7 @@ export class NuxyAspectRatioElement extends LitElement {
   @property({ type: String })
   declare class: string
 
-  private _initialHTML = ''
-
   connectedCallback(): void {
-    // Capture initial children before Lit replaces them
-    this._initialHTML = this.innerHTML
     super.connectedCallback()
     this.applyHostStyles()
   }
@@ -44,7 +40,7 @@ export class NuxyAspectRatioElement extends LitElement {
   }
 
   render(): TemplateResult {
-    return html` <div .innerHTML=${this._initialHTML}></div> `
+    return html` <div><slot></slot></div> `
   }
 }
 

@@ -83,6 +83,7 @@ Files under `extensions/shared/` are cross-extension utilities. Import from ther
 - `ce-utils.ts` has been **removed** — do not reference it anywhere.
 - All Lit imports must come from `@nuxyorg/core`, never directly from `lit`.
 - Light DOM is **mandatory**: every tool element must override `createRenderRoot()` to return `this`.
+- **No imperative DOM** in extension UI: no `.innerHTML`, `document.createElement`, `querySelector`, or `replaceChildren` in component code — use Lit templates, `@query`/`ref()`, and `<nuxy-portal>`. See [`rules/EXTENSION_GUIDE.md`](EXTENSION_GUIDE.md) §5.13 and [DOM Manipulation Rules](../website/docs/extensions/dom-manipulation.md). Enforced by ESLint on `extensions/**/*.ts`.
 - **Never use `unsafeCSS`** (or any other `unsafe*` Lit API). Use the `css` tagged template literal from `@nuxyorg/core` only. If you need the same declarations in two selectors, duplicate them — do not interpolate a shared string via `unsafeCSS`.
 
 ---

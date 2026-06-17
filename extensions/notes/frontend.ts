@@ -156,7 +156,8 @@ export class NuxyToolNotesElement extends LitElement implements NuxyToolElement 
                 return
               }
               void (editor.updateComplete ?? Promise.resolve(true)).then(() => {
-                this.controller!.textareaRef.current = editor.nativeTextarea ?? null
+                const ta = editor.nativeTextarea ?? null
+                this.controller!.textareaRef.current = ta
               })
             })}
             @input=${(e: Event) => {

@@ -25,18 +25,30 @@ async function typeInOmnibar(page: any, text: string): Promise<void> {
     text,
     { timeout: 2000 }
   )
+  // The shell debounces list-provider re-sync by 200ms after a query change
+  // (see controller.ts handleQueryChange). Settle past that window before the
+  // caller sends further keyboard input (e.g. ArrowDown/Enter) — otherwise a
+  // delayed provider sync can race with keyboard navigation and reset the
+  // selection (controller.ts _bindQuerySelectionSync re-syncs the query from
+  // a stale selectedIndex once the new list lands).
+  await page.waitForTimeout(220)
 }
 
+/**
+ * Presses `key` as a real keyboard event via Playwright's keyboard API.
+ *
+ * Focuses whichever input currently owns keyboard interaction — the shell
+ * omnibar input, or the command palette input if the palette is open — then
+ * dispatches a genuine OS-level keypress via `page.keyboard.press`. This
+ * exercises the real browser focus/IME/composition pipeline instead of a
+ * synthetic `dispatchEvent(new KeyboardEvent(...))` call.
+ */
 async function pressOmnibarKey(page: any, key: string): Promise<void> {
-  await page.evaluate((k: string) => {
-    const view = document.querySelector('nuxy-shell-view')
-    const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
-    const input = omni?.shadowRoot?.querySelector(
-      '.nuxy-shell-omni-bar__input'
-    ) as HTMLInputElement | null
-    const target = input ?? omni
-    target?.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }))
-  }, key)
+  const paletteInput = page.locator('.nuxy-command-palette__input')
+  const target =
+    (await paletteInput.count()) > 0 ? paletteInput : page.locator('.nuxy-shell-omni-bar__input')
+  await target.focus()
+  await page.keyboard.press(key)
 }
 
 async function typeInCommandPalette(page: any, text: string): Promise<void> {
@@ -690,6 +702,129 @@ test.describe('command palette navigation', () => {
   })
 })
 
+// ---------------------------------------------------------------------------
+// Command palette — keyboard navigation (real keyboard events via pressOmnibarKey)
+// ---------------------------------------------------------------------------
+
+test.describe('command palette keyboard navigation', () => {
+  test.beforeEach(async ({ appPage }) => {
+    await openCommandPalette(appPage)
+  })
+
+  test('ArrowDown/ArrowUp changes the selected item', async ({ appPage }) => {
+    // Scope to the command palette's own list — `nuxy-list-item` also appears
+    // in the omnibar's tools list elsewhere in the (shadow-pierced) document.
+    const initialActiveIndex = await appPage.evaluate(() => {
+      const palette = document.querySelector('.nuxy-command-palette')
+      const items = Array.from(palette?.querySelectorAll('nuxy-list-item') ?? [])
+      return items.findIndex((el) => el.hasAttribute('active'))
+    })
+    expect(initialActiveIndex).toBe(0)
+
+    await pressOmnibarKey(appPage, 'ArrowDown')
+    await appPage.waitForFunction(
+      () => {
+        const palette = document.querySelector('.nuxy-command-palette')
+        const items = Array.from(palette?.querySelectorAll('nuxy-list-item') ?? [])
+        return items.findIndex((el) => el.hasAttribute('active')) === 1
+      },
+      { timeout: 2000 }
+    )
+
+    const afterDownIndex = await appPage.evaluate(() => {
+      const palette = document.querySelector('.nuxy-command-palette')
+      const items = Array.from(palette?.querySelectorAll('nuxy-list-item') ?? [])
+      return items.findIndex((el) => el.hasAttribute('active'))
+    })
+    expect(afterDownIndex).toBe(1)
+
+    await pressOmnibarKey(appPage, 'ArrowUp')
+    await appPage.waitForFunction(
+      () => {
+        const palette = document.querySelector('.nuxy-command-palette')
+        const items = Array.from(palette?.querySelectorAll('nuxy-list-item') ?? [])
+        return items.findIndex((el) => el.hasAttribute('active')) === 0
+      },
+      { timeout: 2000 }
+    )
+
+    const afterUpIndex = await appPage.evaluate(() => {
+      const palette = document.querySelector('.nuxy-command-palette')
+      const items = Array.from(palette?.querySelectorAll('nuxy-list-item') ?? [])
+      return items.findIndex((el) => el.hasAttribute('active'))
+    })
+    expect(afterUpIndex).toBe(0)
+  })
+
+  test('Enter executes the selected action', async ({ appPage }) => {
+    // The first registered action for the notes tool is "Save as note" / save action,
+    // which closes the palette once executed.
+    await pressOmnibarKey(appPage, 'Enter')
+    await appPage.waitForFunction(() => document.querySelector('.nuxy-command-palette') === null, {
+      timeout: 2000,
+    })
+
+    const paletteGone = await appPage.evaluate(
+      () => document.querySelector('.nuxy-command-palette') === null
+    )
+    expect(paletteGone).toBe(true)
+  })
+
+  test('Escape goes back / closes the palette', async ({ appPage }) => {
+    await pressOmnibarKey(appPage, 'Escape')
+    await appPage.waitForFunction(() => document.querySelector('.nuxy-command-palette') === null, {
+      timeout: 2000,
+    })
+
+    const paletteGone = await appPage.evaluate(
+      () => document.querySelector('.nuxy-command-palette') === null
+    )
+    expect(paletteGone).toBe(true)
+  })
+
+  test('ArrowRight opens a submenu when the selected action has children', async ({ appPage }) => {
+    // No production action currently registers a submenu, so we inject one
+    // directly on the live palette element to exercise the component's real
+    // submenu-opening code path (`_onKeyDown` ArrowRight branch -> `_openSubmenu`).
+    await appPage.evaluate(() => {
+      const view = document.querySelector('nuxy-shell-view')
+      const palette = view?.shadowRoot?.querySelector('nuxy-command-palette') as
+        | (HTMLElement & { actions: unknown[] })
+        | null
+      if (!palette) throw new Error('command palette not found')
+      palette.actions = [
+        {
+          id: 'submenu-parent',
+          label: 'Submenu Parent',
+          children: [{ id: 'submenu-child', label: 'Submenu Child', onExecute: () => {} }],
+        },
+      ]
+    })
+    await appPage.waitForFunction(
+      () => {
+        const palette = document.querySelector('.nuxy-command-palette')
+        return (palette?.querySelectorAll('nuxy-list-item').length ?? 0) === 1
+      },
+      { timeout: 2000 }
+    )
+
+    await pressOmnibarKey(appPage, 'ArrowRight')
+    await appPage.waitForFunction(
+      () => {
+        const palette = document.querySelector('.nuxy-command-palette')
+        const items = palette?.querySelectorAll('nuxy-list-item') ?? []
+        return items.length === 1 && (items[0]?.textContent ?? '').includes('Submenu Child')
+      },
+      { timeout: 2000 }
+    )
+
+    const breadcrumb = await appPage.evaluate(
+      () => document.querySelector('.nuxy-command-palette__breadcrumb-path')?.textContent ?? ''
+    )
+    expect(breadcrumb).toMatch(/Submenu Parent/)
+  })
+})
+
 test.describe('command palette filtering', () => {
   test.beforeEach(async ({ appPage }) => {
     await openCommandPalette(appPage)
@@ -794,16 +929,13 @@ test.describe('command palette dismissal', () => {
     await openCommandPalette(appPage)
   })
 
-  test('Escape closes the command palette', async ({ appPage }) => {
+  test('Escape closes the command palette and restores omnibar focus', async ({ appPage }) => {
     await appPage.keyboard.press('Escape')
     await appPage.waitForFunction(() => document.querySelector('.nuxy-command-palette') === null, {
       timeout: 400,
     })
 
-    const isGone = await appPage.evaluate(() => {
-      return document.querySelector('.nuxy-command-palette') === null
-    })
-    expect(isGone).toBe(true)
+    await expect(appPage.locator('.nuxy-shell-omni-bar__input')).toBeFocused()
   })
 
   test('clicking the backdrop closes the command palette', async ({ appPage }) => {
@@ -825,8 +957,10 @@ test.describe('command palette dismissal', () => {
     expect(isGone).toBe(true)
   })
 
-  test('Ctrl+K again closes the command palette', async ({ appPage }) => {
-    await appPage.keyboard.press('Escape')
+  test('Ctrl+K again closes the command palette and restores omnibar focus', async ({
+    appPage,
+  }) => {
+    await appPage.keyboard.press('Control+k')
     await appPage.waitForFunction(() => document.querySelector('.nuxy-command-palette') === null, {
       timeout: 400,
     })
@@ -835,6 +969,8 @@ test.describe('command palette dismissal', () => {
       return document.querySelector('.nuxy-command-palette') === null
     })
     expect(isGone).toBe(true)
+
+    await expect(appPage.locator('.nuxy-shell-omni-bar__input')).toBeFocused()
   })
 })
 

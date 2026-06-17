@@ -12,7 +12,7 @@ import {
   suppressedWorkerExits,
 } from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
-import { mergeRuntimeSync } from '../extensions/registry.js'
+import { mergeRuntimeSync, clearFailed } from '../extensions/registry.js'
 import { handleHostCall } from './host-handlers.js'
 import type { WorkerToHostMessage } from '@nuxyorg/core'
 
@@ -69,6 +69,7 @@ export async function spawnExtension(
         displayName: msg.displayName,
         registeredEntries: msg.registeredEntries,
       })
+      clearFailed(extId)
       log.silly(`Registry sync for "${extId}"`, msg.ipcChannels)
       return
     }

@@ -78,9 +78,9 @@ export class NuxyMediaPreviewElement extends LitElement {
       bottom: var(--space-1);
       right: var(--space-1);
       background: var(--surface-overlay, rgba(0, 0, 0, 0.8));
-      color: var(--text-on-accent, #fff);
+      color: var(--text-on-accent);
       padding: 0 var(--space-1);
-      border-radius: var(--radius-xs, 2px);
+      border-radius: var(--radius-xs);
       font-family: var(--font-mono);
       font-size: 9px;
       line-height: 1.2;
@@ -220,7 +220,10 @@ export class NuxyMediaPreviewElement extends LitElement {
     const footerText = this.getAttribute('footer-text')
 
     // Collect slotted content — badge and extras pass through via slots
-    const badge = this.querySelector('[data-badge]')
+    const badge =
+      Array.from(this.children).find(
+        (el): el is HTMLElement => el instanceof HTMLElement && el.hasAttribute('data-badge')
+      ) ?? null
     const extras: Node[] = []
     for (const child of [...this.childNodes]) {
       if (child === badge) continue

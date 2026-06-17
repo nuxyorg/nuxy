@@ -1,5 +1,6 @@
 import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
+import { parseJsonArray } from '../../utils/parse.ts'
 
 export interface TabItemData {
   id: string
@@ -8,13 +9,7 @@ export interface TabItemData {
 }
 
 function parseItems(raw: string | null): TabItemData[] {
-  if (!raw) return []
-  try {
-    const parsed = JSON.parse(raw) as TabItemData[]
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
+  return parseJsonArray<TabItemData>(raw)
 }
 
 @customElement('nuxy-tabs')
@@ -85,7 +80,7 @@ export class NuxyTabsElement extends LitElement {
   declare items: string
 
   updated(): void {
-    this.syncPanels()
+    this.syncPanelVisibility()
   }
 
   private getItems(): TabItemData[] {
@@ -106,25 +101,23 @@ export class NuxyTabsElement extends LitElement {
     )
   }
 
-  private syncPanels(): void {
-    const active = this.getActiveId()
-    const content = this.renderRoot.querySelector('.nuxy-tabs__content')
-    if (!content) return
-
-    for (const el of Array.from(this.querySelectorAll('[data-tab-content]'))) {
-      const id = el.getAttribute('data-tab-content')
-      if (!id) continue
-      const panel = el as HTMLElement
-      panel.hidden = id !== active
-      if (id === active) {
-        content.appendChild(panel)
-      } else if (panel.parentElement === content) {
-        this.appendChild(panel)
+  private forEachTabPanel(fn: (el: HTMLElement, id: string) => void): void {
+    const stack: Element[] = [...this.children]
+    while (stack.length) {
+      const node = stack.pop()!
+      if (node instanceof HTMLElement && node.hasAttribute('data-tab-content')) {
+        const id = node.getAttribute('data-tab-content')
+        if (id) fn(node, id)
       }
+      for (const child of node.children) stack.push(child)
     }
+  }
 
-    content.id = `panel-${active}`
-    content.setAttribute('aria-labelledby', `tab-${active}`)
+  private syncPanelVisibility(): void {
+    const active = this.getActiveId()
+    this.forEachTabPanel((el, id) => {
+      el.hidden = id !== active
+    })
   }
 
   render(): TemplateResult {
@@ -157,7 +150,9 @@ export class NuxyTabsElement extends LitElement {
         id="panel-${active}"
         aria-labelledby="tab-${active}"
         tabindex="0"
-      ></div>
+      >
+        <slot></slot>
+      </div>
     `
   }
 }

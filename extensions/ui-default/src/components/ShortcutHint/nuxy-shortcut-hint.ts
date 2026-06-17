@@ -26,7 +26,7 @@ export class NuxyShortcutHintElement extends LitElement {
 
     ::slotted(.nuxy-shortcut-action):hover {
       opacity: 0.75;
-      background: var(--hover, rgba(255, 255, 255, 0.06));
+      background: var(--hover);
     }
   `
 

@@ -4,8 +4,46 @@ title: Extension Linter
 
 # Extension Linter
 
+Extension quality is enforced in two layers today: **ESLint** (available now via `pnpm lint`) and a planned **`pnpm lint-ext`** scorer (beta).
+
+## ESLint — DOM manipulation rules (available today)
+
+Run from the repo root:
+
+```bash
+pnpm lint          # report
+pnpm lint:fix      # auto-fix where possible
+```
+
+For `extensions/**/*.ts` (excluding tests and allowlisted files), ESLint emits **warnings** via `no-restricted-syntax` when code uses imperative DOM APIs:
+
+| Rule                                 | Message                             |
+| ------------------------------------ | ----------------------------------- |
+| `.innerHTML =`                       | Use Lit `html\`\``and`<slot>`       |
+| `.outerHTML =`                       | Use Lit templates                   |
+| `document.createElement`             | Use Lit templates                   |
+| `document.body.appendChild`          | Use `<nuxy-portal>`                 |
+| `insertAdjacentHTML`                 | Use Lit templates                   |
+| `replaceChildren`                    | Return `html\`\``from`render()`     |
+| `querySelector` / `querySelectorAll` | Use `@query`, `ref()`, or templates |
+| `this.appendChild`                   | Use Lit templates                   |
+
+Allowlisted paths (imperative DOM is inherent to the mechanism):
+
+- `render-markdown.ts` — sanitized markdown HTML builder
+- `nuxy-tool-host.ts` — dynamic tool element mounting
+- `nuxy-portal.ts` — reparents slotted nodes to overlay containers
+- `scroll-into-view.ts` — scroll helper (internal DOM walk)
+- `gradient/gradient.ts` — minified third-party WebGL bundle
+
+Full rationale and examples: [DOM Manipulation Rules](/extensions/dom-manipulation) · Development Guide [§5.13](/extensions/development-guide#513-no-imperative-dom-manipulation).
+
+---
+
+## Planned: `pnpm lint-ext` (beta)
+
 ::: warning Beta
-`pnpm lint-ext` is planned for the beta release. This page documents the intended behavior; the tool is not yet available.
+`pnpm lint-ext` is planned for the beta release. The sections below document the intended scoring behavior; the tool is not yet available.
 :::
 
 The **extension linter** (`pnpm lint-ext`) performs static analysis on a Nuxy extension and produces a quality score from 0 to 100. It enforces the rules in the [Development Guide](/extensions/development-guide) automatically, so problems surface before code review or shipping.
@@ -49,8 +87,7 @@ Exit code is `0` when no violations are found (score 100), `1` when violations e
 | Hardcoded spacing / font size (`padding: '16px'`, `'margin-top': '8px'`)                  | −10 per occurrence, max −20 |
 | Node.js built-in import (`import fs`, `import os`, `import path`, `import child_process`) | −20                         |
 | `eval()` usage                                                                            | −25                         |
-| `innerHTML =` assignment (not in Lit template)                                            | −15                         |
-| `dangerouslySetInnerHTML`                                                                 | −15                         |
+| Imperative DOM (`.innerHTML`, `createElement`, `querySelector`, `replaceChildren`, …)     | −15 per occurrence, max −30 |
 | Lit `@property` or `@state` class-field initializer (`@property() label = ''`)            | −10 per occurrence          |
 | File in a forbidden subfolder (`styles/`, `components/`, `hooks/`)                        | −5 per file                 |
 
@@ -166,11 +203,29 @@ Available tokens: `--color-danger`, `--color-success`, `--color-warning`, `--sur
 html`<svg viewBox="0 0 24 24">…</svg>`
 
 // After — use the icon system
-const icon = window.core.icons.get('search')
-html`<span .innerHTML=${icon}></span>`
+html`<nuxy-icon name="search"></nuxy-icon>`
 ```
 
 Register your icon in an icon pack extension, or use one of the built-in icons from `icons-default`.
+
+### Imperative DOM
+
+```ts
+// Before (violation)
+this.innerHTML = window.core.icons.get('search') ?? ''
+const el = this.querySelector('.menu')
+
+// After — declarative Lit
+render() {
+  return html`
+    <nuxy-icon name="search"></nuxy-icon>
+    <div class="menu">${this.renderItems()}</div>
+  `
+}
+@query('.menu') private menuEl!: HTMLElement
+```
+
+See [DOM Manipulation Rules](/extensions/dom-manipulation).
 
 ### Lit property shadowing
 

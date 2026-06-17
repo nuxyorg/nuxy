@@ -15,7 +15,7 @@ export class NuxyItemLeadingElement extends LitElement {
       flex-shrink: 0;
       border-radius: 6px;
       overflow: hidden;
-      background: var(--bg-subtle, rgba(255, 255, 255, 0.06));
+      background: var(--bg-subtle);
     }
 
     :host([size='sm']) {

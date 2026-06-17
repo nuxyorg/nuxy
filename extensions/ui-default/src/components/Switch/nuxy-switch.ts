@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, property, state } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-switch')
@@ -62,15 +62,6 @@ export class NuxySwitchElement extends LitElement {
   @property({ type: Boolean, reflect: true })
   declare disabled: boolean
 
-  @state()
-  declare private _labelHTML: string
-
-  connectedCallback(): void {
-    // Capture initial label content before Lit replaces it
-    this._labelHTML = this.innerHTML
-    super.connectedCallback()
-  }
-
   private handleChange(e: Event): void {
     if (this.disabled) return
     const input = e.target as HTMLInputElement
@@ -103,9 +94,13 @@ export class NuxySwitchElement extends LitElement {
       <span class="nuxy-switch__track" aria-hidden="true" @click=${this.handleTrackClick}
         ><span class="nuxy-switch__thumb"></span
       ></span>
-      ${this._labelHTML
-        ? html`<span class="nuxy-switch__label" .innerHTML=${this._labelHTML}></span>`
-        : nothing}
+      <span class="nuxy-switch__label"><slot></slot></span>
     `
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-switch': NuxySwitchElement
   }
 }

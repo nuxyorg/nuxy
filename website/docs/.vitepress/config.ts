@@ -94,6 +94,7 @@ export default withMermaid(
             text: 'Tooling',
             items: [
               { text: 'Simulator', link: '/extensions/simulator' },
+              { text: 'DOM Rules', link: '/extensions/dom-manipulation' },
               { text: 'Linter', link: '/extensions/linting' },
               { text: 'Packaging', link: '/extensions/packaging' },
             ],

@@ -34,6 +34,7 @@ export class NuxyToolMyTool extends LitElement implements NuxyToolElement {
 - Override `createRenderRoot()` to return `this` so theme tokens apply
 - Use `window.UI` components for all visual elements
 - Put IPC and state logic in a `controller.ts`, not in the element
+- Do **not** use `innerHTML`, `querySelector`, or imperative `createElement` / `appendChild` in components — see [DOM Manipulation Rules](/extensions/dom-manipulation)
 
 ---
 

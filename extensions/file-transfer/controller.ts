@@ -38,7 +38,7 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
   private session: WebRtcFileSession | null = null
   private receiveSessionId: string | null = null
   private localPeerId = ''
-  private fileInputEl: HTMLInputElement | null = null
+  private pickFileHandler: (() => void) | null = null
 
   constructor(onUpdate: () => void) {
     super(
@@ -88,8 +88,7 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
 
   disconnect(): void {
     void this.cleanupSession()
-    this.fileInputEl?.remove()
-    this.fileInputEl = null
+    this.pickFileHandler = null
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
     this.t.destroy()
@@ -175,23 +174,13 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
     window.core?.shell?.refreshKeyHints()
   }
 
+  registerPickFileHandler(handler: () => void): void {
+    this.pickFileHandler = handler
+  }
+
   pickFile(): void {
     if (this.state.mode !== 'send' || this.state.phase !== 'idle') return
-    if (!this.fileInputEl) {
-      const input = document.createElement('input')
-      input.type = 'file'
-      input.style.display = 'none'
-      input.addEventListener('change', () => {
-        const file = input.files?.[0]
-        if (file) this.handleFileSelected([file])
-        input.value = ''
-      })
-      this.fileInputEl = input
-    }
-    if (!this.fileInputEl.isConnected) {
-      document.body.appendChild(this.fileInputEl)
-    }
-    this.fileInputEl.click()
+    this.pickFileHandler?.()
   }
 
   async startSend(): Promise<void> {

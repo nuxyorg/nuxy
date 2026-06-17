@@ -1,4 +1,11 @@
-import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  css,
+  customElement,
+  property,
+  query as queryDecorator,
+} from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-markdown-editor')
@@ -74,7 +81,7 @@ export class NuxyMarkdownEditorElement extends LitElement {
       resize: none;
       outline: none;
       box-sizing: border-box;
-      caret-color: var(--text-accent, #a78bfa);
+      caret-color: var(--text-accent);
     }
 
     .nuxy-md-editor__textarea::placeholder {
@@ -83,17 +90,32 @@ export class NuxyMarkdownEditorElement extends LitElement {
   `
 
   @property({ type: String })
-  value = ''
+  declare value: string
 
   @property({ type: String })
-  placeholder = 'Start writing…'
+  declare placeholder: string
+
+  @queryDecorator('textarea')
+  declare private textareaEl: HTMLTextAreaElement
+
+  constructor() {
+    super()
+    this.value = ''
+    this.placeholder = 'Start writing…'
+  }
 
   private get _textarea(): HTMLTextAreaElement | null {
-    return (this.shadowRoot?.querySelector('textarea') ?? null) as HTMLTextAreaElement | null
+    return this.textareaEl ?? null
   }
 
   get nativeTextarea(): HTMLTextAreaElement | null {
-    return this._textarea
+    return (
+      this.textareaEl ??
+      (this.renderRoot?.querySelector(
+        'textarea.nuxy-md-editor__textarea'
+      ) as HTMLTextAreaElement | null) ??
+      null
+    )
   }
 
   private _insertText(text: string, cursorOffset = text.length): void {

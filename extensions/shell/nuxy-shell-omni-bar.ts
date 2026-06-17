@@ -5,7 +5,6 @@ import {
   nothing,
   customElement,
   property,
-  state,
   query as queryDecorator,
   type TemplateResult,
 } from '@nuxyorg/core'
@@ -152,14 +151,7 @@ export class NuxyShellOmniBarElement extends LitElement {
   @property({ type: Number, attribute: 'hold-ms' })
   declare holdMs: number | null
 
-  @state()
-  declare private _searchIconHtml: string
-
   @queryDecorator('input') private _inputEl!: HTMLInputElement | null
-
-  set searchIconHtml(html: string) {
-    this._searchIconHtml = html
-  }
 
   get nativeInput(): HTMLInputElement | null {
     return this._inputEl ?? null
@@ -176,12 +168,6 @@ export class NuxyShellOmniBarElement extends LitElement {
   }
 
   private _renderIcon(): TemplateResult {
-    if (this._searchIconHtml) {
-      return html`<span
-        class="nuxy-shell-omni-bar__icon-inner"
-        .innerHTML=${this._searchIconHtml}
-      ></span>`
-    }
     return html`<nuxy-icon name="Search" size="16" opacity="1"></nuxy-icon>`
   }
 

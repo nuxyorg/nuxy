@@ -1,5 +1,7 @@
-import { LitElement, html, css, customElement, property, state } from '@nuxyorg/core'
+import './index.css'
+import { LitElement, html, css, customElement, property, nothing } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
+import { mirrorAttrs } from '../../utils/mirror-attrs.ts'
 
 const MIRROR_ATTRS = [
   'disabled',
@@ -21,7 +23,7 @@ const MIRROR_ATTRS = [
 export class NuxyButtonElement extends LitElement {
   static styles = css`
     :host {
-      display: contents;
+      display: inline-flex;
     }
 
     .nuxy-button {
@@ -87,21 +89,8 @@ export class NuxyButtonElement extends LitElement {
   @property({ type: String })
   declare variant: string
 
-  @state()
-  declare private _contentHTML: string
-
-  connectedCallback(): void {
-    // Capture initial slot content before Lit replaces it
-    this._contentHTML = this.innerHTML
-    super.connectedCallback()
-  }
-
   private getMirroredAttrs(): Record<string, string | null> {
-    const result: Record<string, string | null> = {}
-    for (const attr of MIRROR_ATTRS) {
-      result[attr] = this.hasAttribute(attr) ? (this.getAttribute(attr) ?? '') : null
-    }
-    return result
+    return mirrorAttrs(this, MIRROR_ATTRS)
   }
 
   render(): TemplateResult {
@@ -114,8 +103,20 @@ export class NuxyButtonElement extends LitElement {
         class=${className}
         ?disabled=${this.hasAttribute('disabled')}
         type=${mirrored['type'] ?? 'button'}
-        .innerHTML=${this._contentHTML}
-      ></button>
+        name=${mirrored['name'] ?? nothing}
+        value=${mirrored['value'] ?? nothing}
+        aria-label=${mirrored['aria-label'] ?? nothing}
+        aria-disabled=${mirrored['aria-disabled'] ?? nothing}
+        tabindex=${mirrored['tabindex'] ?? nothing}
+      >
+        <slot></slot>
+      </button>
     `
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-button': NuxyButtonElement
   }
 }

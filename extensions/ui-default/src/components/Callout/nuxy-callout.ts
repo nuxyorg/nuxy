@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, property, state } from '@nuxyorg/core'
+import { LitElement, html, css, nothing, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 const ICONS: Record<string, TemplateResult> = {
@@ -102,9 +102,6 @@ export class NuxyCalloutElement extends LitElement {
       align-items: flex-start;
     }
 
-    .nuxy-callout__body {
-    }
-
     .nuxy-callout__title {
       font-weight: 600;
       margin-bottom: var(--space-1);
@@ -121,26 +118,7 @@ export class NuxyCalloutElement extends LitElement {
   @property({ type: String })
   declare title: string
 
-  @state()
-  declare private _customIconHTML: string
-  @state()
-  declare private _messageHTML: string
-
   connectedCallback(): void {
-    // Capture slotted content before Lit replaces it
-    const customIcon = this.querySelector('[slot="icon"]')
-    const messageNodes = Array.from(this.childNodes).filter(
-      (n) =>
-        !(
-          n instanceof Element &&
-          (n.getAttribute('slot') === 'icon' || n.classList.contains('nuxy-callout__body'))
-        )
-    )
-    this._customIconHTML = customIcon ? (customIcon as Element).outerHTML : ''
-    const tmp = document.createElement('div')
-    for (const node of messageNodes) tmp.appendChild(node.cloneNode(true))
-    this._messageHTML = tmp.innerHTML
-
     super.connectedCallback()
     this.syncRole()
   }
@@ -159,12 +137,18 @@ export class NuxyCalloutElement extends LitElement {
 
     return html`
       <span class="nuxy-callout__icon">
-        ${this._customIconHTML ? html`<span .innerHTML=${this._customIconHTML}></span>` : icon}
+        <slot name="icon">${icon}</slot>
       </span>
       <div class="nuxy-callout__body">
         ${this.title ? html`<div class="nuxy-callout__title">${this.title}</div>` : nothing}
-        <div class="nuxy-callout__message" .innerHTML=${this._messageHTML}></div>
+        <div class="nuxy-callout__message"><slot></slot></div>
       </div>
     `
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-callout': NuxyCalloutElement
   }
 }

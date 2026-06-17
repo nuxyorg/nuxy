@@ -5,6 +5,7 @@ import {
   nothing,
   customElement,
   state,
+  ref,
   type TemplateResult,
 } from '@nuxyorg/core'
 import { toastStore, type Toast } from './store'
@@ -141,6 +142,14 @@ export class NuxyToasterElement extends LitElement {
   private unsubscribe: (() => void) | null = null
   private dismissTimers = new Map<string, ReturnType<typeof setTimeout>>()
   private exitingIds = new Set<string>()
+  private toastRefs = new Map<string, HTMLElement>()
+
+  private onToastRef =
+    (id: string) =>
+    (el: Element | undefined): void => {
+      if (el) this.toastRefs.set(id, el as HTMLElement)
+      else this.toastRefs.delete(id)
+    }
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -185,7 +194,7 @@ export class NuxyToasterElement extends LitElement {
     this.dismissTimers.delete(id)
     if (this.exitingIds.has(id)) return
 
-    const el = this.renderRoot.querySelector(`[data-toast-id="${id}"]`)
+    const el = this.toastRefs.get(id)
     if (el) {
       this.exitingIds.add(id)
       el.classList.add('nuxy-toast--exiting')
@@ -219,6 +228,7 @@ export class NuxyToasterElement extends LitElement {
           : 'nuxy-toast--multiline'}"
         role="alert"
         data-toast-id="${toast.id}"
+        ${ref(this.onToastRef(toast.id))}
       >
         <div class="nuxy-toast-body">
           ${toast.title ? html`<div class="nuxy-toast-title">${toast.title}</div>` : nothing}

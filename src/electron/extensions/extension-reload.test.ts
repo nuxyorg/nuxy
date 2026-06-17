@@ -251,6 +251,9 @@ describe('onExtensionWorkerExit', () => {
     vi.advanceTimersByTime(500)
     await Promise.resolve()
     expect(spawnExtension).toHaveBeenCalled()
+    const ext = getExtensionById('com.nuxy.exit')!
+    expect(ext.status).toBe('failed')
+    expect(ext.lastError).toBe('Worker exited with code 1')
   })
 
   it('ignores clean exit (code 0)', () => {

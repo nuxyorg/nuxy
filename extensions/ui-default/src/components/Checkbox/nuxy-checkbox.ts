@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, property, state } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 const CHECKMARK_ICON: TemplateResult = html`<svg
@@ -73,15 +73,6 @@ export class NuxyCheckboxElement extends LitElement {
   @property({ type: Boolean, reflect: true })
   declare disabled: boolean
 
-  @state()
-  declare private _labelHTML: string
-
-  connectedCallback(): void {
-    // Capture initial label content before Lit replaces it
-    this._labelHTML = this.innerHTML
-    super.connectedCallback()
-  }
-
   private handleChange(e: Event): void {
     if (this.disabled) return
     const input = e.target as HTMLInputElement
@@ -113,9 +104,13 @@ export class NuxyCheckboxElement extends LitElement {
       <span class="nuxy-checkbox__box" aria-hidden="true" @click=${this.handleBoxClick}
         >${CHECKMARK_ICON}</span
       >
-      ${this._labelHTML
-        ? html`<span class="nuxy-checkbox__label" .innerHTML=${this._labelHTML}></span>`
-        : nothing}
+      <span class="nuxy-checkbox__label"><slot></slot></span>
     `
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'nuxy-checkbox': NuxyCheckboxElement
   }
 }

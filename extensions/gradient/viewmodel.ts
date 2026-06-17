@@ -67,14 +67,16 @@ export class GradientViewModel {
   // ── Private ──────────────────────────────────────────────────────────────
 
   private tryMount(): void {
-    if (document.querySelector('nuxy-shell')) void this.mountLayer()
+    if (document.getElementsByTagName('nuxy-shell').length > 0) void this.mountLayer()
   }
 
   private async mountLayer(): Promise<void> {
     if (this.handle) return
     if (!window.core?.composition?.mount) return
 
-    const layer = document.createElement('nuxy-gradient-layer')
+    const Ctor = customElements.get('nuxy-gradient-layer') as CustomElementConstructor | undefined
+    if (!Ctor) return
+    const layer = new Ctor()
     try {
       this.handle = await window.core.composition.mount('background-layer', layer, {
         extId: GRADIENT_EXT_ID,

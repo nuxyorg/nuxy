@@ -334,13 +334,8 @@ export class SettingsController extends BaseExtensionController<SettingsControll
             const isLang = 'isLanguage' in row && row.isLanguage
             if (!isLang && row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
               const focusInput = () => {
-                const input = this.inputRefs[row.key]?.isConnected
-                  ? this.inputRefs[row.key]
-                  : (document.querySelector(
-                      '.nuxy-list-item--active nuxy-input input'
-                    ) as HTMLInputElement | null)
-                input?.focus()
-                input?.select()
+                this.inputRefs[row.key]?.focus()
+                this.inputRefs[row.key]?.select()
               }
               focusInput()
               queueMicrotask(focusInput)

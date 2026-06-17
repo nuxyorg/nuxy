@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, property, state, ref } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property, state } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-dropdown-menu')
@@ -54,39 +54,11 @@ export class NuxyDropdownMenuElement extends LitElement {
   @state()
   declare private isOpen: boolean
 
-  private triggerSlotEl: HTMLSpanElement | null = null
-  private menuEl: HTMLDivElement | null = null
   private outsideHandler: ((e: MouseEvent) => void) | null = null
-  private observer: MutationObserver | null = null
-
-  connectedCallback(): void {
-    super.connectedCallback()
-    this.observer = new MutationObserver(() => this.reparentChildren())
-    this.observer.observe(this, { childList: true, subtree: false })
-  }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
     this.removeOutsideListener()
-    this.observer?.disconnect()
-    this.observer = null
-  }
-
-  updated(): void {
-    this.reparentChildren()
-  }
-
-  private onTriggerSlotRef = (el: Element | undefined): void => {
-    this.triggerSlotEl = (el as HTMLSpanElement | null | undefined) ?? null
-    if (this.triggerSlotEl) {
-      this.triggerSlotEl.addEventListener('click', this.onTriggerClick)
-    }
-    this.reparentChildren()
-  }
-
-  private onMenuRef = (el: Element | undefined): void => {
-    this.menuEl = (el as HTMLDivElement | null | undefined) ?? null
-    this.reparentChildren()
   }
 
   private onTriggerClick = (): void => {
@@ -115,22 +87,6 @@ export class NuxyDropdownMenuElement extends LitElement {
     this.outsideHandler = null
   }
 
-  private reparentChildren(): void {
-    if (!this.triggerSlotEl || !this.menuEl) return
-
-    const triggerSource = this.querySelector(':scope > [data-trigger]')
-    if (triggerSource && triggerSource.parentElement !== this.triggerSlotEl) {
-      this.triggerSlotEl.appendChild(triggerSource)
-    }
-
-    for (const child of Array.from(this.children)) {
-      if (child === this.triggerSlotEl || child === this.menuEl) continue
-      if (child.parentElement !== this.menuEl) {
-        this.menuEl.appendChild(child)
-      }
-    }
-  }
-
   render(): TemplateResult {
     const align = (this.align || this.getAttribute('align')) ?? 'right'
     const menuClass = [
@@ -142,8 +98,8 @@ export class NuxyDropdownMenuElement extends LitElement {
       .join(' ')
 
     return html`
-      <span ${ref(this.onTriggerSlotRef)}></span>
-      <div class=${menuClass} ${ref(this.onMenuRef)}></div>
+      <span @click=${this.onTriggerClick}><slot name="trigger"></slot></span>
+      <div class=${menuClass}><slot name="menu"></slot></div>
     `
   }
 }
@@ -239,7 +195,7 @@ export class NuxyDropdownDividerElement extends LitElement {
   }
 
   render() {
-    return nothing
+    return html``
   }
 }
 

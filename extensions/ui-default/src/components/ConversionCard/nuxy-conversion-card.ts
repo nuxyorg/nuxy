@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, ref } from '@nuxyorg/core'
+import { LitElement, html, css, customElement } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-conversion-card')
@@ -55,92 +55,17 @@ export class NuxyConversionCardElement extends LitElement {
     }
   `
 
-  private observer = new MutationObserver(() => {
-    if (this.isConnected) this.requestUpdate()
-  })
-
-  private _labelRef: HTMLDivElement | null = null
-  private _fromRef: HTMLDivElement | null = null
-  private _toRef: HTMLDivElement | null = null
-
-  connectedCallback(): void {
-    super.connectedCallback()
-    this.observer.observe(this, { childList: true, subtree: true })
-  }
-
-  disconnectedCallback(): void {
-    super.disconnectedCallback()
-    this.observer.disconnect()
-  }
-
-  private onLabelRef = (el: Element | undefined): void => {
-    this._labelRef = (el as HTMLDivElement | null | undefined) ?? null
-    this.syncSlots()
-  }
-
-  private onFromRef = (el: Element | undefined): void => {
-    this._fromRef = (el as HTMLDivElement | null | undefined) ?? null
-    this.syncSlots()
-  }
-
-  private onToRef = (el: Element | undefined): void => {
-    this._toRef = (el as HTMLDivElement | null | undefined) ?? null
-    this.syncSlots()
-  }
-
-  updated(): void {
-    this.syncSlots()
-  }
-
-  private syncSlots(): void {
-    const label = this.querySelector(':scope > [data-label]')
-    const from = this.querySelector(':scope > [data-from]')
-    const to = this.querySelector(':scope > [data-to]')
-
-    for (const marker of [label, from, to]) {
-      if (marker instanceof HTMLElement) {
-        marker.hidden = true
-        marker.style.display = 'none'
-      }
-    }
-
-    if (this._labelRef) {
-      if (label) {
-        this._labelRef.hidden = false
-        this._labelRef.replaceChildren(
-          ...Array.from(label.childNodes).map((n) => n.cloneNode(true))
-        )
-      } else {
-        this._labelRef.hidden = true
-      }
-    }
-
-    if (this._fromRef && from) {
-      this._fromRef.replaceChildren(...Array.from(from.childNodes).map((n) => n.cloneNode(true)))
-    }
-
-    if (this._toRef && to) {
-      this._toRef.replaceChildren(...Array.from(to.childNodes).map((n) => n.cloneNode(true)))
-    }
-  }
-
   render(): TemplateResult {
-    const label = this.querySelector(':scope > [data-label]')
-
     return html`
-      ${label
-        ? html`<div class="nuxy-conversion-card__label" ${ref(this.onLabelRef)}></div>`
-        : nothing}
+      <div class="nuxy-conversion-card__label"><slot name="label"></slot></div>
       <div class="nuxy-conversion-card__body">
-        <div
-          class="nuxy-conversion-card__panel nuxy-conversion-card__panel--from"
-          ${ref(this.onFromRef)}
-        ></div>
+        <div class="nuxy-conversion-card__panel nuxy-conversion-card__panel--from">
+          <slot name="from"></slot>
+        </div>
         <div class="nuxy-conversion-card__arrow">→</div>
-        <div
-          class="nuxy-conversion-card__panel nuxy-conversion-card__panel--to"
-          ${ref(this.onToRef)}
-        ></div>
+        <div class="nuxy-conversion-card__panel nuxy-conversion-card__panel--to">
+          <slot name="to"></slot>
+        </div>
       </div>
     `
   }

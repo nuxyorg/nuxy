@@ -485,12 +485,30 @@ connectedCallback(): void {
 // WRONG — direct DOM mutation fights Lit's renderer
 this.appendChild(document.createElement('div'))
 this.replaceChildren()
+this.innerHTML = '<span></span>'
+this.querySelector('.item')?.classList.add('active')
 
 // CORRECT — all DOM changes go through render(); trigger via requestUpdate()
 this.requestUpdate()
 ```
 
-### G. Using `@property` for query without side-effects
+See [DOM Manipulation Rules](../website/docs/extensions/dom-manipulation.md) and Development Guide §5.13.
+
+### G. `querySelector` for element refs
+
+```typescript
+// WRONG — fragile ref lookup after render
+updated() {
+  this.inputEl = this.querySelector('input') as HTMLInputElement
+}
+
+// CORRECT — @query or ref()
+@query('input') private inputEl!: HTMLInputElement
+```
+
+`querySelector` is fine in **tests** and in allowlisted utilities (`scroll-into-view.ts`). Never use it in tool elements or ui-default components.
+
+### H. Using `@property` for query without side-effects
 
 `query` has a side-effect: it must notify the controller. Keep the manual getter/setter.
 
@@ -526,5 +544,6 @@ set query(value: string) {
 - [ ] No `import { ... } from 'lit'` — all imports from `@nuxyorg/core`
 - [ ] No `static styles = css\`...\``— structural styles applied in`connectedCallback`
 - [ ] No `replaceChildren()` / `appendChild()` calls outside `connectedCallback`
+- [ ] No `.innerHTML`, `querySelector`, or `document.createElement` in component code (§5.13 / DOM rules)
 - [ ] Hardcoded colors replaced with `var(--token)` CSS custom properties
 - [ ] `*-dom.ts` file removed from the extension folder (it is no longer served)

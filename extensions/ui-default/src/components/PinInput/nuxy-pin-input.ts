@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, type TemplateResult } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, ref, type TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-pin-input')
 export class NuxyPinInputElement extends LitElement {
@@ -68,10 +68,17 @@ export class NuxyPinInputElement extends LitElement {
     return this.getAttribute('default-value') ?? ''
   }
 
+  private inputRefs: Array<HTMLInputElement | undefined> = []
+
   private focusInput(idx: number): void {
-    const inputs = this.renderRoot.querySelectorAll<HTMLInputElement>('.nuxy-pin-input__cell')
-    inputs[idx]?.focus()
+    this.inputRefs[idx]?.focus()
   }
+
+  private onCellRef =
+    (idx: number) =>
+    (el: Element | undefined): void => {
+      this.inputRefs[idx] = el as HTMLInputElement | undefined
+    }
 
   private onCellInput(idx: number, e: InputEvent): void {
     if (this.hasAttribute('disabled')) return
@@ -143,6 +150,7 @@ export class NuxyPinInputElement extends LitElement {
         type=${mask ? 'password' : 'text'}
         .value=${val}
         ?disabled=${disabled}
+        ${ref(this.onCellRef(idx))}
         @input=${(e: InputEvent) => this.onCellInput(idx, e)}
         @keydown=${(e: KeyboardEvent) => this.onCellKeyDown(idx, e)}
       />
@@ -151,6 +159,7 @@ export class NuxyPinInputElement extends LitElement {
 
   render(): TemplateResult {
     const length = this.getLength()
+    this.inputRefs.length = length
     const currentVal = this.getCurrent()
     const sepIndex = Math.floor(length / 2) - 1
 

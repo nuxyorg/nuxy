@@ -31,6 +31,11 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
   private copiedTimer: ReturnType<typeof setTimeout> | null = null
   private omniPortalHost: HTMLDivElement | null = null
 
+  setOmniPortalHost(host: HTMLDivElement | null): void {
+    this.omniPortalHost = host
+    if (host) window.core?.shell?.setOmniBarPortal(host)
+  }
+
   constructor(onUpdate: () => void) {
     super(
       EXT_ID,
@@ -153,18 +158,13 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
   private setOmniBarPortal(template: TemplateResult | null): void {
     const shell = window.core?.shell
     if (!shell) return
+    if (!this.omniPortalHost) return
     if (!template) {
-      if (this.omniPortalHost) {
-        render(html``, this.omniPortalHost)
-        shell.setOmniBarPortal(null)
-        this.omniPortalHost = null
-      }
+      render(html``, this.omniPortalHost)
+      shell.setOmniBarPortal(null)
       return
     }
-    if (!this.omniPortalHost) {
-      this.omniPortalHost = document.createElement('div')
-      shell.setOmniBarPortal(this.omniPortalHost)
-    }
+    shell.setOmniBarPortal(this.omniPortalHost)
     render(template, this.omniPortalHost)
   }
 

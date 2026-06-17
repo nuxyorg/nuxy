@@ -470,6 +470,11 @@ test.describe('settings tool', () => {
     await expect(dropdown).not.toBeVisible()
     await expect(settingsWrapper).toBeVisible()
 
+    // Keyboard navigation should work again (omnibar regains focus)
+    await appPage.keyboard.press('ArrowDown')
+    const activeAfterClose = appPage.locator('.nuxy-list-item--active')
+    await expect(activeAfterClose).toContainText('Icon Pack')
+
     // 3. Press Escape when dropdown is closed -> closes the settings tool and returns to shell
     await appPage.keyboard.press('Escape')
     await appPage.waitForFunction(

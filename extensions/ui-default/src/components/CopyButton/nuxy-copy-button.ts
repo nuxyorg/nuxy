@@ -1,4 +1,4 @@
-import { LitElement, html, css, customElement, property, state } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property, state, ref } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 const COPY_ICON: TemplateResult = html`<svg
@@ -75,6 +75,11 @@ export class NuxyCopyButtonElement extends LitElement {
   declare private copied: boolean
 
   private resetTimer: ReturnType<typeof setTimeout> | null = null
+  private fallbackTextarea: HTMLTextAreaElement | null = null
+
+  private onFallbackTextareaRef = (el: Element | undefined): void => {
+    this.fallbackTextarea = (el as HTMLTextAreaElement | null | undefined) ?? null
+  }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
@@ -90,12 +95,11 @@ export class NuxyCopyButtonElement extends LitElement {
       await navigator.clipboard.writeText(this.value)
       this.markCopied()
     } catch {
-      const el = document.createElement('textarea')
+      const el = this.fallbackTextarea
+      if (!el) return
       el.value = this.value
-      document.body.appendChild(el)
       el.select()
       document.execCommand('copy')
-      document.body.removeChild(el)
       this.markCopied()
     }
   }
@@ -122,6 +126,12 @@ export class NuxyCopyButtonElement extends LitElement {
         <span>${this.copied ? CHECK_ICON : COPY_ICON}</span>
         <span>${displayLabel}</span>
       </button>
+      <textarea
+        hidden
+        aria-hidden="true"
+        tabindex="-1"
+        ${ref(this.onFallbackTextareaRef)}
+      ></textarea>
     `
   }
 }

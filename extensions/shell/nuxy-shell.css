@@ -6,7 +6,7 @@
   max-width: 800px;
   height: fit-content;
   border-radius: var(--radius-xl);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px -12px var(--shadow-dark, rgba(0, 0, 0, 0.5));
   display: flex;
   flex-direction: column;
   padding: 2px;
@@ -21,7 +21,7 @@
 
 :host([gradient-mode='light']) {
   box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.6),
+    0 25px 50px -12px var(--shadow-dark, rgba(0, 0, 0, 0.6)),
     0 0 30px -4px var(--gradient-color-2, rgba(110, 195, 244, 0.3));
   --gradient-color-1: var(--gradient-1, #c3e4f5);
   --gradient-color-2: var(--gradient-2, #6ec3f4);
@@ -59,7 +59,7 @@
     hsl(360, 85%, 65%)
   );
   box-shadow:
-    0 25px 50px -12px rgba(0, 0, 0, 0.6),
+    0 25px 50px -12px var(--shadow-dark, rgba(0, 0, 0, 0.6)),
     0 0 30px -4px rgba(180, 100, 255, 0.4);
 }
 

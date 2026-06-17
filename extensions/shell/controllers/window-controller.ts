@@ -165,10 +165,8 @@ export class WindowController implements ReactiveController {
   }
 
   constructor(private readonly host: ReactiveControllerHost) {
-    const zoom = getZoom()
-    const dw = (typeof window !== 'undefined' ? window.innerWidth : 1280) / zoom
-    const dh = (typeof window !== 'undefined' ? window.innerHeight : 800) / zoom
-    this._position = { x: Math.round((dw - 800) / 2), y: Math.round(dh * 0.15) }
+    // Defer real positioning to SyncController.updatePosition once the overlay viewport is ready.
+    this._position = { x: 0, y: 0 }
     host.addController(this)
   }
 

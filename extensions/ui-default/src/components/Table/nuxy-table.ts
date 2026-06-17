@@ -1,153 +1,82 @@
 /* cspell:ignore reparenting */
 import './index.css'
-import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  css,
+  nothing,
+  customElement,
+  property,
+  type TemplateResult,
+} from '@nuxyorg/core'
+import { parseJsonArray } from '../../utils/parse.ts'
 
-const TABLE_HOST_ATTRS = new Set(['container-class', 'class', 'style'])
-
-// NuxyTableContainerElement: slot-based child reparenting into <table> — keep as HTMLElement
-export class NuxyTableContainerElement extends HTMLElement {
-  private container: HTMLDivElement | null = null
-  private table: HTMLTableElement | null = null
-
-  static get observedAttributes(): string[] {
-    return ['container-class']
-  }
-
-  connectedCallback(): void {
-    this.build()
-    this.sync()
-    this.forwardAttrsToTable()
-  }
-
-  attributeChangedCallback(name: string): void {
-    if (!this.isConnected) return
-    if (name === 'container-class' || name === 'class') this.sync()
-    else this.forwardAttrsToTable()
-  }
-
-  private build(): void {
-    if (this.container) return
-
-    this.container = document.createElement('div')
-    this.table = document.createElement('table')
-
-    const nodes: Node[] = []
-    for (const child of this.childNodes) nodes.push(child)
-
-    this.container.appendChild(this.table)
-    for (const node of nodes) {
-      this.table.appendChild(node)
+@customElement('nuxy-table-container')
+export class NuxyTableContainerElement extends LitElement {
+  static styles = css`
+    :host {
+      display: block;
     }
-    this.appendChild(this.container)
-  }
+  `
 
-  private sync(): void {
-    const containerClass = this.getAttribute('container-class') ?? ''
+  @property({ type: String, attribute: 'container-class' })
+  declare containerClass: string
+
+  render(): TemplateResult {
+    const containerClass = this.containerClass || this.getAttribute('container-class') || ''
     const tableClass = this.getAttribute('class') ?? ''
 
-    if (this.container) {
-      this.container.className = ['nuxy-table-container', containerClass].filter(Boolean).join(' ')
-    }
-    if (this.table) {
-      this.table.className = ['nuxy-table', tableClass].filter(Boolean).join(' ')
-    }
-  }
-
-  private forwardAttrsToTable(): void {
-    if (!this.table) return
-    for (const attr of this.attributes) {
-      if (TABLE_HOST_ATTRS.has(attr.name)) continue
-      this.table.setAttribute(attr.name, attr.value)
-    }
+    return html`
+      <div class=${['nuxy-table-container', containerClass].filter(Boolean).join(' ')}>
+        <table class=${['nuxy-table', tableClass].filter(Boolean).join(' ')}>
+          <slot></slot>
+        </table>
+      </div>
+    `
   }
 }
 
-// NuxyTableRowElement: slot-based child reparenting into <tr> — keep as HTMLElement
-export class NuxyTableRowElement extends HTMLElement {
-  private row: HTMLTableRowElement | null = null
-
-  static get observedAttributes(): string[] {
-    return ['interactive']
-  }
-
-  connectedCallback(): void {
-    this.build()
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private build(): void {
-    if (this.row) return
-
-    this.row = document.createElement('tr')
-    const nodes: Node[] = []
-    for (const child of this.childNodes) nodes.push(child)
-
-    for (const node of nodes) {
-      this.row.appendChild(node)
+@customElement('nuxy-table-row')
+export class NuxyTableRowElement extends LitElement {
+  static styles = css`
+    :host {
+      display: contents;
     }
-    this.appendChild(this.row)
-  }
+  `
 
-  private sync(): void {
+  render(): TemplateResult {
     const interactive = this.hasAttribute('interactive')
     const extraClass = this.getAttribute('class') ?? ''
 
-    if (this.row) {
-      this.row.className = [
-        'nuxy-table__tr',
-        interactive ? 'nuxy-table__tr--interactive' : '',
-        extraClass,
-      ]
-        .filter(Boolean)
-        .join(' ')
-    }
+    return html`
+      <tr
+        class=${['nuxy-table__tr', interactive ? 'nuxy-table__tr--interactive' : '', extraClass]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        <slot></slot>
+      </tr>
+    `
   }
 }
 
-// NuxyTableCellElement: slot-based child reparenting into <th>/<td> — keep as HTMLElement
-export class NuxyTableCellElement extends HTMLElement {
-  private cell: HTMLTableCellElement | null = null
-
-  static get observedAttributes(): string[] {
-    return ['header']
-  }
-
-  connectedCallback(): void {
-    this.build()
-    this.sync()
-  }
-
-  attributeChangedCallback(): void {
-    if (this.isConnected) this.sync()
-  }
-
-  private build(): void {
-    if (this.cell) return
-
-    const isHeader = this.hasAttribute('header')
-    this.cell = document.createElement(isHeader ? 'th' : 'td')
-
-    const nodes: Node[] = []
-    for (const child of this.childNodes) nodes.push(child)
-
-    for (const node of nodes) {
-      this.cell.appendChild(node)
+@customElement('nuxy-table-cell')
+export class NuxyTableCellElement extends LitElement {
+  static styles = css`
+    :host {
+      display: contents;
     }
-    this.appendChild(this.cell)
-  }
+  `
 
-  private sync(): void {
+  render(): TemplateResult {
     const isHeader = this.hasAttribute('header')
     const baseClass = isHeader ? 'nuxy-table__th' : 'nuxy-table__td'
     const extraClass = this.getAttribute('class') ?? ''
+    const className = [baseClass, extraClass].filter(Boolean).join(' ')
 
-    if (this.cell) {
-      this.cell.className = [baseClass, extraClass].filter(Boolean).join(' ')
-    }
+    return isHeader
+      ? html`<th class=${className}><slot></slot></th>`
+      : html`<td class=${className}><slot></slot></td>`
   }
 }
 
@@ -157,13 +86,7 @@ export interface DataListItemMeta {
 }
 
 function parseDataListItems(raw: string | null): DataListItemMeta[] {
-  if (!raw) return []
-  try {
-    const parsed = JSON.parse(raw) as DataListItemMeta[]
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
+  return parseJsonArray<DataListItemMeta>(raw)
 }
 
 @customElement('nuxy-data-list')
@@ -319,16 +242,6 @@ export class NuxyStatElement extends LitElement {
         : nothing}
     `
   }
-}
-
-if (!customElements.get('nuxy-table-container')) {
-  customElements.define('nuxy-table-container', NuxyTableContainerElement)
-}
-if (!customElements.get('nuxy-table-row')) {
-  customElements.define('nuxy-table-row', NuxyTableRowElement)
-}
-if (!customElements.get('nuxy-table-cell')) {
-  customElements.define('nuxy-table-cell', NuxyTableCellElement)
 }
 
 declare global {

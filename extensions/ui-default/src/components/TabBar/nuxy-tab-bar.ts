@@ -1,4 +1,12 @@
-import { LitElement, html, css, nothing, customElement, property } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  css,
+  nothing,
+  customElement,
+  property,
+  query as queryDecorator,
+} from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 import { smoothScrollIntoViewIfNeeded } from '../../hooks/scroll-into-view'
 
@@ -30,7 +38,7 @@ export class NuxyTabBarElement extends LitElement {
     :host([orientation='horizontal']) {
       overflow-x: overlay;
       padding: 4px 8px;
-      border-bottom: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+      border-bottom: 1px solid var(--border);
     }
 
     :host([orientation='vertical']) {
@@ -47,7 +55,7 @@ export class NuxyTabBarElement extends LitElement {
       border-radius: 6px;
       font-size: 0.75rem;
       font-family: inherit;
-      color: var(--text-muted, rgba(255, 255, 255, 0.45));
+      color: var(--text-muted);
       white-space: nowrap;
       display: flex;
       align-items: center;
@@ -58,13 +66,13 @@ export class NuxyTabBarElement extends LitElement {
     }
 
     .nuxy-tab:hover {
-      background: var(--hover, rgba(255, 255, 255, 0.06));
+      background: var(--hover);
       color: var(--text, rgba(255, 255, 255, 0.8));
     }
 
     .nuxy-tab--active {
-      background: var(--accent-subtle, rgba(99, 102, 241, 0.15));
-      color: var(--accent, #6366f1);
+      background: var(--accent-subtle);
+      color: var(--accent);
     }
 
     .nuxy-tab__icon {
@@ -104,6 +112,9 @@ export class NuxyTabBarElement extends LitElement {
   @property({ type: String, reflect: true })
   declare orientation: string
 
+  @queryDecorator('.nuxy-tab--active')
+  private activeTabEl!: HTMLElement | null
+
   private _prevActive = ''
 
   updated(): void {
@@ -121,9 +132,8 @@ export class NuxyTabBarElement extends LitElement {
   }
 
   private scrollActiveIntoView(): void {
-    const activeEl = this.renderRoot.querySelector('.nuxy-tab--active')
-    if (activeEl instanceof HTMLElement) {
-      smoothScrollIntoViewIfNeeded(activeEl)
+    if (this.activeTabEl instanceof HTMLElement) {
+      smoothScrollIntoViewIfNeeded(this.activeTabEl)
     }
   }
 

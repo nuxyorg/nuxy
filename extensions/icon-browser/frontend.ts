@@ -1,4 +1,13 @@
-import { LitElement, html, css, customElement, property, state, unsafeSVG } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  css,
+  customElement,
+  property,
+  state,
+  unsafeSVG,
+  ref,
+} from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 
 @customElement('nuxy-tool-icon-browser')
@@ -48,36 +57,36 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
     }
 
     .icon-wrap svg {
-      width: 22px;
-      height: 22px;
-      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     .name {
       font-size: 9px;
-      opacity: 0.5;
+      color: var(--color-text-muted, rgba(255, 255, 255, 0.45));
       text-align: center;
       word-break: break-all;
-      line-height: 1.3;
-      font-family: var(--font-mono, monospace);
+      line-height: 1.2;
       max-width: 100%;
     }
 
     .empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      opacity: 0.4;
-      font-size: var(--font-size-sm);
+      padding: var(--space-6);
+      text-align: center;
+      color: var(--color-text-muted, rgba(255, 255, 255, 0.45));
+      font-size: var(--font-sm);
+    }
+
+    .footer-portal {
+      display: none;
     }
   `
 
   @property({ type: String })
-  declare extensionId: string
+  declare committedQuery: string
 
   @property({ type: String })
-  declare committedQuery: string
+  declare extensionId: string
 
   @state() declare private _icons: string[] | null
   @state() declare private _filter: string
@@ -86,7 +95,7 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
   private _rawQuery = ''
   private _extId: string | null = null
   private _svgCache = new Map<string, string>()
-  private _footerEl = document.createElement('span')
+  private _footerRegistered = false
 
   set query(value: string) {
     this._rawQuery = value ?? ''
@@ -99,30 +108,26 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
 
   connectedCallback(): void {
     super.connectedCallback()
-    window.core?.shell?.setFooterPortal(this._footerEl)
-    this._updateFooter()
     void this._load()
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
     window.core?.shell?.setFooterPortal(null)
+    this._footerRegistered = false
   }
 
-  protected updated(changedProperties: Map<PropertyKey, unknown>): void {
-    super.updated(changedProperties)
-    this._updateFooter()
+  private onFooterRef = (el: Element | undefined): void => {
+    if (!el || this._footerRegistered) return
+    window.core?.shell?.setFooterPortal(el as HTMLElement)
+    this._footerRegistered = true
   }
 
-  private _updateFooter(): void {
-    if (!window.core?.shell) return
+  private _footerText(): string {
     const all = this._icons ?? []
     const icons = this._filter ? all.filter((n) => n.includes(this._filter)) : all
-    if (this._ready) {
-      this._footerEl.textContent = `${icons.length} / ${all.length} icons`
-    } else {
-      this._footerEl.textContent = 'Loading…'
-    }
+    if (this._ready) return `${icons.length} / ${all.length} icons`
+    return 'Loading…'
   }
 
   private async _load(): Promise<void> {
@@ -171,10 +176,11 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
     const icons = this._filter ? all.filter((n) => n.includes(this._filter)) : all
 
     return html`
+      <span class="footer-portal" ${ref(this.onFooterRef)}>${this._footerText()}</span>
       ${!this._ready
         ? html`<div class="empty">Loading…</div>`
         : this._filter && icons.length === 0
-          ? html`<div class="empty">No icons match "${this._filter}"</div>`
+          ? html`<div class="empty">No matches for "${this._filter}"</div>`
           : html`
               <div class="grid">
                 ${icons.map(

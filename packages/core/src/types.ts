@@ -159,6 +159,10 @@ export interface LoadedExtension {
   settingsSchema?: ExtensionSettingsSchema
   /** When true, extension is installed but its worker/frontend is not active. */
   disabled?: boolean
+  /** Set when the extension's worker crashed or failed to register; cleared on a clean restart. */
+  status?: 'failed'
+  /** Human-readable reason for the last failure, set alongside `status`. */
+  lastError?: string
 }
 
 export interface IpcResult<T = unknown> {

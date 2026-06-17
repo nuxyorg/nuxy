@@ -38,7 +38,6 @@ export class NuxyTooltipElement extends LitElement {
       opacity: 1;
     }
 
-    /* Placement */
     .nuxy-tooltip--top {
       bottom: calc(100% + 6px);
       left: 50%;
@@ -71,14 +70,6 @@ export class NuxyTooltipElement extends LitElement {
 
   @state()
   declare private _visible: boolean
-  @state()
-  declare private _triggerHTML: string
-
-  connectedCallback(): void {
-    // Capture trigger children before Lit replaces them
-    this._triggerHTML = this.innerHTML
-    super.connectedCallback()
-  }
 
   private show = (): void => {
     this._visible = true
@@ -99,7 +90,7 @@ export class NuxyTooltipElement extends LitElement {
         @focusin=${this.show}
         @focusout=${this.hide}
       >
-        <span .innerHTML=${this._triggerHTML}></span>
+        <slot></slot>
         <span
           role="tooltip"
           class="nuxy-tooltip nuxy-tooltip--${placement} ${this._visible

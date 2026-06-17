@@ -1,4 +1,13 @@
-import { LitElement, html, nothing, customElement, css } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  nothing,
+  customElement,
+  css,
+  query as queryDecorator,
+  ref,
+  createRef,
+} from '@nuxyorg/core'
 import { ShellController } from './controller.ts'
 import './nuxy-shell.ts'
 import './nuxy-portal-host.ts'
@@ -23,7 +32,11 @@ function createToolHost(ctrl: ShellController): HTMLElement & {
   query: string
   committedQuery: string
 } {
-  const host = document.createElement('nuxy-tool-host') as HTMLElement & {
+  const Ctor = customElements.get('nuxy-tool-host') as CustomElementConstructor | undefined
+  if (!Ctor) {
+    throw new Error('nuxy-tool-host is not registered')
+  }
+  const host = new Ctor() as HTMLElement & {
     extensionId: string
     query: string
     committedQuery: string
@@ -196,6 +209,13 @@ export class NuxyShellViewElement extends LitElement {
   private lastActiveTool: string | null = null
   private _inputEl: HTMLInputElement | null = null
   private _didInitialPosition = false
+  private readonly _shellRef = createRef<HTMLElement>()
+
+  @queryDecorator('nuxy-shell-omni-bar')
+  private omniBarEl!: HTMLElement & { nativeInput?: HTMLInputElement }
+
+  @queryDecorator('nuxy-command-palette')
+  private commandPaletteEl!: (HTMLElement & { nativeInput?: HTMLInputElement | null }) | null
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -217,19 +237,16 @@ export class NuxyShellViewElement extends LitElement {
     if (!ctrl) return
     const s = ctrl.state
 
-    ctrl.refs.container = this.shadowRoot!.querySelector('nuxy-shell') as HTMLElement | null
+    ctrl.refs.container =
+      this._shellRef.value ?? this.renderRoot.querySelector('nuxy-shell') ?? null
     if (ctrl.refs.container && !this._didInitialPosition) {
       this._didInitialPosition = true
-      ctrl.syncInitialPosition()
+      ctrl.onContainerReady()
     }
 
-    const omniEl = this.shadowRoot!.querySelector('nuxy-shell-omni-bar') as HTMLElement & {
-      nativeInput?: HTMLInputElement
-    }
+    const omniEl = this.omniBarEl
     if (omniEl) {
-      const input =
-        omniEl.nativeInput ||
-        (omniEl.shadowRoot?.querySelector('.nuxy-shell-omni-bar__input') as HTMLInputElement | null)
+      const input = omniEl.nativeInput ?? null
       this._inputEl = input
       ctrl.refs.input = input
       if (input && input.value !== s.query) {
@@ -239,10 +256,13 @@ export class NuxyShellViewElement extends LitElement {
       if (input && input.placeholder !== placeholder) {
         input.placeholder = placeholder
       }
-      if (input && !s.activeTool && !s.showCommandPalette) {
-        input.focus()
+      if (!s.showCommandPalette) {
+        ctrl.ensureShellFocus()
       }
+      ctrl.bindOmniBarInput(input)
     }
+
+    ctrl.refs.commandPaletteInput = this.commandPaletteEl?.nativeInput ?? null
   }
 
   private renderOmniBar() {
@@ -662,7 +682,7 @@ export class NuxyShellViewElement extends LitElement {
           if (e.target === e.currentTarget) window.core?.window?.esc?.()
         }}
       >
-        <nuxy-shell class=${containerClass} style=${styleStr}>
+        <nuxy-shell ${ref(this._shellRef)} class=${containerClass} style=${styleStr}>
           <nuxy-shell-resize-handles
             @nuxy-shell-resize-start=${(e: Event) => {
               const detail = (e as CustomEvent<{ direction: string; nativeEvent: MouseEvent }>)

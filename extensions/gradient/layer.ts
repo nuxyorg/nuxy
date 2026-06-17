@@ -1,3 +1,5 @@
+import { LitElement, html, customElement, query as queryDecorator } from '@nuxyorg/core'
+
 let layerStylesAdopted = false
 
 function ensureLayerStyles(): void {
@@ -35,7 +37,15 @@ function ensureLayerStyles(): void {
   document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet]
 }
 
-export class NuxyGradientLayerElement extends HTMLElement {
+@customElement('nuxy-gradient-layer')
+export class NuxyGradientLayerElement extends LitElement {
+  protected createRenderRoot(): HTMLElement {
+    return this
+  }
+
+  @queryDecorator('#nuxy-shell-gradient-canvas')
+  private canvasEl!: HTMLCanvasElement
+
   private gInstance: {
     play?: () => void
     pause?: () => void
@@ -45,15 +55,33 @@ export class NuxyGradientLayerElement extends HTMLElement {
   private observer: ResizeObserver | null = null
   private pauseTimeout: ReturnType<typeof setTimeout> | null = null
   private compositionOff: (() => void) | null = null
+  private gradientInitStarted = false
 
   connectedCallback(): void {
     ensureLayerStyles()
-    if (this.querySelector('#nuxy-shell-gradient-canvas')) return
+    super.connectedCallback()
+    this.compositionOff =
+      window.core?.composition?.onStateChange('background-layer', (state) => {
+        this.applyCompositionState(state)
+      }) ?? null
+  }
 
-    const canvas = document.createElement('canvas')
-    canvas.id = 'nuxy-shell-gradient-canvas'
-    canvas.className = 'nuxy-shell-gradient-canvas'
-    this.appendChild(canvas)
+  disconnectedCallback(): void {
+    super.disconnectedCallback()
+    this.compositionOff?.()
+    this.compositionOff = null
+    this.observer?.disconnect()
+    this.observer = null
+    if (this.pauseTimeout) clearTimeout(this.pauseTimeout)
+  }
+
+  protected firstUpdated(): void {
+    this.initGradientShader()
+  }
+
+  private initGradientShader(): void {
+    if (this.gradientInitStarted || !this.canvasEl) return
+    this.gradientInitStarted = true
 
     const dynamicImport = new Function('url', 'return import(url)')
     dynamicImport('nuxy-ext://com.nuxy.gradient/gradient.ts')
@@ -80,25 +108,12 @@ export class NuxyGradientLayerElement extends HTMLElement {
       .catch((err: unknown) => {
         console.warn('Failed to load gradient shader inside shell:', err)
       })
-
-    this.compositionOff =
-      window.core?.composition?.onStateChange('background-layer', (state) => {
-        this.applyCompositionState(state)
-      }) ?? null
-  }
-
-  disconnectedCallback(): void {
-    this.compositionOff?.()
-    this.compositionOff = null
-    this.observer?.disconnect()
-    this.observer = null
-    if (this.pauseTimeout) clearTimeout(this.pauseTimeout)
   }
 
   private applyCompositionState(state: Record<string, unknown>): void {
     const active = Boolean(state.active)
     const mode = typeof state.mode === 'string' ? state.mode : 'light'
-    const canvas = this.querySelector('#nuxy-shell-gradient-canvas') as HTMLElement | null
+    const canvas = this.canvasEl
 
     if (active && mode === 'light') {
       if (this.pauseTimeout) {
@@ -125,6 +140,13 @@ export class NuxyGradientLayerElement extends HTMLElement {
       this.gInstance?.pause?.()
       this.pauseTimeout = null
     }, 500)
+  }
+
+  render() {
+    return html`<canvas
+      id="nuxy-shell-gradient-canvas"
+      class="nuxy-shell-gradient-canvas"
+    ></canvas>`
   }
 }
 

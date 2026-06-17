@@ -920,6 +920,57 @@ if (el && smoothScrollIntoViewIfNeeded) {
 }
 ```
 
+### 5.13 No imperative DOM manipulation
+
+Extension UI must be **declarative**. All visible structure belongs in Lit `html\`\``templates (or real`<slot>` projection). Do not build or patch the DOM imperatively in tool elements, ui-default components, or controllers that own UI.
+
+**Banned in extension source** (enforced by ESLint `no-restricted-syntax` on `extensions/**/*.ts`):
+
+| Pattern                                                                                 | Why                                                             |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `.innerHTML =`, `.outerHTML =`, `insertAdjacentHTML()`                                  | Bypasses Lit diffing; XSS risk; breaks focus and a11y           |
+| `document.createElement`, `document.body.appendChild`                                   | Imperative trees; use `html\`\``and`<nuxy-portal>` for overlays |
+| `replaceChildren`, `this.appendChild`, `removeChild`, `insertBefore` on component hosts | Fights Lit's renderer; use `requestUpdate()` + `render()`       |
+| `querySelector` / `querySelectorAll` on `this`, `document`, or shadow roots for refs    | Fragile; use `@query`, `ref()`, or template bindings            |
+
+```typescript
+// WRONG — imperative icon injection
+this.iconHost.innerHTML = window.core.icons.get('search') ?? ''
+
+// CORRECT — declarative icon component
+html`<nuxy-icon name="search"></nuxy-icon>`
+
+// WRONG — manual dropdown mount
+document.body.appendChild(this.dropdownEl)
+
+// CORRECT — portal in render()
+html`<nuxy-portal .open=${this.open}>${this.renderMenu()}</nuxy-portal>`
+
+// WRONG — ref via querySelector
+const input = this.querySelector('input') as HTMLInputElement
+
+// CORRECT — Lit ref or @query
+@query('input') private inputEl!: HTMLInputElement
+// or: html`<input ${ref((el) => { this.inputEl = el as HTMLInputElement })} />`
+```
+
+**Use instead:**
+
+- Lit `html\`\``, `repeat()`, `map()`, and named/default `<slot>` elements
+- `@query` / `ref()` for element references after render
+- `<nuxy-portal>` for modals, dropdowns, and other body-mounted layers
+- Shared ui-default utilities: `focus-trap.ts`, `mirror-attrs.ts`, `parse-options.ts`
+
+**Allowlisted exceptions** (kernel-adjacent or unavoidable browser APIs — do not copy these patterns into new code):
+
+- `render-markdown.ts`, `nuxy-tool-host.ts`, `nuxy-portal.ts`
+- `scroll-into-view.ts` (scroll helper; internal DOM walk only)
+- `gradient/gradient.ts` (minified third-party WebGL bundle)
+
+**Always OK:** `tests/**`, `*.test.ts`, `e2e.spec.ts` — Playwright and unit tests may use `querySelector` to assert DOM.
+
+See also: [DOM Manipulation Rules](/extensions/dom-manipulation) · enforced locally via `pnpm lint`.
+
 ---
 
 ## 6. Localisation (i18n)
@@ -1565,6 +1616,7 @@ Use `const { t } = useTranslation(EXT_ID)` from `window.UI`.
 | Plugin system deep dive   | [Plugin System](/design/modular-plugin-system)       | Extension loading sequence and CoreContext proxy internals                          |
 | Frontend structure        | [Frontend Structure](/extensions/frontend-structure) | Controller vs viewmodel patterns, `frontend.ts` bootstrap rules                     |
 | Lit renderer composition  | [Lit Renderer](/design/lit-renderer)                 | Tool host, composition layer, cross-extension UI                                    |
+| Imperative DOM rules      | [DOM Manipulation](/extensions/dom-manipulation)     | Banned APIs, ESLint enforcement, allowlist                                          |
 
 ---
 
@@ -1583,6 +1635,27 @@ h('div', { style: 'color:#333;padding:12px;background:#fff' }, ...)
 ```
 
 All styling is done via CSS custom property tokens inline. Use `var(--color-*)`, `var(--space-*)`, `var(--font-*)`, `var(--radius-*)` tokens directly in `style` props. A `styles/` directory will not be served by the protocol server.
+
+### V. Imperative DOM manipulation
+
+```typescript
+// BANNED — building UI outside Lit render()
+this.innerHTML = `<button>${label}</button>`
+document.body.appendChild(this.menuEl)
+this.replaceChildren(renderPanel(state))
+const row = this.querySelector('[data-row]')
+
+// CORRECT — declarative Lit templates + refs
+render() {
+  return html`
+    <nuxy-button>${label}</nuxy-button>
+    <nuxy-portal .open=${this.open}>${this.renderMenu()}</nuxy-portal>
+  `
+}
+@query('[data-row]') private rowEl!: HTMLElement
+```
+
+See §5.13 and [DOM Manipulation Rules](/extensions/dom-manipulation).
 
 ---
 
@@ -1666,6 +1739,7 @@ Before submitting or merging an extension, verify every item:
 - [ ] No hardcoded colors — only `var(--token-name)` CSS custom properties
 - [ ] No emojis — use icon components
 - [ ] Input received from `query` prop — no own input rendering
+- [ ] No imperative DOM — no `.innerHTML`, `createElement`, `querySelector`, or `replaceChildren` in component code (§5.13)
 - [ ] Cross-extension IPC proxied through own backend
 - [ ] Only approved `window.dispatchEvent` channels used
 - [ ] No inline settings panel — settings are declared in `settings.json` and rendered by the settings extension

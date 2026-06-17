@@ -54,7 +54,7 @@
       }
     },
     "violations": [],
-    "filesCount": 18,
+    "filesCount": 19,
     "hasBackend": true,
     "hasBackendTest": true,
     "hasFrontend": false
@@ -79,7 +79,7 @@
       }
     },
     "violations": [],
-    "filesCount": 11,
+    "filesCount": 12,
     "hasBackend": false,
     "hasBackendTest": false,
     "hasFrontend": false
@@ -120,7 +120,7 @@
       }
     },
     "violations": [],
-    "filesCount": 69,
+    "filesCount": 70,
     "hasBackend": false,
     "hasBackendTest": false,
     "hasFrontend": false
@@ -186,7 +186,7 @@
       }
     },
     "violations": [],
-    "filesCount": 15,
+    "filesCount": 16,
     "hasBackend": true,
     "hasBackendTest": true,
     "hasFrontend": false
@@ -214,7 +214,7 @@
       }
     },
     "violations": [],
-    "filesCount": 21,
+    "filesCount": 22,
     "hasBackend": true,
     "hasBackendTest": true,
     "hasFrontend": false
@@ -261,7 +261,7 @@
       }
     },
     "violations": [],
-    "filesCount": 49,
+    "filesCount": 50,
     "hasBackend": true,
     "hasBackendTest": true,
     "hasFrontend": false
@@ -329,7 +329,7 @@
       }
     },
     "violations": [],
-    "filesCount": 3,
+    "filesCount": 4,
     "hasBackend": false,
     "hasBackendTest": false,
     "hasFrontend": false
@@ -347,7 +347,7 @@
       }
     },
     "violations": [],
-    "filesCount": 226,
+    "filesCount": 241,
     "hasBackend": false,
     "hasBackendTest": false,
     "hasFrontend": false

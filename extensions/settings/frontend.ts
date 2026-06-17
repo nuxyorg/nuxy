@@ -233,7 +233,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
                       ${ref((el) => {
                         const nuxyInput = el as NuxyInputElement | null
                         if (nuxyInput) {
-                          const input = nuxyInput.nativeInput || nuxyInput.querySelector('input')
+                          const input = nuxyInput.nativeInput
                           if (this.controller) {
                             this.controller.inputRefs[row.key] = input
                             if (input) {

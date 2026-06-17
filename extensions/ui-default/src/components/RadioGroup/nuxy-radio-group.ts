@@ -1,5 +1,6 @@
 import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
+import { parseJsonArray } from '../../utils/parse.ts'
 
 export interface RadioGroupOption {
   value: string
@@ -8,13 +9,7 @@ export interface RadioGroupOption {
 }
 
 function parseOptions(raw: string | null): RadioGroupOption[] {
-  if (!raw) return []
-  try {
-    const parsed = JSON.parse(raw) as RadioGroupOption[]
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
+  return parseJsonArray<RadioGroupOption>(raw)
 }
 
 @customElement('nuxy-radio-group')

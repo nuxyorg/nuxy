@@ -1,4 +1,4 @@
-import { LitElement, html, css, nothing, customElement, property, state } from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 
 @customElement('nuxy-wizard-section')
@@ -35,20 +35,9 @@ export class NuxyWizardSectionElement extends LitElement {
   @property({ type: String })
   declare title: string
 
-  @state()
-  declare private _iconHTML: string
-
-  connectedCallback(): void {
-    // Capture initial children as icon content before Lit replaces them
-    this._iconHTML = this.innerHTML
-    super.connectedCallback()
-  }
-
   render(): TemplateResult {
     return html`
-      ${this._iconHTML
-        ? html`<span class="nuxy-wizard-section__icon" .innerHTML=${this._iconHTML}></span>`
-        : nothing}
+      <span class="nuxy-wizard-section__icon"><slot name="icon"></slot></span>
       <h2 class="nuxy-wizard-section__title">${this.title}</h2>
     `
   }

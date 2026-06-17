@@ -141,7 +141,7 @@ export class NuxyMarkdownTextElement extends LitElement {
     }
 
     .nuxy-md-link {
-      color: var(--syntax-string, #7aa2f7);
+      color: var(--syntax-string);
       text-decoration: underline;
       text-underline-offset: 2px;
       text-decoration-color: rgba(122, 162, 247, 0.4);
@@ -152,7 +152,7 @@ export class NuxyMarkdownTextElement extends LitElement {
     }
 
     .nuxy-md-link:hover {
-      color: var(--text-accent, #a78bfa);
+      color: var(--text-accent);
       text-decoration-color: currentColor;
     }
 

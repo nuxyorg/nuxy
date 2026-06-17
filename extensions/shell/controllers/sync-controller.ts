@@ -6,6 +6,7 @@ import { parseCoordinate } from '../utils.ts'
 export interface SyncControllerCallbacks {
   getContainer: () => HTMLElement | null
   getInput: () => HTMLInputElement | null
+  getCommandPaletteInput: () => HTMLInputElement | null
   getCfg: () => ShellConfig | null
   getSettings: () => ShellConfig
   setCfg: (cfg: ShellConfig) => void
@@ -22,10 +23,12 @@ export interface SyncControllerCallbacks {
   recompute: () => void
   returnToShell: () => void
   applySettings: (s: ShellConfig) => void
+  ensureShellFocus: () => void
 }
 
 export class SyncController {
   private cleanups: Array<() => void> = []
+  private _positionRetryTimer: ReturnType<typeof setTimeout> | null = null
 
   constructor(private readonly callbacks: SyncControllerCallbacks) {}
 
@@ -69,18 +72,11 @@ export class SyncController {
       window.core?.shell?.resetToolState()
       this.callbacks.syncProviders()
       this.callbacks.recompute()
-      setTimeout(() => this.callbacks.getInput()?.focus(), 50)
+      this.callbacks.ensureShellFocus()
     }
 
     const onFocus = () => {
-      const paletteInput = document
-        .querySelector('nuxy-command-palette')
-        ?.shadowRoot?.querySelector('.nuxy-command-palette__input')
-      if (paletteInput) {
-        ;(paletteInput as HTMLInputElement).focus()
-      } else {
-        this.callbacks.getInput()?.focus()
-      }
+      this.callbacks.ensureShellFocus()
     }
 
     const handleSettingsUpdate = (detail: Record<string, unknown>) => {
@@ -94,13 +90,22 @@ export class SyncController {
 
     const onResize = () => this.updatePosition(false)
 
+    const onWindowShow = () => {
+      requestAnimationFrame(() => this.updatePosition(true))
+    }
+
     const offShellReset = window.core?.events?.on('shell-reset', onReset)
+    const offWindowShow = window.core?.window?.onShow?.(onWindowShow)
     window.addEventListener('focus', onFocus)
     window.addEventListener('resize', onResize)
     const offSettings = window.core?.events?.on('settings-updated', handleSettingsUpdate)
 
+    // Overlay may already be fullscreen before shell mounts; recenter once listeners are ready.
+    requestAnimationFrame(() => this.updatePosition(true))
+
     this.cleanups.push(() => {
       offShellReset?.()
+      offWindowShow?.()
       window.removeEventListener('focus', onFocus)
       window.removeEventListener('resize', onResize)
       offSettings?.()
@@ -116,7 +121,10 @@ export class SyncController {
   updatePosition(force = false, heightOverride?: number): void {
     const cfg = this.callbacks.getCfg() ?? this.callbacks.getSettings()
     const container = this.callbacks.getContainer()
-    if (!cfg?.windowPosition || !container) return
+    if (!cfg?.windowPosition || !container) {
+      if (!container && force) this._schedulePositionRetry(true)
+      return
+    }
     if (!force && this.callbacks.hasDragged()) return
     const parts = cfg.windowPosition.split(/[\s,]+/)
     const winWidth = container.offsetWidth
@@ -131,7 +139,19 @@ export class SyncController {
   }
 
   destroy(): void {
+    if (this._positionRetryTimer !== null) {
+      clearTimeout(this._positionRetryTimer)
+      this._positionRetryTimer = null
+    }
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
+  }
+
+  private _schedulePositionRetry(force: boolean): void {
+    if (this._positionRetryTimer !== null) return
+    this._positionRetryTimer = setTimeout(() => {
+      this._positionRetryTimer = null
+      this.updatePosition(force)
+    }, 16)
   }
 }

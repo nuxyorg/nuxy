@@ -1,36 +1,23 @@
-export class NuxyPortalHostElement extends HTMLElement {
-  private _portalElement: HTMLElement | null = null
+import { LitElement, html, nothing, customElement, property } from '@nuxyorg/core'
 
-  connectedCallback(): void {
-    if (this._portalElement) this.mountPortal()
+@customElement('nuxy-portal-host')
+export class NuxyPortalHostElement extends LitElement {
+  protected createRenderRoot(): HTMLElement {
+    return this
   }
 
-  set portalElement(el: HTMLElement | null) {
-    this.unmountPortal()
-    this._portalElement = el
-    if (el && this.isConnected) this.mountPortal()
-  }
+  @property({ attribute: false })
+  declare portalElement: HTMLElement | null
 
-  get portalElement(): HTMLElement | null {
-    return this._portalElement
-  }
-
-  private mountPortal(): void {
-    const el = this._portalElement
-    if (!el || el.parentNode === this) return
-    el.classList.add('nuxy-portal-host__content')
-    this.appendChild(el)
-  }
-
-  private unmountPortal(): void {
-    if (this._portalElement?.parentNode === this) {
-      this._portalElement.remove()
+  updated(changedProperties: Map<string, unknown>): void {
+    if (changedProperties.has('portalElement') && this.portalElement) {
+      this.portalElement.classList.add('nuxy-portal-host__content')
     }
   }
-}
 
-if (!customElements.get('nuxy-portal-host')) {
-  customElements.define('nuxy-portal-host', NuxyPortalHostElement)
+  render() {
+    return this.portalElement ? html`${this.portalElement}` : nothing
+  }
 }
 
 declare global {

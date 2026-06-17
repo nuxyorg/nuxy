@@ -5,6 +5,7 @@ import {
   nothing,
   customElement,
   property,
+  ref,
   type TemplateResult,
 } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
@@ -86,10 +87,17 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
 
   private controller: NyaaController | null = null
   private _query = ''
+  private omniPortalHost: HTMLDivElement | null = null
+
+  private onOmniPortalRef = (el: Element | undefined): void => {
+    this.omniPortalHost = (el as HTMLDivElement | null | undefined) ?? null
+    this.controller?.setOmniPortalHost(this.omniPortalHost)
+  }
 
   connectedCallback(): void {
     super.connectedCallback()
     this.controller = new NyaaController(() => this.requestUpdate())
+    this.controller.setOmniPortalHost(this.omniPortalHost)
     this.controller.connect()
     if (this._query) this.controller.setQuery(this._query)
   }
@@ -114,6 +122,7 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
   render() {
     if (!this.controller) return nothing
     return html`
+      <div class="nuxy-nyaa-omni-portal" hidden ${ref(this.onOmniPortalRef)}></div>
       <nuxy-two-panel split="50%"> ${this.renderLeft()} ${this.renderRight()} </nuxy-two-panel>
     `
   }

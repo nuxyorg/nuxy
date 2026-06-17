@@ -7,6 +7,8 @@ import { ToolController } from './controllers/tool-controller.ts'
 import { ProviderController } from './controllers/provider-controller.ts'
 import { WindowController } from './controllers/window-controller.ts'
 import { KeyboardController } from './controllers/keyboard-controller.ts'
+import { FocusController } from './controllers/focus-controller.ts'
+import { queryOmniBarInputFromDom } from './utils/focus.ts'
 import { InitController } from './controllers/init-controller.ts'
 import { SyncController } from './controllers/sync-controller.ts'
 import { QueryController } from './controllers/query-controller.ts'
@@ -87,6 +89,7 @@ export type ShellControllerState = ShellCoreState & {
 export interface ShellControllerRefs {
   container: HTMLElement | null
   input: HTMLInputElement | null
+  commandPaletteInput: HTMLInputElement | null
   cfg: ShellConfig | null
   hasDragged: boolean
   selectionSource: 'type' | 'nav'
@@ -108,6 +111,7 @@ export class ShellController {
 
   private readonly _host: ReactiveControllerHost
   private readonly _keyboard: KeyboardController
+  private readonly _focus: FocusController
   private readonly _init: InitController
   private readonly _sync: SyncController
   private cleanups: Array<() => void> = []
@@ -165,6 +169,7 @@ export class ShellController {
     this.refs = {
       container: null,
       input: null,
+      commandPaletteInput: null,
       cfg: null,
       hasDragged: false,
       selectionSource: 'type',
@@ -191,6 +196,13 @@ export class ShellController {
       setHoldMs: (ms) => this.store.setState({ holdMs: ms }),
     })
 
+    this._focus = new FocusController({
+      isCommandPaletteOpen: () => this.commandPalette.showCommandPalette,
+      getOmniBarInput: () => this.refs.input,
+      getCommandPaletteInput: () => this.refs.commandPaletteInput,
+      isOmniBarEnabled: () => this.store.getState().showOmniBar,
+    })
+
     this._init = new InitController({
       getActiveTool: () => this.tools.activeTool,
       applySettings: (s) => this._applySettings(s),
@@ -211,6 +223,7 @@ export class ShellController {
     this._sync = new SyncController({
       getContainer: () => this.refs.container,
       getInput: () => this.refs.input,
+      getCommandPaletteInput: () => this.refs.commandPaletteInput,
       getCfg: () => this.refs.cfg,
       getSettings: () => this.store.getState().settings,
       setCfg: (cfg) => {
@@ -238,7 +251,18 @@ export class ShellController {
       recompute: () => this._recompute(),
       returnToShell: () => this.returnToShell(),
       applySettings: (s) => this._applySettings(s),
+      ensureShellFocus: () => this.ensureShellFocus(),
     })
+  }
+
+  ensureShellFocus(): void {
+    const resolved = queryOmniBarInputFromDom()
+    if (resolved) this.refs.input = resolved
+    this._focus.ensureShellFocus()
+  }
+
+  bindOmniBarInput(input: HTMLInputElement | null): void {
+    this._focus.bindOmniInput(input)
   }
 
   // Merged state view for backward-compat with shell-view
@@ -270,6 +294,7 @@ export class ShellController {
     this._sync.bindBridge()
     this._sync.bindSync()
     this._keyboard.bind()
+    this._focus.bind()
     this._bindQuerySelectionSync()
     this._bindOmniBarControl()
     this._bindPositionClamp()
@@ -286,6 +311,7 @@ export class ShellController {
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
     this._keyboard.destroy()
+    this._focus.destroy()
     this._init.destroy()
     this._sync.destroy()
     this.t.destroy()
@@ -469,20 +495,15 @@ export class ShellController {
 
   closeCommandPalette(): void {
     this.commandPalette.close()
-    setTimeout(() => this.refs.input?.focus(), 50)
+    this.ensureShellFocus()
   }
 
   toggleCommandPalette(): void {
-    const wasOpen = this.commandPalette.showCommandPalette
-    this.commandPalette.toggle()
-    if (!wasOpen) {
-      requestAnimationFrame(() => {
-        const input = document
-          .querySelector('nuxy-command-palette')
-          ?.shadowRoot?.querySelector('.nuxy-command-palette__input') as HTMLInputElement | null
-        input?.focus()
-      })
+    if (this.commandPalette.showCommandPalette) {
+      this.closeCommandPalette()
+      return
     }
+    this.commandPalette.open()
   }
 
   /** Deactivate the active tool and reset omnibar query to return to the main shell screen. */
@@ -504,10 +525,10 @@ export class ShellController {
     if (shouldAnimate) {
       this._sync.updatePosition(true, toH!)
       this.win.animateToHeight(null, fromH, () => {
-        this.refs.input?.focus()
+        this.ensureShellFocus()
       })
     } else {
-      setTimeout(() => this.refs.input?.focus(), 50)
+      this.ensureShellFocus()
     }
   }
 
@@ -516,7 +537,7 @@ export class ShellController {
     return this.win.containerStyle(settings, this.tools.activeTool, isInitialLoad)
   }
 
-  syncInitialPosition(): void {
+  onContainerReady(): void {
     const settings = this.store.getState().settings
     this.refs.cfg = { ...(this.refs.cfg ?? {}), ...settings }
     requestAnimationFrame(() => this._sync.updatePosition(true))
@@ -647,7 +668,7 @@ export class ShellController {
         this.refs.input?.blur()
       } else if (action === 'show') {
         this.store.setState({ showOmniBar: true })
-        setTimeout(() => this.refs.input?.focus(), 50)
+        this.ensureShellFocus()
       } else if (action === 'clear') {
         this.query.reset()
         this.navigation.reset()

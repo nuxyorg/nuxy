@@ -16,6 +16,7 @@
     "format:fix": "node scripts/format-fix.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "lint-ext": "node scripts/lint-ext.mjs",
     "typecheck": "pnpm -C src typecheck && tsc --project extensions/tsconfig.json --noEmit",
     "spellcheck": "cspell lint \"**/*.{js,ts,tsx,jsx,json,md,html,css,yml,yaml}\" --no-progress",
     "check": "pnpm format && pnpm lint && pnpm typecheck && pnpm spellcheck",

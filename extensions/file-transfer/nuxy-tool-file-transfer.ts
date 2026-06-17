@@ -4,6 +4,7 @@ import {
   nothing,
   customElement,
   property,
+  ref,
   type TemplateResult,
 } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
@@ -23,6 +24,11 @@ export class NuxyToolFileTransferElement extends LitElement implements NuxyToolE
 
   private controller: FileTransferController | null = null
   private _query = ''
+  private fileInputEl: HTMLInputElement | null = null
+
+  private onFileInputRef = (el: Element | undefined): void => {
+    this.fileInputEl = (el as HTMLInputElement | null | undefined) ?? null
+  }
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -33,6 +39,7 @@ export class NuxyToolFileTransferElement extends LitElement implements NuxyToolE
     this.style.height = '100%'
     this.style.overflow = 'hidden'
     this.controller = new FileTransferController(() => this.requestUpdate())
+    this.controller.registerPickFileHandler(() => this.fileInputEl?.click())
     this.controller.connect()
     if (this._query) this.controller.setQuery(this._query)
   }
@@ -52,6 +59,13 @@ export class NuxyToolFileTransferElement extends LitElement implements NuxyToolE
     if (this._query === next) return
     this._query = next
     this.controller?.setQuery(next)
+  }
+
+  private onFileInputChange = (e: Event): void => {
+    const input = e.target as HTMLInputElement
+    const file = input.files?.[0]
+    if (file) this.controller?.handleFileSelected([file])
+    input.value = ''
   }
 
   render(): TemplateResult | typeof nothing {
@@ -151,6 +165,14 @@ export class NuxyToolFileTransferElement extends LitElement implements NuxyToolE
     return html`
       <div style=${this.panelStyle()}>
         <nuxy-section-header label=${t('send.title')}></nuxy-section-header>
+        <input
+          type="file"
+          hidden
+          aria-hidden="true"
+          tabindex="-1"
+          ${ref(this.onFileInputRef)}
+          @change=${this.onFileInputChange}
+        />
         <nuxy-list active-index=${0}>
           ${sendItems.map(
             (item, i) => html`

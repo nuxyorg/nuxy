@@ -9,6 +9,7 @@ import {
   unregisterExtension,
   getExtensionById,
   resolveExtensionId,
+  markFailed,
 } from './registry.js'
 import { registerExtensionTheme } from '../themes/extension-themes.js'
 import { registerIconPack } from '../icons/registry.js'
@@ -233,6 +234,7 @@ export function startExtensionDirectoryWatcher(
 export function onExtensionWorkerExit(extId: string, code: number): void {
   if (code === 0 || suppressedWorkerExits.has(extId)) return
   log.info(`Extension worker "${extId}" exited with code ${code} — scheduling restart`)
+  markFailed(extId, `Worker exited with code ${code}`)
   scheduleWorkerRestart(extId)
 }
 

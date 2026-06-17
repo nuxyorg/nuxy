@@ -1,11 +1,6 @@
 import { LitElement, html, css, nothing, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
-
-function parseNum(attr: string | null, fallback?: number): number | undefined {
-  if (attr === null || attr === '') return fallback
-  const n = Number(attr)
-  return Number.isFinite(n) ? n : fallback
-}
+import { parseNum } from '../../utils/parse.ts'
 
 @customElement('nuxy-progress-bar')
 export class NuxyProgressBarElement extends LitElement {

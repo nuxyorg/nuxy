@@ -1,4 +1,11 @@
-import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  css,
+  customElement,
+  property,
+  query as queryDecorator,
+} from '@nuxyorg/core'
 import { getZoom } from '../../utils/zoom'
 
 @customElement('nuxy-two-panel')
@@ -15,7 +22,7 @@ export class NuxyTwoPanelElement extends LitElement {
       flex-shrink: 0;
       overflow-x: hidden;
       overflow-y: overlay;
-      border-right: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+      border-right: 1px solid var(--border);
     }
 
     :host([hide-left]) ::slotted(:first-child) {
@@ -61,15 +68,24 @@ export class NuxyTwoPanelElement extends LitElement {
   declare hideLeft: boolean
 
   @property({ type: Number, attribute: 'min-left' })
-  minLeft = 80
+  declare minLeft: number
 
   @property({ type: Number, attribute: 'min-right' })
-  minRight = 80
+  declare minRight: number
+
+  @queryDecorator('.handle')
+  private handleEl!: HTMLElement
 
   private observer: MutationObserver | null = null
   private _dragging = false
   private _dragStartX = 0
   private _dragStartWidth = 0
+
+  constructor() {
+    super()
+    this.minLeft = 80
+    this.minRight = 80
+  }
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -96,7 +112,7 @@ export class NuxyTwoPanelElement extends LitElement {
   }
 
   private _repositionHandle(): void {
-    const handle = this.shadowRoot?.querySelector<HTMLElement>('.handle')
+    const handle = this.handleEl
     const left = Array.from(this.children)[0] as HTMLElement | undefined
     if (!handle || !left) return
     handle.style.left = `${left.offsetWidth}px`
@@ -121,7 +137,7 @@ export class NuxyTwoPanelElement extends LitElement {
       Math.min(this.offsetWidth - this.minRight, this._dragStartWidth + delta)
     )
     const left = Array.from(this.children)[0] as HTMLElement | undefined
-    const handle = this.shadowRoot?.querySelector<HTMLElement>('.handle')
+    const handle = this.handleEl
     if (left) left.style.width = `${newWidth}px`
     if (handle) handle.style.left = `${newWidth}px`
   }

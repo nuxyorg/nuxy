@@ -74,6 +74,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
     this.t.destroy()
     window.core?.shell?.registerActions([])
     window.core?.shell?.registerKeyActions(null)
+    window.core?.window?.setBlurSuppressed?.(false)
   }
 
   syncSearchPlaceholder(): void {
@@ -123,15 +124,22 @@ export class NotesController extends BaseExtensionController<NotesState> {
     window.core?.shell?.refreshKeyHints()
   }
 
+  focusTextarea(ta?: HTMLTextAreaElement | null): void {
+    const target = ta ?? this.textareaRef.current
+    if (!target || !this.state.editMode) return
+    target.focus()
+    const len = target.value.length
+    target.setSelectionRange(len, len)
+  }
+
   setEditMode(editMode: boolean): void {
     this.store.setState({ editMode })
+    window.core?.window?.setBlurSuppressed?.(editMode)
     if (editMode) {
       requestAnimationFrame(() => {
         const ta = this.textareaRef.current
         if (ta) {
-          ta.focus()
-          const len = ta.value.length
-          ta.setSelectionRange(len, len)
+          this.focusTextarea(ta)
         }
       })
     }
@@ -141,9 +149,10 @@ export class NotesController extends BaseExtensionController<NotesState> {
   async handleNew(): Promise<void> {
     const note = await invoke<Note>('notes:create', { title: 'New Note', body: '' })
     const updated = await invoke<Note[]>('notes:list', {})
+    const filtered = this.filterNotes(updated, this.state.query)
     this.store.setState({
       notes: updated,
-      filteredNotes: this.filterNotes(updated, this.state.query),
+      filteredNotes: filtered,
       selected: note,
       body: '',
       selectedIndex: 0,
@@ -174,16 +183,26 @@ export class NotesController extends BaseExtensionController<NotesState> {
     if (!noteToDelete) return
     await invoke('notes:delete', { id: noteToDelete.id })
     const list = await invoke<Note[]>('notes:list', {})
+    const filtered = this.filterNotes(list, this.state.query)
+    const newIndex =
+      selectedIndex < filtered.length
+        ? selectedIndex
+        : filtered.length > 0
+          ? filtered.length - 1
+          : -1
+    const newSelected = newIndex >= 0 ? filtered[newIndex] : null
     this.store.setState({
       notes: list,
-      filteredNotes: this.filterNotes(list, this.state.query),
-      selected: null,
-      body: '',
-      selectedIndex: -1,
+      filteredNotes: filtered,
+      selected: newSelected,
+      body: newSelected?.body ?? '',
+      selectedIndex: newIndex,
       editMode: false,
     })
+    window.core?.window?.setBlurSuppressed?.(false)
     window.UI?.toast?.('Note deleted', { type: 'info' })
     window.core?.shell?.refreshKeyHints()
+    if (newIndex === -1) window.core?.shell?.controlOmniBar('show')
   }
 
   async handleRecord(): Promise<void> {
