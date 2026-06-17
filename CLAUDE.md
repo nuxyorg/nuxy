@@ -13,13 +13,13 @@ pnpm dev          # Build ui-default once, then start Electron + ui-default watc
 pnpm build        # Build ui-default, run tests, then build renderer + Electron main
 pnpm package      # Build + package distributable via electron-builder
 pnpm test         # Run vitest unit tests (from src/)
-pnpm format       # Format all files with Prettier
-pnpm format:check # Check formatting without writing
+pnpm format       # Check formatting without writing (prettier --check)
+pnpm format:fix   # Format all files with Prettier (prettier --write)
 pnpm lint         # ESLint across the repo
 pnpm lint:fix     # ESLint with auto-fix
 pnpm typecheck    # TypeScript check (src/ + extensions/)
-pnpm check        # format:check + lint + typecheck (CI-style)
-pnpm check:fix    # format + lint:fix + typecheck (after AI edits)
+pnpm check        # format + lint + typecheck + spellcheck (CI-style)
+pnpm check:fix    # format:fix + lint:fix + typecheck + spellcheck (after edits)
 ```
 
 > **Note**: `extensions/ui-default/frontend.js` is a build artifact (gitignored). Run `pnpm -C extensions/ui-default build` manually to rebuild it, or use `pnpm dev` which handles this automatically.

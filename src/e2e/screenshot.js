@@ -70,8 +70,7 @@ async function run() {
     await page.waitForTimeout(3000)
 
     console.log('Taking screenshot...')
-    const screenshotPath =
-      '/home/xava/.gemini/antigravity-ide/brain/47735c7d-1391-4f62-a413-943b666dae76/screenshot.png'
+    const screenshotPath = resolve(tmpdir(), 'nuxy-screenshot.png')
     await page.screenshot({ path: screenshotPath })
     console.log(`Screenshot saved to: ${screenshotPath}`)
   } catch (err) {

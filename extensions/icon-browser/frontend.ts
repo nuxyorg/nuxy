@@ -1,13 +1,4 @@
-import {
-  LitElement,
-  html,
-  css,
-  nothing,
-  customElement,
-  property,
-  state,
-  unsafeSVG,
-} from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property, state, unsafeSVG } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 
 @customElement('nuxy-tool-icon-browser')
@@ -205,4 +196,3 @@ declare global {
     'nuxy-tool-icon-browser': NuxyToolIconBrowserElement
   }
 }
-

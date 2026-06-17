@@ -1,3 +1,4 @@
+/* cspell:ignore naruto */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { type CoreContext } from '@nuxyorg/extension-sdk'
 import { createMockCore } from '@nuxyorg/extension-sdk/testing'

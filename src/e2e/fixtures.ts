@@ -129,6 +129,7 @@ type ElectronTestFixtures = {
 
 export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
   socketPath: [
+    // eslint-disable-next-line no-empty-pattern -- Playwright fixture signature requires the destructure
     async ({}, use) => {
       const socketName = `nuxy-test-${Math.random().toString(36).substring(2, 9)}.sock`
       const socketPath = resolve(tmpdir(), socketName)
@@ -205,10 +206,10 @@ export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
         }
 
         const overrideQuery = (proto: any) => {
-          proto.querySelectorAll = function(selector: string) {
+          proto.querySelectorAll = function (selector: string) {
             return querySelectorAllDeep(selector, this)
           }
-          proto.querySelector = function(selector: string) {
+          proto.querySelector = function (selector: string) {
             return querySelectorAllDeep(selector, this)[0] || null
           }
         }

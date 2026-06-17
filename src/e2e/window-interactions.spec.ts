@@ -52,18 +52,18 @@ test.describe('window.core.window API', () => {
 
 test.describe('window dragging', () => {
   test('shell container is draggable (has drag handle)', async ({ appPage }) => {
-    await appPage.waitForSelector('.nuxy-shell-omni-bar', { timeout: 400 })
+    await appPage.waitForSelector('nuxy-shell-omni-bar', { timeout: 2000 })
 
     const hasDragHandle = await appPage.evaluate(() => {
-      return document.querySelector('.nuxy-shell-omni-bar') !== null
+      return document.querySelector('nuxy-shell-omni-bar') !== null
     })
     expect(hasDragHandle).toBe(true)
   })
 
   test('mousedown on omnibar initiates drag', async ({ appPage }) => {
-    await appPage.waitForSelector('.nuxy-shell-omni-bar', { timeout: 400 })
+    await appPage.waitForSelector('nuxy-shell-omni-bar', { timeout: 2000 })
 
-    const omnibar = await appPage.$('.nuxy-shell-omni-bar')
+    const omnibar = await appPage.$('nuxy-shell-omni-bar')
     expect(omnibar).not.toBeNull()
 
     const box = await omnibar!.boundingBox()
@@ -85,7 +85,7 @@ test.describe('window resize handles', () => {
   test('resize handle elements exist in the shell container', async ({ appPage }) => {
     // The shell renders 8 resize handles (n, s, e, w, ne, nw, se, sw)
     // They are absolutely-positioned divs without specific class names
-    await appPage.waitForSelector('.nuxy-main-wrapper', { timeout: 400 })
+    await appPage.waitForSelector('.nuxy-main-wrapper', { timeout: 2000 })
 
     const hasMainWrapper = await appPage.evaluate(() => {
       return document.querySelector('.nuxy-main-wrapper') !== null

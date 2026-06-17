@@ -55,7 +55,11 @@ parentPort!.on('message', (msg: HostToWorkerMessage) => {
         parentPort!.postMessage({ kind: 'reply', id: msg.id, result: res } as WorkerToHostMessage)
       } catch (e) {
         const err = e as Error
-        parentPort!.postMessage({ kind: 'reply', id: msg.id, error: err.message } as WorkerToHostMessage)
+        parentPort!.postMessage({
+          kind: 'reply',
+          id: msg.id,
+          error: err.message,
+        } as WorkerToHostMessage)
       }
     })()
   }
@@ -97,7 +101,11 @@ void (async () => {
     logger.log('error', 'Worker', 'Extension failed to load: ' + err.message, {
       stack: err.stack,
     })
-    const errMsg: WorkerToHostMessage = { kind: 'event', type: 'registry:error', error: err.message }
+    const errMsg: WorkerToHostMessage = {
+      kind: 'event',
+      type: 'registry:error',
+      error: err.message,
+    }
     parentPort!.postMessage(errMsg)
   }
 })()

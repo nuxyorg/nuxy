@@ -30,7 +30,7 @@ linux:
     - AppImage
     - deb
   category: Utility
-  maintainer: xavaneo@gmail.com
+  maintainer: ata@gulalan.com
   synopsis: Extensible desktop launcher
   description: Nuxy desktop launcher and productivity hub.
 mac:

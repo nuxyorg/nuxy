@@ -1,10 +1,12 @@
 import { _electron as electron } from '@playwright/test'
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { resolve, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 
-const PROJECT_ROOT = '/home/xava/Documents/nuxy'
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const PROJECT_ROOT = resolve(__dirname, '..')
 const APP_DIR = resolve(PROJECT_ROOT, 'src')
 const ELECTRON_BIN = execSync(
   `find "${PROJECT_ROOT}/node_modules/.pnpm" -name "electron" -path "*/dist/electron" -type f 2>/dev/null | head -1`

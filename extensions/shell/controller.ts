@@ -160,7 +160,6 @@ export class ShellController {
       holdMs: null,
       extensionSummary: null,
     })
-
     ;(this._host as any).store = this.store
 
     this.refs = {

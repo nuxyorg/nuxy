@@ -73,7 +73,7 @@ All exports are available on `window.UI` at runtime.
 
 `useToolKeyActions` `useListNavigation` `useTwoPanelNav`
 
-### Specialised
+### Specialized
 
 `ShortcutBar` `ShortcutHint` `ShortcutSep` `EmptyState` `MediaPreview` `ConversionCard` `ChatMessage` `ChatList` `WizardSection` `PropertiesPanel` `MarkdownText`  
 Primitives: `VisuallyHidden` `AspectRatio` `Portal` `DataList` `Stat` `Table` `TableRow` `TableCell`

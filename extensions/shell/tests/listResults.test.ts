@@ -1,3 +1,4 @@
+/* cspell:ignore recents */
 import { describe, it, expect } from 'vitest'
 import { buildListResults, buildOmnibarSections } from '../utils/listResults.ts'
 import type { Tool, ProviderState, Provider } from '../types.ts'

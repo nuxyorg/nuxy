@@ -1,6 +1,137 @@
 // fallow-ignore-file code-duplication
 import { test, expect } from '../../../src/e2e/fixtures.js'
-import { resetShell, openTool, typeInOmnibar, submitOmnibar } from '../../tests/e2e-helpers.js'
+
+function toolNamePattern(name: string): RegExp {
+  return new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
+}
+
+async function typeInOmnibar(page: any, text: string): Promise<void> {
+  const input = page.locator('.nuxy-shell-omni-bar__input')
+  await input.click()
+  await input.fill(text)
+  await input.dispatchEvent('input', { bubbles: true })
+  await page.waitForFunction(
+    (t: string) => {
+      const view = document.querySelector('nuxy-shell-view')
+      const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
+      const inp = omni?.shadowRoot?.querySelector(
+        '.nuxy-shell-omni-bar__input'
+      ) as HTMLInputElement | null
+      return inp?.value === t
+    },
+    text,
+    { timeout: 2000 }
+  )
+}
+
+/** Submit omnibar query — waits for React tool key actions to see the typed query. */
+async function submitOmnibar(page: any): Promise<void> {
+  await page.waitForFunction(
+    () => {
+      const actions = (window as any).core?.shell?.getKeyActionsGetter()?.() ?? []
+      const enter = actions.find((a: { key: string }) => a.key === 'Enter')
+      if (!enter) return true
+      return typeof enter.activeOn !== 'function' || enter.activeOn()
+    },
+    undefined,
+    { timeout: 3000 }
+  )
+  await page.locator('.nuxy-shell-omni-bar__input').focus()
+  await page.keyboard.press('Enter')
+}
+
+async function resetShell(page: any) {
+  await page.evaluate(() => {
+    window.core?.events?.emit('shell-reset')
+  })
+  await page.waitForFunction(
+    () => {
+      const view = document.querySelector('nuxy-shell-view')
+      const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
+      const el = omni?.shadowRoot?.querySelector(
+        '.nuxy-shell-omni-bar__tool-name'
+      ) as HTMLElement | null
+      const toolActive = el !== null && !el.hidden && (el.textContent ?? '').trim().length > 0
+      const palette = view?.shadowRoot?.querySelector('nuxy-command-palette')
+      const input = omni?.shadowRoot?.querySelector(
+        '.nuxy-shell-omni-bar__input'
+      ) as HTMLInputElement | null
+      return !toolActive && palette === null && (input?.value ?? '') === ''
+    },
+    undefined,
+    { timeout: 2000 }
+  )
+  await page.waitForSelector('[role="option"]', { timeout: 2000 }).catch(() => {})
+  await page.locator('.nuxy-shell-omni-bar__input').focus()
+}
+
+/** Click a tool row from omnibar results — avoids provider rows that also match the query. */
+async function clickToolOption(page: any, name: string): Promise<void> {
+  const pattern = toolNamePattern(name)
+  await page.waitForFunction(
+    (toolName: string) => {
+      const re = new RegExp(toolName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')
+      const view = document.querySelector('nuxy-shell-view')
+      const root = view?.shadowRoot
+      if (!root) return false
+      const sections = root.querySelectorAll('.nuxy-shell-results-section')
+      for (const section of sections) {
+        const headerEl = section.querySelector('nuxy-section-header')
+        const header = headerEl?.getAttribute('label') ?? ''
+        if (!/^Tools$/i.test(header.trim())) continue
+        const options = section.querySelectorAll('[role="option"]')
+        for (const option of options) {
+          const txt = option.textContent ?? ''
+          if (re.test(txt)) return true
+        }
+      }
+      return false
+    },
+    name,
+    { timeout: 3000 }
+  )
+  const toolsSection = page.locator('.nuxy-shell-results-section').filter({
+    has: page.locator('nuxy-section-header[label="Tools"]'),
+  })
+  await toolsSection.locator('[role="option"]').filter({ hasText: pattern }).first().click()
+}
+
+async function waitForToolMounted(page: any, timeout = 10000): Promise<void> {
+  await page.waitForFunction(
+    () => {
+      const view = document.querySelector('nuxy-shell-view')
+      const omni = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
+      const el = omni?.shadowRoot?.querySelector(
+        '.nuxy-shell-omni-bar__tool-name'
+      ) as HTMLElement | null
+      return !!el && !el.hidden && !!(el.textContent ?? '').trim()
+    },
+    undefined,
+    { timeout }
+  )
+  await page.waitForFunction(
+    () => {
+      const view = document.querySelector('nuxy-shell-view')
+      const host = view?.shadowRoot?.querySelector('.nuxy-shell-tool-wrapper nuxy-tool-host')
+      if (!host || host.hasAttribute('loading')) return false
+      if (host.childElementCount === 0) return false
+      if (host.querySelector('.nuxy-react-tool-island')) {
+        return (window.core?.shell?.getKeyActionsGetter()?.()?.length ?? 0) > 0
+      }
+      return true
+    },
+    undefined,
+    { timeout: 5000 }
+  )
+}
+
+async function openTool(page: any, name: string) {
+  await resetShell(page)
+  await typeInOmnibar(page, name)
+  await clickToolOption(page, name)
+  await waitForToolMounted(page)
+  await page.locator('.nuxy-shell-omni-bar__input').focus()
+}
 
 test.describe('gradient extension', () => {
   test('shell gradient canvas element is present in the DOM', async ({ appPage }) => {

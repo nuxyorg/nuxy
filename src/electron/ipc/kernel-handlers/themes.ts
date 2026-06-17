@@ -35,9 +35,6 @@ export const themeHandlers: Record<string, Handler> = {
       return { success: false, error: 'Missing icon name', code: 'INVALID_ARGS' }
     }
     const svg = getIcon(name, args?.pack)
-    if (!svg) {
-      return { success: false, error: `Icon not found: ${name}`, code: 'NOT_FOUND' }
-    }
     return { success: true, data: svg }
   },
 

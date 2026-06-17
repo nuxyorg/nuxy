@@ -1,4 +1,5 @@
 // fallow-ignore-file code-duplication
+/* cspell:ignore myextension */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import fs from 'fs'
 import path from 'path'

@@ -51,13 +51,13 @@ When modifying or generating code for this repository, you **MUST** strictly adh
 After writing or modifying code, run these before considering the task done:
 
 ```bash
-pnpm format        # or: pnpm exec prettier --write <edited-files>
+pnpm format:fix    # or: pnpm exec prettier --write <edited-files>
 pnpm lint:fix      # fix auto-fixable ESLint issues
 pnpm typecheck     # src/ + extensions/
 ```
 
 - Fix **all** errors in files you touched. Do not leave type errors or lint errors behind.
-- One-shot: `pnpm check:fix` runs format + lint:fix + typecheck.
+- One-shot: `pnpm check:fix` runs format:fix + lint:fix + typecheck + spellcheck.
 - Read-only CI equivalent: `pnpm check`.
 
 Cursor project hooks (`.cursor/hooks.json`) auto-format on edit and verify edited files on each agent turn. If the stop hook reports failures, fix them before stopping.

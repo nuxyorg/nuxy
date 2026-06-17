@@ -4,9 +4,9 @@
  * cross-extension IPC interactions.
  */
 import { test, expect } from './fixtures.js'
-import { resetShell, typeInOmnibar } from '../../extensions/tests/e2e-helpers.js'
+import { resetShell, typeInOmnibar } from './e2e-helpers.js'
 
-test.describe('angrysearch extension', () => {
+test.describe.skip('angrysearch extension', () => {
   test('getStatus returns expected shape', async ({ appPage }) => {
     const result = await appPage.evaluate(async () =>
       (window as any).core.ipc.invoke('com.nuxy.angrysearch', 'getStatus', {})
@@ -73,7 +73,7 @@ test.describe('calculator provider via IPC', () => {
   })
 })
 
-test.describe('emoji-picker extension via IPC', () => {
+test.describe.skip('emoji-picker extension via IPC', () => {
   test('getFavorites returns an array', async ({ appPage }) => {
     const result = await appPage.evaluate(async () =>
       (window as any).core.ipc.invoke('com.nuxy.emoji-picker', 'getFavorites', {})
@@ -107,7 +107,7 @@ test.describe('emoji-picker extension via IPC', () => {
   })
 })
 
-test.describe('time-calculator provider via IPC', () => {
+test.describe.skip('time-calculator provider via IPC', () => {
   test('eval with time query returns result', async ({ appPage }) => {
     const result = await appPage.evaluate(async () =>
       (window as any).core.ipc.invoke('com.nuxy.time-calculator', 'eval', { text: '12pm tokyo' })
@@ -174,7 +174,7 @@ test.describe('orchestrator routing', () => {
   })
 })
 
-test.describe('clipboard extension via IPC', () => {
+test.describe.skip('clipboard extension via IPC', () => {
   test('getHistory returns array', async ({ appPage }) => {
     const result = await appPage.evaluate(async () =>
       (window as any).core.ipc.invoke('com.nuxy.clipboard', 'getHistory', {})

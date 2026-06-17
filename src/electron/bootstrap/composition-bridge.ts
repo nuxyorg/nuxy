@@ -87,10 +87,15 @@ export function createCompositionBridge(ipcRenderer: IpcRenderer): CoreCompositi
         throw new Error('nuxy-shell is not mounted')
       }
 
-      element.slot = slotName
-      mountIntoShell(shell, slotName, element)
+      if (typeof HTMLElement !== 'undefined' && !(element instanceof HTMLElement)) {
+        throw new Error('element must be an instance of HTMLElement')
+      }
+      const htmlEl = element as HTMLElement
 
-      const record: MountRecord = { slotName, element, extId }
+      htmlEl.slot = slotName
+      mountIntoShell(shell, slotName, htmlEl)
+
+      const record: MountRecord = { slotName, element: htmlEl, extId }
       mountsBySlot.set(slotName, [...(mountsBySlot.get(slotName) ?? []), record])
 
       if (opts?.state) {
@@ -100,8 +105,8 @@ export function createCompositionBridge(ipcRenderer: IpcRenderer): CoreCompositi
       return {
         setState: (state) => setState(slotName, state),
         release: () => {
-          element.remove()
-          const next = (mountsBySlot.get(slotName) ?? []).filter((m) => m.element !== element)
+          htmlEl.remove()
+          const next = (mountsBySlot.get(slotName) ?? []).filter((m) => m.element !== htmlEl)
           if (next.length === 0) mountsBySlot.delete(slotName)
           else mountsBySlot.set(slotName, next)
         },

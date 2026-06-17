@@ -1,10 +1,11 @@
+import { defineConfig } from 'eslint/config'
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
 import litPlugin from 'eslint-plugin-lit'
 import wcPlugin from 'eslint-plugin-wc'
 import globals from 'globals'
 
-export default tseslint.config(
+export default defineConfig(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   litPlugin.configs['flat/recommended'],
@@ -24,6 +25,7 @@ export default tseslint.config(
       '**/website/docs/.vitepress/dist/**',
       '**/website/docs/.vitepress/cache/**',
       '**/reports/**',
+      '**/playwright-report/**',
       'extensions/ui-default/frontend.js',
     ],
   },

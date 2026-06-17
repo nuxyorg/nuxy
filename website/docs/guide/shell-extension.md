@@ -56,7 +56,9 @@ extensions/shell/
 ## Root Files Reference
 
 ### `backend.ts`
+
 Manages the backend worker process for the shell. It registers key IPC endpoints for history and metrics:
+
 - **`register(core: CoreContext): void`**: Entry point that loads historical records on startup and registers the following three IPC handlers:
   - `getRecentTools`: Resolves the array of recently opened tool IDs.
   - `getUsageStats`: Resolves the usage count and query logs object.
@@ -65,9 +67,11 @@ Manages the backend worker process for the shell. It registers key IPC endpoints
 ---
 
 ### `controller.ts`
+
 Defines `ShellController`, the core conductor coordinating all frontend events and bindings.
 
 #### Key Methods:
+
 - **`connect(): void`**: Hooks up sub-controllers, registers listeners to the IPC/DOM bridge, and starts computing provider states.
 - **`disconnect(): void`**: Safely detaches event handlers, removes intervals, and resets tool-scoped state properties.
 - **`resolveOmniBarPlaceholder(): string`**: Computes the search input placeholder based on the active tool or localized fallbacks.
@@ -81,9 +85,11 @@ Defines `ShellController`, the core conductor coordinating all frontend events a
 ---
 
 ### `frontend.ts`
+
 Defines `NuxyShellViewElement` (`<nuxy-shell-view>`), the main visual container mounted at launcher bootstrap.
 
 #### Key Render Functions:
+
 - **`render()`**: Combines the backdrop, resizing boundaries, omnibar, results area, and footer layout into the main template.
 - **`renderOmniBar()`**: Renders the input container, loading indicators, custom portal extensions, and registers keyboard listeners.
 - **`renderResultsPanel()`**: Orchestrates card slots, lists, and skeleton loading grids.
@@ -94,7 +100,9 @@ Defines `NuxyShellViewElement` (`<nuxy-shell-view>`), the main visual container 
 ---
 
 ### `nuxy-shell.ts`
+
 Defines `<nuxy-shell>`, the visual wrapper containing background portals and border gradient configurations.
+
 - **`SHELL_COMPOSITION_SLOTS`**: Declares layout slots for third-party extensions:
   - `background-layer`: Full-bleed canvas layout.
   - `footer-portal`: Utility footer overlay slots.
@@ -104,21 +112,25 @@ Defines `<nuxy-shell>`, the visual wrapper containing background portals and bor
 ---
 
 ### `nuxy-portal-host.ts`
+
 Defines `<nuxy-portal-host>`. Helper component that accepts an HTML element reference (`portalElement`) and appends it dynamically into the DOM tree.
 
 ---
 
 ### `nuxy-shell-omni-bar.ts`
+
 Defines `<nuxy-shell-omni-bar>`. Implements the text field element, searching icons, spinner graphics, and progress bars matching timed hold operations.
 
 ---
 
 ### `nuxy-shell-resize-handles.ts`
+
 Defines `<nuxy-shell-resize-handles>`. Renders 8 interactive corner/edge anchors to trigger resizing events via mouse drag.
 
 ---
 
 ### `nuxy-command-palette.ts`
+
 Defines `<nuxy-command-palette>`. Implements a searchable drop-down overlay that filters and executes actions contextually relevant to the current search query. Supports recursive submenus up to `MAX_DEPTH` (10).
 
 ---
@@ -126,13 +138,17 @@ Defines `<nuxy-command-palette>`. Implements a searchable drop-down overlay that
 ## Controllers Reference (`controllers/`)
 
 ### `command-palette-controller.ts`
+
 Manages open/closed states for the command palette.
+
 - **Methods**: `toggle()`, `open()`, and `close()`.
 
 ---
 
 ### `init-controller.ts`
+
 Bootstraps launcher configs, tools, themes, and locale data from the main process.
+
 - **`load()`**: Dispatches initial startup queries:
   - `kernel:listTools` to get all tools.
   - `kernel:listProviders` to get all providers.
@@ -145,7 +161,9 @@ Bootstraps launcher configs, tools, themes, and locale data from the main proces
 ---
 
 ### `keyboard-controller.ts`
+
 Handles global keyboard event dispatching.
+
 - **Key Actions**:
   - `Ctrl+Q` / `Cmd+Q`: Calls the window quit process.
   - `Ctrl+K` / `Cmd+K`: Opens the command palette.
@@ -155,13 +173,17 @@ Handles global keyboard event dispatching.
 ---
 
 ### `navigation-controller.ts`
+
 Maintains selected item index tracking inside lists.
+
 - **Methods**: `setSelectedIndex(index)`, `moveDown(listLength)`, `moveUp()`, and `reset()`.
 
 ---
 
 ### `provider-controller.ts`
+
 Manages querying active providers.
+
 - **`syncActions(...)`**: Instantly fires evaluations to action-based providers.
 - **`sync(...)`**: Queries list-based search providers, debounced at 50ms.
 - **`_invokeProviderEval(...)`**: Executes the IPC query. Shows skeleton animations if queries take longer than 150ms.
@@ -169,12 +191,15 @@ Manages querying active providers.
 ---
 
 ### `query-controller.ts`
+
 Stores search query variables (`_query`, `_savedQuery`) and dispatches updates to host templates.
 
 ---
 
 ### `sync-controller.ts`
+
 Synchronizes state changes between the renderer and preload/main process.
+
 - **`bindBridge()`**: Monitors and syncs portal changes or placeholder modifications from the shell bridge.
 - **`bindSync()`**: Listens to style changes, focus signals, and configuration updates to repaint the DOM or reset active tools.
 - **`updatePosition(force, heightOverride)`**: Positions the launcher window based on config coordinates.
@@ -183,13 +208,17 @@ Synchronizes state changes between the renderer and preload/main process.
 ---
 
 ### `tool-controller.ts`
+
 Manages registry lookups for extensions.
+
 - **Methods**: `setTools(tools)`, `setOrchestrators(orchestrators)`, `setRecentToolIds(ids)`, `setUsageStats(stats)`, and `setActiveTool(toolId)`.
 
 ---
 
 ### `window-controller.ts`
+
 Handles physics-based spring animations for window geometry.
+
 - **Properties**:
   - Uses spring algorithms to smoothly animate window heights (`HEIGHT_SPRING`) and positions (`POSITION_SPRING`).
   - **`handleDragMouseDown(...)`**: Performs repositioning calculations.
@@ -200,19 +229,24 @@ Handles physics-based spring animations for window geometry.
 ## Utilities Reference (`utils/`)
 
 ### `keyboard.ts`
+
 - **`getDeepActiveElement(root)`**: Traverses shadow DOM boundaries to locate the focused element.
 - **`isWritingElement(el)`**: Determines if a target element is a text input, textbox, or contenteditable node.
 
 ### `listResults.ts`
+
 - **`buildOmnibarSections(tools, query, providerStates, recentToolIds, providers, usageStats)`**: Organizes, dedupes, and prioritizes matches based on usage patterns.
 - **`affinityScore(toolId, query, usageStats)`**: Calculates usage metrics to rank matching items.
 
 ### `omniBarPlaceholder.ts`
+
 - **`resolveOmniBarPlaceholder(bridge, activeToolName, activeToolPlaceholder, t)`**: Resolves input search placeholders.
 
 ### `toolSearchPlaceholder.ts`
+
 - **`loadToolSearchPlaceholder(extId)`**: Retrieves a tool's custom placeholder from translations.
 - **`syncToolSearchPlaceholder(extId, isStillActive)`**: Applies localized placeholders when a tool is activated.
 
 ### `zoom.ts`
+
 - **`getZoom()`**: Reads the document element's zoom property to compute coordinates correctly.

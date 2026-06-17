@@ -23,6 +23,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm spellcheck
+
       - run: pnpm test
 
       - run: pnpm -C src typecheck

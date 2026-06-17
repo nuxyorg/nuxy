@@ -143,7 +143,7 @@ export class NuxyToolHostElement extends LitElement {
           return
         }
 
-        const el = document.createElement(tag) as NuxyToolElement
+        const el = document.createElement(tag) as unknown as HTMLElement & NuxyToolElement
         el.extensionId = extId
         el.query = this._query
         el.committedQuery = this._committedQuery

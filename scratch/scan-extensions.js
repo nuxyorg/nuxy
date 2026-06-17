@@ -1,7 +1,10 @@
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'node:url'
 
-const EXTENSIONS_DIR = '/home/xava/Documents/nuxy/extensions'
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const PROJECT_ROOT = path.resolve(__dirname, '..')
+const EXTENSIONS_DIR = path.join(PROJECT_ROOT, 'extensions')
 
 // Exclude build artifacts or node_modules if any
 const EXCLUDE_DIRS = ['node_modules', 'dist', 'build', '.git']
@@ -36,7 +39,12 @@ function walkDir(dir) {
 
 const extensions = fs.readdirSync(EXTENSIONS_DIR).filter((file) => {
   const fullPath = path.join(EXTENSIONS_DIR, file)
-  return fs.statSync(fullPath).isDirectory() && !EXCLUDE_DIRS.includes(file)
+  return (
+    fs.statSync(fullPath).isDirectory() &&
+    !EXCLUDE_DIRS.includes(file) &&
+    // "tests" is a shared test-helper package, not an extension — skip it
+    file !== 'tests'
+  )
 })
 
 const report = {}
@@ -93,8 +101,12 @@ for (const ext of extensions) {
     // However, build outputs or entry points listed in manifest might be .js in manifest,
     // but the source directory shouldn't have .js unless it's a config file or similar.
     // Wait, the rule is "All source files use .ts or .tsx - no .js extension files".
+    // Exception: uikit extensions may have a root-level frontend.js that is a Vite build artifact.
+    const isUikitBuildArtifact =
+      extname === '.js' && extReport.manifest?.type === 'uikit' && path.dirname(file) === extPath
     if (
       extname === '.js' &&
+      !isUikitBuildArtifact &&
       basename !== 'manifest.json' &&
       basename !== 'package.json' &&
       !file.includes('node_modules')
@@ -294,10 +306,7 @@ for (const ext of extensions) {
 }
 
 // Write JSON
-fs.writeFileSync(
-  '/home/xava/Documents/nuxy/scratch/scan-report.json',
-  JSON.stringify(report, null, 2)
-)
+fs.writeFileSync(path.join(__dirname, 'scan-report.json'), JSON.stringify(report, null, 2))
 
 // Generate Markdown
 let md = `# Extension Scan Report\n\nGenerated on: ${new Date().toISOString()}\n\n`
@@ -319,5 +328,5 @@ for (const [ext, data] of Object.entries(report)) {
   md += `\n---\n\n`
 }
 
-fs.writeFileSync('/home/xava/Documents/nuxy/scratch/scan-report.md', md)
+fs.writeFileSync(path.join(__dirname, 'scan-report.md'), md)
 console.log('Report saved to scratch/scan-report.json and scratch/scan-report.md')

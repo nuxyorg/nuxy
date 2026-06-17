@@ -9,9 +9,9 @@ export type WorkerToHostMessage =
     }
   | { kind: 'event'; type: 'registry:error'; error: string }
   | { kind: 'call'; type: 'host:call'; id: string; channel: string; payload?: unknown }
-  | { kind: 'reply'; id: string; result?: unknown; error?: string }
+  | { kind: 'reply'; type?: undefined; id: string; result?: unknown; error?: string }
 
 /** Messages sent from the host to the extension worker. */
 export type HostToWorkerMessage =
   | { kind: 'reply'; type: 'host:reply'; id: string; result?: unknown; error?: string }
-  | { kind: 'call'; id: string; channel: string; payload?: unknown }
+  | { kind: 'call'; type?: undefined; id: string; channel: string; payload?: unknown }

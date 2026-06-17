@@ -2,6 +2,7 @@
  * E2E tests for the Nuxy shell interaction flow: omnibar input, command palette,
  * extension selection, shell reset, and keyboard navigation.
  */
+/* cspell:ignore zzznomatch */
 import { test, expect } from './fixtures.js'
 import {
   resetShell,
@@ -9,7 +10,7 @@ import {
   pressOmnibarKey,
   waitForToolMounted,
   clickToolOption,
-} from '../../extensions/tests/e2e-helpers.js'
+} from './e2e-helpers.js'
 
 test.describe('omnibar input', () => {
   test.beforeEach(async ({ appPage }) => {

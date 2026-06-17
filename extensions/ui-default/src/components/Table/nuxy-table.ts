@@ -1,3 +1,4 @@
+/* cspell:ignore reparenting */
 import './index.css'
 import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxyorg/core'
 

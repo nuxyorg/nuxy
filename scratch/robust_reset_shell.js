@@ -1,7 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const projectRoot = '/home/xava/Documents/nuxy'
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const projectRoot = path.resolve(__dirname, '..')
 
 function getAllFiles(dir, files = []) {
   const list = fs.readdirSync(dir)

@@ -25,59 +25,75 @@ Supplies a set of named SVG icons. Loaded at startup; icons are accessed by name
 
 ## Available Icons
 
-The pack ships 50 icons covering common UI actions and extension categories:
+The pack ships 65 icons covering common UI actions and extension categories:
 
-| Name           | Description                          |
-| -------------- | ------------------------------------ |
-| `shell`        | Terminal / command prompt            |
-| `clipboard`    | Clipboard with document              |
-| `calculator`   | Calculator keypad                    |
-| `gradient`     | Half-filled circle (gradient visual) |
-| `search`       | Magnifying glass                     |
-| `settings`     | Gear / cog                           |
-| `file`         | Generic file                         |
-| `folder`       | Folder                               |
-| `link`         | Chain link                           |
-| `star`         | Star / favourite                     |
-| `music`        | Music notes                          |
-| `tool`         | Wrench                               |
-| `calendar`     | Calendar grid                        |
-| `notes`        | Lined document                       |
-| `emoji`        | Smiley face                          |
-| `bitwarden`    | Lock / password vault                |
-| `video`        | Video camera                         |
-| `workflow`     | Node graph                           |
-| `ai`           | Pin / AI indicator                   |
-| `clock`        | Analog clock face                    |
-| `copy`         | Copy-to-clipboard                    |
-| `check`        | Checkmark                            |
-| `trash`        | Trash bin                            |
-| `edit`         | Pencil / edit                        |
-| `pin`          | Pin                                  |
-| `download`     | Download arrow                       |
-| `upload`       | Upload arrow                         |
-| `refresh`      | Circular refresh arrows              |
-| `globe`        | Globe / world                        |
-| `close`        | X close button                       |
-| `plus`         | Plus / add                           |
-| `minus`        | Minus / remove                       |
-| `arrow-left`   | Arrow left                           |
-| `arrow-right`  | Arrow right                          |
-| `chevron-down` | Chevron down                         |
-| `chevron-up`   | Chevron up                           |
-| `mic`          | Microphone                           |
-| `image`        | Image / photo                        |
-| `lock`         | Locked padlock                       |
-| `unlock`       | Unlocked padlock                     |
-| `eye`          | Visible / show                       |
-| `eye-off`      | Hidden / hide                        |
-| `warning`      | Warning triangle                     |
-| `info`         | Info circle                          |
-| `send`         | Send / paper plane                   |
-| `filter`       | Filter funnel                        |
-| `tag`          | Tag / label                          |
-| `user`         | Person / user                        |
-| `zap`          | Lightning bolt                       |
+| Name            | Description                          |
+| --------------- | ------------------------------------ |
+| `alert-circle`  | Exclamation mark in a circle         |
+| `archive`       | Archive box / drawer                 |
+| `arrow-down`    | Arrow pointing down                  |
+| `arrow-left`    | Arrow pointing left                  |
+| `arrow-right`   | Arrow pointing right                 |
+| `arrow-up`      | Arrow pointing up                    |
+| `bell`          | Notification bell                    |
+| `calculator`    | Calculator keypad                    |
+| `calendar`      | Calendar grid                        |
+| `check`         | Checkmark                            |
+| `chevron-down`  | Chevron down                         |
+| `chevron-up`    | Chevron up                           |
+| `circle`        | Empty circle outline                 |
+| `clipboard`     | Clipboard with document              |
+| `clock`         | Analog clock face                    |
+| `close`         | X close button                       |
+| `code`          | Angle brackets (`</>`) / code syntax |
+| `copy`          | Copy-to-clipboard                    |
+| `document`      | Document / page                      |
+| `download`      | Download arrow                       |
+| `edit`          | Pencil / edit                        |
+| `eye`           | Visible / show                       |
+| `eye-off`       | Hidden / hide                        |
+| `file`          | Generic file                         |
+| `filter`        | Filter funnel                        |
+| `folder`        | Folder                               |
+| `globe`         | Globe / world                        |
+| `image`         | Image / photo                        |
+| `info`          | Info circle                          |
+| `kbd-backspace` | Backspace key icon                   |
+| `kbd-cmd`       | Command key icon                     |
+| `kbd-ctrl`      | Control key icon                     |
+| `kbd-enter`     | Enter/Return key icon                |
+| `kbd-escape`    | Escape key icon                      |
+| `kbd-option`    | Option key icon                      |
+| `kbd-shift`     | Shift key icon                       |
+| `kbd-tab`       | Tab key icon                         |
+| `link`          | Chain link                           |
+| `location-pin`  | Map pin / location marker            |
+| `lock`          | Locked padlock                       |
+| `mic`           | Microphone                           |
+| `minus`         | Minus / remove                       |
+| `music`         | Music notes                          |
+| `notes`         | Lined document                       |
+| `pdf`           | PDF document file                    |
+| `pin`           | Pin / tack                           |
+| `plus`          | Plus / add                           |
+| `refresh`       | Circular refresh arrows              |
+| `search`        | Magnifying glass                     |
+| `send`          | Send / paper plane                   |
+| `settings`      | Gear / cog                           |
+| `shell`         | Terminal / command prompt            |
+| `smile`         | Smiley face                          |
+| `star`          | Star / favorite                      |
+| `stop`          | Stop / square button                 |
+| `tag`           | Tag / label                          |
+| `tool`          | Wrench                               |
+| `trash`         | Trash bin                            |
+| `unlock`        | Unlocked padlock                     |
+| `upload`        | Upload arrow                         |
+| `user`          | Person / user                        |
+| `video`         | Video camera                         |
+| `warning`       | Warning triangle                     |
+| `workflow`      | Node graph                           |
+| `zap`           | Lightning bolt                       |
 
 ### Accessing icons in extensions
 

@@ -1,11 +1,13 @@
 import { _electron as electron } from '@playwright/test'
-import { resolve } from 'node:path'
+import { resolve, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
 import { createRequire } from 'node:module'
+import { fileURLToPath } from 'node:url'
 
+const __dirname = dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
-const PROJECT_ROOT = '/home/xava/Documents/nuxy'
+const PROJECT_ROOT = resolve(__dirname, '..')
 const APP_DIR = resolve(PROJECT_ROOT, 'src')
 
 function findElectronBin() {
@@ -107,8 +109,7 @@ async function run() {
     console.log(scrollAreaHtml)
 
     console.log('Taking screenshot...')
-    const screenshotPath =
-      '/home/xava/.gemini/antigravity-ide/brain/47735c7d-1391-4f62-a413-943b666dae76/screenshot.png'
+    const screenshotPath = resolve(tmpdir(), 'nuxy-screenshot.png')
     await page.screenshot({ path: screenshotPath })
     console.log(`Screenshot saved to: ${screenshotPath}`)
   } catch (err) {

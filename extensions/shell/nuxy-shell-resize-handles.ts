@@ -1,3 +1,4 @@
+/* cspell:ignore nesw */
 import { LitElement, html, css, customElement } from '@nuxyorg/core'
 
 const DIRECTIONS = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'] as const

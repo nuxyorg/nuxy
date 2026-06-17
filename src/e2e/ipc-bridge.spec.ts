@@ -80,12 +80,13 @@ test.describe('kernel IPC channels via window.core.ipc.invoke', () => {
     expect(result.data).toBeTruthy()
   })
 
-  test('getThemeByName with missing name returns error', async ({ appPage }) => {
+  test('getThemeByName with missing name returns default theme', async ({ appPage }) => {
     const result = await appPage.evaluate(async () =>
       (window as any).core.ipc.invoke('kernel', 'getThemeByName', {})
     )
-    expect(result.success).toBe(false)
-    expect(result.code).toBe('INVALID_ARGS')
+    expect(result.success).toBe(true)
+    expect(result.data).toBeDefined()
+    expect(result.data.name).toBeDefined()
   })
 
   test('listThemes returns array of theme names', async ({ appPage }) => {

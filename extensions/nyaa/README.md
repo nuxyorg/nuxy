@@ -1,3 +1,5 @@
+<!-- cspell:ignore Frieren -->
+
 # Nyaa Search
 
 > Search nyaa.si for torrents and copy magnet links directly to the clipboard.
@@ -58,7 +60,7 @@ Settings are accessible from the Nuxy **Settings** tool.
 | Key        | Type   | Default                 | Description                                            |
 | ---------- | ------ | ----------------------- | ------------------------------------------------------ |
 | `category` | select | `1_2` (Anime - English) | Nyaa category filter                                   |
-| `filter`   | select | `0` (No Filter)         | Removes remakes or limits to trusted uploaders         |
+| `filter`   | select | `0` (No Filter)         | Removes remakes or limits to trusted uploader(s)       |
 | `sortBy`   | select | `seeders`               | Result sort order: Seeders, Newest, Size, or Downloads |
 
 ---

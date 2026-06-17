@@ -8,12 +8,14 @@ export class NuxyListItemElement extends LitElement {
   protected updated(changedProperties: Map<string, any>) {
     super.updated(changedProperties)
     if (changedProperties.has('active')) {
-      console.log('E2E Debug: list-item active changed to', this.active, 'for text', this.textContent?.trim())
-      if (this.active) {
-        this.classList.add('nuxy-list-item--active')
-      } else {
-        this.classList.remove('nuxy-list-item--active')
-      }
+      console.log(
+        'E2E Debug: list-item active changed to',
+        this.active,
+        'for text',
+        this.textContent?.trim()
+      )
+      // eslint-disable-next-line wc/no-self-class -- consumers query/style via this class from outside the element (see ListItem/index.css, settings/notes e2e specs)
+      this.classList.toggle('nuxy-list-item--active', this.active)
     }
   }
 

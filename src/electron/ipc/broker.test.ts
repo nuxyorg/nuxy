@@ -1,3 +1,4 @@
+/* cspell:ignore nocaps nocallable nocaller */
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { invokeExtension } from './broker.js'
 import { registerExtension, clearRegistry, setExtensionChannels } from '../extensions/registry.js'

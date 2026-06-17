@@ -1,3 +1,4 @@
+/* cspell:ignore abcpx */
 import { describe, it, expect } from 'vitest'
 import { parseCoordinate, SHELL_EXT_ID } from '../utils.ts'
 
