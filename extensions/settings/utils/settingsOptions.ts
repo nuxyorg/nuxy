@@ -1,4 +1,5 @@
 /* cspell:ignore Bahasa čeština dansk Deutsch español français italiano Melayu Nederlands norsk polski português română slovenčina svenska tiếng Türkçe Việt ελληνικά русский українська עברית العربية فارسی हिन्दी ภาษาไทย */
+import { DEFAULT_FONT_FAMILY_MAP } from '@nuxyorg/core'
 import type {
   NuxySettings,
   SelectOption,
@@ -208,10 +209,7 @@ export const SECTIONS: SectionDef[] = [
 // ---------------------------------------------------------------------------
 
 export function buildFontFamilyMap(systemFonts: string[]): Record<string, string> {
-  const base: Record<string, string> = {
-    system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
-    monospace: 'monospace',
-  }
+  const base: Record<string, string> = { ...DEFAULT_FONT_FAMILY_MAP }
   systemFonts.forEach((name) => {
     base[name] = `'${name}', sans-serif`
   })

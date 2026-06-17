@@ -186,6 +186,11 @@ export class MockPanel extends LitElement {
 
   connectedCallback() {
     super.connectedCallback()
+    this.open = false
+    this.channels = []
+    this.newChannel = ''
+    this.rowStates = new Map()
+    this.tick = 0
     this.pollInterval = setInterval(() => this.syncChannels(), 800)
   }
 

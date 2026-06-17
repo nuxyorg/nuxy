@@ -49,6 +49,9 @@ export function registerProtocols() {
           trapTabKey,
           resolveHoldMs,
           HOLD_MS_BY_PRESET,
+          applyUiFontSettings,
+          DEFAULT_FONT_FAMILY_MAP,
+          resolveFontFamily,
         } = NuxyCore;
       `
       return new Response(coreVirtualScript, { headers: MODULE_HEADERS })

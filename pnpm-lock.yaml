@@ -304,9 +304,19 @@ importers:
         specifier: workspace:*
         version: link:../../packages/extension-sdk
 
+  extensions/file-transfer:
+    devDependencies:
+      '@nuxyorg/ext-devserver':
+        specifier: workspace:*
+        version: link:../../packages/ext-devserver
+
   extensions/gradient: {}
 
-  extensions/icon-browser: {}
+  extensions/icon-browser:
+    devDependencies:
+      '@nuxyorg/ext-devserver':
+        specifier: workspace:*
+        version: link:../../packages/ext-devserver
 
   extensions/icons-default: {}
 
@@ -315,16 +325,32 @@ importers:
       '@nuxyorg/extension-sdk':
         specifier: workspace:*
         version: link:../../packages/extension-sdk
+    devDependencies:
+      '@nuxyorg/ext-devserver':
+        specifier: workspace:*
+        version: link:../../packages/ext-devserver
 
-  extensions/nyaa: {}
+  extensions/nyaa:
+    devDependencies:
+      '@nuxyorg/ext-devserver':
+        specifier: workspace:*
+        version: link:../../packages/ext-devserver
 
   extensions/settings:
     dependencies:
       lit:
         specifier: ^3.0.0
         version: 3.3.3
+    devDependencies:
+      '@nuxyorg/ext-devserver':
+        specifier: workspace:*
+        version: link:../../packages/ext-devserver
 
-  extensions/shell: {}
+  extensions/shell:
+    devDependencies:
+      '@nuxyorg/ext-devserver':
+        specifier: workspace:*
+        version: link:../../packages/ext-devserver
 
   extensions/theme-black: {}
 

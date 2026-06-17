@@ -1,9 +1,16 @@
 {
   "name": "@nuxy-ext/notes",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "version": "1.0.0",
+  "scripts": {
+    "dev": "nuxy-ext-dev",
+    "start": "nuxy-ext-dev"
+  },
   "dependencies": {
     "@nuxyorg/extension-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@nuxyorg/ext-devserver": "workspace:*"
   }
 }

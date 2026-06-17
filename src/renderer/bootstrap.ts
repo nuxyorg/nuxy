@@ -1,4 +1,5 @@
 import type { ThemeDefinition, IpcResult } from '@nuxyorg/core'
+import { applyUiFontSettings } from '@nuxyorg/core'
 
 const BOOTSTRAP_ID = 'com.nuxy.shell'
 const EXTENSIONS_PATH = '~/.nxy/extensions'
@@ -34,7 +35,13 @@ async function bootstrapNuxy(): Promise<void> {
   try {
     const configRes = await core?.ipc?.invoke('kernel', 'getConfig', {}).catch(() => null)
     const config = configRes as
-      | IpcResult<{ zoom?: string; font?: string; theme?: string; backgroundBehavior?: string }>
+      | IpcResult<{
+          zoom?: string
+          font?: string
+          fontWeight?: string
+          theme?: string
+          backgroundBehavior?: string
+        }>
       | undefined
     const configTheme = config?.success && config.data?.theme ? config.data.theme : null
     let themeName: string
@@ -49,15 +56,9 @@ async function bootstrapNuxy(): Promise<void> {
     }
 
     if (config?.success && config.data) {
-      const { zoom, font } = config.data
+      const { zoom, font, fontWeight } = config.data
       if (zoom) document.documentElement.style.zoom = zoom
-      if (font) {
-        const FONT_FAMILY_MAP: Record<string, string> = {
-          system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
-          monospace: 'monospace',
-        }
-        document.body.style.fontFamily = FONT_FAMILY_MAP[font] || font
-      }
+      applyUiFontSettings({ font, fontWeight })
     }
 
     const [toolsRes, themeRes, uikitRes] = await Promise.all([

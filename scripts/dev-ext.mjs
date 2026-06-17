@@ -5,17 +5,15 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const EXTENSIONS_DIR = path.resolve(__dirname, '../extensions')
-const DEV_SERVER_DIR = path.resolve(__dirname, '../packages/ext-devserver')
 
 const name = process.argv[2]
 
 if (!name) {
   console.error('Usage: pnpm dev-ext <extension-name>')
-  console.error('Example: pnpm dev-ext clipboard')
+  console.error('Example: pnpm dev-ext nyaa')
   console.error('\nAvailable extensions:')
-  for (const entry of fs.readdirSync(EXTENSIONS_DIR)) {
-    const manifestPath = path.join(EXTENSIONS_DIR, entry, 'manifest.json')
+  for (const entry of fs.readdirSync(path.resolve(__dirname, '../extensions'))) {
+    const manifestPath = path.join(__dirname, '../extensions', entry, 'manifest.json')
     if (fs.existsSync(manifestPath)) {
       const m = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
       if (m.entry?.frontend) console.error(`  ${entry}`)
@@ -24,7 +22,7 @@ if (!name) {
   process.exit(1)
 }
 
-const extPath = path.join(EXTENSIONS_DIR, name)
+const extPath = path.resolve(__dirname, '../extensions', name)
 const manifestPath = path.join(extPath, 'manifest.json')
 
 if (!fs.existsSync(manifestPath)) {
@@ -39,19 +37,16 @@ if (!manifest.entry?.frontend) {
   process.exit(1)
 }
 
-console.log(`\n  Nuxy Extension Dev Server`)
-console.log(`  Extension : ${manifest.name} (${manifest.id})`)
-console.log(`  Frontend  : ${path.join(extPath, manifest.entry.frontend)}`)
-console.log(`  URL       : http://localhost:5174\n`)
+const devBin = path.resolve(__dirname, '../packages/ext-devserver/bin/dev.mjs')
 
-const vite = spawn('pnpm', ['vite'], {
-  cwd: DEV_SERVER_DIR,
+const child = spawn(process.execPath, [devBin], {
+  cwd: extPath,
   env: {
     ...process.env,
     NUXY_EXT_PATH: extPath,
-    NUXY_EXT_NAME: manifest.name,
+    NUXY_EXT_NAME: manifest.entry.element?.replace(/^nuxy-tool-/, '') ?? name,
   },
   stdio: 'inherit',
 })
 
-vite.on('exit', (code) => process.exit(code ?? 0))
+child.on('exit', (code) => process.exit(code ?? 0))

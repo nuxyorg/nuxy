@@ -1,3 +1,4 @@
+import { applyUiFontSettings } from '@nuxyorg/core'
 import type { NuxySettings, AnyRow } from './types.ts'
 
 const EXT_ID = 'com.nuxy.settings'
@@ -35,10 +36,11 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
 
   const applySettings = (s: NuxySettings): void => {
     if (s.zoom) document.documentElement.style.zoom = s.zoom
-    if (s.font) {
-      document.body.style.fontFamily = ctx.getFontFamilyMap()[s.font] || String(s.font)
-    }
-    if (s.fontWeight) document.body.style.fontWeight = String(s.fontWeight)
+    applyUiFontSettings({
+      font: s.font,
+      fontWeight: s.fontWeight,
+      fontFamilyMap: ctx.getFontFamilyMap(),
+    })
     if (s.theme) applyTheme(String(s.theme))
   }
 

@@ -4,6 +4,8 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "preserve",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "strict": true,
     "noUnusedLocals": false,
     "types": ["vite/client"],

@@ -227,4 +227,42 @@ describe('nuxy-select-box', () => {
     el.open = false
     await el.updateComplete
   })
+
+  it('restores focus to the selected option after a search query is cleared', async () => {
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      cb(0)
+      return 0
+    })
+
+    const el = document.createElement('nuxy-select-box') as NuxySelectBoxElement
+    el.options = JSON.stringify(
+      Array.from({ length: 30 }, (_, i) => ({ value: `v${i}`, label: `Option ${i}` }))
+    )
+    el.value = 'v25'
+    el.searchable = true
+    parent.appendChild(el)
+    await el.updateComplete
+
+    el.open = true
+    await el.updateComplete
+
+    const searchInput = document.body.querySelector<HTMLInputElement>('.nuxy-select-box__search')!
+    searchInput.value = 'v'
+    searchInput.dispatchEvent(new Event('input'))
+    await el.updateComplete
+
+    searchInput.value = ''
+    searchInput.dispatchEvent(new Event('input'))
+    await el.updateComplete
+
+    const focusedOption = document.body.querySelector<HTMLElement>(
+      '.nuxy-select-box__option--focused'
+    )
+    expect(focusedOption!.querySelector('.nuxy-select-box__option-label')!.textContent).toBe(
+      'Option 25'
+    )
+
+    el.open = false
+    await el.updateComplete
+  })
 })

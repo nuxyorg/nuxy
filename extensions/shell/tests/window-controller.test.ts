@@ -1,3 +1,5 @@
+// @vitest-environment happy-dom
+
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import type { ReactiveControllerHost } from '@nuxyorg/core'
 import type { ShellConfig } from '../types.ts'
@@ -143,6 +145,62 @@ describe('WindowController', () => {
       const ctrl = new WindowController(host)
       const style = ctrl.containerStyle(defaultSettings, null, false)
       expect(style.transition).toContain('cubic-bezier')
+    })
+  })
+
+  describe('handleDragMouseDown', () => {
+    function makeContainer(): HTMLElement {
+      const el = document.createElement('div')
+      vi.spyOn(el, 'offsetWidth', 'get').mockReturnValue(400)
+      vi.spyOn(el, 'offsetHeight', 'get').mockReturnValue(300)
+      return el
+    }
+
+    it('reads container offsetWidth/offsetHeight only once per drag, not on every mousemove', () => {
+      const host = makeHost()
+      const ctrl = new WindowController(host)
+      const container = makeContainer()
+      const widthSpy = vi.spyOn(container, 'offsetWidth', 'get')
+      const heightSpy = vi.spyOn(container, 'offsetHeight', 'get')
+
+      const mouseDown = new MouseEvent('mousedown', { button: 0, clientX: 10, clientY: 10 })
+      ctrl.handleDragMouseDown(mouseDown, container)
+
+      expect(widthSpy).toHaveBeenCalledTimes(1)
+      expect(heightSpy).toHaveBeenCalledTimes(1)
+
+      for (let i = 0; i < 20; i++) {
+        window.dispatchEvent(new MouseEvent('mousemove', { clientX: 10 + i, clientY: 10 + i }))
+      }
+
+      // Re-reading offsetWidth/offsetHeight inside the mousemove handler forces a
+      // synchronous layout on every drag event (since the previous iteration just
+      // wrote style.left/top) — this caused the reported "jumpy" dragging.
+      expect(widthSpy).toHaveBeenCalledTimes(1)
+      expect(heightSpy).toHaveBeenCalledTimes(1)
+
+      window.dispatchEvent(new MouseEvent('mouseup'))
+    })
+
+    it('updates container position and clamps to viewport while dragging', () => {
+      const host = makeHost()
+      const ctrl = new WindowController(host)
+      const container = makeContainer()
+      ctrl.setPosition({ x: 50, y: 50 })
+
+      const mouseDown = new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 100 })
+      ctrl.handleDragMouseDown(mouseDown, container)
+
+      window.dispatchEvent(new MouseEvent('mousemove', { clientX: 130, clientY: 140 }))
+      expect(ctrl.position).toEqual({ x: 80, y: 90 })
+      expect(container.style.left).toBe('80px')
+      expect(container.style.top).toBe('90px')
+
+      window.dispatchEvent(new MouseEvent('mouseup'))
+
+      // mousemove after mouseup should be ignored
+      window.dispatchEvent(new MouseEvent('mousemove', { clientX: 200, clientY: 200 }))
+      expect(ctrl.position).toEqual({ x: 80, y: 90 })
     })
   })
 })

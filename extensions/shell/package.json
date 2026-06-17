@@ -1,6 +1,13 @@
 {
   "name": "@nuxy-ext/shell",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
-  "version": "1.0.0"
+  "scripts": {
+    "dev": "nuxy-ext-dev",
+    "start": "nuxy-ext-dev"
+  },
+  "devDependencies": {
+    "@nuxyorg/ext-devserver": "workspace:*"
+  }
 }

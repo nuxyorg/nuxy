@@ -67,7 +67,16 @@ const files = {
       version: '1.0.0',
       private: true,
       type: 'module',
-      dependencies: { '@nuxyorg/extension-sdk': 'workspace:*' },
+      scripts: {
+        dev: 'nuxy-ext-dev',
+        start: 'nuxy-ext-dev',
+        test: 'vitest',
+      },
+      devDependencies: {
+        '@nuxyorg/ext-devserver': 'workspace:*',
+        '@nuxyorg/extension-sdk': 'workspace:*',
+        vitest: '*',
+      },
     },
     null,
     2
@@ -226,5 +235,5 @@ console.log(`  2. Edit extensions/${name}/types.ts — define IpcChannels and da
 console.log(`  3. Edit extensions/${name}/backend.ts — implement IPC handlers`)
 console.log(`  4. Edit extensions/${name}/frontend.tsx — build the UI`)
 console.log(`  5. Run: pnpm test -- extensions/${name}/backend.test.ts`)
-console.log(`  6. Run: pnpm dev-ext ${name}   (frontend preview — no Electron needed)`)
-console.log(`  7. Run: pnpm dev               (full app)`)
+console.log(`  6. Run: pnpm dev   (from extensions/${name}/ — standalone browser preview)`)
+console.log(`     or: pnpm dev-ext ${name}   (from repo root)`)

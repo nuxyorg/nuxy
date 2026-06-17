@@ -1,0 +1,163 @@
+import type {
+  CoreEvents,
+  CoreShell,
+  NuxyRendererEvent,
+  OmniBarControlAction,
+  ResetToolStateOptions,
+  ShellBridgeSnapshot,
+  ShellCommandAction,
+  ShellKeyAction,
+} from '@nuxyorg/core'
+
+function computeHints(getter: (() => ShellKeyAction[]) | null): ShellKeyAction[] {
+  if (!getter) return []
+  return getter().filter((a) => a.hint && (typeof a.activeOn !== 'function' || a.activeOn()))
+}
+
+export function createShellBridge(): CoreShell {
+  let keyActionsGetter: (() => ShellKeyAction[]) | null = null
+  let keyActionsGeneration = 0
+  let toolActions: ShellCommandAction[] = []
+  let omniBarPortal: HTMLElement | null = null
+  let footerPortal: HTMLElement | null = null
+  let searchPlaceholder: string | null = null
+  let returnToShellHandler: (() => void) | null = null
+  let shellResetPaused = false
+  const listeners = new Set<() => void>()
+  const omniBarControlListeners = new Set<(action: OmniBarControlAction) => void>()
+
+  const notify = () => {
+    for (const listener of listeners) listener()
+  }
+
+  return {
+    subscribe(listener) {
+      listeners.add(listener)
+      return () => listeners.delete(listener)
+    },
+
+    getSnapshot(): ShellBridgeSnapshot {
+      return {
+        toolActions,
+        keyActionHints: computeHints(keyActionsGetter),
+        omniBarPortal,
+        footerPortal,
+        searchPlaceholder,
+      }
+    },
+
+    registerKeyActions(getter) {
+      if (getter) {
+        keyActionsGeneration += 1
+        keyActionsGetter = getter
+        notify()
+        return
+      }
+
+      const generation = keyActionsGeneration
+      queueMicrotask(() => {
+        if (generation !== keyActionsGeneration) return
+        keyActionsGetter = null
+        notify()
+      })
+    },
+
+    refreshKeyHints() {
+      notify()
+    },
+
+    registerActions(actions) {
+      toolActions = actions
+      notify()
+    },
+
+    setOmniBarPortal(element) {
+      omniBarPortal = element
+      notify()
+    },
+
+    setFooterPortal(element) {
+      footerPortal = element
+      notify()
+    },
+
+    setSearchPlaceholder(placeholder) {
+      searchPlaceholder = placeholder
+      notify()
+    },
+
+    getKeyActionsGetter() {
+      return keyActionsGetter
+    },
+
+    getToolActions() {
+      return toolActions
+    },
+
+    controlOmniBar(action) {
+      for (const handler of omniBarControlListeners) handler(action)
+    },
+
+    subscribeOmniBarControl(handler) {
+      omniBarControlListeners.add(handler)
+      return () => omniBarControlListeners.delete(handler)
+    },
+
+    resetToolState(options?: ResetToolStateOptions) {
+      keyActionsGeneration += 1
+      keyActionsGetter = null
+      toolActions = []
+      omniBarPortal = null
+      footerPortal = null
+      if (options?.clearSearchPlaceholder !== false) {
+        searchPlaceholder = null
+      }
+      notify()
+    },
+
+    returnToShell() {
+      returnToShellHandler?.()
+    },
+
+    bindReturnToShell(handler) {
+      returnToShellHandler = handler
+      return () => {
+        if (returnToShellHandler === handler) returnToShellHandler = null
+      }
+    },
+
+    setShellResetPaused(paused) {
+      shellResetPaused = paused
+    },
+
+    isShellResetPaused() {
+      return shellResetPaused
+    },
+  }
+}
+
+export function createEventsBridge(): CoreEvents {
+  const listeners = new Map<NuxyRendererEvent, Set<(detail: unknown) => void>>()
+
+  return {
+    emit(type, ...args) {
+      const detail = args[0]
+      const set = listeners.get(type)
+      if (!set) return
+      for (const handler of set) handler(detail)
+    },
+
+    on(type, handler) {
+      let set = listeners.get(type)
+      if (!set) {
+        set = new Set()
+        listeners.set(type, set)
+      }
+      const wrapped = handler as (detail: unknown) => void
+      set.add(wrapped)
+      return () => {
+        set!.delete(wrapped)
+      }
+    },
+  }
+}

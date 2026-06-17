@@ -114,6 +114,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   syncSearchPlaceholder(): void {
+    this.recomputeMeta()
     setToolSearchPlaceholder(this.t.t, 'search.placeholder')
   }
 

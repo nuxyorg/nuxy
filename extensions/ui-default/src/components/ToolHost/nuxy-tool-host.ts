@@ -10,7 +10,25 @@ async function loadFrontendModule(extId: string): Promise<void> {
 export class NuxyToolHostElement extends LitElement {
   static styles = css`
     :host {
-      display: contents;
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    slot {
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    ::slotted(*) {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-height: 0;
+      overflow: hidden;
     }
   `
   private _extensionId: string | null = null
@@ -25,10 +43,11 @@ export class NuxyToolHostElement extends LitElement {
   @property({ attribute: 'loading-message' })
   declare loadingMessage: string
   @state()
-  private _showLoading = false
+  declare private _showLoading: boolean
 
   connectedCallback(): void {
     super.connectedCallback()
+    this._showLoading = false
     if (this._extensionId) {
       void this.swapTool(this._extensionId)
     }

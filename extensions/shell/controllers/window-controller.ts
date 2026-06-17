@@ -239,15 +239,19 @@ export class WindowController implements ReactiveController {
     const startClientY = e.clientY
     const startPosX = this._position.x
     const startPosY = this._position.y
+    // Read once — re-reading offsetWidth/offsetHeight inside onMouseMove forces
+    // a synchronous layout on every event (since the previous iteration just
+    // wrote style.left/top), which is what made dragging feel jumpy. The
+    // container's size doesn't change during a plain drag, so this is safe.
+    const winWidth = containerRef ? containerRef.offsetWidth : 0
+    const winHeight = containerRef ? containerRef.offsetHeight : 0
+    const dw = window.innerWidth / zoom
+    const dh = window.innerHeight / zoom
 
     const onMouseMove = (moveEvent: MouseEvent) => {
       if (!this._isDragging) return
       const deltaX = (moveEvent.clientX - startClientX) / zoom
       const deltaY = (moveEvent.clientY - startClientY) / zoom
-      const winWidth = containerRef ? containerRef.offsetWidth : 0
-      const winHeight = containerRef ? containerRef.offsetHeight : 0
-      const dw = window.innerWidth / zoom
-      const dh = window.innerHeight / zoom
       const newX = Math.max(0, Math.min(startPosX + deltaX, Math.max(0, dw - winWidth)))
       const newY = Math.max(0, Math.min(startPosY + deltaY, Math.max(0, dh - winHeight)))
       this._position = { x: newX, y: newY }

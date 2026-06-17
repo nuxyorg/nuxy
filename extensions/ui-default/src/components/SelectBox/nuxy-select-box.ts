@@ -289,13 +289,17 @@ export class NuxySelectBoxElement extends LitElement {
     }
   }
 
-  private onOpenTransition(): void {
+  private getSelectedIndex(): number {
     const options = this.getOptions()
     const value = this.getValue()
-    this.internalFocused = Math.max(
+    return Math.max(
       0,
       options.findIndex((o) => o.value === value)
     )
+  }
+
+  private onOpenTransition(): void {
+    this.internalFocused = this.getSelectedIndex()
     this.searchQuery = ''
     this.instantScrollOnNextRender = true
     this.addEscapeListener()
@@ -430,7 +434,7 @@ export class NuxySelectBoxElement extends LitElement {
 
   private onSearchInput = (e: Event): void => {
     this.searchQuery = (e.target as HTMLInputElement).value
-    this.internalFocused = 0
+    this.internalFocused = this.searchQuery.trim() ? 0 : this.getSelectedIndex()
   }
 
   private onSearchKeyDown = (e: KeyboardEvent): void => {

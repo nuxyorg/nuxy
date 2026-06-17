@@ -3,10 +3,16 @@
   "version": "1.0.1",
   "description": "Vite-based dev server for building and testing Nuxy extensions",
   "type": "module",
+  "bin": {
+    "nuxy-ext-dev": "./bin/dev.mjs"
+  },
   "files": [
+    "assets",
+    "bin",
     "src",
     "vite.config.ts",
-    "tsconfig.json"
+    "tsconfig.json",
+    "index.html"
   ],
   "scripts": {
     "dev": "vite"

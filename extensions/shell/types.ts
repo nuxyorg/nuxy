@@ -34,6 +34,7 @@ export interface ShellConfig {
   theme?: string
   zoom?: string
   font?: string
+  fontWeight?: string
   kbdScheme?: string
   holdMs?: HoldMsPreset
 }

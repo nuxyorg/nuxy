@@ -1,4 +1,5 @@
 import type { NuxySettings, SelectOption, ExtSettingsInfo } from './types.ts'
+import { applyUiFontSettings } from '@nuxyorg/core'
 import { DEFAULT_SETTINGS } from './utils/settingsOptions.ts'
 import { buildIconPackOptions, resolveSingleIconPack } from './utils/iconPackDefaults.ts'
 
@@ -79,6 +80,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
       if (r?.success && r.data) {
         onPatch({ settings: r.data })
         if (r.data.zoom) document.documentElement.style.zoom = r.data.zoom
+        applyUiFontSettings({ font: r.data.font, fontWeight: r.data.fontWeight })
         window.core?.events?.emit('settings-loaded', r.data as Record<string, unknown>)
       }
     })

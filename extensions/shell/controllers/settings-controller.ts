@@ -1,10 +1,6 @@
+import { applyUiFontSettings } from '@nuxyorg/core'
 import type { ReactiveController, ReactiveControllerHost } from '@nuxyorg/core'
 import type { ShellConfig } from '../types.ts'
-
-const FONT_FAMILY_MAP: Record<string, string> = {
-  system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
-  monospace: 'monospace',
-}
 
 export class SettingsController implements ReactiveController {
   private _settings: ShellConfig = {}
@@ -27,7 +23,7 @@ export class SettingsController implements ReactiveController {
 
   applySettingsToDOM(s: ShellConfig): void {
     if (s.zoom) document.documentElement.style.zoom = s.zoom
-    if (s.font) document.body.style.fontFamily = FONT_FAMILY_MAP[s.font] || s.font
+    applyUiFontSettings({ font: s.font, fontWeight: s.fontWeight })
     if (s.theme) this.applyThemeByName(s.theme)
 
     if (s.kbdScheme) {
