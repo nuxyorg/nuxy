@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */
 // Vanilla renderer bootstrap — expose shared runtime modules before any extension loads.
 import * as NuxyCore from '@nuxyorg/core'
 import * as NuxySdk from '@nuxyorg/extension-sdk'

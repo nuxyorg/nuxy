@@ -23,6 +23,7 @@ const DEFAULT_SETTINGS: NuxySettings = {
   windowPosition: '1/2, 1/2',
   preferredLanguages: [],
   kbdScheme: 'auto',
+  holdMs: 'long',
 }
 
 function createCore(storageData: Partial<NuxySettings> | null | undefined = null): {
@@ -89,6 +90,13 @@ describe('settings backend', () => {
       expect(result.font).toBe('system')
       expect(result.escAction).toBe('hide')
       expect(result.windowWidth).toBe(800)
+    })
+
+    it('merges stored holdMs preset over default', async () => {
+      const { core, handlers } = createCore({ holdMs: 'short' })
+      register(core)
+      const result = await (handlers['getSettings'] as (p: unknown) => Promise<NuxySettings>)({})
+      expect(result.holdMs).toBe('short')
     })
 
     it('merges stored boolean field (alwaysOnTop: true) over default false', async () => {

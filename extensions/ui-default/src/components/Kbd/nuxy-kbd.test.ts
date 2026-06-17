@@ -46,6 +46,22 @@ describe('nuxy-kbd', () => {
     expect(kbd.shadowRoot?.querySelector('.nuxy-kbd-icon')).toBeNull()
   })
 
+  it('renders a linear hold progress stroke when hold-ms is set', async () => {
+    const host = document.createElement('nuxy-kbd') as NuxyKbdElement
+    host.keys = 'hold Esc'
+    host.holdMs = 800
+    parent.appendChild(host)
+    await host.updateComplete
+
+    const progress = host.shadowRoot?.querySelector(
+      '.nuxy-kbd__hold-progress'
+    ) as HTMLElement | null
+    const track = host.shadowRoot?.querySelector('.nuxy-kbd__hold-progress-track')
+    expect(progress).not.toBeNull()
+    expect(track).not.toBeNull()
+    expect(progress?.style.getPropertyValue('--nuxy-hold-ms')).toBe('800ms')
+  })
+
   it('adapts shortcut modifier icons based on data-kbd-scheme', async () => {
     const host = document.createElement('nuxy-kbd') as NuxyKbdElement
     parent.appendChild(host)

@@ -109,13 +109,7 @@ export class NuxyMarkdownEditorElement extends LitElement {
   }
 
   get nativeTextarea(): HTMLTextAreaElement | null {
-    return (
-      this.textareaEl ??
-      (this.renderRoot?.querySelector(
-        'textarea.nuxy-md-editor__textarea'
-      ) as HTMLTextAreaElement | null) ??
-      null
-    )
+    return this.textareaEl ?? null
   }
 
   private _insertText(text: string, cursorOffset = text.length): void {

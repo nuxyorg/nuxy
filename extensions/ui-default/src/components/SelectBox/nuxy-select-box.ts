@@ -208,6 +208,7 @@ export class NuxySelectBoxElement extends LitElement {
     const dropdown = this.dropdownComponentQuery
     if (!dropdown) return
     await dropdown.updateComplete
+    // eslint-disable-next-line no-restricted-syntax -- dynamic list rendered by a nested component; no ref/@query can target it by index
     const optionEls = Array.from(dropdown.querySelectorAll('nuxy-select-option'))
     await Promise.all(
       optionEls.map((el) => (el as unknown as { updateComplete: Promise<unknown> }).updateComplete)
@@ -339,6 +340,7 @@ export class NuxySelectBoxElement extends LitElement {
 
   private getOptionEl(index: number): HTMLElement | null {
     if (!this.optionsEl) return null
+    // eslint-disable-next-line no-restricted-syntax -- dynamic list rendered by a nested component; no ref/@query can target it by index
     const options = Array.from(this.optionsEl.querySelectorAll<HTMLElement>('[role="option"]'))
     return options[index] ?? null
   }

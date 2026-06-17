@@ -1,4 +1,5 @@
 import type { ShellBridgeSnapshot, ReactiveControllerHost } from '@nuxyorg/core'
+import { resolveHoldMs } from '@nuxyorg/core'
 import { createStore, type Store, createTranslator, type Translator } from '@nuxyorg/extension-sdk'
 import { getZoom } from './utils/zoom.ts'
 import { SHELL_EXT_ID } from './utils.ts'
@@ -17,6 +18,7 @@ import { SettingsController } from './controllers/settings-controller.ts'
 import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
 import { syncBlurSuppression } from '@nuxyorg/extension-sdk'
 import type {
+  HoldProgress,
   ListItem,
   Orchestrator,
   Provider,
@@ -46,6 +48,7 @@ const DEFAULT_SETTINGS: ShellConfig = {
   zoom: '100%',
   font: 'system',
   windowPosition: '1/2, 1/2',
+  holdMs: 'long',
 }
 
 export interface ExtensionSummary {
@@ -65,7 +68,7 @@ export interface ShellCoreState {
   themeStyles: Record<string, string> | null
   settings: ShellConfig
   bridge: ShellBridgeSnapshot
-  holdMs: number | null
+  holdProgress: HoldProgress | null
   extensionSummary: ExtensionSummary | null
 }
 
@@ -161,7 +164,7 @@ export class ShellController {
       themeStyles: null,
       settings: DEFAULT_SETTINGS,
       bridge: EMPTY_SNAPSHOT,
-      holdMs: null,
+      holdProgress: null,
       extensionSummary: null,
     })
     ;(this._host as any).store = this.store
@@ -193,7 +196,8 @@ export class ShellController {
         this._recompute()
         window.core?.window?.esc?.()
       },
-      setHoldMs: (ms) => this.store.setState({ holdMs: ms }),
+      setHoldProgress: (progress) => this.store.setState({ holdProgress: progress }),
+      getHoldMs: () => resolveHoldMs(this.store.getState().settings.holdMs),
     })
 
     this._focus = new FocusController({

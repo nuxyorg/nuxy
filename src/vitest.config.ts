@@ -10,6 +10,7 @@ export default defineConfig({
       '../extensions/**/*.test.ts',
       '../packages/**/*.test.ts',
     ],
+    exclude: ['**/node_modules/**', '**/dist/**', '../**/node_modules/**'],
   },
   resolve: {
     alias: {

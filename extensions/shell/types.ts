@@ -1,4 +1,5 @@
 import type { ExtensionManifest } from '@nuxyorg/extension-sdk'
+import type { HoldMsPreset } from '@nuxyorg/core'
 
 export interface Tool {
   id: string
@@ -34,6 +35,7 @@ export interface ShellConfig {
   zoom?: string
   font?: string
   kbdScheme?: string
+  holdMs?: HoldMsPreset
 }
 
 export interface ListItem {
@@ -56,6 +58,11 @@ export interface ProviderState {
   name: string
 }
 
+export interface HoldProgress {
+  ms: number
+  hint: string | string[]
+}
+
 export interface KeyAction {
   key: string
   modifiers?: string[]
@@ -67,6 +74,7 @@ export interface KeyAction {
   allowRepeat?: boolean
   trigger?: 'press' | 'hold'
   holdMs?: number
+  holdCancelToast?: string
 }
 
 export interface CommandPaletteAction {

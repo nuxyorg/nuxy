@@ -83,6 +83,16 @@ export default defineConfig(
             'CallExpression[callee.property.name="appendChild"][callee.object.type="ThisExpression"]',
           message: 'Avoid this.appendChild in Lit components — use html`` templates instead.',
         },
+        {
+          selector: 'Identifier[name="unsafeHTML"]',
+          message:
+            'unsafeHTML is strictly forbidden. Use safeHTML or other safe templating alternatives instead.',
+        },
+        {
+          selector: 'Identifier[name="unsafeSVG"]',
+          message:
+            'unsafeSVG is strictly forbidden. Use safeSVG or other safe parsed SVG alternatives instead.',
+        },
       ],
     },
   },
@@ -111,6 +121,54 @@ export default defineConfig(
       'prefer-const': 'warn',
       'no-extra-boolean-cast': 'warn',
       'no-useless-escape': 'warn',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'lit/directives/unsafe-html.js',
+              importNames: ['unsafeHTML'],
+              message:
+                'unsafeHTML is strictly forbidden. Use safeHTML or other safe templating alternatives instead.',
+            },
+            {
+              name: 'lit/directives/unsafe-svg.js',
+              importNames: ['unsafeSVG'],
+              message:
+                'unsafeSVG is strictly forbidden. Use safeSVG or other safe parsed SVG alternatives instead.',
+            },
+            {
+              name: '@nuxyorg/core',
+              importNames: ['unsafeHTML', 'unsafeSVG'],
+              message:
+                'unsafeHTML and unsafeSVG are strictly forbidden. Use safeHTML/safeSVG instead.',
+            },
+            {
+              name: 'lit-html/directives/unsafe-html.js',
+              importNames: ['unsafeHTML'],
+              message: 'unsafeHTML is strictly forbidden.',
+            },
+            {
+              name: 'lit-html/directives/unsafe-svg.js',
+              importNames: ['unsafeSVG'],
+              message: 'unsafeSVG is strictly forbidden.',
+            },
+          ],
+        },
+      ],
+      'no-restricted-properties': [
+        'error',
+        {
+          property: 'unsafeHTML',
+          message:
+            'unsafeHTML is strictly forbidden. Use safeHTML or other safe templating alternatives instead.',
+        },
+        {
+          property: 'unsafeSVG',
+          message:
+            'unsafeSVG is strictly forbidden. Use safeSVG or other safe parsed SVG alternatives instead.',
+        },
+      ],
     },
     settings: {
       wc: {

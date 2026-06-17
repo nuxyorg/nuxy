@@ -156,7 +156,6 @@ vi.mock('lit/decorators.js', () => ({
 }))
 
 vi.mock('lit/directives/ref.js', () => ({ ref: (cb: unknown) => cb }))
-vi.mock('lit/directives/unsafe-html.js', () => ({ unsafeHTML: (v: unknown) => v }))
 
 vi.mock('../controller.ts', () => ({
   ShellController: class MockShellController {

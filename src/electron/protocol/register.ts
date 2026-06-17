@@ -43,10 +43,12 @@ export function registerProtocols() {
           query,
           ref,
           createRef,
-          unsafeHTML,
-          unsafeSVG,
+          safeHTML,
+          safeSVG,
           getFocusableElements,
           trapTabKey,
+          resolveHoldMs,
+          HOLD_MS_BY_PRESET,
         } = NuxyCore;
       `
       return new Response(coreVirtualScript, { headers: MODULE_HEADERS })

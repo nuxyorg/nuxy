@@ -328,8 +328,10 @@ export class NotesController extends BaseExtensionController<NotesState> {
       },
       {
         key: 'Delete',
-        label: t('actions.deleteNote'),
-        hint: 'Del',
+        label: 'Hold Del to delete',
+        hint: 'hold Del',
+        trigger: 'hold',
+        holdCancelToast: 'Hold Del to delete',
         activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex < filteredNotes.length,
         handler: () => void this.handleDelete(),
       },
@@ -351,7 +353,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         label: 'Hold Esc to exit',
         hint: 'hold Esc',
         trigger: 'hold',
-        holdMs: 800,
+        holdCancelToast: 'Unsaved — hold Esc to exit',
         activeOn: () => editMode && this.isDirty(),
         handler: () => this.setEditMode(false),
       },
@@ -408,14 +410,6 @@ export class NotesController extends BaseExtensionController<NotesState> {
     }
     window.addEventListener('keydown', handleEditEscCapture, true)
     this.cleanups.push(() => window.removeEventListener('keydown', handleEditEscCapture, true))
-
-    const handleDirtyEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !e.repeat && this.state.editMode && this.isDirty()) {
-        window.UI?.toast?.('Unsaved — hold Esc to exit', { type: 'warning' })
-      }
-    }
-    window.addEventListener('keydown', handleDirtyEsc)
-    this.cleanups.push(() => window.removeEventListener('keydown', handleDirtyEsc))
 
     const registerActions = () => {
       const { selected, recording } = this.state

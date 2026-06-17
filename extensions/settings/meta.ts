@@ -104,7 +104,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
       })
       return {
         ...r,
-        label: t(s.id + '.' + r.key),
+        label: r.key === 'holdMs' ? r.label : t(s.id + '.' + r.key),
         options: translatedOptions,
       }
     }),

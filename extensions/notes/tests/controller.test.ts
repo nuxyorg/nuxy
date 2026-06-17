@@ -175,3 +175,39 @@ describe('NotesController.handleDelete', () => {
     expect(controlOmniBarMock).toHaveBeenCalledWith('show')
   })
 })
+
+describe('NotesController delete key action', () => {
+  it('requires holding Delete to delete a note', () => {
+    let getter:
+      | (() => Array<{
+          key: string
+          trigger?: string
+          holdMs?: number
+          hint?: string
+          holdCancelToast?: string
+          activeOn?: () => boolean
+        }>)
+      | null = null
+
+    vi.mocked(window.core!.shell!.registerKeyActions).mockImplementation((fn) => {
+      getter = fn as typeof getter
+    })
+
+    const controller = new NotesController(() => {})
+    controller.connect()
+    controller.store.setState({
+      filteredNotes: [makeNote('a')],
+      selectedIndex: 0,
+      editMode: false,
+    })
+
+    const deleteAction = getter!().find((a) => a.key === 'Delete')
+    expect(deleteAction?.trigger).toBe('hold')
+    expect(deleteAction?.holdMs).toBeUndefined()
+    expect(deleteAction?.hint).toBe('hold Del')
+    expect(deleteAction?.holdCancelToast).toBe('Hold Del to delete')
+    expect(deleteAction?.activeOn?.()).toBe(true)
+
+    controller.disconnect()
+  })
+})

@@ -6,6 +6,7 @@ import type {
   AnyRow,
   StateSnapshot,
   KbdScheme,
+  HoldMsPreset,
 } from '../types.ts'
 
 // ---------------------------------------------------------------------------
@@ -94,6 +95,11 @@ export const KBD_SCHEME_OPTIONS: SelectOption<KbdScheme>[] = [
   { value: 'windows', label: 'PC (Ctrl)' },
 ]
 
+export const HOLD_MS_OPTIONS: SelectOption<HoldMsPreset>[] = [
+  { value: 'short', label: 'Short (400 ms)' },
+  { value: 'long', label: 'Long (800 ms)' },
+]
+
 export const LANGUAGE_OPTIONS: SelectOption<string>[] = [
   { value: '', label: '— (none)' },
   { value: 'ar', label: 'Arabic (العربية)' },
@@ -154,6 +160,7 @@ export const DEFAULT_SETTINGS: NuxySettings = {
   windowPosition: '1/2, 1/2',
   preferredLanguages: [],
   kbdScheme: 'auto',
+  holdMs: 'long',
 }
 
 // ---------------------------------------------------------------------------
@@ -171,6 +178,7 @@ export const SECTIONS: SectionDef[] = [
       { key: 'font', label: 'Font', options: fontOptions, searchable: true },
       { key: 'fontWeight', label: 'Font Weight', options: FONT_WEIGHT_OPTIONS },
       { key: 'kbdScheme', label: 'Keyboard Shortcut Style', options: KBD_SCHEME_OPTIONS },
+      { key: 'holdMs', label: 'Hold Key Duration', options: HOLD_MS_OPTIONS },
     ],
   },
   {

@@ -1,4 +1,4 @@
-import type { KeyAction } from '../types.ts'
+import type { HoldProgress, KeyAction } from '../types.ts'
 import { isWritingElement } from '../utils/keyboard.ts'
 
 export interface KeyboardControllerCallbacks {
@@ -10,7 +10,8 @@ export interface KeyboardControllerCallbacks {
   closeCommandPalette: () => void
   returnToShell: () => void
   clearQueryAndEsc: () => void
-  setHoldMs: (ms: number | null) => void
+  setHoldProgress: (progress: HoldProgress | null) => void
+  getHoldMs: () => number
 }
 
 export class KeyboardController {
@@ -26,7 +27,7 @@ export class KeyboardController {
         clearTimeout(holdTimer)
         holdTimer = null
       }
-      this.callbacks.setHoldMs(null)
+      this.callbacks.setHoldProgress(null)
     }
 
     const matchesAction = (action: KeyAction, e: KeyboardEvent): boolean => {
@@ -41,8 +42,8 @@ export class KeyboardController {
 
     const startHold = (action: KeyAction, e: KeyboardEvent) => {
       if (holdTimer !== null) return
-      const ms = action.holdMs ?? 600
-      this.callbacks.setHoldMs(ms)
+      const ms = action.holdMs ?? this.callbacks.getHoldMs()
+      this.callbacks.setHoldProgress({ ms, hint: action.hint ?? action.key })
       holdTimer = setTimeout(() => {
         holdTimer = null
         clearHold()
@@ -98,7 +99,7 @@ export class KeyboardController {
               return
             }
           }
-          deactivateTool()
+          if (!e.repeat) deactivateTool()
         } else {
           clearHold()
           this.callbacks.clearQueryAndEsc()
@@ -164,7 +165,12 @@ export class KeyboardController {
       if (holdTimer !== null) {
         const actions = window.core?.shell?.getKeyActionsGetter()?.()
         const held = actions?.find((a) => a.trigger === 'hold' && matchesAction(a, e))
-        if (held) clearHold()
+        if (held) {
+          if (held.holdCancelToast) {
+            window.UI?.toast?.(held.holdCancelToast, { type: 'warning' })
+          }
+          clearHold()
+        }
       }
     }
 

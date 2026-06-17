@@ -6,7 +6,7 @@ import {
   customElement,
   property,
   state,
-  unsafeSVG,
+  safeSVG,
 } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 import { getIconSvg, getIconMeta, iconCacheReady } from '../../icon-cache.ts'
@@ -117,7 +117,7 @@ export class NuxyIconElement extends LitElement {
         </style>`
       : nothing
 
-    return html`${strokeStyle}<span style=${style}>${unsafeSVG(this._svg)}</span>`
+    return html`${strokeStyle}<span style=${style}>${safeSVG(this._svg)}</span>`
   }
 }
 

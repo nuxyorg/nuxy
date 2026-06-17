@@ -14,7 +14,7 @@ export function getDeepActiveElement(root: DocumentOrShadowRoot = document): Ele
  * Checks if the element is a text entry, select box, or a rich text editor.
  */
 export function isWritingElement(el: Element | null): boolean {
-  if (!el) return false
+  if (!el?.tagName) return false
 
   const tagName = el.tagName.toLowerCase()
 

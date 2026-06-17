@@ -102,36 +102,6 @@ export class NuxyShellOmniBarElement extends LitElement {
       opacity: 1;
       scale: 1;
     }
-
-    @keyframes nuxy-hold-fill {
-      from {
-        transform: scaleX(0);
-      }
-      to {
-        transform: scaleX(1);
-      }
-    }
-
-    .nuxy-shell-omni-bar__hold-progress {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: var(--z-1, 1);
-    }
-
-    .nuxy-shell-omni-bar__hold-progress-bar {
-      width: 100%;
-      height: 100%;
-      background: var(--color-accent, var(--syntax-operator));
-      transform: scaleX(0);
-      transform-origin: left center;
-      animation: nuxy-hold-fill var(--nuxy-hold-ms, 600ms) linear forwards;
-      border-radius: 0 2px 2px 0;
-    }
   `
 
   @property()
@@ -148,8 +118,6 @@ export class NuxyShellOmniBarElement extends LitElement {
   declare disabled: boolean
   @property({ type: Boolean })
   declare loading: boolean
-  @property({ type: Number, attribute: 'hold-ms' })
-  declare holdMs: number | null
 
   @queryDecorator('input') private _inputEl!: HTMLInputElement | null
 
@@ -217,16 +185,6 @@ export class NuxyShellOmniBarElement extends LitElement {
           <nuxy-spinner size="sm"></nuxy-spinner>
         </span>
       </div>
-      ${this.holdMs != null
-        ? html`
-            <div class="nuxy-shell-omni-bar__hold-progress">
-              <div
-                class="nuxy-shell-omni-bar__hold-progress-bar"
-                style="--nuxy-hold-ms:${this.holdMs}ms"
-              ></div>
-            </div>
-          `
-        : nothing}
     `
   }
 }

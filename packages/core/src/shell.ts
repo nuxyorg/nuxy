@@ -8,6 +8,8 @@ export interface ShellKeyAction {
   allowRepeat?: boolean
   trigger?: 'press' | 'hold'
   holdMs?: number
+  /** Shown when a hold action is released before it completes. */
+  holdCancelToast?: string
 }
 
 export interface ShellCommandAction {

@@ -10,6 +10,7 @@ export interface KeyAction {
   allowRepeat?: boolean
   trigger?: 'press' | 'hold'
   holdMs?: number
+  holdCancelToast?: string
 }
 
 // Registry for Lit reactive controllers

@@ -14,8 +14,16 @@ import './nuxy-portal-host.ts'
 import './nuxy-shell-resize-handles.ts'
 import './nuxy-shell-omni-bar.ts'
 import './nuxy-command-palette.ts'
-import type { CommandPaletteAction, KeyAction, ProviderState } from './types.ts'
+import type { CommandPaletteAction, HoldProgress, KeyAction, ProviderState } from './types.ts'
 import type { OmnibarSection } from './utils/listResults.ts'
+
+function holdTargetMatches(action: KeyAction, holdProgress: HoldProgress | null): boolean {
+  if (!holdProgress || action.trigger !== 'hold') return false
+  const actionHint = action.hint ?? action.key
+  const normalize = (hint: string | string[]) =>
+    (Array.isArray(hint) ? hint.join('+') : hint).toLowerCase()
+  return normalize(actionHint) === normalize(holdProgress.hint)
+}
 
 interface ResultItem {
   id: string
@@ -237,8 +245,7 @@ export class NuxyShellViewElement extends LitElement {
     if (!ctrl) return
     const s = ctrl.state
 
-    ctrl.refs.container =
-      this._shellRef.value ?? this.renderRoot.querySelector('nuxy-shell') ?? null
+    ctrl.refs.container = this._shellRef.value ?? null
     if (ctrl.refs.container && !this._didInitialPosition) {
       this._didInitialPosition = true
       ctrl.onContainerReady()
@@ -284,7 +291,6 @@ export class NuxyShellViewElement extends LitElement {
         ?static=${!showOmniBar}
         ?disabled=${!showOmniBar}
         ?loading=${isLoading}
-        .holdMs=${ctrl.state.holdMs}
         @mousedown=${(e: MouseEvent) => ctrl.handleDragMouseDown(e)}
         @click=${() => showOmniBar && ctrl.refs.input?.focus()}
         @nuxy-omni-input=${(e: CustomEvent<{ value: string }>) => {
@@ -548,7 +554,8 @@ export class NuxyShellViewElement extends LitElement {
   ) {
     const ctrl = this.controller
     if (!ctrl) return nothing
-    const { tools, activeTool, selectedIndex, listResults, extensionSummary } = ctrl.state
+    const { tools, activeTool, selectedIndex, listResults, extensionSummary, holdProgress } =
+      ctrl.state
     const t = ctrl.t.t
 
     const hasFooterContent =
@@ -573,7 +580,14 @@ export class NuxyShellViewElement extends LitElement {
                           : nothing}
                         <span class="nuxy-shortcut-action" @click=${() => a.handler()}>
                           ${(Array.isArray(a.hint) ? a.hint : [a.hint]).map(
-                            (k) => html` <nuxy-kbd .keys=${k}></nuxy-kbd> `
+                            (k) => html`
+                              <nuxy-kbd
+                                .keys=${k}
+                                .holdMs=${holdTargetMatches(a, holdProgress)
+                                  ? holdProgress!.ms
+                                  : null}
+                              ></nuxy-kbd>
+                            `
                           )}
                           <span>${a.label}</span>
                         </span>

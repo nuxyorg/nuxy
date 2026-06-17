@@ -37,15 +37,21 @@ export interface ShellFocusPolicy {
 }
 
 export function queryOmniBarInputFromDom(): HTMLInputElement | null {
+  // eslint-disable-next-line no-restricted-syntax -- plain utility (not a Lit component); crosses shadow roots of sibling custom elements that ref()/@query cannot reach
   const view = document.querySelector('nuxy-shell-view')
+  // eslint-disable-next-line no-restricted-syntax -- see above
   const omniBar = view?.shadowRoot?.querySelector('nuxy-shell-omni-bar')
+  // eslint-disable-next-line no-restricted-syntax -- see above
   return omniBar?.shadowRoot?.querySelector<HTMLInputElement>('.nuxy-shell-omni-bar__input') ?? null
 }
 
 function queryPaletteInputFromDom(): HTMLInputElement | null {
+  // eslint-disable-next-line no-restricted-syntax -- plain utility (not a Lit component); crosses shadow roots of sibling custom elements that ref()/@query cannot reach
   const view = document.querySelector('nuxy-shell-view')
+  // eslint-disable-next-line no-restricted-syntax -- see above
   const palette = view?.shadowRoot?.querySelector('nuxy-command-palette')
   return (
+    // eslint-disable-next-line no-restricted-syntax -- see above
     palette?.shadowRoot?.querySelector<HTMLInputElement>('.nuxy-command-palette__input') ?? null
   )
 }

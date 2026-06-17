@@ -156,7 +156,7 @@ Contains standard system type models, including `ExtensionType`, `ExtensionPermi
 
 ### `src/lit.ts`
 
-Helper file re-exporting reactive element decorators, directives (`unsafeHTML`, `unsafeSVG`), and templates from the `lit` package.
+Helper file re-exporting reactive element decorators, custom templates from the `lit` package, and custom sanitizing helpers (`safeHTML`, `safeSVG`) as secure alternatives to Lit's standard unsafe directives.
 
 ---
 

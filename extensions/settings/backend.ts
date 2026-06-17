@@ -23,6 +23,7 @@ const DEFAULT: NuxySettings = {
   preferredLanguages: [],
   // Keyboard
   kbdScheme: 'auto',
+  holdMs: 'long',
 }
 
 export function register(core: CoreContext): void {

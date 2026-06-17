@@ -1,49 +1,9 @@
 /**
  * Integration tests for extension behavior in the running Electron app:
- * angrysearch status, orchestrator routing, media provider, and
- * cross-extension IPC interactions.
+ * orchestrator routing, calculator provider, and cross-extension IPC interactions.
  */
 import { test, expect } from './fixtures.js'
 import { resetShell, typeInOmnibar } from './e2e-helpers.js'
-
-test.describe.skip('angrysearch extension', () => {
-  test('getStatus returns expected shape', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.angrysearch', 'getStatus', {})
-    )
-    expect(result.success).toBe(true)
-    const s = result.data
-    expect(typeof s.isUpdating).toBe('boolean')
-    expect(typeof s.exists).toBe('boolean')
-    // lastUpdate is null initially or a date string
-    expect(s.lastUpdate === null || typeof s.lastUpdate === 'string').toBe(true)
-  })
-
-  test('search with short query returns empty items', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.angrysearch', 'search', { query: 'ab' })
-    )
-    expect(result.success).toBe(true)
-    expect(Array.isArray(result.data.items)).toBe(true)
-    expect(result.data.items).toHaveLength(0)
-  })
-
-  test('search with 3+ chars returns items array', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.angrysearch', 'search', { query: 'usr' })
-    )
-    expect(result.success).toBe(true)
-    expect(Array.isArray(result.data.items)).toBe(true)
-  })
-
-  test('updateDatabase returns true', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.angrysearch', 'updateDatabase', {})
-    )
-    expect(result.success).toBe(true)
-    expect(result.data).toBe(true)
-  })
-})
 
 test.describe('calculator provider via IPC', () => {
   test('eval returns result for valid math', async ({ appPage }) => {
@@ -70,73 +30,6 @@ test.describe('calculator provider via IPC', () => {
     )
     expect(result.success).toBe(true)
     expect(result.data.items[0].subtitle).toBeTruthy()
-  })
-})
-
-test.describe.skip('emoji-picker extension via IPC', () => {
-  test('getFavorites returns an array', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.emoji-picker', 'getFavorites', {})
-    )
-    expect(result.success).toBe(true)
-    expect(Array.isArray(result.data)).toBe(true)
-  })
-
-  test('copy returns { ok: true }', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.emoji-picker', 'copy', '😀')
-    )
-    expect(result.success).toBe(true)
-    expect(result.data.ok).toBe(true)
-  })
-
-  test('toggleFavorite adds then removes emoji', async ({ appPage }) => {
-    // Add
-    const add = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.emoji-picker', 'toggleFavorite', '🧪')
-    )
-    expect(add.success).toBe(true)
-    expect(add.data).toContain('🧪')
-
-    // Remove
-    const remove = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.emoji-picker', 'toggleFavorite', '🧪')
-    )
-    expect(remove.success).toBe(true)
-    expect(remove.data).not.toContain('🧪')
-  })
-})
-
-test.describe.skip('time-calculator provider via IPC', () => {
-  test('eval with time query returns result', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.time-calculator', 'eval', { text: '12pm tokyo' })
-    )
-    expect(result.success).toBe(true)
-    expect(Array.isArray(result.data.items)).toBe(true)
-    expect(result.data.items.length).toBeGreaterThan(0)
-  })
-
-  test('eval with non-time query returns empty or hint', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.time-calculator', 'eval', { text: 'just a query' })
-    )
-    expect(result.success).toBe(true)
-    expect(Array.isArray(result.data.items)).toBe(true)
-  })
-
-  test('convert channel performs time conversion', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.time-calculator', 'convert', {
-        time: '12pm',
-        from: 'UTC',
-        to: 'tokyo',
-      })
-    )
-    expect(result.success).toBe(true)
-    const d = result.data
-    expect(typeof d.convertedTime).toBe('string')
-    expect(typeof d.timezone).toBe('string')
   })
 })
 
@@ -171,23 +64,5 @@ test.describe('orchestrator routing', () => {
     // App should still be responsive
     const inputExists = await appPage.evaluate(() => document.querySelector('input') !== null)
     expect(inputExists).toBe(true)
-  })
-})
-
-test.describe.skip('clipboard extension via IPC', () => {
-  test('getHistory returns array', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.clipboard', 'getHistory', {})
-    )
-    expect(result.success).toBe(true)
-    expect(Array.isArray(result.data)).toBe(true)
-  })
-
-  test('clearHistory returns array', async ({ appPage }) => {
-    const result = await appPage.evaluate(async () =>
-      (window as any).core.ipc.invoke('com.nuxy.clipboard', 'clearHistory', {})
-    )
-    expect(result.success).toBe(true)
-    expect(Array.isArray(result.data)).toBe(true)
   })
 })

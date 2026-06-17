@@ -197,6 +197,8 @@ export type {
   CoreShell,
   ResetToolStateOptions,
 } from './shell'
+export { HOLD_MS_BY_PRESET, resolveHoldMs } from './hold-ms'
+export type { HoldMsPreset } from './hold-ms'
 export type { CoreEvents, NuxyRendererEvent, NuxyRendererEventMap } from './events'
 export { classifyQuery } from './query-context'
 export type { QueryType, QueryContext } from './query-context'

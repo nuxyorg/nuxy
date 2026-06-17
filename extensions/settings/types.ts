@@ -6,6 +6,7 @@ export type ZoomLevel = string
 export type FontFamily = string
 export type FontWeight = string
 export type KbdScheme = 'auto' | 'mac' | 'windows'
+export type HoldMsPreset = 'short' | 'long'
 
 export interface NuxySettings {
   theme: Theme
@@ -27,6 +28,8 @@ export interface NuxySettings {
   preferredLanguages: string[]
   /** Controls how modifier keys are displayed in keyboard shortcut hints. */
   kbdScheme: KbdScheme
+  /** Duration for hold-to-confirm keyboard shortcuts. */
+  holdMs: HoldMsPreset
   [key: string]: unknown
 }
 

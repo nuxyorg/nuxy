@@ -1,13 +1,4 @@
-import {
-  LitElement,
-  html,
-  css,
-  customElement,
-  property,
-  state,
-  unsafeSVG,
-  ref,
-} from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property, state, safeSVG, ref } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 
 @customElement('nuxy-tool-icon-browser')
@@ -186,7 +177,7 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
                 ${icons.map(
                   (name) => html`
                     <div class="cell" title=${name}>
-                      <span class="icon-wrap">${unsafeSVG(this._svgCache.get(name) ?? '')}</span>
+                      <span class="icon-wrap">${safeSVG(this._svgCache.get(name) ?? '')}</span>
                       <span class="name">${name}</span>
                     </div>
                   `

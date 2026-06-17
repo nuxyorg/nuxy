@@ -52,6 +52,18 @@ const DOM_ANTIPATTERN_RULES = [
     message: 'Prefer @query / ref() in Lit components; querySelector is OK in tests and utilities',
     severity: 'low',
   },
+  {
+    id: 'unsafeHTML',
+    regex: /\bunsafeHTML\b/,
+    message: 'unsafeHTML is strictly forbidden. Use safeHTML or safe template design.',
+    severity: 'high',
+  },
+  {
+    id: 'unsafeSVG',
+    regex: /\bunsafeSVG\b/,
+    message: 'unsafeSVG is strictly forbidden. Use safeSVG instead.',
+    severity: 'high',
+  },
 ]
 
 const DOM_SCAN_SKIP_FILES = new Set([

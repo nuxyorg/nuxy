@@ -24,11 +24,16 @@ describe('nuxy-list indicator', () => {
     )
 
     const list = document.querySelector('nuxy-list') as NuxyListElement
+    Object.defineProperty(list, 'offsetHeight', { value: 90, configurable: true })
+    const items = Array.from(list.querySelectorAll('nuxy-list-item')) as HTMLElement[]
+    items.forEach((item, index) => {
+      Object.defineProperty(item, 'offsetTop', { value: index * 30, configurable: true })
+      Object.defineProperty(item, 'offsetHeight', { value: 30, configurable: true })
+    })
     await list.updateComplete
     await new Promise((r) => requestAnimationFrame(r))
 
     const indicator = list.shadowRoot?.querySelector('.indicator') as HTMLElement | null
-    const items = Array.from(list.querySelectorAll('nuxy-list-item')) as HTMLElement[]
     const activeItem = items[1]
 
     expect(indicator).toBeTruthy()
@@ -52,6 +57,12 @@ describe('nuxy-list indicator', () => {
     )
 
     const list = container.querySelector('nuxy-list') as NuxyListElement
+    Object.defineProperty(list, 'offsetHeight', { value: 60, configurable: true })
+    const items = Array.from(list.querySelectorAll('nuxy-list-item')) as HTMLElement[]
+    items.forEach((item, index) => {
+      Object.defineProperty(item, 'offsetTop', { value: index * 30, configurable: true })
+      Object.defineProperty(item, 'offsetHeight', { value: 30, configurable: true })
+    })
     await list.updateComplete
     await new Promise((r) => requestAnimationFrame(r))
 
@@ -60,7 +71,6 @@ describe('nuxy-list indicator', () => {
     await new Promise((r) => requestAnimationFrame(r))
 
     const indicator = list.shadowRoot?.querySelector('.indicator') as HTMLElement | null
-    const items = Array.from(list.querySelectorAll('nuxy-list-item')) as HTMLElement[]
 
     expect(indicator!.classList.contains('visible')).toBe(true)
     expect(indicator!.style.transform).toBe(`translateY(${items[1].offsetTop}px)`)
