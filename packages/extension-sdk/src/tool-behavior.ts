@@ -26,7 +26,7 @@ export function syncBlurSuppression(
 export function setToolSearchPlaceholder(t: TranslateFn, key: string): void {
   const translated = t(key)
   if (!translated || translated === key) return
-  window.core?.shell?.setSearchPlaceholder(translated)
+  window.core?.shell?.setSearchPlaceholder?.(translated)
 }
 
 export function completeToolAction(manifest: ExtensionManifest): void {

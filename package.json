@@ -30,7 +30,10 @@
     "publish:dry": "node scripts/publish.mjs",
     "publish:all": "node scripts/publish.mjs --publish",
     "publish:patch": "node scripts/publish.mjs --publish patch",
-    "publish:minor": "node scripts/publish.mjs --publish minor"
+    "publish:minor": "node scripts/publish.mjs --publish minor",
+    "publish:npm": "node scripts/publish-npm.mjs --channel stable --publish",
+    "publish:npm:dry": "node scripts/publish-npm.mjs --channel stable",
+    "publish:npm:nightly": "node scripts/publish-npm.mjs --channel nightly --publish"
   },
   "keywords": [],
   "author": "",

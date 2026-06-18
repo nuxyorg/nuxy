@@ -20,51 +20,21 @@ on:
       - 'extensions/shell/**'
       - 'extensions/theme-sakura/**'
       - 'extensions/ui-default/**'
+      - 'scripts/sync-org-repo.mjs'
+      - 'scripts/rewrite-workspace-deps.mjs'
+      - 'scripts/npm-packages.mjs'
+      - 'scripts/publish-npm.mjs'
 
 jobs:
-  sync:
+  sync-npm-packages:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - prefix: packages/core
-            repo: nuxyorg/core
-          - prefix: packages/extension-sdk
-            repo: nuxyorg/extension-sdk
-          - prefix: packages/ext-devserver
-            repo: nuxyorg/ext-devserver
-          - prefix: packages/nxt
-            repo: nuxyorg/nxt
-          - prefix: extensions/calculator
-            repo: nuxyorg/ext-calculator
-          - prefix: extensions/file-transfer
-            repo: nuxyorg/ext-file-transfer
-          - prefix: extensions/gradient
-            repo: nuxyorg/ext-gradient
-          - prefix: extensions/icon-browser
-            repo: nuxyorg/ext-icon-browser
-          - prefix: extensions/icons-default
-            repo: nuxyorg/ext-icons-default
-          - prefix: extensions/notes
-            repo: nuxyorg/ext-notes
-          - prefix: extensions/nyaa
-            repo: nuxyorg/ext-nyaa
-          - prefix: extensions/settings
-            repo: nuxyorg/ext-settings
-          - prefix: extensions/shell
-            repo: nuxyorg/ext-shell
-          - prefix: extensions/theme-sakura
-            repo: nuxyorg/ext-theme-sakura
-          - prefix: extensions/ui-default
-            repo: nuxyorg/ui-default
-
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Verify token
+      - name: Verify sync token
         env:
           TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
         run: |
@@ -72,41 +42,67 @@ jobs:
             -H "Authorization: Bearer $TOKEN" \
             https://api.github.com/repos/nuxyorg/core)
           echo "GitHub API response for nuxyorg/core: $status"
-
-      - name: Ensure repo ${{ matrix.repo }} exists
-        env:
-          TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
-        run: |
-          status=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: Bearer $TOKEN" \
-            https://api.github.com/repos/${{ matrix.repo }})
-          if [ "$status" = "404" ]; then
-            REPO_NAME=$(echo '${{ matrix.repo }}' | cut -d'/' -f2)
-            response=$(curl -s -w "\n%{http_code}" -X POST \
-              -H "Authorization: Bearer $TOKEN" \
-              -H "Content-Type: application/json" \
-              https://api.github.com/orgs/nuxyorg/repos \
-              -d "{\"name\": \"$REPO_NAME\", \"private\": false, \"auto_init\": false}")
-            create_status=$(echo "$response" | tail -1)
-            if [ "$create_status" = "201" ]; then
-              echo "Created repo ${{ matrix.repo }}"
-            else
-              echo "Failed to create repo ${{ matrix.repo }}: $(echo "$response" | head -n -1)"
-              exit 1
-            fi
-          else
-            echo "Repo ${{ matrix.repo }} already exists (HTTP $status)"
+          if [ "$status" = "401" ] || [ "$status" = "403" ]; then
+            echo "NUXYORG_SYNC_TOKEN is invalid or lacks org access"
+            exit 1
           fi
 
-      - name: Push subtree to ${{ matrix.repo }}
+      - name: Sync npm toolchain packages (ordered)
         env:
-          TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
+          NUXYORG_SYNC_TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          BRANCH="sync-$(echo '${{ matrix.repo }}' | tr '/' '-')"
-          git subtree split --prefix=${{ matrix.prefix }} -b "$BRANCH"
-          git remote add target https://x-access-token:${TOKEN}@github.com/${{ matrix.repo }}.git
-          git push target "$BRANCH":main --force
-          git remote remove target
-          git branch -D "$BRANCH"
+          set -euo pipefail
+          node scripts/sync-org-repo.mjs packages/core nuxyorg/core
+          node scripts/sync-org-repo.mjs packages/extension-sdk nuxyorg/extension-sdk
+          node scripts/sync-org-repo.mjs extensions/ui-default nuxyorg/ui-default
+          node scripts/sync-org-repo.mjs packages/nxt nuxyorg/nxt
+          node scripts/sync-org-repo.mjs packages/ext-devserver nuxyorg/ext-devserver
+
+  sync-extensions:
+    needs: sync-npm-packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Sync extension mirrors
+        env:
+          NUXYORG_SYNC_TOKEN: ${{ secrets.NUXYORG_SYNC_TOKEN }}
+        run: |
+          set -euo pipefail
+          node scripts/sync-org-repo.mjs extensions/calculator nuxyorg/ext-calculator
+          node scripts/sync-org-repo.mjs extensions/file-transfer nuxyorg/ext-file-transfer
+          node scripts/sync-org-repo.mjs extensions/gradient nuxyorg/ext-gradient
+          node scripts/sync-org-repo.mjs extensions/icon-browser nuxyorg/ext-icon-browser
+          node scripts/sync-org-repo.mjs extensions/icons-default nuxyorg/ext-icons-default
+          node scripts/sync-org-repo.mjs extensions/notes nuxyorg/ext-notes
+          node scripts/sync-org-repo.mjs extensions/nyaa nuxyorg/ext-nyaa
+          node scripts/sync-org-repo.mjs extensions/settings nuxyorg/ext-settings
+          node scripts/sync-org-repo.mjs extensions/shell nuxyorg/ext-shell
+          node scripts/sync-org-repo.mjs extensions/theme-sakura nuxyorg/ext-theme-sakura
+
+  publish-npm-nightly:
+    needs: sync-npm-packages
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Publish nightly dist-tag (ordered)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node scripts/publish-npm.mjs --channel nightly --publish

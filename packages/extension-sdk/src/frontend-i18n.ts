@@ -54,7 +54,7 @@ export function createTranslator(extId: string, onChange?: () => void): Translat
 
   const fetchTranslations = async (): Promise<void> => {
     try {
-      const res = (await window.core?.ipc?.invoke('kernel', 'getExtensionTranslations', {
+      const res = (await window.core?.ipc?.invoke?.('kernel', 'getExtensionTranslations', {
         extId,
       })) as
         | {
@@ -79,7 +79,7 @@ export function createTranslator(extId: string, onChange?: () => void): Translat
   }
 
   void fetchTranslations()
-  const off = window.core?.events?.on('locale-changed', () => {
+  const off = window.core?.events?.on?.('locale-changed', () => {
     retryCount = 0
     void fetchTranslations()
   })
