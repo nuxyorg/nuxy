@@ -23,7 +23,6 @@ on:
       - 'scripts/sync-org-repo.mjs'
       - 'scripts/rewrite-workspace-deps.mjs'
       - 'scripts/npm-packages.mjs'
-      - 'scripts/publish-npm.mjs'
 
 jobs:
   sync-npm-packages:
@@ -82,27 +81,3 @@ jobs:
           node scripts/sync-org-repo.mjs extensions/settings nuxyorg/ext-settings
           node scripts/sync-org-repo.mjs extensions/shell nuxyorg/ext-shell
           node scripts/sync-org-repo.mjs extensions/theme-sakura nuxyorg/ext-theme-sakura
-
-  publish-npm-nightly:
-    needs: sync-npm-packages
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: pnpm/action-setup@v6
-        with:
-          version: 11
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
-
-      - run: pnpm install --frozen-lockfile
-
-      - name: Publish nightly dist-tag (ordered)
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: node scripts/publish-npm.mjs --channel nightly --publish
