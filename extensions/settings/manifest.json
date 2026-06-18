@@ -17,5 +17,8 @@
   "locales": {
     "default": "en",
     "supported": ["en", "tr", "ja"]
+  },
+  "deeplinks": {
+    "schemes": ["extension/:extId"]
   }
 }

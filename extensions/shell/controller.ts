@@ -12,6 +12,7 @@ import { FocusController } from './controllers/focus-controller.ts'
 import { queryOmniBarInputFromDom } from './utils/focus.ts'
 import { InitController } from './controllers/init-controller.ts'
 import { SyncController } from './controllers/sync-controller.ts'
+import { DeeplinkController } from './controllers/deeplink-controller.ts'
 import { QueryController } from './controllers/query-controller.ts'
 import { NavigationController } from './controllers/navigation-controller.ts'
 import { SettingsController } from './controllers/settings-controller.ts'
@@ -117,6 +118,7 @@ export class ShellController {
   private readonly _focus: FocusController
   private readonly _init: InitController
   private readonly _sync: SyncController
+  private readonly _deeplink: DeeplinkController
   private cleanups: Array<() => void> = []
   private copiedTimer: ReturnType<typeof setTimeout> | null = null
   private initialLoadTimer: ReturnType<typeof setTimeout> | null = null
@@ -257,6 +259,11 @@ export class ShellController {
       applySettings: (s) => this._applySettings(s),
       ensureShellFocus: () => this.ensureShellFocus(),
     })
+
+    this._deeplink = new DeeplinkController({
+      openTool: (toolId, initialQuery) => this.openTool(toolId, initialQuery),
+      getTools: () => this.tools.tools,
+    })
   }
 
   ensureShellFocus(): void {
@@ -299,6 +306,7 @@ export class ShellController {
     this._sync.bindSync()
     this._keyboard.bind()
     this._focus.bind()
+    this._deeplink.bind()
     this._bindQuerySelectionSync()
     this._bindOmniBarControl()
     this._bindPositionClamp()
@@ -318,6 +326,7 @@ export class ShellController {
     this._focus.destroy()
     this._init.destroy()
     this._sync.destroy()
+    this._deeplink.destroy()
     this.t.destroy()
     window.core?.shell?.resetToolState()
   }

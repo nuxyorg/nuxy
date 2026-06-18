@@ -78,12 +78,25 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
     this.controller = new SettingsController(() => this.requestUpdate())
     this.controller.connect()
     if (this._query) this.controller.setFilterQuery(this._query)
+    if (this.committedQuery) this.controller.selectPanelFromDeeplinkPath(this.committedQuery)
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
     this.controller?.disconnect()
     this.controller = null
+  }
+
+  /**
+   * Deeplink round-trip: `nuxy://settings/extension/:extId` arrives as
+   * `committedQuery = "extension/:extId"` (the deeplink path, forwarded
+   * verbatim by nuxy-tool-host). Selects the matching extension panel when
+   * the path matches that shape; no-ops otherwise.
+   */
+  protected updated(changed: Map<string, unknown>): void {
+    if (changed.has('committedQuery') && this.committedQuery && this.controller) {
+      this.controller.selectPanelFromDeeplinkPath(this.committedQuery)
+    }
   }
 
   render() {

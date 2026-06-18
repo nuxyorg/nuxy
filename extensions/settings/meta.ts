@@ -303,3 +303,22 @@ export function filterSettingsByQuery(meta: SettingsMeta, query: string): Settin
     sectionStartIndex,
   }
 }
+
+/**
+ * Resolves the settings section id targeted by a `nuxy://settings/<path>`
+ * deeplink path (e.g. "extension/nyaa" -> "nyaa"), validated against the
+ * currently rendered sections. Returns `null` when the path doesn't match
+ * the `extension/:extId` shape or the extId has no matching section.
+ *
+ * Extension panel section ids equal their manifest id 1:1 (see
+ * `computeSettingsMeta`: extension sections are built with `id: info.extId`).
+ */
+export function resolveDeeplinkSectionId(
+  path: string,
+  sectionsToRender: RenderSection[]
+): string | null {
+  const match = /^extension\/([^/]+)$/.exec(path)
+  if (!match) return null
+  const extId = decodeURIComponent(match[1])
+  return sectionsToRender.some((s) => s.id === extId) ? extId : null
+}
