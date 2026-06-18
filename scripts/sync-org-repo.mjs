@@ -34,8 +34,25 @@ function run(cmd, opts = {}) {
   execSync(cmd, { stdio: 'inherit', cwd: root, ...opts })
 }
 
+function runSafe(cmd) {
+  try {
+    execSync(cmd, { cwd: root, stdio: 'inherit' })
+  } catch {
+    /* best-effort cleanup */
+  }
+}
+
 function runCapture(cmd) {
   return execSync(cmd, { cwd: root, encoding: 'utf8' }).trim()
+}
+
+/** GitHub Actions runners have no default committer; set local identity for amend. */
+function ensureGitIdentity() {
+  const name = process.env.GIT_COMMITTER_NAME || 'github-actions[bot]'
+  const email =
+    process.env.GIT_COMMITTER_EMAIL || '41898282+github-actions[bot]@users.noreply.github.com'
+  run(`git config user.name ${JSON.stringify(name)}`)
+  run(`git config user.email ${JSON.stringify(email)}`)
 }
 
 console.log(`\n▶ Sync ${prefix} → ${repo}`)
@@ -62,6 +79,7 @@ const branch = `sync-${repo.replace('/', '-')}`
 const pkgInPrefix = path.join(prefix, 'package.json')
 const versions = readNuxyVersions()
 
+ensureGitIdentity()
 run(`git subtree split --prefix=${prefix} -b ${branch}`)
 
 if (existsSync(path.join(root, pkgInPrefix))) {
@@ -76,6 +94,8 @@ if (existsSync(path.join(root, pkgInPrefix))) {
       run('git commit --amend --no-edit')
     }
   } finally {
+    runSafe('git reset HEAD package.json')
+    runSafe('git checkout -- package.json')
     run('git checkout -')
   }
 }
