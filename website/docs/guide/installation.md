@@ -44,15 +44,12 @@ sudo apt install ./nuxy_*.deb
 
 The package installs Nuxy to `/opt/nuxy`, creates `/usr/bin/nuxy`, and registers the `.desktop` entry automatically.
 
-### Linux — Arch Linux
-
-Install from the AUR:
-
-```bash
-yay -S nuxy-bin
-# or
-paru -S nuxy-bin
-```
+> AppImage and `.deb` are the only Linux targets currently produced by this repo's
+> `electron-builder` config (`src/electron-builder.yml`). There is no official Arch/AUR,
+> rpm, snap, or flatpak package — see
+> [Linux Desktop Integration](/guide/linux-desktop-integration) for build-from-source,
+> manual install, and GNOME/KDE-specific setup (autostart, global shortcuts, tray
+> caveats).
 
 ### macOS
 
@@ -94,9 +91,14 @@ update-desktop-database ~/.local/share/applications
 
 Nuxy is most useful when bound to a system-wide shortcut. It does not register a hotkey itself — configure one in your DE or compositor.
 
-**GNOME** — Settings → Keyboard → Custom Shortcuts → add `nuxy toggle`
+**GNOME** — Settings → Keyboard → Custom Shortcuts → add `nuxy toggle`. GNOME has no
+generic global-accelerator API for arbitrary apps, so Custom Shortcuts is the
+supported workaround — see [Linux Desktop Integration](/guide/linux-desktop-integration#gnome)
+for the full walkthrough.
 
-**KDE Plasma** — System Settings → Shortcuts → Custom Shortcuts → add command `nuxy toggle`
+**KDE Plasma** — System Settings → Shortcuts → Custom Shortcuts → add command `nuxy toggle`.
+KDE supports binding native global shortcuts to arbitrary commands directly — see
+[Linux Desktop Integration](/guide/linux-desktop-integration#kde-plasma).
 
 **Hyprland / Sway / i3** — add to your config:
 
@@ -117,7 +119,7 @@ bindsym $mod+space exec nuxy toggle
 After first launch Nuxy creates:
 
 ```
-~/.nuxy/
+~/.nxy/
   nuxyconfig              # key=value settings (auto-created)
   extensions/             # bundled + user-installed extensions
   data/                   # per-extension storage (chrooted)
@@ -130,10 +132,10 @@ See [Configuration](/guide/configuration) for all `nuxyconfig` options.
 
 ## Installing third-party extensions
 
-1. Create a folder under `~/.nuxy/extensions/`:
+1. Create a folder under `~/.nxy/extensions/`:
 
    ```bash
-   mkdir -p ~/.nuxy/extensions/com.example.my-tool
+   mkdir -p ~/.nxy/extensions/com.example.my-tool
    ```
 
 2. Add `manifest.json`, `backend.js`, and optionally `frontend.js`.
@@ -155,7 +157,7 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev` builds `ui-default`, syncs bundled extensions to `~/.nuxy/extensions/`, starts the Vite renderer with HMR, and launches Electron.
+`pnpm dev` builds `ui-default`, syncs bundled extensions to `~/.nxy/extensions/`, starts the Vite renderer with HMR, and launches Electron.
 
 ```bash
 pnpm build      # tests + compile
