@@ -184,3 +184,38 @@ process) — so GNOME's lack of a built-in tray (it requires the
 to show tray icons at all) does not affect Nuxy today. If a tray icon is added in a
 future release, this caveat will apply and should be revisited.
 
+---
+
+## KDE Plasma
+
+### Autostart
+
+Same freedesktop convention as GNOME:
+
+```bash
+mkdir -p ~/.config/autostart
+cp ~/.local/share/applications/nuxy.desktop ~/.config/autostart/
+```
+
+KDE also exposes a GUI for this under System Settings → Autostart → Add Program, if
+you'd rather not edit the directory by hand.
+
+### Global shortcut
+
+Unlike GNOME, KDE supports binding **native global shortcuts to arbitrary commands**
+directly:
+
+1. System Settings → Shortcuts → Custom Shortcuts
+2. Right-click → New → Global Shortcut → Command/URL
+3. Name: `Nuxy Toggle`; Command: `nuxy.sh toggle`
+4. Click the shortcut trigger field and press your desired key combo (e.g. `Alt+Space`)
+
+This is more direct than GNOME's path — no separate "Custom Shortcuts" reinterpretation
+step, and it integrates with KDE's regular shortcut conflict detection.
+
+### Tray icon
+
+As above, Nuxy does not currently use a tray icon, so KDE's (generally good, native)
+`StatusNotifierItem` tray support isn't exercised either way.
+
+
