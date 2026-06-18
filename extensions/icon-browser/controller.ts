@@ -1,4 +1,7 @@
 import { createStore, type Store } from '@nuxyorg/extension-sdk'
+import type { ShellKeyAction } from '@nuxyorg/core'
+
+const EXT_ID = 'com.nuxy.icon-browser'
 
 export interface IconBrowserState {
   icons: string[]
@@ -33,6 +36,62 @@ export class IconBrowserController {
 
   disconnect(): void {
     // no-op — grid owns keyboard registration
+  }
+
+  private activeName(): string | null {
+    const { filtered, activeIndex } = this.state
+    if (activeIndex < 0 || activeIndex >= filtered.length) return null
+    return filtered[activeIndex] ?? null
+  }
+
+  async copyActiveName(): Promise<void> {
+    const name = this.activeName()
+    if (!name) return
+    const res = (await window.core?.ipc?.invoke(EXT_ID, 'copyIconName', { name })) as
+      | { success: boolean }
+      | null
+      | undefined
+    if (res?.success) {
+      window.UI?.toast?.(`Copied "${name}"`, { type: 'success' })
+    }
+  }
+
+  async copyActiveSvg(): Promise<void> {
+    const name = this.activeName()
+    if (!name) return
+    const svg = this.svgCache.get(name)
+    if (!svg) return
+    const res = (await window.core?.ipc?.invoke(EXT_ID, 'copyIconSvg', { svg })) as
+      | { success: boolean }
+      | null
+      | undefined
+    if (res?.success) {
+      window.UI?.toast?.(`Copied SVG for "${name}"`, { type: 'success' })
+    }
+  }
+
+  getKeyActions(): ShellKeyAction[] {
+    return [
+      {
+        key: 'Enter',
+        label: 'Copy name',
+        hint: '↵',
+        activeOn: () => this.activeName() !== null,
+        handler: () => {
+          void this.copyActiveName()
+        },
+      },
+      {
+        key: 'Enter',
+        modifiers: ['shift'],
+        label: 'Copy SVG',
+        hint: ['⇧', '↵'],
+        activeOn: () => this.activeName() !== null,
+        handler: () => {
+          void this.copyActiveSvg()
+        },
+      },
+    ]
   }
 
   setQuery(query: string): void {

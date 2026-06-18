@@ -77,6 +77,7 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
   private controller: IconBrowserController | null = null
   private _query = ''
   private _footerRegistered = false
+  private _keyActions: unknown = null
 
   set query(value: string) {
     const next = value ?? ''
@@ -94,12 +95,21 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
     this.controller = new IconBrowserController(() => this.requestUpdate())
     this.controller.connect()
     if (this._query) this.controller.setQuery(this._query)
+
+    const KeyActionsController = ((window as any).UI || {}).KeyActionsController
+    if (KeyActionsController) {
+      this._keyActions = new KeyActionsController(
+        this,
+        () => this.controller?.getKeyActions() ?? []
+      )
+    }
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
     this.controller?.disconnect()
     this.controller = null
+    this._keyActions = null
     window.core?.shell?.setFooterPortal(null)
     this._footerRegistered = false
   }
@@ -112,6 +122,11 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
 
   private onActiveIndexChange = (event: CustomEvent<{ index: number }>): void => {
     this.controller?.setActiveIndex(event.detail.index)
+  }
+
+  private onItemClick = (idx: number): void => {
+    this.controller?.setActiveIndex(idx)
+    void this.controller?.copyActiveName()
   }
 
   private _footerText(): string {
@@ -144,7 +159,11 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
                 >
                   ${filtered.map(
                     (name, idx) => html`
-                      <nuxy-grid-item .active=${idx === activeIndex} title=${name}>
+                      <nuxy-grid-item
+                        .active=${idx === activeIndex}
+                        title=${name}
+                        @click=${() => this.onItemClick(idx)}
+                      >
                         <span class="icon-wrap"
                           >${safeSVG(this.controller!.svgCache.get(name) ?? '')}</span
                         >
