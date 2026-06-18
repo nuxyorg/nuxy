@@ -1,3 +1,5 @@
+/** DOM font-application helpers for the renderer/settings UI. Frontend-only — not used by extension backends. */
+
 export const DEFAULT_FONT_FAMILY_MAP: Record<string, string> = {
   system: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`,
   monospace: 'monospace',

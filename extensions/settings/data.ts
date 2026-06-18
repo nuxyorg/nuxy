@@ -1,5 +1,5 @@
 import type { NuxySettings, SelectOption, ExtSettingsInfo } from './types.ts'
-import { applyUiFontSettings } from '@nuxyorg/core'
+import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import { DEFAULT_SETTINGS } from './utils/settingsOptions.ts'
 import { buildIconPackOptions, resolveSingleIconPack } from './utils/iconPackDefaults.ts'
 

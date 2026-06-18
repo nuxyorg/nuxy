@@ -199,4 +199,3 @@ export type {
 export type { CoreEvents, NuxyRendererEvent, NuxyRendererEventMap } from './events'
 export { classifyQuery } from './query-context'
 export type { QueryType, QueryContext } from './query-context'
-export { applyUiFontSettings, DEFAULT_FONT_FAMILY_MAP, resolveFontFamily } from './ui-font'

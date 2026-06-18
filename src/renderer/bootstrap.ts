@@ -1,5 +1,5 @@
 import type { ThemeDefinition, IpcResult } from '@nuxyorg/core'
-import { applyUiFontSettings } from '@nuxyorg/core'
+import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 
 const BOOTSTRAP_ID = 'com.nuxy.shell'
 const EXTENSIONS_PATH = '~/.nxy/extensions'

@@ -1,5 +1,5 @@
 /* cspell:ignore Bahasa čeština dansk Deutsch español français italiano Melayu Nederlands norsk polski português română slovenčina svenska tiếng Türkçe Việt ελληνικά русский українська עברית العربية فارسی हिन्दी ภาษาไทย */
-import { DEFAULT_FONT_FAMILY_MAP } from '@nuxyorg/core'
+import { DEFAULT_FONT_FAMILY_MAP } from '@nuxyorg/extension-sdk'
 import type {
   NuxySettings,
   SelectOption,

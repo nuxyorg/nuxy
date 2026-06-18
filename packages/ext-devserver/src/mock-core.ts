@@ -1,4 +1,4 @@
-import { applyUiFontSettings } from '@nuxyorg/core'
+import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import fileMocks from 'virtual:ext-mocks'
 import { createEventsBridge, createShellBridge } from './dev-bridges'
 import type { DevExtensionInfo, DevIconPack, DevTheme } from './dev-env'

@@ -1,4 +1,4 @@
-import { applyUiFontSettings } from '@nuxyorg/core'
+import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import type { NuxySettings, AnyRow } from './types.ts'
 
 const EXT_ID = 'com.nuxy.settings'
