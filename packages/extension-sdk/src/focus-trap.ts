@@ -1,4 +1,4 @@
-/** DOM focus-trap helpers for modal/dialog-like overlays. Renderer-only — not imported by Electron main or workers. */
+/** DOM focus-trap helpers for modal/dialog-like overlays. Frontend-only — not used by extension backends. */
 
 const FOCUSABLE_SELECTOR = [
   'a[href]',

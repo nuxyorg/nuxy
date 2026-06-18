@@ -1,5 +1,5 @@
 import type { ExtensionManifest } from '@nuxyorg/extension-sdk'
-import type { HoldMsPreset } from '@nuxyorg/core'
+import type { HoldMsPreset } from './hold-ms.ts'
 
 export interface Tool {
   id: string

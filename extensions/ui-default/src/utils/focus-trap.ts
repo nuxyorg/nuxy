@@ -1,4 +1,4 @@
-import { getFocusableElements, trapTabKey } from '@nuxyorg/core'
+import { getFocusableElements, trapTabKey } from '@nuxyorg/extension-sdk'
 
 export { getFocusableElements, trapTabKey }
 

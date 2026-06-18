@@ -45,13 +45,6 @@ export function registerProtocols() {
           createRef,
           safeHTML,
           safeSVG,
-          getFocusableElements,
-          trapTabKey,
-          resolveHoldMs,
-          HOLD_MS_BY_PRESET,
-          applyUiFontSettings,
-          DEFAULT_FONT_FAMILY_MAP,
-          resolveFontFamily,
         } = NuxyCore;
       `
       return new Response(coreVirtualScript, { headers: MODULE_HEADERS })
@@ -71,6 +64,11 @@ export function registerProtocols() {
           completeToolAction,
           defineExtension,
           HostChannel,
+          getFocusableElements,
+          trapTabKey,
+          applyUiFontSettings,
+          DEFAULT_FONT_FAMILY_MAP,
+          resolveFontFamily,
         } = NuxySdk;
       `
       return new Response(sdkVirtualScript, { headers: MODULE_HEADERS })

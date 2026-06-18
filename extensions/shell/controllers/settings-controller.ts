@@ -1,4 +1,4 @@
-import { applyUiFontSettings } from '@nuxyorg/core'
+import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import type { ReactiveController, ReactiveControllerHost } from '@nuxyorg/core'
 import type { ShellConfig } from '../types.ts'
 
