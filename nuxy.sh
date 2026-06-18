@@ -18,6 +18,17 @@ if [ "$1" == "toggle" ]; then
     else
         echo "Nuxy is not running."
     fi
+elif [ "$1" == "--open" ]; then
+    if [ -z "$2" ]; then
+        echo "Usage: nuxy.sh --open nuxy://<extension-id>/<path>?<query>"
+        exit 1
+    fi
+    if [ -S "$SOCKET" ]; then
+        send_command "open:$2"
+    else
+        echo "Nuxy is not running."
+        exit 1
+    fi
 else
     if [ -S "$SOCKET" ]; then
         send_command "show"

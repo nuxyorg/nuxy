@@ -8,6 +8,7 @@ import {
   createMainWindow,
   getMainWindow,
   isPreloadsLoaded,
+  setPreloadsLoadedCallback,
   tryHideMainWindow,
 } from '../window/manager.js'
 import { applyConfigToWindow, positionWindowOnDisplay } from '../window/runtime.js'
@@ -17,6 +18,8 @@ import { scanExtensions } from '../extensions/scanner.js'
 import { reloadConfig, setSettingsReloadCallback } from '../config/nuxyconfig.js'
 import { kernelLogger } from '@nuxyorg/core'
 import { platformId, getNowPlaying } from '../media/index.js'
+import { findDeeplinkUrlInArgv } from '../deeplink/argv.js'
+import { handleDeeplinkUrl } from '../deeplink/dispatch.js'
 
 // Linux: disable Vulkan (breaks on Wayland). Do not force X11 or disable GPU by default —
 // both break transparent windows on Wayland desktops.
@@ -49,6 +52,11 @@ process.on('uncaughtException', (err: any) => {
 
 const gotTheLock = app.requestSingleInstanceLock()
 
+// Register nuxy:// as the OS-level deeplink protocol handler. On Linux this only
+// takes effect once the app is installed (desktop file + xdg-mime); during local
+// dev it's a no-op registration attempt but harmless.
+app.setAsDefaultProtocolClient('nuxy')
+
 protocol.registerSchemesAsPrivileged([
   {
     scheme: 'nuxy-ext',
@@ -62,11 +70,32 @@ protocol.registerSchemesAsPrivileged([
   },
 ])
 
+/** Deeplink URL seen before the app/window was ready (cold start via OS "open with"). */
+let pendingDeeplinkUrl: string | undefined = findDeeplinkUrlInArgv(process.argv)
+
+function dispatchOrQueueDeeplink(url: string): void {
+  if (!isPreloadsLoaded()) {
+    log.info('Queuing deeplink until preloads are ready:', url)
+    pendingDeeplinkUrl = url
+    return
+  }
+  const result = handleDeeplinkUrl(url)
+  if (!result.ok) {
+    log.warn(`Deeplink dispatch failed (${result.error}):`, url)
+  }
+}
+
+// macOS: OS hands off nuxy:// URLs via 'open-url' instead of argv.
+app.on('open-url', (event, url) => {
+  event.preventDefault()
+  dispatchOrQueueDeeplink(url)
+})
+
 if (!gotTheLock) {
   log.warn('Another instance is already running — quitting.')
   app.quit()
 } else {
-  app.on('second-instance', () => {
+  app.on('second-instance', (_event, argv) => {
     log.info('Second instance attempted — focusing existing window.')
 
     try {
@@ -78,6 +107,13 @@ if (!gotTheLock) {
     if (!isPreloadsLoaded()) {
       log.warn('Ignoring second-instance show because preloads are not fully loaded yet.')
       return
+    }
+
+    const deeplinkUrl = findDeeplinkUrlInArgv(argv)
+    if (deeplinkUrl) {
+      const result = handleDeeplinkUrl(deeplinkUrl)
+      if (result.ok) return // handleDeeplinkUrl already shows/focuses the window
+      log.warn(`Deeplink dispatch failed (${result.error}):`, deeplinkUrl)
     }
 
     const win = getMainWindow() ?? BrowserWindow.getAllWindows()[0]
@@ -101,6 +137,18 @@ if (!gotTheLock) {
   setSettingsReloadCallback(async () => {
     const win = getMainWindow() ?? BrowserWindow.getAllWindows()[0]
     if (win && !win.isDestroyed()) applyConfigToWindow(win)
+  })
+
+  // Flush any deeplink URL seen before the renderer was ready to receive
+  // deeplink:open (cold start via OS "open with", or open-url before preloads loaded).
+  setPreloadsLoadedCallback(() => {
+    if (!pendingDeeplinkUrl) return
+    const url = pendingDeeplinkUrl
+    pendingDeeplinkUrl = undefined
+    const result = handleDeeplinkUrl(url)
+    if (!result.ok) {
+      log.warn(`Deferred deeplink dispatch failed (${result.error}):`, url)
+    }
   })
 
   app.whenReady().then(async () => {
@@ -149,7 +197,13 @@ if (!gotTheLock) {
           return
         }
 
-        if (cmd === 'toggle') {
+        if (cmd.startsWith('open:')) {
+          const url = cmd.slice('open:'.length)
+          const result = handleDeeplinkUrl(url)
+          if (!result.ok) {
+            log.warn(`Socket deeplink dispatch failed (${result.error}):`, url)
+          }
+        } else if (cmd === 'toggle') {
           if (win.isVisible()) {
             tryHideMainWindow('socket-toggle', () => win.hide())
           } else {
