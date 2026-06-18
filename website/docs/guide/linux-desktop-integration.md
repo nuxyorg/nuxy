@@ -142,4 +142,45 @@ echo -n "toggle" | socat - UNIX-CONNECT:/tmp/nuxy.sock
 If the socket file doesn't exist, Nuxy isn't running; `nuxy.sh` with no arguments
 falls back to starting it (`pnpm dev` in a source checkout).
 
+---
+
+## GNOME
+
+### Autostart
+
+GNOME (like other freedesktop-compliant DEs) reads `~/.config/autostart/*.desktop`
+on login. Copy your installed desktop entry there:
+
+```bash
+mkdir -p ~/.config/autostart
+cp ~/.local/share/applications/nuxy.desktop ~/.config/autostart/
+```
+
+(For a `.deb` install, the entry is usually at `/usr/share/applications/nuxy.desktop`
+— copy from there instead.)
+
+### Global shortcut
+
+GNOME (Mutter/Shell) has **no generic API for binding a global accelerator to an
+arbitrary command** the way KDE or i3/Sway do — there's no app-level "register
+hotkey" hook. The supported workaround is GNOME's **Custom Shortcuts** panel, which
+runs a shell command on keypress:
+
+1. Settings → Keyboard → Keyboard Shortcuts → View and Customize Shortcuts →
+   Custom Shortcuts → **+**
+2. Name: `Nuxy Toggle`
+3. Command: `nuxy.sh toggle` (use the absolute path if `nuxy.sh` isn't on `PATH`,
+   e.g. `/home/you/.local/share/nuxy/nuxy.sh toggle`)
+4. Set the key combination (e.g. `Super+Space`)
+
+Equivalently, from the terminal with `gsettings`/`dconf`, but the GUI panel above is
+simpler for a single binding.
+
+### Tray icon
+
+Nuxy does not create a system tray icon (no `Tray` usage in the Electron main
+process) — so GNOME's lack of a built-in tray (it requires the
+[AppIndicator/KStatusNotifierItem extension](https://extensions.gnome.org/extension/615/appindicator-support/)
+to show tray icons at all) does not affect Nuxy today. If a tray icon is added in a
+future release, this caveat will apply and should be revisited.
 
