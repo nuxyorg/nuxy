@@ -4,7 +4,7 @@ title: Core Package Reference
 
 # Core Package Reference
 
-The `@nuxy/core` workspace package is the foundational layer of the Nuxy monorepo. It contains shared types, schema definitions, helper utilities, and runtime modules used across the Electron main process, preload script, backend extension workers, and frontend Lit custom elements.
+The `@nuxy/core` workspace package is the foundational layer of the Nuxy monorepo. It is the contract shared between the Electron host (main process, preload script) and extension code that runs with **no DOM** — backend Worker threads and the frontend bundles that load them. It contains shared types, schema definitions, and runtime modules, but deliberately **no DOM-dependent behavior**: helpers that manipulate `document`/`window` (font application, focus trapping, UI timing presets) live in `@nuxyorg/extension-sdk` or the consuming extension instead, since workers have no DOM to operate on. See [Core Package Responsibility Audit](#responsibility-boundary) below.
 
 ## Roles & Responsibilities
 
@@ -14,6 +14,16 @@ The `@nuxy/core` workspace package is the foundational layer of the Nuxy monorep
 4. **UI Composition Management**: Defines slots, mounts, and claim validations to safely overlays HTML elements on top of the launcher's layout frame.
 5. **Internationalization Helpers**: Implements BCP-47 locale matching, pluralization formatting, dot-notation translation flattener, and text direction resolvers.
 6. **Preload Typed Event Bus**: Exposes typed event signatures to coordinate communication between the preload environment and the shell renderer.
+
+## Responsibility boundary
+
+`@nuxyorg/core` is consumed by extension **backends** running in Worker threads, which have no `document`/`window`. DOM-behavior helpers therefore do not belong here, even though earlier versions of this package included a few:
+
+- `trapTabKey` / `getFocusableElements` (focus trapping) moved to `@nuxyorg/extension-sdk` — consumed by `extensions/ui-default` (modal dialogs) and `extensions/shell` (command palette), two independent extensions that share frontend code only through the `@nuxyorg/core` / `@nuxyorg/extension-sdk` virtual runtime modules.
+- `resolveHoldMs` / `HOLD_MS_BY_PRESET` / `HoldMsPreset` (press-and-hold timing presets) moved to `extensions/shell` directly — it was the only consumer, so it no longer needs to be a shared package export at all.
+- `applyUiFontSettings` / `resolveFontFamily` / `DEFAULT_FONT_FAMILY_MAP` (font CSS variable application) moved to `@nuxyorg/extension-sdk` — consumed by the host renderer bootstrap, `extensions/settings`, `extensions/shell`, and `packages/ext-devserver`, none of which can import each other's source directly.
+
+`@nuxyorg/extension-sdk` is the right home for cross-cutting frontend/DOM helpers because every extension frontend already resolves it (via Vite alias in dev, or the `nuxy-ext://sdk` virtual module at runtime) — the same mechanism `@nuxyorg/core` uses, but scoped to frontend-authoring concerns rather than the host/backend contract.
 
 ---
 
@@ -162,7 +172,7 @@ Helper file re-exporting reactive element decorators, custom templates from the 
 
 ### `src/renderer.ts`
 
-Vite compiler helper that exports `@nuxy/core` types and Lit definitions for renderer contexts.
+Vite compiler helper that exports `@nuxy/core` types and Lit definitions for renderer contexts (used by the `ui-default` Vite build).
 
 ---
 
