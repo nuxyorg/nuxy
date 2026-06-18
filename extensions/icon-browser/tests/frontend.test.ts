@@ -50,4 +50,18 @@ describe('nuxy-tool-icon-browser element', () => {
 
     expect(el.query).toBe('home')
   })
+
+  it('clicking a grid item activates it and copies its name', async () => {
+    const Ctor = customElements.get('nuxy-tool-icon-browser')!
+    const el = new Ctor() as any
+
+    el.connectedCallback()
+    el.controller.store.setState({ filtered: ['home', 'search'], activeIndex: -1 })
+
+    const copySpy = vi.spyOn(el.controller, 'copyActiveName').mockResolvedValue(undefined)
+    el.onItemClick(1)
+
+    expect(el.controller.state.activeIndex).toBe(1)
+    expect(copySpy).toHaveBeenCalledOnce()
+  })
 })
