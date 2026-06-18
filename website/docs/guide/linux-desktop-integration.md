@@ -218,4 +218,37 @@ step, and it integrates with KDE's regular shortcut conflict detection.
 As above, Nuxy does not currently use a tray icon, so KDE's (generally good, native)
 `StatusNotifierItem` tray support isn't exercised either way.
 
+---
 
+## Troubleshooting
+
+**Socket already in use / `nuxy.sh` says "Nuxy is not running" but won't start it**
+
+On startup Nuxy unlinks any stale socket file at its control path before listening
+(see `src/electron/bootstrap/main.ts`), so a leftover socket from a crashed process
+shouldn't normally block a fresh launch. If you still hit issues:
+
+- Confirm nothing else is bound to the path: `fuser /tmp/nuxy.sock` (or
+  `lsof /tmp/nuxy.sock`).
+- If you're running multiple Nuxy instances/profiles, set `NUXY_SOCKET_PATH` to a
+  distinct path per instance before launching, and point your `nuxy.sh` calls at
+  the matching socket.
+- Manually remove a stuck socket file (only if you're sure no Nuxy process owns it):
+  `rm /tmp/nuxy.sock`.
+
+**Protocol handler (`nuxy://` deeplinks) not registering**
+
+Nuxy currently registers only the internal `nuxy-ext://` privileged scheme used to
+serve extension assets — there is no `nuxy://` OS-level deeplink protocol handler
+registered yet. A deeplink system is planned (tracked separately); once it lands,
+this section will cover `xdg-mime`/`update-desktop-database` registration steps and
+common GNOME/KDE re-registration gotchas (stale MIME cache, multiple `.desktop`
+files claiming the same scheme). For now, if you're looking for `nuxy://` link
+support, it isn't implemented in this codebase yet — check for a more recent release.
+
+---
+
+## Next steps
+
+- [Installation](/guide/installation) — platform packages and quick install
+- [Configuration](/guide/configuration) — `nuxyconfig` reference
