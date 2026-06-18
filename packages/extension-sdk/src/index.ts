@@ -6,6 +6,8 @@ export type { Store, Unsubscribe } from './store'
 export { createTranslator } from './frontend-i18n'
 export type { TranslateFn, Translator } from './frontend-i18n'
 
+export { getFocusableElements, trapTabKey } from './focus-trap'
+
 export { BaseExtensionController } from './controller'
 
 export {

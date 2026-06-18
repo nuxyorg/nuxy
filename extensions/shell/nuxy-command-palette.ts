@@ -5,9 +5,9 @@ import {
   customElement,
   state,
   ref,
-  trapTabKey,
   type TemplateResult,
 } from '@nuxyorg/core'
+import { trapTabKey } from '@nuxyorg/extension-sdk'
 import type { CommandPaletteAction, Position } from './types.ts'
 
 const MAX_DEPTH = 10

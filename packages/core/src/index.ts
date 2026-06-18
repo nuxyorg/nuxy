@@ -2,7 +2,6 @@ import type { NowPlaying } from './media'
 import type { IpcResult, ThemeDefinition, IconPackDefinition } from './types'
 
 export type { NowPlaying } from './media'
-export { getFocusableElements, trapTabKey } from './focus-trap'
 
 export interface DbHandle {
   exec(sql: string): void

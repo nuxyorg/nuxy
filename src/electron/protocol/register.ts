@@ -45,8 +45,6 @@ export function registerProtocols() {
           createRef,
           safeHTML,
           safeSVG,
-          getFocusableElements,
-          trapTabKey,
           resolveHoldMs,
           HOLD_MS_BY_PRESET,
           applyUiFontSettings,
@@ -71,6 +69,8 @@ export function registerProtocols() {
           completeToolAction,
           defineExtension,
           HostChannel,
+          getFocusableElements,
+          trapTabKey,
         } = NuxySdk;
       `
       return new Response(sdkVirtualScript, { headers: MODULE_HEADERS })
