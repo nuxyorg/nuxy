@@ -92,6 +92,8 @@ export { useToolKeyActions, KeyActionsController } from './hooks/useToolKeyActio
 export type { KeyAction } from './hooks/useToolKeyActions'
 export { useListNavigation } from './hooks/useListNavigation'
 export type { UseListNavigationOptions, UseListNavigationResult } from './hooks/useListNavigation'
+export { createGridKeyActions } from './hooks/grid-navigation'
+export type { GridNavigationOptions } from './hooks/grid-navigation'
 export { useTwoPanelNav } from './hooks/useTwoPanelNav'
 export type {
   TwoPanelNavSection,

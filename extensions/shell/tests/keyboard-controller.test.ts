@@ -117,6 +117,23 @@ describe('KeyboardController', () => {
     expect(setHoldProgress).toHaveBeenCalledWith({ ms: 400, hint: 'hold Del' })
   })
 
+  it('routes ArrowDown from the omnibar input to tool key actions', () => {
+    const handler = vi.fn()
+    keyActions = [{ key: 'ArrowDown', label: '', handler, allowRepeat: true }]
+
+    const omniInput = document.createElement('input')
+    omniInput.className = 'nuxy-shell-omni-bar__input'
+    document.body.appendChild(omniInput)
+    omniInput.focus()
+
+    omniInput.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true })
+    )
+
+    expect(handler).toHaveBeenCalledTimes(1)
+    omniInput.remove()
+  })
+
   it('shows holdCancelToast only when a hold is released before completion', () => {
     const toast = vi.fn()
     window.UI = { toast } as never

@@ -672,7 +672,10 @@ export class ShellController {
         this.refs.input?.blur()
       } else if (action === 'show') {
         this.store.setState({ showOmniBar: true })
-        this.ensureShellFocus()
+        // Defer until Lit re-enables the input (sync ensureShellFocus sees disabled=true).
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => this.ensureShellFocus())
+        })
       } else if (action === 'clear') {
         this.query.reset()
         this.navigation.reset()

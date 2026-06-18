@@ -1,5 +1,18 @@
-import { LitElement, html, css, customElement, property, state, safeSVG, ref } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  css,
+  customElement,
+  property,
+  ref,
+  nothing,
+  safeSVG,
+} from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
+import { IconBrowserController } from './controller.ts'
+
+const MIN_CELL_WIDTH = 72
+const GRID_GAP = 8
 
 @customElement('nuxy-tool-icon-browser')
 export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolElement {
@@ -11,29 +24,11 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
       min-height: 0;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
-      gap: var(--space-1);
+    .scroll {
       overflow-y: auto;
       flex: 1;
       min-height: 0;
       padding: var(--space-3);
-    }
-
-    .cell {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-1);
-      padding: var(--space-2) var(--space-1);
-      border-radius: var(--radius-md);
-      cursor: default;
-      transition: background 0.1s;
-    }
-
-    .cell:hover {
-      background: var(--color-surface-hover, rgba(255, 255, 255, 0.06));
     }
 
     .icon-wrap {
@@ -79,31 +74,32 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
   @property({ type: String })
   declare extensionId: string
 
-  @state() declare private _icons: string[] | null
-  @state() declare private _filter: string
-  @state() declare private _ready: boolean
-
-  private _rawQuery = ''
-  private _extId: string | null = null
-  private _svgCache = new Map<string, string>()
+  private controller: IconBrowserController | null = null
+  private _query = ''
   private _footerRegistered = false
 
   set query(value: string) {
-    this._rawQuery = value ?? ''
-    this._filter = this._rawQuery.trim().toLowerCase()
+    const next = value ?? ''
+    if (this._query === next) return
+    this._query = next
+    this.controller?.setQuery(next)
   }
 
   get query(): string {
-    return this._rawQuery
+    return this._query
   }
 
   connectedCallback(): void {
     super.connectedCallback()
-    void this._load()
+    this.controller = new IconBrowserController(() => this.requestUpdate())
+    this.controller.connect()
+    if (this._query) this.controller.setQuery(this._query)
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
+    this.controller?.disconnect()
+    this.controller = null
     window.core?.shell?.setFooterPortal(null)
     this._footerRegistered = false
   }
@@ -114,74 +110,49 @@ export class NuxyToolIconBrowserElement extends LitElement implements NuxyToolEl
     this._footerRegistered = true
   }
 
+  private onActiveIndexChange = (event: CustomEvent<{ index: number }>): void => {
+    this.controller?.setActiveIndex(event.detail.index)
+  }
+
   private _footerText(): string {
-    const all = this._icons ?? []
-    const icons = this._filter ? all.filter((n) => n.includes(this._filter)) : all
-    if (this._ready) return `${icons.length} / ${all.length} icons`
+    const s = this.controller?.state
+    if (!s) return ''
+    if (s.ready) return `${s.filtered.length} / ${s.icons.length} icons`
     return 'Loading…'
   }
 
-  private async _load(): Promise<void> {
-    try {
-      const res = (await window.core?.ipc?.invoke('kernel', 'getIconPack', {})) as
-        | { success: boolean; data?: { extId?: string; icons?: unknown } }
-        | null
-        | undefined
-      const data = res?.success ? res.data : undefined
-      if (res?.success && data) {
-        this._extId = data.extId ?? null
-        if (Array.isArray(data.icons)) {
-          this._icons = [...(data.icons as string[])].sort()
-          if (this._extId) {
-            await this._fetchAllSvgs(this._icons, this._extId)
-          }
-        } else {
-          this._icons = []
-        }
-      } else {
-        this._icons = []
-      }
-    } catch {
-      this._icons = []
-    }
-    this._ready = true
-  }
-
-  private async _fetchAllSvgs(names: string[], extId: string): Promise<void> {
-    await Promise.all(
-      names.map(async (name) => {
-        try {
-          const res = await fetch(`nuxy-ext://${extId}/icons/${name}.svg`)
-          if (res.ok) {
-            this._svgCache.set(name, await res.text())
-          }
-        } catch {
-          // ignore failed icons
-        }
-      })
-    )
-  }
-
   render() {
-    const all = this._icons ?? []
-    const icons = this._filter ? all.filter((n) => n.includes(this._filter)) : all
+    if (!this.controller) return nothing
+    const { filtered, ready, query, activeIndex } = this.controller.state
+    const trimmedQuery = query.trim()
 
     return html`
       <span class="footer-portal" ${ref(this.onFooterRef)}>${this._footerText()}</span>
-      ${!this._ready
+      ${!ready
         ? html`<div class="empty">Loading…</div>`
-        : this._filter && icons.length === 0
-          ? html`<div class="empty">No matches for "${this._filter}"</div>`
+        : trimmedQuery && filtered.length === 0
+          ? html`<div class="empty">No matches for "${trimmedQuery}"</div>`
           : html`
-              <div class="grid">
-                ${icons.map(
-                  (name) => html`
-                    <div class="cell" title=${name}>
-                      <span class="icon-wrap">${safeSVG(this._svgCache.get(name) ?? '')}</span>
-                      <span class="name">${name}</span>
-                    </div>
-                  `
-                )}
+              <div class="scroll">
+                <nuxy-grid
+                  min-cell-width=${MIN_CELL_WIDTH}
+                  gap=${GRID_GAP}
+                  keyboard-nav
+                  omnibar-handoff
+                  .activeIndex=${activeIndex}
+                  @active-index-change=${this.onActiveIndexChange}
+                >
+                  ${filtered.map(
+                    (name, idx) => html`
+                      <nuxy-grid-item .active=${idx === activeIndex} title=${name}>
+                        <span class="icon-wrap"
+                          >${safeSVG(this.controller!.svgCache.get(name) ?? '')}</span
+                        >
+                        <span class="name">${name}</span>
+                      </nuxy-grid-item>
+                    `
+                  )}
+                </nuxy-grid>
               </div>
             `}
     `

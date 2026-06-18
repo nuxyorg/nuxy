@@ -34,7 +34,8 @@ function getCombinedActions(): KeyAction[] {
 
 let isRegistered = false
 function ensureShellRegistration() {
-  if (isRegistered) return
+  const getterExists = !!window.core?.shell?.getKeyActionsGetter?.()
+  if (isRegistered && getterExists) return
   isRegistered = true
   window.core?.shell?.registerKeyActions(() => getCombinedActions())
 }
