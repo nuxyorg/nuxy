@@ -46,6 +46,7 @@ export default withMermaid(
               { text: 'What is Nuxy?', link: '/guide/what-is-nuxy' },
               { text: 'Quick Start', link: '/guide/getting-started' },
               { text: 'Installation', link: '/guide/installation' },
+              { text: 'Linux Desktop Integration', link: '/guide/linux-desktop-integration' },
               { text: 'Configuration', link: '/guide/configuration' },
             ],
           },

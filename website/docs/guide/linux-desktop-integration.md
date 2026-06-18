@@ -1,0 +1,254 @@
+---
+title: Linux Desktop Integration
+---
+
+# Linux Desktop Integration
+
+This page goes deeper than [Installation](/guide/installation) for Linux users: concrete
+commands for every install method, and how autostart, global shortcuts, and tray
+behavior differ between GNOME and KDE Plasma.
+
+::: tip Runtime directory
+Nuxy's user data lives at **`~/.nxy/`** (`nuxyconfig`, `extensions/`, `data/`). Some
+older docs/notes refer to `~/.nuxy/` — that path is stale; the code uses `~/.nxy/`
+(see `src/electron/config/paths.ts`). If you're following an older guide, use `~/.nxy/`.
+:::
+
+## Installation scenarios
+
+Nuxy's Linux builds are produced by `electron-builder` with two targets only —
+**AppImage** and **deb** (see `src/electron-builder.yml`). There is no official rpm,
+snap, or flatpak package; if you see one referenced elsewhere, it isn't built by this
+repo.
+
+### AppImage
+
+Works on any distro, no installation required.
+
+```bash
+chmod +x Nuxy-*.AppImage
+./Nuxy-*.AppImage
+```
+
+By default this runs Nuxy without adding a launcher entry. To integrate it into your
+application menu:
+
+- **appimaged** (daemon) — watches well-known directories and automatically registers
+  a desktop entry + icon for any AppImage placed there:
+
+  ```bash
+  mkdir -p ~/Applications
+  mv Nuxy-*.AppImage ~/Applications/
+  ```
+
+- **AppImageLauncher** — prompts to integrate the AppImage the first time you double-click
+  or run it, copying it into `~/.local/bin` (or similar) and registering a `.desktop` file.
+
+If you'd rather not install either helper, follow [Manual install](#manual-install)
+below and point `Exec` at the AppImage directly.
+
+### .deb (Debian / Ubuntu)
+
+```bash
+sudo dpkg -i nuxy_*.deb
+```
+
+If `dpkg` reports missing dependencies, resolve them with:
+
+```bash
+sudo apt --fix-broken install
+```
+
+This installs the `.desktop` entry and icon automatically — no manual steps needed.
+
+### Building from source
+
+For development or to package your own build, see the root `CLAUDE.md` command
+reference. The short version:
+
+```bash
+git clone https://github.com/nuxy/nuxy
+cd nuxy
+pnpm install
+pnpm build      # builds ui-default, runs tests, compiles renderer + Electron main
+pnpm package    # produces AppImage + deb under release/ via electron-builder
+```
+
+`pnpm package` runs `pnpm -C src dist`, which invokes `electron-builder` using
+`src/electron-builder.yml`. Output lands in `release/`, including an unpacked
+`linux-unpacked/` directory alongside the AppImage and deb.
+
+### Manual install (from `linux-unpacked/`)
+
+If you only want the unpacked app directory (e.g. to run from a custom location
+without an installer), use the `linux-unpacked/` output from `pnpm package`, or
+extract a deb without installing it:
+
+```bash
+mkdir nuxy-extracted && cd nuxy-extracted
+dpkg-deb -x ../nuxy_*.deb .
+# binary now at ./opt/nuxy/nuxy (or similar, check `usr/bin` symlink target)
+```
+
+Then create a desktop entry by hand. Save as `~/.local/share/applications/nuxy.desktop`:
+
+```ini
+[Desktop Entry]
+Name=Nuxy
+Comment=Nuxy Spotlight Launcher
+Exec=/path/to/nuxy-extracted/opt/nuxy/nuxy
+Icon=nuxy
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=launcher;spotlight;search;
+StartupNotify=false
+StartupWMClass=nuxy
+```
+
+Place an icon (any size, PNG or SVG) at:
+
+```bash
+mkdir -p ~/.local/share/icons/hicolor/256x256/apps
+cp /path/to/nuxy-extracted/nuxy.png ~/.local/share/icons/hicolor/256x256/apps/nuxy.png
+```
+
+Then refresh the desktop database and icon cache:
+
+```bash
+update-desktop-database ~/.local/share/applications
+gtk-update-icon-cache ~/.local/share/icons/hicolor
+```
+
+### From the terminal
+
+Once Nuxy is running, `nuxy.sh` (or the `nuxy` command from a packaged install)
+talks to the running instance over a UNIX socket rather than launching a new process:
+
+```bash
+nuxy.sh toggle   # show if hidden, hide if visible
+nuxy.sh show     # bring to front / re-center, even if already visible
+```
+
+Under the hood this connects to the control socket (`/tmp/nuxy.sock` by default,
+see `src/electron/bootstrap/main.ts`) and writes the literal string `toggle` or
+`show`. You can talk to the socket directly without `nuxy.sh`, e.g. for scripting a
+custom keybinding:
+
+```bash
+echo -n "toggle" | socat - UNIX-CONNECT:/tmp/nuxy.sock
+```
+
+If the socket file doesn't exist, Nuxy isn't running; `nuxy.sh` with no arguments
+falls back to starting it (`pnpm dev` in a source checkout).
+
+---
+
+## GNOME
+
+### Autostart
+
+GNOME (like other freedesktop-compliant DEs) reads `~/.config/autostart/*.desktop`
+on login. Copy your installed desktop entry there:
+
+```bash
+mkdir -p ~/.config/autostart
+cp ~/.local/share/applications/nuxy.desktop ~/.config/autostart/
+```
+
+(For a `.deb` install, the entry is usually at `/usr/share/applications/nuxy.desktop`
+— copy from there instead.)
+
+### Global shortcut
+
+GNOME (Mutter/Shell) has **no generic API for binding a global accelerator to an
+arbitrary command** the way KDE or i3/Sway do — there's no app-level "register
+hotkey" hook. The supported workaround is GNOME's **Custom Shortcuts** panel, which
+runs a shell command on keypress:
+
+1. Settings → Keyboard → Keyboard Shortcuts → View and Customize Shortcuts →
+   Custom Shortcuts → **+**
+2. Name: `Nuxy Toggle`
+3. Command: `nuxy.sh toggle` (use the absolute path if `nuxy.sh` isn't on `PATH`,
+   e.g. `/home/you/.local/share/nuxy/nuxy.sh toggle`)
+4. Set the key combination (e.g. `Super+Space`)
+
+Equivalently, from the terminal with `gsettings`/`dconf`, but the GUI panel above is
+simpler for a single binding.
+
+### Tray icon
+
+Nuxy does not create a system tray icon (no `Tray` usage in the Electron main
+process) — so GNOME's lack of a built-in tray (it requires the
+[AppIndicator/KStatusNotifierItem extension](https://extensions.gnome.org/extension/615/appindicator-support/)
+to show tray icons at all) does not affect Nuxy today. If a tray icon is added in a
+future release, this caveat will apply and should be revisited.
+
+---
+
+## KDE Plasma
+
+### Autostart
+
+Same freedesktop convention as GNOME:
+
+```bash
+mkdir -p ~/.config/autostart
+cp ~/.local/share/applications/nuxy.desktop ~/.config/autostart/
+```
+
+KDE also exposes a GUI for this under System Settings → Autostart → Add Program, if
+you'd rather not edit the directory by hand.
+
+### Global shortcut
+
+Unlike GNOME, KDE supports binding **native global shortcuts to arbitrary commands**
+directly:
+
+1. System Settings → Shortcuts → Custom Shortcuts
+2. Right-click → New → Global Shortcut → Command/URL
+3. Name: `Nuxy Toggle`; Command: `nuxy.sh toggle`
+4. Click the shortcut trigger field and press your desired key combo (e.g. `Alt+Space`)
+
+This is more direct than GNOME's path — no separate "Custom Shortcuts" reinterpretation
+step, and it integrates with KDE's regular shortcut conflict detection.
+
+### Tray icon
+
+As above, Nuxy does not currently use a tray icon, so KDE's (generally good, native)
+`StatusNotifierItem` tray support isn't exercised either way.
+
+---
+
+## Troubleshooting
+
+**Socket already in use / `nuxy.sh` says "Nuxy is not running" but won't start it**
+
+On startup Nuxy unlinks any stale socket file at its control path before listening
+(see `src/electron/bootstrap/main.ts`), so a leftover socket from a crashed process
+shouldn't normally block a fresh launch. If you still hit issues:
+
+- Confirm nothing else is bound to the path: `fuser /tmp/nuxy.sock` (or
+  `lsof /tmp/nuxy.sock`).
+- If you're running multiple Nuxy instances/profiles, set `NUXY_SOCKET_PATH` to a
+  distinct path per instance before launching, and point your `nuxy.sh` calls at
+  the matching socket.
+- Manually remove a stuck socket file (only if you're sure no Nuxy process owns it):
+  `rm /tmp/nuxy.sock`.
+
+**Protocol handler (`nuxy://` deeplinks) not registering**
+
+Nuxy currently registers only the internal `nuxy-ext://` privileged scheme used to
+serve extension assets — there is no `nuxy://` OS-level deeplink protocol handler
+registered yet. A deeplink system is planned (tracked separately); once it lands,
+this section will cover `xdg-mime`/`update-desktop-database` registration steps and
+common GNOME/KDE re-registration gotchas (stale MIME cache, multiple `.desktop`
+files claiming the same scheme). For now, if you're looking for `nuxy://` link
+support, it isn't implemented in this codebase yet — check for a more recent release.
+
+---
+
+## Next steps
+
+- [Installation](/guide/installation) — platform packages and quick install
+- [Configuration](/guide/configuration) — `nuxyconfig` reference
