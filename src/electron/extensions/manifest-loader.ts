@@ -21,6 +21,7 @@ import { readDisabledList } from './disabled.js'
 import { registerExtension } from './registry.js'
 import { registerExtensionByType } from './worker-manager.js'
 import { seedBundledExtensions } from './seed-bundled.js'
+import { validateDeeplinksConfig } from '../deeplink/manifest.js'
 import AdmZip from 'adm-zip'
 import type { ExtensionManifest, LoadedExtension, ExtensionSettingsSchema } from '@nuxyorg/core'
 
@@ -401,6 +402,12 @@ export function loadAndRegisterExtensions(extractedItems: string[]): void {
             throw new Error(`Manifest validation failed: Invalid permission "${p}"`)
           }
         }
+      }
+
+      // Validate optional deeplinks.schemes field
+      const deeplinksValidation = validateDeeplinksConfig(manifest.deeplinks)
+      if (!deeplinksValidation.ok) {
+        throw new Error(`Manifest validation failed: ${deeplinksValidation.error}`)
       }
 
       // Security check: Scan for forbidden Node.js built-in imports
