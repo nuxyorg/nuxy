@@ -45,8 +45,6 @@ export function registerProtocols() {
           createRef,
           safeHTML,
           safeSVG,
-          resolveHoldMs,
-          HOLD_MS_BY_PRESET,
           applyUiFontSettings,
           DEFAULT_FONT_FAMILY_MAP,
           resolveFontFamily,

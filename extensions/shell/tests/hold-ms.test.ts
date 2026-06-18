@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { HOLD_MS_BY_PRESET, resolveHoldMs } from './hold-ms.ts'
+import { HOLD_MS_BY_PRESET, resolveHoldMs } from '../hold-ms.ts'
 
 describe('resolveHoldMs', () => {
   it('maps short and long presets to milliseconds', () => {
