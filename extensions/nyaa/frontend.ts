@@ -123,7 +123,9 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
     if (!this.controller) return nothing
     return html`
       <div class="nuxy-nyaa-omni-portal" hidden ${ref(this.onOmniPortalRef)}></div>
-      <nuxy-two-panel split="50%"> ${this.renderLeft()} ${this.renderRight()} </nuxy-two-panel>
+      <nuxy-two-panel min-scale="1/4" default-position="1/2">
+        ${this.renderLeft()} ${this.renderRight()}
+      </nuxy-two-panel>
     `
   }
 

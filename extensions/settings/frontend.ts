@@ -120,7 +120,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
     const { focusedPanel } = this.controller.state
 
     return html`
-      <nuxy-two-panel split="130px">
+      <nuxy-two-panel min-scale="1/4" default-position="1/6">
         <div>
           <nuxy-list active-index=${focusedPanel === 'left' ? sectionIndex : -1}>
             ${sections.map(

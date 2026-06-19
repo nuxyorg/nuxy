@@ -35,11 +35,11 @@ The Shell is always active. Nuxy opens directly into the Shell's omnibar. No man
 
 **In the tool list (no active tool):**
 
-| Key     | Action                                                |
-| ------- | ----------------------------------------------------- |
-| `↓` `↑` | Navigate the tool/result list                         |
-| `→`     | Accept the highlighted item's name into the omnibar   |
-| `Enter` | Open the selected tool or execute the selected result |
+| Key     | Action                                                                        |
+| ------- | ----------------------------------------------------------------------------- |
+| `↓` `↑` | Navigate the tool/result list                                                 |
+| `→`     | Accept the highlighted item's name into the omnibar                           |
+| `Enter` | Open the highlighted tool/result, or the first match when none is highlighted |
 
 **Inside an active tool:**
 
@@ -59,7 +59,7 @@ The Shell is always active. Nuxy opens directly into the Shell's omnibar. No man
 ### Examples
 
 **Example 1 — Open a tool:**
-Type `calc` → `↓` to highlight Calculator → `Enter` to open it.
+Type `calc` → `Enter` to open Calculator (or `↓` to pick a different match first).
 
 **Example 2 — Return to the tool list:**
 While inside any tool, clear the omnibar and press `Backspace` to go back.

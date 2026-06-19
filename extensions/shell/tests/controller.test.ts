@@ -23,6 +23,85 @@ vi.hoisted(() => {
   }
 })
 
+describe('ShellController handleOmniKeyDown Enter', () => {
+  const calcTool = {
+    id: 'com.nuxy.calculator',
+    manifest: {
+      id: 'com.nuxy.calculator',
+      name: 'Calculator',
+      version: '1.0.0',
+      type: 'tool',
+    },
+  }
+  const emojiTool = {
+    id: 'com.nuxy.emoji',
+    manifest: {
+      id: 'com.nuxy.emoji',
+      name: 'Emoji Picker',
+      version: '1.0.0',
+      type: 'tool',
+    },
+  }
+
+  it('opens the first list result when nothing is selected', () => {
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setTools([calcTool, emojiTool] as never[])
+    ctrl.store.setState({ savedQuery: 'calc', query: 'calc', selectedIndex: -1 })
+    ctrl.providers.recompute(ctrl.tools.tools, 'calc', [], {})
+
+    const clickSpy = vi.spyOn(ctrl, 'handleItemClick').mockResolvedValue(undefined)
+    const event = { key: 'Enter', preventDefault: vi.fn() } as unknown as KeyboardEvent
+
+    ctrl.handleOmniKeyDown(event)
+
+    expect(event.preventDefault).toHaveBeenCalled()
+    expect(clickSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'com.nuxy.calculator', isTool: true })
+    )
+  })
+
+  it('uses the highlighted result when one is selected', () => {
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setTools([calcTool, emojiTool] as never[])
+    ctrl.store.setState({ savedQuery: 'calc', query: 'calc', selectedIndex: 0 })
+    ctrl.providers.recompute(ctrl.tools.tools, 'calc', [], {})
+
+    const clickSpy = vi.spyOn(ctrl, 'handleItemClick').mockResolvedValue(undefined)
+    const event = { key: 'Enter', preventDefault: vi.fn() } as unknown as KeyboardEvent
+
+    ctrl.handleOmniKeyDown(event)
+
+    expect(clickSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'com.nuxy.calculator', isTool: true })
+    )
+  })
+
+  it('routes to orchestrator only when there are no list results', async () => {
+    vi.mocked(window.core!.ipc.invoke).mockResolvedValue({
+      success: true,
+      data: { ok: true, data: { toolCalled: 'com.nuxy.calculator', initialQuery: '' } },
+    })
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setTools([calcTool, emojiTool] as never[])
+    ctrl.tools.setOrchestrators([
+      { id: 'com.nuxy.ai-orchestrator', manifest: { name: 'AI' } },
+    ] as never[])
+    ctrl.store.setState({ savedQuery: 'what is 2+2', query: 'what is 2+2', selectedIndex: -1 })
+    ctrl.providers.recompute(ctrl.tools.tools, 'what is 2+2', [], {})
+
+    const clickSpy = vi.spyOn(ctrl, 'handleItemClick').mockResolvedValue(undefined)
+    const event = { key: 'Enter', preventDefault: vi.fn() } as unknown as KeyboardEvent
+
+    ctrl.handleOmniKeyDown(event)
+
+    expect(clickSpy).not.toHaveBeenCalled()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(window.core!.ipc.invoke).toHaveBeenCalledWith('com.nuxy.ai-orchestrator', 'route', {
+      text: 'what is 2+2',
+    })
+  })
+})
+
 describe('ShellController tryOrchestratorRoute', () => {
   const orchestrators = [{ id: 'com.nuxy.ai-orchestrator', manifest: { name: 'AI' } }]
 

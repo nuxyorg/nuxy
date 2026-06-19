@@ -1,5 +1,6 @@
 import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import { getZoom } from '../../utils/zoom'
+import { parseRatio, clampSplitRatio, isSplitLocked } from '../../utils/parseRatio'
 
 @customElement('nuxy-two-panel')
 export class NuxyTwoPanelElement extends LitElement {
@@ -43,6 +44,10 @@ export class NuxyTwoPanelElement extends LitElement {
       transition: background 150ms;
     }
 
+    .handle[hidden] {
+      display: none;
+    }
+
     .handle:hover {
       background: rgba(255, 255, 255, 0.06);
     }
@@ -52,27 +57,29 @@ export class NuxyTwoPanelElement extends LitElement {
     }
   `
 
-  @property({ type: String })
-  declare split: string
+  /** Minimum width ratio for each panel (e.g. `1/4` → draggable between 1/4 and 3/4). */
+  @property({ type: String, attribute: 'min-scale' })
+  declare minScale: string
+
+  /** Initial left-panel width ratio (e.g. `1/3`, `0.4`, `40%`). */
+  @property({ type: String, attribute: 'default-position' })
+  declare defaultPosition: string
 
   @property({ type: Boolean, attribute: 'hide-left', reflect: true })
   declare hideLeft: boolean
 
-  @property({ type: Number, attribute: 'min-left' })
-  declare minLeft: number
-
-  @property({ type: Number, attribute: 'min-right' })
-  declare minRight: number
-
   private observer: MutationObserver | null = null
+  private resizeObserver: ResizeObserver | null = null
+  private _positionInitialized = false
+  private _ratio = 0.5
   private _dragging = false
   private _dragStartX = 0
-  private _dragStartWidth = 0
+  private _dragStartRatio = 0
 
   constructor() {
     super()
-    this.minLeft = 80
-    this.minRight = 80
+    this.minScale = '1/4'
+    this.defaultPosition = '1/2'
   }
 
   connectedCallback(): void {
@@ -83,6 +90,9 @@ export class NuxyTwoPanelElement extends LitElement {
       this.sync()
     })
     this.observer.observe(this, { childList: true })
+    this.resizeObserver = new ResizeObserver(() => this.sync())
+    this.resizeObserver.observe(this)
+    this.initPosition()
     this.sync()
   }
 
@@ -90,10 +100,31 @@ export class NuxyTwoPanelElement extends LitElement {
     super.disconnectedCallback()
     this.observer?.disconnect()
     this.observer = null
+    this.resizeObserver?.disconnect()
+    this.resizeObserver = null
   }
 
-  updated(): void {
+  updated(changed: Map<string, unknown>): void {
+    if (changed.has('defaultPosition') && !this._positionInitialized) {
+      this.initPosition()
+    }
+    if (changed.has('minScale')) {
+      this._ratio = clampSplitRatio(this._ratio, this.getMinScaleRatio())
+    }
     this.sync()
+  }
+
+  private getMinScaleRatio(): number {
+    return parseRatio(this.minScale, 0.25)
+  }
+
+  private get locked(): boolean {
+    return isSplitLocked(this.getMinScaleRatio())
+  }
+
+  private initPosition(): void {
+    this._ratio = clampSplitRatio(parseRatio(this.defaultPosition, 0.5), this.getMinScaleRatio())
+    this._positionInitialized = true
   }
 
   private getHandle(): HTMLElement | null {
@@ -115,30 +146,36 @@ export class NuxyTwoPanelElement extends LitElement {
   private sync(): void {
     const left = this.getLeft()
     if (!left) return
-    if (this.split) left.style.width = this.split
+    const ratio = this.locked ? 0.5 : clampSplitRatio(this._ratio, this.getMinScaleRatio())
+    this._ratio = ratio
+    left.style.width = `${ratio * 100}%`
+    const handle = this.getHandle()
+    if (handle) {
+      handle.hidden = this.locked
+      handle.style.cursor = this.locked ? 'default' : 'col-resize'
+    }
   }
 
   private _onPointerDown(e: PointerEvent): void {
+    if (this.locked) return
     e.preventDefault()
     const handle = e.currentTarget as HTMLElement
     handle.setPointerCapture(e.pointerId)
     this._dragging = true
     this._dragStartX = e.clientX
-    this._dragStartWidth = this.getLeft()?.offsetWidth ?? 0
+    this._dragStartRatio = this._ratio
     document.body.style.cursor = 'col-resize'
     document.body.style.userSelect = 'none'
   }
 
   private _onPointerMove(e: PointerEvent): void {
-    if (!this._dragging) return
+    if (!this._dragging || this.locked) return
     const delta = (e.clientX - this._dragStartX) / getZoom()
-    const handleWidth = this.getHandle()?.offsetWidth ?? 8
-    const newWidth = Math.max(
-      this.minLeft,
-      Math.min(this.offsetWidth - this.minRight - handleWidth, this._dragStartWidth + delta)
-    )
-    const left = this.getLeft()
-    if (left) left.style.width = `${newWidth}px`
+    const hostWidth = this.offsetWidth
+    if (hostWidth <= 0) return
+    const deltaRatio = delta / hostWidth
+    this._ratio = clampSplitRatio(this._dragStartRatio + deltaRatio, this.getMinScaleRatio())
+    this.sync()
   }
 
   private _onPointerUp(): void {
@@ -146,13 +183,9 @@ export class NuxyTwoPanelElement extends LitElement {
     this._dragging = false
     document.body.style.cursor = ''
     document.body.style.userSelect = ''
-    const left = this.getLeft()
-    if (!left) return
-    const newWidth = left.offsetWidth
-    this.split = `${newWidth}px`
     this.dispatchEvent(
       new CustomEvent('split-change', {
-        detail: { width: newWidth },
+        detail: { ratio: this._ratio },
         bubbles: true,
         composed: true,
       })
@@ -164,6 +197,7 @@ export class NuxyTwoPanelElement extends LitElement {
       <slot name="left"></slot>
       <div
         class="handle"
+        ?hidden=${this.locked}
         @pointerdown=${this._onPointerDown}
         @pointermove=${this._onPointerMove}
         @pointerup=${this._onPointerUp}
@@ -178,6 +212,6 @@ declare global {
     'nuxy-two-panel': NuxyTwoPanelElement
   }
   interface HTMLElementEventMap {
-    'split-change': CustomEvent<{ width: number }>
+    'split-change': CustomEvent<{ ratio: number }>
   }
 }

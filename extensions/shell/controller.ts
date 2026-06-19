@@ -494,14 +494,12 @@ export class ShellController {
 
     if (activeTool) return
 
-    if (
-      e.key === 'Enter' &&
-      (selectedIndex < 0 || !listResults[selectedIndex]) &&
-      savedQuery.trim()
-    ) {
-      void this.tryOrchestratorRoute()
+    if (listResults.length === 0) {
+      if (e.key === 'Enter' && savedQuery.trim()) {
+        void this.tryOrchestratorRoute()
+      }
+      return
     }
-    if (listResults.length === 0) return
 
     if (e.key === 'ArrowDown') {
       e.preventDefault()
@@ -524,10 +522,9 @@ export class ShellController {
         this.store.setState({ savedQuery: title, query: title, selectedIndex: -1 })
       }
     } else if (e.key === 'Enter') {
-      if (selectedIndex >= 0 && listResults[selectedIndex]) {
-        e.preventDefault()
-        void this.handleItemClick(listResults[selectedIndex])
-      }
+      e.preventDefault()
+      const index = selectedIndex >= 0 && listResults[selectedIndex] ? selectedIndex : 0
+      void this.handleItemClick(listResults[index])
     }
   }
 
