@@ -9,6 +9,10 @@ import {
 } from '@nuxyorg/core'
 import { trapTabKey } from '@nuxyorg/extension-sdk'
 import type { CommandPaletteAction, Position } from './types.ts'
+import {
+  filterCommandPaletteSections,
+  flattenCommandPaletteSections,
+} from './utils/commandPaletteSections.ts'
 
 const MAX_DEPTH = 10
 
@@ -85,6 +89,13 @@ export class NuxyCommandPaletteElement extends LitElement {
     .nuxy-command-palette__empty {
       padding: 12px 16px;
       color: var(--syntax-comment);
+    }
+
+    .nuxy-command-palette__divider {
+      border: none;
+      margin: 4px 0 4px;
+      height: 1px;
+      background: var(--syntax-comment);
     }
 
     .nuxy-command-palette__submenu-arrow {
@@ -231,8 +242,11 @@ export class NuxyCommandPaletteElement extends LitElement {
   }
 
   private _filteredActions(): CommandPaletteAction[] {
-    const q = this._query.toLowerCase()
-    return this._currentLevel().filter((a) => a.label.toLowerCase().includes(q))
+    return flattenCommandPaletteSections(this._filteredSections())
+  }
+
+  private _filteredSections() {
+    return filterCommandPaletteSections(this._currentLevel(), this._query)
   }
 
   private _goBack(): void {
@@ -328,6 +342,7 @@ export class NuxyCommandPaletteElement extends LitElement {
   }
 
   private _renderList(): TemplateResult {
+    const sections = this._filteredSections()
     const filtered = this._filteredActions()
 
     if (filtered.length === 0) {
@@ -338,27 +353,37 @@ export class NuxyCommandPaletteElement extends LitElement {
       `
     }
 
+    let actionIndex = 0
+
     return html`
       <nuxy-list active-index=${this._selectedIndex}>
-        ${filtered.map(
-          (action, idx) => html`
-            <nuxy-list-item
-              ?active=${idx === this._selectedIndex}
-              @click=${() => this._executeAction(action)}
-            >
-              <nuxy-list-item-body>
-                <nuxy-list-item-text>${action.label}</nuxy-list-item-text>
-              </nuxy-list-item-body>
-              <nuxy-list-item-actions>
-                ${action.children
-                  ? html`<span class="nuxy-command-palette__submenu-arrow">›</span>`
-                  : html`<nuxy-kbd
-                      .keys=${this._translate('commandPalette.enterShortcut')}
-                    ></nuxy-kbd>`}
-              </nuxy-list-item-actions>
-            </nuxy-list-item>
-          `
-        )}
+        ${sections.flatMap((section, sectionIdx) => {
+          const nodes: TemplateResult[] = []
+          if (sectionIdx > 0) {
+            nodes.push(html`<hr class="nuxy-command-palette__divider" role="separator" />`)
+          }
+          for (const action of section.actions) {
+            const idx = actionIndex++
+            nodes.push(html`
+              <nuxy-list-item
+                ?active=${idx === this._selectedIndex}
+                @click=${() => this._executeAction(action)}
+              >
+                <nuxy-list-item-body>
+                  <nuxy-list-item-text>${action.label}</nuxy-list-item-text>
+                </nuxy-list-item-body>
+                <nuxy-list-item-actions>
+                  ${action.children
+                    ? html`<span class="nuxy-command-palette__submenu-arrow">›</span>`
+                    : html`<nuxy-kbd
+                        .keys=${this._translate('commandPalette.enterShortcut')}
+                      ></nuxy-kbd>`}
+                </nuxy-list-item-actions>
+              </nuxy-list-item>
+            `)
+          }
+          return nodes
+        })}
       </nuxy-list>
     `
   }

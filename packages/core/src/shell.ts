@@ -16,6 +16,11 @@ export interface ShellCommandAction {
   id: string
   label: string
   /**
+   * Optional Ctrl+K section id. Consecutive actions with the same id are grouped;
+   * the palette renders a divider between sections (no header label).
+   */
+  section?: string
+  /**
    * Query types for which this action should be boosted to the top of the
    * tool-actions list. The shell reorders actions at render time based on the
    * current QueryContext — no polling or manual refresh needed.

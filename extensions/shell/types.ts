@@ -81,6 +81,8 @@ export interface KeyAction {
 export interface CommandPaletteAction {
   id: string
   label: string
+  /** Optional Ctrl+K section id for divider grouping in the palette. */
+  section?: string
   onExecute?: () => void
   children?: CommandPaletteAction[]
 }

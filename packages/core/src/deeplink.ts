@@ -55,6 +55,8 @@ export interface ExtensionCallerCommand {
   label: string
   /** Target `nuxy://...` URL, dispatched through the same path as any other deeplink. */
   deeplink: string
+  /** Optional Ctrl+K section id; a divider is shown when the section changes. */
+  section?: string
   /** Optional logical icon name from the active icon pack. */
   icon?: string
 }

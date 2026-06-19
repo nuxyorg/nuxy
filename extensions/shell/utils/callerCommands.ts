@@ -31,6 +31,7 @@ export function buildCallerCommandActions(
       actions.push({
         id: `caller:${tool.id}:${index}`,
         label: cmd.label,
+        ...(cmd.section ? { section: cmd.section } : {}),
         onExecute: () => {
           void window.core?.deeplink?.dispatch?.(cmd.deeplink)
         },

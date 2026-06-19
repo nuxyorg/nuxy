@@ -289,13 +289,15 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
   private registerShellActions(): void {
     const { results, selectedIndex, multiSelectMode, checkedIds, enterAction } = this.state
     const t = this.t.t
-    const actions: Array<{ id: string; label: string; onExecute: () => void }> = []
+    const actions: Array<{ id: string; label: string; section?: string; onExecute: () => void }> =
+      []
 
     if (!multiSelectMode) {
       if (results.length > 0) {
         actions.push({
           id: 'nyaa-select-multiple',
           label: t('actions.selectMultiple'),
+          section: 'actions',
           onExecute: () => this.setMultiSelectMode(true),
         })
       }
@@ -305,12 +307,14 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
           actions.push({
             id: 'nyaa-copy-magnet',
             label: t('actions.copyMagnetLabel'),
+            section: 'actions',
             onExecute: () => this.handleCopyMagnet(item.id, item.magnet),
           })
         } else {
           actions.push({
             id: 'nyaa-download-torrent',
             label: t('actions.downloadTorrentLabel'),
+            section: 'actions',
             onExecute: () => this.handleDownloadTorrent(item.id),
           })
         }
@@ -319,6 +323,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
       actions.push({
         id: 'nyaa-exit-select',
         label: t('actions.exitSelectMultiple'),
+        section: 'actions',
         onExecute: () => this.setMultiSelectMode(false),
       })
       const checkedItems = results.filter((r) => checkedIds.has(r.id))
@@ -326,11 +331,13 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
         actions.push({
           id: 'nyaa-copy-all',
           label: t('actions.copyAll'),
+          section: 'actions',
           onExecute: () => this.handleCopyMagnets(checkedItems),
         })
         actions.push({
           id: 'nyaa-download-all',
           label: t('actions.downloadAll'),
+          section: 'actions',
           onExecute: () => this.handleDownloadTorrents(checkedItems.map((i) => i.id)),
         })
       }

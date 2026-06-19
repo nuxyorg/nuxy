@@ -29,7 +29,8 @@
     "commands": [
       {
         "label": "Nyaa settings",
-        "deeplink": "nuxy://settings/extension/com.nuxy.nyaa"
+        "deeplink": "nuxy://settings/extension/com.nuxy.nyaa",
+        "section": "settings"
       }
     ]
   }

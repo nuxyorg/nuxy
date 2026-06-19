@@ -2,7 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { buildCallerCommandActions, mergeCommandPaletteActions } from '../utils/callerCommands.ts'
 import type { Tool } from '../types.ts'
 
-function makeTool(id: string, callerCommands?: { label: string; deeplink: string }[]): Tool {
+function makeTool(
+  id: string,
+  callerCommands?: { label: string; deeplink: string; section?: string }[]
+): Tool {
   return {
     id,
     manifest: {
@@ -58,6 +61,20 @@ describe('buildCallerCommandActions', () => {
       id: 'caller:com.nuxy.nyaa:0',
       label: 'Nyaa settings',
     })
+  })
+
+  it('passes through an optional section label from manifest caller.commands', () => {
+    const tools = [
+      makeTool('com.nuxy.nyaa', [
+        {
+          label: 'Nyaa settings',
+          deeplink: 'nuxy://settings/extension/com.nuxy.nyaa',
+          section: 'Settings',
+        },
+      ]),
+    ]
+    const actions = buildCallerCommandActions(tools, 'com.nuxy.nyaa')
+    expect(actions[0].section).toBe('Settings')
   })
 
   it('collects caller commands only from the active tool', () => {
