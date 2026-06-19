@@ -49,6 +49,7 @@ declare global {
       events?: CoreEvents
       deeplink?: {
         onOpen: (callback: (payload: DeeplinkPayload) => void) => () => void
+        dispatch: (url: string) => Promise<{ ok: boolean; error?: string }>
       }
       /**
        * Kernel i18n helper — fetches translations for any extension.
