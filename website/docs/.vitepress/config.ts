@@ -55,6 +55,7 @@ export default withMermaid(
             items: [
               { text: 'Architecture', link: '/guide/architecture' },
               { text: 'Extension System', link: '/guide/extension-system' },
+              { text: 'Deeplinks', link: '/guide/deeplinks' },
               { text: 'IPC & Kernel', link: '/guide/ipc-kernel' },
               { text: 'Security', link: '/guide/security' },
             ],
