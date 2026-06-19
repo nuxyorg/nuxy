@@ -42,6 +42,16 @@ describe('registry', () => {
     expect(getExtensionFolder('com.nuxy.clipboard')).toBe('clipboard')
   })
 
+  it('maps the manifest id short name (last dot segment) to the full id, even when the folder name is versioned', () => {
+    clearRegistry()
+    registerExtension({
+      id: 'com.nuxy.settings',
+      folderName: 'com.nuxy.settings-1.0.0',
+      manifest: { id: 'com.nuxy.settings', name: 'Settings', version: '1.0.0', type: 'tool' },
+    })
+    expect(resolveExtensionId('settings')).toBe('com.nuxy.settings')
+  })
+
   it('clears between tests', () => {
     clearRegistry()
     expect(loadedExtensions).toHaveLength(0)

@@ -51,7 +51,7 @@ function createToolHost(ctrl: ShellController): HTMLElement & {
   }
   host.extensionId = ctrl.state.activeTool ?? ''
   host.query = ctrl.state.query
-  host.committedQuery = ctrl.state.savedQuery
+  host.committedQuery = ctrl.state.deeplinkPath ?? ctrl.state.savedQuery
   host.setAttribute('loading-message', ctrl.t.t('loading'))
   return host
 }
@@ -679,7 +679,7 @@ export class NuxyShellViewElement extends LitElement {
       } else if (this.toolHostEl) {
         this.toolHostEl.extensionId = s.activeTool
         this.toolHostEl.query = s.query
-        this.toolHostEl.committedQuery = s.savedQuery
+        this.toolHostEl.committedQuery = s.deeplinkPath ?? s.savedQuery
       }
       toolHostEl = this.toolHostEl
     } else {

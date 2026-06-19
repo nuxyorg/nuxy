@@ -61,6 +61,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
 
   private controller: SettingsController | null = null
   private _query = ''
+  private _deeplinkApplied = false
 
   get query(): string {
     return this._query
@@ -78,7 +79,9 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
     this.controller = new SettingsController(() => this.requestUpdate())
     this.controller.connect()
     if (this._query) this.controller.setFilterQuery(this._query)
-    if (this.committedQuery) this.controller.selectPanelFromDeeplinkPath(this.committedQuery)
+    if (this.committedQuery) {
+      this._deeplinkApplied = this.controller.selectPanelFromDeeplinkPath(this.committedQuery)
+    }
   }
 
   disconnectedCallback(): void {
@@ -92,10 +95,15 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
    * `committedQuery = "extension/:extId"` (the deeplink path, forwarded
    * verbatim by nuxy-tool-host). Selects the matching extension panel when
    * the path matches that shape; no-ops otherwise.
+   *
+   * The target extension's section may not exist yet on the first attempt —
+   * its settings schema loads asynchronously in the controller — so this
+   * keeps retrying on every update until `selectPanelFromDeeplinkPath`
+   * reports success, rather than gating on a single `committedQuery` change.
    */
-  protected updated(changed: Map<string, unknown>): void {
-    if (changed.has('committedQuery') && this.committedQuery && this.controller) {
-      this.controller.selectPanelFromDeeplinkPath(this.committedQuery)
+  protected updated(): void {
+    if (this.committedQuery && this.controller && !this._deeplinkApplied) {
+      this._deeplinkApplied = this.controller.selectPanelFromDeeplinkPath(this.committedQuery)
     }
   }
 

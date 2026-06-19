@@ -62,6 +62,14 @@ export interface ExtensionSummary {
 export interface ShellCoreState {
   query: string
   savedQuery: string
+  /**
+   * Path forwarded from a `nuxy://` deeplink (e.g. "extension/com.nuxy.nyaa"),
+   * kept separate from query/savedQuery so a deeplink never shows up as text
+   * in the visible search box or gets treated as a search filter by the
+   * target tool. Consumed by the tool host as `committedQuery` instead of
+   * savedQuery when set. Cleared whenever a tool is opened by any other means.
+   */
+  deeplinkPath: string | null
   selectedIndex: number
   showOmniBar: boolean
   isInitialLoad: boolean
@@ -159,6 +167,7 @@ export class ShellController {
     this.store = createStore<ShellCoreState>({
       query: '',
       savedQuery: '',
+      deeplinkPath: null,
       selectedIndex: -1,
       showOmniBar: true,
       isInitialLoad: true,
@@ -261,7 +270,7 @@ export class ShellController {
     })
 
     this._deeplink = new DeeplinkController({
-      openTool: (toolId, initialQuery) => this.openTool(toolId, initialQuery),
+      openTool: (toolId, path) => this.openToolFromDeeplink(toolId, path),
       getTools: () => this.tools.tools,
     })
   }
@@ -398,6 +407,7 @@ export class ShellController {
       this.win.animateToHeight(targetH, fromH)
       this._sync.updatePosition(true, targetH)
     }
+    this.store.setState({ deeplinkPath: null })
     this.tools.setActiveTool(toolId)
     this.query.handleChange(initialQuery)
     this.navigation.reset()
@@ -405,6 +415,18 @@ export class ShellController {
     this._recordToolUsed(toolId, queryBeforeOpen)
     this._syncProviders()
     this._recompute()
+  }
+
+  /**
+   * Opens a tool from a `nuxy://` deeplink. Unlike `openTool`, the path is
+   * forwarded as `deeplinkPath` (consumed by the tool host as
+   * `committedQuery`) rather than as the live search query — a deeplink path
+   * like "extension/com.nuxy.nyaa" is not a search string and must not show
+   * up in the visible search box or be applied as a filter by the tool.
+   */
+  openToolFromDeeplink(toolId: string, path: string): void {
+    this.openTool(toolId, '')
+    this.store.setState({ deeplinkPath: path })
   }
 
   async handleItemClick(item: ListItem): Promise<void> {

@@ -13,13 +13,15 @@ describe('DeeplinkController', () => {
   let onOpen: ReturnType<typeof vi.fn>
   let openTool: ReturnType<typeof vi.fn>
   let getTools: ReturnType<typeof vi.fn>
+  let setShellResetPaused: ReturnType<typeof vi.fn>
 
   beforeEach(() => {
     offOpen = vi.fn()
     onOpen = vi.fn().mockReturnValue(offOpen)
     openTool = vi.fn()
     getTools = vi.fn().mockReturnValue([tool('com.nuxy.settings'), tool('com.nuxy.clipboard')])
-    ;(window as any).core = { deeplink: { onOpen } }
+    setShellResetPaused = vi.fn()
+    ;(window as any).core = { deeplink: { onOpen }, shell: { setShellResetPaused } }
   })
 
   afterEach(() => {
@@ -61,6 +63,19 @@ describe('DeeplinkController', () => {
     const handler = onOpen.mock.calls[0][0]
     handler({ extensionId: 'com.nuxy.settings', path: '', query: {} })
     expect(openTool).toHaveBeenCalledWith('com.nuxy.settings', '')
+  })
+
+  it('pauses shell-reset so a window show/focus triggered by the deeplink dispatch does not immediately undo openTool', () => {
+    vi.useFakeTimers()
+    const ctrl = new DeeplinkController({ openTool, getTools })
+    ctrl.bind()
+    const handler = onOpen.mock.calls[0][0]
+    handler({ extensionId: 'com.nuxy.settings', path: 'extension/nyaa', query: {} })
+    expect(setShellResetPaused).toHaveBeenCalledWith(true)
+    expect(setShellResetPaused).not.toHaveBeenCalledWith(false)
+    vi.runAllTimers()
+    expect(setShellResetPaused).toHaveBeenCalledWith(false)
+    vi.useRealTimers()
   })
 
   it('does not call openTool when the extension id is not in the known tools list', () => {

@@ -155,10 +155,17 @@ export class SettingsController extends BaseExtensionController<SettingsControll
    * `nuxy://settings/extension/:extId` deeplink. `path` is the deeplink path
    * segment after the extension id host (e.g. "extension/nyaa"). No-op for
    * any other path shape, or when the extId has no matching section.
+   *
+   * Returns whether a matching section was found and selected. The target
+   * extension's section only exists once its settings schema has loaded
+   * (`extSchemas`, fetched async in `connect()`), which can resolve after
+   * this is first called — callers should keep retrying on subsequent
+   * updates until this returns true.
    */
-  selectPanelFromDeeplinkPath(path: string): void {
+  selectPanelFromDeeplinkPath(path: string): boolean {
     const sectionId = resolveDeeplinkSectionId(path, this.meta?.sectionsToRender ?? [])
     if (sectionId) this.setSelectedSection(sectionId)
+    return sectionId !== null
   }
 
   setSelectFocused(index: number | ((prev: number) => number)): void {

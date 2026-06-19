@@ -7,7 +7,14 @@ import { resolveLocale } from '../../../packages/core/src/i18n.js'
 
 const byId = new Map<string, LoadedExtension>()
 const folderToId = new Map<string, string>()
+const shortNameToId = new Map<string, string>()
 const ipcChannelsByExtId = new Map<string, Set<string>>()
+
+/** Last dot-separated segment of a reverse-domain id, e.g. "com.nuxy.settings" → "settings". */
+function shortNameOf(id: string): string {
+  const idx = id.lastIndexOf('.')
+  return idx === -1 ? id : id.slice(idx + 1)
+}
 
 export const loadedExtensions: LoadedExtension[] = []
 
@@ -46,6 +53,7 @@ export function registerExtension(ext: LoadedExtension): void {
   }
   byId.set(ext.id, ext)
   folderToId.set(ext.folderName, ext.id)
+  shortNameToId.set(shortNameOf(ext.id), ext.id)
   loadedExtensions.push(ext)
 }
 
@@ -69,9 +77,18 @@ export function getExtensionFolder(id: string): string | undefined {
   return byId.get(id)?.folderName
 }
 
+/**
+ * Resolves a manifest id, folder name, or short name (the last dot segment
+ * of a reverse-domain id, e.g. "settings" for "com.nuxy.settings") to the
+ * full manifest id. Used by the `nuxy://<extension-id>/...` deeplink
+ * resolver so URLs can target the short, user-facing name rather than the
+ * full reverse-domain id. If two loaded extensions share a short name, the
+ * most recently registered one wins — short names are a convenience alias,
+ * not a stable identifier.
+ */
 export function resolveExtensionId(idOrFolder: string): string | undefined {
   if (byId.has(idOrFolder)) return idOrFolder
-  return folderToId.get(idOrFolder)
+  return folderToId.get(idOrFolder) ?? shortNameToId.get(idOrFolder)
 }
 
 export function isBootstrapExtension(ext: LoadedExtension): boolean {
@@ -150,6 +167,9 @@ export function unregisterExtension(extId: string): void {
   if (!ext) return
   byId.delete(extId)
   folderToId.delete(ext.folderName)
+  if (shortNameToId.get(shortNameOf(extId)) === extId) {
+    shortNameToId.delete(shortNameOf(extId))
+  }
   ipcChannelsByExtId.delete(extId)
   const idx = loadedExtensions.findIndex((e) => e.id === extId)
   if (idx >= 0) loadedExtensions.splice(idx, 1)
@@ -158,6 +178,7 @@ export function unregisterExtension(extId: string): void {
 export function clearRegistry(): void {
   byId.clear()
   folderToId.clear()
+  shortNameToId.clear()
   ipcChannelsByExtId.clear()
   loadedExtensions.length = 0
 }

@@ -75,6 +75,37 @@ describe('nuxy-tool-settings element', () => {
     expect(window.core.shell?.setSearchPlaceholder).toHaveBeenCalled()
   })
 
+  it('retries selectPanelFromDeeplinkPath on later updates until it succeeds', async () => {
+    // The target extension's settings section may not exist on the first
+    // attempt (its schema loads asynchronously) — the element must keep
+    // retrying on subsequent re-renders rather than applying it only once.
+    const { SettingsController } = await import('../controller.ts')
+    const spy = vi
+      .spyOn(SettingsController.prototype, 'selectPanelFromDeeplinkPath')
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true)
+
+    const Ctor = customElements.get('nuxy-tool-settings')!
+    const el = new Ctor() as any
+    el.committedQuery = 'extension/com.nuxy.nyaa'
+    el.connectedCallback()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(spy).toHaveBeenCalledTimes(1)
+
+    // Simulate a subsequent re-render triggered by the controller's onUpdate
+    // callback (e.g. extSchemas finishing its async load).
+    el.updated(new Map())
+
+    expect(spy).toHaveBeenCalledTimes(2)
+
+    // Once applied, further re-renders must not call it again.
+    el.updated(new Map())
+    expect(spy).toHaveBeenCalledTimes(2)
+
+    spy.mockRestore()
+  })
+
   it('cleans up on disconnect', () => {
     const Ctor = customElements.get('nuxy-tool-settings')!
     const el = new Ctor() as any
