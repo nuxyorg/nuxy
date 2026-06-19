@@ -1,0 +1,217 @@
+import type { CoreContext } from '@nuxyorg/extension-sdk'
+import type { SpawnHandle } from '@nuxyorg/core'
+import type { AddDownloadPayload, DownloadIdPayload, DownloadItem, DownloadStatus } from './types.ts'
+
+const QUEUE_FILE = 'queue.json'
+const POLL_INTERVAL_MS = 1000
+
+interface ActiveDownload {
+  handle: SpawnHandle
+  pollTimer: ReturnType<typeof setInterval>
+  lastBytes: number
+  lastSampleAt: number
+}
+
+function resolveDownloadDir(core: CoreContext, configured: string): string {
+  const trimmed = configured.trim() || '~/Downloads'
+  if (trimmed.startsWith('~/')) {
+    return `${core.fs.homedir()}/${trimmed.slice(2)}`
+  }
+  return trimmed
+}
+
+function fileNameFromUrl(url: URL): string {
+  const segments = url.pathname.split('/').filter(Boolean)
+  const last = segments.pop()
+  return last && last.trim() ? last : 'download'
+}
+
+function sanitizeFileName(name: string): string {
+  const base = name.split(/[/\\]/).pop() ?? 'download'
+  const cleaned = base.replace(/[^\w.\-() ]+/g, '_').trim()
+  return cleaned || 'download'
+}
+
+export function register(core: CoreContext): void {
+  core.registry.registerTool({ name: 'download-manager' })
+
+  const items = new Map<string, DownloadItem>()
+  const active = new Map<string, ActiveDownload>()
+
+  function touch(id: string, patch: Partial<DownloadItem>): void {
+    const current = items.get(id)
+    if (!current) return
+    items.set(id, { ...current, ...patch, updatedAt: new Date().toISOString() })
+  }
+
+  function persist(): void {
+    void core.storage.write(QUEUE_FILE, Array.from(items.values()))
+  }
+
+  function stopPolling(id: string): void {
+    const a = active.get(id)
+    if (!a) return
+    clearInterval(a.pollTimer)
+    active.delete(id)
+  }
+
+  function startPolling(id: string, filePath: string, handle: SpawnHandle): void {
+    const a: ActiveDownload = {
+      handle,
+      pollTimer: setInterval(() => {
+        void core.fs
+          .stat(filePath)
+          .then((stat) => {
+            const now = Date.now()
+            const prev = active.get(id)
+            if (!prev) return
+            const elapsedSec = (now - prev.lastSampleAt) / 1000
+            const deltaBytes = stat.size - prev.lastBytes
+            const speedBps = elapsedSec > 0 ? Math.max(0, deltaBytes / elapsedSec) : 0
+            prev.lastBytes = stat.size
+            prev.lastSampleAt = now
+            touch(id, { bytesDownloaded: stat.size, speedBps })
+            persist()
+          })
+          .catch(() => {})
+      }, POLL_INTERVAL_MS),
+      lastBytes: 0,
+      lastSampleAt: Date.now(),
+    }
+    active.set(id, a)
+
+    handle.onClose((code: number | null) => {
+      stopPolling(id)
+      const current = items.get(id)
+      // A pause kills the process too; do not overwrite the 'paused' status
+      // a close that races in after pause() already set it.
+      if (!current || current.status !== 'downloading') return
+      if (code === 0) {
+        touch(id, { status: 'completed', speedBps: 0 })
+      } else {
+        touch(id, { status: 'failed', speedBps: 0, error: `Download process exited with code ${code}` })
+      }
+      persist()
+    })
+  }
+
+  function spawnCurl(item: DownloadItem, resume: boolean): SpawnHandle {
+    const args = resume
+      ? ['-fL', '-C', '-', '-o', item.filePath, item.url]
+      : ['-fL', '-o', item.filePath, item.url]
+    return core.shell.spawn('curl', args)
+  }
+
+  async function startDownload(item: DownloadItem, resume: boolean): Promise<void> {
+    const handle = spawnCurl(item, resume)
+    startPolling(item.id, item.filePath, handle)
+    touch(item.id, { status: 'downloading', error: null })
+    persist()
+  }
+
+  async function restoreQueue(): Promise<void> {
+    const saved = await core.storage.read<DownloadItem[]>(QUEUE_FILE)
+    if (!saved) return
+    for (const saved_item of saved) {
+      // Any item that was mid-flight when the app last shut down had its
+      // underlying curl process killed along with it — it cannot silently
+      // resume, so surface it as failed rather than implying it's still moving.
+      const restored: DownloadItem =
+        saved_item.status === 'downloading'
+          ? { ...saved_item, status: 'failed', error: 'Download interrupted by app restart', speedBps: 0 }
+          : saved_item
+      items.set(restored.id, restored)
+    }
+    persist()
+  }
+
+  void restoreQueue()
+
+  core.ipc.handle('list', async (): Promise<DownloadItem[]> => {
+    return Array.from(items.values())
+  })
+
+  core.ipc.handle('add', async (payload: unknown): Promise<DownloadItem> => {
+    const { url: rawUrl, fileName } = payload as AddDownloadPayload
+
+    let parsed: URL
+    try {
+      parsed = new URL(rawUrl)
+    } catch {
+      throw new Error('Invalid URL')
+    }
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      throw new Error('Invalid URL: only http/https are supported')
+    }
+
+    const downloadDirSetting = (await core.settings.read<string>('downloadDir')) ?? '~/Downloads'
+    const downloadDir = resolveDownloadDir(core, downloadDirSetting)
+    await core.fs.mkdir(downloadDir, { recursive: true })
+
+    const safeName = sanitizeFileName(fileName?.trim() || fileNameFromUrl(parsed))
+    const filePath = `${downloadDir}/${safeName}`
+    const now = new Date().toISOString()
+
+    const item: DownloadItem = {
+      id: crypto.randomUUID(),
+      url: rawUrl,
+      fileName: safeName,
+      filePath,
+      status: 'queued',
+      bytesDownloaded: 0,
+      totalBytes: null,
+      speedBps: 0,
+      error: null,
+      createdAt: now,
+      updatedAt: now,
+    }
+    items.set(item.id, item)
+    persist()
+
+    await startDownload(item, false)
+    core.logger.info(`Queued download: ${item.url} -> ${item.filePath}`)
+    return items.get(item.id) as DownloadItem
+  })
+
+  core.ipc.handle('pause', async (payload: unknown): Promise<void> => {
+    const { id } = payload as DownloadIdPayload
+    const item = items.get(id)
+    if (!item || item.status !== 'downloading') return
+    const a = active.get(id)
+    a?.handle.kill()
+    stopPolling(id)
+    touch(id, { status: 'paused', speedBps: 0 })
+    persist()
+  })
+
+  core.ipc.handle('resume', async (payload: unknown): Promise<void> => {
+    const { id } = payload as DownloadIdPayload
+    const item = items.get(id)
+    if (!item || (item.status !== 'paused' && item.status !== 'failed')) return
+    await startDownload(item, true)
+  })
+
+  core.ipc.handle('cancel', async (payload: unknown): Promise<void> => {
+    const { id } = payload as DownloadIdPayload
+    const item = items.get(id)
+    if (!item) return
+    const a = active.get(id)
+    a?.handle.kill()
+    stopPolling(id)
+    if (await core.fs.fileExists(item.filePath)) {
+      await core.fs.rm(item.filePath)
+    }
+    touch(id, { status: 'cancelled', speedBps: 0 })
+    persist()
+  })
+
+  core.ipc.handle('remove', async (payload: unknown): Promise<void> => {
+    const { id } = payload as DownloadIdPayload
+    stopPolling(id)
+    items.delete(id)
+    persist()
+  })
+}
+
+// Re-exported only so DownloadStatus stays referenced for downstream typing.
+export type { DownloadStatus }

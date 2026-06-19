@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "downloadDir",
+      "label": "Download Location",
+      "type": "location",
+      "default": "~/Downloads",
+      "placeholder": "~/Downloads",
+      "description": "Folder where downloaded files are saved"
+    }
+  ]
+}
