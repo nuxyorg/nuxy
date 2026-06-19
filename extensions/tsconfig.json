@@ -27,6 +27,6 @@
       ]
     }
   },
-  "include": ["./**/*.ts", "./**/*.tsx", "../packages/core/src/global.d.ts"],
+  "include": ["./**/*.ts", "./**/*.tsx", "./global.d.ts"],
   "exclude": ["../node_modules", "../src"]
 }
