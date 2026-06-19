@@ -48,6 +48,10 @@ declare global {
       events: CoreEvents
       deeplink: {
         onOpen: (callback: (payload: DeeplinkPayload) => void) => () => void
+        /** Self-triggers the main process's `handleDeeplinkUrl` for a `nuxy://...` URL. */
+        dispatch: (
+          url: string
+        ) => Promise<{ ok: true } | { ok: false; error: 'invalid-url' | 'unknown-extension' | 'no-window' }>
       }
     }
   }

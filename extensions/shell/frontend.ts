@@ -722,7 +722,7 @@ export class NuxyShellViewElement extends LitElement {
             </div>
             <div class="nuxy-shell-footer">
               ${this.renderShortcutBar(
-                s.bridge.toolActions as never[],
+                ctrl.commandPaletteActions() as never[],
                 s.bridge.keyActionHints as never[],
                 s.bridge.footerPortal
               )}
@@ -733,7 +733,7 @@ export class NuxyShellViewElement extends LitElement {
         ${s.showCommandPalette
           ? html`
               <nuxy-command-palette
-                .actions=${s.bridge.toolActions}
+                .actions=${ctrl.commandPaletteActions()}
                 .containerEl=${ctrl.refs.container}
                 .position=${s.position}
                 .translateFn=${ctrl.t.t}

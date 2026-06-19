@@ -11,6 +11,10 @@ export class NuxyEmptyStateElement extends LitElement {
       justify-content: center;
       padding: var(--space-6) 0;
       text-align: center;
+      height: 100%;
+      flex: 1;
+      min-height: 0;
+      box-sizing: border-box;
     }
 
     :host([page]) {

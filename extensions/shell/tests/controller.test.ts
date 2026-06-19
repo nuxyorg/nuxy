@@ -14,6 +14,7 @@ vi.hoisted(() => {
         setSearchPlaceholder: vi.fn(),
       },
       events: { on: vi.fn(() => () => {}) },
+      deeplink: { dispatch: vi.fn() },
     },
   }
   ;(globalThis as any).document = {
@@ -63,6 +64,82 @@ describe('ShellController tryOrchestratorRoute', () => {
     vi.mocked(window.core!.ipc.invoke).mockClear()
     await ctrl.tryOrchestratorRoute()
     expect(window.core!.ipc.invoke).not.toHaveBeenCalled()
+  })
+})
+
+describe('ShellController commandPaletteActions', () => {
+  it('includes caller.commands only when that tool is active', () => {
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setTools([
+      {
+        id: 'com.nuxy.nyaa',
+        manifest: {
+          id: 'com.nuxy.nyaa',
+          name: 'Nyaa Search',
+          version: '1.0.0',
+          type: 'tool',
+          caller: {
+            commands: [
+              { label: 'Nyaa settings', deeplink: 'nuxy://settings/extension/com.nuxy.nyaa' },
+            ],
+          },
+        },
+      },
+      {
+        id: 'com.nuxy.icon-browser',
+        manifest: {
+          id: 'com.nuxy.icon-browser',
+          name: 'Icon Browser',
+          version: '1.0.0',
+          type: 'tool',
+        },
+      },
+    ] as never[])
+
+    expect(ctrl.commandPaletteActions()).toEqual([])
+
+    ctrl.tools.setActiveTool('com.nuxy.nyaa')
+    const actions = ctrl.commandPaletteActions()
+    expect(actions).toHaveLength(1)
+    expect(actions[0].label).toBe('Nyaa settings')
+
+    actions[0].onExecute?.()
+    expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
+      'nuxy://settings/extension/com.nuxy.nyaa'
+    )
+
+    ctrl.tools.setActiveTool('com.nuxy.icon-browser')
+    expect(ctrl.commandPaletteActions()).toEqual([])
+  })
+
+  it('combines caller commands with the active tool bridge actions', () => {
+    const ctrl = new ShellController(() => {})
+    ctrl.store.setState({
+      bridge: {
+        ...ctrl.store.getState().bridge,
+        toolActions: [{ id: 'tool:foo', label: 'Foo action' }],
+      },
+    })
+    ctrl.tools.setTools([
+      {
+        id: 'com.nuxy.nyaa',
+        manifest: {
+          id: 'com.nuxy.nyaa',
+          name: 'Nyaa Search',
+          version: '1.0.0',
+          type: 'tool',
+          caller: {
+            commands: [
+              { label: 'Nyaa settings', deeplink: 'nuxy://settings/extension/com.nuxy.nyaa' },
+            ],
+          },
+        },
+      },
+    ] as never[])
+    ctrl.tools.setActiveTool('com.nuxy.nyaa')
+
+    const actions = ctrl.commandPaletteActions()
+    expect(actions.map((a) => a.label)).toEqual(['Foo action', 'Nyaa settings'])
   })
 })
 

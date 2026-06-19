@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import type { DeeplinkPayload } from '@nuxyorg/core'
-import { DEEPLINK_OPEN_CHANNEL } from '@nuxyorg/core'
+import { DEEPLINK_OPEN_CHANNEL, DEEPLINK_DISPATCH_CHANNEL } from '@nuxyorg/core'
 import { createCompositionBridge } from './composition-bridge.js'
 import { createShellBridge } from './shell-bridge.js'
 import { createEventsBridge } from './events-bridge.js'
@@ -63,6 +63,13 @@ contextBridge.exposeInMainWorld('core', {
         ipcRenderer.off(DEEPLINK_OPEN_CHANNEL, listener)
       }
     },
+    /**
+     * Self-triggers the same `handleDeeplinkUrl` dispatch path used for
+     * OS-delivered/cold-start/control-socket deeplinks, for a `nuxy://...`
+     * URL constructed entirely within the renderer (e.g. a Ctrl+K
+     * `caller.commands` entry). Resolves to `{ ok: true } | { ok: false, error }`.
+     */
+    dispatch: (url: string) => ipcRenderer.invoke(DEEPLINK_DISPATCH_CHANNEL, url),
   },
 })
 

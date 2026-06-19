@@ -287,6 +287,19 @@ describe('core.deeplink.onOpen', () => {
   })
 })
 
+describe('core.deeplink.dispatch', () => {
+  it('invokes ipcRenderer.invoke("deeplink:dispatch", url) and returns its result', async () => {
+    const { deeplink } = getExposedCore()
+    mockInvoke.mockResolvedValueOnce({ ok: true })
+    const result = await deeplink.dispatch('nuxy://settings/extension/com.nuxy.nyaa')
+    expect(mockInvoke).toHaveBeenCalledWith(
+      'deeplink:dispatch',
+      'nuxy://settings/extension/com.nuxy.nyaa'
+    )
+    expect(result).toEqual({ ok: true })
+  })
+})
+
 // ── C. Preload bootstrap sequence ────────────────────────────────────────────
 
 describe('preload bootstrap', () => {

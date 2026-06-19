@@ -17,6 +17,7 @@ import { QueryController } from './controllers/query-controller.ts'
 import { NavigationController } from './controllers/navigation-controller.ts'
 import { SettingsController } from './controllers/settings-controller.ts'
 import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
+import { buildCallerCommandActions, mergeCommandPaletteActions } from './utils/callerCommands.ts'
 import { syncBlurSuppression } from '@nuxyorg/extension-sdk'
 import type {
   HoldProgress,
@@ -209,6 +210,7 @@ export class ShellController {
       },
       setHoldProgress: (progress) => this.store.setState({ holdProgress: progress }),
       getHoldMs: () => resolveHoldMs(this.store.getState().settings.holdMs),
+      hasCommandPaletteActions: () => this.commandPaletteActions().length > 0,
     })
 
     this._focus = new FocusController({
@@ -355,6 +357,17 @@ export class ShellController {
       this.activeToolPlaceholder,
       this.t.t
     )
+  }
+
+  /**
+   * Ctrl+K palette entries: the active tool's `bridge.toolActions` merged
+   * with that tool's manifest `caller.commands` (see
+   * `extensions/shell/utils/callerCommands.ts`). Caller commands are scoped
+   * to the owning extension — only visible while that tool is active.
+   */
+  commandPaletteActions(): import('./types.ts').CommandPaletteAction[] {
+    const callerActions = buildCallerCommandActions(this.tools.tools, this.tools.activeTool)
+    return mergeCommandPaletteActions(this.store.getState().bridge.toolActions, callerActions)
   }
 
   setQuery(val: string): void {

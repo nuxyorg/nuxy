@@ -43,5 +43,33 @@ export interface ExtensionDeeplinkConfig {
   schemes: string[]
 }
 
+/**
+ * One Ctrl+K command palette entry an extension declares to jump straight to
+ * another extension's deeplink target, e.g. a "Nyaa settings" entry that
+ * resolves to `nuxy://settings/extension/com.nuxy.nyaa`. Surfaced in the
+ * Ctrl+K palette only while this extension's tool is active via
+ * `manifest.caller.commands`.
+ */
+export interface ExtensionCallerCommand {
+  /** Palette row label, e.g. "Nyaa settings". */
+  label: string
+  /** Target `nuxy://...` URL, dispatched through the same path as any other deeplink. */
+  deeplink: string
+  /** Optional logical icon name from the active icon pack. */
+  icon?: string
+}
+
+/**
+ * Manifest field declaring Ctrl+K palette shortcuts this extension wants to
+ * surface, each resolving to a `nuxy://` deeplink (typically targeting
+ * another extension, e.g. Settings). See `ExtensionCallerCommand`.
+ */
+export interface ExtensionCallerConfig {
+  commands: ExtensionCallerCommand[]
+}
+
 /** IPC channel name the main process uses to push a resolved deeplink to the renderer. */
 export const DEEPLINK_OPEN_CHANNEL = 'deeplink:open' as const
+
+/** IPC channel the renderer invokes to self-trigger `handleDeeplinkUrl` (see ipc/deeplink-channels.ts). */
+export const DEEPLINK_DISPATCH_CHANNEL = 'deeplink:dispatch' as const

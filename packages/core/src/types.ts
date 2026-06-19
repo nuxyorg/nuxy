@@ -143,6 +143,17 @@ export interface ExtensionManifest {
   deeplinks?: {
     schemes: string[]
   }
+  /**
+   * Ctrl+K command palette shortcuts this extension surfaces while its tool
+   * is active, each resolving to a
+   * `nuxy://` deeplink — typically a jump to another extension's settings
+   * panel, e.g.:
+   * ```json
+   * "caller": { "commands": [{ "label": "Nyaa settings", "deeplink": "nuxy://settings/extension/com.nuxy.nyaa" }] }
+   * ```
+   * See `ExtensionCallerConfig` in `deeplink.ts`.
+   */
+  caller?: import('./deeplink.js').ExtensionCallerConfig
 }
 
 export interface RegistryEntry {

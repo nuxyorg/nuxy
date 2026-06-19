@@ -5,6 +5,7 @@ import { createDefaultSettingsData, loadSettingsData, type SettingsDataState } f
 import {
   computeSettingsMeta,
   filterSettingsByQuery,
+  reconcileSelectedRowAfterMetaChange,
   resolveDeeplinkSectionId,
   type SettingsMeta,
 } from './meta.ts'
@@ -164,7 +165,15 @@ export class SettingsController extends BaseExtensionController<SettingsControll
    */
   selectPanelFromDeeplinkPath(path: string): boolean {
     const sectionId = resolveDeeplinkSectionId(path, this.meta?.sectionsToRender ?? [])
-    if (sectionId) this.setSelectedSection(sectionId)
+    if (sectionId) {
+      const start = this.meta?.sectionStartIndex[sectionId] ?? 0
+      this.store.setState({
+        selectedSectionId: sectionId,
+        selectedRow: start,
+        activeSelect: null,
+        focusedPanel: 'right',
+      })
+    }
     return sectionId !== null
   }
 
@@ -188,6 +197,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   private recomputeMeta(): void {
+    const prevMeta = this.meta
     const s = this.state
     const base = computeSettingsMeta({
       themes: s.themes,
@@ -200,6 +210,16 @@ export class SettingsController extends BaseExtensionController<SettingsControll
       t: this.t.t,
     })
     this.meta = filterSettingsByQuery(base, this.filterQuery)
+
+    const nextRow = reconcileSelectedRowAfterMetaChange(
+      s.selectedSectionId,
+      s.selectedRow,
+      prevMeta,
+      this.meta
+    )
+    if (nextRow !== s.selectedRow) {
+      this.store.setState({ selectedRow: nextRow })
+    }
   }
 
   private bindKeyActions(): void {

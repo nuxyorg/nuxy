@@ -304,6 +304,45 @@ export function filterSettingsByQuery(meta: SettingsMeta, query: string): Settin
   }
 }
 
+type SectionIndexMeta = Pick<SettingsMeta, 'sectionsToRender' | 'sectionStartIndex'>
+
+/**
+ * Keeps `selectedRow` aligned with `selectedSectionId` when async loads shift
+ * `sectionStartIndex` (e.g. extension setting values arriving after a deeplink
+ * panel selection). Preserves the row's offset within its section.
+ */
+export function reconcileSelectedRowAfterMetaChange(
+  selectedSectionId: string | null,
+  selectedRow: number,
+  prevMeta: SectionIndexMeta | null,
+  nextMeta: SectionIndexMeta
+): number {
+  if (!selectedSectionId || selectedRow < 0) return selectedRow
+
+  const section = nextMeta.sectionsToRender.find((s) => s.id === selectedSectionId)
+  const newStart = nextMeta.sectionStartIndex[selectedSectionId]
+  if (!section || newStart === undefined) return selectedRow
+
+  const newEnd = newStart + section.resolvedRows.length
+  if (selectedRow >= newStart && selectedRow < newEnd) return selectedRow
+
+  let relativeIndex = 0
+  if (prevMeta) {
+    const oldStart = prevMeta.sectionStartIndex[selectedSectionId]
+    if (oldStart !== undefined && selectedRow >= oldStart) {
+      const oldSection = prevMeta.sectionsToRender.find((s) => s.id === selectedSectionId)
+      const oldLen = oldSection?.resolvedRows.length ?? 0
+      relativeIndex = Math.min(selectedRow - oldStart, Math.max(0, oldLen - 1))
+    }
+  }
+
+  const clampedRelative = Math.min(
+    Math.max(0, relativeIndex),
+    Math.max(0, section.resolvedRows.length - 1)
+  )
+  return newStart + clampedRelative
+}
+
 /**
  * Resolves the settings section id targeted by a `nuxy://settings/<path>`
  * deeplink path (e.g. "extension/nyaa" -> "nyaa"), validated against the

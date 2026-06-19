@@ -35,6 +35,7 @@ describe('KeyboardController', () => {
       clearQueryAndEsc: vi.fn(),
       setHoldProgress,
       getHoldMs,
+      hasCommandPaletteActions: vi.fn(() => false),
     })
     controller.bind()
   })

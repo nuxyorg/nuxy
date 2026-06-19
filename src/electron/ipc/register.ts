@@ -4,6 +4,7 @@ import { kernelLogger } from '@nuxyorg/core'
 import { validateExtInvokeArgs } from './validate.js'
 import { handleKernelChannel } from './kernel-channels.js'
 import { registerWindowChannels } from './window-channels.js'
+import { registerDeeplinkChannels } from './deeplink-channels.js'
 import { invokeWorker } from './worker-invoke.js'
 
 const log = kernelLogger.child('IPC')
@@ -29,6 +30,7 @@ export function registerIpc() {
   )
 
   registerWindowChannels()
+  registerDeeplinkChannels()
 
   log.info('IPC handlers registered.')
 }

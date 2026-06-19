@@ -12,6 +12,7 @@ export interface KeyboardControllerCallbacks {
   clearQueryAndEsc: () => void
   setHoldProgress: (progress: HoldProgress | null) => void
   getHoldMs: () => number
+  hasCommandPaletteActions: () => boolean
 }
 
 export class KeyboardController {
@@ -69,7 +70,7 @@ export class KeyboardController {
 
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
-        if ((window.core?.shell?.getToolActions()?.length ?? 0) > 0) {
+        if (this.callbacks.hasCommandPaletteActions()) {
           this.callbacks.toggleCommandPalette()
         }
         return

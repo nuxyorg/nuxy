@@ -1,11 +1,4 @@
-import {
-  LitElement,
-  html,
-  css,
-  customElement,
-  property,
-  query as queryDecorator,
-} from '@nuxyorg/core'
+import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import { getZoom } from '../../utils/zoom'
 
 @customElement('nuxy-two-panel')
@@ -15,17 +8,15 @@ export class NuxyTwoPanelElement extends LitElement {
       display: flex;
       height: 100%;
       overflow: hidden;
-      position: relative;
     }
 
-    ::slotted(:first-child) {
+    ::slotted([slot='left']) {
       flex-shrink: 0;
       overflow-x: hidden;
       overflow-y: overlay;
-      border-right: 1px solid var(--border);
     }
 
-    :host([hide-left]) ::slotted(:first-child) {
+    :host([hide-left]) ::slotted([slot='left']) {
       display: none;
     }
 
@@ -33,19 +24,19 @@ export class NuxyTwoPanelElement extends LitElement {
       display: none;
     }
 
-    ::slotted(:last-child) {
+    ::slotted([slot='right']) {
       flex: 1;
       display: flex;
       flex-direction: column;
       min-height: 0;
+      min-width: 0;
+      border-left: 1px solid var(--border);
     }
 
     .handle {
-      position: absolute;
-      top: 0;
-      bottom: 0;
+      flex-shrink: 0;
       width: 8px;
-      transform: translateX(-50%);
+      margin: 0 -4px;
       cursor: col-resize;
       z-index: 1;
       border-radius: 4px;
@@ -73,9 +64,6 @@ export class NuxyTwoPanelElement extends LitElement {
   @property({ type: Number, attribute: 'min-right' })
   declare minRight: number
 
-  @queryDecorator('.handle')
-  private handleEl!: HTMLElement
-
   private observer: MutationObserver | null = null
   private _dragging = false
   private _dragStartX = 0
@@ -89,7 +77,11 @@ export class NuxyTwoPanelElement extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    this.observer = new MutationObserver(() => this.sync())
+    this.assignSlots()
+    this.observer = new MutationObserver(() => {
+      this.assignSlots()
+      this.sync()
+    })
     this.observer.observe(this, { childList: true })
     this.sync()
   }
@@ -104,18 +96,26 @@ export class NuxyTwoPanelElement extends LitElement {
     this.sync()
   }
 
-  private sync(): void {
-    const left = Array.from(this.children)[0] as HTMLElement | undefined
-    if (!left) return
-    if (this.split) left.style.width = this.split
-    this._repositionHandle()
+  private getHandle(): HTMLElement | null {
+    return this.shadowRoot?.querySelector<HTMLElement>('.handle') ?? null
   }
 
-  private _repositionHandle(): void {
-    const handle = this.handleEl
-    const left = Array.from(this.children)[0] as HTMLElement | undefined
-    if (!handle || !left) return
-    handle.style.left = `${left.offsetWidth}px`
+  private getLeft(): HTMLElement | undefined {
+    return (this.querySelector('[slot="left"]') ?? Array.from(this.children)[0]) as
+      | HTMLElement
+      | undefined
+  }
+
+  private assignSlots(): void {
+    const children = Array.from(this.children) as HTMLElement[]
+    if (children[0] && children[0].slot !== 'right') children[0].slot = 'left'
+    if (children[1] && children[1].slot !== 'left') children[1].slot = 'right'
+  }
+
+  private sync(): void {
+    const left = this.getLeft()
+    if (!left) return
+    if (this.split) left.style.width = this.split
   }
 
   private _onPointerDown(e: PointerEvent): void {
@@ -124,7 +124,7 @@ export class NuxyTwoPanelElement extends LitElement {
     handle.setPointerCapture(e.pointerId)
     this._dragging = true
     this._dragStartX = e.clientX
-    this._dragStartWidth = (Array.from(this.children)[0] as HTMLElement)?.offsetWidth ?? 0
+    this._dragStartWidth = this.getLeft()?.offsetWidth ?? 0
     document.body.style.cursor = 'col-resize'
     document.body.style.userSelect = 'none'
   }
@@ -132,14 +132,13 @@ export class NuxyTwoPanelElement extends LitElement {
   private _onPointerMove(e: PointerEvent): void {
     if (!this._dragging) return
     const delta = (e.clientX - this._dragStartX) / getZoom()
+    const handleWidth = this.getHandle()?.offsetWidth ?? 8
     const newWidth = Math.max(
       this.minLeft,
-      Math.min(this.offsetWidth - this.minRight, this._dragStartWidth + delta)
+      Math.min(this.offsetWidth - this.minRight - handleWidth, this._dragStartWidth + delta)
     )
-    const left = Array.from(this.children)[0] as HTMLElement | undefined
-    const handle = this.handleEl
+    const left = this.getLeft()
     if (left) left.style.width = `${newWidth}px`
-    if (handle) handle.style.left = `${newWidth}px`
   }
 
   private _onPointerUp(): void {
@@ -147,7 +146,7 @@ export class NuxyTwoPanelElement extends LitElement {
     this._dragging = false
     document.body.style.cursor = ''
     document.body.style.userSelect = ''
-    const left = Array.from(this.children)[0] as HTMLElement | undefined
+    const left = this.getLeft()
     if (!left) return
     const newWidth = left.offsetWidth
     this.split = `${newWidth}px`
@@ -162,13 +161,14 @@ export class NuxyTwoPanelElement extends LitElement {
 
   render() {
     return html`
-      <slot></slot>
+      <slot name="left"></slot>
       <div
         class="handle"
         @pointerdown=${this._onPointerDown}
         @pointermove=${this._onPointerMove}
         @pointerup=${this._onPointerUp}
       ></div>
+      <slot name="right"></slot>
     `
   }
 }
