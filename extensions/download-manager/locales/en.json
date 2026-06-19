@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "name": "Download Manager"
+  },
+  "title": "Downloads",
+  "search": {
+    "placeholder": "Search downloads"
+  },
+  "empty": {
+    "message": "No downloads yet.",
+    "hint": "Queue a download with a nuxy://download-manager/add?url=... link."
+  },
+  "status": {
+    "queued": "Queued",
+    "downloading": "Downloading",
+    "paused": "Paused",
+    "completed": "Completed",
+    "failed": "Failed",
+    "cancelled": "Cancelled"
+  },
+  "progress": {
+    "transferred": "Transferred",
+    "speed": "Speed"
+  },
+  "actions": {
+    "previous": "Previous",
+    "next": "Next",
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "remove": "Remove"
+  }
+}
