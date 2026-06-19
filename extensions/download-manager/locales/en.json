@@ -22,12 +22,24 @@
     "transferred": "Transferred",
     "speed": "Speed"
   },
+  "item": {
+    "selectPromptMulti": "Check items to select them",
+    "selectedCount": "{count} selected",
+    "multiSelectHint": "Open Ctrl+K to remove selected"
+  },
   "actions": {
     "previous": "Previous",
     "next": "Next",
     "pause": "Pause",
     "resume": "Resume",
     "cancel": "Cancel",
-    "remove": "Remove"
+    "remove": "Remove",
+    "openFile": "Open file",
+    "openFolder": "Open folder",
+    "retry": "Retry",
+    "checkToggle": "Check / Uncheck",
+    "selectMultiple": "Select Multiple",
+    "exitSelectMultiple": "Exit Selection",
+    "removeSelected": "Remove Selected"
   }
 }

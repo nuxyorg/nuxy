@@ -151,3 +151,42 @@ export function buildListResults(
   return buildOmnibarSections(tools, savedQuery, providerStates, recentToolIds, [], usageStats)
     .flatItems
 }
+
+/** Result/compare provider cards in the top results zone (UI order). */
+export function buildProviderCardItems(
+  providerStates: Record<string, ProviderState>,
+  providers: Provider[] = []
+): ListItem[] {
+  const order = providers.length > 0 ? providers.map((p) => p.id) : Object.keys(providerStates)
+  const items: ListItem[] = []
+
+  for (const provId of order) {
+    const state = providerStates[provId]
+    if (!state) continue
+    if (state.type !== 'result' && state.type !== 'compare') continue
+    if (!state.items?.length) continue
+
+    for (const item of state.items) {
+      if (state.type === 'compare') {
+        const meta = (item as ListItem & { meta?: { left?: unknown; right?: unknown } }).meta
+        if (!meta?.left || !meta?.right) continue
+      }
+      items.push({
+        ...item,
+        value: item.value != null ? String(item.value) : item.value,
+        isProviderCard: true,
+      })
+    }
+  }
+
+  return items
+}
+
+/** Flat navigable list matching on-screen order: cards, then tools, then list providers. */
+export function buildNavigableResults(
+  listResults: ListItem[],
+  providerStates: Record<string, ProviderState>,
+  providers: Provider[] = []
+): ListItem[] {
+  return [...buildProviderCardItems(providerStates, providers), ...listResults]
+}

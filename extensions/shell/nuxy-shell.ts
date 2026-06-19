@@ -35,8 +35,6 @@ export class NuxyShellElement extends LitElement {
   static styles = css`
     :host {
       position: absolute;
-      width: 100%;
-      max-width: 800px;
       height: fit-content;
       border-radius: var(--radius-xl);
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);

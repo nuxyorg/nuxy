@@ -1,6 +1,11 @@
 import type { CoreContext } from '@nuxyorg/extension-sdk'
 import type { SpawnHandle } from '@nuxyorg/core'
-import type { AddDownloadPayload, DownloadIdPayload, DownloadItem, DownloadStatus } from './types.ts'
+import type {
+  AddDownloadPayload,
+  DownloadIdPayload,
+  DownloadItem,
+  DownloadStatus,
+} from './types.ts'
 
 const QUEUE_FILE = 'queue.json'
 const POLL_INTERVAL_MS = 1000
@@ -32,8 +37,23 @@ function sanitizeFileName(name: string): string {
   return cleaned || 'download'
 }
 
+function dirname(filePath: string): string {
+  const idx = Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\'))
+  return idx > 0 ? filePath.slice(0, idx) : filePath
+}
+
+function isHttpUrl(text: string): boolean {
+  try {
+    const parsed = new URL(text)
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 export function register(core: CoreContext): void {
   core.registry.registerTool({ name: 'download-manager' })
+  core.registry.registerProvider({ name: 'download-manager' })
 
   const items = new Map<string, DownloadItem>()
   const active = new Map<string, ActiveDownload>()
@@ -89,7 +109,11 @@ export function register(core: CoreContext): void {
       if (code === 0) {
         touch(id, { status: 'completed', speedBps: 0 })
       } else {
-        touch(id, { status: 'failed', speedBps: 0, error: `Download process exited with code ${code}` })
+        touch(id, {
+          status: 'failed',
+          speedBps: 0,
+          error: `Download process exited with code ${code}`,
+        })
       }
       persist()
     })
@@ -118,7 +142,12 @@ export function register(core: CoreContext): void {
       // resume, so surface it as failed rather than implying it's still moving.
       const restored: DownloadItem =
         saved_item.status === 'downloading'
-          ? { ...saved_item, status: 'failed', error: 'Download interrupted by app restart', speedBps: 0 }
+          ? {
+              ...saved_item,
+              status: 'failed',
+              error: 'Download interrupted by app restart',
+              speedBps: 0,
+            }
           : saved_item
       items.set(restored.id, restored)
     }
@@ -131,7 +160,7 @@ export function register(core: CoreContext): void {
     return Array.from(items.values())
   })
 
-  core.ipc.handle('add', async (payload: unknown): Promise<DownloadItem> => {
+  async function queueDownload(payload: unknown): Promise<DownloadItem> {
     const { url: rawUrl, fileName } = payload as AddDownloadPayload
 
     let parsed: URL
@@ -171,6 +200,35 @@ export function register(core: CoreContext): void {
     await startDownload(item, false)
     core.logger.info(`Queued download: ${item.url} -> ${item.filePath}`)
     return items.get(item.id) as DownloadItem
+  }
+
+  core.ipc.handle('eval', async (payload: unknown): Promise<{ items: unknown[] }> => {
+    const text = (payload as { text?: string } | null | undefined)?.text ?? ''
+    const trimmed = text.trim()
+    if (!isHttpUrl(trimmed)) return { items: [] }
+
+    return {
+      items: [
+        {
+          id: 'com.nuxy.download-manager',
+          title: `Download ${trimmed}`,
+          subtitle: 'Download Manager',
+          execute: { channel: 'add_from_provider', payload: { url: trimmed } },
+        },
+      ],
+    }
+  })
+
+  core.ipc.handle(
+    'add_from_provider',
+    async (payload: unknown): Promise<{ toolId: string; query: string }> => {
+      await queueDownload(payload)
+      return { toolId: 'com.nuxy.download-manager', query: '' }
+    }
+  )
+
+  core.ipc.handle('add', async (payload: unknown): Promise<DownloadItem> => {
+    return queueDownload(payload)
   })
 
   core.ipc.handle('pause', async (payload: unknown): Promise<void> => {
@@ -210,6 +268,24 @@ export function register(core: CoreContext): void {
     stopPolling(id)
     items.delete(id)
     persist()
+  })
+
+  core.ipc.handle('openFile', async (payload: unknown): Promise<void> => {
+    const { id } = payload as DownloadIdPayload
+    const item = items.get(id)
+    if (!item) throw new Error('Download not found')
+    if (await core.fs.fileExists(item.filePath)) {
+      await core.shell.open(item.filePath)
+      return
+    }
+    await core.shell.open(item.url)
+  })
+
+  core.ipc.handle('openFolder', async (payload: unknown): Promise<void> => {
+    const { id } = payload as DownloadIdPayload
+    const item = items.get(id)
+    if (!item) throw new Error('Download not found')
+    await core.shell.open(dirname(item.filePath))
   })
 }
 

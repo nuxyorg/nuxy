@@ -81,8 +81,6 @@ export class NuxyToolFileTransferElement extends LitElement implements NuxyToolE
     return [
       'display:flex',
       'flex-direction:column',
-      'gap:var(--space-4)',
-      'padding:var(--space-5)',
       'flex:1',
       'min-height:0',
       'overflow:auto',

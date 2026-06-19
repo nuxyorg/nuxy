@@ -3,6 +3,20 @@ import type { NuxySettings, AnyRow } from './types.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 
+const NUMERIC_SETTING_KEYS = new Set<keyof NuxySettings>([
+  'windowWidth',
+  'windowMaxHeight',
+  'opacity',
+])
+
+function coerceSettingValue(key: keyof NuxySettings, value: unknown): unknown {
+  if (!NUMERIC_SETTING_KEYS.has(key) || typeof value !== 'string' || value.trim() === '') {
+    return value
+  }
+  const n = Number(value)
+  return Number.isFinite(n) ? n : value
+}
+
 export interface SettingsActionsContext {
   getSettings: () => NuxySettings
   getExtValues: () => Record<string, Record<string, unknown>>
@@ -46,7 +60,7 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
 
   const updateSetting = (key: keyof NuxySettings, value: unknown): void => {
     const settings = ctx.getSettings()
-    const next: NuxySettings = { ...settings, [key]: value }
+    const next: NuxySettings = { ...settings, [key]: coerceSettingValue(key, value) }
     ctx.setSettings(next)
     applySettings(next)
     ctx.setActiveSelect(null)

@@ -13,9 +13,15 @@ function getZoom(): number {
   }
 }
 
-// CSS transition for properties not driven by JS spring (width, shadows, etc.)
-export const TRANSITION_DURATION_MS = 1500
-const STATIC_TRANSITION = `width ${TRANSITION_DURATION_MS}ms cubic-bezier(0.16, 1, 0.3, 1), max-width ${TRANSITION_DURATION_MS}ms cubic-bezier(0.16, 1, 0.3, 1), max-height ${TRANSITION_DURATION_MS}ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow ${TRANSITION_DURATION_MS + 1000}ms cubic-bezier(0.16, 1, 0.3, 1)`
+// Height uses the JS spring below (~350ms). Width/max-height share this CSS duration so
+// settings changes feel as snappy as tool open/close.
+const SIZE_TRANSITION_MS = 350
+const SHADOW_TRANSITION_MS = 2500
+const EASE_OUT = 'cubic-bezier(0.16, 1, 0.3, 1)'
+const STATIC_TRANSITION = `width ${SIZE_TRANSITION_MS}ms ${EASE_OUT}, max-width ${SIZE_TRANSITION_MS}ms ${EASE_OUT}, max-height ${SIZE_TRANSITION_MS}ms ${EASE_OUT}, box-shadow ${SHADOW_TRANSITION_MS}ms ${EASE_OUT}`
+
+/** @deprecated Use SIZE_TRANSITION_MS — kept for any external importers */
+export const TRANSITION_DURATION_MS = SIZE_TRANSITION_MS
 
 // Spring parameters — tune independently
 // v = (v + (target - x) * stiffness) * damping

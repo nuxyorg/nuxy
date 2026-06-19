@@ -1,7 +1,12 @@
 /* cspell:ignore recents */
 import { describe, it, expect } from 'vitest'
-import { buildListResults, buildOmnibarSections } from '../utils/listResults.ts'
-import type { Tool, ProviderState, Provider } from '../types.ts'
+import {
+  buildListResults,
+  buildOmnibarSections,
+  buildNavigableResults,
+  buildProviderCardItems,
+} from '../utils/listResults.ts'
+import type { Tool, ProviderState, Provider, ListItem } from '../types.ts'
 
 const makeTool = (id: string, name: string): Tool => ({ id, manifest: { id, name } }) as Tool
 
@@ -321,5 +326,91 @@ describe('buildOmnibarSections', () => {
     ]
     const { sections } = buildOmnibarSections([], 'q', providerStates, [], providers)
     expect(sections.map((s) => s.id)).toEqual(['a', 'z'])
+  })
+})
+
+describe('buildProviderCardItems', () => {
+  it('includes result and compare provider items in registration order', () => {
+    const providerStates: Record<string, ProviderState> = {
+      calc: {
+        loading: false,
+        type: 'result',
+        name: 'Calculator',
+        items: [{ id: 'calc-result', title: '= 4', value: '4' }],
+      },
+      conv: {
+        loading: false,
+        type: 'compare',
+        name: 'Convert',
+        items: [
+          {
+            id: 'conv-1',
+            title: 'km → mi',
+            value: '0.62',
+            meta: {
+              left: { text: '1 km', badge: 'from' },
+              right: { text: '0.62 mi', badge: 'to' },
+            },
+          } as ListItem & {
+            meta: {
+              left: { text: string; badge: string }
+              right: { text: string; badge: string }
+            }
+          },
+        ],
+      },
+    }
+    const providers: Provider[] = [
+      { id: 'calc', manifest: { name: 'Calculator' } as Provider['manifest'] },
+      { id: 'conv', manifest: { name: 'Convert' } as Provider['manifest'] },
+    ]
+    const cards = buildProviderCardItems(providerStates, providers)
+    expect(cards.map((c) => c.id)).toEqual(['calc-result', 'conv-1'])
+    expect(cards.every((c) => c.isProviderCard)).toBe(true)
+  })
+
+  it('skips compare items without both sides', () => {
+    const providerStates: Record<string, ProviderState> = {
+      conv: {
+        loading: false,
+        type: 'compare',
+        name: 'Convert',
+        items: [
+          {
+            id: 'bad',
+            title: 'bad',
+            value: 'x',
+            meta: { left: { text: 'a', badge: 'b' } },
+          } as ListItem & { meta: { left: { text: string; badge: string } } },
+        ],
+      },
+    }
+    expect(buildProviderCardItems(providerStates)).toEqual([])
+  })
+})
+
+describe('buildNavigableResults', () => {
+  it('places provider cards before tools and list providers', () => {
+    const tools = [makeTool('t1', 'Tool')]
+    const providerStates: Record<string, ProviderState> = {
+      calc: {
+        loading: false,
+        type: 'result',
+        name: 'Calculator',
+        items: [{ id: 'calc-result', title: '= 4', value: '4' }],
+      },
+      p1: {
+        loading: false,
+        type: 'list',
+        name: 'Notes',
+        items: [{ id: 'note-action', title: 'Save as note' }],
+      },
+    }
+    const listResults = buildListResults(tools, '', providerStates, [])
+    const navigable = buildNavigableResults(listResults, providerStates, [
+      { id: 'calc', manifest: { name: 'Calculator' } as Provider['manifest'] },
+      { id: 'p1', manifest: { name: 'Notes' } as Provider['manifest'] },
+    ])
+    expect(navigable.map((i) => i.id)).toEqual(['calc-result', 't1', 'note-action'])
   })
 })

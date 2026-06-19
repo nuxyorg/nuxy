@@ -23,6 +23,43 @@ vi.hoisted(() => {
   }
 })
 
+describe('ShellController handleItemClick execute actions', () => {
+  it('opens the target tool when execute returns toolId', async () => {
+    vi.mocked(window.core!.ipc.invoke).mockResolvedValue({
+      success: true,
+      data: { toolId: 'com.nuxy.download-manager', query: '' },
+    })
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setTools([
+      {
+        id: 'com.nuxy.download-manager',
+        manifest: {
+          id: 'com.nuxy.download-manager',
+          name: 'Download Manager',
+          version: '1.0.0',
+          type: 'tool',
+        },
+      },
+    ] as never[])
+
+    await ctrl.handleItemClick({
+      id: 'com.nuxy.download-manager',
+      title: 'Download https://example.com/file.js',
+      execute: {
+        channel: 'add_from_provider',
+        payload: { url: 'https://example.com/file.js' },
+      },
+    })
+
+    expect(window.core!.ipc.invoke).toHaveBeenCalledWith(
+      'com.nuxy.download-manager',
+      'add_from_provider',
+      { url: 'https://example.com/file.js' }
+    )
+    expect(ctrl.state.activeTool).toBe('com.nuxy.download-manager')
+  })
+})
+
 describe('ShellController handleOmniKeyDown Enter', () => {
   const calcTool = {
     id: 'com.nuxy.calculator',
@@ -76,7 +113,7 @@ describe('ShellController handleOmniKeyDown Enter', () => {
     )
   })
 
-  it('routes to orchestrator only when there are no list results', async () => {
+  it('routes to orchestrator only when there are no navigable results', async () => {
     vi.mocked(window.core!.ipc.invoke).mockResolvedValue({
       success: true,
       data: { ok: true, data: { toolCalled: 'com.nuxy.calculator', initialQuery: '' } },
@@ -254,5 +291,41 @@ describe('ShellController tool search placeholder', () => {
     expect(window.core!.shell!.resetToolState).toHaveBeenCalledWith({
       clearSearchPlaceholder: true,
     })
+  })
+})
+
+describe('ShellController handleOmniKeyDown provider cards', () => {
+  it('navigates to provider result cards and copies on Enter', async () => {
+    vi.useFakeTimers()
+    vi.mocked(window.core!.ipc.invoke).mockResolvedValue({
+      success: true,
+      data: { items: [{ id: 'calc-result', title: '= 4', value: '4' }] },
+    })
+
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    Object.assign(navigator, { clipboard: { writeText } })
+
+    const ctrl = new ShellController(() => {})
+    ctrl.providers.setProviders([
+      { id: 'com.nuxy.calculator', manifest: { name: 'Calculator', providerType: 'result' } },
+    ] as never[])
+    ctrl.store.setState({ savedQuery: '2+2', query: '2+2', selectedIndex: -1 })
+    ctrl.providers.sync('2+2', null, [], [])
+    vi.runAllTimers()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(ctrl.providers.navigableResults).toHaveLength(1)
+
+    const down = { key: 'ArrowDown', preventDefault: vi.fn() } as unknown as KeyboardEvent
+    ctrl.handleOmniKeyDown(down)
+    expect(ctrl.store.getState().selectedIndex).toBe(0)
+
+    const enter = { key: 'Enter', preventDefault: vi.fn() } as unknown as KeyboardEvent
+    ctrl.handleOmniKeyDown(enter)
+
+    expect(writeText).toHaveBeenCalledWith('4')
+    expect(ctrl.store.getState().copiedId).toBe('calc-result')
+    vi.useRealTimers()
   })
 })

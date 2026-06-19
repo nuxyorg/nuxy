@@ -3,6 +3,8 @@
   "name": "Download Manager",
   "version": "1.0.0",
   "type": "tool",
+  "providerGroup": "actions",
+  "providerGroupLabel": "Tool actions",
   "icon": "download",
   "permissions": ["fs", "shell", "storage"],
   "capabilities": {
@@ -24,5 +26,14 @@
   "locales": {
     "default": "en",
     "supported": ["en", "tr"]
+  },
+  "caller": {
+    "commands": [
+      {
+        "label": "Download Manager settings",
+        "deeplink": "nuxy://settings/extension/com.nuxy.download-manager",
+        "section": "settings"
+      }
+    ]
   }
 }

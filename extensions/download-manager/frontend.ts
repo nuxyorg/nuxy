@@ -25,6 +25,24 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
       min-height: 0;
       overflow: hidden;
     }
+
+    .nuxy-dm-checkbox {
+      padding-right: var(--space-2);
+      flex-shrink: 0;
+    }
+
+    .nuxy-dm-multi-select-banner {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      background: var(--surface-elevated);
+    }
+
+    .nuxy-dm-multi-select-banner nuxy-text.nuxy-dm-count--empty {
+      opacity: 0.4;
+    }
   `
 
   @property({ type: String })
@@ -79,8 +97,6 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
     return [
       'display:flex',
       'flex-direction:column',
-      'gap:var(--space-4)',
-      'padding:var(--space-5)',
       'flex:1',
       'min-height:0',
       'overflow:auto',
@@ -90,7 +106,7 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
   render(): TemplateResult | typeof nothing {
     if (!this.controller) return nothing
     const t = this.controller.t.t
-    const { items, selectedIndex } = this.controller.state
+    const { items, selectedIndex, multiSelectMode, checkedIds } = this.controller.state
 
     if (items.length === 0) {
       return html`
@@ -107,9 +123,32 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
     return html`
       <div style=${this.panelStyle()}>
         <nuxy-section-header label=${t('title')}></nuxy-section-header>
+        ${multiSelectMode ? this.renderMultiSelectBanner(t, checkedIds.size) : nothing}
         <nuxy-list active-index=${selectedIndex}>
-          ${items.map((item, i) => this.renderItem(item, i, i === selectedIndex, t))}
+          ${items.map((item, i) =>
+            this.renderItem(item, i, i === selectedIndex, t, multiSelectMode, checkedIds)
+          )}
         </nuxy-list>
+      </div>
+    `
+  }
+
+  private renderMultiSelectBanner(t: TranslateFn, count: number): TemplateResult {
+    return html`
+      <div class="nuxy-dm-multi-select-banner">
+        <nuxy-text
+          size="sm"
+          bold
+          variant=${count > 0 ? 'accent' : 'default'}
+          class=${count > 0 ? '' : 'nuxy-dm-count--empty'}
+        >
+          ${count > 0
+            ? t('item.selectedCount').replace('{count}', String(count))
+            : t('item.selectPromptMulti')}
+        </nuxy-text>
+        ${count > 0
+          ? html`<nuxy-text size="xs" variant="muted">${t('item.multiSelectHint')}</nuxy-text>`
+          : nothing}
       </div>
     `
   }
@@ -122,7 +161,9 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
     item: DownloadItem,
     index: number,
     active: boolean,
-    t: TranslateFn
+    t: TranslateFn,
+    multiSelectMode: boolean,
+    checkedIds: Set<string>
   ): TemplateResult {
     const meta =
       item.status === 'downloading'
@@ -132,7 +173,24 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
           : this.statusLabel(item.status, t)
 
     return html`
-      <nuxy-list-item ?active=${active} @click=${() => this.controller?.setSelectedIndex(index)}>
+      <nuxy-list-item
+        ?active=${active}
+        @click=${() => {
+          if (multiSelectMode) this.controller?.toggleCheck(item.id)
+          else this.controller?.setSelectedIndex(index)
+        }}
+      >
+        ${multiSelectMode
+          ? html`
+              <nuxy-checkbox
+                class="nuxy-dm-checkbox"
+                ?checked=${checkedIds.has(item.id)}
+                aria-label=${item.fileName}
+                @nuxy-checkbox-change=${() => this.controller?.toggleCheck(item.id)}
+                @click=${(e: Event) => e.stopPropagation()}
+              ></nuxy-checkbox>
+            `
+          : nothing}
         <nuxy-list-item-body>
           <nuxy-list-item-text ?active=${active}>${item.fileName}</nuxy-list-item-text>
           <nuxy-list-item-meta>${meta}</nuxy-list-item-meta>

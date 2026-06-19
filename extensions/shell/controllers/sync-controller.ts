@@ -1,7 +1,7 @@
 import type { ShellBridgeSnapshot } from '@nuxyorg/core'
 import type { ShellConfig } from '../types.ts'
 import { getZoom } from '../utils/zoom.ts'
-import { parseCoordinate } from '../utils.ts'
+import { parseCoordinate, resolveLayoutHeight, resolveLayoutWidth } from '../utils.ts'
 
 export interface SyncControllerCallbacks {
   getContainer: () => HTMLElement | null
@@ -9,6 +9,9 @@ export interface SyncControllerCallbacks {
   getCommandPaletteInput: () => HTMLInputElement | null
   getCfg: () => ShellConfig | null
   getSettings: () => ShellConfig
+  getSize: () => { width: number | null; height: number | null }
+  getActiveTool: () => string | null
+  getSpringHeight: () => number | null
   setCfg: (cfg: ShellConfig) => void
   hasDragged: () => boolean
   setHasDragged: (val: boolean) => void
@@ -119,7 +122,7 @@ export class SyncController {
     }
   }
 
-  updatePosition(force = false, heightOverride?: number): void {
+  updatePosition(force = false, heightOverride?: number, widthOverride?: number): void {
     const cfg = this.callbacks.getCfg() ?? this.callbacks.getSettings()
     const container = this.callbacks.getContainer()
     if (!cfg?.windowPosition || !container) {
@@ -128,8 +131,14 @@ export class SyncController {
     }
     if (!force && this.callbacks.hasDragged()) return
     const parts = cfg.windowPosition.split(/[\s,]+/)
-    const winWidth = container.offsetWidth
-    const winHeight = heightOverride ?? container.offsetHeight
+    const { width: manualWidth, height: manualHeight } = this.callbacks.getSize()
+    const winWidth = resolveLayoutWidth(container, cfg, manualWidth, widthOverride)
+    const winHeight = resolveLayoutHeight(container, cfg, {
+      manualHeight,
+      heightOverride,
+      springHeight: this.callbacks.getSpringHeight(),
+      activeTool: this.callbacks.getActiveTool() !== null,
+    })
     const zoom = getZoom()
     const dw = window.innerWidth / zoom
     const dh = window.innerHeight / zoom

@@ -1,10 +1,99 @@
 /* cspell:ignore abcpx */
 import { describe, it, expect } from 'vitest'
-import { parseCoordinate, SHELL_EXT_ID } from '../utils.ts'
+import {
+  parseCoordinate,
+  SHELL_EXT_ID,
+  toInlineStyle,
+  resolveLayoutHeight,
+  resolveLayoutWidth,
+} from '../utils.ts'
 
 describe('constants', () => {
   it('exports SHELL_EXT_ID', () => {
     expect(SHELL_EXT_ID).toBe('com.nuxy.shell')
+  })
+})
+
+describe('toInlineStyle', () => {
+  it('converts camelCase keys to kebab-case for CSS', () => {
+    expect(
+      toInlineStyle({
+        left: '10px',
+        maxWidth: '900px',
+        maxHeight: '600px',
+        '--shell-max-height': '600px',
+      })
+    ).toBe('left:10px;max-width:900px;max-height:600px;--shell-max-height:600px')
+  })
+
+  it('omits undefined values', () => {
+    expect(toInlineStyle({ width: '800px', maxWidth: undefined })).toBe('width:800px')
+  })
+})
+
+describe('resolveLayoutWidth', () => {
+  function makeContainer(width: number): HTMLElement {
+    return { offsetWidth: width } as HTMLElement
+  }
+
+  it('uses configured windowWidth instead of the live box during CSS transitions', () => {
+    expect(resolveLayoutWidth(makeContainer(800), { windowWidth: 1000 }, null)).toBe(1000)
+  })
+
+  it('prefers manual resize width over settings', () => {
+    expect(resolveLayoutWidth(makeContainer(800), { windowWidth: 1000 }, 950)).toBe(950)
+  })
+
+  it('accepts numeric string settings', () => {
+    expect(resolveLayoutWidth(makeContainer(800), { windowWidth: '900' }, null)).toBe(900)
+  })
+
+  it('falls back to offsetWidth when settings are missing', () => {
+    expect(resolveLayoutWidth(makeContainer(720), {}, null)).toBe(720)
+  })
+
+  it('honours an explicit width override', () => {
+    expect(resolveLayoutWidth(makeContainer(800), { windowWidth: 1000 }, null, 1100)).toBe(1100)
+  })
+})
+
+describe('resolveLayoutHeight', () => {
+  function makeContainer(height: number): HTMLElement {
+    return { offsetHeight: height } as HTMLElement
+  }
+
+  it('uses configured windowMaxHeight when a tool is open', () => {
+    expect(
+      resolveLayoutHeight(makeContainer(600), { windowMaxHeight: 800 }, { activeTool: true })
+    ).toBe(800)
+  })
+
+  it('uses live offsetHeight on the home screen', () => {
+    expect(
+      resolveLayoutHeight(makeContainer(180), { windowMaxHeight: 800 }, { activeTool: false })
+    ).toBe(180)
+  })
+
+  it('prefers manual resize height over settings', () => {
+    expect(
+      resolveLayoutHeight(
+        makeContainer(600),
+        { windowMaxHeight: 800 },
+        { activeTool: true, manualHeight: 650 }
+      )
+    ).toBe(650)
+  })
+
+  it('uses spring height while height animation is running', () => {
+    expect(
+      resolveLayoutHeight(makeContainer(600), { windowMaxHeight: 800 }, { springHeight: 420 })
+    ).toBe(420)
+  })
+
+  it('honours an explicit height override', () => {
+    expect(
+      resolveLayoutHeight(makeContainer(600), { windowMaxHeight: 800 }, { heightOverride: 500 })
+    ).toBe(500)
   })
 })
 

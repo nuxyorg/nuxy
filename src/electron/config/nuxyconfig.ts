@@ -47,6 +47,15 @@ const DEFAULTS: NuxyConfig = {
 /** Path to the settings.json written by the settings extension. */
 const SETTINGS_JSON_PATH = path.join(DATA_DIR, 'com.nuxy.settings', 'settings.json')
 
+function toFiniteNumber(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return value
+  if (typeof value === 'string' && value.trim() !== '') {
+    const n = Number(value)
+    if (Number.isFinite(n)) return n
+  }
+  return undefined
+}
+
 function parseSettingsFields(parsed: Record<string, unknown>): Partial<NuxyConfig> {
   const result: Partial<NuxyConfig> = {}
   if (['hide', 'minimize', 'quit', 'none'].includes(parsed.escAction as string))
@@ -55,12 +64,14 @@ function parseSettingsFields(parsed: Record<string, unknown>): Partial<NuxyConfi
     result.blurAction = parsed.blurAction as EscAction
   if (['reset-on-show', 'resume-session'].includes(parsed.backgroundBehavior as string))
     result.backgroundBehavior = parsed.backgroundBehavior as BackgroundBehavior
-  if (typeof parsed.windowWidth === 'number' && parsed.windowWidth >= 200)
-    result.windowWidth = parsed.windowWidth
-  if (typeof parsed.windowMaxHeight === 'number' && parsed.windowMaxHeight >= 48)
-    result.windowMaxHeight = parsed.windowMaxHeight
+  const windowWidth = toFiniteNumber(parsed.windowWidth)
+  if (windowWidth !== undefined && windowWidth >= 200) result.windowWidth = windowWidth
+  const windowMaxHeight = toFiniteNumber(parsed.windowMaxHeight)
+  if (windowMaxHeight !== undefined && windowMaxHeight >= 48)
+    result.windowMaxHeight = windowMaxHeight
   if (typeof parsed.alwaysOnTop === 'boolean') result.alwaysOnTop = parsed.alwaysOnTop
-  if (typeof parsed.opacity === 'number') result.opacity = Math.min(1, Math.max(0, parsed.opacity))
+  const opacity = toFiniteNumber(parsed.opacity)
+  if (opacity !== undefined) result.opacity = Math.min(1, Math.max(0, opacity))
   if (typeof parsed.showInTaskbar === 'boolean') result.showInTaskbar = parsed.showInTaskbar
   if (typeof parsed.showOnStartup === 'boolean') result.showOnStartup = parsed.showOnStartup
   if (typeof parsed.windowPosition === 'string') result.windowPosition = parsed.windowPosition

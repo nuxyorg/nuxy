@@ -10,6 +10,8 @@ const POLL_INTERVAL_MS = 1000
 export interface DownloadManagerState {
   items: DownloadItem[]
   selectedIndex: number
+  multiSelectMode: boolean
+  checkedIds: Set<string>
 }
 
 export class DownloadManagerController extends BaseExtensionController<DownloadManagerState> {
@@ -17,7 +19,11 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
   private lastAppliedDeeplinkPath: string | null = null
 
   constructor(onUpdate: () => void) {
-    super(EXT_ID, { items: [], selectedIndex: -1 }, onUpdate)
+    super(
+      EXT_ID,
+      { items: [], selectedIndex: -1, multiSelectMode: false, checkedIds: new Set() },
+      onUpdate
+    )
   }
 
   connect(): void {
@@ -32,7 +38,10 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
       clearInterval(this.pollTimer)
       this.pollTimer = null
     }
+    this.cleanups.forEach((fn) => fn())
+    this.cleanups = []
     window.core?.shell?.registerKeyActions(null)
+    window.core?.shell?.registerActions([])
     this.t.destroy()
   }
 
@@ -44,6 +53,22 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
     const prev = this.state.selectedIndex
     const next = typeof index === 'function' ? index(prev) : index
     this.store.setState({ selectedIndex: next })
+    window.core?.shell?.refreshKeyHints()
+  }
+
+  toggleCheck(id: string): void {
+    const next = new Set(this.state.checkedIds)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    this.store.setState({ checkedIds: next })
+    window.core?.shell?.refreshKeyHints()
+  }
+
+  setMultiSelectMode(val: boolean): void {
+    this.store.setState({
+      multiSelectMode: val,
+      checkedIds: val ? this.state.checkedIds : new Set(),
+    })
     window.core?.shell?.refreshKeyHints()
   }
 
@@ -97,14 +122,168 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
     return true
   }
 
+  async openFile(id: string): Promise<void> {
+    await invoke('openFile', { id })
+  }
+
+  async openFolder(id: string): Promise<void> {
+    await invoke('openFolder', { id })
+  }
+
+  async handleRemove(): Promise<void> {
+    const { items, selectedIndex } = this.state
+    const selected = selectedIndex >= 0 ? items[selectedIndex] : null
+    if (!selected) return
+
+    const remainingCount = items.length - 1
+    if (
+      selected.status === 'downloading' ||
+      selected.status === 'paused' ||
+      selected.status === 'queued'
+    ) {
+      await this.cancel(selected.id)
+    }
+    await this.remove(selected.id)
+
+    if (remainingCount === 0) {
+      this.store.setState({ selectedIndex: -1 })
+      window.core?.shell?.controlOmniBar('show')
+      return
+    }
+
+    this.setSelectedIndex((prev) => Math.min(prev, remainingCount - 1))
+  }
+
+  async handleRemoveSelected(): Promise<void> {
+    const { items, checkedIds } = this.state
+    const ids = items.filter((item) => checkedIds.has(item.id)).map((item) => item.id)
+    if (ids.length === 0) return
+
+    for (const id of ids) {
+      const item = items.find((i) => i.id === id)
+      if (!item) continue
+      if (item.status === 'downloading' || item.status === 'paused' || item.status === 'queued') {
+        await this.cancel(id)
+      }
+      await this.remove(id)
+    }
+
+    const remainingCount = this.state.items.length
+    this.store.setState({ multiSelectMode: false, checkedIds: new Set() })
+
+    if (remainingCount === 0) {
+      this.store.setState({ selectedIndex: -1 })
+      window.core?.shell?.controlOmniBar('show')
+      return
+    }
+
+    this.setSelectedIndex((prev) => Math.min(prev, remainingCount - 1))
+  }
+
+  getKeyActions(): ShellKeyAction[] {
+    return this.buildKeyActions()
+  }
+
   private bindKeyActions(): void {
     window.core?.shell?.registerKeyActions(() => this.buildKeyActions())
+    this.store.subscribe(() => this.registerShellActions())
+    this.cleanups.push(() => {
+      window.core?.shell?.registerActions([])
+    })
+  }
+
+  private registerShellActions(): void {
+    const { items, selectedIndex, multiSelectMode, checkedIds } = this.state
+    const t = this.t.t
+    const actions: Array<{ id: string; label: string; section?: string; onExecute: () => void }> =
+      []
+
+    if (!multiSelectMode) {
+      if (items.length > 0) {
+        actions.push({
+          id: 'dm-select-multiple',
+          label: t('actions.selectMultiple'),
+          section: 'actions',
+          onExecute: () => this.setMultiSelectMode(true),
+        })
+      }
+    } else {
+      actions.push({
+        id: 'dm-exit-select',
+        label: t('actions.exitSelectMultiple'),
+        section: 'actions',
+        onExecute: () => this.setMultiSelectMode(false),
+      })
+      if (checkedIds.size > 0) {
+        actions.push({
+          id: 'dm-remove-selected',
+          label: t('actions.removeSelected'),
+          section: 'actions',
+          onExecute: () => void this.handleRemoveSelected(),
+        })
+      }
+    }
+
+    const selected = selectedIndex >= 0 ? items[selectedIndex] : null
+    if (!multiSelectMode && selected) {
+      if (selected.status === 'downloading') {
+        actions.push({
+          id: 'dm-pause',
+          label: t('actions.pause'),
+          section: 'actions',
+          onExecute: () => void this.pause(selected.id),
+        })
+      }
+      if (selected.status === 'paused') {
+        actions.push({
+          id: 'dm-resume',
+          label: t('actions.resume'),
+          section: 'actions',
+          onExecute: () => void this.resume(selected.id),
+        })
+      }
+      if (selected.status === 'failed') {
+        actions.push({
+          id: 'dm-retry',
+          label: t('actions.retry'),
+          section: 'actions',
+          onExecute: () => void this.resume(selected.id),
+        })
+      }
+      if (
+        selected.status === 'downloading' ||
+        selected.status === 'paused' ||
+        selected.status === 'queued'
+      ) {
+        actions.push({
+          id: 'dm-cancel',
+          label: t('actions.cancel'),
+          section: 'actions',
+          onExecute: () => void this.cancel(selected.id),
+        })
+      }
+      actions.push({
+        id: 'dm-remove',
+        label: t('actions.remove'),
+        section: 'actions',
+        onExecute: () => void this.handleRemove(),
+      })
+    }
+
+    window.core?.shell?.registerActions(actions)
   }
 
   private buildKeyActions(): ShellKeyAction[] {
     const t = this.t.t
-    const { items, selectedIndex } = this.state
+    const { items, selectedIndex, multiSelectMode } = this.state
     const selected = selectedIndex >= 0 ? items[selectedIndex] : null
+    const isFailed = selected?.status === 'failed'
+
+    const enterLabel = multiSelectMode
+      ? t('actions.checkToggle')
+      : isFailed
+        ? t('actions.retry')
+        : t('actions.openFile')
 
     return [
       {
@@ -112,47 +291,92 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
         label: t('actions.previous'),
         hint: '↑↓',
         allowRepeat: true,
-        handler: () => this.setSelectedIndex((i) => Math.max(-1, i - 1)),
+        activeOn: () => items.length > 0,
+        handler: () => {
+          this.setSelectedIndex((prev) => {
+            if (prev <= 0) {
+              window.core?.shell?.controlOmniBar('show')
+              return -1
+            }
+            return prev - 1
+          })
+        },
       },
       {
         key: 'ArrowDown',
         label: t('actions.next'),
         allowRepeat: true,
-        handler: () => this.setSelectedIndex((i) => Math.min(i + 1, items.length - 1)),
+        activeOn: () => items.length > 0,
+        handler: () => {
+          this.setSelectedIndex((prev) => {
+            if (prev + 1 < items.length) {
+              if (prev === -1) window.core?.shell?.controlOmniBar('hide')
+              return prev + 1
+            }
+            return prev
+          })
+        },
+      },
+      {
+        key: 'Enter',
+        label: enterLabel,
+        hint: '↵',
+        activeOn: () => selectedIndex >= 0 && selectedIndex < items.length,
+        handler: () => {
+          const item = items[selectedIndex]
+          if (!item) return
+          if (multiSelectMode) {
+            this.toggleCheck(item.id)
+            return
+          }
+          if (item.status === 'failed') {
+            void this.resume(item.id)
+            return
+          }
+          void this.openFile(item.id)
+        },
+      },
+      {
+        key: 'Enter',
+        modifiers: ['shift'],
+        label: t('actions.openFolder'),
+        hint: ['⇧', '↵'],
+        activeOn: () => {
+          const { items: currentItems, selectedIndex: idx, multiSelectMode: multi } = this.state
+          if (multi || idx < 0 || idx >= currentItems.length) return false
+          return currentItems[idx]?.status !== 'failed'
+        },
+        handler: () => {
+          const item = items[selectedIndex]
+          if (item) void this.openFolder(item.id)
+        },
+      },
+      {
+        key: 'Delete',
+        label: 'Hold Del to remove',
+        hint: 'Del',
+        trigger: 'hold',
+        holdCancelToast: 'Hold Del to remove',
+        activeOn: () => !multiSelectMode && selectedIndex >= 0 && selectedIndex < items.length,
+        handler: () => void this.handleRemove(),
       },
       {
         key: 'p',
         label: t('actions.pause'),
         hint: 'P',
-        activeOn: () => selected?.status === 'downloading',
+        activeOn: () => !multiSelectMode && selected?.status === 'downloading',
         handler: () => selected && void this.pause(selected.id),
-      },
-      {
-        key: 'r',
-        label: t('actions.resume'),
-        hint: 'R',
-        activeOn: () => selected?.status === 'paused' || selected?.status === 'failed',
-        handler: () => selected && void this.resume(selected.id),
       },
       {
         key: 'x',
         label: t('actions.cancel'),
         hint: 'X',
         activeOn: () =>
-          selected?.status === 'downloading' ||
-          selected?.status === 'paused' ||
-          selected?.status === 'queued',
+          !multiSelectMode &&
+          (selected?.status === 'downloading' ||
+            selected?.status === 'paused' ||
+            selected?.status === 'queued'),
         handler: () => selected && void this.cancel(selected.id),
-      },
-      {
-        key: 'Delete',
-        label: t('actions.remove'),
-        hint: 'Del',
-        activeOn: () =>
-          selected?.status === 'completed' ||
-          selected?.status === 'cancelled' ||
-          selected?.status === 'failed',
-        handler: () => selected && void this.remove(selected.id),
       },
     ]
   }

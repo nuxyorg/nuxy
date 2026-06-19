@@ -169,6 +169,8 @@ vi.mock('../controller.ts', () => ({
       showCommandPalette: false,
       providerStates: {},
       omnibarSections: [],
+      navigableResults: [],
+      providerCardItems: [],
       isAnyListProviderLoading: false,
       bridge: {
         toolActions: [],

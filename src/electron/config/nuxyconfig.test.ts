@@ -213,6 +213,11 @@ describe('config validation', () => {
     expect(getConfig().windowWidth).toBe(1200)
   })
 
+  it('accepts windowWidth stored as a numeric string', () => {
+    setupWithSettings({ windowWidth: '1000' })
+    expect(getConfig().windowWidth).toBe(1000)
+  })
+
   it('rejects windowWidth < 200 and keeps default', () => {
     setupWithSettings({ windowWidth: 100 })
     expect(getConfig().windowWidth).toBe(800)

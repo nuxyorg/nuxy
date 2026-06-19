@@ -45,6 +45,8 @@ export interface ListItem {
   subtitle?: string
   icon?: string
   isTool?: boolean
+  /** Result/compare provider card shown in the top results zone. */
+  isProviderCard?: boolean
   value?: string
   execute?: {
     channel: string

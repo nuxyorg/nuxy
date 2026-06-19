@@ -202,12 +202,23 @@ export class NuxyCommandPaletteElement extends LitElement {
     requestAnimationFrame(() => this._inputEl?.focus())
   }
 
+  private _actionTreeKey(actions: CommandPaletteAction[]): string {
+    return actions
+      .map((a) => `${a.id}${a.children?.length ? `[${this._actionTreeKey(a.children)}]` : ''}`)
+      .join(',')
+  }
+
   set actions(value: CommandPaletteAction[]) {
+    const prevKey = this._actionTreeKey(this._actions)
+    const nextKey = this._actionTreeKey(value)
     this._actions = value
-    if (this.isConnected) {
+    if (!this.isConnected) return
+    if (prevKey !== nextKey) {
       this._resetStack()
-      this.requestUpdate()
+    } else {
+      this._menuStack = [value, ...this._menuStack.slice(1)]
     }
+    this.requestUpdate()
   }
 
   set containerEl(el: HTMLElement | null) {

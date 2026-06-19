@@ -1,6 +1,7 @@
 import type { ShellBridgeSnapshot, ReactiveControllerHost } from '@nuxyorg/core'
 import { createStore, type Store, createTranslator, type Translator } from '@nuxyorg/extension-sdk'
 import { getZoom } from './utils/zoom.ts'
+import { resolveLayoutHeight, resolveLayoutWidth } from './utils.ts'
 import { SHELL_EXT_ID } from './utils.ts'
 import { resolveHoldMs } from './hold-ms.ts'
 import { CommandPaletteController } from './controllers/command-palette-controller.ts'
@@ -96,6 +97,8 @@ export type ShellControllerState = ShellCoreState & {
   providerStates: Record<string, ProviderState>
   omnibarSections: OmnibarSection[]
   listResults: ListItem[]
+  navigableResults: ListItem[]
+  providerCardItems: ListItem[]
   isAnyListProviderLoading: boolean
 }
 
@@ -243,6 +246,9 @@ export class ShellController {
       getCommandPaletteInput: () => this.refs.commandPaletteInput,
       getCfg: () => this.refs.cfg,
       getSettings: () => this.store.getState().settings,
+      getSize: () => this.win.size,
+      getActiveTool: () => this.tools.activeTool,
+      getSpringHeight: () => this.win.springHeight,
       setCfg: (cfg) => {
         this.refs.cfg = { ...(this.refs.cfg ?? {}), ...cfg }
       },
@@ -307,6 +313,8 @@ export class ShellController {
       providerStates: this.providers.providerStates,
       omnibarSections: this.providers.omnibarSections,
       listResults: this.providers.listResults,
+      navigableResults: this.providers.navigableResults,
+      providerCardItems: this.providers.providerCardItems,
       isAnyListProviderLoading: this.providers.isAnyListProviderLoading,
     }
   }
@@ -459,6 +467,9 @@ export class ShellController {
       }
     } else if (item.isTool) {
       this.openTool(item.id, (item as ListItem & { initialQuery?: string }).initialQuery || '')
+    } else if (item.value != null && String(item.value) !== '') {
+      navigator.clipboard.writeText(String(item.value)).catch(() => {})
+      this.handleCopy(item.id)
     }
   }
 
@@ -484,7 +495,7 @@ export class ShellController {
   handleOmniKeyDown(e: KeyboardEvent): void {
     const { savedQuery, selectedIndex } = this.store.getState()
     const { activeTool } = this.tools
-    const listResults = this.providers.listResults
+    const navigableResults = this.providers.navigableResults
 
     if (activeTool && this.store.getState().query === '' && e.key === 'Backspace') {
       e.preventDefault()
@@ -494,7 +505,7 @@ export class ShellController {
 
     if (activeTool) return
 
-    if (listResults.length === 0) {
+    if (navigableResults.length === 0) {
       if (e.key === 'Enter' && savedQuery.trim()) {
         void this.tryOrchestratorRoute()
       }
@@ -506,7 +517,7 @@ export class ShellController {
       this.refs.selectionSource = 'nav'
       this.setSelectedIndex((prev) => {
         const next = prev + 1
-        return next < listResults.length ? next : prev
+        return next < navigableResults.length ? next : prev
       })
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
@@ -516,15 +527,15 @@ export class ShellController {
         return next >= -1 ? next : prev
       })
     } else if (e.key === 'ArrowRight') {
-      if (selectedIndex >= 0 && listResults[selectedIndex]) {
+      if (selectedIndex >= 0 && navigableResults[selectedIndex]) {
         e.preventDefault()
-        const title = listResults[selectedIndex].title
+        const title = navigableResults[selectedIndex].title
         this.store.setState({ savedQuery: title, query: title, selectedIndex: -1 })
       }
     } else if (e.key === 'Enter') {
       e.preventDefault()
-      const index = selectedIndex >= 0 && listResults[selectedIndex] ? selectedIndex : 0
-      void this.handleItemClick(listResults[index])
+      const index = selectedIndex >= 0 && navigableResults[selectedIndex] ? selectedIndex : 0
+      void this.handleItemClick(navigableResults[index])
     }
   }
 
@@ -589,9 +600,18 @@ export class ShellController {
   }
 
   private _applySettings(s: ShellConfig): void {
+    const prev = this.store.getState().settings
+    const widthChanged = s.windowWidth !== prev.windowWidth
+    const maxHeightChanged = s.windowMaxHeight !== prev.windowMaxHeight
     this.store.setState({ settings: s })
     this.refs.cfg = { ...(this.refs.cfg ?? {}), ...s }
     this.settings.applySettings(s)
+    if (widthChanged || maxHeightChanged) {
+      this.win.setSize({
+        width: widthChanged ? null : this.win.size.width,
+        height: maxHeightChanged ? null : this.win.size.height,
+      })
+    }
     requestAnimationFrame(() => this._sync.updatePosition(true))
   }
 
@@ -663,19 +683,19 @@ export class ShellController {
   private _bindQuerySelectionSync(): void {
     let prevSelected = this.store.getState().selectedIndex
     let prevSaved = this.store.getState().savedQuery
-    let prevListLen = this.providers.listResults.length
+    let prevListLen = this.providers.navigableResults.length
     let prevActiveTool = this.tools.activeTool
 
     this.store.subscribe(() => {
       const { selectedIndex, savedQuery } = this.store.getState()
-      const listResults = this.providers.listResults
+      const navigableResults = this.providers.navigableResults
       const activeTool = this.tools.activeTool
 
       if (activeTool) {
         prevActiveTool = activeTool
         prevSelected = selectedIndex
         prevSaved = savedQuery
-        prevListLen = listResults.length
+        prevListLen = navigableResults.length
         return
       }
       if (activeTool !== prevActiveTool) {
@@ -685,18 +705,18 @@ export class ShellController {
       if (
         selectedIndex === prevSelected &&
         savedQuery === prevSaved &&
-        listResults.length === prevListLen
+        navigableResults.length === prevListLen
       ) {
         return
       }
       prevSelected = selectedIndex
       prevSaved = savedQuery
-      prevListLen = listResults.length
+      prevListLen = navigableResults.length
 
       if (selectedIndex === -1 || this.refs.selectionSource === 'type') {
         if (this.query.query !== savedQuery) this.query.setQuery(savedQuery)
-      } else if (listResults[selectedIndex]) {
-        const title = listResults[selectedIndex].title
+      } else if (navigableResults[selectedIndex]) {
+        const title = navigableResults[selectedIndex].title
         if (this.query.query !== title) this.query.setQuery(title)
       }
     })
@@ -736,8 +756,13 @@ export class ShellController {
       const zoom = getZoom()
       const dw = window.innerWidth / zoom
       const dh = window.innerHeight / zoom
-      const winWidth = el.offsetWidth
-      const winHeight = el.offsetHeight
+      const settings = this.store.getState().settings
+      const winWidth = resolveLayoutWidth(el, settings, this.win.size.width)
+      const winHeight = resolveLayoutHeight(el, settings, {
+        manualHeight: this.win.size.height,
+        springHeight: this.win.springHeight,
+        activeTool: this.tools.activeTool !== null,
+      })
       const maxX = Math.max(0, dw - winWidth)
       const maxY = Math.max(0, dh - winHeight)
       const { x, y } = this.win.position

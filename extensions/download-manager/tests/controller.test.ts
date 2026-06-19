@@ -224,3 +224,163 @@ describe('DownloadManagerController', () => {
     })
   })
 })
+
+describe('DownloadManagerController keyboard actions', () => {
+  let controlOmniBarMock: ReturnType<typeof vi.fn>
+  let getter: (() => ReturnType<DownloadManagerController['getKeyActions']>) | null = null
+
+  beforeEach(() => {
+    controlOmniBarMock = window.core!.shell!.controlOmniBar as ReturnType<typeof vi.fn>
+    controlOmniBarMock.mockReset()
+    vi.mocked(window.core!.shell!.registerKeyActions).mockImplementation((fn) => {
+      getter = fn as typeof getter
+    })
+    mockInvoke((channel) => (channel === 'list' ? [makeItem()] : null))
+  })
+
+  it('hides the omnibar when navigating down into the list', () => {
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({ items: [makeItem()], selectedIndex: -1 })
+
+    const down = getter!().find((a) => a.key === 'ArrowDown')
+    down?.handler()
+
+    expect(controlOmniBarMock).toHaveBeenCalledWith('hide')
+    expect(controller.state.selectedIndex).toBe(0)
+    controller.disconnect()
+  })
+
+  it('shows the omnibar when navigating up past the first item', () => {
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({ items: [makeItem()], selectedIndex: 0 })
+
+    const up = getter!().find((a) => a.key === 'ArrowUp')
+    up?.handler()
+
+    expect(controlOmniBarMock).toHaveBeenCalledWith('show')
+    expect(controller.state.selectedIndex).toBe(-1)
+    controller.disconnect()
+  })
+
+  it('exposes Enter, Shift+Enter, and hold Delete when an item is selected', () => {
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({ items: [makeItem({ status: 'completed' })], selectedIndex: 0 })
+
+    const actions = getter!()
+    const enter = actions.find((a) => a.key === 'Enter' && !a.modifiers?.length)
+    const shiftEnter = actions.find((a) => a.key === 'Enter' && a.modifiers?.includes('shift'))
+    const del = actions.find((a) => a.key === 'Delete')
+
+    expect(enter?.activeOn?.()).toBe(true)
+    expect(shiftEnter?.activeOn?.()).toBe(true)
+    expect(del?.trigger).toBe('hold')
+    expect(del?.holdCancelToast).toBe('Hold Del to remove')
+    controller.disconnect()
+  })
+
+  it('retries failed downloads on Enter and hides Shift+Enter', async () => {
+    const resumed: string[] = []
+    mockInvoke((channel, payload) => {
+      if (channel === 'resume') resumed.push((payload as { id: string }).id)
+      return channel === 'list' ? [makeItem({ status: 'failed' })] : null
+    })
+
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({ items: [makeItem({ status: 'failed' })], selectedIndex: 0 })
+
+    const actions = getter!()
+    const enter = actions.find((a) => a.key === 'Enter' && !a.modifiers?.length)
+    const shiftEnter = actions.find((a) => a.key === 'Enter' && a.modifiers?.includes('shift'))
+
+    expect(enter?.activeOn?.()).toBe(true)
+    expect(shiftEnter?.activeOn?.()).toBe(false)
+    enter?.handler()
+    await Promise.resolve()
+    expect(resumed).toEqual(['d1'])
+    controller.disconnect()
+  })
+
+  it('registers shell actions for multi-select and bulk remove', () => {
+    let lastActions: Array<{ id: string; label: string }> = []
+    vi.mocked(window.core!.shell!.registerActions).mockImplementation((actions) => {
+      lastActions = actions as typeof lastActions
+    })
+
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({
+      items: [makeItem({ id: 'd1' }), makeItem({ id: 'd2', fileName: 'two.iso' })],
+      selectedIndex: 0,
+    })
+
+    expect(lastActions.some((a) => a.id === 'dm-select-multiple')).toBe(true)
+
+    controller.setMultiSelectMode(true)
+    controller.toggleCheck('d1')
+    expect(lastActions.some((a) => a.id === 'dm-exit-select')).toBe(true)
+    expect(lastActions.some((a) => a.id === 'dm-remove-selected')).toBe(true)
+
+    controller.disconnect()
+  })
+
+  it('removes all checked downloads after cancelling active ones', async () => {
+    const removed: string[] = []
+    const cancelled: string[] = []
+    let items = [
+      makeItem({ id: 'd1', status: 'downloading' }),
+      makeItem({ id: 'd2', fileName: 'two.iso', status: 'completed' }),
+    ]
+    mockInvoke((channel, payload) => {
+      if (channel === 'list') return items
+      if (channel === 'cancel') {
+        cancelled.push((payload as { id: string }).id)
+        return null
+      }
+      if (channel === 'remove') {
+        removed.push((payload as { id: string }).id)
+        items = items.filter((item) => item.id !== (payload as { id: string }).id)
+        return null
+      }
+      return null
+    })
+
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({
+      items,
+      selectedIndex: 0,
+      multiSelectMode: true,
+      checkedIds: new Set(['d1', 'd2']),
+    })
+
+    await controller.handleRemoveSelected()
+
+    expect(cancelled).toEqual(['d1'])
+    expect(removed).toEqual(['d1', 'd2'])
+    expect(controller.state.multiSelectMode).toBe(false)
+    expect(controller.state.checkedIds.size).toBe(0)
+    controller.disconnect()
+  })
+
+  it('shows the omnibar after removing the only download', async () => {
+    mockInvoke((channel, payload) => {
+      if (channel === 'list') return []
+      if (channel === 'remove') return null
+      return null
+    })
+
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({ items: [makeItem()], selectedIndex: 0 })
+
+    await controller.handleRemove()
+
+    expect(controller.state.selectedIndex).toBe(-1)
+    expect(controlOmniBarMock).toHaveBeenCalledWith('show')
+    controller.disconnect()
+  })
+})

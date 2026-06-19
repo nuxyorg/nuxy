@@ -44,6 +44,7 @@ describe('download-manager backend', () => {
       shell: {
         spawn: vi.fn().mockReturnValue(spawnHandle),
         exec: vi.fn().mockResolvedValue({ stdout: '', code: 0 }),
+        open: vi.fn().mockResolvedValue(undefined),
       },
       settings: {
         read: vi.fn(async (key: string) => {
@@ -68,9 +69,102 @@ describe('download-manager backend', () => {
     expect(core.registry.registerTool).toHaveBeenCalledWith({ name: 'download-manager' })
   })
 
+  it('registers as a provider', () => {
+    expect(core.registry.registerProvider).toHaveBeenCalledWith({ name: 'download-manager' })
+  })
+
+  describe('eval handler', () => {
+    it('offers a download action item when the query is an http(s) url', async () => {
+      const res = (await handlers.eval({ text: 'https://example.com/file.iso' })) as {
+        items: unknown[]
+      }
+      expect(res.items).toHaveLength(1)
+      expect(res.items[0]).toMatchObject({
+        id: 'com.nuxy.download-manager',
+        execute: {
+          channel: 'add_from_provider',
+          payload: { url: 'https://example.com/file.iso' },
+        },
+      })
+    })
+
+    it('offers a download action for urls with @ in the path', async () => {
+      const url = 'https://cdn.statically.io/gh/jcubic/static@master/js/lzjb.js'
+      const res = (await handlers.eval({ text: url })) as { items: unknown[] }
+      expect(res.items).toHaveLength(1)
+      expect(res.items[0]).toMatchObject({
+        execute: { channel: 'add_from_provider', payload: { url } },
+      })
+    })
+
+    it('trims surrounding whitespace before validating the url', async () => {
+      const res = (await handlers.eval({ text: '  https://example.com/file.iso  ' })) as {
+        items: unknown[]
+      }
+      expect(res.items).toHaveLength(1)
+    })
+
+    it('returns no items for plain text that is not a url', async () => {
+      const res = (await handlers.eval({ text: 'hello world' })) as { items: unknown[] }
+      expect(res.items).toHaveLength(0)
+    })
+
+    it('returns no items for non-http(s) urls', async () => {
+      const res = (await handlers.eval({ text: 'ftp://example.com/file.iso' })) as {
+        items: unknown[]
+      }
+      expect(res.items).toHaveLength(0)
+    })
+
+    it('returns no items for an empty query', async () => {
+      const res = (await handlers.eval({ text: '   ' })) as { items: unknown[] }
+      expect(res.items).toHaveLength(0)
+    })
+  })
+
   it('starts empty', async () => {
     const items = (await handlers.list()) as DownloadItem[]
     expect(items).toEqual([])
+  })
+
+  describe('openFile handler', () => {
+    it('opens the saved file when it exists on disk', async () => {
+      vi.mocked(core.fs.fileExists).mockResolvedValue(true)
+      const item = (await handlers.add({ url: 'https://example.com/file.iso' })) as DownloadItem
+      await handlers.openFile({ id: item.id })
+      expect(core.shell.open).toHaveBeenCalledWith('/home/test/Downloads/file.iso')
+    })
+
+    it('opens the source url when the file is not on disk yet', async () => {
+      vi.mocked(core.fs.fileExists).mockResolvedValue(false)
+      const item = (await handlers.add({ url: 'https://example.com/file.iso' })) as DownloadItem
+      await handlers.openFile({ id: item.id })
+      expect(core.shell.open).toHaveBeenCalledWith('https://example.com/file.iso')
+    })
+  })
+
+  describe('openFolder handler', () => {
+    it('opens the download directory for the item', async () => {
+      const item = (await handlers.add({
+        url: 'https://example.com/path/to/archive.tar.gz',
+      })) as DownloadItem
+      await handlers.openFolder({ id: item.id })
+      expect(core.shell.open).toHaveBeenCalledWith('/home/test/Downloads')
+    })
+  })
+
+  describe('add_from_provider handler', () => {
+    it('queues the download and returns a navigation target for the shell', async () => {
+      const url = 'https://cdn.statically.io/gh/jcubic/static@master/js/lzjb.js'
+      const res = (await handlers.add_from_provider({ url })) as { toolId: string; query: string }
+      expect(res).toEqual({ toolId: 'com.nuxy.download-manager', query: '' })
+      expect(core.shell.spawn).toHaveBeenCalledWith('curl', [
+        '-fL',
+        '-o',
+        '/home/test/Downloads/lzjb.js',
+        url,
+      ])
+    })
   })
 
   it('adds a download and spawns curl', async () => {
@@ -90,7 +184,9 @@ describe('download-manager backend', () => {
   })
 
   it('derives a filename from the url when none is given', async () => {
-    const item = (await handlers.add({ url: 'https://example.com/path/to/archive.tar.gz' })) as DownloadItem
+    const item = (await handlers.add({
+      url: 'https://example.com/path/to/archive.tar.gz',
+    })) as DownloadItem
     expect(item.fileName).toBe('archive.tar.gz')
   })
 
@@ -160,10 +256,7 @@ describe('download-manager backend', () => {
 
     await handlers.resume({ id: item.id })
 
-    expect(core.shell.spawn).toHaveBeenCalledWith(
-      'curl',
-      expect.arrayContaining(['-C', '-'])
-    )
+    expect(core.shell.spawn).toHaveBeenCalledWith('curl', expect.arrayContaining(['-C', '-']))
     const items = (await handlers.list()) as DownloadItem[]
     expect(items.find((i) => i.id === item.id)?.status).toBe('downloading')
   })

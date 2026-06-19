@@ -329,7 +329,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
       {
         key: 'Delete',
         label: 'Hold Del to delete',
-        hint: 'hold Del',
+        hint: 'Del',
         trigger: 'hold',
         holdCancelToast: 'Hold Del to delete',
         activeOn: () => !editMode && selectedIndex >= 0 && selectedIndex < filteredNotes.length,

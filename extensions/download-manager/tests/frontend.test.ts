@@ -40,6 +40,17 @@ describe('download-manager manifest', () => {
   it('declares nuxy-tool-download-manager tag', () => {
     expect(resolveToolElementTag(manifest as any)).toBe('nuxy-tool-download-manager')
   })
+
+  it('declares a settings caller command for Ctrl+K', () => {
+    expect(manifest.caller?.commands).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          deeplink: 'nuxy://settings/extension/com.nuxy.download-manager',
+          section: 'settings',
+        }),
+      ])
+    )
+  })
 })
 
 describe('nuxy-tool-download-manager element', () => {

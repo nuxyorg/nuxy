@@ -1,6 +1,11 @@
 import type { ReactiveController, ReactiveControllerHost } from '@nuxyorg/core'
 import type { Provider, Tool, ProviderState, ListItem, UsageStats } from '../types.ts'
-import { buildOmnibarSections, type OmnibarSection } from '../utils/listResults.ts'
+import {
+  buildOmnibarSections,
+  buildNavigableResults,
+  buildProviderCardItems,
+  type OmnibarSection,
+} from '../utils/listResults.ts'
 
 interface SyncOptions {
   /** When true, only non-action providers are evaluated (debounced list/search providers). */
@@ -12,6 +17,8 @@ export class ProviderController implements ReactiveController {
   private _providerStates: Record<string, ProviderState> = {}
   private _omnibarSections: OmnibarSection[] = []
   private _listResults: ListItem[] = []
+  private _providerCardItems: ListItem[] = []
+  private _navigableResults: ListItem[] = []
   private _isAnyListProviderLoading = false
   private _queryGeneration = 0
   private _actionQueryGeneration = 0
@@ -30,6 +37,12 @@ export class ProviderController implements ReactiveController {
   }
   get listResults(): ListItem[] {
     return this._listResults
+  }
+  get providerCardItems(): ListItem[] {
+    return this._providerCardItems
+  }
+  get navigableResults(): ListItem[] {
+    return this._navigableResults
   }
   get isAnyListProviderLoading(): boolean {
     return this._isAnyListProviderLoading
@@ -68,6 +81,8 @@ export class ProviderController implements ReactiveController {
     )
     this._omnibarSections = sections
     this._listResults = flatItems
+    this._providerCardItems = buildProviderCardItems(this._providerStates, this._providers)
+    this._navigableResults = buildNavigableResults(flatItems, this._providerStates, this._providers)
     this._isAnyListProviderLoading = Object.values(this._providerStates).some(
       (s) => s.type === 'list' && s.loading
     )

@@ -9,6 +9,7 @@ import {
   createRef,
 } from '@nuxyorg/core'
 import { ShellController } from './controller.ts'
+import { toInlineStyle } from './utils.ts'
 import './nuxy-shell.ts'
 import './nuxy-portal-host.ts'
 import './nuxy-shell-resize-handles.ts'
@@ -172,6 +173,13 @@ export class NuxyShellViewElement extends LitElement {
       padding: 0 var(--space-5) var(--space-3);
     }
 
+    nuxy-result-card[data-active],
+    nuxy-compare-card[data-active] {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      transform: translateY(-1px);
+    }
+
     .nuxy-shell-tool-loading {
       color: var(--syntax-variable);
       padding: var(--space-4) var(--space-5);
@@ -330,65 +338,63 @@ export class NuxyShellViewElement extends LitElement {
 
   private renderProviderResults(
     providerStates: Record<string, ProviderState>,
-    copiedId: string | null
+    copiedId: string | null,
+    selectedIndex: number,
+    providers: { id: string }[],
+    cardStartIndex = 0
   ) {
     const ctrl = this.controller
     if (!ctrl) return nothing
-    const resultIds = Object.keys(providerStates).filter(
-      (id) => providerStates[id].type === 'result'
-    )
-    const compareIds = Object.keys(providerStates).filter(
-      (id) => providerStates[id].type === 'compare'
-    )
+    const providerOrder =
+      providers.length > 0 ? providers.map((p) => p.id) : Object.keys(providerStates)
+    let flatIndex = cardStartIndex
 
     return html`
-      ${resultIds.map((id) => {
+      ${providerOrder.map((id) => {
         const state = providerStates[id]
+        if (!state || (state.type !== 'result' && state.type !== 'compare')) return nothing
+
         if (!state.items || state.items.length === 0) {
           if (!state.loading) return nothing
+          const skeletonHeight = state.type === 'compare' ? 70 : 52
           return html`
             <section class="nuxy-shell-results-section">
               ${this.renderSectionHeader(state.name, true)}
               <div class="nuxy-shell-results-section__skeletons">
-                <nuxy-skeleton height="52"></nuxy-skeleton>
+                <nuxy-skeleton height=${skeletonHeight}></nuxy-skeleton>
               </div>
             </section>
           `
         }
-        return html`
-          <section class="nuxy-shell-results-section">
-            ${this.renderSectionHeader(state.name, state.loading)}
-            <div class="nuxy-shell-results-section__body">
-              ${state.items.map(
-                (item) => html`
-                  <nuxy-result-card
-                    item-id=${item.id}
-                    title=${item.title}
-                    value=${item.value || nothing}
-                    provider-name=${state.name}
-                    ?copied=${copiedId === item.id}
-                    @nuxy-result-card-copy=${(e: CustomEvent<{ id: string }>) =>
-                      ctrl.handleCopy(e.detail.id)}
-                  ></nuxy-result-card>
-                `
-              )}
-            </div>
-          </section>
-        `
-      })}
-      ${compareIds.map((id) => {
-        const state = providerStates[id]
-        if (!state.items || state.items.length === 0) {
-          if (!state.loading) return nothing
+
+        if (state.type === 'result') {
           return html`
             <section class="nuxy-shell-results-section">
-              ${this.renderSectionHeader(state.name, true)}
-              <div class="nuxy-shell-results-section__skeletons">
-                <nuxy-skeleton height="70"></nuxy-skeleton>
+              ${this.renderSectionHeader(state.name, state.loading)}
+              <div class="nuxy-shell-results-section__body">
+                ${state.items.map((item) => {
+                  const currentIndex = flatIndex++
+                  const active = currentIndex === selectedIndex
+                  return html`
+                    <nuxy-result-card
+                      item-id=${item.id}
+                      title=${item.title}
+                      value=${item.value || nothing}
+                      provider-name=${state.name}
+                      ?copied=${copiedId === item.id}
+                      ?data-active=${active}
+                      role="option"
+                      aria-selected=${active ? 'true' : 'false'}
+                      @nuxy-result-card-copy=${(e: CustomEvent<{ id: string }>) =>
+                        ctrl.handleCopy(e.detail.id)}
+                    ></nuxy-result-card>
+                  `
+                })}
               </div>
             </section>
           `
         }
+
         return html`
           <section class="nuxy-shell-results-section">
             ${this.renderSectionHeader(state.name, state.loading)}
@@ -396,12 +402,17 @@ export class NuxyShellViewElement extends LitElement {
               ${state.items.map((item) => {
                 const meta = (item as ResultItem).meta
                 if (!meta?.left || !meta?.right) return nothing
+                const currentIndex = flatIndex++
+                const active = currentIndex === selectedIndex
                 return html`
                   <nuxy-compare-card
                     item-id=${item.id}
                     value=${item.value || nothing}
                     .meta=${meta}
                     ?copied=${copiedId === item.id}
+                    ?data-active=${active}
+                    role="option"
+                    aria-selected=${active ? 'true' : 'false'}
                     @nuxy-result-card-copy=${(e: CustomEvent<{ id: string }>) =>
                       ctrl.handleCopy(e.detail.id)}
                   ></nuxy-compare-card>
@@ -514,6 +525,7 @@ export class NuxyShellViewElement extends LitElement {
       listProviderSections.some((section) => section.items.length > 0 || section.loading) ||
       isAnyListProviderLoading
     const toolsFlatCount = toolSections.reduce((count, section) => count + section.items.length, 0)
+    const cardCount = ctrl.state.providerCardItems.length
 
     if (!hasProviderContent && !hasToolsContent && !hasListProviderContent) return nothing
 
@@ -525,11 +537,19 @@ export class NuxyShellViewElement extends LitElement {
       >
         <div class="nuxy-zone" ?data-visible=${hasProviderContent}>
           <div class="nuxy-zone-inner">
-            ${hasProviderContent ? this.renderProviderResults(providerStates, copiedId) : nothing}
+            ${hasProviderContent
+              ? this.renderProviderResults(
+                  providerStates,
+                  copiedId,
+                  selectedIndex,
+                  ctrl.state.providers,
+                  0
+                )
+              : nothing}
           </div>
         </div>
         ${hasToolsContent
-          ? this.renderOmnibarSections(toolSections, selectedIndex, false)
+          ? this.renderOmnibarSections(toolSections, selectedIndex, false, cardCount)
           : nothing}
         <div class="nuxy-zone" ?data-visible=${hasListProviderContent}>
           <div class="nuxy-zone-inner">
@@ -538,7 +558,7 @@ export class NuxyShellViewElement extends LitElement {
                   listProviderSections,
                   selectedIndex,
                   isAnyListProviderLoading,
-                  toolsFlatCount
+                  cardCount + toolsFlatCount
                 )
               : nothing}
           </div>
@@ -554,7 +574,7 @@ export class NuxyShellViewElement extends LitElement {
   ) {
     const ctrl = this.controller
     if (!ctrl) return nothing
-    const { tools, activeTool, selectedIndex, listResults, extensionSummary, holdProgress } =
+    const { tools, activeTool, selectedIndex, navigableResults, extensionSummary, holdProgress } =
       ctrl.state
     const t = ctrl.t.t
 
@@ -636,7 +656,7 @@ export class NuxyShellViewElement extends LitElement {
         </nuxy-shortcut-hint>
 
         <nuxy-shortcut-hint>
-          ${selectedIndex >= 0 && listResults.length > 0 && !activeTool
+          ${selectedIndex >= 0 && navigableResults.length > 0 && !activeTool
             ? html`
                 <span>${t('footer.pressToRun')}</span>
                 <nuxy-kbd keys="↵"></nuxy-kbd>
@@ -659,11 +679,7 @@ export class NuxyShellViewElement extends LitElement {
     if (!ctrl) return nothing
 
     const s = ctrl.state
-    const style = ctrl.containerStyle()
-    const styleStr = Object.entries(style)
-      .filter(([, v]) => v != null)
-      .map(([k, v]) => `${k}:${v}`)
-      .join(';')
+    const styleStr = toInlineStyle(ctrl.containerStyle())
 
     // Keep same tool host element across renders to preserve its internal state
     let toolHostEl: HTMLElement | null = null
