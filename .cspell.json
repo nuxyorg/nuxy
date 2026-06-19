@@ -16,6 +16,8 @@
     "cjs",
     "contenteditable",
     "dbus",
+    "deeplink",
+    "deeplinks",
     "devserver",
     "electron-builder",
     "glassmorphism",

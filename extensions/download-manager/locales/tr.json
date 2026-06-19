@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "name": "İndirme Yöneticisi"
+  },
+  "title": "İndirmeler",
+  "search": {
+    "placeholder": "İndirmelerde ara"
+  },
+  "empty": {
+    "message": "Henüz indirme yok.",
+    "hint": "nuxy://download-manager/add?url=... bağlantısıyla bir indirme kuyruğa ekleyin."
+  },
+  "status": {
+    "queued": "Sırada",
+    "downloading": "İndiriliyor",
+    "paused": "Duraklatıldı",
+    "completed": "Tamamlandı",
+    "failed": "Başarısız",
+    "cancelled": "İptal edildi"
+  },
+  "progress": {
+    "transferred": "Aktarılan",
+    "speed": "Hız"
+  },
+  "actions": {
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "pause": "Duraklat",
+    "resume": "Devam ettir",
+    "cancel": "İptal et",
+    "remove": "Kaldır"
+  }
+}

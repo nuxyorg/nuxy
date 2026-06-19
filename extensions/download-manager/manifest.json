@@ -1,0 +1,28 @@
+{
+  "id": "com.nuxy.download-manager",
+  "name": "Download Manager",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "download",
+  "permissions": ["fs", "shell", "storage"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "behavior": {
+    "onComplete": "stay"
+  },
+  "deeplinks": {
+    "schemes": ["add"]
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-download-manager",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr"]
+  }
+}
