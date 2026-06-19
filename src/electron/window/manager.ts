@@ -131,11 +131,18 @@ export function createMainWindow() {
 }
 
 let preloadsLoaded = false
+let _onPreloadsLoadedCallback: (() => void) | null = null
 
 export function isPreloadsLoaded(): boolean {
   return preloadsLoaded
 }
 
+/** Register a callback invoked once, the first time preloads finish loading. */
+export function setPreloadsLoadedCallback(cb: () => void): void {
+  _onPreloadsLoadedCallback = cb
+}
+
 export function onPreloadsLoaded(): void {
   preloadsLoaded = true
+  _onPreloadsLoadedCallback?.()
 }

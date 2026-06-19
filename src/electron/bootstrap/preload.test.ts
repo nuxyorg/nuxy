@@ -39,7 +39,7 @@ describe('contextBridge.exposeInMainWorld', () => {
     expect(call![0]).toBe('core')
   })
 
-  it('exposed object has ipc, window, icons, themes, tools, composition, shell, events keys', () => {
+  it('exposed object has ipc, window, icons, themes, tools, composition, shell, events, deeplink keys', () => {
     const core = getExposedCore()
     expect(core).toHaveProperty('ipc')
     expect(core).toHaveProperty('window')
@@ -49,6 +49,7 @@ describe('contextBridge.exposeInMainWorld', () => {
     expect(core).toHaveProperty('composition')
     expect(core).toHaveProperty('shell')
     expect(core).toHaveProperty('events')
+    expect(core).toHaveProperty('deeplink')
   })
 
   it('window object has all 9 methods: ready, resize, hide, esc, center, dragStart, dragMove, dragEnd, onShow', () => {
@@ -249,6 +250,40 @@ describe('core.events', () => {
     events.emit('shell-reset')
     expect(handler).toHaveBeenCalled()
     off()
+  })
+})
+
+describe('core.deeplink.onOpen', () => {
+  it('registers a listener with ipcRenderer.on("deeplink:open", ...)', () => {
+    const { deeplink } = getExposedCore()
+    const callsBefore = mockOn.mock.calls.length
+    const cb = vi.fn()
+    deeplink.onOpen(cb)
+    const newCalls = mockOn.mock.calls.slice(callsBefore)
+    expect(newCalls.length).toBe(1)
+    expect(newCalls[0][0]).toBe('deeplink:open')
+    expect(typeof newCalls[0][1]).toBe('function')
+  })
+
+  it('invokes the callback with the payload when the IPC event fires', () => {
+    const { deeplink } = getExposedCore()
+    const onCallsBefore = mockOn.mock.calls.length
+    const cb = vi.fn()
+    deeplink.onOpen(cb)
+    const registeredListener = mockOn.mock.calls[onCallsBefore][1]
+    const payload = { extensionId: 'com.nuxy.settings', path: 'extension/nyaa', query: {} }
+    registeredListener({}, payload)
+    expect(cb).toHaveBeenCalledWith(payload)
+  })
+
+  it('returns a cleanup function that calls ipcRenderer.off', () => {
+    const { deeplink } = getExposedCore()
+    const onCallsBefore = mockOn.mock.calls.length
+    const cb = vi.fn()
+    const cleanup = deeplink.onOpen(cb)
+    const registeredListener = mockOn.mock.calls[onCallsBefore][1]
+    cleanup()
+    expect(mockOff).toHaveBeenCalledWith('deeplink:open', registeredListener)
   })
 })
 

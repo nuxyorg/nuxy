@@ -1,4 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
+import type { DeeplinkPayload } from '@nuxyorg/core'
+import { DEEPLINK_OPEN_CHANNEL } from '@nuxyorg/core'
 import { createCompositionBridge } from './composition-bridge.js'
 import { createShellBridge } from './shell-bridge.js'
 import { createEventsBridge } from './events-bridge.js'
@@ -53,6 +55,15 @@ contextBridge.exposeInMainWorld('core', {
   composition: createCompositionBridge(ipcRenderer),
   shell: createShellBridge(),
   events: createEventsBridge(),
+  deeplink: {
+    onOpen: (callback: (payload: DeeplinkPayload) => void) => {
+      const listener = (_event: unknown, payload: DeeplinkPayload) => callback(payload)
+      ipcRenderer.on(DEEPLINK_OPEN_CHANNEL, listener)
+      return () => {
+        ipcRenderer.off(DEEPLINK_OPEN_CHANNEL, listener)
+      }
+    },
+  },
 })
 
 ipcRenderer

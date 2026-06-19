@@ -2,7 +2,12 @@ import type { ShellKeyAction } from '@nuxyorg/core'
 import { BaseExtensionController, setToolSearchPlaceholder } from '@nuxyorg/extension-sdk'
 import { createSettingsActions, type SettingsActions } from './actions.ts'
 import { createDefaultSettingsData, loadSettingsData, type SettingsDataState } from './data.ts'
-import { computeSettingsMeta, filterSettingsByQuery, type SettingsMeta } from './meta.ts'
+import {
+  computeSettingsMeta,
+  filterSettingsByQuery,
+  resolveDeeplinkSectionId,
+  type SettingsMeta,
+} from './meta.ts'
 import type { AnyRow, NuxySettings, SelectOption, StateSnapshot } from './types.ts'
 import { getRowCurrentValue, getRowOptions } from './utils/settingsOptions.ts'
 
@@ -143,6 +148,17 @@ export class SettingsController extends BaseExtensionController<SettingsControll
       activeSelect: null,
       focusedPanel: 'right',
     })
+  }
+
+  /**
+   * Selects an extension's settings panel by id, e.g. when activated via the
+   * `nuxy://settings/extension/:extId` deeplink. `path` is the deeplink path
+   * segment after the extension id host (e.g. "extension/nyaa"). No-op for
+   * any other path shape, or when the extId has no matching section.
+   */
+  selectPanelFromDeeplinkPath(path: string): void {
+    const sectionId = resolveDeeplinkSectionId(path, this.meta?.sectionsToRender ?? [])
+    if (sectionId) this.setSelectedSection(sectionId)
   }
 
   setSelectFocused(index: number | ((prev: number) => number)): void {

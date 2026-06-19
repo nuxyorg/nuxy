@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 
-import type { CoreComposition, CoreShell, CoreEvents } from '@nuxyorg/core'
+import type { CoreComposition, CoreShell, CoreEvents, DeeplinkPayload } from '@nuxyorg/core'
 
 declare global {
   const __NUXY_DEV__: boolean
@@ -46,6 +46,9 @@ declare global {
       composition: CoreComposition
       shell: CoreShell
       events: CoreEvents
+      deeplink: {
+        onOpen: (callback: (payload: DeeplinkPayload) => void) => () => void
+      }
     }
   }
 }

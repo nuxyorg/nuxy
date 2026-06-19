@@ -135,6 +135,14 @@ export interface ExtensionManifest {
     /** Path to an ExtensionSettingsSchema JSON file within the extension folder. */
     settings?: string
   }
+  /**
+   * Deeplink paths this extension accepts as a `nuxy://<id>/<path>` target.
+   * See `DeeplinkPayload` / `ExtensionDeeplinkConfig` in `deeplink.ts`.
+   * Advisory: dispatch warns (does not block) on undeclared paths.
+   */
+  deeplinks?: {
+    schemes: string[]
+  }
 }
 
 export interface RegistryEntry {

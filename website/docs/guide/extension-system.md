@@ -121,9 +121,18 @@ Extension assets (JavaScript, CSS, images) are served via a privileged Electron 
 
 This means extensions can be written in TypeScript without a build step — the protocol server handles transpilation on demand.
 
+## Invoking an extension via deeplink
+
+Extensions can also be activated from outside the app — by the OS, a
+browser, or another process — via the `nuxy://` URL scheme. See
+[Deeplinks](/guide/deeplinks) for the URL shape, the optional manifest
+`deeplinks` field, and how a target extension receives the path/query once
+its tool is activated.
+
 ## Next steps
 
 - [Extension types reference](/extensions/overview) — tools, providers, orchestrators, helpers
 - [Built-in Extensions](/extensions/built-in) — bundled extensions in the repo
 - [Your First Extension](/extensions/first-extension) — hands-on tutorial
 - [Manifest Reference](/extensions/manifest) — `manifest.json` fields
+- [Deeplinks](/guide/deeplinks) — invoking extensions via `nuxy://` URLs
