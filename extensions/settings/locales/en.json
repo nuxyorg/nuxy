@@ -17,7 +17,8 @@
     "zoom": "Zoom",
     "font": "Font",
     "fontWeight": "Font Weight",
-    "kbdScheme": "Keyboard Shortcut Style"
+    "kbdScheme": "Keyboard Shortcut Style",
+    "holdMs": "Hold Key Duration"
   },
   "window": {
     "escAction": "Esc Key Action",
@@ -34,7 +35,8 @@
   "language": {
     "addLanguage": "Add Language",
     "addPlaceholder": "Search languages…",
-    "hint": "Languages are tried in order — first added takes highest priority."
+    "hint": "Languages are tried in order — first added takes highest priority.",
+    "removeHint": "↵ remove"
   },
   "font": {
     "systemDefault": "System Default",
@@ -92,5 +94,9 @@
     "auto": "Auto (detect OS)",
     "mac": "Mac (⌘ Command)",
     "windows": "PC (Ctrl)"
+  },
+  "holdMs": {
+    "short": "Short (400 ms)",
+    "long": "Long (800 ms)"
   }
 }

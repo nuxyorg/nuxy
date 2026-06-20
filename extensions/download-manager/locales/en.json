@@ -3,6 +3,10 @@
     "name": "Download Manager"
   },
   "title": "Downloads",
+  "provider": {
+    "download": "Download {url}",
+    "subtitle": "Download Manager"
+  },
   "search": {
     "placeholder": "Search downloads"
   },
@@ -50,5 +54,12 @@
     "exitSelectMultiple": "Exit Selection",
     "removeSelected": "Delete Selected",
     "holdDeleteToRemove": "Hold to delete"
+  },
+  "settings": {
+    "downloadDir": {
+      "label": "Download Location",
+      "placeholder": "~/Downloads",
+      "description": "Folder where downloaded files are saved"
+    }
   }
 }

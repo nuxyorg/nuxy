@@ -38,12 +38,41 @@
     "stopRecording": "Stop recording",
     "focusSearchExitEdit": "Focus search / Exit edit",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "holdDeleteNote": "Hold Del to delete",
+    "holdEscToExit": "Hold Esc to exit",
+    "holdEscHint": "hold Esc",
+    "unsavedHoldEscToExit": "Unsaved — hold Esc to exit"
   },
   "provider": {
-    "saveAsNote": "Save as note"
+    "saveAsNote": "Save as note",
+    "untitled": "Untitled",
+    "matchSubtitle": "notes — {body}",
+    "saveSubtitle": "notes — \"{text}\""
   },
   "search": {
     "placeholder": "Search through notes"
+  },
+  "settings": {
+    "openaiApiKey": {
+      "label": "OpenAI API Key",
+      "placeholder": "sk-...",
+      "description": "API Key used to perform speech-to-text notes transcription via Whisper"
+    },
+    "language": {
+      "label": "Transcription Language",
+      "description": "Default language hint sent to the Whisper speech-to-text API",
+      "options": {
+        "en": "English",
+        "tr": "Turkish",
+        "de": "German",
+        "fr": "French",
+        "es": "Spanish"
+      }
+    },
+    "fontSize": {
+      "label": "Editor Font Size",
+      "description": "Visual font size inside the note body editor and preview"
+    }
   }
 }

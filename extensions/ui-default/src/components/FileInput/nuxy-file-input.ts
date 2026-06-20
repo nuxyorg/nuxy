@@ -148,7 +148,16 @@ export class NuxyFileInputElement extends LitElement {
   private nativeFileInput!: HTMLInputElement
 
   static get observedAttributes(): string[] {
-    return ['files-meta', 'multiple', 'accept', 'disabled', 'label', 'hint', 'id']
+    return [
+      ...super.observedAttributes,
+      'files-meta',
+      'multiple',
+      'accept',
+      'disabled',
+      'label',
+      'hint',
+      'id',
+    ]
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {

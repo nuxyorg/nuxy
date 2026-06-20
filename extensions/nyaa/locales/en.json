@@ -50,5 +50,47 @@
     "exitSelectMultiple": "Exit Selection",
     "copyAll": "Copy All Magnets",
     "downloadAll": "Download All Torrents"
+  },
+  "settings": {
+    "category": {
+      "label": "Category",
+      "options": {
+        "0_0": "All Categories",
+        "1_0": "Anime",
+        "1_2": "Anime - English",
+        "1_4": "Anime - Raw",
+        "3_0": "Literature",
+        "3_1": "Literature - English",
+        "2_0": "Audio",
+        "4_0": "Live Action",
+        "5_0": "Pictures",
+        "6_0": "Software"
+      }
+    },
+    "filter": {
+      "label": "Filter",
+      "options": {
+        "0": "No Filter",
+        "1": "No Remakes",
+        "2": "Trusted Only"
+      }
+    },
+    "sortBy": {
+      "label": "Sort By",
+      "options": {
+        "seeders": "Seeders (High to Low)",
+        "date": "Newest First",
+        "size": "Size (High to Low)",
+        "completed": "Downloads (High to Low)"
+      }
+    },
+    "enterAction": {
+      "label": "Enter Key Action",
+      "description": "What Enter does on a result. Shift+Enter always does the opposite.",
+      "options": {
+        "copyMagnet": "Copy Magnet Link",
+        "downloadTorrent": "Save Torrent File"
+      }
+    }
   }
 }

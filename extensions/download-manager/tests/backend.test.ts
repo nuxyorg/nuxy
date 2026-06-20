@@ -4,6 +4,8 @@ import { createMockCore } from '@nuxyorg/extension-sdk/testing'
 import { register } from '../backend.ts'
 import type { DownloadItem } from '../types.ts'
 
+const VIDEO_DL_ID = 'com.nuxy.video-downloader'
+
 interface FakeSpawnHandle {
   onData: (handler: (chunk: string) => void) => void
   onClose: (handler: (code: number | null) => void) => void
@@ -303,6 +305,7 @@ describe('download-manager backend', () => {
         error: null,
         createdAt: '2024-01-01T00:00:00.000Z',
         updatedAt: '2024-01-01T00:00:00.000Z',
+        thumbnail: null,
       },
     ]
     const { core: restoredCore, handlers: restoredHandlers } = createMockCore({
@@ -327,5 +330,128 @@ describe('download-manager backend', () => {
     const items = (await restoredHandlers.list()) as DownloadItem[]
     expect(items[0].status).toBe('failed')
     expect(items[0].error).toMatch(/interrupted/i)
+  })
+
+  describe('externally-owned jobs', () => {
+    it('registerExternal creates an item tagged with its owning extension', async () => {
+      const item = (await handlers.registerExternal({
+        extensionId: VIDEO_DL_ID,
+        jobId: 'job-1',
+        url: 'https://youtube.com/watch?v=abc',
+        fileName: 'My Video',
+      })) as DownloadItem
+
+      expect(item.fileName).toBe('My Video')
+      expect(item.status).toBe('downloading')
+      expect(item.source).toEqual({ extensionId: VIDEO_DL_ID, jobId: 'job-1' })
+      expect(item.thumbnail).toBeNull()
+      expect(core.shell.spawn).not.toHaveBeenCalled()
+    })
+
+    it('registerExternal stores the thumbnail when provided', async () => {
+      const item = (await handlers.registerExternal({
+        extensionId: VIDEO_DL_ID,
+        jobId: 'job-1',
+        url: 'https://youtube.com/watch?v=abc',
+        fileName: 'My Video',
+        thumbnail: 'https://img.youtube.com/vi/abc/0.jpg',
+      })) as DownloadItem
+
+      expect(item.thumbnail).toBe('https://img.youtube.com/vi/abc/0.jpg')
+    })
+
+    it('updateExternal patches the matching item by source', async () => {
+      await handlers.registerExternal({
+        extensionId: VIDEO_DL_ID,
+        jobId: 'job-1',
+        url: 'https://youtube.com/watch?v=abc',
+        fileName: 'My Video',
+      })
+
+      await handlers.updateExternal({
+        extensionId: VIDEO_DL_ID,
+        jobId: 'job-1',
+        bytesDownloaded: 5000,
+        totalBytes: 10000,
+        speedBps: 250,
+        filePath: '/home/test/Downloads/My Video.mp4',
+      })
+
+      const items = (await handlers.list()) as DownloadItem[]
+      const updated = items.find((i) => i.source?.jobId === 'job-1')
+      expect(updated?.bytesDownloaded).toBe(5000)
+      expect(updated?.filePath).toBe('/home/test/Downloads/My Video.mp4')
+    })
+
+    it('updateExternal is a no-op for an unknown job', async () => {
+      await expect(
+        handlers.updateExternal({ extensionId: VIDEO_DL_ID, jobId: 'missing', bytesDownloaded: 1 })
+      ).resolves.toBeUndefined()
+    })
+
+    it('removeExternal deletes the matching item', async () => {
+      await handlers.registerExternal({
+        extensionId: VIDEO_DL_ID,
+        jobId: 'job-1',
+        url: 'https://youtube.com/watch?v=abc',
+        fileName: 'My Video',
+      })
+
+      await handlers.removeExternal({ extensionId: VIDEO_DL_ID, jobId: 'job-1' })
+
+      const items = (await handlers.list()) as DownloadItem[]
+      expect(items.find((i) => i.source?.jobId === 'job-1')).toBeUndefined()
+    })
+
+    it('pause proxies to the owning extension instead of killing a local process', async () => {
+      const item = (await handlers.registerExternal({
+        extensionId: VIDEO_DL_ID,
+        jobId: 'job-1',
+        url: 'https://youtube.com/watch?v=abc',
+        fileName: 'My Video',
+      })) as DownloadItem
+
+      await handlers.pause({ id: item.id })
+
+      expect(core.extensions.invoke).toHaveBeenCalledWith(VIDEO_DL_ID, 'pause', { jobId: 'job-1' })
+      const items = (await handlers.list()) as DownloadItem[]
+      expect(items.find((i) => i.id === item.id)?.status).toBe('paused')
+    })
+
+    it('resume proxies to the owning extension', async () => {
+      const item = (await handlers.registerExternal({
+        extensionId: VIDEO_DL_ID,
+        jobId: 'job-1',
+        url: 'https://youtube.com/watch?v=abc',
+        fileName: 'My Video',
+      })) as DownloadItem
+      await handlers.pause({ id: item.id })
+
+      await handlers.resume({ id: item.id })
+
+      expect(core.extensions.invoke).toHaveBeenCalledWith(VIDEO_DL_ID, 'resume', {
+        jobId: 'job-1',
+      })
+      const items = (await handlers.list()) as DownloadItem[]
+      expect(items.find((i) => i.id === item.id)?.status).toBe('downloading')
+    })
+
+    it('cancel proxies to the owning extension and does not touch local fs', async () => {
+      const item = (await handlers.registerExternal({
+        extensionId: VIDEO_DL_ID,
+        jobId: 'job-1',
+        url: 'https://youtube.com/watch?v=abc',
+        fileName: 'My Video',
+      })) as DownloadItem
+
+      await handlers.cancel({ id: item.id })
+
+      expect(core.extensions.invoke).toHaveBeenCalledWith(VIDEO_DL_ID, 'cancel', {
+        jobId: 'job-1',
+      })
+      expect(core.fs.rm).not.toHaveBeenCalled()
+      const items = (await handlers.list()) as DownloadItem[]
+      expect(items.find((i) => i.id === item.id)?.status).toBe('cancelled')
+    })
   })
 })

@@ -3,6 +3,8 @@ import type { Tool, ListItem, ProviderState, Provider, UsageStats } from '../typ
 export interface OmnibarSection {
   id: string
   label: string
+  /** i18n key (in the shell's own locale namespace) to resolve `label` at render time. */
+  labelKey?: string
   items: ListItem[]
   loading?: boolean
 }
@@ -96,7 +98,7 @@ export function buildOmnibarSections(
     seenKeys
   )
   if (filteredTools.length > 0) {
-    sections.push({ id: 'tools', label: 'Tools', items: filteredTools })
+    sections.push({ id: 'tools', label: 'Tools', labelKey: 'sections.tools', items: filteredTools })
   }
 
   const providerOrder =
@@ -126,6 +128,7 @@ export function buildOmnibarSections(
       section = {
         id: sectionKey,
         label: sectionLabel,
+        labelKey: groupKey ? `sections.${groupKey}` : undefined,
         items: [],
         loading: false,
       }

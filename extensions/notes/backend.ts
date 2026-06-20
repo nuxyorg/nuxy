@@ -195,8 +195,8 @@ export async function register(core: CoreContext): Promise<void> {
     matchingNotes.forEach((row) => {
       items.push({
         id: 'com.nuxy.notes',
-        title: row.title || 'Untitled',
-        subtitle: `notes — ${row.body.slice(0, 40)}`,
+        title: row.title || core.i18n.t('provider.untitled'),
+        subtitle: core.i18n.t('provider.matchSubtitle', { body: row.body.slice(0, 40) }),
         isTool: true,
         initialQuery: text,
       })
@@ -204,8 +204,8 @@ export async function register(core: CoreContext): Promise<void> {
 
     items.push({
       id: 'com.nuxy.notes',
-      title: 'Save as note',
-      subtitle: `notes — "${text}"`,
+      title: core.i18n.t('provider.saveAsNote'),
+      subtitle: core.i18n.t('provider.saveSubtitle', { text }),
       execute: {
         channel: 'notes:create_from_provider',
         payload: { text },

@@ -17,7 +17,8 @@
     "zoom": "Yakınlaştırma",
     "font": "Yazı Tipi",
     "fontWeight": "Yazı Ağırlığı",
-    "kbdScheme": "Klavye Kısayol Stili"
+    "kbdScheme": "Klavye Kısayol Stili",
+    "holdMs": "Tuş Basılı Tutma Süresi"
   },
   "window": {
     "escAction": "Esc Tuşu Eylemi",
@@ -34,7 +35,8 @@
   "language": {
     "addLanguage": "Dil Ekle",
     "addPlaceholder": "Dil ara…",
-    "hint": "Diller sırayla denenir — ilk eklenen en yüksek önceliğe sahiptir."
+    "hint": "Diller sırayla denenir — ilk eklenen en yüksek önceliğe sahiptir.",
+    "removeHint": "↵ kaldır"
   },
   "font": {
     "systemDefault": "Sistem Varsayılanı",
@@ -89,5 +91,9 @@
     "auto": "Otomatik (sistemi algıla)",
     "mac": "Mac (⌘ Command)",
     "windows": "PC (Ctrl)"
+  },
+  "holdMs": {
+    "short": "Kısa (400 ms)",
+    "long": "Uzun (800 ms)"
   }
 }

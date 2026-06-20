@@ -99,12 +99,14 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
           optLabel = t('iconPack.default')
         } else if (r.key === 'kbdScheme') {
           optLabel = t('kbdScheme.' + opt.value)
+        } else if (r.key === 'holdMs') {
+          optLabel = t('holdMs.' + opt.value)
         }
         return { ...opt, label: optLabel }
       })
       return {
         ...r,
-        label: r.key === 'holdMs' ? r.label : t(s.id + '.' + r.key),
+        label: t(s.id + '.' + r.key),
         options: translatedOptions,
       }
     }),

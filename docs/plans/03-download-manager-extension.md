@@ -4,11 +4,13 @@
 `nuxy://` scheme and manifest `deeplinks.schemes` field defined there.
 
 ## Request
+
 "Bir download manager extensioni olmalı. Deeplink ile çalıştırılabilmeli." —
 new extension, invocable via deeplink (e.g. external app/browser hands Nuxy a
 URL to download).
 
 ## Plan
+
 1. Scaffold `extensions/download-manager/` following the pattern of
    `extensions/file-transfer/` (closest existing analog — check its
    manifest/backend/frontend split first).
@@ -28,6 +30,7 @@ URL to download).
 7. README for the extension + entry in `website/docs/extensions/built-in/`.
 
 ## Acceptance
+
 - `nuxy://download-manager/add?url=https://example.com/file` queues and
   starts a download visible in the tool UI.
 - Survives app restart (in-progress downloads resumed or clearly marked

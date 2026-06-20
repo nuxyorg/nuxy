@@ -49,5 +49,47 @@
     "exitSelectMultiple": "Seçimi Bitir",
     "copyAll": "Tüm Mıknatısları Kopyala",
     "downloadAll": "Tüm Torrentleri İndir"
+  },
+  "settings": {
+    "category": {
+      "label": "Kategori",
+      "options": {
+        "0_0": "Tüm Kategoriler",
+        "1_0": "Anime",
+        "1_2": "Anime - İngilizce",
+        "1_4": "Anime - Ham",
+        "3_0": "Edebiyat",
+        "3_1": "Edebiyat - İngilizce",
+        "2_0": "Ses",
+        "4_0": "Canlı Aksiyon",
+        "5_0": "Resimler",
+        "6_0": "Yazılım"
+      }
+    },
+    "filter": {
+      "label": "Filtre",
+      "options": {
+        "0": "Filtre Yok",
+        "1": "Yeniden Yapımlar Hariç",
+        "2": "Sadece Güvenilir"
+      }
+    },
+    "sortBy": {
+      "label": "Sıralama",
+      "options": {
+        "seeders": "Seeder (Çoktan Aza)",
+        "date": "En Yeni",
+        "size": "Boyut (Çoktan Aza)",
+        "completed": "İndirme (Çoktan Aza)"
+      }
+    },
+    "enterAction": {
+      "label": "Enter Tuşu Eylemi",
+      "description": "Enter bir sonuçta ne yapar. Shift+Enter her zaman tersini yapar.",
+      "options": {
+        "copyMagnet": "Mıknatıs Bağlantısını Kopyala",
+        "downloadTorrent": "Torrent Dosyasını Kaydet"
+      }
+    }
   }
 }

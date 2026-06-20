@@ -42,6 +42,35 @@ describe('nuxy-list indicator', () => {
     expect(indicator!.style.height).toBe(`${activeItem.offsetHeight}px`)
   })
 
+  it('updates indicator when a list item is removed but active-index is unchanged', async () => {
+    const list = document.createElement('nuxy-list') as NuxyListElement
+    list.activeIndex = 1
+    const items = ['One', 'Two', 'Three'].map((label) => {
+      const item = document.createElement('nuxy-list-item')
+      item.textContent = label
+      list.appendChild(item)
+      return item
+    })
+    document.body.appendChild(list)
+
+    Object.defineProperty(list, 'offsetHeight', { value: 90, configurable: true })
+    items.forEach((item, index) => {
+      Object.defineProperty(item, 'offsetTop', { value: index * 30, configurable: true })
+      Object.defineProperty(item, 'offsetHeight', { value: 30, configurable: true })
+    })
+    await list.updateComplete
+    await new Promise((r) => requestAnimationFrame(r))
+
+    items[0].remove()
+    Object.defineProperty(items[2], 'offsetTop', { value: 30, configurable: true })
+    await new Promise((r) => requestAnimationFrame(r))
+
+    const indicator = list.shadowRoot?.querySelector('.indicator') as HTMLElement | null
+
+    expect(indicator!.classList.contains('visible')).toBe(true)
+    expect(indicator!.style.transform).toBe(`translateY(${items[2].offsetTop}px)`)
+  })
+
   it('updates indicator when active-index changes', async () => {
     const container = document.createElement('div')
     document.body.appendChild(container)

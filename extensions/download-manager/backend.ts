@@ -5,6 +5,9 @@ import type {
   DownloadIdPayload,
   DownloadItem,
   DownloadStatus,
+  RegisterExternalPayload,
+  RemoveExternalPayload,
+  UpdateExternalPayload,
 } from './types.ts'
 
 const QUEUE_FILE = 'queue.json'
@@ -66,6 +69,12 @@ export function register(core: CoreContext): void {
 
   function persist(): void {
     void core.storage.write(QUEUE_FILE, Array.from(items.values()))
+  }
+
+  function findBySource(extensionId: string, jobId: string): DownloadItem | undefined {
+    return Array.from(items.values()).find(
+      (item) => item.source?.extensionId === extensionId && item.source?.jobId === jobId
+    )
   }
 
   function stopPolling(id: string): void {
@@ -193,6 +202,7 @@ export function register(core: CoreContext): void {
       error: null,
       createdAt: now,
       updatedAt: now,
+      thumbnail: null,
     }
     items.set(item.id, item)
     persist()
@@ -211,8 +221,8 @@ export function register(core: CoreContext): void {
       items: [
         {
           id: 'com.nuxy.download-manager',
-          title: `Download ${trimmed}`,
-          subtitle: 'Download Manager',
+          title: core.i18n.t('provider.download', { url: trimmed }),
+          subtitle: core.i18n.t('provider.subtitle'),
           execute: { channel: 'add_from_provider', payload: { url: trimmed } },
         },
       ],
@@ -235,6 +245,12 @@ export function register(core: CoreContext): void {
     const { id } = payload as DownloadIdPayload
     const item = items.get(id)
     if (!item || item.status !== 'downloading') return
+    if (item.source) {
+      await core.extensions.invoke(item.source.extensionId, 'pause', { jobId: item.source.jobId })
+      touch(id, { status: 'paused', speedBps: 0 })
+      persist()
+      return
+    }
     const a = active.get(id)
     a?.handle.kill()
     stopPolling(id)
@@ -246,6 +262,14 @@ export function register(core: CoreContext): void {
     const { id } = payload as DownloadIdPayload
     const item = items.get(id)
     if (!item || (item.status !== 'paused' && item.status !== 'failed')) return
+    if (item.source) {
+      await core.extensions.invoke(item.source.extensionId, 'resume', {
+        jobId: item.source.jobId,
+      })
+      touch(id, { status: 'downloading', error: null })
+      persist()
+      return
+    }
     await startDownload(item, true)
   })
 
@@ -253,6 +277,14 @@ export function register(core: CoreContext): void {
     const { id } = payload as DownloadIdPayload
     const item = items.get(id)
     if (!item) return
+    if (item.source) {
+      await core.extensions.invoke(item.source.extensionId, 'cancel', {
+        jobId: item.source.jobId,
+      })
+      touch(id, { status: 'cancelled', speedBps: 0 })
+      persist()
+      return
+    }
     const a = active.get(id)
     a?.handle.kill()
     stopPolling(id)
@@ -260,6 +292,46 @@ export function register(core: CoreContext): void {
       await core.fs.rm(item.filePath)
     }
     touch(id, { status: 'cancelled', speedBps: 0 })
+    persist()
+  })
+
+  core.ipc.handle('registerExternal', async (payload: unknown): Promise<DownloadItem> => {
+    const { extensionId, jobId, url, fileName, filePath, totalBytes, thumbnail } =
+      payload as RegisterExternalPayload
+    const now = new Date().toISOString()
+    const item: DownloadItem = {
+      id: crypto.randomUUID(),
+      url,
+      fileName: sanitizeFileName(fileName),
+      filePath: filePath ?? '',
+      status: 'downloading',
+      bytesDownloaded: 0,
+      totalBytes: totalBytes ?? null,
+      speedBps: 0,
+      error: null,
+      createdAt: now,
+      updatedAt: now,
+      source: { extensionId, jobId },
+      thumbnail: thumbnail ?? null,
+    }
+    items.set(item.id, item)
+    persist()
+    return item
+  })
+
+  core.ipc.handle('updateExternal', async (payload: unknown): Promise<void> => {
+    const { extensionId, jobId, filePath, ...patch } = payload as UpdateExternalPayload
+    const item = findBySource(extensionId, jobId)
+    if (!item) return
+    touch(item.id, { ...patch, ...(filePath ? { filePath } : {}) })
+    persist()
+  })
+
+  core.ipc.handle('removeExternal', async (payload: unknown): Promise<void> => {
+    const { extensionId, jobId } = payload as RemoveExternalPayload
+    const item = findBySource(extensionId, jobId)
+    if (!item) return
+    items.delete(item.id)
     persist()
   })
 

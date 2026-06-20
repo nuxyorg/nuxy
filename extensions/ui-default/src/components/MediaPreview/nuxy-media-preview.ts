@@ -161,7 +161,11 @@ export class NuxyMediaPreviewElement extends LitElement {
   `
 
   static get observedAttributes(): string[] {
+    // Reading `super.observedAttributes` triggers Lit's `finalize()` step,
+    // which turns `static styles` into adopted stylesheets. Skipping it
+    // silently drops all styling for this element (no error, no warning).
     return [
+      ...super.observedAttributes,
       'thumbnail',
       'title',
       'uploader',

@@ -46,6 +46,7 @@ function makeItem(overrides: Partial<DownloadItem> = {}): DownloadItem {
     error: null,
     createdAt: '2024-01-01T00:00:00.000Z',
     updatedAt: '2024-01-01T00:00:00.000Z',
+    thumbnail: null,
     ...overrides,
   }
 }

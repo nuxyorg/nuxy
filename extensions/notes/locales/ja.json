@@ -38,12 +38,41 @@
     "stopRecording": "録音を停止",
     "focusSearchExitEdit": "検索にフォーカス / 編集を終了",
     "previous": "前",
-    "next": "次"
+    "next": "次",
+    "holdDeleteNote": "削除するにはDelを長押し",
+    "holdEscToExit": "終了するにはEscを長押し",
+    "holdEscHint": "Escを長押し",
+    "unsavedHoldEscToExit": "未保存 — 終了するにはEscを長押し"
   },
   "provider": {
-    "saveAsNote": "ノートとして保存"
+    "saveAsNote": "ノートとして保存",
+    "untitled": "無題",
+    "matchSubtitle": "ノート — {body}",
+    "saveSubtitle": "ノート — 「{text}」"
   },
   "search": {
     "placeholder": "ノートを検索"
+  },
+  "settings": {
+    "openaiApiKey": {
+      "label": "OpenAI APIキー",
+      "placeholder": "sk-...",
+      "description": "Whisperによる音声からテキストへの変換に使用するAPIキー"
+    },
+    "language": {
+      "label": "文字起こし言語",
+      "description": "Whisper音声テキスト変換APIに送信される既定の言語ヒント",
+      "options": {
+        "en": "英語",
+        "tr": "トルコ語",
+        "de": "ドイツ語",
+        "fr": "フランス語",
+        "es": "スペイン語"
+      }
+    },
+    "fontSize": {
+      "label": "エディタのフォントサイズ",
+      "description": "ノート本文エディタとプレビュー内の表示フォントサイズ"
+    }
   }
 }

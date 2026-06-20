@@ -128,7 +128,7 @@ export class NuxyDataListElement extends LitElement {
   `
 
   static get observedAttributes(): string[] {
-    return ['items']
+    return [...super.observedAttributes, 'items']
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
@@ -197,7 +197,7 @@ export class NuxyStatElement extends LitElement {
   `
 
   static get observedAttributes(): string[] {
-    return ['label', 'value', 'change', 'help-text']
+    return [...super.observedAttributes, 'label', 'value', 'change', 'help-text']
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {

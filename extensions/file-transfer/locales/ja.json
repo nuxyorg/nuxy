@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "name": "ファイル転送"
+  },
+  "menu.placeholder": "送信または受信を選択",
+  "menu.title": "ピアツーピアファイル転送",
+  "menu.send": "ファイルを送信",
+  "menu.sendHint": "ファイルを選んで転送コードを共有",
+  "menu.receive": "ファイルを受信",
+  "menu.receiveHint": "送信者の転送コードを入力",
+  "send.title": "ファイルを送信",
+  "send.placeholder": "Enter または O でファイルを選択",
+  "send.activeTitle": "受信者を待機中",
+  "send.pickItem": "ファイルを選択",
+  "send.pickHint": "Enter または O で参照",
+  "send.startItem": "転送を開始",
+  "send.startHint": "Enter でコードを生成して待機",
+  "send.fileLabel": "ファイル",
+  "send.sizeLabel": "サイズ",
+  "send.codeTitle": "転送コード",
+  "send.codeLabel": "このコードを共有",
+  "send.waitingHint": "コードを受信者に共有してください。接続されると転送が始まります。",
+  "send.done": "ファイルを送信しました",
+  "send.error.tooLarge": "ファイルが {max} MB の上限を超えています",
+  "send.error.settings": "拡張機能の設定を読み込めませんでした",
+  "send.error.connection": "シグナリングサーバーに接続できませんでした",
+  "send.error.transfer": "ファイル転送に失敗しました",
+  "receive.placeholder": "転送コードを入力（例: FT-ABCD-EFGH）",
+  "receive.title": "ファイルを受信",
+  "receive.activeTitle": "ファイルを受信中",
+  "receive.prompt": "検索バーに転送コードを入力",
+  "receive.hint": "コード入力後、Enter で接続",
+  "receive.enteredCode": "コード: {code}",
+  "receive.connectingTo": "{code} に接続中…",
+  "receive.savedTitle": "保存したファイル",
+  "receive.pathLabel": "パス",
+  "receive.done": "ファイルを受信しました",
+  "receive.error.invalidCode": "無効な転送コードです",
+  "receive.error.connection": "送信者に接続できませんでした",
+  "receive.error.save": "受信したファイルを保存できませんでした",
+  "progress.label": "転送の進捗",
+  "progress.details": "統計",
+  "progress.transferred": "転送済み",
+  "progress.speed": "速度",
+  "progress.eta": "残り時間",
+  "keys.navigate": "移動",
+  "keys.select": "選択",
+  "keys.back": "戻る",
+  "keys.startSend": "転送を開始",
+  "keys.pickFile": "ファイルを選択",
+  "keys.copyCode": "コードをコピー",
+  "keys.connect": "接続",
+  "signaling.connectionFailed": "シグナリングサーバーへの接続に失敗しました",
+  "signaling.connectionClosed": "シグナリング接続が切断されました",
+  "signaling.notConnected": "シグナリングサーバーに接続されていません",
+  "webrtc.connectionFailed": "WebRTC 接続に失敗しました",
+  "webrtc.channelError": "データチャネルエラー",
+  "webrtc.channelTimeout": "接続がタイムアウトしました",
+  "webrtc.negotiationFailed": "接続ネゴシエーションに失敗しました",
+  "webrtc.noDataChannel": "データチャネルを利用できません",
+  "settings": {
+    "downloadDir": {
+      "label": "ダウンロード先",
+      "placeholder": "~/Downloads",
+      "description": "受信したファイルの保存先フォルダ"
+    },
+    "maxFileSizeMb": {
+      "label": "最大ファイルサイズ (MB)",
+      "options": {
+        "64": "64 MB",
+        "256": "256 MB",
+        "512": "512 MB",
+        "1024": "1 GB"
+      }
+    },
+    "signalingHost": {
+      "label": "シグナリングサーバーホスト",
+      "description": "WebRTC ハンドシェイク用 PeerServer Cloud ホスト（ファイルデータではありません）"
+    },
+    "signalingPort": {
+      "label": "シグナリングサーバーポート",
+      "options": {
+        "443": "443 (TLS)",
+        "9000": "9000 (自前ホスト)"
+      }
+    },
+    "stunServer": {
+      "label": "STUN サーバー",
+      "description": "NAT トラバーサル用 ICE STUN サーバー"
+    }
+  }
+}

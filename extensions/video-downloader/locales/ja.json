@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "name": "動画ダウンローダー"
+  },
+  "provider": {
+    "download": "動画をダウンロード",
+    "subtitle": "動画ダウンローダー — {url}"
+  },
+  "search": {
+    "placeholder": "動画のURLを貼り付けてください…"
+  },
+  "empty": {
+    "pasteUrl": "検索バーに動画のURLを貼り付けてEnterを押してください。",
+    "noFormats": "このカテゴリに一致するフォーマットはありません。"
+  },
+  "loading": {
+    "fetchingFormats": "動画情報とフォーマットを取得中…"
+  },
+  "tabs": {
+    "recommended": "おすすめ",
+    "video_audio": "動画と音声",
+    "audio_only": "音声のみ",
+    "video_only": "動画のみ",
+    "all": "すべてのストリーム"
+  },
+  "actions": {
+    "navigate": "移動",
+    "fetchFormats": "フォーマットを取得",
+    "download": "ダウンロード",
+    "openTab": "開く"
+  },
+  "install": {
+    "notInstalled": "yt-dlp がインストールされていません。",
+    "viaPip": "pip でインストール",
+    "viaBrew": "brew でインストール",
+    "viaPacman": "pacman でインストール"
+  },
+  "settings": {
+    "downloadPath": {
+      "label": "ダウンロード先",
+      "placeholder": "~/Downloads",
+      "description": "ダウンロードした動画を保存するフォルダ"
+    }
+  }
+}

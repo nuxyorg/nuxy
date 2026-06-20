@@ -38,9 +38,38 @@
     "stopRecording": "Kaydı durdur",
     "focusSearchExitEdit": "Aramaya odaklan / Düzenlemeyi çık",
     "previous": "Önceki",
-    "next": "Sonraki"
+    "next": "Sonraki",
+    "holdDeleteNote": "Silmek için Del'i basılı tutun",
+    "holdEscToExit": "Çıkmak için Esc'i basılı tutun",
+    "holdEscHint": "Esc'i basılı tut",
+    "unsavedHoldEscToExit": "Kaydedilmedi — çıkmak için Esc'i basılı tutun"
   },
   "provider": {
-    "saveAsNote": "Not olarak kaydet"
+    "saveAsNote": "Not olarak kaydet",
+    "untitled": "Başlıksız",
+    "matchSubtitle": "notlar — {body}",
+    "saveSubtitle": "notlar — \"{text}\""
+  },
+  "settings": {
+    "openaiApiKey": {
+      "label": "OpenAI API Anahtarı",
+      "placeholder": "sk-...",
+      "description": "Whisper ile konuşmadan metne dönüştürme için kullanılan API Anahtarı"
+    },
+    "language": {
+      "label": "Dönüştürme Dili",
+      "description": "Whisper konuşmadan metne API'sine gönderilen varsayılan dil ipucu",
+      "options": {
+        "en": "İngilizce",
+        "tr": "Türkçe",
+        "de": "Almanca",
+        "fr": "Fransızca",
+        "es": "İspanyolca"
+      }
+    },
+    "fontSize": {
+      "label": "Düzenleyici Yazı Boyutu",
+      "description": "Not metni düzenleyicisi ve önizlemesindeki görsel yazı boyutu"
+    }
   }
 }

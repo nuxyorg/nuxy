@@ -51,7 +51,9 @@ declare global {
         /** Self-triggers the main process's `handleDeeplinkUrl` for a `nuxy://...` URL. */
         dispatch: (
           url: string
-        ) => Promise<{ ok: true } | { ok: false; error: 'invalid-url' | 'unknown-extension' | 'no-window' }>
+        ) => Promise<
+          { ok: true } | { ok: false; error: 'invalid-url' | 'unknown-extension' | 'no-window' }
+        >
       }
     }
   }

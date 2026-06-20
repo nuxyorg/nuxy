@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "name": "Video Downloader"
+  },
+  "provider": {
+    "download": "Download video",
+    "subtitle": "Video Downloader — {url}"
+  },
+  "search": {
+    "placeholder": "Paste a video URL…"
+  },
+  "empty": {
+    "pasteUrl": "Paste a video URL in the search bar and press Enter.",
+    "noFormats": "No matching formats for this category."
+  },
+  "loading": {
+    "fetchingFormats": "Fetching video details and formats…"
+  },
+  "tabs": {
+    "recommended": "Recommended",
+    "video_audio": "Video & Audio",
+    "audio_only": "Audio Only",
+    "video_only": "Video Only",
+    "all": "All Streams"
+  },
+  "actions": {
+    "navigate": "Navigate",
+    "fetchFormats": "Fetch formats",
+    "download": "Download",
+    "openTab": "Open"
+  },
+  "install": {
+    "notInstalled": "yt-dlp is not installed.",
+    "viaPip": "Install via pip",
+    "viaBrew": "Install via brew",
+    "viaPacman": "Install via pacman"
+  },
+  "settings": {
+    "downloadPath": {
+      "label": "Download Location",
+      "placeholder": "~/Downloads",
+      "description": "Folder where downloaded videos are saved"
+    }
+  }
+}

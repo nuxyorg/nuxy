@@ -57,5 +57,36 @@
   "webrtc.channelError": "Veri kanalı hatası",
   "webrtc.channelTimeout": "Bağlantı zaman aşımına uğradı",
   "webrtc.negotiationFailed": "Bağlantı müzakeresi başarısız",
-  "webrtc.noDataChannel": "Veri kanalı kullanılamıyor"
+  "webrtc.noDataChannel": "Veri kanalı kullanılamıyor",
+  "settings": {
+    "downloadDir": {
+      "label": "İndirme Konumu",
+      "placeholder": "~/Downloads",
+      "description": "Alınan dosyaların kaydedileceği klasör"
+    },
+    "maxFileSizeMb": {
+      "label": "Maksimum Dosya Boyutu (MB)",
+      "options": {
+        "64": "64 MB",
+        "256": "256 MB",
+        "512": "512 MB",
+        "1024": "1 GB"
+      }
+    },
+    "signalingHost": {
+      "label": "Signaling Sunucu Adresi",
+      "description": "WebRTC el sıkışması için PeerServer Cloud adresi (dosya verisi değil)"
+    },
+    "signalingPort": {
+      "label": "Signaling Sunucu Portu",
+      "options": {
+        "443": "443 (TLS)",
+        "9000": "9000 (kendi sunucunuz)"
+      }
+    },
+    "stunServer": {
+      "label": "STUN Sunucusu",
+      "description": "NAT geçişi için ICE STUN sunucusu"
+    }
+  }
 }

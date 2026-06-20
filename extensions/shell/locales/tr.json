@@ -10,6 +10,10 @@
   "results": {
     "ariaLabel": "Sonuçlar"
   },
+  "sections": {
+    "tools": "Araçlar",
+    "actions": "Araç işlemleri"
+  },
   "footer": {
     "extensionsLoaded": "{count} uzantı yüklendi",
     "tools__one": "{count} araç",

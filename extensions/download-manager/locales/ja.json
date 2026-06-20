@@ -3,6 +3,10 @@
     "name": "ダウンロードマネージャー"
   },
   "title": "ダウンロード",
+  "provider": {
+    "download": "{url} をダウンロード",
+    "subtitle": "ダウンロードマネージャー"
+  },
   "search": {
     "placeholder": "ダウンロードを検索"
   },
@@ -50,5 +54,12 @@
     "exitSelectMultiple": "選択を終了",
     "removeSelected": "選択項目を削除",
     "holdDeleteToRemove": "長押しで削除"
+  },
+  "settings": {
+    "downloadDir": {
+      "label": "ダウンロード先",
+      "placeholder": "~/Downloads",
+      "description": "ダウンロードしたファイルを保存するフォルダ"
+    }
   }
 }

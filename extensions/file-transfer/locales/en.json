@@ -57,5 +57,36 @@
   "webrtc.channelError": "Data channel error",
   "webrtc.channelTimeout": "Connection timed out",
   "webrtc.negotiationFailed": "Connection negotiation failed",
-  "webrtc.noDataChannel": "Data channel unavailable"
+  "webrtc.noDataChannel": "Data channel unavailable",
+  "settings": {
+    "downloadDir": {
+      "label": "Download Location",
+      "placeholder": "~/Downloads",
+      "description": "Folder where received files are saved"
+    },
+    "maxFileSizeMb": {
+      "label": "Maximum File Size (MB)",
+      "options": {
+        "64": "64 MB",
+        "256": "256 MB",
+        "512": "512 MB",
+        "1024": "1 GB"
+      }
+    },
+    "signalingHost": {
+      "label": "Signaling Server Host",
+      "description": "PeerServer Cloud host for WebRTC handshake (not file data)"
+    },
+    "signalingPort": {
+      "label": "Signaling Server Port",
+      "options": {
+        "443": "443 (TLS)",
+        "9000": "9000 (self-hosted)"
+      }
+    },
+    "stunServer": {
+      "label": "STUN Server",
+      "description": "ICE STUN server for NAT traversal"
+    }
+  }
 }

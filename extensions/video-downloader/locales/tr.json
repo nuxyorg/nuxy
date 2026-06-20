@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "name": "Video İndirici"
+  },
+  "provider": {
+    "download": "Videoyu indir",
+    "subtitle": "Video İndirici — {url}"
+  },
+  "search": {
+    "placeholder": "Bir video bağlantısı yapıştırın…"
+  },
+  "empty": {
+    "pasteUrl": "Arama çubuğuna bir video bağlantısı yapıştırıp Enter'a basın.",
+    "noFormats": "Bu kategoride eşleşen format yok."
+  },
+  "loading": {
+    "fetchingFormats": "Video bilgileri ve formatlar alınıyor…"
+  },
+  "tabs": {
+    "recommended": "Önerilen",
+    "video_audio": "Video & Ses",
+    "audio_only": "Sadece Ses",
+    "video_only": "Sadece Video",
+    "all": "Tüm Akışlar"
+  },
+  "actions": {
+    "navigate": "Gezin",
+    "fetchFormats": "Formatları getir",
+    "download": "İndir",
+    "openTab": "Aç"
+  },
+  "install": {
+    "notInstalled": "yt-dlp kurulu değil.",
+    "viaPip": "pip ile kur",
+    "viaBrew": "brew ile kur",
+    "viaPacman": "pacman ile kur"
+  },
+  "settings": {
+    "downloadPath": {
+      "label": "İndirme Konumu",
+      "placeholder": "~/Downloads",
+      "description": "İndirilen videoların kaydedileceği klasör"
+    }
+  }
+}

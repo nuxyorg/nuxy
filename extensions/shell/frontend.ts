@@ -472,9 +472,13 @@ export class NuxyShellViewElement extends LitElement {
         <nuxy-list role="presentation" active-index=${localActiveIndex}>${listItems}</nuxy-list>
       `
 
+      const sectionLabel = section.labelKey
+        ? this.controller?.t.t(section.labelKey) || section.label
+        : section.label
+
       return html`
         <section class="nuxy-shell-results-section">
-          ${this.renderSectionHeader(section.label, section.loading)} ${listEl}
+          ${this.renderSectionHeader(sectionLabel, section.loading)} ${listEl}
           ${section.loading && section.items.length === 0
             ? html`
                 <div class="nuxy-shell-results-section__skeletons">

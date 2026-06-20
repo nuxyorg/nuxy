@@ -17,7 +17,8 @@
     "zoom": "ズーム",
     "font": "フォント",
     "fontWeight": "フォントウェイト",
-    "kbdScheme": "キーボードショートカットのスタイル"
+    "kbdScheme": "キーボードショートカットのスタイル",
+    "holdMs": "キー長押しの時間"
   },
   "window": {
     "escAction": "Escキーの動作",
@@ -34,7 +35,8 @@
   "language": {
     "addLanguage": "言語を追加",
     "addPlaceholder": "言語を検索…",
-    "hint": "言語は順番に試されます — 最初に追加された言語が最も優先されます。"
+    "hint": "言語は順番に試されます — 最初に追加された言語が最も優先されます。",
+    "removeHint": "↵ 削除"
   },
   "font": {
     "systemDefault": "システムデフォルト",
@@ -92,5 +94,9 @@
     "auto": "自動 (OSを検出)",
     "mac": "Mac (⌘ Command)",
     "windows": "PC (Ctrl)"
+  },
+  "holdMs": {
+    "short": "短い (400 ms)",
+    "long": "長い (800 ms)"
   }
 }

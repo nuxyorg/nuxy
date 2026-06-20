@@ -10,6 +10,10 @@
   "results": {
     "ariaLabel": "結果"
   },
+  "sections": {
+    "tools": "ツール",
+    "actions": "ツールアクション"
+  },
   "footer": {
     "extensionsLoaded": "{count}個の拡張機能が読み込まれました",
     "tools__other": "{count}個のツール",

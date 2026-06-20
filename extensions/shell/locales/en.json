@@ -10,6 +10,10 @@
   "results": {
     "ariaLabel": "Results"
   },
+  "sections": {
+    "tools": "Tools",
+    "actions": "Tool actions"
+  },
   "footer": {
     "extensionsLoaded": "{count} extensions loaded",
     "tools__one": "{count} tool",

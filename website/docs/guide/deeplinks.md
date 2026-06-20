@@ -109,7 +109,7 @@ deeplinks — see `extensions/settings/controller.ts`.
 
 ## Limitations / forward-looking notes
 
-- There is currently no UI affordance for *constructing* deeplinks from
+- There is currently no UI affordance for _constructing_ deeplinks from
   inside another extension (e.g. a "Nyaa settings" entry in the Ctrl+K
   command palette that resolves to
   `nuxy://settings/extension/nyaa`) — that is tracked separately as the

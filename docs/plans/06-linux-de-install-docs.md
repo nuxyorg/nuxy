@@ -1,11 +1,13 @@
 # Linux DE install/config docs + installation scenarios
 
 ## Request
+
 Document how install/configuration/settings work under GNOME, KDE, etc., and
 add examples for different installation scenarios: AppImage, .deb, building
 from source, manual install, from terminal, etc.
 
 ## Plan
+
 1. Read existing `website/docs/guide/installation.md` to see what's already
    covered (likely npm/dev workflow only) — extend, don't duplicate.
 2. New/extended sections in `website/docs/guide/installation.md` or a new
@@ -37,6 +39,7 @@ from source, manual install, from terminal, etc.
    handler not registering (relevant once #4 deeplink ships — cross-link).
 
 ## Acceptance
+
 - New content reviewed against actual `electron-builder` targets in
   `package.json`/`electron-builder.yml` (only document targets that are
   actually built).

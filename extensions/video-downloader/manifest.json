@@ -1,12 +1,12 @@
 {
-  "id": "com.nuxy.download-manager",
-  "name": "Download Manager",
+  "id": "com.nuxy.video-downloader",
+  "name": "Video Downloader",
   "version": "1.0.0",
   "type": "tool",
   "providerGroup": "actions",
   "providerGroupLabel": "Tool actions",
-  "icon": "download",
-  "permissions": ["fs", "shell", "storage"],
+  "icon": "video",
+  "permissions": ["shell", "fs"],
   "capabilities": {
     "callable": true,
     "caller": true
@@ -14,17 +14,14 @@
   "behavior": {
     "onComplete": "stay"
   },
-  "deeplinks": {
-    "schemes": ["add"]
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja"]
   },
   "entry": {
     "backend": "backend.ts",
     "frontend": "frontend.ts",
-    "element": "nuxy-tool-download-manager",
+    "element": "nuxy-tool-video-downloader",
     "settings": "settings.json"
-  },
-  "locales": {
-    "default": "en",
-    "supported": ["en", "tr", "ja"]
   }
 }

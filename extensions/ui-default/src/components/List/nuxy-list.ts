@@ -21,11 +21,14 @@ export class NuxyListElement extends LitElement {
 
   private _indicatorState: ListIndicatorState = createListIndicatorState()
   private _visibilityObserver: IntersectionObserver | null = null
+  private _childObserver: MutationObserver | null = null
   private _observersAttached = false
 
   disconnectedCallback(): void {
     this._visibilityObserver?.disconnect()
     this._visibilityObserver = null
+    this._childObserver?.disconnect()
+    this._childObserver = null
     this._observersAttached = false
     super.disconnectedCallback()
   }
@@ -47,6 +50,13 @@ export class NuxyListElement extends LitElement {
       { threshold: 0 }
     )
     this._visibilityObserver.observe(this)
+
+    this._childObserver = new MutationObserver(() => {
+      if (this.activeIndex >= 0) {
+        requestAnimationFrame(() => this._updateIndicator())
+      }
+    })
+    this._childObserver.observe(this, { childList: true, subtree: true })
   }
 
   static styles = css`

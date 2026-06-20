@@ -177,6 +177,7 @@ describe('buildOmnibarSections', () => {
     expect(sections[0]).toEqual({
       id: 'tools',
       label: 'Tools',
+      labelKey: 'sections.tools',
       items: expect.any(Array),
     })
     expect(sections[0].items).toHaveLength(2)
@@ -264,6 +265,7 @@ describe('buildOmnibarSections', () => {
     expect(sections).toHaveLength(1)
     expect(sections[0].id).toBe('actions')
     expect(sections[0].label).toBe('Tool actions')
+    expect(sections[0].labelKey).toBe('sections.actions')
     expect(sections[0].items).toHaveLength(2)
   })
 

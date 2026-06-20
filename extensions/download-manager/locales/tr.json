@@ -3,6 +3,10 @@
     "name": "İndirme Yöneticisi"
   },
   "title": "İndirmeler",
+  "provider": {
+    "download": "{url} indir",
+    "subtitle": "İndirme Yöneticisi"
+  },
   "search": {
     "placeholder": "İndirmelerde ara"
   },
@@ -50,5 +54,12 @@
     "exitSelectMultiple": "Seçimden Çık",
     "removeSelected": "Seçilenleri Sil",
     "holdDeleteToRemove": "Silmek için basılı tut"
+  },
+  "settings": {
+    "downloadDir": {
+      "label": "İndirme Konumu",
+      "placeholder": "~/Downloads",
+      "description": "İndirilen dosyaların kaydedileceği klasör"
+    }
   }
 }

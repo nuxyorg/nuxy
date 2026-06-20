@@ -45,7 +45,16 @@ export class NuxyPinInputElement extends LitElement {
   `
 
   static get observedAttributes(): string[] {
-    return ['length', 'value', 'default-value', 'disabled', 'error', 'mask', 'class']
+    return [
+      ...super.observedAttributes,
+      'length',
+      'value',
+      'default-value',
+      'disabled',
+      'error',
+      'mask',
+      'class',
+    ]
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {

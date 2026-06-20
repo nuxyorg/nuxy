@@ -189,7 +189,8 @@ export class KeyboardController {
         const held = actions?.find((a) => a.trigger === 'hold' && matchesAction(a, e))
         if (held) {
           if (held.holdCancelToast) {
-            holdCancelToastId = window.UI?.toast?.(held.holdCancelToast, { type: 'warning' }) ?? null
+            holdCancelToastId =
+              window.UI?.toast?.(held.holdCancelToast, { type: 'warning' }) ?? null
           }
           clearHold()
         }

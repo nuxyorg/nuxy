@@ -11,13 +11,10 @@ import { handleDeeplinkUrl, type DeeplinkDispatchResult } from '../deeplink/disp
  * `deeplink:open` push the renderer's `DeeplinkController` already handles.
  */
 export function registerDeeplinkChannels(): void {
-  ipcMain.handle(
-    DEEPLINK_DISPATCH_CHANNEL,
-    (_event, raw: unknown): DeeplinkDispatchResult => {
-      if (typeof raw !== 'string') {
-        return { ok: false, error: 'invalid-url' }
-      }
-      return handleDeeplinkUrl(raw)
+  ipcMain.handle(DEEPLINK_DISPATCH_CHANNEL, (_event, raw: unknown): DeeplinkDispatchResult => {
+    if (typeof raw !== 'string') {
+      return { ok: false, error: 'invalid-url' }
     }
-  )
+    return handleDeeplinkUrl(raw)
+  })
 }

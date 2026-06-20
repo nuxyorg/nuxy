@@ -31,6 +31,18 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
       padding-right: var(--space-2);
       flex-shrink: 0;
     }
+
+    .nuxy-dm-thumbnail {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .nuxy-dm-progress {
+      margin-top: var(--space-1);
+    }
   `
 
   @property({ type: String })
@@ -195,6 +207,9 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
           ? `${this.statusLabel(item.status, t)} — ${item.error}`
           : this.statusLabel(item.status, t)
 
+    const showProgressBar = item.status === 'downloading'
+    const knownSize = showProgressBar && item.totalBytes !== null
+
     return html`
       <nuxy-list-item
         ?active=${active}
@@ -214,9 +229,22 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
               ></nuxy-checkbox>
             `
           : nothing}
+        ${item.thumbnail
+          ? html`<img class="nuxy-dm-thumbnail" src=${item.thumbnail} alt="" />`
+          : nothing}
         <nuxy-list-item-body>
           <nuxy-list-item-text ?active=${active}>${item.fileName}</nuxy-list-item-text>
           <nuxy-list-item-meta>${meta}</nuxy-list-item-meta>
+          ${showProgressBar
+            ? html`
+                <nuxy-progress-bar
+                  class="nuxy-dm-progress"
+                  value=${knownSize ? item.bytesDownloaded : nothing}
+                  max=${knownSize ? item.totalBytes : 100}
+                  size="sm"
+                ></nuxy-progress-bar>
+              `
+            : nothing}
         </nuxy-list-item-body>
       </nuxy-list-item>
     `

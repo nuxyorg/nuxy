@@ -32,10 +32,7 @@ test.describe('nuxy:// deeplink system', () => {
     socketPath,
     appPage,
   }) => {
-    const sent = await sendSocketCommand(
-      socketPath,
-      'open:nuxy://settings/extension/com.nuxy.nyaa'
-    )
+    const sent = await sendSocketCommand(socketPath, 'open:nuxy://settings/extension/com.nuxy.nyaa')
     expect(sent).toBe(true)
 
     // Settings tool should mount.

@@ -197,7 +197,9 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
             <nuxy-list-item-text>${row.label}</nuxy-list-item-text>
           </nuxy-list-item-body>
           <nuxy-list-item-actions>
-            <span class="nuxy-settings-remove-hint">↵ remove</span>
+            <span class="nuxy-settings-remove-hint"
+              >${this.controller?.t.t('language.removeHint')}</span
+            >
           </nuxy-list-item-actions>
         </nuxy-list-item>
       `

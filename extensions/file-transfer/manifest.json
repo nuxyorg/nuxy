@@ -21,6 +21,6 @@
   },
   "locales": {
     "default": "en",
-    "supported": ["en", "tr"]
+    "supported": ["en", "ja", "tr"]
   }
 }

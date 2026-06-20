@@ -17,6 +17,7 @@ function makeItem(id: string, createdAt: string): DownloadItem {
     error: null,
     createdAt,
     updatedAt: createdAt,
+    thumbnail: null,
   }
 }
 
