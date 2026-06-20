@@ -28,7 +28,7 @@ async function typeInOmnibar(page: any, text: string): Promise<void> {
 async function submitOmnibar(page: any): Promise<void> {
   await page.waitForFunction(
     () => {
-      const actions = (window as any).core?.shell?.getKeyActionsGetter()?.() ?? []
+      const actions = (window as any).core?.shell?.getShellActionsGetter()?.() ?? []
       const enter = actions.find((a: { key: string }) => a.key === 'Enter')
       if (!enter) return true
       return typeof enter.activeOn !== 'function' || enter.activeOn()
@@ -116,7 +116,7 @@ async function waitForToolMounted(page: any, timeout = 10000): Promise<void> {
       if (!host || host.hasAttribute('loading')) return false
       if (host.childElementCount === 0) return false
       if (host.querySelector('.nuxy-react-tool-island')) {
-        return (window.core?.shell?.getKeyActionsGetter()?.()?.length ?? 0) > 0
+        return (window.core?.shell?.getShellActionsGetter()?.()?.length ?? 0) > 0
       }
       return true
     },

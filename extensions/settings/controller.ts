@@ -1,4 +1,4 @@
-import type { ShellKeyAction } from '@nuxyorg/core'
+import type { ShellAction } from '@nuxyorg/core'
 import { BaseExtensionController, setToolSearchPlaceholder } from '@nuxyorg/extension-sdk'
 import { createSettingsActions, type SettingsActions } from './actions.ts'
 import { createDefaultSettingsData, loadSettingsData, type SettingsDataState } from './data.ts'
@@ -99,7 +99,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
     this.dataCleanup = null
     this.filterQuery = ''
     this.t.destroy()
-    window.core?.shell?.registerKeyActions(null)
+    window.core?.shell?.registerShellActions(null)
   }
 
   toggleExtPending(extId: string, enabled: boolean): void {
@@ -223,10 +223,10 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   private bindKeyActions(): void {
-    window.core?.shell?.registerKeyActions(() => this.buildKeyActions())
+    window.core?.shell?.registerShellActions(() => this.buildKeyActions())
   }
 
-  private buildKeyActions(): ShellKeyAction[] {
+  private buildKeyActions(): ShellAction[] {
     const t = this.t.t
     const { focusedPanel } = this.state
 
@@ -237,7 +237,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
     return this.buildRightPanelKeyActions(t)
   }
 
-  private buildLeftPanelKeyActions(t: (key: string) => string): ShellKeyAction[] {
+  private buildLeftPanelKeyActions(t: (key: string) => string): ShellAction[] {
     const sections = this.meta?.sectionsToRender ?? []
     const currentIdx = sections.findIndex((s) => s.id === this.effectiveSectionId)
 
@@ -292,8 +292,8 @@ export class SettingsController extends BaseExtensionController<SettingsControll
     ]
   }
 
-  private buildRightPanelKeyActions(t: (key: string) => string): ShellKeyAction[] {
-    const list: ShellKeyAction[] = [
+  private buildRightPanelKeyActions(t: (key: string) => string): ShellAction[] {
+    const list: ShellAction[] = [
       {
         key: 'ArrowLeft',
         label: '',

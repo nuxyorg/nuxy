@@ -5,9 +5,8 @@ const hoisted = vi.hoisted(async () => {
   h.setupDomGlobals({
     ipc: { invoke: vi.fn() },
     shell: {
-      registerKeyActions: vi.fn(),
-      registerActions: vi.fn(),
-      refreshKeyHints: vi.fn(),
+      registerShellActions: vi.fn(),
+      refreshShellActions: vi.fn(),
       controlOmniBar: vi.fn(),
       setSearchPlaceholder: vi.fn(),
       setShellResetPaused: vi.fn(),
@@ -27,8 +26,12 @@ vi.mock('@nuxyorg/core', async () => {
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
+import { flattenTranslations } from '@nuxyorg/core'
 import type { DownloadItem } from '../types.ts'
 import { DownloadManagerController } from '../controller.ts'
+import enLocale from '../locales/en.json'
+
+const enTranslations = flattenTranslations(enLocale)
 
 function makeItem(overrides: Partial<DownloadItem> = {}): DownloadItem {
   return {
@@ -56,7 +59,7 @@ function mockInvoke(impl: (channel: string, payload?: unknown) => unknown): void
     // would otherwise interfere with assertions about this extension's own
     // polling interval.
     if (channel === 'getExtensionTranslations') {
-      return { success: true, data: { locale: 'en', dir: 'ltr', translations: {} } }
+      return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
     }
     try {
       return { success: true, data: await impl(channel, payload) }
@@ -157,6 +160,32 @@ describe('DownloadManagerController', () => {
     controller.disconnect()
   })
 
+  it('filters items by file name when a query is set', async () => {
+    mockInvoke((channel) =>
+      channel === 'list'
+        ? [
+            makeItem({ id: 'd1', fileName: 'movie.mkv' }),
+            makeItem({ id: 'd2', fileName: 'song.mp3' }),
+          ]
+        : null
+    )
+
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(controller.filteredItems).toHaveLength(2)
+
+    controller.setQuery('mov')
+    expect(controller.filteredItems).toHaveLength(1)
+    expect(controller.filteredItems[0].id).toBe('d1')
+    expect(controller.state.selectedIndex).toBe(-1)
+
+    controller.setQuery('')
+    expect(controller.filteredItems).toHaveLength(2)
+    controller.disconnect()
+  })
+
   it('pause/resume/cancel/remove call their respective channels with the item id', async () => {
     const calledChannels: string[] = []
     mockInvoke((channel) => {
@@ -232,7 +261,7 @@ describe('DownloadManagerController keyboard actions', () => {
   beforeEach(() => {
     controlOmniBarMock = window.core!.shell!.controlOmniBar as ReturnType<typeof vi.fn>
     controlOmniBarMock.mockReset()
-    vi.mocked(window.core!.shell!.registerKeyActions).mockImplementation((fn) => {
+    vi.mocked(window.core!.shell!.registerShellActions).mockImplementation((fn) => {
       getter = fn as typeof getter
     })
     mockInvoke((channel) => (channel === 'list' ? [makeItem()] : null))
@@ -264,20 +293,22 @@ describe('DownloadManagerController keyboard actions', () => {
     controller.disconnect()
   })
 
-  it('exposes Enter, Shift+Enter, and hold Delete when an item is selected', () => {
+  it('exposes Enter, Shift+Enter, and hold Delete when an item is selected', async () => {
     const controller = new DownloadManagerController(() => {})
     controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
     controller.store.setState({ items: [makeItem({ status: 'completed' })], selectedIndex: 0 })
 
     const actions = getter!()
     const enter = actions.find((a) => a.key === 'Enter' && !a.modifiers?.length)
     const shiftEnter = actions.find((a) => a.key === 'Enter' && a.modifiers?.includes('shift'))
-    const del = actions.find((a) => a.key === 'Delete')
+    const del = actions.find((a) => a.id === 'dm-remove')
 
     expect(enter?.activeOn?.()).toBe(true)
     expect(shiftEnter?.activeOn?.()).toBe(true)
     expect(del?.trigger).toBe('hold')
-    expect(del?.holdCancelToast).toBe('Hold Del to remove')
+    expect(del?.holdCancelToast).toBe('Hold to remove')
     controller.disconnect()
   })
 
@@ -305,11 +336,6 @@ describe('DownloadManagerController keyboard actions', () => {
   })
 
   it('registers shell actions for multi-select and bulk remove', () => {
-    let lastActions: Array<{ id: string; label: string }> = []
-    vi.mocked(window.core!.shell!.registerActions).mockImplementation((actions) => {
-      lastActions = actions as typeof lastActions
-    })
-
     const controller = new DownloadManagerController(() => {})
     controller.connect()
     controller.store.setState({
@@ -317,12 +343,61 @@ describe('DownloadManagerController keyboard actions', () => {
       selectedIndex: 0,
     })
 
-    expect(lastActions.some((a) => a.id === 'dm-select-multiple')).toBe(true)
+    const menuActions = () => getter!().filter((a) => a.showInMenu)
+    expect(menuActions().some((a) => a.id === 'dm-select-all')).toBe(true)
 
     controller.setMultiSelectMode(true)
     controller.toggleCheck('d1')
-    expect(lastActions.some((a) => a.id === 'dm-exit-select')).toBe(true)
-    expect(lastActions.some((a) => a.id === 'dm-remove-selected')).toBe(true)
+    expect(menuActions().some((a) => a.id === 'dm-remove-selected')).toBe(true)
+    // Exit Select Mode already has a footer chip (Esc) — it must not also
+    // clutter the menu, which is reserved for actions that don't fit there.
+    expect(menuActions().some((a) => a.id === 'dm-exit-select')).toBe(false)
+
+    controller.disconnect()
+  })
+
+  it('exposes Space to enter multi-select and toggle checks, Ctrl+A to select all', () => {
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({
+      items: [makeItem({ id: 'd1' }), makeItem({ id: 'd2', fileName: 'two.iso' })],
+      selectedIndex: 0,
+    })
+
+    const selectAll = getter!().find((a) => a.id === 'dm-select-all')
+    expect(selectAll).toMatchObject({ key: 'a', modifiers: ['ctrl'], showInMenu: true })
+    selectAll?.handler()
+    expect(controller.state.multiSelectMode).toBe(true)
+    expect(controller.state.checkedIds).toEqual(new Set(['d1', 'd2']))
+
+    controller.setMultiSelectMode(false)
+    controller.store.setState({ checkedIds: new Set(), selectedIndex: 0 })
+
+    const space = getter!().find((a) => a.id === 'dm-space')
+    expect(space).toMatchObject({ key: ' ', hint: 'Space' })
+    space?.handler()
+    expect(controller.state.multiSelectMode).toBe(true)
+    expect(controller.state.checkedIds).toEqual(new Set(['d1']))
+
+    space?.handler()
+    expect(controller.state.checkedIds).toEqual(new Set())
+
+    controller.disconnect()
+  })
+
+  it('exits multi-select mode on Escape only while it is active', () => {
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({ items: [makeItem()], selectedIndex: 0 })
+
+    const escInactive = getter!().find((a) => a.key === 'Escape')
+    expect(escInactive?.activeOn?.()).toBe(false)
+
+    controller.setMultiSelectMode(true)
+    const escActive = getter!().find((a) => a.key === 'Escape')
+    expect(escActive?.activeOn?.()).toBe(true)
+    escActive?.handler()
+    expect(controller.state.multiSelectMode).toBe(false)
 
     controller.disconnect()
   })
@@ -381,6 +456,89 @@ describe('DownloadManagerController keyboard actions', () => {
 
     expect(controller.state.selectedIndex).toBe(-1)
     expect(controlOmniBarMock).toHaveBeenCalledWith('show')
+    controller.disconnect()
+  })
+
+  it('refreshes shell actions after the list loads', async () => {
+    mockInvoke((channel) => (channel === 'list' ? [makeItem()] : null))
+
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    await Promise.resolve()
+
+    expect(window.core!.shell!.refreshShellActions).toHaveBeenCalled()
+    controller.disconnect()
+  })
+
+  it('exits multi-select mode when the list becomes empty', async () => {
+    let list: DownloadItem[] = [makeItem()]
+    mockInvoke((channel) => (channel === 'list' ? list : null))
+
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    await Promise.resolve()
+    controller.store.setState({ multiSelectMode: true, checkedIds: new Set(['d1']) })
+
+    list = []
+    await controller.refresh()
+
+    expect(controller.state.multiSelectMode).toBe(false)
+    expect(controller.state.checkedIds.size).toBe(0)
+    controller.disconnect()
+  })
+
+  it('selects the first item when entering multi-select with no selection', () => {
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({
+      items: [makeItem({ id: 'd1' }), makeItem({ id: 'd2', fileName: 'two.iso' })],
+      selectedIndex: -1,
+    })
+
+    controller.setMultiSelectMode(true)
+
+    expect(controller.state.selectedIndex).toBe(0)
+    expect(controller.state.multiSelectMode).toBe(true)
+    controller.disconnect()
+  })
+
+  it('selects all filtered downloads on Ctrl+A', () => {
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({
+      items: [makeItem({ id: 'd1' }), makeItem({ id: 'd2', fileName: 'two.iso' })],
+      selectedIndex: 0,
+    })
+
+    const selectAll = getter!().find((a) => a.id === 'dm-select-all')
+    expect(selectAll?.activeOn?.()).toBe(true)
+    selectAll?.handler()
+
+    expect(controller.state.multiSelectMode).toBe(true)
+    expect(controller.state.checkedIds).toEqual(new Set(['d1', 'd2']))
+    controller.disconnect()
+  })
+
+  it('exits multi-select mode after removing the last download individually', async () => {
+    mockInvoke((channel, payload) => {
+      if (channel === 'list') return []
+      if (channel === 'remove') return null
+      return null
+    })
+
+    const controller = new DownloadManagerController(() => {})
+    controller.connect()
+    controller.store.setState({
+      items: [makeItem()],
+      selectedIndex: 0,
+      multiSelectMode: true,
+      checkedIds: new Set(['d1']),
+    })
+
+    await controller.handleRemove()
+
+    expect(controller.state.multiSelectMode).toBe(false)
+    expect(controller.state.checkedIds.size).toBe(0)
     controller.disconnect()
   })
 })

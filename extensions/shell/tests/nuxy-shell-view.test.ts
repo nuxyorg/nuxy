@@ -42,8 +42,8 @@ vi.hoisted(() => {
       window: { esc: vi.fn(), resize: vi.fn(), hide: vi.fn() },
       events: { on: vi.fn(() => () => {}), emit: vi.fn() },
       shell: {
-        registerKeyActions: vi.fn(),
-        refreshKeyHints: vi.fn(),
+        registerShellActions: vi.fn(),
+        refreshShellActions: vi.fn(),
         bindReturnToShell: vi.fn(() => () => {}),
         subscribeOmniBarControl: vi.fn(() => () => {}),
         subscribe: vi.fn(() => () => {}),

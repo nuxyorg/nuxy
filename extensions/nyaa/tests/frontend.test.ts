@@ -19,9 +19,8 @@ const hoisted = vi.hoisted(async () => {
       }),
     },
     shell: {
-      registerKeyActions: vi.fn(),
-      registerActions: vi.fn(),
-      refreshKeyHints: vi.fn(),
+      registerShellActions: vi.fn(),
+      refreshShellActions: vi.fn(),
       setOmniBarPortal: vi.fn(),
       setSearchPlaceholder: vi.fn(),
     },
@@ -92,7 +91,7 @@ describe('nuxy-tool-nyaa element', () => {
 
     expect(el.query).toBe('ubuntu')
     expect(el.committedQuery).toBe('ubuntu iso')
-    expect(window.core.shell!.registerKeyActions).toHaveBeenCalled()
+    expect(window.core.shell!.registerShellActions).toHaveBeenCalled()
     expect(window.core.shell!.setSearchPlaceholder).toHaveBeenCalled()
   })
 
@@ -101,6 +100,6 @@ describe('nuxy-tool-nyaa element', () => {
     const el = new Ctor() as any
     el.connectedCallback()
     el.disconnectedCallback()
-    expect(window.core.shell!.registerActions).toHaveBeenCalledWith([])
+    expect(window.core.shell!.registerShellActions).toHaveBeenCalledWith(null)
   })
 })

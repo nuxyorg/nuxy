@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   gap: 1px;
-  padding: var(--space-0) var(--space-2);
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
   background-color: var(--syntax-comment);
   border: 1px solid var(--syntax-keyword);

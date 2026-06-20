@@ -18,10 +18,10 @@ const hoisted = vi.hoisted(async () => {
       }),
     },
     shell: {
-      registerKeyActions: vi.fn(),
-      registerActions: vi.fn(),
-      refreshKeyHints: vi.fn(),
+      registerShellActions: vi.fn(),
+      refreshShellActions: vi.fn(),
       setSearchPlaceholder: vi.fn(),
+      setFooterPortal: vi.fn(),
     },
     events: { on: vi.fn(() => () => {}) },
   })
@@ -41,15 +41,8 @@ describe('download-manager manifest', () => {
     expect(resolveToolElementTag(manifest as any)).toBe('nuxy-tool-download-manager')
   })
 
-  it('declares a settings caller command for Ctrl+K', () => {
-    expect(manifest.caller?.commands).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          deeplink: 'nuxy://settings/extension/com.nuxy.download-manager',
-          section: 'settings',
-        }),
-      ])
-    )
+  it('declares settings so the shell auto-synthesizes a Ctrl+. entry', () => {
+    expect(manifest.entry?.settings).toBe('settings.json')
   })
 })
 
@@ -68,14 +61,19 @@ describe('nuxy-tool-download-manager element', () => {
     expect(customElements.get('nuxy-tool-download-manager')).toBeDefined()
   })
 
-  it('connects and registers key actions', async () => {
+  it('connects, registers key actions, and registers footer portal', async () => {
     const Ctor = customElements.get('nuxy-tool-download-manager')!
-    const el = new Ctor() as HTMLElement & { connectedCallback: () => void }
+    const el = new Ctor() as HTMLElement & {
+      connectedCallback: () => void
+      disconnectedCallback: () => void
+    }
 
     el.connectedCallback()
     await new Promise((resolve) => setTimeout(resolve, 0))
 
-    expect(window.core!.shell!.registerKeyActions).toHaveBeenCalled()
+    expect(window.core!.shell!.registerShellActions).toHaveBeenCalled()
+    el.disconnectedCallback()
+    expect(window.core!.shell!.setFooterPortal).toHaveBeenCalledWith(null)
   })
 
   it('applies an add deeplink via committedQuery', async () => {

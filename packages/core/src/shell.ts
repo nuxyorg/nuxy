@@ -1,38 +1,43 @@
-export interface ShellKeyAction {
-  key: string
+import type { QueryType } from './query-context.js'
+
+/**
+ * A single action an extension exposes to the shell. The `hint` field controls
+ * footer-chip visibility, `showInMenu` controls Ctrl+K palette visibility — an
+ * action can opt into either, both, or neither (e.g. a pure background key
+ * binding). One `handler` serves both the keypress and the palette select.
+ */
+export interface ShellAction {
+  /** Required when `showInMenu` is true (palette dedupe/keying). */
+  id?: string
+  key?: string
   modifiers?: ('ctrl' | 'shift' | 'alt' | 'meta')[]
   label: string
+  /** Footer chip text. Presence of this field makes the action show up in the footer. */
   hint?: string | string[]
-  activeOn?: () => boolean
-  handler: () => void
-  allowRepeat?: boolean
-  trigger?: 'press' | 'hold'
-  holdMs?: number
-  /** Shown when a hold action is released before it completes. */
-  holdCancelToast?: string
-}
-
-export interface ShellCommandAction {
-  id: string
-  label: string
-  /**
-   * Optional Ctrl+K section id. Consecutive actions with the same id are grouped;
-   * the palette renders a divider between sections (no header label).
-   */
+  /** Ctrl+K palette divider grouping. */
   section?: string
+  /** Makes the action show up in the Ctrl+K palette. */
+  showInMenu?: boolean
   /**
    * Query types for which this action should be boosted to the top of the
    * tool-actions list. The shell reorders actions at render time based on the
    * current QueryContext — no polling or manual refresh needed.
    */
-  relevantFor?: import('./query-context.js').QueryType[]
-  onExecute?: () => void
-  children?: ShellCommandAction[]
+  relevantFor?: QueryType[]
+  activeOn?: () => boolean
+  handler: () => void
+  allowRepeat?: boolean
+  trigger?: 'press' | 'hold'
+  /** Shown when a hold action is released before it completes. */
+  holdCancelToast?: string
+  children?: ShellAction[]
 }
 
 export interface ShellBridgeSnapshot {
-  toolActions: ShellCommandAction[]
-  keyActionHints: ShellKeyAction[]
+  /** Ctrl+K palette actions: `showInMenu` actions, filtered by `activeOn`. */
+  toolActions: ShellAction[]
+  /** Footer chip actions: actions with a `hint`, filtered by `activeOn`. */
+  keyActionHints: ShellAction[]
   omniBarPortal: HTMLElement | null
   footerPortal: HTMLElement | null
   /** Omnibar placeholder set by the active tool at runtime. */
@@ -51,9 +56,8 @@ export interface CoreShell {
   subscribe(listener: () => void): () => void
   getSnapshot(): ShellBridgeSnapshot
 
-  registerKeyActions(getter: (() => ShellKeyAction[]) | null): void
-  refreshKeyHints(): void
-  registerActions(actions: ShellCommandAction[]): void
+  registerShellActions(getter: (() => ShellAction[]) | null): void
+  refreshShellActions(): void
 
   setOmniBarPortal(element: HTMLElement | null): void
   setFooterPortal(element: HTMLElement | null): void
@@ -61,8 +65,7 @@ export interface CoreShell {
   setSearchPlaceholder(placeholder: string | null): void
 
   /** Used by shell keyboard routing — not for extension authors. */
-  getKeyActionsGetter(): (() => ShellKeyAction[]) | null
-  getToolActions(): ShellCommandAction[]
+  getShellActionsGetter(): (() => ShellAction[]) | null
 
   controlOmniBar(action: OmniBarControlAction): void
   subscribeOmniBarControl(handler: (action: OmniBarControlAction) => void): () => void

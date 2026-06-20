@@ -1,4 +1,5 @@
-import type { HoldProgress, KeyAction } from '../types.ts'
+import type { ShellAction } from '@nuxyorg/core'
+import type { HoldProgress } from '../types.ts'
 import { isWritingElement } from '../utils/keyboard.ts'
 
 export interface KeyboardControllerCallbacks {
@@ -13,6 +14,10 @@ export interface KeyboardControllerCallbacks {
   setHoldProgress: (progress: HoldProgress | null) => void
   getHoldMs: () => number
   hasCommandPaletteActions: () => boolean
+  /** True when the active tool declares settings (`entry.settings`). */
+  hasActiveToolSettings: () => boolean
+  /** Opens the active tool's settings panel (Ctrl+.). */
+  openActiveToolSettings: () => void
 }
 
 export class KeyboardController {
@@ -22,6 +27,7 @@ export class KeyboardController {
 
   bind(): void {
     let holdTimer: ReturnType<typeof setTimeout> | null = null
+    let holdCancelToastId: string | null = null
 
     const clearHold = () => {
       if (holdTimer !== null) {
@@ -31,7 +37,8 @@ export class KeyboardController {
       this.callbacks.setHoldProgress(null)
     }
 
-    const matchesAction = (action: KeyAction, e: KeyboardEvent): boolean => {
+    const matchesAction = (action: ShellAction, e: KeyboardEvent): boolean => {
+      if (!action.key) return false
       if (action.key.toLowerCase() !== e.key.toLowerCase()) return false
       const mods = action.modifiers || []
       if (mods.includes('ctrl') !== e.ctrlKey) return false
@@ -41,10 +48,14 @@ export class KeyboardController {
       return true
     }
 
-    const startHold = (action: KeyAction, e: KeyboardEvent) => {
+    const startHold = (action: ShellAction, e: KeyboardEvent) => {
       if (holdTimer !== null) return
-      const ms = action.holdMs ?? this.callbacks.getHoldMs()
-      this.callbacks.setHoldProgress({ ms, hint: action.hint ?? action.key })
+      if (holdCancelToastId !== null) {
+        window.UI?.toastStore?.remove?.(holdCancelToastId)
+        holdCancelToastId = null
+      }
+      const ms = this.callbacks.getHoldMs()
+      this.callbacks.setHoldProgress({ ms, hint: action.hint ?? action.key ?? '' })
       holdTimer = setTimeout(() => {
         holdTimer = null
         clearHold()
@@ -76,13 +87,21 @@ export class KeyboardController {
         return
       }
 
+      if ((e.ctrlKey || e.metaKey) && e.key === '.') {
+        if (this.callbacks.hasActiveToolSettings()) {
+          e.preventDefault()
+          this.callbacks.openActiveToolSettings()
+        }
+        return
+      }
+
       if (e.key === 'Escape') {
         if (showCommandPalette) {
           this.callbacks.closeCommandPalette()
           return
         }
         if (isToolActive) {
-          const actions = window.core?.shell?.getKeyActionsGetter()?.()
+          const actions = window.core?.shell?.getShellActionsGetter()?.()
           if (actions && actions.length > 0) {
             const matched = actions.find((a) => {
               if (!matchesAction(a, e)) return false
@@ -114,14 +133,16 @@ export class KeyboardController {
         const target = (e.composedPath?.()[0] || e.target) as HTMLElement
         const isInput = isWritingElement(target)
         const isOmniBar = target?.classList?.contains('nuxy-shell-omni-bar__input')
-        const actions = window.core?.shell?.getKeyActionsGetter()?.()
+        const actions = window.core?.shell?.getShellActionsGetter()?.()
         if (actions && actions.length > 0) {
           const matched = actions.find((a) => {
             if (!matchesAction(a, e)) return false
             if (e.repeat && !a.allowRepeat) return false
             if (isInput) {
               if (isOmniBar) {
-                if (!a.modifiers?.length && a.key.length === 1) return false
+                const key = a.key!
+                const isSpace = key === ' ' || key.toLowerCase() === 'space'
+                if (!a.modifiers?.length && key.length === 1 && !isSpace) return false
               } else {
                 if (!a.modifiers?.length) return false
               }
@@ -164,11 +185,11 @@ export class KeyboardController {
 
     const handleGlobalKeyUp = (e: KeyboardEvent) => {
       if (holdTimer !== null) {
-        const actions = window.core?.shell?.getKeyActionsGetter()?.()
+        const actions = window.core?.shell?.getShellActionsGetter()?.()
         const held = actions?.find((a) => a.trigger === 'hold' && matchesAction(a, e))
         if (held) {
           if (held.holdCancelToast) {
-            window.UI?.toast?.(held.holdCancelToast, { type: 'warning' })
+            holdCancelToastId = window.UI?.toast?.(held.holdCancelToast, { type: 'warning' }) ?? null
           }
           clearHold()
         }

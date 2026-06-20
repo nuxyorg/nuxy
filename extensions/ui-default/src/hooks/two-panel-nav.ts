@@ -1,4 +1,4 @@
-import type { ShellKeyAction } from '@nuxyorg/core'
+import type { ShellAction } from '@nuxyorg/core'
 
 const BUILTIN_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter'])
 
@@ -18,7 +18,7 @@ export interface TwoPanelNavOptions {
   onSectionChange?: (id: string) => void
   onFocusRight?: (sectionId: string) => void
   onFocusLeft?: () => void
-  getRightPanelActions?: () => ShellKeyAction[]
+  getRightPanelActions?: () => ShellAction[]
   translate?: (key: string) => string
 }
 
@@ -32,7 +32,7 @@ export class TwoPanelNav {
   private onSectionChange?: (id: string) => void
   private onFocusRight?: (sectionId: string) => void
   private onFocusLeft?: () => void
-  private getRightPanelActions: () => ShellKeyAction[]
+  private getRightPanelActions: () => ShellAction[]
   private tr: (key: string) => string
   private cleanup: (() => void) | null = null
 
@@ -50,8 +50,8 @@ export class TwoPanelNav {
   }
 
   bind(): void {
-    window.core?.shell?.registerKeyActions(() => this.buildKeyActions())
-    this.cleanup = () => window.core?.shell?.registerKeyActions(null)
+    window.core?.shell?.registerShellActions(() => this.buildKeyActions())
+    this.cleanup = () => window.core?.shell?.registerShellActions(null)
   }
 
   unbind(): void {
@@ -155,7 +155,7 @@ export class TwoPanelNav {
     return false
   }
 
-  private buildKeyActions(): ShellKeyAction[] {
+  private buildKeyActions(): ShellAction[] {
     const rightPanelActions = this.getRightPanelActions()
     const tr = this.tr
 
@@ -259,7 +259,7 @@ export class TwoPanelNav {
         },
       },
       ...rightPanelActions
-        .filter((a) => !BUILTIN_KEYS.has(a.key) || a.modifiers?.length)
+        .filter((a) => !!a.key && (!BUILTIN_KEYS.has(a.key) || a.modifiers?.length))
         .map((a) => ({
           ...a,
           handler: () => {

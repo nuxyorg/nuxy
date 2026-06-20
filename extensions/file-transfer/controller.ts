@@ -1,4 +1,4 @@
-import type { ShellKeyAction } from '@nuxyorg/core'
+import type { ShellAction } from '@nuxyorg/core'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 import { createInvoker } from './utils/ipc.ts'
 import {
@@ -92,7 +92,7 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
     this.t.destroy()
-    window.core?.shell?.registerKeyActions(null)
+    window.core?.shell?.registerShellActions(null)
   }
 
   syncSearchPlaceholder(): void {
@@ -107,12 +107,12 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
     const next = query ?? ''
     if (this.state.query === next) return
     this.store.setState({ query: next })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   setMenuIndex(index: number): void {
     this.store.setState({ menuIndex: Math.max(0, Math.min(1, index)) })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   async selectMode(mode: 'send' | 'receive'): Promise<void> {
@@ -133,7 +133,7 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
       },
     })
     this.syncSearchPlaceholder()
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   async backToMenu(): Promise<void> {
@@ -157,7 +157,7 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
     })
     this.syncSearchPlaceholder()
     window.core?.shell?.controlOmniBar?.('clear')
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   handleFileSelected(files: File[]): void {
@@ -171,7 +171,7 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
       },
       file,
     })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   registerPickFileHandler(handler: () => void): void {
@@ -385,12 +385,12 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
   }
 
   bindKeyboard(): void {
-    const register = () => window.core?.shell?.registerKeyActions(() => this.getKeyActions())
+    const register = () => window.core?.shell?.registerShellActions(() => this.getKeyActions())
     register()
-    this.cleanups.push(() => window.core?.shell?.registerKeyActions(null))
+    this.cleanups.push(() => window.core?.shell?.registerShellActions(null))
   }
 
-  getKeyActions(): ShellKeyAction[] {
+  getKeyActions(): ShellAction[] {
     const s = this.state
     const t = this.t.t
 
@@ -428,7 +428,7 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
     }
 
     if (s.mode === 'send') {
-      const actions: ShellKeyAction[] = [
+      const actions: ShellAction[] = [
         {
           key: 'Escape',
           label: t('keys.back'),
@@ -466,7 +466,7 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
     }
 
     if (s.mode === 'receive') {
-      const actions: ShellKeyAction[] = [
+      const actions: ShellAction[] = [
         {
           key: 'Escape',
           label: t('keys.back'),

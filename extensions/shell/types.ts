@@ -66,28 +66,7 @@ export interface HoldProgress {
   hint: string | string[]
 }
 
-export interface KeyAction {
-  key: string
-  modifiers?: string[]
-  label: string
-  hint?: string | string[]
-  activeOn?: () => boolean
-  handler: () => void
-  onExecute?: () => void
-  allowRepeat?: boolean
-  trigger?: 'press' | 'hold'
-  holdMs?: number
-  holdCancelToast?: string
-}
-
-export interface CommandPaletteAction {
-  id: string
-  label: string
-  /** Optional Ctrl+K section id for divider grouping in the palette. */
-  section?: string
-  onExecute?: () => void
-  children?: CommandPaletteAction[]
-}
+export type { ShellAction } from '@nuxyorg/core'
 
 export interface Position {
   x: number

@@ -170,7 +170,7 @@ export class NuxyToolHostElement extends LitElement {
         this.loading = false
         this.appendChild(el)
         this.toolEl = el
-        window.core?.shell?.refreshKeyHints()
+        window.core?.shell?.refreshShellActions()
 
         const composition = window.core?.composition
         if (composition && el.onToolActivate) {

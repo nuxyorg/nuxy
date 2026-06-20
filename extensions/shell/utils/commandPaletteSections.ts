@@ -1,14 +1,12 @@
-import type { CommandPaletteAction } from '../types.ts'
+import type { ShellAction } from '@nuxyorg/core'
 
 export interface CommandPaletteSection {
   id: string
-  actions: CommandPaletteAction[]
+  actions: ShellAction[]
 }
 
 /** Groups a flat action list into Ctrl+K sections (divider boundaries), preserving order. */
-export function groupCommandPaletteActions(
-  actions: CommandPaletteAction[]
-): CommandPaletteSection[] {
+export function groupCommandPaletteActions(actions: ShellAction[]): CommandPaletteSection[] {
   const sections: CommandPaletteSection[] = []
 
   for (const action of actions) {
@@ -29,7 +27,7 @@ export function groupCommandPaletteActions(
 
 /** Filters actions by query and drops empty sections. */
 export function filterCommandPaletteSections(
-  actions: CommandPaletteAction[],
+  actions: ShellAction[],
   query: string
 ): CommandPaletteSection[] {
   const q = query.trim().toLowerCase()
@@ -44,8 +42,6 @@ export function filterCommandPaletteSections(
     .filter((section) => section.actions.length > 0)
 }
 
-export function flattenCommandPaletteSections(
-  sections: CommandPaletteSection[]
-): CommandPaletteAction[] {
+export function flattenCommandPaletteSections(sections: CommandPaletteSection[]): ShellAction[] {
   return sections.flatMap((section) => section.actions)
 }

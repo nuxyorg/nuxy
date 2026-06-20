@@ -11,6 +11,7 @@ import type { NuxyToolElement } from '@nuxyorg/core'
 import type { TranslateFn } from '@nuxyorg/extension-sdk'
 import { DownloadManagerController } from './controller.ts'
 import { formatBytes, formatSpeed } from './utils/format.ts'
+import { groupDownloadsByDate } from './utils/groupByDate.ts'
 import type { DownloadItem, DownloadStatus } from './types.ts'
 
 const TAG = 'nuxy-tool-download-manager'
@@ -30,19 +31,6 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
       padding-right: var(--space-2);
       flex-shrink: 0;
     }
-
-    .nuxy-dm-multi-select-banner {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-1);
-      padding: var(--space-3) var(--space-4);
-      border-radius: var(--radius-md);
-      background: var(--surface-elevated);
-    }
-
-    .nuxy-dm-multi-select-banner nuxy-text.nuxy-dm-count--empty {
-      opacity: 0.4;
-    }
   `
 
   @property({ type: String })
@@ -53,26 +41,55 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
   private controller: DownloadManagerController | null = null
   private _query = ''
   private _deeplinkApplied = false
+  private readonly footerStatusEl = document.createElement('span')
 
   get query(): string {
     return this._query
   }
 
   set query(value: string) {
-    this._query = value ?? ''
+    const next = value ?? ''
+    if (this._query === next) return
+    this._query = next
+    this.controller?.setQuery(next)
   }
 
   connectedCallback(): void {
     super.connectedCallback()
-    this.controller = new DownloadManagerController(() => this.requestUpdate())
+    this.footerStatusEl.className = 'nuxy-dm-footer-status'
+    this.controller = new DownloadManagerController(() => {
+      this.syncFooterStatus()
+      this.requestUpdate()
+    })
     this.controller.connect()
+    if (this._query) this.controller.setQuery(this._query)
     if (this.committedQuery) this.applyDeeplink(this.committedQuery)
+    this.syncFooterStatus()
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback()
     this.controller?.disconnect()
     this.controller = null
+    window.core?.shell?.setFooterPortal(null)
+  }
+
+  private syncFooterStatus(): void {
+    if (!this.controller) {
+      this.footerStatusEl.textContent = ''
+      window.core?.shell?.setFooterPortal(null)
+      return
+    }
+    const t = this.controller.t.t
+    const { multiSelectMode, checkedIds } = this.controller.state
+    const text = this.footerStatusText(t, multiSelectMode, checkedIds.size)
+    this.footerStatusEl.textContent = text
+    window.core?.shell?.setFooterPortal(text ? this.footerStatusEl : null)
+  }
+
+  private footerStatusText(t: TranslateFn, multiSelectMode: boolean, count: number): string {
+    if (!multiSelectMode || count === 0) return ''
+    return t('item.selectedCount').replace('{count}', String(count))
   }
 
   /**
@@ -93,6 +110,16 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
     })
   }
 
+  private wrapperStyle(): string {
+    return [
+      'display:flex',
+      'flex-direction:column',
+      'flex:1',
+      'min-height:0',
+      'overflow:hidden',
+    ].join(';')
+  }
+
   private panelStyle(): string {
     return [
       'display:flex',
@@ -106,49 +133,45 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
   render(): TemplateResult | typeof nothing {
     if (!this.controller) return nothing
     const t = this.controller.t.t
-    const { items, selectedIndex, multiSelectMode, checkedIds } = this.controller.state
+    const { items, query, selectedIndex, multiSelectMode, checkedIds } = this.controller.state
+    const filteredItems = this.controller.filteredItems
 
-    if (items.length === 0) {
+    if (filteredItems.length === 0) {
       return html`
         <div style=${this.panelStyle()}>
-          <nuxy-section-header label=${t('title')}></nuxy-section-header>
           <nuxy-empty-state
-            message=${t('empty.message')}
-            hint=${t('empty.hint')}
+            message=${query && items.length > 0 ? t('empty.noMatching') : t('empty.message')}
+            hint=${query && items.length > 0 ? '' : t('empty.hint')}
           ></nuxy-empty-state>
         </div>
       `
     }
 
-    return html`
-      <div style=${this.panelStyle()}>
-        <nuxy-section-header label=${t('title')}></nuxy-section-header>
-        ${multiSelectMode ? this.renderMultiSelectBanner(t, checkedIds.size) : nothing}
-        <nuxy-list active-index=${selectedIndex}>
-          ${items.map((item, i) =>
-            this.renderItem(item, i, i === selectedIndex, t, multiSelectMode, checkedIds)
-          )}
-        </nuxy-list>
-      </div>
-    `
-  }
+    const groups = groupDownloadsByDate(filteredItems, t)
+    let index = 0
 
-  private renderMultiSelectBanner(t: TranslateFn, count: number): TemplateResult {
     return html`
-      <div class="nuxy-dm-multi-select-banner">
-        <nuxy-text
-          size="sm"
-          bold
-          variant=${count > 0 ? 'accent' : 'default'}
-          class=${count > 0 ? '' : 'nuxy-dm-count--empty'}
-        >
-          ${count > 0
-            ? t('item.selectedCount').replace('{count}', String(count))
-            : t('item.selectPromptMulti')}
-        </nuxy-text>
-        ${count > 0
-          ? html`<nuxy-text size="xs" variant="muted">${t('item.multiSelectHint')}</nuxy-text>`
-          : nothing}
+      <div style=${this.wrapperStyle()}>
+        <div style=${this.panelStyle()}>
+          <nuxy-list active-index=${selectedIndex}>
+            ${groups.map(
+              (group) => html`
+                <nuxy-section-header label=${group.label}></nuxy-section-header>
+                ${group.items.map((item) => {
+                  const i = index++
+                  return this.renderItem(
+                    item,
+                    i,
+                    i === selectedIndex,
+                    t,
+                    multiSelectMode,
+                    checkedIds
+                  )
+                })}
+              `
+            )}
+          </nuxy-list>
+        </div>
       </div>
     `
   }

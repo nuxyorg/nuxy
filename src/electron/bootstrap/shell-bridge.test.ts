@@ -2,31 +2,38 @@ import { describe, it, expect, vi } from 'vitest'
 import { createShellBridge } from './shell-bridge.js'
 
 describe('createShellBridge', () => {
-  it('registerKeyActions exposes hints via snapshot', () => {
+  it('registerShellActions exposes footer hints via snapshot, filtered by hint + activeOn', () => {
     const bridge = createShellBridge()
     const handler = vi.fn()
-    bridge.registerKeyActions(() => [
+    bridge.registerShellActions(() => [
       { key: 'Enter', label: 'Run', hint: '↵', handler, activeOn: () => true },
-      { key: 'x', label: 'Hidden', handler, activeOn: () => false },
+      { key: 'x', label: 'Hidden (inactive)', hint: 'X', handler, activeOn: () => false },
+      { key: 'y', label: 'No hint', handler },
     ])
     expect(bridge.getSnapshot().keyActionHints).toHaveLength(1)
     expect(bridge.getSnapshot().keyActionHints[0]?.label).toBe('Run')
   })
 
-  it('registerActions and portal elements appear in snapshot', () => {
+  it('registerShellActions exposes menu actions via snapshot, filtered by showInMenu + activeOn', () => {
     const bridge = createShellBridge()
     const portal = { tagName: 'DIV' } as unknown as HTMLElement
-    bridge.registerActions([{ id: 'a', label: 'Action A' }])
+    bridge.registerShellActions(() => [
+      { id: 'a', label: 'Action A', showInMenu: true, handler: vi.fn() },
+      { id: 'b', label: 'Inactive', showInMenu: true, activeOn: () => false, handler: vi.fn() },
+      { id: 'c', label: 'Footer only', hint: '↵', handler: vi.fn() },
+    ])
     bridge.setOmniBarPortal(portal)
     const snap = bridge.getSnapshot()
     expect(snap.toolActions).toHaveLength(1)
+    expect(snap.toolActions[0]?.id).toBe('a')
     expect(snap.omniBarPortal).toBe(portal)
   })
 
   it('resetToolState clears tool registrations', () => {
     const bridge = createShellBridge()
-    bridge.registerActions([{ id: 'a', label: 'Action A' }])
-    bridge.registerKeyActions(() => [])
+    bridge.registerShellActions(() => [
+      { id: 'a', label: 'Action A', showInMenu: true, hint: '↵', handler: vi.fn() },
+    ])
     bridge.setFooterPortal({ tagName: 'DIV' } as unknown as HTMLElement)
     bridge.setSearchPlaceholder('Search in settings')
     bridge.resetToolState()
@@ -71,16 +78,16 @@ describe('createShellBridge', () => {
     expect(handler).toHaveBeenCalledOnce()
   })
 
-  it('deferred unregisterKeyActions does not clear a newer registration', async () => {
+  it('deferred unregisterShellActions does not clear a newer registration', async () => {
     const bridge = createShellBridge()
     const oldHandler = vi.fn()
     const newHandler = vi.fn()
 
-    bridge.registerKeyActions(() => [
+    bridge.registerShellActions(() => [
       { key: 'n', modifiers: ['ctrl'], label: 'Old', hint: '⌃N', handler: oldHandler },
     ])
-    bridge.registerKeyActions(null)
-    bridge.registerKeyActions(() => [
+    bridge.registerShellActions(null)
+    bridge.registerShellActions(() => [
       { key: 'n', modifiers: ['ctrl'], label: 'New', hint: '⌃N', handler: newHandler },
     ])
 

@@ -101,7 +101,7 @@ async function waitForToolMounted(page: any, timeout = 10000): Promise<void> {
       if (!host || host.hasAttribute('loading')) return false
       if (host.childElementCount === 0) return false
       if (host.querySelector('.nuxy-react-tool-island')) {
-        return (window.core?.shell?.getKeyActionsGetter()?.()?.length ?? 0) > 0
+        return (window.core?.shell?.getShellActionsGetter()?.()?.length ?? 0) > 0
       }
       return true
     },

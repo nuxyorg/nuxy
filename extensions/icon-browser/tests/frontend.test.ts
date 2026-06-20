@@ -5,7 +5,7 @@ const hoisted = vi.hoisted(async () => {
   h.setupDomGlobals({
     ipc: { invoke: vi.fn() },
     shell: {
-      refreshKeyHints: vi.fn(),
+      refreshShellActions: vi.fn(),
       setFooterPortal: vi.fn(),
     },
   })

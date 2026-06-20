@@ -15,12 +15,13 @@ import './nuxy-portal-host.ts'
 import './nuxy-shell-resize-handles.ts'
 import './nuxy-shell-omni-bar.ts'
 import './nuxy-command-palette.ts'
-import type { CommandPaletteAction, HoldProgress, KeyAction, ProviderState } from './types.ts'
+import type { ShellAction } from '@nuxyorg/core'
+import type { HoldProgress, ProviderState } from './types.ts'
 import type { OmnibarSection } from './utils/listResults.ts'
 
-function holdTargetMatches(action: KeyAction, holdProgress: HoldProgress | null): boolean {
+function holdTargetMatches(action: ShellAction, holdProgress: HoldProgress | null): boolean {
   if (!holdProgress || action.trigger !== 'hold') return false
-  const actionHint = action.hint ?? action.key
+  const actionHint = action.hint ?? action.key ?? ''
   const normalize = (hint: string | string[]) =>
     (Array.isArray(hint) ? hint.join('+') : hint).toLowerCase()
   return normalize(actionHint) === normalize(holdProgress.hint)
@@ -568,8 +569,8 @@ export class NuxyShellViewElement extends LitElement {
   }
 
   private renderShortcutBar(
-    toolActions: CommandPaletteAction[],
-    keyActionHints: KeyAction[],
+    toolActions: ShellAction[],
+    keyActionHints: ShellAction[],
     footerPortal: HTMLElement | null
   ) {
     const ctrl = this.controller

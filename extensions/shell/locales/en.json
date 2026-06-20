@@ -28,7 +28,7 @@
   "commandPalette": {
     "searchPlaceholder": "Search commands...",
     "noActions": "No actions available.",
-    "enterShortcut": "Enter"
+    "openSettings": "Open settings"
   },
   "keyboard": {
     "focusTabs": "Focus tabs",

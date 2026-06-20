@@ -1,5 +1,5 @@
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
-import type { ShellKeyAction } from '@nuxyorg/core'
+import type { ShellAction } from '@nuxyorg/core'
 import { invoke } from './utils/ipc.ts'
 import { parseAddDeeplink } from './utils/parseDeeplink.ts'
 import type { DownloadItem } from './types.ts'
@@ -9,6 +9,7 @@ const POLL_INTERVAL_MS = 1000
 
 export interface DownloadManagerState {
   items: DownloadItem[]
+  query: string
   selectedIndex: number
   multiSelectMode: boolean
   checkedIds: Set<string>
@@ -21,16 +22,36 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
   constructor(onUpdate: () => void) {
     super(
       EXT_ID,
-      { items: [], selectedIndex: -1, multiSelectMode: false, checkedIds: new Set() },
+      {
+        items: [],
+        query: '',
+        selectedIndex: -1,
+        multiSelectMode: false,
+        checkedIds: new Set(),
+      },
       onUpdate
     )
+  }
+
+  get filteredItems(): DownloadItem[] {
+    const q = this.state.query.trim().toLowerCase()
+    const items = q
+      ? this.state.items.filter((item) => item.fileName.toLowerCase().includes(q))
+      : this.state.items
+    return items.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+  }
+
+  setQuery(query: string): void {
+    if (query === this.state.query) return
+    this.store.setState({ query, selectedIndex: -1 })
+    window.core?.shell?.refreshShellActions()
   }
 
   connect(): void {
     this.syncSearchPlaceholder()
     void this.refresh()
     this.pollTimer = setInterval(() => void this.refresh(), POLL_INTERVAL_MS)
-    this.bindKeyActions()
+    this.bindActions()
   }
 
   disconnect(): void {
@@ -40,8 +61,7 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
     }
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
-    window.core?.shell?.registerKeyActions(null)
-    window.core?.shell?.registerActions([])
+    window.core?.shell?.registerShellActions(null)
     this.t.destroy()
   }
 
@@ -53,7 +73,7 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
     const prev = this.state.selectedIndex
     const next = typeof index === 'function' ? index(prev) : index
     this.store.setState({ selectedIndex: next })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   toggleCheck(id: string): void {
@@ -61,20 +81,73 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
     if (next.has(id)) next.delete(id)
     else next.add(id)
     this.store.setState({ checkedIds: next })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   setMultiSelectMode(val: boolean): void {
+    const items = this.filteredItems
+    const selectedIndex =
+      val && this.state.selectedIndex < 0 && items.length > 0 ? 0 : this.state.selectedIndex
     this.store.setState({
       multiSelectMode: val,
       checkedIds: val ? this.state.checkedIds : new Set(),
+      selectedIndex,
     })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
+  }
+
+  selectAll(): void {
+    const ids = new Set(this.filteredItems.map((item) => item.id))
+    this.store.setState({ checkedIds: ids })
+    window.core?.shell?.refreshShellActions()
+  }
+
+  enterMultiSelectAndSelectAll(): void {
+    const items = this.filteredItems
+    if (items.length === 0) return
+    const selectedIndex = this.state.selectedIndex < 0 ? 0 : this.state.selectedIndex
+    this.store.setState({
+      multiSelectMode: true,
+      selectedIndex,
+      checkedIds: new Set(items.map((item) => item.id)),
+    })
+    window.core?.shell?.refreshShellActions()
+  }
+
+  handleSpace(): void {
+    const items = this.filteredItems
+    if (items.length === 0) return
+
+    const { multiSelectMode, selectedIndex } = this.state
+    const index = selectedIndex < 0 ? 0 : selectedIndex
+    const item = items[index]
+    if (!item) return
+
+    if (!multiSelectMode) {
+      this.store.setState({
+        multiSelectMode: true,
+        selectedIndex: index,
+        checkedIds: new Set([item.id]),
+      })
+      window.core?.shell?.refreshShellActions()
+      return
+    }
+
+    this.toggleCheck(item.id)
   }
 
   async refresh(): Promise<void> {
     const items = await invoke<DownloadItem[]>('list').catch(() => null)
-    if (items) this.store.setState({ items })
+    if (!items) return
+
+    const next: Partial<DownloadManagerState> = { items }
+    if (items.length === 0) {
+      next.multiSelectMode = false
+      next.checkedIds = new Set()
+      next.selectedIndex = -1
+    }
+    this.store.setState(next)
+    window.core?.shell?.refreshShellActions()
   }
 
   async addUrl(url: string, fileName?: string): Promise<DownloadItem> {
@@ -131,11 +204,12 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
   }
 
   async handleRemove(): Promise<void> {
-    const { items, selectedIndex } = this.state
-    const selected = selectedIndex >= 0 ? items[selectedIndex] : null
+    const { selectedIndex } = this.state
+    const filteredItems = this.filteredItems
+    const selected = selectedIndex >= 0 ? filteredItems[selectedIndex] : null
     if (!selected) return
 
-    const remainingCount = items.length - 1
+    const remainingCount = filteredItems.length - 1
     if (
       selected.status === 'downloading' ||
       selected.status === 'paused' ||
@@ -146,8 +220,9 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
     await this.remove(selected.id)
 
     if (remainingCount === 0) {
-      this.store.setState({ selectedIndex: -1 })
+      this.store.setState({ selectedIndex: -1, multiSelectMode: false, checkedIds: new Set() })
       window.core?.shell?.controlOmniBar('show')
+      window.core?.shell?.refreshShellActions()
       return
     }
 
@@ -168,125 +243,96 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
       await this.remove(id)
     }
 
-    const remainingCount = this.state.items.length
+    const remainingCount = this.filteredItems.length
     this.store.setState({ multiSelectMode: false, checkedIds: new Set() })
 
     if (remainingCount === 0) {
       this.store.setState({ selectedIndex: -1 })
       window.core?.shell?.controlOmniBar('show')
+      window.core?.shell?.refreshShellActions()
       return
     }
 
     this.setSelectedIndex((prev) => Math.min(prev, remainingCount - 1))
   }
 
-  getKeyActions(): ShellKeyAction[] {
-    return this.buildKeyActions()
+  getKeyActions(): ShellAction[] {
+    return this.buildActions()
   }
 
-  private bindKeyActions(): void {
-    window.core?.shell?.registerKeyActions(() => this.buildKeyActions())
-    this.store.subscribe(() => this.registerShellActions())
+  private bindActions(): void {
+    window.core?.shell?.registerShellActions(() => this.buildActions())
     this.cleanups.push(() => {
-      window.core?.shell?.registerActions([])
+      window.core?.shell?.registerShellActions(null)
     })
   }
 
-  private registerShellActions(): void {
-    const { items, selectedIndex, multiSelectMode, checkedIds } = this.state
+  /**
+   * Single source of truth for both the footer (actions with a `hint`) and
+   * the Ctrl+K palette (actions with `showInMenu: true`). The two are
+   * mutually exclusive per action: the footer only has room for the
+   * frequent, single-item operations — anything that doesn't fit there
+   * (bulk multi-select operations) is Ctrl+K-only, with its key binding
+   * still live in the background.
+   */
+  private buildActions(): ShellAction[] {
     const t = this.t.t
-    const actions: Array<{ id: string; label: string; section?: string; onExecute: () => void }> =
-      []
-
-    if (!multiSelectMode) {
-      if (items.length > 0) {
-        actions.push({
-          id: 'dm-select-multiple',
-          label: t('actions.selectMultiple'),
-          section: 'actions',
-          onExecute: () => this.setMultiSelectMode(true),
-        })
-      }
-    } else {
-      actions.push({
-        id: 'dm-exit-select',
-        label: t('actions.exitSelectMultiple'),
-        section: 'actions',
-        onExecute: () => this.setMultiSelectMode(false),
-      })
-      if (checkedIds.size > 0) {
-        actions.push({
-          id: 'dm-remove-selected',
-          label: t('actions.removeSelected'),
-          section: 'actions',
-          onExecute: () => void this.handleRemoveSelected(),
-        })
-      }
-    }
-
-    const selected = selectedIndex >= 0 ? items[selectedIndex] : null
-    if (!multiSelectMode && selected) {
-      if (selected.status === 'downloading') {
-        actions.push({
-          id: 'dm-pause',
-          label: t('actions.pause'),
-          section: 'actions',
-          onExecute: () => void this.pause(selected.id),
-        })
-      }
-      if (selected.status === 'paused') {
-        actions.push({
-          id: 'dm-resume',
-          label: t('actions.resume'),
-          section: 'actions',
-          onExecute: () => void this.resume(selected.id),
-        })
-      }
-      if (selected.status === 'failed') {
-        actions.push({
-          id: 'dm-retry',
-          label: t('actions.retry'),
-          section: 'actions',
-          onExecute: () => void this.resume(selected.id),
-        })
-      }
-      if (
-        selected.status === 'downloading' ||
-        selected.status === 'paused' ||
-        selected.status === 'queued'
-      ) {
-        actions.push({
-          id: 'dm-cancel',
-          label: t('actions.cancel'),
-          section: 'actions',
-          onExecute: () => void this.cancel(selected.id),
-        })
-      }
-      actions.push({
-        id: 'dm-remove',
-        label: t('actions.remove'),
-        section: 'actions',
-        onExecute: () => void this.handleRemove(),
-      })
-    }
-
-    window.core?.shell?.registerActions(actions)
-  }
-
-  private buildKeyActions(): ShellKeyAction[] {
-    const t = this.t.t
-    const { items, selectedIndex, multiSelectMode } = this.state
+    const { selectedIndex, multiSelectMode, checkedIds } = this.state
+    const items = this.filteredItems
     const selected = selectedIndex >= 0 ? items[selectedIndex] : null
     const isFailed = selected?.status === 'failed'
 
-    const enterLabel = multiSelectMode
-      ? t('actions.checkToggle')
-      : isFailed
-        ? t('actions.retry')
-        : t('actions.openFile')
+    const enterLabel = isFailed
+      ? t('actions.retry')
+      : selected?.status === 'downloading'
+        ? t('actions.pause')
+        : selected?.status === 'paused'
+          ? t('actions.resume')
+          : t('actions.openFile')
+
+    const spaceLabel = t('actions.checkToggle')
 
     return [
       {
+        id: 'dm-select-all',
+        key: 'a',
+        modifiers: ['ctrl'],
+        label: t('actions.selectAll'),
+        section: 'actions',
+        showInMenu: items.length > 0,
+        activeOn: () => items.length > 0,
+        handler: () => this.enterMultiSelectAndSelectAll(),
+      },
+      {
+        id: 'dm-space',
+        key: ' ',
+        label: spaceLabel,
+        hint: 'Space',
+        activeOn: () => items.length > 0,
+        handler: () => this.handleSpace(),
+      },
+      {
+        id: 'dm-exit-select',
+        key: 'Escape',
+        label: t('actions.exitSelectMultiple'),
+        hint: 'Esc',
+        activeOn: () => multiSelectMode,
+        handler: () => this.setMultiSelectMode(false),
+      },
+      {
+        id: 'dm-remove-selected',
+        key: 'Delete',
+        label: t('actions.removeSelected'),
+        hint: 'Del',
+        trigger: 'hold',
+        holdCancelToast: t('actions.removeSelected'),
+        section: 'actions',
+        showInMenu: multiSelectMode && checkedIds.size > 0,
+        activeOn: () => multiSelectMode && checkedIds.size > 0,
+        handler: () => void this.handleRemoveSelected(),
+      },
+      {
+        id: 'dm-previous',
         key: 'ArrowUp',
         label: t('actions.previous'),
         hint: '↑↓',
@@ -303,6 +349,7 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
         },
       },
       {
+        id: 'dm-next',
         key: 'ArrowDown',
         label: t('actions.next'),
         allowRepeat: true,
@@ -318,18 +365,23 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
         },
       },
       {
+        id: 'dm-enter',
         key: 'Enter',
         label: enterLabel,
         hint: '↵',
-        activeOn: () => selectedIndex >= 0 && selectedIndex < items.length,
+        activeOn: () => !multiSelectMode && selectedIndex >= 0 && selectedIndex < items.length,
         handler: () => {
           const item = items[selectedIndex]
           if (!item) return
-          if (multiSelectMode) {
-            this.toggleCheck(item.id)
+          if (item.status === 'failed') {
+            void this.resume(item.id)
             return
           }
-          if (item.status === 'failed') {
+          if (item.status === 'downloading') {
+            void this.pause(item.id)
+            return
+          }
+          if (item.status === 'paused') {
             void this.resume(item.id)
             return
           }
@@ -337,14 +389,17 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
         },
       },
       {
+        id: 'dm-open-folder',
         key: 'Enter',
         modifiers: ['shift'],
         label: t('actions.openFolder'),
         hint: ['⇧', '↵'],
         activeOn: () => {
-          const { items: currentItems, selectedIndex: idx, multiSelectMode: multi } = this.state
+          const { selectedIndex: idx, multiSelectMode: multi } = this.state
+          const currentItems = this.filteredItems
           if (multi || idx < 0 || idx >= currentItems.length) return false
-          return currentItems[idx]?.status !== 'failed'
+          const status = currentItems[idx]?.status
+          return status !== 'failed' && status !== 'downloading' && status !== 'paused'
         },
         handler: () => {
           const item = items[selectedIndex]
@@ -352,22 +407,17 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
         },
       },
       {
+        id: 'dm-remove',
         key: 'Delete',
-        label: 'Hold Del to remove',
+        label: t('actions.holdDeleteToRemove'),
         hint: 'Del',
         trigger: 'hold',
-        holdCancelToast: 'Hold Del to remove',
+        holdCancelToast: t('actions.holdDeleteToRemove'),
         activeOn: () => !multiSelectMode && selectedIndex >= 0 && selectedIndex < items.length,
         handler: () => void this.handleRemove(),
       },
       {
-        key: 'p',
-        label: t('actions.pause'),
-        hint: 'P',
-        activeOn: () => !multiSelectMode && selected?.status === 'downloading',
-        handler: () => selected && void this.pause(selected.id),
-      },
-      {
+        id: 'dm-cancel',
         key: 'x',
         label: t('actions.cancel'),
         hint: 'X',

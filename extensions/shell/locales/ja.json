@@ -24,7 +24,7 @@
   "commandPalette": {
     "searchPlaceholder": "コマンドを検索...",
     "noActions": "利用可能なアクションがありません。",
-    "enterShortcut": "Enter"
+    "openSettings": "設定を開く"
   },
   "keyboard": {
     "focusTabs": "タブにフォーカス",

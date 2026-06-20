@@ -5,18 +5,18 @@ import { KeyActionsController, type KeyAction } from './useToolKeyActions.ts'
 
 describe('KeyActionsController shell registration', () => {
   let keyActionsGetter: (() => KeyAction[]) | null = null
-  const registerKeyActions = vi.fn((getter: (() => KeyAction[]) | null) => {
+  const registerShellActions = vi.fn((getter: (() => KeyAction[]) | null) => {
     keyActionsGetter = getter
   })
 
   beforeEach(() => {
     keyActionsGetter = null
-    registerKeyActions.mockClear()
+    registerShellActions.mockClear()
     window.core = {
       shell: {
-        registerKeyActions,
-        getKeyActionsGetter: () => keyActionsGetter,
-        refreshKeyHints: vi.fn(),
+        registerShellActions,
+        getShellActionsGetter: () => keyActionsGetter,
+        refreshShellActions: vi.fn(),
       },
     } as never
   })
@@ -37,14 +37,14 @@ describe('KeyActionsController shell registration', () => {
       { key: 'ArrowDown', label: '', handler: vi.fn() },
     ])
     ctrl.hostConnected()
-    expect(registerKeyActions).toHaveBeenCalledTimes(1)
-    expect(registerKeyActions.mock.calls[0]![0]!()).toHaveLength(1)
+    expect(registerShellActions).toHaveBeenCalledTimes(1)
+    expect(registerShellActions.mock.calls[0]![0]!()).toHaveLength(1)
 
     keyActionsGetter = null
     ctrl.hostDisconnected()
 
     ctrl.hostConnected()
-    expect(registerKeyActions).toHaveBeenCalledTimes(2)
-    expect(registerKeyActions.mock.calls[1]![0]!()).toHaveLength(1)
+    expect(registerShellActions).toHaveBeenCalledTimes(2)
+    expect(registerShellActions.mock.calls[1]![0]!()).toHaveLength(1)
   })
 })

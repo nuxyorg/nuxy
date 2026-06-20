@@ -25,15 +25,6 @@
   },
   "locales": {
     "default": "en",
-    "supported": ["en", "tr"]
-  },
-  "caller": {
-    "commands": [
-      {
-        "label": "Download Manager settings",
-        "deeplink": "nuxy://settings/extension/com.nuxy.download-manager",
-        "section": "settings"
-      }
-    ]
+    "supported": ["en", "tr", "ja"]
   }
 }

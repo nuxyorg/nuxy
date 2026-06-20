@@ -28,7 +28,7 @@
   "commandPalette": {
     "searchPlaceholder": "Komut ara...",
     "noActions": "Kullanılabilir işlem yok.",
-    "enterShortcut": "Enter"
+    "openSettings": "Ayarları aç"
   },
   "keyboard": {
     "focusTabs": "Sekmelere odaklan",

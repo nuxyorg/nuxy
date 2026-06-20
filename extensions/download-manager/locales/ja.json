@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "name": "ダウンロードマネージャー"
+  },
+  "title": "ダウンロード",
+  "search": {
+    "placeholder": "ダウンロードを検索"
+  },
+  "empty": {
+    "message": "ダウンロードはまだありません。",
+    "hint": "nuxy://download-manager/add?url=... のリンクでダウンロードをキューに追加してください。",
+    "noMatching": "一致するダウンロードがありません。"
+  },
+  "status": {
+    "queued": "キュー待ち",
+    "downloading": "ダウンロード中",
+    "paused": "一時停止",
+    "completed": "完了",
+    "failed": "失敗",
+    "cancelled": "キャンセル済み"
+  },
+  "progress": {
+    "transferred": "転送済み",
+    "speed": "速度"
+  },
+  "date": {
+    "today": "今日",
+    "yesterday": "昨日",
+    "lastWeek": "先週",
+    "lastMonth": "先月",
+    "older": "それ以前"
+  },
+  "item": {
+    "selectPromptMulti": "選択するにはアイテムをチェックしてください",
+    "selectedCount": "{count}件選択中",
+    "multiSelectHint": "Ctrl+Kを開いて選択項目を削除"
+  },
+  "actions": {
+    "previous": "前へ",
+    "next": "次へ",
+    "pause": "一時停止",
+    "resume": "再開",
+    "cancel": "キャンセル",
+    "remove": "削除",
+    "openFile": "ファイルを開く",
+    "openFolder": "フォルダを開く",
+    "retry": "再試行",
+    "checkToggle": "チェック",
+    "selectAll": "すべて選択",
+    "exitSelectMultiple": "選択を終了",
+    "removeSelected": "選択項目を削除",
+    "holdDeleteToRemove": "長押しで削除"
+  }
+}

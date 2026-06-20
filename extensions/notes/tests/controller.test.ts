@@ -5,9 +5,8 @@ const hoisted = vi.hoisted(async () => {
   h.setupDomGlobals({
     ipc: { invoke: vi.fn() },
     shell: {
-      registerKeyActions: vi.fn(),
-      registerActions: vi.fn(),
-      refreshKeyHints: vi.fn(),
+      registerShellActions: vi.fn(),
+      refreshShellActions: vi.fn(),
       controlOmniBar: vi.fn(),
       setSearchPlaceholder: vi.fn(),
       setShellResetPaused: vi.fn(),
@@ -189,7 +188,7 @@ describe('NotesController delete key action', () => {
         }>)
       | null = null
 
-    vi.mocked(window.core!.shell!.registerKeyActions).mockImplementation((fn) => {
+    vi.mocked(window.core!.shell!.registerShellActions).mockImplementation((fn) => {
       getter = fn as typeof getter
     })
 
@@ -203,10 +202,67 @@ describe('NotesController delete key action', () => {
 
     const deleteAction = getter!().find((a) => a.key === 'Delete')
     expect(deleteAction?.trigger).toBe('hold')
-    expect(deleteAction?.holdMs).toBeUndefined()
     expect(deleteAction?.hint).toBe('hold Del')
     expect(deleteAction?.holdCancelToast).toBe('Hold Del to delete')
     expect(deleteAction?.activeOn?.()).toBe(true)
+
+    controller.disconnect()
+  })
+})
+
+describe('NotesController unified menu actions', () => {
+  let getter: (() => ReturnType<NotesController['getKeyActions']>) | null = null
+
+  beforeEach(() => {
+    getter = null
+    vi.mocked(window.core!.shell!.registerShellActions).mockImplementation((fn) => {
+      getter = fn as typeof getter
+    })
+  })
+
+  it('New has a real Ctrl+N footer shortcut and is not duplicated in the menu', () => {
+    const controller = new NotesController(() => {})
+    controller.connect()
+
+    const newAction = getter!().find((a) => a.id === 'notes-new')
+    expect(newAction).toMatchObject({ key: 'n', modifiers: ['ctrl'], hint: '⌃N' })
+    expect(newAction?.showInMenu).toBeUndefined()
+
+    controller.disconnect()
+  })
+
+  it('exposes Ctrl+R to toggle recording only when a note is selected — menu-only, no footer chip', () => {
+    const controller = new NotesController(() => {})
+    controller.connect()
+
+    expect(getter!().find((a) => a.id === 'notes-record')?.showInMenu).toBe(false)
+
+    controller.store.setState({ selected: makeNote('a') })
+    const record = getter!().find((a) => a.id === 'notes-record')
+    expect(record).toMatchObject({ key: 'r', modifiers: ['ctrl'], showInMenu: true })
+    expect(record?.hint).toBeUndefined()
+
+    controller.disconnect()
+  })
+
+  it('Save and Delete only have a footer chip, never duplicated in the menu', () => {
+    const controller = new NotesController(() => {})
+    controller.connect()
+    controller.store.setState({
+      filteredNotes: [makeNote('a')],
+      selectedIndex: 0,
+      selected: makeNote('a'),
+    })
+
+    controller.setEditMode(true)
+    const save = getter!().find((a) => a.id === 'notes-save')
+    expect(save).toMatchObject({ key: 's', modifiers: ['ctrl'], hint: '⌃S' })
+    expect(save?.showInMenu).toBeUndefined()
+
+    controller.setEditMode(false)
+    const del = getter!().find((a) => a.id === 'notes-delete')
+    expect(del).toMatchObject({ key: 'Delete', hint: 'Del' })
+    expect(del?.showInMenu).toBeUndefined()
 
     controller.disconnect()
   })

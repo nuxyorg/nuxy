@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { groupCommandPaletteActions } from '../utils/commandPaletteSections.ts'
-import type { CommandPaletteAction } from '../types.ts'
+import type { ShellAction } from '@nuxyorg/core'
 
-function action(id: string, label: string, section?: string): CommandPaletteAction {
-  return { id, label, ...(section ? { section } : {}) }
+function action(id: string, label: string, section?: string): ShellAction {
+  return { id, label, handler: () => {}, ...(section ? { section } : {}) }
 }
 
 describe('groupCommandPaletteActions', () => {

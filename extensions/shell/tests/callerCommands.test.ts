@@ -1,10 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { buildCallerCommandActions, mergeCommandPaletteActions } from '../utils/callerCommands.ts'
+import {
+  buildAutoSettingsAction,
+  buildCallerCommandActions,
+  mergeCommandPaletteActions,
+} from '../utils/callerCommands.ts'
 import type { Tool } from '../types.ts'
 
 function makeTool(
   id: string,
-  callerCommands?: { label: string; deeplink: string; section?: string }[]
+  callerCommands?: { label: string; deeplink: string; section?: string }[],
+  hasSettings?: boolean
 ): Tool {
   return {
     id,
@@ -13,6 +18,7 @@ function makeTool(
       name: id,
       version: '1.0.0',
       type: 'tool',
+      ...(hasSettings ? { entry: { settings: 'settings.json' } } : {}),
       ...(callerCommands ? { caller: { commands: callerCommands } } : {}),
     },
   }
@@ -90,14 +96,14 @@ describe('buildCallerCommandActions', () => {
     expect(actions.map((a) => a.label)).toEqual(['Nyaa settings'])
   })
 
-  it('onExecute dispatches the declared deeplink through window.core.deeplink.dispatch', () => {
+  it('handler dispatches the declared deeplink through window.core.deeplink.dispatch', () => {
     const tools = [
       makeTool('com.nuxy.nyaa', [
         { label: 'Nyaa settings', deeplink: 'nuxy://settings/extension/com.nuxy.nyaa' },
       ]),
     ]
     const actions = buildCallerCommandActions(tools, 'com.nuxy.nyaa')
-    actions[0].onExecute?.()
+    actions[0].handler()
     expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
       'nuxy://settings/extension/com.nuxy.nyaa'
     )
@@ -114,10 +120,57 @@ describe('buildCallerCommandActions', () => {
   })
 })
 
+describe('buildAutoSettingsAction', () => {
+  const t = (key: string) => key
+
+  it('returns an empty array when no tool is active', () => {
+    const tools = [makeTool('com.nuxy.download-manager', undefined, true)]
+    expect(buildAutoSettingsAction(tools, null, t)).toEqual([])
+  })
+
+  it('returns an empty array when the active tool has no entry.settings', () => {
+    const tools = [makeTool('com.nuxy.calculator')]
+    expect(buildAutoSettingsAction(tools, 'com.nuxy.calculator', t)).toEqual([])
+  })
+
+  it('synthesizes a Ctrl+. settings action when the active tool declares entry.settings', () => {
+    const tools = [makeTool('com.nuxy.download-manager', undefined, true)]
+    const actions = buildAutoSettingsAction(tools, 'com.nuxy.download-manager', t)
+    expect(actions).toHaveLength(1)
+    expect(actions[0]).toMatchObject({
+      id: 'auto-settings',
+      section: 'settings',
+      showInMenu: true,
+      hint: ['⌃', '.'],
+    })
+    actions[0].handler()
+    expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
+      'nuxy://settings/extension/com.nuxy.download-manager'
+    )
+  })
+
+  it('skips synthesis when the manifest already declares a manual settings caller command', () => {
+    const tools = [
+      makeTool(
+        'com.nuxy.nyaa',
+        [
+          {
+            label: 'Nyaa settings',
+            deeplink: 'nuxy://settings/extension/com.nuxy.nyaa',
+            section: 'settings',
+          },
+        ],
+        true
+      ),
+    ]
+    expect(buildAutoSettingsAction(tools, 'com.nuxy.nyaa', t)).toEqual([])
+  })
+})
+
 describe('mergeCommandPaletteActions', () => {
   it('appends caller command actions after the tool-scoped bridge actions', () => {
-    const toolActions = [{ id: 'tool:a', label: 'Tool action A' }]
-    const callerActions = [{ id: 'caller:b:0', label: 'Caller action B' }]
+    const toolActions = [{ id: 'tool:a', label: 'Tool action A', handler: () => {} }]
+    const callerActions = [{ id: 'caller:b:0', label: 'Caller action B', handler: () => {} }]
     expect(mergeCommandPaletteActions(toolActions, callerActions)).toEqual([
       ...toolActions,
       ...callerActions,
@@ -125,15 +178,15 @@ describe('mergeCommandPaletteActions', () => {
   })
 
   it('de-duplicates by id, preferring the tool-scoped action', () => {
-    const toolActions = [{ id: 'same-id', label: 'From tool' }]
-    const callerActions = [{ id: 'same-id', label: 'From caller' }]
+    const toolActions = [{ id: 'same-id', label: 'From tool', handler: () => {} }]
+    const callerActions = [{ id: 'same-id', label: 'From caller', handler: () => {} }]
     const merged = mergeCommandPaletteActions(toolActions, callerActions)
     expect(merged).toHaveLength(1)
     expect(merged[0].label).toBe('From tool')
   })
 
   it('returns the tool actions unchanged when there are no caller actions', () => {
-    const toolActions = [{ id: 'tool:a', label: 'Tool action A' }]
+    const toolActions = [{ id: 'tool:a', label: 'Tool action A', handler: () => {} }]
     expect(mergeCommandPaletteActions(toolActions, [])).toEqual(toolActions)
   })
 })

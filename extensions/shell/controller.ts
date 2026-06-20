@@ -18,7 +18,11 @@ import { QueryController } from './controllers/query-controller.ts'
 import { NavigationController } from './controllers/navigation-controller.ts'
 import { SettingsController } from './controllers/settings-controller.ts'
 import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
-import { buildCallerCommandActions, mergeCommandPaletteActions } from './utils/callerCommands.ts'
+import {
+  buildAutoSettingsAction,
+  buildCallerCommandActions,
+  mergeCommandPaletteActions,
+} from './utils/callerCommands.ts'
 import { syncBlurSuppression } from '@nuxyorg/extension-sdk'
 import type {
   HoldProgress,
@@ -214,6 +218,11 @@ export class ShellController {
       setHoldProgress: (progress) => this.store.setState({ holdProgress: progress }),
       getHoldMs: () => resolveHoldMs(this.store.getState().settings.holdMs),
       hasCommandPaletteActions: () => this.commandPaletteActions().length > 0,
+      hasActiveToolSettings: () => this._activeToolSettingsDeeplink() !== null,
+      openActiveToolSettings: () => {
+        const deeplink = this._activeToolSettingsDeeplink()
+        if (deeplink) void window.core?.deeplink?.dispatch?.(deeplink)
+      },
     })
 
     this._focus = new FocusController({
@@ -373,9 +382,26 @@ export class ShellController {
    * `extensions/shell/utils/callerCommands.ts`). Caller commands are scoped
    * to the owning extension — only visible while that tool is active.
    */
-  commandPaletteActions(): import('./types.ts').CommandPaletteAction[] {
+  commandPaletteActions(): import('@nuxyorg/core').ShellAction[] {
     const callerActions = buildCallerCommandActions(this.tools.tools, this.tools.activeTool)
-    return mergeCommandPaletteActions(this.store.getState().bridge.toolActions, callerActions)
+    const autoSettingsAction = buildAutoSettingsAction(
+      this.tools.tools,
+      this.tools.activeTool,
+      this.t.t
+    )
+    return mergeCommandPaletteActions(this.store.getState().bridge.toolActions, [
+      ...callerActions,
+      ...autoSettingsAction,
+    ])
+  }
+
+  /** Settings deeplink for the active tool, or null when it declares no settings. */
+  private _activeToolSettingsDeeplink(): string | null {
+    const activeToolId = this.tools.activeTool
+    if (!activeToolId) return null
+    const tool = this.tools.tools.find((t) => t.id === activeToolId)
+    if (!tool?.manifest.entry?.settings) return null
+    return `nuxy://settings/extension/${activeToolId}`
   }
 
   setQuery(val: string): void {
@@ -566,8 +592,6 @@ export class ShellController {
   returnToShell(options?: { selectedIndex?: number }): void {
     const container = this.refs.container
     const fromH = container?.offsetHeight ?? 0
-    const toH = this.win.restingHeight
-    const shouldAnimate = container !== null && fromH > 0 && toH !== null && !this.refs.hasDragged
 
     this.tools.setActiveTool(null)
     this.query.reset()
@@ -578,13 +602,30 @@ export class ShellController {
     this._syncProviders()
     this._recompute()
 
-    if (shouldAnimate) {
-      this._sync.updatePosition(true, toH!)
-      this.win.animateToHeight(null, fromH, () => {
+    const finishReturn = (): void => {
+      requestAnimationFrame(() => {
+        this._sync.updatePosition(true)
         this.ensureShellFocus()
       })
+    }
+
+    if (container && fromH > 0 && !this.refs.hasDragged) {
+      requestAnimationFrame(() => {
+        const toH = container.offsetHeight
+        if (toH <= 0) {
+          finishReturn()
+          return
+        }
+        this.win.recordRestingHeight(toH)
+        this._sync.updatePosition(true, toH)
+        if (Math.abs(fromH - toH) >= 1) {
+          this.win.animateToHeight(null, fromH, finishReturn)
+        } else {
+          finishReturn()
+        }
+      })
     } else {
-      this.ensureShellFocus()
+      finishReturn()
     }
   }
 

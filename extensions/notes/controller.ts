@@ -1,4 +1,4 @@
-import type { ShellKeyAction } from '@nuxyorg/core'
+import type { ShellAction } from '@nuxyorg/core'
 import type { Note } from './types.ts'
 import { deriveTitle } from './utils/noteTitle.ts'
 import { invoke } from './utils/ipc.ts'
@@ -82,8 +82,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
     this.t.destroy()
-    window.core?.shell?.registerActions([])
-    window.core?.shell?.registerKeyActions(null)
+    window.core?.shell?.registerShellActions(null)
     window.core?.window?.setBlurSuppressed?.(false, 'tool')
     window.core?.shell?.setShellResetPaused?.(false)
   }
@@ -132,7 +131,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
     const next = typeof index === 'function' ? index(prev) : index
     this.store.setState({ selectedIndex: next })
     this.syncSelectionFromIndex()
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   focusTextarea(ta?: HTMLTextAreaElement | null): void {
@@ -154,7 +153,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         }
       })
     }
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   /** Sync blur guard to main process; uses invoke when enabling for immediate effect. */
@@ -229,7 +228,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
     })
     window.core?.window?.setBlurSuppressed?.(false, 'tool')
     window.UI?.toast?.('Note deleted', { type: 'info' })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
     if (newIndex === -1) window.core?.shell?.controlOmniBar('show')
   }
 
@@ -256,12 +255,12 @@ export class NotesController extends BaseExtensionController<NotesState> {
         } catch {
           this.store.setState({ transcribing: false })
         }
-        window.core?.shell?.refreshKeyHints()
+        window.core?.shell?.refreshShellActions()
       }
       this.mediaRecorder = recorder
       recorder.start()
       this.store.setState({ recording: true })
-      window.core?.shell?.refreshKeyHints()
+      window.core?.shell?.refreshShellActions()
       setTimeout(() => recorder.state === 'recording' && recorder.stop(), 10000)
     } catch {
       this.store.setState({ recording: false })
@@ -305,12 +304,25 @@ export class NotesController extends BaseExtensionController<NotesState> {
     this.store.setState({ selected: null, body: '' })
   }
 
-  private getKeyActions(): ShellKeyAction[] {
-    const { editMode, selectedIndex, filteredNotes, selected } = this.state
+  getKeyActions(): ShellAction[] {
+    return this.buildActions()
+  }
+
+  /**
+   * Single source of truth for both the footer (actions with a `hint`) and
+   * the Ctrl+K palette (actions with `showInMenu: true`). The two are
+   * mutually exclusive per action: the footer only has room for the
+   * frequent operations — anything that doesn't fit there (recording
+   * toggle) is Ctrl+K-only, with its key binding still live in the
+   * background.
+   */
+  private buildActions(): ShellAction[] {
+    const { editMode, selectedIndex, filteredNotes, selected, recording } = this.state
     const t = this.t.t
 
     return [
       {
+        id: 'notes-new',
         key: 'n',
         modifiers: ['ctrl'],
         label: t('actions.newNote'),
@@ -319,6 +331,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         handler: () => void this.handleNew(),
       },
       {
+        id: 'notes-save',
         key: 's',
         modifiers: ['ctrl'],
         label: t('actions.saveNote'),
@@ -327,6 +340,20 @@ export class NotesController extends BaseExtensionController<NotesState> {
         handler: () => void this.handleSave(),
       },
       {
+        id: 'notes-record',
+        key: 'r',
+        modifiers: ['ctrl'],
+        label: recording ? t('actions.stopRecording') : t('actions.record'),
+        section: 'actions',
+        showInMenu: selected !== null,
+        activeOn: () => selected !== null,
+        handler: () => {
+          if (this.state.recording) this.handleStopRecord()
+          else void this.handleRecord()
+        },
+      },
+      {
+        id: 'notes-delete',
         key: 'Delete',
         label: 'Hold Del to delete',
         hint: 'Del',
@@ -336,6 +363,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         handler: () => void this.handleDelete(),
       },
       {
+        id: 'notes-edit',
         key: 'Enter',
         label: t('actions.editNote'),
         hint: '↵',
@@ -349,6 +377,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         },
       },
       {
+        id: 'notes-exit-edit-dirty',
         key: 'Escape',
         label: 'Hold Esc to exit',
         hint: 'hold Esc',
@@ -358,6 +387,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         handler: () => this.setEditMode(false),
       },
       {
+        id: 'notes-exit-edit',
         key: 'Escape',
         label: t('actions.focusSearchExitEdit'),
         hint: 'Esc',
@@ -367,6 +397,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         },
       },
       {
+        id: 'notes-previous',
         key: 'ArrowUp',
         label: t('actions.previous'),
         allowRepeat: true,
@@ -382,6 +413,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
         },
       },
       {
+        id: 'notes-next',
         key: 'ArrowDown',
         label: t('actions.next'),
         allowRepeat: true,
@@ -400,7 +432,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
   }
 
   private bindKeyboard(): void {
-    window.core?.shell?.registerKeyActions(() => this.getKeyActions())
+    window.core?.shell?.registerShellActions(() => this.buildActions())
 
     const handleEditEscCapture = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || !this.state.editMode || this.isDirty()) return
@@ -411,42 +443,8 @@ export class NotesController extends BaseExtensionController<NotesState> {
     window.addEventListener('keydown', handleEditEscCapture, true)
     this.cleanups.push(() => window.removeEventListener('keydown', handleEditEscCapture, true))
 
-    const registerActions = () => {
-      const { selected, recording } = this.state
-      const t = this.t.t
-      const actions: { id: string; label: string; onExecute: () => void }[] = [
-        { id: 'notes-new', label: t('actions.newNote'), onExecute: () => void this.handleNew() },
-      ]
-      if (selected !== null) {
-        actions.push(
-          { id: 'notes-save', label: t('actions.save'), onExecute: () => void this.handleSave() },
-          {
-            id: 'notes-delete',
-            label: t('actions.delete'),
-            onExecute: () => void this.handleDelete(),
-          },
-          {
-            id: 'notes-record',
-            label: recording ? t('actions.stopRecording') : t('actions.record'),
-            onExecute: () => {
-              if (recording) this.handleStopRecord()
-              else void this.handleRecord()
-            },
-          }
-        )
-      }
-      window.core?.shell?.registerActions(actions)
-    }
-
-    registerActions()
-    this.store.subscribe(() => {
-      registerActions()
-      window.core?.shell?.refreshKeyHints()
-    })
-
     this.cleanups.push(() => {
-      window.core?.shell?.registerKeyActions(null)
-      window.core?.shell?.registerActions([])
+      window.core?.shell?.registerShellActions(null)
     })
   }
 }

@@ -21,8 +21,8 @@ const hoisted = vi.hoisted(async () => {
     themes: { list: vi.fn().mockResolvedValue({ success: true, data: [] }) },
     icons: { listPacks: vi.fn().mockResolvedValue({ success: true, data: [] }) },
     shell: {
-      registerKeyActions: vi.fn(),
-      refreshKeyHints: vi.fn(),
+      registerShellActions: vi.fn(),
+      refreshShellActions: vi.fn(),
       setSearchPlaceholder: vi.fn(),
     },
     events: { on: vi.fn(() => () => {}), emit: vi.fn() },
@@ -71,7 +71,7 @@ describe('nuxy-tool-settings element', () => {
     await new Promise((resolve) => setTimeout(resolve, 0))
 
     expect(el.extensionId).toBe('com.nuxy.settings')
-    expect(window.core.shell?.registerKeyActions).toHaveBeenCalled()
+    expect(window.core.shell?.registerShellActions).toHaveBeenCalled()
     expect(window.core.shell?.setSearchPlaceholder).toHaveBeenCalled()
   })
 
@@ -111,6 +111,6 @@ describe('nuxy-tool-settings element', () => {
     const el = new Ctor() as any
     el.connectedCallback()
     el.disconnectedCallback()
-    expect(window.core.shell?.registerKeyActions).toHaveBeenCalledWith(null)
+    expect(window.core.shell?.registerShellActions).toHaveBeenCalledWith(null)
   })
 })

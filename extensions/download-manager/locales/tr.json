@@ -8,7 +8,8 @@
   },
   "empty": {
     "message": "Henüz indirme yok.",
-    "hint": "nuxy://download-manager/add?url=... bağlantısıyla bir indirme kuyruğa ekleyin."
+    "hint": "nuxy://download-manager/add?url=... bağlantısıyla bir indirme kuyruğa ekleyin.",
+    "noMatching": "Eşleşen indirme bulunamadı."
   },
   "status": {
     "queued": "Sırada",
@@ -22,12 +23,32 @@
     "transferred": "Aktarılan",
     "speed": "Hız"
   },
+  "date": {
+    "today": "Bugün",
+    "yesterday": "Dün",
+    "lastWeek": "Geçen hafta",
+    "lastMonth": "Geçen ay",
+    "older": "Daha eski"
+  },
+  "item": {
+    "selectPromptMulti": "Seçmek için öğeleri işaretleyin",
+    "selectedCount": "{count} seçildi",
+    "multiSelectHint": "Seçilenleri silmek için Ctrl+K'yı açın"
+  },
   "actions": {
     "previous": "Önceki",
     "next": "Sonraki",
     "pause": "Duraklat",
     "resume": "Devam ettir",
     "cancel": "İptal et",
-    "remove": "Kaldır"
+    "remove": "Kaldır",
+    "openFile": "Dosyayı aç",
+    "openFolder": "Klasörü aç",
+    "retry": "Yeniden dene",
+    "checkToggle": "İşaretle",
+    "selectAll": "Tümünü Seç",
+    "exitSelectMultiple": "Seçimden Çık",
+    "removeSelected": "Seçilenleri Sil",
+    "holdDeleteToRemove": "Silmek için basılı tut"
   }
 }

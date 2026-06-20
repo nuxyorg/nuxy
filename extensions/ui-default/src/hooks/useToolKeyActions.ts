@@ -9,7 +9,6 @@ export interface KeyAction {
   handler: () => void
   allowRepeat?: boolean
   trigger?: 'press' | 'hold'
-  holdMs?: number
   holdCancelToast?: string
 }
 
@@ -34,10 +33,10 @@ function getCombinedActions(): KeyAction[] {
 
 let isRegistered = false
 function ensureShellRegistration() {
-  const getterExists = !!window.core?.shell?.getKeyActionsGetter?.()
+  const getterExists = !!window.core?.shell?.getShellActionsGetter?.()
   if (isRegistered && getterExists) return
   isRegistered = true
-  window.core?.shell?.registerKeyActions(() => getCombinedActions())
+  window.core?.shell?.registerShellActions(() => getCombinedActions())
 }
 
 export class KeyActionsController implements ReactiveController {
@@ -51,12 +50,12 @@ export class KeyActionsController implements ReactiveController {
   hostConnected() {
     activeControllers.add(this)
     ensureShellRegistration()
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   hostDisconnected() {
     activeControllers.delete(this)
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 }
 
@@ -66,10 +65,10 @@ export function useToolKeyActions(actions: KeyAction[]): void {
     legacyActionsList.push(actions)
   }
   ensureShellRegistration()
-  window.core?.shell?.refreshKeyHints()
+  window.core?.shell?.refreshShellActions()
 }
 
 export function unregisterToolKeyActions(): void {
   legacyActionsList.length = 0
-  window.core?.shell?.refreshKeyHints()
+  window.core?.shell?.refreshShellActions()
 }

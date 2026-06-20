@@ -2,13 +2,13 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { KeyboardController } from '../controllers/keyboard-controller.ts'
-import type { KeyAction } from '../types.ts'
+import type { ShellAction } from '@nuxyorg/core'
 
 describe('KeyboardController', () => {
   const returnToShell = vi.fn()
   const setHoldProgress = vi.fn()
   const getHoldMs = vi.fn(() => 800)
-  let keyActions: KeyAction[] = []
+  let keyActions: ShellAction[] = []
   let controller: KeyboardController
 
   beforeEach(() => {
@@ -20,8 +20,7 @@ describe('KeyboardController', () => {
 
     window.core = {
       shell: {
-        getKeyActionsGetter: () => () => keyActions,
-        getToolActions: () => [],
+        getShellActionsGetter: () => () => keyActions,
       },
       window: { quit: vi.fn() },
     } as never
@@ -36,6 +35,8 @@ describe('KeyboardController', () => {
       setHoldProgress,
       getHoldMs,
       hasCommandPaletteActions: vi.fn(() => false),
+      hasActiveToolSettings: vi.fn(() => false),
+      openActiveToolSettings: vi.fn(),
     })
     controller.bind()
   })
@@ -53,7 +54,6 @@ describe('KeyboardController', () => {
         label: 'Hold Esc to exit',
         hint: 'hold Esc',
         trigger: 'hold',
-        holdMs: 800,
         activeOn: () => editMode,
         handler: () => {
           editMode = false
@@ -88,7 +88,6 @@ describe('KeyboardController', () => {
         label: 'Hold Esc to exit',
         hint: 'hold Esc',
         trigger: 'hold',
-        holdMs: 800,
         handler: vi.fn(),
       },
     ]
@@ -101,7 +100,7 @@ describe('KeyboardController', () => {
     expect(setHoldProgress).toHaveBeenCalledWith(null)
   })
 
-  it('uses configured hold duration when an action omits holdMs', () => {
+  it('uses the configured hold duration from settings', () => {
     getHoldMs.mockReturnValue(400)
     keyActions = [
       {
@@ -145,7 +144,6 @@ describe('KeyboardController', () => {
         label: 'Hold Del to delete',
         hint: 'hold Del',
         trigger: 'hold',
-        holdMs: 800,
         holdCancelToast: 'Hold Del to delete',
         handler: vi.fn(),
       },
@@ -162,5 +160,64 @@ describe('KeyboardController', () => {
     vi.advanceTimersByTime(800)
     expect(keyActions[0].handler).toHaveBeenCalled()
     expect(toast).not.toHaveBeenCalled()
+  })
+
+  it('opens active tool settings on Ctrl+. when the active tool has settings', () => {
+    const openActiveToolSettings = vi.fn()
+    controller.destroy()
+    controller = new KeyboardController({
+      isCommandPaletteOpen: () => false,
+      isToolActive: () => true,
+      toggleCommandPalette: vi.fn(),
+      closeCommandPalette: vi.fn(),
+      returnToShell,
+      clearQueryAndEsc: vi.fn(),
+      setHoldProgress,
+      getHoldMs,
+      hasCommandPaletteActions: vi.fn(() => false),
+      hasActiveToolSettings: vi.fn(() => true),
+      openActiveToolSettings,
+    })
+    controller.bind()
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: '.', ctrlKey: true, bubbles: true }))
+    expect(openActiveToolSettings).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not open settings on Ctrl+. when the active tool has none', () => {
+    const openActiveToolSettings = vi.fn()
+    controller.destroy()
+    controller = new KeyboardController({
+      isCommandPaletteOpen: () => false,
+      isToolActive: () => true,
+      toggleCommandPalette: vi.fn(),
+      closeCommandPalette: vi.fn(),
+      returnToShell,
+      clearQueryAndEsc: vi.fn(),
+      setHoldProgress,
+      getHoldMs,
+      hasCommandPaletteActions: vi.fn(() => false),
+      hasActiveToolSettings: vi.fn(() => false),
+      openActiveToolSettings,
+    })
+    controller.bind()
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: '.', ctrlKey: true, bubbles: true }))
+    expect(openActiveToolSettings).not.toHaveBeenCalled()
+  })
+
+  it('routes Space tool actions even when the omnibar input is focused', () => {
+    const handler = vi.fn()
+    keyActions = [{ key: ' ', label: 'Select', handler }]
+
+    const input = document.createElement('input')
+    input.className = 'nuxy-shell-omni-bar__input'
+    document.body.appendChild(input)
+    input.focus()
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }))
+    expect(handler).toHaveBeenCalledTimes(1)
+
+    input.remove()
   })
 })

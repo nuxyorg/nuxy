@@ -24,14 +24,5 @@
   "locales": {
     "default": "en",
     "supported": ["en", "tr", "ja"]
-  },
-  "caller": {
-    "commands": [
-      {
-        "label": "Nyaa settings",
-        "deeplink": "nuxy://settings/extension/com.nuxy.nyaa",
-        "section": "settings"
-      }
-    ]
   }
 }

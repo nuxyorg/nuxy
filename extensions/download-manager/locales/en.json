@@ -8,7 +8,8 @@
   },
   "empty": {
     "message": "No downloads yet.",
-    "hint": "Queue a download with a nuxy://download-manager/add?url=... link."
+    "hint": "Queue a download with a nuxy://download-manager/add?url=... link.",
+    "noMatching": "No matching downloads."
   },
   "status": {
     "queued": "Queued",
@@ -22,10 +23,17 @@
     "transferred": "Transferred",
     "speed": "Speed"
   },
+  "date": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "lastWeek": "Last week",
+    "lastMonth": "Last month",
+    "older": "Older"
+  },
   "item": {
     "selectPromptMulti": "Check items to select them",
     "selectedCount": "{count} selected",
-    "multiSelectHint": "Open Ctrl+K to remove selected"
+    "multiSelectHint": "Open Ctrl+K to delete selected"
   },
   "actions": {
     "previous": "Previous",
@@ -37,9 +45,10 @@
     "openFile": "Open file",
     "openFolder": "Open folder",
     "retry": "Retry",
-    "checkToggle": "Check / Uncheck",
-    "selectMultiple": "Select Multiple",
+    "checkToggle": "Check",
+    "selectAll": "Select All",
     "exitSelectMultiple": "Exit Selection",
-    "removeSelected": "Remove Selected"
+    "removeSelected": "Delete Selected",
+    "holdDeleteToRemove": "Hold to delete"
   }
 }

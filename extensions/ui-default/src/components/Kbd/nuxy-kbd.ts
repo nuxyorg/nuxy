@@ -25,7 +25,7 @@ export class NuxyKbdElement extends LitElement {
       display: inline-flex;
       align-items: center;
       gap: 1px;
-      padding: var(--space-0) var(--space-2);
+      padding: var(--space-1) var(--space-2);
       border-radius: var(--radius-sm);
       background-color: var(--syntax-comment);
       border: 1px solid var(--syntax-keyword);
@@ -50,6 +50,7 @@ export class NuxyKbdElement extends LitElement {
       fill: none;
       stroke: currentColor;
       stroke-width: 2;
+      vector-effect: non-scaling-stroke;
       stroke-linecap: round;
       stroke-dasharray: 100;
       stroke-dashoffset: 100;
@@ -113,7 +114,7 @@ export class NuxyKbdElement extends LitElement {
     if (this.holdMs == null) return nothing
     return html`<svg
       class="nuxy-kbd__hold-progress"
-      style="--nuxy-hold-ms:${this.holdMs}ms"
+      style="--nuxy-hold-ms:${this.holdMs * 2}ms"
       aria-hidden="true"
       viewBox="0 0 100 100"
       preserveAspectRatio="none"

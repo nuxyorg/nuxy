@@ -34,9 +34,8 @@ const hoisted = vi.hoisted(async () => {
       }),
     },
     shell: {
-      registerKeyActions: vi.fn(),
-      registerActions: vi.fn(),
-      refreshKeyHints: vi.fn(),
+      registerShellActions: vi.fn(),
+      refreshShellActions: vi.fn(),
       setSearchPlaceholder: vi.fn(),
       controlOmniBar: vi.fn(),
     },
@@ -82,7 +81,7 @@ describe('nuxy-tool-file-transfer element', () => {
     el.query = 'FT-ABCD-EFGH'
     await new Promise((resolve) => setTimeout(resolve, 0))
 
-    expect(window.core.shell!.registerKeyActions).toHaveBeenCalled()
+    expect(window.core.shell!.registerShellActions).toHaveBeenCalled()
     expect(window.core.shell!.setSearchPlaceholder).toHaveBeenCalled()
   })
 })

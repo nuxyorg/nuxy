@@ -13,7 +13,7 @@ export abstract class BaseExtensionController<S extends object> {
   ) {
     this.store = createStore<S>(initialState)
     this.t = createTranslator(extId, () => {
-      window.core?.shell?.refreshKeyHints?.()
+      window.core?.shell?.refreshShellActions?.()
       this.syncSearchPlaceholder()
       this.onUpdate()
     })

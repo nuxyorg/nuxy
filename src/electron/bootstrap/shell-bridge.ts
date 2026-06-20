@@ -2,20 +2,21 @@ import type {
   CoreShell,
   OmniBarControlAction,
   ResetToolStateOptions,
+  ShellAction,
   ShellBridgeSnapshot,
-  ShellCommandAction,
-  ShellKeyAction,
 } from '@nuxyorg/core'
 
-function computeHints(getter: (() => ShellKeyAction[]) | null): ShellKeyAction[] {
-  if (!getter) return []
-  return getter().filter((a) => a.hint && (typeof a.activeOn !== 'function' || a.activeOn()))
+function computeKeyHints(actions: ShellAction[]): ShellAction[] {
+  return actions.filter((a) => a.hint && (typeof a.activeOn !== 'function' || a.activeOn()))
+}
+
+function computeToolActions(actions: ShellAction[]): ShellAction[] {
+  return actions.filter((a) => a.showInMenu && (typeof a.activeOn !== 'function' || a.activeOn()))
 }
 
 export function createShellBridge(): CoreShell {
-  let keyActionsGetter: (() => ShellKeyAction[]) | null = null
-  let keyActionsGeneration = 0
-  let toolActions: ShellCommandAction[] = []
+  let actionsGetter: (() => ShellAction[]) | null = null
+  let actionsGeneration = 0
   let omniBarPortal: HTMLElement | null = null
   let footerPortal: HTMLElement | null = null
   let searchPlaceholder: string | null = null
@@ -35,38 +36,34 @@ export function createShellBridge(): CoreShell {
     },
 
     getSnapshot(): ShellBridgeSnapshot {
+      const actions = actionsGetter ? actionsGetter() : []
       return {
-        toolActions,
-        keyActionHints: computeHints(keyActionsGetter),
+        toolActions: computeToolActions(actions),
+        keyActionHints: computeKeyHints(actions),
         omniBarPortal,
         footerPortal,
         searchPlaceholder,
       }
     },
 
-    registerKeyActions(getter) {
+    registerShellActions(getter) {
       if (getter) {
-        keyActionsGeneration += 1
-        keyActionsGetter = getter
+        actionsGeneration += 1
+        actionsGetter = getter
         notify()
         return
       }
 
       // Defer clearing so a newly mounted tool can register in the same turn.
-      const generation = keyActionsGeneration
+      const generation = actionsGeneration
       queueMicrotask(() => {
-        if (generation !== keyActionsGeneration) return
-        keyActionsGetter = null
+        if (generation !== actionsGeneration) return
+        actionsGetter = null
         notify()
       })
     },
 
-    refreshKeyHints() {
-      notify()
-    },
-
-    registerActions(actions) {
-      toolActions = actions
+    refreshShellActions() {
       notify()
     },
 
@@ -85,12 +82,8 @@ export function createShellBridge(): CoreShell {
       notify()
     },
 
-    getKeyActionsGetter() {
-      return keyActionsGetter
-    },
-
-    getToolActions() {
-      return toolActions
+    getShellActionsGetter() {
+      return actionsGetter
     },
 
     controlOmniBar(action) {
@@ -103,9 +96,8 @@ export function createShellBridge(): CoreShell {
     },
 
     resetToolState(options?: ResetToolStateOptions) {
-      keyActionsGeneration += 1
-      keyActionsGetter = null
-      toolActions = []
+      actionsGeneration += 1
+      actionsGetter = null
       omniBarPortal = null
       footerPortal = null
       if (options?.clearSearchPlaceholder !== false) {

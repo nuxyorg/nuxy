@@ -189,8 +189,7 @@ export type {
   CompositionClaimFailure,
 } from './composition'
 export type {
-  ShellKeyAction,
-  ShellCommandAction,
+  ShellAction,
   ShellBridgeSnapshot,
   OmniBarControlAction,
   CoreShell,

@@ -6,13 +6,15 @@ import {
   state,
   ref,
   type TemplateResult,
+  type ShellAction,
 } from '@nuxyorg/core'
 import { trapTabKey } from '@nuxyorg/extension-sdk'
-import type { CommandPaletteAction, Position } from './types.ts'
+import type { Position } from './types.ts'
 import {
   filterCommandPaletteSections,
   flattenCommandPaletteSections,
 } from './utils/commandPaletteSections.ts'
+import { formatShortcut } from './utils/shortcutDisplay.ts'
 
 const MAX_DEPTH = 10
 
@@ -150,11 +152,11 @@ export class NuxyCommandPaletteElement extends LitElement {
   @state()
   declare private _selectedIndex: number
   @state()
-  declare private _menuStack: CommandPaletteAction[][]
+  declare private _menuStack: ShellAction[][]
   @state()
   declare private _pathLabels: string[]
 
-  private _actions: CommandPaletteAction[] = []
+  private _actions: ShellAction[] = []
   private _container: HTMLElement | null = null
   private _position: Position = { x: 0, y: 0 }
   private _translate: (key: string) => string = (k) => k
@@ -202,13 +204,13 @@ export class NuxyCommandPaletteElement extends LitElement {
     requestAnimationFrame(() => this._inputEl?.focus())
   }
 
-  private _actionTreeKey(actions: CommandPaletteAction[]): string {
+  private _actionTreeKey(actions: ShellAction[]): string {
     return actions
       .map((a) => `${a.id}${a.children?.length ? `[${this._actionTreeKey(a.children)}]` : ''}`)
       .join(',')
   }
 
-  set actions(value: CommandPaletteAction[]) {
+  set actions(value: ShellAction[]) {
     const prevKey = this._actionTreeKey(this._actions)
     const nextKey = this._actionTreeKey(value)
     this._actions = value
@@ -248,11 +250,11 @@ export class NuxyCommandPaletteElement extends LitElement {
     if (this._inputEl) this._inputEl.value = ''
   }
 
-  private _currentLevel(): CommandPaletteAction[] {
+  private _currentLevel(): ShellAction[] {
     return this._menuStack[this._menuStack.length - 1] ?? []
   }
 
-  private _filteredActions(): CommandPaletteAction[] {
+  private _filteredActions(): ShellAction[] {
     return flattenCommandPaletteSections(this._filteredSections())
   }
 
@@ -272,7 +274,7 @@ export class NuxyCommandPaletteElement extends LitElement {
     }
   }
 
-  private _openSubmenu(action: CommandPaletteAction): void {
+  private _openSubmenu(action: ShellAction): void {
     if (!action.children || this._menuStack.length >= MAX_DEPTH) return
     this._menuStack = [...this._menuStack, action.children]
     this._pathLabels = [...this._pathLabels, action.label]
@@ -281,11 +283,11 @@ export class NuxyCommandPaletteElement extends LitElement {
     if (this._inputEl) this._inputEl.value = ''
   }
 
-  private _executeAction(action: CommandPaletteAction): void {
+  private _executeAction(action: ShellAction): void {
     if (action.children) {
       this._openSubmenu(action)
-    } else if (action.onExecute) {
-      action.onExecute()
+    } else {
+      action.handler()
       this._close()
     }
   }
@@ -386,9 +388,9 @@ export class NuxyCommandPaletteElement extends LitElement {
                 <nuxy-list-item-actions>
                   ${action.children
                     ? html`<span class="nuxy-command-palette__submenu-arrow">›</span>`
-                    : html`<nuxy-kbd
-                        .keys=${this._translate('commandPalette.enterShortcut')}
-                      ></nuxy-kbd>`}
+                    : (formatShortcut(action) ?? []).map(
+                        (k) => html`<nuxy-kbd .keys=${k}></nuxy-kbd>`
+                      )}
                 </nuxy-list-item-actions>
               </nuxy-list-item>
             `)

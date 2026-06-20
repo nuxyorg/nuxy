@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { ShellController } from '../controller.ts'
+import { parseCoordinate } from '../utils.ts'
 
 vi.hoisted(() => {
   ;(globalThis as any).window = {
@@ -8,8 +9,8 @@ vi.hoisted(() => {
     core: {
       ipc: { invoke: vi.fn() },
       shell: {
-        registerKeyActions: vi.fn(),
-        refreshKeyHints: vi.fn(),
+        registerShellActions: vi.fn(),
+        refreshShellActions: vi.fn(),
         resetToolState: vi.fn(),
         setSearchPlaceholder: vi.fn(),
       },
@@ -219,7 +220,7 @@ describe('ShellController commandPaletteActions', () => {
     expect(actions).toHaveLength(1)
     expect(actions[0].label).toBe('Nyaa settings')
 
-    actions[0].onExecute?.()
+    actions[0].handler()
     expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
       'nuxy://settings/extension/com.nuxy.nyaa'
     )
@@ -233,7 +234,7 @@ describe('ShellController commandPaletteActions', () => {
     ctrl.store.setState({
       bridge: {
         ...ctrl.store.getState().bridge,
-        toolActions: [{ id: 'tool:foo', label: 'Foo action' }],
+        toolActions: [{ id: 'tool:foo', label: 'Foo action', handler: () => {} }],
       },
     })
     ctrl.tools.setTools([
@@ -256,6 +257,56 @@ describe('ShellController commandPaletteActions', () => {
 
     const actions = ctrl.commandPaletteActions()
     expect(actions.map((a) => a.label)).toEqual(['Foo action', 'Nyaa settings'])
+  })
+
+  it('auto-synthesizes a settings entry for a tool with entry.settings and no manual caller command', () => {
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setTools([
+      {
+        id: 'com.nuxy.download-manager',
+        manifest: {
+          id: 'com.nuxy.download-manager',
+          name: 'Download Manager',
+          version: '1.0.0',
+          type: 'tool',
+          entry: { settings: 'settings.json' },
+        },
+      },
+    ] as never[])
+    ctrl.tools.setActiveTool('com.nuxy.download-manager')
+
+    const actions = ctrl.commandPaletteActions()
+    expect(actions.map((a) => a.id)).toContain('auto-settings')
+
+    const settingsAction = actions.find((a) => a.id === 'auto-settings')
+    settingsAction?.handler()
+    expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
+      'nuxy://settings/extension/com.nuxy.download-manager'
+    )
+  })
+})
+
+describe('ShellController Ctrl+. settings shortcut wiring', () => {
+  it('exposes a settings deeplink for the active tool when it declares entry.settings', () => {
+    const ctrl = new ShellController(() => {})
+    ctrl.tools.setTools([
+      {
+        id: 'com.nuxy.download-manager',
+        manifest: {
+          id: 'com.nuxy.download-manager',
+          name: 'Download Manager',
+          version: '1.0.0',
+          type: 'tool',
+          entry: { settings: 'settings.json' },
+        },
+      },
+    ] as never[])
+
+    expect(ctrl['_activeToolSettingsDeeplink']()).toBeNull()
+    ctrl.tools.setActiveTool('com.nuxy.download-manager')
+    expect(ctrl['_activeToolSettingsDeeplink']()).toBe(
+      'nuxy://settings/extension/com.nuxy.download-manager'
+    )
   })
 })
 
@@ -327,5 +378,116 @@ describe('ShellController handleOmniKeyDown provider cards', () => {
     expect(writeText).toHaveBeenCalledWith('4')
     expect(ctrl.store.getState().copiedId).toBe('calc-result')
     vi.useRealTimers()
+  })
+})
+
+describe('ShellController returnToShell positioning', () => {
+  beforeEach(() => {
+    window.innerHeight = 600
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0)
+      return 0
+    })
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('recenters using live content height after reset, not stale restingHeight', () => {
+    let phase: 'tool' | 'shell' = 'tool'
+    const container = {
+      get offsetHeight() {
+        return phase === 'tool' ? 600 : 320
+      },
+      offsetWidth: 800,
+    } as HTMLElement
+
+    const ctrl = new ShellController(() => {})
+    ctrl.refs.container = container
+    ctrl.refs.cfg = {
+      windowWidth: 800,
+      windowMaxHeight: 600,
+      windowPosition: '1/2, 1/2',
+      opacity: 1,
+      theme: 'dark',
+      zoom: '100%',
+      font: 'system',
+      holdMs: 'long',
+    }
+    ctrl.win.recordRestingHeight(180)
+    ctrl.tools.setActiveTool('com.nuxy.download-manager')
+
+    const originalSetState = ctrl.store.setState.bind(ctrl.store)
+    ctrl.store.setState = (partial) => {
+      phase = 'shell'
+      return originalSetState(partial)
+    }
+
+    const animatePositionSpy = vi.spyOn(ctrl.win, 'animatePosition')
+    vi.spyOn(ctrl.win, 'animateToHeight').mockImplementation((_toH, _fromH, cb) => {
+      cb?.()
+    })
+    vi.spyOn(ctrl, 'ensureShellFocus').mockImplementation(() => {})
+
+    ctrl.returnToShell()
+
+    const expectedY = parseCoordinate('1/2', 600, 320)
+    const staleY = parseCoordinate('1/2', 600, 180)
+    expect(expectedY).not.toBe(staleY)
+
+    const yValues = animatePositionSpy.mock.calls.map(([pos]) => pos.y)
+    expect(yValues).toContain(expectedY)
+    expect(yValues).not.toContain(staleY)
+    expect(ctrl.win.restingHeight).toBe(320)
+  })
+
+  it('recenters again after the height animation completes', () => {
+    let phase: 'tool' | 'shell' = 'tool'
+    const container = {
+      get offsetHeight() {
+        return phase === 'tool' ? 600 : 320
+      },
+      offsetWidth: 800,
+    } as HTMLElement
+
+    const ctrl = new ShellController(() => {})
+    ctrl.refs.container = container
+    ctrl.refs.cfg = {
+      windowWidth: 800,
+      windowMaxHeight: 600,
+      windowPosition: '1/2, 1/2',
+      opacity: 1,
+      theme: 'dark',
+      zoom: '100%',
+      font: 'system',
+      holdMs: 'long',
+    }
+    ctrl.win.recordRestingHeight(180)
+    ctrl.tools.setActiveTool('com.nuxy.download-manager')
+
+    const originalSetState = ctrl.store.setState.bind(ctrl.store)
+    ctrl.store.setState = (partial) => {
+      phase = 'shell'
+      return originalSetState(partial)
+    }
+
+    const animatePositionSpy = vi.spyOn(ctrl.win, 'animatePosition')
+    let capturedComplete: (() => void) | undefined
+    vi.spyOn(ctrl.win, 'animateToHeight').mockImplementation((_toH, _fromH, cb) => {
+      capturedComplete = cb
+    })
+    vi.spyOn(ctrl, 'ensureShellFocus').mockImplementation(() => {})
+
+    ctrl.returnToShell()
+
+    expect(capturedComplete).toBeTypeOf('function')
+    expect(animatePositionSpy).toHaveBeenCalledTimes(1)
+
+    capturedComplete!()
+
+    const expectedY = parseCoordinate('1/2', 600, 320)
+    expect(animatePositionSpy).toHaveBeenCalledTimes(2)
+    expect(animatePositionSpy.mock.calls[1][0].y).toBe(expectedY)
   })
 })

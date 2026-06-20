@@ -1,4 +1,4 @@
-import type { ExtensionManifest, ShellKeyAction, TemplateResult } from '@nuxyorg/core'
+import type { ExtensionManifest, ShellAction, TemplateResult } from '@nuxyorg/core'
 import { render, html } from '@nuxyorg/core'
 import {
   completeToolAction,
@@ -79,8 +79,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
     this.t.destroy()
-    window.core?.shell?.registerActions([])
-    window.core?.shell?.registerKeyActions(null)
+    window.core?.shell?.registerShellActions(null)
   }
 
   setQuery(query: string): void {
@@ -92,7 +91,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
       checkedIds: new Set(),
     })
     this.syncSearch()
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   syncSearchPlaceholder(): void {
@@ -103,7 +102,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
     const prev = this.state.selectedIndex
     const next = typeof index === 'function' ? index(prev) : index
     this.store.setState({ selectedIndex: next })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   toggleCheck(id: string): void {
@@ -111,7 +110,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
     if (next.has(id)) next.delete(id)
     else next.add(id)
     this.store.setState({ checkedIds: next })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   setMultiSelectMode(val: boolean): void {
@@ -119,7 +118,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
       multiSelectMode: val,
       checkedIds: val ? this.state.checkedIds : new Set(),
     })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   handleCopyMagnet(id: string, magnet: string): void {
@@ -212,9 +211,22 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
     }, 1000)
   }
 
-  private getKeyActions(): ShellKeyAction[] {
-    const { multiSelectMode, enterAction } = this.state
+  getKeyActions(): ShellAction[] {
+    return this.buildActions()
+  }
+
+  /**
+   * Single source of truth for both the footer (actions with a `hint`) and
+   * the Ctrl+K palette (actions with `showInMenu: true`). The two are
+   * mutually exclusive per action: the footer only has room for the
+   * frequent, single-item operations — anything that doesn't fit there
+   * (bulk multi-select operations) is Ctrl+K-only, with its key binding
+   * still live in the background.
+   */
+  private buildActions(): ShellAction[] {
+    const { results, multiSelectMode, checkedIds, enterAction } = this.state
     const t = this.t.t
+    const checkedItems = results.filter((r) => checkedIds.has(r.id))
 
     const enterLabel = multiSelectMode
       ? t('actions.checkToggle')
@@ -230,6 +242,45 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
 
     return [
       {
+        id: 'nyaa-select-multiple',
+        key: 'a',
+        modifiers: ['ctrl'],
+        label: t('actions.selectMultiple'),
+        section: 'actions',
+        showInMenu: !multiSelectMode && results.length > 0,
+        activeOn: () => !multiSelectMode && results.length > 0,
+        handler: () => this.setMultiSelectMode(true),
+      },
+      {
+        id: 'nyaa-exit-select',
+        key: 'Escape',
+        label: t('actions.exitSelectMultiple'),
+        hint: 'Esc',
+        activeOn: () => multiSelectMode,
+        handler: () => this.setMultiSelectMode(false),
+      },
+      {
+        id: 'nyaa-copy-all',
+        key: 'c',
+        modifiers: ['ctrl'],
+        label: t('actions.copyAll'),
+        section: 'actions',
+        showInMenu: multiSelectMode && checkedItems.length > 0,
+        activeOn: () => multiSelectMode && checkedItems.length > 0,
+        handler: () => this.handleCopyMagnets(checkedItems),
+      },
+      {
+        id: 'nyaa-download-all',
+        key: 'd',
+        modifiers: ['ctrl'],
+        label: t('actions.downloadAll'),
+        section: 'actions',
+        showInMenu: multiSelectMode && checkedItems.length > 0,
+        activeOn: () => multiSelectMode && checkedItems.length > 0,
+        handler: () => this.handleDownloadTorrents(checkedItems.map((i) => i.id)),
+      },
+      {
+        id: 'nyaa-navigate-up',
         key: 'ArrowUp',
         label: t('actions.navigate'),
         hint: '↑↓',
@@ -239,6 +290,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
         },
       },
       {
+        id: 'nyaa-navigate-down',
         key: 'ArrowDown',
         label: '',
         handler: () => {
@@ -247,26 +299,28 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
         },
       },
       {
+        id: 'nyaa-enter',
         key: 'Enter',
         label: enterLabel,
         hint: '↵',
         activeOn: () => this.state.selectedIndex >= 0,
         handler: () => {
           const idx = this.state.selectedIndex
-          const item = this.state.results[idx]
-          if (!item) return
+          const result = this.state.results[idx]
+          if (!result) return
           if (this.state.multiSelectMode) {
-            this.toggleCheck(item.id)
+            this.toggleCheck(result.id)
             return
           }
           if (this.state.enterAction === 'copyMagnet') {
-            this.handleCopyMagnet(item.id, item.magnet)
+            this.handleCopyMagnet(result.id, result.magnet)
           } else {
-            this.handleDownloadTorrent(item.id)
+            this.handleDownloadTorrent(result.id)
           }
         },
       },
       {
+        id: 'nyaa-shift-enter',
         key: 'Enter',
         modifiers: ['shift'],
         label: shiftEnterLabel,
@@ -274,87 +328,22 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
         activeOn: () => this.state.selectedIndex >= 0 && !this.state.multiSelectMode,
         handler: () => {
           const idx = this.state.selectedIndex
-          const item = this.state.results[idx]
-          if (!item) return
+          const result = this.state.results[idx]
+          if (!result) return
           if (this.state.enterAction === 'copyMagnet') {
-            this.handleDownloadTorrent(item.id)
+            this.handleDownloadTorrent(result.id)
           } else {
-            this.handleCopyMagnet(item.id, item.magnet)
+            this.handleCopyMagnet(result.id, result.magnet)
           }
         },
       },
     ]
   }
 
-  private registerShellActions(): void {
-    const { results, selectedIndex, multiSelectMode, checkedIds, enterAction } = this.state
-    const t = this.t.t
-    const actions: Array<{ id: string; label: string; section?: string; onExecute: () => void }> =
-      []
-
-    if (!multiSelectMode) {
-      if (results.length > 0) {
-        actions.push({
-          id: 'nyaa-select-multiple',
-          label: t('actions.selectMultiple'),
-          section: 'actions',
-          onExecute: () => this.setMultiSelectMode(true),
-        })
-      }
-      const item = selectedIndex >= 0 ? results[selectedIndex] : null
-      if (item) {
-        if (enterAction === 'copyMagnet') {
-          actions.push({
-            id: 'nyaa-copy-magnet',
-            label: t('actions.copyMagnetLabel'),
-            section: 'actions',
-            onExecute: () => this.handleCopyMagnet(item.id, item.magnet),
-          })
-        } else {
-          actions.push({
-            id: 'nyaa-download-torrent',
-            label: t('actions.downloadTorrentLabel'),
-            section: 'actions',
-            onExecute: () => this.handleDownloadTorrent(item.id),
-          })
-        }
-      }
-    } else {
-      actions.push({
-        id: 'nyaa-exit-select',
-        label: t('actions.exitSelectMultiple'),
-        section: 'actions',
-        onExecute: () => this.setMultiSelectMode(false),
-      })
-      const checkedItems = results.filter((r) => checkedIds.has(r.id))
-      if (checkedItems.length > 0) {
-        actions.push({
-          id: 'nyaa-copy-all',
-          label: t('actions.copyAll'),
-          section: 'actions',
-          onExecute: () => this.handleCopyMagnets(checkedItems),
-        })
-        actions.push({
-          id: 'nyaa-download-all',
-          label: t('actions.downloadAll'),
-          section: 'actions',
-          onExecute: () => this.handleDownloadTorrents(checkedItems.map((i) => i.id)),
-        })
-      }
-    }
-
-    window.core?.shell?.registerActions(actions)
-  }
-
   private bindKeyboard(): void {
-    window.core?.shell?.registerKeyActions(() => this.getKeyActions())
-    this.store.subscribe(() => {
-      this.registerShellActions()
-      window.core?.shell?.refreshKeyHints()
-    })
+    window.core?.shell?.registerShellActions(() => this.buildActions())
     this.cleanups.push(() => {
-      window.core?.shell?.registerKeyActions(null)
-      window.core?.shell?.registerActions([])
+      window.core?.shell?.registerShellActions(null)
     })
   }
 }

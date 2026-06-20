@@ -233,11 +233,11 @@ describe('core.composition', () => {
 })
 
 describe('core.shell', () => {
-  it('registerKeyActions updates snapshot', () => {
+  it('registerShellActions updates snapshot', () => {
     const { shell } = getExposedCore()
-    shell.registerKeyActions(() => [{ key: 'Enter', label: 'Go', handler: () => {} }])
+    shell.registerShellActions(() => [{ key: 'Enter', label: 'Go', handler: () => {} }])
     expect(shell.getSnapshot().keyActionHints).toHaveLength(0)
-    shell.registerKeyActions(() => [{ key: 'Enter', label: 'Go', hint: '↵', handler: () => {} }])
+    shell.registerShellActions(() => [{ key: 'Enter', label: 'Go', hint: '↵', handler: () => {} }])
     expect(shell.getSnapshot().keyActionHints).toHaveLength(1)
   })
 })

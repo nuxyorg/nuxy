@@ -1,5 +1,5 @@
 import { createStore, type Store } from '@nuxyorg/extension-sdk'
-import type { ShellKeyAction } from '@nuxyorg/core'
+import type { ShellAction } from '@nuxyorg/core'
 
 const EXT_ID = 'com.nuxy.icon-browser'
 
@@ -70,7 +70,7 @@ export class IconBrowserController {
     }
   }
 
-  getKeyActions(): ShellKeyAction[] {
+  getKeyActions(): ShellAction[] {
     return [
       {
         key: 'Enter',
@@ -103,7 +103,7 @@ export class IconBrowserController {
     const prev = this.state.activeIndex
     const next = typeof index === 'function' ? index(prev) : index
     this.store.setState({ activeIndex: next })
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   private async load(): Promise<void> {

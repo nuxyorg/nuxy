@@ -109,7 +109,7 @@ export class NuxyGridElement extends LitElement {
         composed: true,
       })
     )
-    window.core?.shell?.refreshKeyHints()
+    window.core?.shell?.refreshShellActions()
   }
 
   private _attachObservers(): void {
