@@ -72,14 +72,37 @@ export class StoreController extends BaseExtensionController<StoreState> {
     window.core?.shell?.refreshShellActions()
   }
 
+  /** Mouse click on a category — switches tab and focuses the extension list. */
   setActiveTab(tabId: string): void {
+    if (this.state.activeTab === tabId && this.state.focusArea === 'right') return
+    this.store.setState({ activeTab: tabId, selectedIndex: -1, focusArea: 'right' })
+    window.core?.shell?.refreshShellActions()
+  }
+
+  /** Keyboard navigation on the left category list — stays on the left panel. */
+  navigateTab(tabId: string): void {
     if (this.state.activeTab === tabId) return
     this.store.setState({ activeTab: tabId, selectedIndex: -1 })
     window.core?.shell?.refreshShellActions()
   }
 
-  setFocusArea(area: 'left' | 'right'): void {
-    this.store.setState({ focusArea: area })
+  focusLeftPanel(): void {
+    this.store.setState({ focusArea: 'left', selectedIndex: -1 })
+    window.core?.shell?.refreshShellActions()
+  }
+
+  focusRightPanel(): void {
+    const filtered = this.filteredExtensions
+    this.store.setState({
+      focusArea: 'right',
+      selectedIndex: filtered.length > 0 ? 0 : -1,
+    })
+    window.core?.shell?.refreshShellActions()
+  }
+
+  selectExtension(index: number): void {
+    this.store.setState({ selectedIndex: index, focusArea: 'right' })
+    window.core?.shell?.refreshShellActions()
   }
 
   get filteredExtensions(): ExtensionListItem[] {
@@ -166,26 +189,95 @@ export class StoreController extends BaseExtensionController<StoreState> {
   }
 
   private buildActions(): ShellAction[] {
+    return this.state.focusArea === 'left'
+      ? this.buildLeftPanelActions()
+      : this.buildRightPanelActions()
+  }
+
+  private buildLeftPanelActions(): ShellAction[] {
+    const t = this.t.t
+    const currentIdx = TABS.findIndex((tab) => tab.id === this.state.activeTab)
+
+    return [
+      {
+        id: 'store-tab-up',
+        key: 'ArrowUp',
+        label: t('actions.navigate'),
+        hint: '↑↓',
+        allowRepeat: true,
+        handler: () => {
+          if (currentIdx > 0) this.navigateTab(TABS[currentIdx - 1].id)
+        },
+      },
+      {
+        id: 'store-tab-down',
+        key: 'ArrowDown',
+        label: '',
+        allowRepeat: true,
+        handler: () => {
+          if (currentIdx < TABS.length - 1) this.navigateTab(TABS[currentIdx + 1].id)
+        },
+      },
+      {
+        id: 'store-focus-right',
+        key: 'ArrowRight',
+        label: '',
+        handler: () => this.focusRightPanel(),
+      },
+      {
+        id: 'store-open-category',
+        key: 'Enter',
+        label: t('actions.performAction'),
+        hint: '↵',
+        handler: () => this.focusRightPanel(),
+      },
+      {
+        id: 'store-next-category',
+        key: 'Tab',
+        label: t('actions.nextCategory'),
+        hint: 'Tab',
+        handler: () => {
+          const nextTab = TABS[(currentIdx + 1) % TABS.length].id
+          this.navigateTab(nextTab)
+        },
+      },
+    ]
+  }
+
+  private buildRightPanelActions(): ShellAction[] {
     const t = this.t.t
     const filtered = this.filteredExtensions
 
     return [
       {
+        id: 'store-focus-sidebar',
+        key: 'ArrowLeft',
+        label: t('actions.focusSidebar'),
+        handler: () => this.focusLeftPanel(),
+      },
+      {
         id: 'store-navigate-up',
         key: 'ArrowUp',
         label: t('actions.navigate'),
         hint: '↑↓',
-        handler: () => {
-          this.setSelectedIndex((idx) => (idx <= 0 ? 0 : idx - 1))
-        },
+        allowRepeat: true,
+        handler: () =>
+          this.setSelectedIndex((idx) => {
+            if (idx <= 0) {
+              this.focusLeftPanel()
+              return -1
+            }
+            return idx - 1
+          }),
       },
       {
         id: 'store-navigate-down',
         key: 'ArrowDown',
         label: '',
+        allowRepeat: true,
         handler: () => {
           this.setSelectedIndex((idx) => {
-            const maxIdx = this.filteredExtensions.length - 1
+            const maxIdx = filtered.length - 1
             return idx >= maxIdx ? maxIdx : idx + 1
           })
         },
@@ -200,7 +292,7 @@ export class StoreController extends BaseExtensionController<StoreState> {
           return !!(item && (!item.installed || item.canUpdate))
         },
         handler: () => {
-          const item = this.filteredExtensions[this.state.selectedIndex]
+          const item = filtered[this.state.selectedIndex]
           if (item) void this.handleInstall(item)
         },
       },
@@ -214,7 +306,7 @@ export class StoreController extends BaseExtensionController<StoreState> {
           return !!(item && item.installed && !item.isSystem)
         },
         handler: () => {
-          const item = this.filteredExtensions[this.state.selectedIndex]
+          const item = filtered[this.state.selectedIndex]
           if (item) void this.handleUninstall(item)
         },
       },
@@ -237,7 +329,7 @@ export class StoreController extends BaseExtensionController<StoreState> {
           return selectedIndex >= 0 && selectedIndex < filtered.length
         },
         handler: () => {
-          const item = this.filteredExtensions[this.state.selectedIndex]
+          const item = filtered[this.state.selectedIndex]
           if (!item) return
           if (!item.installed || item.canUpdate) {
             void this.handleInstall(item)
@@ -255,14 +347,6 @@ export class StoreController extends BaseExtensionController<StoreState> {
           const idx = TABS.findIndex((tab) => tab.id === this.state.activeTab)
           const nextTab = TABS[(idx + 1) % TABS.length].id
           this.setActiveTab(nextTab)
-        },
-      },
-      {
-        id: 'store-focus-sidebar',
-        key: 'ArrowLeft',
-        label: t('actions.focusSidebar'),
-        handler: () => {
-          this.setFocusArea('left')
         },
       },
     ]

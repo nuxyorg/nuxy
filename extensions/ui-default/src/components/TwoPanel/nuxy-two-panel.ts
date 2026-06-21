@@ -7,6 +7,7 @@ export class NuxyTwoPanelElement extends LitElement {
   static styles = css`
     :host {
       display: flex;
+      flex-direction: row;
       height: 100%;
       overflow: hidden;
     }
@@ -27,11 +28,19 @@ export class NuxyTwoPanelElement extends LitElement {
 
     ::slotted([slot='right']) {
       flex: 1;
-      display: flex;
-      flex-direction: column;
       min-height: 0;
       min-width: 0;
       border-left: 1px solid var(--border);
+    }
+
+    ::slotted([slot='right']:not(nuxy-two-panel)) {
+      display: flex;
+      flex-direction: column;
+      overflow-y: overlay;
+    }
+
+    ::slotted([slot='right']:is(nuxy-two-panel)) {
+      width: 100%;
     }
 
     .handle {

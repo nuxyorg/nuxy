@@ -3,7 +3,6 @@ import {
   filterExtensions,
   buildNavSections,
   permissionVariant,
-  serializeTabs,
   TABS,
 } from '../utils/store-filter.ts'
 import type { ExtensionListItem } from '../types.ts'
@@ -118,26 +117,6 @@ describe('buildNavSections', () => {
     const sections = buildNavSections(all)
     const updates = sections.find((s) => s.id === 'updates')!
     expect(updates.itemCount).toBe(1)
-  })
-})
-
-describe('serializeTabs', () => {
-  it('returns a JSON string parseable into {id,label} entries', () => {
-    const sections = buildNavSections([TOOL, THEME])
-    const json = serializeTabs(sections)
-    expect(typeof json).toBe('string')
-    const parsed = JSON.parse(json)
-    expect(Array.isArray(parsed)).toBe(true)
-    expect(parsed.length).toBe(sections.length)
-    expect(parsed[0]).toHaveProperty('id')
-    expect(parsed[0]).toHaveProperty('label')
-  })
-
-  it('includes the item count in the label', () => {
-    const sections = buildNavSections([TOOL, THEME])
-    const parsed = JSON.parse(serializeTabs(sections))
-    const allTab = parsed.find((t: { id: string }) => t.id === 'all')
-    expect(allTab.label).toBe('All Extensions (2)')
   })
 })
 

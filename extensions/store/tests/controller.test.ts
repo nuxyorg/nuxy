@@ -200,6 +200,10 @@ describe('StoreController', () => {
   })
 
   describe('keyboard actions', () => {
+    function actionByKey(controller: StoreController, key: string) {
+      return controller.getKeyActions().find((a) => a.key === key && !a.modifiers?.length)
+    }
+
     it('exposes install action active only when item not installed or updatable', () => {
       const controller = new StoreController(() => {})
       controller.connect()
@@ -238,13 +242,61 @@ describe('StoreController', () => {
       controller.disconnect()
     })
 
-    it('ArrowLeft focuses the sidebar', () => {
+    it('ArrowLeft focuses the sidebar and clears list selection', () => {
       const controller = new StoreController(() => {})
       controller.connect()
-      const focusAction = getter!().find((a) => a.id === 'store-focus-sidebar')
-      focusAction?.handler()
+      controller.store.setState({ selectedIndex: 2 })
+      actionByKey(controller, 'ArrowLeft')?.handler()
 
       expect(controller.state.focusArea).toBe('left')
+      expect(controller.state.selectedIndex).toBe(-1)
+      controller.disconnect()
+    })
+
+    it('keeps focus on the left panel when navigating categories with arrow keys', () => {
+      const controller = new StoreController(() => {})
+      controller.connect()
+      controller.store.setState({ activeTab: 'tool', focusArea: 'left', selectedIndex: -1 })
+
+      actionByKey(controller, 'ArrowUp')?.handler()
+      expect(controller.state.activeTab).toBe('all')
+      expect(controller.state.focusArea).toBe('left')
+
+      actionByKey(controller, 'ArrowDown')?.handler()
+      expect(controller.state.activeTab).toBe('tool')
+      expect(controller.state.focusArea).toBe('left')
+      controller.disconnect()
+    })
+
+    it('moves focus to the extension list when Enter is pressed on the left panel', () => {
+      const controller = new StoreController(() => {})
+      controller.connect()
+      controller.store.setState({
+        extensions: [makeExt({ id: 'com.test.a' }), makeExt({ id: 'com.test.b' })],
+        focusArea: 'left',
+        selectedIndex: -1,
+      })
+
+      actionByKey(controller, 'Enter')?.handler()
+
+      expect(controller.state.focusArea).toBe('right')
+      expect(controller.state.selectedIndex).toBe(0)
+      controller.disconnect()
+    })
+
+    it('returns focus to the left panel from the first list row with ArrowUp', () => {
+      const controller = new StoreController(() => {})
+      controller.connect()
+      controller.store.setState({
+        extensions: [makeExt({ id: 'com.test.a' })],
+        selectedIndex: 0,
+        focusArea: 'right',
+      })
+
+      actionByKey(controller, 'ArrowUp')?.handler()
+
+      expect(controller.state.focusArea).toBe('left')
+      expect(controller.state.selectedIndex).toBe(-1)
       controller.disconnect()
     })
   })

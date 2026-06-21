@@ -9,7 +9,7 @@ import {
 } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { StoreController } from './controller.ts'
-import { permissionVariant, serializeTabs } from './utils/store-filter.ts'
+import { permissionVariant } from './utils/store-filter.ts'
 import type { ExtensionListItem } from './types.ts'
 
 @customElement('nuxy-tool-store')
@@ -27,25 +27,13 @@ export class NuxyToolStoreElement extends LitElement implements NuxyToolElement 
       min-height: 0;
     }
 
-    .nuxy-store-right {
-      display: flex;
-      flex-direction: row;
-      height: 100%;
-      min-height: 0;
-    }
-
     .nuxy-store-list-col {
-      flex: 1;
-      min-width: 0;
+      min-height: 0;
       overflow-y: auto;
-      border-right: 1px solid var(--border);
     }
 
     .nuxy-store-detail-col {
-      width: 320px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
+      min-height: 0;
       overflow-y: auto;
     }
 
@@ -143,23 +131,33 @@ export class NuxyToolStoreElement extends LitElement implements NuxyToolElement 
   render() {
     if (!this.controller) return nothing
     return html`
-      <nuxy-two-panel min-scale="1/5" default-position="160px">
+      <nuxy-two-panel min-scale="1/5" default-position="1/6">
         ${this.renderLeft()} ${this.renderRight()}
       </nuxy-two-panel>
     `
   }
 
   private renderLeft(): TemplateResult {
-    const { activeTab } = this.controller!.state
+    const { activeTab, focusArea } = this.controller!.state
     const navSections = this.controller!.navSections
+    const tabIndex = navSections.findIndex((s) => s.id === activeTab)
+
     return html`
-      <nuxy-tab-bar
-        tabs=${serializeTabs(navSections)}
-        active=${activeTab}
-        orientation="vertical"
-        @nuxy-tab-bar-change=${(e: CustomEvent<{ id: string }>) =>
-          this.controller?.setActiveTab(e.detail.id)}
-      ></nuxy-tab-bar>
+      <nuxy-list active-index=${focusArea === 'left' ? tabIndex : -1}>
+        ${navSections.map(
+          (section) => html`
+            <nuxy-list-item
+              ?active=${section.id === activeTab}
+              @click=${() => this.controller?.setActiveTab(section.id)}
+            >
+              <nuxy-list-item-body>
+                <nuxy-list-item-text>${section.label}</nuxy-list-item-text>
+              </nuxy-list-item-body>
+              <nuxy-list-item-meta>${section.itemCount}</nuxy-list-item-meta>
+            </nuxy-list-item>
+          `
+        )}
+      </nuxy-list>
     `
   }
 
@@ -172,10 +170,10 @@ export class NuxyToolStoreElement extends LitElement implements NuxyToolElement 
     }
 
     return html`
-      <div class="nuxy-store-right">
+      <nuxy-two-panel min-scale="2/5" default-position="2/5">
         <div class="nuxy-store-list-col">${this.renderList()}</div>
         <div class="nuxy-store-detail-col">${this.renderDetail()}</div>
-      </div>
+      </nuxy-two-panel>
     `
   }
 
@@ -210,10 +208,7 @@ export class NuxyToolStoreElement extends LitElement implements NuxyToolElement 
     return html`
       <nuxy-list-item
         ?active=${focusArea === 'right' && idx === selectedIndex}
-        @click=${() => {
-          this.controller?.setSelectedIndex(idx)
-          this.controller?.setFocusArea('right')
-        }}
+        @click=${() => this.controller?.selectExtension(idx)}
       >
         <nuxy-list-item-body>
           <div class="nuxy-store-list-item-title">

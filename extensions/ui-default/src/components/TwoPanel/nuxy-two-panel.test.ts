@@ -68,6 +68,37 @@ describe('nuxy-two-panel', () => {
     expect(leftStyleWidth(el)).toBe('25%')
   })
 
+  it('keeps a nested nuxy-two-panel split horizontal in the right slot', async () => {
+    const outer = document.createElement('nuxy-two-panel') as HTMLElement & {
+      updateComplete: Promise<boolean>
+    }
+    outer.style.width = '800px'
+    outer.style.height = '400px'
+
+    const nav = document.createElement('div')
+    nav.id = 'nav'
+    const inner = document.createElement('nuxy-two-panel') as HTMLElement & {
+      updateComplete: Promise<boolean>
+    }
+    inner.setAttribute('default-position', '1/2')
+    const list = document.createElement('div')
+    list.id = 'list'
+    list.style.height = '200px'
+    const detail = document.createElement('div')
+    detail.id = 'detail'
+    detail.style.height = '200px'
+    inner.append(list, detail)
+
+    outer.append(nav, inner)
+    document.body.appendChild(outer)
+    await outer.updateComplete
+    await inner.updateComplete
+
+    expect(getComputedStyle(inner).flexDirection).toBe('row')
+    expect((inner.querySelector('#list') as HTMLElement).style.width).toBe('50%')
+    outer.remove()
+  })
+
   it('does not start drag when minScale locks the split', async () => {
     const el = await mount({ 'min-scale': '1/2', 'default-position': '1/3' })
     let fired = false

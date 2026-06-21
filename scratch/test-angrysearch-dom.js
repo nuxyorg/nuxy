@@ -44,7 +44,7 @@ if ((await settingsItem.count()) > 0) {
 
 // Click ANGRYsearch tab in the left bar if it exists, or just scroll/inspect the right panel
 // Let's click the ANGRYsearch tab
-const tab = page.locator('nuxy-tab-bar').locator('text=ANGRYsearch').first()
+const tab = page.locator('nuxy-list-item').filter({ hasText: 'ANGRYsearch' }).first()
 if ((await tab.count()) > 0) {
   await tab.click()
   await page.waitForTimeout(1000)
