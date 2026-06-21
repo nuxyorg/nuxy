@@ -336,6 +336,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ext-devserver
 
+  extensions/ollama:
+    dependencies:
+      '@nuxyorg/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+
   extensions/settings:
     dependencies:
       lit:

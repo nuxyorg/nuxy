@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "name": "Ollama"
+  },
+  "empty": {
+    "message": "Ask Ollama anything.",
+    "hint": "Type in the omnibar and press Enter."
+  },
+  "actions": {
+    "send": "Send",
+    "queue": "Queue",
+    "stop": "Stop",
+    "clearHistory": "Clear Chat History",
+    "models": "Models"
+  },
+  "hints": {
+    "model": "Model: {name}"
+  },
+  "alert": {
+    "queued": "Queued: {message}"
+  },
+  "provider": {
+    "askOllama": "Ask Ollama",
+    "subtitle": "ollama — \"{text}\""
+  },
+  "settings": {
+    "host": {
+      "label": "Ollama Host",
+      "placeholder": "http://localhost:11434",
+      "description": "URL where the Ollama server is running"
+    },
+    "model": {
+      "label": "Default Model",
+      "placeholder": "llama3",
+      "description": "Model name to use for chat (e.g. llama3, mistral)"
+    },
+    "thinkingColor": {
+      "label": "Thinking Indicator",
+      "description": "Border effect shown while Ollama is generating a response",
+      "options": {
+        "light": "Light",
+        "rainbow": "Rainbow",
+        "bit": "Bit",
+        "off": "Off"
+      }
+    }
+  }
+}

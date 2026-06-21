@@ -1,0 +1,27 @@
+{
+  "id": "com.nuxy.ollama",
+  "name": "Ollama",
+  "version": "1.0.0",
+  "type": "tool",
+  "providerGroup": "actions",
+  "providerGroupLabel": "Tool actions",
+  "providerType": "result",
+  "icon": "ai",
+  "description": "Conversational AI assistant powered by a local Ollama model.",
+  "placeholder": "Ask anything",
+  "permissions": ["storage", "network"],
+  "capabilities": {
+    "callable": true,
+    "caller": false
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja"]
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-ollama",
+    "settings": "settings.json"
+  }
+}
