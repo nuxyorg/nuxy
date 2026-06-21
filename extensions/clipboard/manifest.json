@@ -1,0 +1,22 @@
+{
+  "id": "com.nuxy.clipboard",
+  "name": "Clipboard Manager",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "clipboard",
+  "permissions": ["clipboard", "storage", "fs"],
+  "capabilities": {
+    "callable": true,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-clipboard",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja"]
+  }
+}

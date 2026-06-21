@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "name": "クリップボードマネージャー"
+  },
+  "search": {
+    "placeholder": "クリップボード履歴を検索"
+  },
+  "list": {
+    "empty": {
+      "message": "履歴が空です。",
+      "hint": "コピーしたテキストがここに表示されます。"
+    },
+    "noMatches": {
+      "message": "一致なし。",
+      "hint": "別の検索をお試しください。"
+    }
+  },
+  "item": {
+    "copied": "コピーしました！",
+    "current": "現在",
+    "type": {
+      "image": "画像",
+      "color": "色",
+      "url": "URL",
+      "file": "ファイル",
+      "text": "テキスト"
+    }
+  },
+  "preview": {
+    "selectPrompt": "プレビューするアイテムを選択してください",
+    "imageAlt": "クリップボードプレビュー"
+  },
+  "properties": {
+    "title": "プロパティ",
+    "type": "種類",
+    "name": "名前",
+    "path": "パス",
+    "dimensions": "サイズ",
+    "value": "値",
+    "copied": "コピー済み",
+    "imageFile": "画像ファイル"
+  },
+  "actions": {
+    "navigate": "ナビゲート",
+    "nextItem": "次のアイテム",
+    "copy": "コピー",
+    "deleteSelected": "選択アイテムを削除",
+    "pinSelected": "選択アイテムをピン留め",
+    "unpinSelected": "選択アイテムのピン留めを解除"
+  },
+  "alert": {
+    "fileNotFound": "ファイルが見つかりません — 移動または削除された可能性があります。"
+  },
+  "time": {
+    "now": "今"
+  }
+}
