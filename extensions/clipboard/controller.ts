@@ -4,7 +4,7 @@ import type { ClipboardItem } from './types.ts'
 import { getItemType } from './utils/itemType.ts'
 
 const EXT_ID = 'com.nuxy.clipboard'
-const REFRESH_INTERVAL_MS = 1500
+const DEFAULT_REFRESH_INTERVAL_MS = 1000
 const COPIED_RESET_MS = 1800
 
 export interface ClipboardState {
@@ -39,8 +39,31 @@ export class ClipboardController extends BaseExtensionController<ClipboardState>
     if (!window.core?.ipc) return
     this.syncSearchPlaceholder()
     this.loadHistory()
-    this.refreshTimer = setInterval(() => this.loadHistory(), REFRESH_INTERVAL_MS)
+    this.startRefreshTimer(DEFAULT_REFRESH_INTERVAL_MS)
+    this.syncRefreshIntervalFromBackend()
     this.bindKeyboard()
+  }
+
+  private startRefreshTimer(intervalMs: number): void {
+    if (this.refreshTimer) clearInterval(this.refreshTimer)
+    this.refreshTimer = setInterval(() => this.loadHistory(), intervalMs)
+  }
+
+  /**
+   * Never poll faster than the backend's own clipboard-read cadence — doing
+   * so just doubles work without surfacing new clips any sooner.
+   */
+  private syncRefreshIntervalFromBackend(): void {
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(EXT_ID, 'getPollIntervalMs')
+      .then((res) => {
+        const r = res as { success: boolean; data?: number } | null
+        if (r?.success && typeof r.data === 'number' && r.data > 0) {
+          this.startRefreshTimer(Math.max(r.data, DEFAULT_REFRESH_INTERVAL_MS))
+        }
+      })
+      .catch(() => {})
   }
 
   disconnect(): void {

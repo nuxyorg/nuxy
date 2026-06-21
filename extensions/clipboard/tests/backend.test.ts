@@ -71,6 +71,35 @@ describe('clipboard backend', () => {
     })
   })
 
+  describe('getPollIntervalMs', () => {
+    it('returns the saved pollIntervalMs setting', async () => {
+      const { core, handlers } = createMockCore({
+        settings: { read: vi.fn().mockResolvedValue(500) },
+      })
+      register(core)
+      await flush()
+      expect(await handlers.getPollIntervalMs()).toBe(500)
+    })
+
+    it('defaults to 1000ms when no setting is saved', async () => {
+      const { core, handlers } = createMockCore({
+        settings: { read: vi.fn().mockResolvedValue(null) },
+      })
+      register(core)
+      await flush()
+      expect(await handlers.getPollIntervalMs()).toBe(1000)
+    })
+
+    it('defaults to 1000ms for a non-positive saved value', async () => {
+      const { core, handlers } = createMockCore({
+        settings: { read: vi.fn().mockResolvedValue(0) },
+      })
+      register(core)
+      await flush()
+      expect(await handlers.getPollIntervalMs()).toBe(1000)
+    })
+  })
+
   describe('clearHistory', () => {
     it('removes all unpinned items', async () => {
       const items = [makeItem({ id: 'a', text: 'hello' }), makeItem({ id: 'b', text: 'world' })]

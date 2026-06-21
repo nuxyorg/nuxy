@@ -6,6 +6,7 @@ import type { AngrysearchItem, DbStatus, IpcChannels } from './types.ts'
 const EXT_ID = 'com.nuxy.angrysearch'
 const MIN_QUERY_LENGTH = 3
 const SEARCH_DEBOUNCE_MS = 150
+const STATUS_POLL_MS = 2000
 
 export interface AngrysearchState {
   query: string
@@ -17,6 +18,7 @@ export interface AngrysearchState {
 
 export class AngrysearchController extends BaseExtensionController<AngrysearchState> {
   private searchTimer: ReturnType<typeof setTimeout> | null = null
+  private statusPollTimer: ReturnType<typeof setInterval> | null = null
   private searchGen = 0
 
   private invoke: TypedInvoker<IpcChannels> = async (channel, ...args) => {
@@ -48,7 +50,10 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
     this.syncSearchPlaceholder()
 
     this.invoke('getStatus')
-      .then((status) => this.store.setState({ status }))
+      .then((status) => {
+        this.store.setState({ status })
+        if (status.isUpdating) this.startStatusPoll()
+      })
       .catch(() => {})
 
     this.bindKeyboard()
@@ -56,6 +61,7 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
 
   disconnect(): void {
     if (this.searchTimer) clearTimeout(this.searchTimer)
+    this.stopStatusPoll()
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
     this.t.destroy()
@@ -103,8 +109,28 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
       .then(() => {
         const status = this.state.status
         this.store.setState({ status: status ? { ...status, isUpdating: true } : status })
+        this.startStatusPoll()
       })
       .catch(() => {})
+  }
+
+  private startStatusPoll(): void {
+    if (this.statusPollTimer) return
+    this.statusPollTimer = setInterval(() => {
+      this.invoke('getStatus')
+        .then((status) => {
+          this.store.setState({ status })
+          if (!status.isUpdating) this.stopStatusPoll()
+        })
+        .catch(() => {})
+    }, STATUS_POLL_MS)
+  }
+
+  private stopStatusPoll(): void {
+    if (this.statusPollTimer) {
+      clearInterval(this.statusPollTimer)
+      this.statusPollTimer = null
+    }
   }
 
   private syncSearch(): void {

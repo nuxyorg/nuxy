@@ -11,7 +11,10 @@
     "queue": "Sıraya Al",
     "stop": "Durdur",
     "clearHistory": "Sohbet Geçmişini Temizle",
-    "models": "Modeller"
+    "models": "Modeller",
+    "refreshModels": "Modelleri Yenile",
+    "copyLastMessage": "Son Mesajı Kopyala",
+    "retry": "Son Yanıtı Tekrar Dene"
   },
   "hints": {
     "model": "Model: {name}"
@@ -60,5 +63,8 @@
         "1": "1.0 (Maksimum)"
       }
     }
+  },
+  "error": {
+    "modelNotFound": "\"{model}\" modeli bulunamadı — model listesi yenileniyor..."
   }
 }

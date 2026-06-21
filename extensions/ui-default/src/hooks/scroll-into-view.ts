@@ -103,7 +103,12 @@ export interface ScrollListActiveItemOptions {
 
 type RectLike = Pick<DOMRect, 'top' | 'bottom' | 'height'>
 
-function computeScrollTargetForRect(
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(value, max))
+}
+
+/** Computes the desired scrollTop for `elRect`, without clamping to [0, maxScrollTop]. */
+function computeRawScrollTarget(
   elRect: RectLike,
   parent: HTMLElement,
   parentRect: DOMRect,
@@ -120,7 +125,17 @@ function computeScrollTargetForRect(
     targetScrollTop -= parentRect.top - futureElTop
   }
 
-  return Math.max(0, Math.min(targetScrollTop, maxScrollTop(parent)))
+  return targetScrollTop
+}
+
+function computeScrollTargetForRect(
+  elRect: RectLike,
+  parent: HTMLElement,
+  parentRect: DOMRect,
+  startScrollTop: number
+): number {
+  const raw = computeRawScrollTarget(elRect, parent, parentRect, startScrollTop)
+  return clamp(raw, 0, maxScrollTop(parent))
 }
 
 /** @internal Exported for unit tests. */
@@ -165,12 +180,26 @@ export function smoothScrollIntoViewIfNeeded(
 
   let targetScrollTop = computeScrollTargetForRect(elRect, parent, parentRect, startScrollTop)
 
-  const scrollNeeded = targetScrollTop !== parent.scrollTop
+  let scrollNeeded = targetScrollTop !== parent.scrollTop
 
-  if (scrollNeeded && options.scrollBias) {
+  if (options.scrollBias) {
     const padding = resolveScrollLookaheadPadding(parent, options.scrollLookaheadPadding)
     const biasedRect = inflateRectForScrollBias(elRect, options.scrollBias, padding)
-    targetScrollTop = computeScrollTargetForRect(biasedRect, parent, parentRect, startScrollTop)
+    const rawBiasedTarget = computeRawScrollTarget(biasedRect, parent, parentRect, startScrollTop)
+    const maxTop = maxScrollTop(parent)
+    const clampedBiasedTarget = clamp(rawBiasedTarget, 0, maxTop)
+
+    if (scrollNeeded) {
+      // Already scrolling for the unbiased case — use the look-ahead target as-is.
+      targetScrollTop = clampedBiasedTarget
+    } else if (rawBiasedTarget < 0 || rawBiasedTarget > maxTop) {
+      // The item looks fully visible, but the look-ahead bias pushes past a scroll
+      // edge — snap flush to that edge (0 or max) instead of silently rejecting the scroll.
+      if (clampedBiasedTarget !== parent.scrollTop) {
+        targetScrollTop = clampedBiasedTarget
+        scrollNeeded = true
+      }
+    }
   }
 
   if (maxScrollTop(parent) <= 0) {

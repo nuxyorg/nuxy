@@ -8,6 +8,7 @@ import {
 } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { AngrysearchController } from './controller.ts'
+import { selectEmptyState } from './utils.ts'
 import type { AngrysearchItem } from './types.ts'
 
 @customElement('nuxy-tool-angrysearch')
@@ -50,20 +51,14 @@ export class NuxyToolAngrysearchElement extends LitElement implements NuxyToolEl
 
   render() {
     if (!this.controller) return nothing
-    const { items, query, selectedIndex } = this.controller.state
+    const { items, query, selectedIndex, status } = this.controller.state
     const t = this.controller.t.t
 
-    if (query.trim().length < 3) {
+    const emptyState = selectEmptyState(status, query, items.length > 0, t)
+    if (emptyState) {
       return html`<nuxy-empty-state
-        message=${t('empty.typeToSearch')}
-        hint=${t('empty.typeHint')}
-      ></nuxy-empty-state>`
-    }
-
-    if (items.length === 0) {
-      return html`<nuxy-empty-state
-        message=${t('empty.noMatches')}
-        hint=${t('empty.noMatchesHint')}
+        message=${emptyState.message}
+        hint=${emptyState.hint ?? ''}
       ></nuxy-empty-state>`
     }
 

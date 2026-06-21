@@ -73,6 +73,37 @@ describe('AngrysearchController', () => {
     controller.disconnect()
   })
 
+  it('polls status on connect when the database is already updating', async () => {
+    ipcInvoke.mockImplementation(async (_extId: string, channel: string) => {
+      if (channel === 'getExtensionTranslations') {
+        return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
+      }
+      if (channel === 'getStatus') {
+        return { success: true, data: { isUpdating: true, lastUpdate: null, exists: false } }
+      }
+      return { success: true, data: undefined }
+    })
+
+    const controller = new AngrysearchController(() => {})
+    controller.connect()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(controller.state.status?.isUpdating).toBe(true)
+
+    ipcInvoke.mockImplementation(async (_extId: string, channel: string) => {
+      if (channel === 'getStatus') {
+        return {
+          success: true,
+          data: { isUpdating: false, lastUpdate: '2026-06-21T00:00:00.000Z', exists: true },
+        }
+      }
+      return { success: true, data: undefined }
+    })
+
+    await vi.advanceTimersByTimeAsync(2000)
+    expect(controller.state.status?.isUpdating).toBe(false)
+    controller.disconnect()
+  })
+
   describe('setQuery', () => {
     it('does not search when query is shorter than 3 characters', async () => {
       const controller = new AngrysearchController(() => {})
@@ -201,11 +232,56 @@ describe('AngrysearchController', () => {
       await vi.runAllTimersAsync()
 
       controller.triggerUpdate()
-      await vi.runAllTimersAsync()
+      await vi.advanceTimersByTimeAsync(0)
 
       expect(ipcInvoke).toHaveBeenCalledWith('com.nuxy.angrysearch', 'updateDatabase', undefined)
       expect(controller.state.status?.isUpdating).toBe(true)
       controller.disconnect()
+    })
+
+    it('polls getStatus until isUpdating flips back to false', async () => {
+      const controller = new AngrysearchController(() => {})
+      controller.connect()
+      await vi.runAllTimersAsync()
+
+      controller.triggerUpdate()
+      await vi.advanceTimersByTimeAsync(0)
+      expect(controller.state.status?.isUpdating).toBe(true)
+
+      ipcInvoke.mockImplementation(async (_extId: string, channel: string) => {
+        if (channel === 'getStatus') {
+          return {
+            success: true,
+            data: { isUpdating: false, lastUpdate: '2026-06-21T00:00:00.000Z', exists: true },
+          }
+        }
+        return { success: true, data: undefined }
+      })
+
+      await vi.advanceTimersByTimeAsync(2000)
+
+      expect(controller.state.status?.isUpdating).toBe(false)
+      expect(controller.state.status?.exists).toBe(true)
+      controller.disconnect()
+    })
+
+    it('stops polling getStatus after disconnect', async () => {
+      const controller = new AngrysearchController(() => {})
+      controller.connect()
+      await vi.runAllTimersAsync()
+
+      controller.triggerUpdate()
+      await vi.advanceTimersByTimeAsync(0)
+      controller.disconnect()
+      ipcInvoke.mockClear()
+
+      await vi.advanceTimersByTimeAsync(10000)
+
+      expect(ipcInvoke).not.toHaveBeenCalledWith(
+        'com.nuxy.angrysearch',
+        'getStatus',
+        expect.anything()
+      )
     })
   })
 

@@ -157,6 +157,82 @@ describe('angrysearch backend', () => {
       expect(() => new Date(lastUpdate!)).not.toThrow()
     })
 
+    it('skips a directory listed in ignoredRoots as a string array (new list field shape)', async () => {
+      const { db, mockPrepare, preparedStmt } = makeMockDb([])
+      const { core } = createCore({ db, mockPrepare, preparedStmt })
+      ;(core.db.open as ReturnType<typeof vi.fn>).mockReturnValue(db)
+      ;(core.settings.read as ReturnType<typeof vi.fn>).mockImplementation(async (key: string) => {
+        if (key === 'scanRoot') return '/'
+        if (key === 'ignoredRoots') return ['/proc', '/dev']
+        return null
+      })
+      ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockImplementation(async (dir: string) => {
+        if (dir === '/') {
+          return [
+            { name: 'proc', isDir: true },
+            { name: 'home', isDir: true },
+          ]
+        }
+        return []
+      })
+
+      const register = await freshBackend()
+      register(core)
+      await settle()
+
+      expect(core.fs.readDir).not.toHaveBeenCalledWith('/proc')
+      expect(core.fs.readDir).toHaveBeenCalledWith('/home')
+    })
+
+    it('migrates a legacy comma-separated ignoredRoots string', async () => {
+      const { db, mockPrepare, preparedStmt } = makeMockDb([])
+      const { core } = createCore({ db, mockPrepare, preparedStmt })
+      ;(core.db.open as ReturnType<typeof vi.fn>).mockReturnValue(db)
+      ;(core.settings.read as ReturnType<typeof vi.fn>).mockImplementation(async (key: string) => {
+        if (key === 'scanRoot') return '/'
+        if (key === 'ignoredRoots') return '/proc,/dev'
+        return null
+      })
+      ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockImplementation(async (dir: string) => {
+        if (dir === '/') {
+          return [
+            { name: 'proc', isDir: true },
+            { name: 'home', isDir: true },
+          ]
+        }
+        return []
+      })
+
+      const register = await freshBackend()
+      register(core)
+      await settle()
+
+      expect(core.fs.readDir).not.toHaveBeenCalledWith('/proc')
+      expect(core.fs.readDir).toHaveBeenCalledWith('/home')
+    })
+
+    it('falls back to the default ignored roots when no setting is saved', async () => {
+      const { db, mockPrepare, preparedStmt } = makeMockDb([])
+      const { core } = createCore({ db, mockPrepare, preparedStmt })
+      ;(core.db.open as ReturnType<typeof vi.fn>).mockReturnValue(db)
+      ;(core.fs.readDir as ReturnType<typeof vi.fn>).mockImplementation(async (dir: string) => {
+        if (dir === '/') {
+          return [
+            { name: 'proc', isDir: true },
+            { name: 'home', isDir: true },
+          ]
+        }
+        return []
+      })
+
+      const register = await freshBackend()
+      register(core)
+      await settle()
+
+      expect(core.fs.readDir).not.toHaveBeenCalledWith('/proc')
+      expect(core.fs.readDir).toHaveBeenCalledWith('/home')
+    })
+
     it('registers a REGEXP custom function on the active db', async () => {
       const { db } = makeMockDb([])
       const register = await freshBackend()

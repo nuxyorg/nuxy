@@ -64,6 +64,14 @@ export function buildNavSections(extensions: ExtensionListItem[]): NavSection[] 
 }
 
 /**
+ * Serializes nav sections into the JSON string `nuxy-tab-bar` expects for its
+ * `tabs` attribute (it parses the attribute value with `JSON.parse`, not a live array).
+ */
+export function serializeTabs(sections: NavSection[]): string {
+  return JSON.stringify(sections.map((s) => ({ id: s.id, label: `${s.label} (${s.itemCount})` })))
+}
+
+/**
  * Returns the `nuxy-tag` variant for a given permission string.
  * Pure — no UI dependencies.
  */

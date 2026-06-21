@@ -74,14 +74,43 @@ export class NuxyToolOllamaElement extends LitElement implements NuxyToolElement
               hint=${t('empty.hint')}
             ></nuxy-empty-state>`
           : messages.map(
-              (msg) =>
-                html`<nuxy-chat-message role=${msg.role} content=${msg.content}>
+              (msg, idx) =>
+                html`<nuxy-chat-message
+                  role=${msg.role}
+                  content=${msg.content}
+                  ?loading=${loading && idx === messages.length - 1}
+                >
                 </nuxy-chat-message>`
             )}
         ${loading && messages.at(-1)?.role !== 'assistant'
           ? html`<div style="align-self:flex-start; opacity:0.5; font-size:var(--font-sm);">…</div>`
           : nothing}
       </div>
+      ${messages.length > 0
+        ? html`
+            <div style="display:flex; gap:var(--space-1); align-self:flex-start;">
+              <nuxy-icon-button
+                size="sm"
+                variant="ghost"
+                title=${t('actions.copyLastMessage')}
+                aria-label=${t('actions.copyLastMessage')}
+                @click=${() => this.controller?.handleCopyLastMessage()}
+              >
+                <nuxy-icon name="copy"></nuxy-icon>
+              </nuxy-icon-button>
+              <nuxy-icon-button
+                size="sm"
+                variant="ghost"
+                ?disabled=${loading}
+                title=${t('actions.retry')}
+                aria-label=${t('actions.retry')}
+                @click=${() => this.controller?.handleRetry()}
+              >
+                <nuxy-icon name="refresh"></nuxy-icon>
+              </nuxy-icon-button>
+            </div>
+          `
+        : nothing}
     `
   }
 }

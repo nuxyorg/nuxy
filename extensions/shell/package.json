@@ -7,6 +7,9 @@
     "dev": "nuxy-ext-dev",
     "start": "nuxy-ext-dev"
   },
+  "dependencies": {
+    "@nuxyorg/extension-sdk": "workspace:*"
+  },
   "devDependencies": {
     "@nuxyorg/ext-devserver": "workspace:*"
   }

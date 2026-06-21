@@ -35,8 +35,8 @@
     },
     "ignoredRoots": {
       "label": "Ignored Directories",
-      "placeholder": "/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock",
-      "description": "Comma-separated list of root-level directories to ignore during indexing"
+      "placeholder": "/proc",
+      "description": "Root-level directories to ignore during indexing"
     },
     "updateIntervalHours": {
       "label": "Re-indexing Interval",

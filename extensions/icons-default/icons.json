@@ -3,6 +3,7 @@
   "name": "Nuxy Icons",
   "extId": "com.nuxy.icons-default",
   "icons": [
+    "ai",
     "alert-circle",
     "archive",
     "arrow-down",

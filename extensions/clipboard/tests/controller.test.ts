@@ -151,6 +151,68 @@ describe('ClipboardController', () => {
     expect(controller.state.selectedIndex).toBe(0)
   })
 
+  describe('refresh interval', () => {
+    it('polls getHistory at the default 1000ms cadence before the backend interval resolves', async () => {
+      const controller = new ClipboardController(() => {})
+      controller.connect()
+      await flush()
+      invokeMock.mockClear()
+
+      await vi.advanceTimersByTimeAsync(1000)
+      expect(invokeMock).toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+
+      controller.disconnect()
+    })
+
+    it('switches to the backend pollIntervalMs once it resolves, never polling faster than it', async () => {
+      invokeMock.mockImplementation(async (_ext: string, channel: string) => {
+        if (channel === 'getExtensionTranslations') {
+          return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
+        }
+        if (channel === 'getHistory') return { success: true, data: [] }
+        if (channel === 'getPollIntervalMs') return { success: true, data: 5000 }
+        return { success: true, data: undefined }
+      })
+
+      const controller = new ClipboardController(() => {})
+      controller.connect()
+      await flush()
+      invokeMock.mockClear()
+
+      await vi.advanceTimersByTimeAsync(1000)
+      expect(invokeMock).not.toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+
+      await vi.advanceTimersByTimeAsync(4000)
+      expect(invokeMock).toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+
+      controller.disconnect()
+    })
+
+    it('floors a backend interval below 1000ms at 1000ms', async () => {
+      invokeMock.mockImplementation(async (_ext: string, channel: string) => {
+        if (channel === 'getExtensionTranslations') {
+          return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
+        }
+        if (channel === 'getHistory') return { success: true, data: [] }
+        if (channel === 'getPollIntervalMs') return { success: true, data: 250 }
+        return { success: true, data: undefined }
+      })
+
+      const controller = new ClipboardController(() => {})
+      controller.connect()
+      await flush()
+      invokeMock.mockClear()
+
+      await vi.advanceTimersByTimeAsync(250)
+      expect(invokeMock).not.toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+
+      await vi.advanceTimersByTimeAsync(750)
+      expect(invokeMock).toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+
+      controller.disconnect()
+    })
+  })
+
   describe('keyboard actions', () => {
     let getter: (() => ReturnType<ClipboardController['getKeyActions']>) | null = null
 

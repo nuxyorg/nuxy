@@ -125,7 +125,36 @@ export interface LanguageRemoveRow {
   langCode: string
 }
 
-export type AnyRow = BaseRow | ExtSectionRow | LanguageRow | LanguageRemoveRow | ExtToggleRow
+export interface ExtListAddRow {
+  key: string
+  label: string
+  options: SelectOption[]
+  isExtension: false
+  isExtListAdd: true
+  extId: string
+  fieldKey: string
+  placeholder?: string
+}
+
+export interface ExtListRemoveRow {
+  key: string
+  label: string
+  options: SelectOption[]
+  isExtension: false
+  isExtListRemove: true
+  extId: string
+  fieldKey: string
+  itemValue: string
+}
+
+export type AnyRow =
+  | BaseRow
+  | ExtSectionRow
+  | LanguageRow
+  | LanguageRemoveRow
+  | ExtToggleRow
+  | ExtListAddRow
+  | ExtListRemoveRow
 
 export interface RenderSection {
   id: string

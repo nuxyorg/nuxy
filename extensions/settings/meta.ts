@@ -7,6 +7,8 @@ import type {
   ExtFieldDef,
   ExtSectionRow,
   ExtToggleRow,
+  ExtListAddRow,
+  ExtListRemoveRow,
   LanguageRow,
   LanguageRemoveRow,
   BaseRow,
@@ -22,6 +24,7 @@ import {
   buildFontFamilyMap,
   buildFontOptions,
 } from './utils/settingsOptions.ts'
+import { parseListFieldValue } from './utils/listField.ts'
 
 const OLLAMA_EXT_ID = 'com.nuxy.ollama'
 
@@ -29,7 +32,7 @@ export interface SettingsMeta {
   fontFamilyMap: Record<string, string>
   fontOptions: SelectOption<string>[]
   allSections: ResolvedSection[]
-  extSections: Array<{ id: string; label: string; resolvedRows: ExtSectionRow[] }>
+  extSections: Array<{ id: string; label: string; resolvedRows: AnyRow[] }>
   extToggleRows: ExtToggleRow[]
   sectionsToRender: RenderSection[]
   allRows: AnyRow[]
@@ -45,6 +48,7 @@ export interface ComputeSettingsMetaParams {
   installedExtensions: InstalledExtension[]
   ollamaModelOptions: SelectOption[]
   preferredLanguages: string[]
+  extValues: Record<string, Record<string, unknown>>
   t: (key: string) => string
 }
 
@@ -57,6 +61,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
     installedExtensions,
     ollamaModelOptions,
     preferredLanguages,
+    extValues,
     t,
   } = params
 
@@ -113,7 +118,32 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
   }))
 
   const extSections = extSchemas.map((info: ExtSettingsInfo) => {
-    const resolvedRows: ExtSectionRow[] = info.schema.fields.map((field: ExtFieldDef) => {
+    const resolvedRows: AnyRow[] = info.schema.fields.flatMap((field: ExtFieldDef): AnyRow[] => {
+      if (field.type === 'list') {
+        const items = parseListFieldValue(extValues[info.extId]?.[field.key])
+        const addRow: ExtListAddRow = {
+          key: `${info.extId}:${field.key}:add`,
+          label: field.label,
+          options: [],
+          isExtension: false as const,
+          isExtListAdd: true as const,
+          extId: info.extId,
+          fieldKey: field.key,
+          placeholder: field.placeholder,
+        }
+        const removeRows: ExtListRemoveRow[] = items.map((item) => ({
+          key: `${info.extId}:${field.key}:remove:${item}`,
+          label: item,
+          options: [],
+          isExtension: false as const,
+          isExtListRemove: true as const,
+          extId: info.extId,
+          fieldKey: field.key,
+          itemValue: item,
+        }))
+        return [addRow, ...removeRows]
+      }
+
       const selectKey = `${info.extId}:${field.key}`
       const selectOptions: SelectOption[] =
         field.type === 'toggle'
@@ -124,7 +154,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
           : info.extId === OLLAMA_EXT_ID && field.key === 'model' && ollamaModelOptions.length > 0
             ? ollamaModelOptions
             : field.options || []
-      return {
+      const row: ExtSectionRow = {
         key: selectKey,
         label: field.label,
         options: selectOptions,
@@ -136,6 +166,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
         placeholder: field.placeholder,
         default: field.default,
       }
+      return [row]
     })
     return { id: info.extId, label: info.name, resolvedRows }
   })
@@ -214,7 +245,7 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
     const base: BaseRow[] = allSections.flatMap((s) =>
       s.resolvedRows.map((r: SectionRow) => ({ ...r, isExtension: false as const }))
     )
-    const ext: ExtSectionRow[] = extSections.flatMap((s) => s.resolvedRows)
+    const ext: AnyRow[] = extSections.flatMap((s) => s.resolvedRows)
     return [...base, languageAddRow, ...languageRemoveRows, ...extToggleRows, ...ext]
   })()
 

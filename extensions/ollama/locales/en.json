@@ -11,7 +11,10 @@
     "queue": "Queue",
     "stop": "Stop",
     "clearHistory": "Clear Chat History",
-    "models": "Models"
+    "models": "Models",
+    "refreshModels": "Refresh Models",
+    "copyLastMessage": "Copy Last Message",
+    "retry": "Retry Last Response"
   },
   "hints": {
     "model": "Model: {name}"
@@ -60,5 +63,8 @@
         "1": "1.0 (Maximum)"
       }
     }
+  },
+  "error": {
+    "modelNotFound": "Model \"{model}\" not found — refreshing model list..."
   }
 }

@@ -353,6 +353,10 @@ importers:
         version: link:../../packages/ext-devserver
 
   extensions/shell:
+    dependencies:
+      '@nuxyorg/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
     devDependencies:
       '@nuxyorg/ext-devserver':
         specifier: workspace:*

@@ -156,6 +156,8 @@ export class NuxyCommandPaletteElement extends LitElement {
   @state()
   declare private _pathLabels: string[]
 
+  private _selectedIndexStack: number[] = []
+
   private _actions: ShellAction[] = []
   private _container: HTMLElement | null = null
   private _position: Position = { x: 0, y: 0 }
@@ -245,6 +247,7 @@ export class NuxyCommandPaletteElement extends LitElement {
   private _resetStack(): void {
     this._menuStack = [this._actions]
     this._pathLabels = []
+    this._selectedIndexStack = []
     this._query = ''
     this._selectedIndex = 0
     if (this._inputEl) this._inputEl.value = ''
@@ -267,7 +270,7 @@ export class NuxyCommandPaletteElement extends LitElement {
       this._menuStack = this._menuStack.slice(0, -1)
       this._pathLabels = this._pathLabels.slice(0, -1)
       this._query = ''
-      this._selectedIndex = 0
+      this._selectedIndex = this._selectedIndexStack.pop() ?? 0
       if (this._inputEl) this._inputEl.value = ''
     } else {
       this._close()
@@ -276,6 +279,7 @@ export class NuxyCommandPaletteElement extends LitElement {
 
   private _openSubmenu(action: ShellAction): void {
     if (!action.children || this._menuStack.length >= MAX_DEPTH) return
+    this._selectedIndexStack = [...this._selectedIndexStack, this._selectedIndex]
     this._menuStack = [...this._menuStack, action.children]
     this._pathLabels = [...this._pathLabels, action.label]
     this._query = ''

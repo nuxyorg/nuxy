@@ -1,5 +1,6 @@
 import type { CoreContext } from '@nuxyorg/extension-sdk'
 import type { AngrysearchItem, SearchPayload, SearchResult, DbStatus, DbRow } from './types.ts'
+import { parseIgnoredRoots } from './utils.ts'
 
 type Db = ReturnType<CoreContext['db']['open']>
 
@@ -7,7 +8,16 @@ let activeDb: Db | null = null
 let isUpdating = false
 let lastUpdate: Date | null = null
 
-const DEFAULT_IGNORED_ROOTS = '/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock'
+const DEFAULT_IGNORED_ROOTS = [
+  '/proc',
+  '/dev',
+  '/sys',
+  '/snap',
+  '/run',
+  '/tmp',
+  '/var/run',
+  '/var/lock',
+]
 
 function registerRegexFunction(db: Db): void {
   db.function('REGEXP', (...args: unknown[]): unknown => {
@@ -33,14 +43,10 @@ async function updateDatabase(core: CoreContext): Promise<void> {
 
   try {
     const scanRoot = (await core.settings.read<string>('scanRoot')) ?? '/'
-    const ignoredRootsRaw =
-      (await core.settings.read<string>('ignoredRoots')) ?? DEFAULT_IGNORED_ROOTS
-    const ignoredSet = new Set(
-      ignoredRootsRaw
-        .split(',')
-        .map((s) => s.trim())
-        .filter(Boolean)
-    )
+    const ignoredRootsRaw = await core.settings.read<string | string[]>('ignoredRoots')
+    const ignoredList =
+      ignoredRootsRaw === null ? DEFAULT_IGNORED_ROOTS : parseIgnoredRoots(ignoredRootsRaw)
+    const ignoredSet = new Set(ignoredList)
 
     const tempDb = core.db.open('temp_angry_database')
     tempDb.exec('PRAGMA synchronous = OFF;')

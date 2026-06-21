@@ -12,10 +12,10 @@
     {
       "key": "ignoredRoots",
       "label": "Ignored Directories",
-      "type": "text",
-      "default": "/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock",
-      "placeholder": "/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock",
-      "description": "Comma-separated list of root-level directories to ignore during indexing"
+      "type": "list",
+      "default": ["/proc", "/dev", "/sys", "/snap", "/run", "/tmp", "/var/run", "/var/lock"],
+      "placeholder": "/proc",
+      "description": "Root-level directories to ignore during indexing"
     },
     {
       "key": "updateIntervalHours",

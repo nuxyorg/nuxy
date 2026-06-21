@@ -107,6 +107,11 @@ export function register(core: CoreContext): void {
 
   core.ipc.handle('getHistory', async (): Promise<ClipboardItem[]> => history)
 
+  core.ipc.handle('getPollIntervalMs', async (): Promise<number> => {
+    const pollInterval = await core.settings.read<number>('pollIntervalMs')
+    return pollInterval && pollInterval > 0 ? pollInterval : 1000
+  })
+
   core.ipc.handle('clearHistory', async (): Promise<ClipboardItem[]> => {
     history = history.filter((i) => i.pinned)
     await persistAfterMutation()

@@ -1,6 +1,8 @@
 import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { SettingsController } from './controller.ts'
+import { handleSettingsInputKeydown, handleListAddInputKeydown } from './utils/inputKeydown.ts'
+import { isBooleanRow } from './utils/settingsOptions.ts'
 import type { AnyRow, RenderSection } from './types.ts'
 
 interface NuxyInputElement extends HTMLElement {
@@ -180,17 +182,18 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
 
     const isLanguageRow = 'isLanguage' in row && row.isLanguage
     const isLanguageRemoveRow = 'isLanguageRemove' in row && row.isLanguageRemove
-    const isExtToggleRow = 'isExtToggle' in row && row.isExtToggle
+    const isListAddRow = 'isExtListAdd' in row && row.isExtListAdd
+    const isListRemoveRow = 'isExtListRemove' in row && row.isExtListRemove
+    const isBoolRow = isBooleanRow(row)
     const isSelectType =
-      isLanguageRow ||
-      isExtToggleRow ||
-      !row.isExtension ||
-      row.type === 'select' ||
-      row.type === 'toggle'
+      !isBoolRow &&
+      !isListAddRow &&
+      !isListRemoveRow &&
+      (isLanguageRow || !row.isExtension || row.type === 'select')
 
     const isActive = globalIdx === selectedRow && activeSelect === null
 
-    if (isLanguageRemoveRow) {
+    if (isLanguageRemoveRow || isListRemoveRow) {
       return html`
         <nuxy-list-item ?active=${isActive} @click=${() => this.controller?.onItemClick(globalIdx)}>
           <nuxy-list-item-body>
@@ -205,6 +208,40 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
       `
     }
 
+    if (isListAddRow) {
+      return html`
+        <nuxy-list-item ?active=${isActive} @click=${() => this.controller?.onItemClick(globalIdx)}>
+          <nuxy-list-item-body>
+            <nuxy-list-item-text>${row.label}</nuxy-list-item-text>
+          </nuxy-list-item-body>
+          <nuxy-list-item-actions>
+            <nuxy-input
+              type="text"
+              placeholder=${row.placeholder || ''}
+              class="nuxy-settings-input--text"
+              ${ref((el) => {
+                const nuxyInput = el as NuxyInputElement | null
+                if (nuxyInput) {
+                  const input = nuxyInput.nativeInput
+                  if (this.controller) {
+                    this.controller.inputRefs[row.key] = input
+                    if (input) {
+                      input.onkeydown = (e: KeyboardEvent) =>
+                        handleListAddInputKeydown(e, input, (value) =>
+                          this.controller?.handleListAdd(row, value)
+                        )
+                    }
+                  }
+                } else if (this.controller) {
+                  this.controller.inputRefs[row.key] = null
+                }
+              })}
+            ></nuxy-input>
+          </nuxy-list-item-actions>
+        </nuxy-list-item>
+      `
+    }
+
     return html`
       <nuxy-list-item ?active=${isActive} @click=${() => this.controller?.onItemClick(globalIdx)}>
         <nuxy-list-item-body>
@@ -214,7 +251,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
             : nothing}
         </nuxy-list-item-body>
         <nuxy-list-item-actions>
-          ${isExtToggleRow
+          ${isBoolRow
             ? html`
                 <nuxy-switch
                   ?checked=${Boolean(currentValue)}
@@ -264,11 +301,8 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
                                 this.controller?.handleExtInputChange(row, input.value)
                               input.onblur = () =>
                                 this.controller?.handleExtInputBlur(row, input.value)
-                              input.onkeydown = (e: KeyboardEvent) => {
-                                if (e.key === 'Enter' || e.key === 'Escape') {
-                                  input.blur()
-                                }
-                              }
+                              input.onkeydown = (e: KeyboardEvent) =>
+                                handleSettingsInputKeydown(e, input)
                             }
                           }
                         } else {

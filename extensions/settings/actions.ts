@@ -1,5 +1,6 @@
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import type { NuxySettings, AnyRow } from './types.ts'
+import { parseListFieldValue } from './utils/listField.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 
@@ -103,6 +104,23 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
       .catch(() => {})
   }
 
+  const addListItem = (extId: string, fieldKey: string, rawValue: string): void => {
+    const value = rawValue.trim()
+    if (!value) return
+    const current = parseListFieldValue(ctx.getExtValues()[extId]?.[fieldKey])
+    if (current.includes(value)) return
+    updateExtSetting(extId, fieldKey, [...current, value])
+  }
+
+  const removeListItem = (extId: string, fieldKey: string, itemValue: string): void => {
+    const current = parseListFieldValue(ctx.getExtValues()[extId]?.[fieldKey])
+    updateExtSetting(
+      extId,
+      fieldKey,
+      current.filter((v) => v !== itemValue)
+    )
+  }
+
   const toggleExtension = (extId: string, enabled: boolean): void => {
     ctx.setActiveSelect(null)
     if (!window.core?.ipc?.invoke) return
@@ -135,6 +153,8 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
     addLanguage,
     removeLanguage,
     updateExtSetting,
+    addListItem,
+    removeListItem,
     toggleExtension,
     handleRowSelect,
     handleExtInputChange,

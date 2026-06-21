@@ -1,6 +1,7 @@
 import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
 import '../MarkdownText/nuxy-markdown-text.ts'
+import '../Spinner/nuxy-spinner.ts'
 
 const ROLE_LABELS: Record<string, string> = {
   user: 'You',
@@ -56,13 +57,18 @@ export class NuxyChatMessageElement extends LitElement {
   declare role: string
   @property({ type: String })
   declare content: string
+  @property({ type: Boolean })
+  declare loading: boolean
 
   render(): TemplateResult {
+    const isThinking = this.role === 'assistant' && this.loading && !this.content
     return html`
       <div class="nuxy-chat-message__bubble">
-        ${this.role === 'assistant'
-          ? html`<nuxy-markdown-text content=${this.content}></nuxy-markdown-text>`
-          : this.content}
+        ${isThinking
+          ? html`<nuxy-spinner size="sm"></nuxy-spinner>`
+          : this.role === 'assistant'
+            ? html`<nuxy-markdown-text content=${this.content}></nuxy-markdown-text>`
+            : this.content}
       </div>
       <div class="nuxy-chat-message__role">${ROLE_LABELS[this.role] ?? this.role}</div>
     `

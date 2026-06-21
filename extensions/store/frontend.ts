@@ -9,7 +9,7 @@ import {
 } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { StoreController } from './controller.ts'
-import { permissionVariant } from './utils/storeFilter.ts'
+import { permissionVariant, serializeTabs } from './utils/storeFilter.ts'
 import type { ExtensionListItem } from './types.ts'
 
 @customElement('nuxy-tool-store')
@@ -154,7 +154,7 @@ export class NuxyToolStoreElement extends LitElement implements NuxyToolElement 
     const navSections = this.controller!.navSections
     return html`
       <nuxy-tab-bar
-        .tabs=${navSections.map((s) => ({ id: s.id, label: `${s.label} (${s.itemCount})` }))}
+        tabs=${serializeTabs(navSections)}
         active=${activeTab}
         orientation="vertical"
         @nuxy-tab-bar-change=${(e: CustomEvent<{ id: string }>) =>

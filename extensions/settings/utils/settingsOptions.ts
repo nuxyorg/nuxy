@@ -220,6 +220,17 @@ export function buildFontOptions(systemFonts: string[]): SelectOption<string>[] 
   return [...FONT_OPTIONS_STATIC, ...systemFonts.map((name) => ({ value: name, label: name }))]
 }
 
+/**
+ * True for any row whose value is a plain boolean — extension enable rows,
+ * extension fields declared `type: "toggle"`, and kernel rows backed by
+ * BOOL_OPTIONS. These render as a switch instead of a Yes/No select-box.
+ */
+export function isBooleanRow(row: AnyRow): boolean {
+  if ('isExtToggle' in row && row.isExtToggle) return true
+  if (row.isExtension) return row.type === 'toggle'
+  return row.options.length === 2 && row.options.every((o) => typeof o.value === 'boolean')
+}
+
 export function getRowOptions(row: AnyRow, state: StateSnapshot): SelectOption[] {
   if ('isLanguage' in row && row.isLanguage) {
     const selected = new Set(state.settings.preferredLanguages.filter(Boolean))

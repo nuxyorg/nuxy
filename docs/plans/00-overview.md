@@ -15,3 +15,22 @@ independently once its tests/checks pass.
 
 Items #3 and #5 consume the deeplink scheme/API defined in #4, so they are
 queued until #4 lands on `main` to avoid two incompatible deeplink designs.
+
+---
+
+## Backlog: UI & extensions polish (2026-06-21)
+
+Twelve review items grouped into seven workstreams (settings, list scroll,
+store, angrysearch, clipboard, shell Ctrl+K, ollama). See
+[07-ui-extensions-backlog.md](07-ui-extensions-backlog.md) for phased order and
+blockers.
+
+| Group | Scope                                      | Blocked by |
+| ----- | ------------------------------------------ | ---------- |
+| A     | Store tab-bar fix, Ollama icon             | —          |
+| B     | List forward-scroll edge snap              | —          |
+| C     | Settings Esc, bool→switch, list field type | —          |
+| D     | Ctrl+K submenu Esc + selection memory      | —          |
+| E     | Angrysearch repair + ignored-dirs list     | E2 → C3    |
+| F     | Clipboard poll perf                        | —          |
+| G     | Ollama models, loader, copy/retry          | G3 → D     |

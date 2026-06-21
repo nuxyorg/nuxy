@@ -10,7 +10,7 @@ import {
   type SettingsMeta,
 } from './meta.ts'
 import type { AnyRow, NuxySettings, SelectOption, StateSnapshot } from './types.ts'
-import { getRowCurrentValue, getRowOptions } from './utils/settingsOptions.ts'
+import { getRowCurrentValue, getRowOptions, isBooleanRow } from './utils/settingsOptions.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 
@@ -207,6 +207,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
       installedExtensions: s.installedExtensions,
       ollamaModelOptions: s.ollamaModelOptions,
       preferredLanguages: s.settings.preferredLanguages ?? [],
+      extValues: s.extValues,
       t: this.t.t,
     })
     this.meta = filterSettingsByQuery(base, this.filterQuery)
@@ -367,6 +368,21 @@ export class SettingsController extends BaseExtensionController<SettingsControll
               this.actions?.removeLanguage((row as { langCode: string }).langCode)
               return
             }
+            const isListRemove = 'isExtListRemove' in row && row.isExtListRemove
+            if (isListRemove) {
+              this.actions?.removeListItem(row.extId, row.fieldKey, row.itemValue)
+              return
+            }
+            const isListAdd = 'isExtListAdd' in row && row.isExtListAdd
+            if (isListAdd) {
+              const focusInput = () => {
+                this.inputRefs[row.key]?.focus()
+              }
+              focusInput()
+              queueMicrotask(focusInput)
+              setTimeout(focusInput, 0)
+              return
+            }
             const isExtToggle = 'isExtToggle' in row && row.isExtToggle
             if (isExtToggle) {
               const currentEnabled = !(
@@ -376,6 +392,10 @@ export class SettingsController extends BaseExtensionController<SettingsControll
               return
             }
             const isLang = 'isLanguage' in row && row.isLanguage
+            if (!isLang && isBooleanRow(row)) {
+              this.handleRowSelect(row, !this.getRowValue(row))
+              return
+            }
             if (!isLang && row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
               const focusInput = () => {
                 this.inputRefs[row.key]?.focus()
@@ -423,6 +443,14 @@ export class SettingsController extends BaseExtensionController<SettingsControll
       return
     }
     this.actions?.handleRowSelect(row, value)
+  }
+
+  handleListAdd(row: { extId: string; fieldKey: string }, value: string): void {
+    this.actions?.addListItem(row.extId, row.fieldKey, value)
+  }
+
+  handleListRemove(row: { extId: string; fieldKey: string; itemValue: string }): void {
+    this.actions?.removeListItem(row.extId, row.fieldKey, row.itemValue)
   }
 
   handleExtInputChange(row: AnyRow, value: string): void {

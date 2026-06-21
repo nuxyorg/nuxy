@@ -1,8 +1,10 @@
+/* cspell:ignore angrysearch */
 import { describe, it, expect } from 'vitest'
 import {
   buildFontFamilyMap,
   buildFontOptions,
   getRowCurrentValue,
+  isBooleanRow,
   FONT_OPTIONS_STATIC,
   DEFAULT_SETTINGS,
   BOOL_OPTIONS,
@@ -135,6 +137,66 @@ describe('getRowCurrentValue', () => {
       default: 'basic',
     }
     expect(getRowCurrentValue(row, settings, extValues, installed)).toBe('basic')
+  })
+})
+
+describe('isBooleanRow', () => {
+  it('is true for an extension enable/disable row', () => {
+    const row: AnyRow = {
+      key: 'ext-toggle:com.nuxy.calculator',
+      label: 'Calculator',
+      options: BOOL_OPTIONS,
+      isExtension: false,
+      isExtToggle: true,
+      extId: 'com.nuxy.calculator',
+    }
+    expect(isBooleanRow(row)).toBe(true)
+  })
+
+  it('is true for an extension field declared type: "toggle"', () => {
+    const row: AnyRow = {
+      key: 'com.nuxy.angrysearch:caseSensitive',
+      label: 'Case Sensitive',
+      options: [],
+      isExtension: true,
+      extId: 'com.nuxy.angrysearch',
+      fieldKey: 'caseSensitive',
+      type: 'toggle',
+    }
+    expect(isBooleanRow(row)).toBe(true)
+  })
+
+  it('is false for an extension field declared type: "select"', () => {
+    const row: AnyRow = {
+      key: 'com.nuxy.calculator:precision',
+      label: 'Precision',
+      options: [],
+      isExtension: true,
+      extId: 'com.nuxy.calculator',
+      fieldKey: 'precision',
+      type: 'select',
+    }
+    expect(isBooleanRow(row)).toBe(false)
+  })
+
+  it('is true for a kernel row backed by BOOL_OPTIONS', () => {
+    const row: AnyRow = {
+      key: 'alwaysOnTop',
+      label: 'Always on Top',
+      options: BOOL_OPTIONS,
+      isExtension: false,
+    } as any
+    expect(isBooleanRow(row)).toBe(true)
+  })
+
+  it('is false for a kernel row with non-boolean options', () => {
+    const row: AnyRow = {
+      key: 'theme',
+      label: 'Theme',
+      options: [{ value: 'dark', label: 'Dark' }],
+      isExtension: false,
+    } as any
+    expect(isBooleanRow(row)).toBe(false)
   })
 })
 

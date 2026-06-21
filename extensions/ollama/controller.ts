@@ -82,6 +82,21 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
     window.core?.shell?.refreshShellActions()
   }
 
+  /**
+   * Re-fetches the model list from Ollama (e.g. after pulling a new model
+   * while the app is open) and falls back to the first available model if
+   * the currently selected one no longer exists.
+   */
+  async refreshModels(): Promise<void> {
+    const list = await invoke<string[]>('models').catch(() => [] as string[])
+    const models = Array.isArray(list) ? list : []
+    const selectedModel = models.includes(this.state.selectedModel)
+      ? this.state.selectedModel
+      : (models[0] ?? '')
+    this.store.setState({ models, selectedModel })
+    window.core?.shell?.refreshShellActions()
+  }
+
   async handleSend(overrideText?: string): Promise<void> {
     const text = overrideText ?? this.state.query.trim()
     if (!text || this.state.loading) return
@@ -90,11 +105,42 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
       window.core?.shell?.controlOmniBar('clear')
     }
 
+    const next: ChatMessage[] = [...this.state.messages, { role: 'user', content: text }]
+    this.store.setState({ messages: next, error: null })
+    await this.streamChat(next)
+  }
+
+  /**
+   * Regenerates the assistant's reply for the most recent user turn — drops
+   * the existing assistant message (if any) without duplicating the user
+   * message, then re-streams from Ollama.
+   */
+  async handleRetry(): Promise<void> {
+    if (this.state.loading) return
+    const messages = this.state.messages
+    if (messages.length === 0) return
+    const last = messages[messages.length - 1]
+    const base = last?.role === 'assistant' ? messages.slice(0, -1) : messages
+    if (base.length === 0 || base[base.length - 1]?.role !== 'user') return
+    this.store.setState({ messages: base, error: null })
+    await this.streamChat(base)
+  }
+
+  /**
+   * Copies the most recent message's text to the system clipboard via the
+   * renderer's own clipboard access (extensions use `core.clipboard` only
+   * from the backend Worker context).
+   */
+  handleCopyLastMessage(): void {
+    const last = this.state.messages.at(-1)
+    if (!last?.content) return
+    navigator.clipboard.writeText(last.content).catch(() => {})
+  }
+
+  private async streamChat(next: ChatMessage[]): Promise<void> {
     const controller = new AbortController()
     this.abortController = controller
-
-    const next: ChatMessage[] = [...this.state.messages, { role: 'user', content: text }]
-    this.store.setState({ messages: next, loading: true, error: null })
+    this.store.setState({ loading: true })
 
     let assistantContent = ''
 
@@ -169,7 +215,15 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
           this.store.setState({ messages: next })
         }
       } else {
-        this.store.setState({ error: e?.message ?? String(err) })
+        const message = e?.message ?? String(err)
+        if (/Ollama HTTP 404/.test(message)) {
+          this.store.setState({
+            error: this.t.t('error.modelNotFound', { model: this.state.selectedModel }),
+          })
+          void this.refreshModels()
+        } else {
+          this.store.setState({ error: message })
+        }
         const messages = this.state.messages
         const last = messages[messages.length - 1]
         if (last?.role === 'assistant' && last.content === '') {
@@ -246,6 +300,39 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
         section: 'actions',
         showInMenu: true,
         handler: () => this.handleClearChat(),
+      },
+      {
+        id: 'ollama-refresh-models',
+        label: t('actions.refreshModels'),
+        section: 'actions',
+        showInMenu: true,
+        handler: () => void this.refreshModels(),
+      },
+      {
+        id: 'ollama-copy-last-message',
+        key: 'c',
+        modifiers: ['ctrl'],
+        label: t('actions.copyLastMessage'),
+        section: 'actions',
+        showInMenu: true,
+        activeOn: () => this.state.messages.length > 0,
+        handler: () => this.handleCopyLastMessage(),
+      },
+      {
+        id: 'ollama-retry',
+        key: 'r',
+        modifiers: ['ctrl'],
+        label: t('actions.retry'),
+        section: 'actions',
+        showInMenu: true,
+        activeOn: () => {
+          if (this.state.loading) return false
+          const last = this.state.messages.at(-1)
+          const base =
+            last?.role === 'assistant' ? this.state.messages.slice(0, -1) : this.state.messages
+          return base.length > 0 && base[base.length - 1]?.role === 'user'
+        },
+        handler: () => void this.handleRetry(),
       },
     ]
 

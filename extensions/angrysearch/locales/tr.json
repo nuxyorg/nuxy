@@ -35,8 +35,8 @@
     },
     "ignoredRoots": {
       "label": "Yoksayılan Dizinler",
-      "placeholder": "/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock",
-      "description": "İndeksleme sırasında yoksayılacak kök düzeyi dizinlerin virgülle ayrılmış listesi"
+      "placeholder": "/proc",
+      "description": "İndeksleme sırasında yoksayılacak kök düzeyi dizinler"
     },
     "updateIntervalHours": {
       "label": "Yeniden İndeksleme Aralığı",

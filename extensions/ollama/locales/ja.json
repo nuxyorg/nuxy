@@ -11,7 +11,10 @@
     "queue": "キュー",
     "stop": "停止",
     "clearHistory": "チャット履歴をクリア",
-    "models": "モデル"
+    "models": "モデル",
+    "refreshModels": "モデルを更新",
+    "copyLastMessage": "最後のメッセージをコピー",
+    "retry": "最後の応答を再試行"
   },
   "hints": {
     "model": "モデル: {name}"
@@ -60,5 +63,8 @@
         "1": "1.0（最大）"
       }
     }
+  },
+  "error": {
+    "modelNotFound": "モデル「{model}」が見つかりません — モデルリストを更新しています..."
   }
 }

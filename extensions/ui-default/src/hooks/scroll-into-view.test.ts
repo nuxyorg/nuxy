@@ -140,6 +140,50 @@ describe('scroll-into-view', () => {
     expect(container.scrollTop).toBeGreaterThan(defaultPaddingScroll)
   })
 
+  it('snaps to scrollTop 0 when up-bias look-ahead would go negative, even though the item is already visible', () => {
+    const { container, item } = setupScrollContainer()
+    container.scrollTop = 6
+
+    // Item sits 6px below the container's visible top — fully visible unbiased
+    // (futureElTop === parentRect.top once scrollTop accounted for), but the
+    // up-bias look-ahead padding (clientHeight / 5 = 20) pushes the computed
+    // target to -8, which should snap flush to 0 instead of being rejected.
+    vi.spyOn(item, 'getBoundingClientRect').mockReturnValue({
+      top: 6,
+      bottom: 26,
+      left: 0,
+      right: 100,
+      width: 100,
+      height: 20,
+      x: 0,
+      y: 6,
+      toJSON: () => ({}),
+    } as DOMRect)
+
+    smoothScrollIntoViewIfNeeded(item, { scrollBias: 'up' })
+    expect(container.scrollTop).toBe(0)
+  })
+
+  it('does not snap up-bias when the look-ahead target stays within bounds', () => {
+    const { container, item } = setupScrollContainer()
+    container.scrollTop = 30
+
+    vi.spyOn(item, 'getBoundingClientRect').mockReturnValue({
+      top: 30,
+      bottom: 50,
+      left: 0,
+      right: 100,
+      width: 100,
+      height: 20,
+      x: 0,
+      y: 30,
+      toJSON: () => ({}),
+    } as DOMRect)
+
+    smoothScrollIntoViewIfNeeded(item, { scrollBias: 'up' })
+    expect(container.scrollTop).toBe(30)
+  })
+
   it('resolves scrollSpeed override with clamping', () => {
     expect(resolveScrollSpeedForTest()).toBe(DEFAULT_SCROLL_SPEED)
     expect(resolveScrollSpeedForTest(0.25)).toBe(0.25)

@@ -35,8 +35,8 @@
     },
     "ignoredRoots": {
       "label": "無視するディレクトリ",
-      "placeholder": "/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock",
-      "description": "インデックス作成時に無視するルートレベルディレクトリのカンマ区切りリスト"
+      "placeholder": "/proc",
+      "description": "インデックス作成時に無視するルートレベルディレクトリ"
     },
     "updateIntervalHours": {
       "label": "再インデックス間隔",
