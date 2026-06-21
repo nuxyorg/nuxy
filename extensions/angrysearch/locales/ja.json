@@ -26,5 +26,39 @@
     "openFolder": "フォルダを開く",
     "updateDatabase": "データベースを更新",
     "toggleRegex": "正規表現モードを切り替え"
+  },
+  "settings": {
+    "scanRoot": {
+      "label": "スキャンするルートディレクトリ",
+      "placeholder": "/",
+      "description": "ファイルをスキャンするルートディレクトリ（例: /, /home/user）"
+    },
+    "ignoredRoots": {
+      "label": "無視するディレクトリ",
+      "placeholder": "/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock",
+      "description": "インデックス作成時に無視するルートレベルディレクトリのカンマ区切りリスト"
+    },
+    "updateIntervalHours": {
+      "label": "再インデックス間隔",
+      "description": "ファイル検索データベースが自動的に再インデックスされる頻度（時間）",
+      "options": {
+        "1": "1時間",
+        "3": "3時間",
+        "6": "6時間",
+        "12": "12時間",
+        "24": "24時間"
+      }
+    },
+    "searchLimit": {
+      "label": "検索結果の上限",
+      "description": "リストに返す検索結果の最大数",
+      "options": {
+        "50": "50件",
+        "100": "100件",
+        "200": "200件",
+        "500": "500件",
+        "1000": "1000件"
+      }
+    }
   }
 }

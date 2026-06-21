@@ -64,5 +64,12 @@
     "uninstallFailed": "{name}のアンインストールに失敗しました",
     "installError": "インストールエラー",
     "uninstallError": "アンインストールエラー"
+  },
+  "settings": {
+    "registryUrl": {
+      "label": "レジストリURL",
+      "placeholder": "https://raw.githubusercontent.com/atagulalan/nuxy-assets/main/registry.json",
+      "description": "リモート拡張機能レジストリJSONファイルのURL。"
+    }
   }
 }

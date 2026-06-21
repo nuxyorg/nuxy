@@ -53,5 +53,32 @@
   },
   "time": {
     "now": "now"
+  },
+  "settings": {
+    "pollIntervalMs": {
+      "label": "Clipboard Check Interval",
+      "description": "How frequently the manager polls the system clipboard for new entries",
+      "options": {
+        "250": "250 ms",
+        "500": "500 ms",
+        "1000": "1 Second",
+        "2000": "2 Seconds"
+      }
+    },
+    "maxHistoryItems": {
+      "label": "Max Unpinned Items",
+      "description": "Maximum number of unpinned entries to retain in the history",
+      "options": {
+        "25": "25 Items",
+        "50": "50 Items",
+        "100": "100 Items",
+        "200": "200 Items",
+        "500": "500 Items"
+      }
+    },
+    "storeImages": {
+      "label": "Keep Image Captures",
+      "description": "Store copied images and screenshots in the clipboard history"
+    }
   }
 }

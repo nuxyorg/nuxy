@@ -64,5 +64,12 @@
     "uninstallFailed": "Failed to uninstall {name}",
     "installError": "Installation error",
     "uninstallError": "Uninstall error"
+  },
+  "settings": {
+    "registryUrl": {
+      "label": "Registry URL",
+      "placeholder": "https://raw.githubusercontent.com/atagulalan/nuxy-assets/main/registry.json",
+      "description": "The URL of the remote extension registry JSON file."
+    }
   }
 }

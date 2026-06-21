@@ -26,5 +26,39 @@
     "openFolder": "Klasörü aç",
     "updateDatabase": "Veritabanını Güncelle",
     "toggleRegex": "Regex Modunu Aç/Kapat"
+  },
+  "settings": {
+    "scanRoot": {
+      "label": "Taranacak Kök Dizin",
+      "placeholder": "/",
+      "description": "Dosyaları taramak için kök dizin (örn. /, /home/user)"
+    },
+    "ignoredRoots": {
+      "label": "Yoksayılan Dizinler",
+      "placeholder": "/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock",
+      "description": "İndeksleme sırasında yoksayılacak kök düzeyi dizinlerin virgülle ayrılmış listesi"
+    },
+    "updateIntervalHours": {
+      "label": "Yeniden İndeksleme Aralığı",
+      "description": "Dosya arama veritabanının otomatik olarak ne sıklıkla yeniden indeksleneceği (saat)",
+      "options": {
+        "1": "1 Saat",
+        "3": "3 Saat",
+        "6": "6 Saat",
+        "12": "12 Saat",
+        "24": "24 Saat"
+      }
+    },
+    "searchLimit": {
+      "label": "Arama Sonucu Sınırı",
+      "description": "Listede döndürülecek maksimum arama sonucu sayısı",
+      "options": {
+        "50": "50 Sonuç",
+        "100": "100 Sonuç",
+        "200": "200 Sonuç",
+        "500": "500 Sonuç",
+        "1000": "1000 Sonuç"
+      }
+    }
   }
 }

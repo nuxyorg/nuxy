@@ -26,5 +26,39 @@
     "openFolder": "Open folder",
     "updateDatabase": "Update Database",
     "toggleRegex": "Toggle Regex Mode"
+  },
+  "settings": {
+    "scanRoot": {
+      "label": "Scan Root Directory",
+      "placeholder": "/",
+      "description": "Root directory to scan for files (e.g. /, /home/user)"
+    },
+    "ignoredRoots": {
+      "label": "Ignored Directories",
+      "placeholder": "/proc,/dev,/sys,/snap,/run,/tmp,/var/run,/var/lock",
+      "description": "Comma-separated list of root-level directories to ignore during indexing"
+    },
+    "updateIntervalHours": {
+      "label": "Re-indexing Interval",
+      "description": "How often the file search database automatically re-indexes (in hours)",
+      "options": {
+        "1": "1 Hour",
+        "3": "3 Hours",
+        "6": "6 Hours",
+        "12": "12 Hours",
+        "24": "24 Hours"
+      }
+    },
+    "searchLimit": {
+      "label": "Search Results Limit",
+      "description": "Maximum number of search results to return in the list",
+      "options": {
+        "50": "50 Results",
+        "100": "100 Results",
+        "200": "200 Results",
+        "500": "500 Results",
+        "1000": "1000 Results"
+      }
+    }
   }
 }

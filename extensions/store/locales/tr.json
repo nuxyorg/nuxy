@@ -64,5 +64,12 @@
     "uninstallFailed": "{name} kaldırılamadı",
     "installError": "Yükleme hatası",
     "uninstallError": "Kaldırma hatası"
+  },
+  "settings": {
+    "registryUrl": {
+      "label": "Kayıt Defteri URL'si",
+      "placeholder": "https://raw.githubusercontent.com/atagulalan/nuxy-assets/main/registry.json",
+      "description": "Uzak eklenti kayıt defteri JSON dosyasının URL'si."
+    }
   }
 }
