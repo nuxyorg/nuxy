@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "name": "Mağaza",
+    "direction": "ltr"
+  },
+  "search": {
+    "placeholder": "Eklenti ara"
+  },
+  "tabs": {
+    "all": "Tüm Eklentiler",
+    "tool": "Araçlar",
+    "theme": "Temalar",
+    "iconpack": "Simge Paketleri",
+    "installed": "Yüklü",
+    "updates": "Güncellemeler"
+  },
+  "list": {
+    "empty": "Eklenti bulunamadı.",
+    "items": {
+      "one": "{count} öğe",
+      "other": "{count} öğe"
+    }
+  },
+  "badge": {
+    "update": "Güncelle",
+    "installed": "Yüklü"
+  },
+  "detail": {
+    "selectPrompt": "Ayrıntıları görmek için bir eklenti seçin",
+    "author": "Geliştirici",
+    "version": "Sürüm",
+    "type": "Tür",
+    "description": "Açıklama",
+    "permissions": "Gerekli İzinler",
+    "noPermissions": "İzin gerekmiyor",
+    "riskyWarning": "Bu eklenti sistem komutu veya dosya yazma yetkisi istiyor. Yayıncı bütünlüğünü doğrulayın."
+  },
+  "actions": {
+    "install": "Yükle",
+    "update": "Güncelle",
+    "uninstall": "Kaldır",
+    "refresh": "Mağazayı yenile",
+    "navigate": "Listede gezin",
+    "installUpdate": "Yükle / Güncelle",
+    "nextCategory": "Sonraki kategori",
+    "focusSidebar": "Kenar çubuğuna odaklan",
+    "performAction": "Eylemi gerçekleştir"
+  },
+  "loading": {
+    "connecting": "Eklenti mağazasına bağlanılıyor...",
+    "installing": "{name} yükleniyor...",
+    "uninstalling": "{name} kaldırılıyor..."
+  },
+  "toast": {
+    "installSuccess": "{name} başarıyla yüklendi!",
+    "installFailed": "Yükleme başarısız",
+    "uninstallSuccess": "{name} kaldırıldı.",
+    "uninstallFailed": "Kaldırma başarısız"
+  },
+  "error": {
+    "fetchFailed": "Katalog alınamadı",
+    "networkError": "Eklentiler alınırken ağ hatası oluştu",
+    "installFailed": "{name} yüklenemedi",
+    "uninstallFailed": "{name} kaldırılamadı",
+    "installError": "Yükleme hatası",
+    "uninstallError": "Kaldırma hatası"
+  }
+}
