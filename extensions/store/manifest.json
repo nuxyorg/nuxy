@@ -1,0 +1,22 @@
+{
+  "id": "com.nuxy.store",
+  "name": "Store",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "download",
+  "permissions": ["network"],
+  "capabilities": {
+    "callable": false,
+    "caller": true
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-store",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja"]
+  }
+}
