@@ -1,11 +1,16 @@
 // fallow-ignore-file code-duplication
-const DEFAULT_SCROLL_SPEED = 0.1
+const DEFAULT_SCROLL_SPEED = 0.2
 
 let scrollAnimationId: number | null = null
 let currentTargetTop: number | null = null
 let currentContainer: HTMLElement | null = null
 let currentScrollSpeed = DEFAULT_SCROLL_SPEED
 let lastFrameTime: number | null = null
+/** Last scrollTop this module wrote — lets the loop spot a manual scroll and bail. */
+let lastWrittenTop: number | null = null
+
+/** Abandon an in-flight animation once the user scrolls more than this past our write. */
+const MANUAL_SCROLL_CANCEL_PX = 1.5
 
 function resolveScrollSpeed(override?: number): number {
   if (override !== undefined && Number.isFinite(override) && override > 0) {
@@ -18,16 +23,34 @@ function resolveScrollSpeed(override?: number): number {
 export const resolveScrollSpeedForTest = resolveScrollSpeed
 export { DEFAULT_SCROLL_SPEED }
 
+function stopScrollAnimation(): void {
+  scrollAnimationId = null
+  currentTargetTop = null
+  currentContainer = null
+  lastFrameTime = null
+  lastWrittenTop = null
+}
+
 function smoothScrollTo(container: HTMLElement, target: number, speed?: number) {
   currentTargetTop = target
   currentContainer = container
   currentScrollSpeed = resolveScrollSpeed(speed)
 
   if (scrollAnimationId === null) {
+    lastWrittenTop = container.scrollTop
     const animate = (timestamp: number) => {
       if (!currentContainer || currentTargetTop === null) {
-        scrollAnimationId = null
-        lastFrameTime = null
+        stopScrollAnimation()
+        return
+      }
+
+      // The user spun the wheel / grabbed the scrollbar mid-animation — the
+      // container moved somewhere we didn't put it, so hand control back.
+      if (
+        lastWrittenTop !== null &&
+        Math.abs(currentContainer.scrollTop - lastWrittenTop) > MANUAL_SCROLL_CANCEL_PX
+      ) {
+        stopScrollAnimation()
         return
       }
 
@@ -38,13 +61,13 @@ function smoothScrollTo(container: HTMLElement, target: number, speed?: number) 
       const diff = currentTargetTop - currentContainer.scrollTop
       if (Math.abs(diff) < 1) {
         currentContainer.scrollTop = currentTargetTop
-        scrollAnimationId = null
-        lastFrameTime = null
+        stopScrollAnimation()
         return
       }
 
       const factor = 1 - Math.pow(1 - currentScrollSpeed, (dt * 60) / 1000)
       currentContainer.scrollTop += diff * factor
+      lastWrittenTop = currentContainer.scrollTop
       scrollAnimationId = requestAnimationFrame(animate)
     }
 
@@ -74,25 +97,14 @@ function maxScrollTop(container: HTMLElement): number {
   return Math.max(0, container.scrollHeight - container.clientHeight)
 }
 
-function defaultScrollLookaheadPadding(container: HTMLElement): number {
-  return Math.round(container.clientHeight / 5)
-}
-
-function resolveScrollLookaheadPadding(container: HTMLElement, override?: number): number {
-  if (override !== undefined && Number.isFinite(override) && override >= 0) {
-    return override
-  }
-  return defaultScrollLookaheadPadding(container)
-}
-
 export type ScrollBias = 'up' | 'down'
 
 export interface SmoothScrollIntoViewOptions {
-  /** Inflate the element rect in the navigation direction when scroll is already needed. */
+  /** Inflate the element rect in the navigation direction so context stays visible ahead. */
   scrollBias?: ScrollBias
-  /** Override lookahead padding in px; default is scroll container height / 5. */
+  /** Override look-ahead padding in px; default is the focused element's own height (~one item). */
   scrollLookaheadPadding?: number
-  /** Fraction of remaining distance applied per frame (0–1). Default 0.1. */
+  /** Fraction of remaining distance applied per frame (0–1). Default 0.2. */
   scrollSpeed?: number
 }
 
@@ -107,21 +119,34 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(value, max))
 }
 
-/** Computes the desired scrollTop for `elRect`, without clamping to [0, maxScrollTop]. */
+/** Default look-ahead is one item — approximated by the focused element's height. */
+function resolveScrollLookaheadPadding(elRect: RectLike, override?: number): number {
+  if (override !== undefined && Number.isFinite(override) && override >= 0) {
+    return override
+  }
+  return elRect.height
+}
+
+/**
+ * Computes the desired scrollTop for `elRect`, without clamping to [0, maxScrollTop].
+ * With a `scrollBias`, only scrolls in the navigation direction so the view never
+ * jumps backwards relative to the keypress.
+ */
 function computeRawScrollTarget(
   elRect: RectLike,
   parent: HTMLElement,
   parentRect: DOMRect,
-  startScrollTop: number
+  startScrollTop: number,
+  scrollBias?: ScrollBias
 ): number {
   let targetScrollTop = startScrollTop
 
   const futureElTop = elRect.top + (parent.scrollTop - targetScrollTop)
   const futureElBottom = futureElTop + elRect.height
 
-  if (futureElBottom > parentRect.bottom) {
+  if (futureElBottom > parentRect.bottom && scrollBias !== 'up') {
     targetScrollTop += futureElBottom - parentRect.bottom
-  } else if (futureElTop < parentRect.top) {
+  } else if (futureElTop < parentRect.top && scrollBias !== 'down') {
     targetScrollTop -= parentRect.top - futureElTop
   }
 
@@ -165,47 +190,47 @@ export function smoothScrollIntoViewIfNeeded(
 ): void {
   const parent = getScrollParent(el.parentElement)
 
-  if (!parent) {
+  if (!parent || maxScrollTop(parent) <= 0) {
     el.scrollIntoView({ block: 'nearest' })
     return
   }
 
   const elRect = el.getBoundingClientRect()
   const parentRect = parent.getBoundingClientRect()
+  const max = maxScrollTop(parent)
 
-  const startScrollTop =
-    currentContainer === parent && scrollAnimationId !== null && currentTargetTop !== null
+  // While a programmatic scroll is mid-flight, chain off its destination so
+  // back-to-back calls compose smoothly. Directional (bias) nav always measures
+  // from the live position, so a reversed keypress turns around immediately.
+  const startScrollTop = options.scrollBias
+    ? parent.scrollTop
+    : currentContainer === parent && scrollAnimationId !== null && currentTargetTop !== null
       ? currentTargetTop
       : parent.scrollTop
 
-  let targetScrollTop = computeScrollTargetForRect(elRect, parent, parentRect, startScrollTop)
-
-  let scrollNeeded = targetScrollTop !== parent.scrollTop
+  let targetScrollTop: number
 
   if (options.scrollBias) {
-    const padding = resolveScrollLookaheadPadding(parent, options.scrollLookaheadPadding)
+    // "Minimal + margin": only scroll once the focused item plus one item of
+    // look-ahead would leave the viewport; otherwise the cursor moves freely.
+    const padding = resolveScrollLookaheadPadding(elRect, options.scrollLookaheadPadding)
     const biasedRect = inflateRectForScrollBias(elRect, options.scrollBias, padding)
-    const rawBiasedTarget = computeRawScrollTarget(biasedRect, parent, parentRect, startScrollTop)
-    const maxTop = maxScrollTop(parent)
-    const clampedBiasedTarget = clamp(rawBiasedTarget, 0, maxTop)
-
-    if (scrollNeeded) {
-      // Already scrolling for the unbiased case — use the look-ahead target as-is.
-      targetScrollTop = clampedBiasedTarget
-    } else if (rawBiasedTarget < 0 || rawBiasedTarget > maxTop) {
-      // The item looks fully visible, but the look-ahead bias pushes past a scroll
-      // edge — snap flush to that edge (0 or max) instead of silently rejecting the scroll.
-      if (clampedBiasedTarget !== parent.scrollTop) {
-        targetScrollTop = clampedBiasedTarget
-        scrollNeeded = true
-      }
-    }
+    const raw = computeRawScrollTarget(
+      biasedRect,
+      parent,
+      parentRect,
+      startScrollTop,
+      options.scrollBias
+    )
+    // Hard-clamp to the scrollable range: when the look-ahead reaches past an
+    // edge the target caps flush at 0 / max, so navigation lands exactly on the
+    // boundary instead of stopping short or overshooting.
+    targetScrollTop = clamp(raw, 0, max)
+  } else {
+    targetScrollTop = computeScrollTargetForRect(elRect, parent, parentRect, startScrollTop)
   }
 
-  if (maxScrollTop(parent) <= 0) {
-    el.scrollIntoView({ block: 'nearest' })
-    return
-  }
+  const scrollNeeded = targetScrollTop !== parent.scrollTop
 
   if (scrollNeeded || scrollAnimationId !== null) {
     smoothScrollTo(parent, targetScrollTop, options.scrollSpeed)
@@ -248,11 +273,7 @@ export function smoothScrollElementToStart(
   const targetScrollTop = scrollTopForElementStart(el, parent)
 
   if (instant) {
-    if (currentContainer === parent) {
-      scrollAnimationId = null
-      currentTargetTop = null
-      currentContainer = null
-    }
+    if (currentContainer === parent) stopScrollAnimation()
     parent.scrollTop = targetScrollTop
     return
   }
@@ -288,11 +309,8 @@ export const _resolveListActiveTargetForTest = resolveListActiveTarget
 
 /** @internal Resets in-flight scroll animation between unit tests. */
 export function resetSmoothScrollStateForTest(): void {
-  scrollAnimationId = null
-  currentTargetTop = null
-  currentContainer = null
+  stopScrollAnimation()
   currentScrollSpeed = DEFAULT_SCROLL_SPEED
-  lastFrameTime = null
 }
 
 function listScrollBias(activeIndex: number, previousActiveIndex?: number): ScrollBias | undefined {
@@ -318,6 +336,18 @@ export function scrollListActiveItem(
   options: ScrollListActiveItemOptions = {}
 ): void {
   const scrollBias = scrollBiasForIndexChange(activeIndex, previousActiveIndex)
+
+  // Focus left the list at the top (e.g. ArrowUp off the first item, back to the
+  // search box) — settle the scroll container flush at the very top.
+  if (activeIndex < 0 && scrollBias === 'up') {
+    requestAnimationFrame(() => {
+      const parent = getScrollParent(listEl)
+      if (parent && parent.scrollTop > 0) {
+        smoothScrollTo(parent, 0, options.scrollSpeed)
+      }
+    })
+    return
+  }
 
   const attempt = (retriesLeft: number) => {
     requestAnimationFrame(() => {
