@@ -1,0 +1,22 @@
+{
+  "id": "com.nuxy.angrysearch",
+  "name": "ANGRYsearch",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "search",
+  "permissions": ["fs", "db", "shell"],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-angrysearch",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja"]
+  }
+}

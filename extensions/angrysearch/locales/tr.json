@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "name": "ANGRYsearch"
+  },
+  "search": {
+    "placeholder": "Dosya ve klasör ara"
+  },
+  "empty": {
+    "typeToSearch": "Aramak için yazın...",
+    "typeHint": "En az 3 karakter girin.",
+    "noMatches": "Sonuç yok.",
+    "noMatchesHint": "Farklı bir arama deneyin."
+  },
+  "mode": {
+    "regex": "Regex Modu",
+    "normal": "Normal Mod"
+  },
+  "db": {
+    "loading": "Yükleniyor...",
+    "updating": "Veritabanı güncelleniyor...",
+    "ready": "Veritabanı Hazır",
+    "missing": "Veritabanı Bulunamadı"
+  },
+  "actions": {
+    "openFile": "Dosyayı aç",
+    "openFolder": "Klasörü aç",
+    "updateDatabase": "Veritabanını Güncelle",
+    "toggleRegex": "Regex Modunu Aç/Kapat"
+  }
+}
