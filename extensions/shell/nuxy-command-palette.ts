@@ -13,8 +13,8 @@ import type { Position } from './types.ts'
 import {
   filterCommandPaletteSections,
   flattenCommandPaletteSections,
-} from './utils/commandPaletteSections.ts'
-import { formatShortcut } from './utils/shortcutDisplay.ts'
+} from './utils/command-palette-sections.ts'
+import { formatShortcut } from './utils/shortcut-display.ts'
 
 const MAX_DEPTH = 10
 

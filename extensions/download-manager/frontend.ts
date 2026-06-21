@@ -11,7 +11,7 @@ import type { NuxyToolElement } from '@nuxyorg/core'
 import type { TranslateFn } from '@nuxyorg/extension-sdk'
 import { DownloadManagerController } from './controller.ts'
 import { formatBytes, formatSpeed } from './utils/format.ts'
-import { groupDownloadsByDate } from './utils/groupByDate.ts'
+import { groupDownloadsByDate } from './utils/group-by-date.ts'
 import type { DownloadItem, DownloadStatus } from './types.ts'
 
 const TAG = 'nuxy-tool-download-manager'

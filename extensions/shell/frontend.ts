@@ -17,7 +17,7 @@ import './nuxy-shell-omni-bar.ts'
 import './nuxy-command-palette.ts'
 import type { ShellAction } from '@nuxyorg/core'
 import type { HoldProgress, ProviderState } from './types.ts'
-import type { OmnibarSection } from './utils/listResults.ts'
+import type { OmnibarSection } from './utils/list-results.ts'
 
 function holdTargetMatches(action: ShellAction, holdProgress: HoldProgress | null): boolean {
   if (!holdProgress || action.trigger !== 'hold') return false

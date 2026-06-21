@@ -1,7 +1,7 @@
 import type { ShellAction } from '@nuxyorg/core'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 import type { ClipboardItem } from './types.ts'
-import { getItemType } from './utils/itemType.ts'
+import { getItemType } from './utils/item-type.ts'
 
 const EXT_ID = 'com.nuxy.clipboard'
 const DEFAULT_REFRESH_INTERVAL_MS = 1000

@@ -18,7 +18,7 @@ import {
   getFileExtension,
   getFileIconType,
   type ItemType,
-} from './utils/itemType.ts'
+} from './utils/item-type.ts'
 
 const FILE_ICON_MAP: Record<string, string> = {
   'image-file': 'image',

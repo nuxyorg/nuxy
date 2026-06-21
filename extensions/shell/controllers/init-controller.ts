@@ -1,7 +1,7 @@
 import type { ShellConfig, Tool, Provider, Orchestrator, UsageStats } from '../types.ts'
 import type { ExtensionSummary } from '../controller.ts'
 import { SHELL_EXT_ID } from '../utils.ts'
-import { syncToolSearchPlaceholder } from '../utils/toolSearchPlaceholder.ts'
+import { syncToolSearchPlaceholder } from '../utils/tool-search-placeholder.ts'
 
 export interface InitControllerCallbacks {
   getActiveTool: () => string | null

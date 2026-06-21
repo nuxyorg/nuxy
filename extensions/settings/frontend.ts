@@ -1,8 +1,8 @@
 import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { SettingsController } from './controller.ts'
-import { handleSettingsInputKeydown, handleListAddInputKeydown } from './utils/inputKeydown.ts'
-import { isBooleanRow } from './utils/settingsOptions.ts'
+import { handleSettingsInputKeydown, handleListAddInputKeydown } from './utils/input-keydown.ts'
+import { isBooleanRow } from './utils/settings-options.ts'
 import type { AnyRow, RenderSection } from './types.ts'
 
 interface NuxyInputElement extends HTMLElement {

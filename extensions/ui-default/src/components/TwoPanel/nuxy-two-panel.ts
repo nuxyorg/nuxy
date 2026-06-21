@@ -1,6 +1,6 @@
 import { LitElement, html, css, customElement, property } from '@nuxyorg/core'
 import { getZoom } from '../../utils/zoom'
-import { parseRatio, clampSplitRatio, isSplitLocked } from '../../utils/parseRatio'
+import { parseRatio, clampSplitRatio, isSplitLocked } from '../../utils/parse-ratio'
 
 @customElement('nuxy-two-panel')
 export class NuxyTwoPanelElement extends LitElement {

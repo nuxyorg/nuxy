@@ -1,6 +1,6 @@
 import type { ShellAction } from '@nuxyorg/core'
 import type { Note } from './types.ts'
-import { deriveTitle } from './utils/noteTitle.ts'
+import { deriveTitle } from './utils/note-title.ts'
 import { invoke } from './utils/ipc.ts'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 

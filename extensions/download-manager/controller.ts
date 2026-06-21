@@ -1,7 +1,7 @@
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 import type { ShellAction } from '@nuxyorg/core'
 import { invoke } from './utils/ipc.ts'
-import { parseAddDeeplink } from './utils/parseDeeplink.ts'
+import { parseAddDeeplink } from './utils/parse-deeplink.ts'
 import type { DownloadItem } from './types.ts'
 
 const EXT_ID = 'com.nuxy.download-manager'

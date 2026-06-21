@@ -9,7 +9,7 @@ import {
 } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { StoreController } from './controller.ts'
-import { permissionVariant, serializeTabs } from './utils/storeFilter.ts'
+import { permissionVariant, serializeTabs } from './utils/store-filter.ts'
 import type { ExtensionListItem } from './types.ts'
 
 @customElement('nuxy-tool-store')

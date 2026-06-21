@@ -23,8 +23,8 @@ import {
   LANGUAGE_OPTIONS,
   buildFontFamilyMap,
   buildFontOptions,
-} from './utils/settingsOptions.ts'
-import { parseListFieldValue } from './utils/listField.ts'
+} from './utils/settings-options.ts'
+import { parseListFieldValue } from './utils/list-field.ts'
 
 const OLLAMA_EXT_ID = 'com.nuxy.ollama'
 

@@ -5,7 +5,7 @@ import {
   buildNavigableResults,
   buildProviderCardItems,
   type OmnibarSection,
-} from '../utils/listResults.ts'
+} from '../utils/list-results.ts'
 
 interface SyncOptions {
   /** When true, only non-action providers are evaluated (debounced list/search providers). */

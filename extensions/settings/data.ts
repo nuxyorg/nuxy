@@ -1,7 +1,7 @@
 import type { NuxySettings, SelectOption, ExtSettingsInfo } from './types.ts'
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
-import { DEFAULT_SETTINGS } from './utils/settingsOptions.ts'
-import { buildIconPackOptions, resolveSingleIconPack } from './utils/iconPackDefaults.ts'
+import { DEFAULT_SETTINGS } from './utils/settings-options.ts'
+import { buildIconPackOptions, resolveSingleIconPack } from './utils/icon-pack-defaults.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 const OLLAMA_EXT_ID = 'com.nuxy.ollama'

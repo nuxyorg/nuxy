@@ -1,8 +1,8 @@
 import type { ShellAction } from '@nuxyorg/core'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 import type { TypedInvoker } from '@nuxyorg/extension-sdk'
-import { TABS, buildNavSections, filterExtensions } from './utils/storeFilter.ts'
-import type { NavSection } from './utils/storeFilter.ts'
+import { TABS, buildNavSections, filterExtensions } from './utils/store-filter.ts'
+import type { NavSection } from './utils/store-filter.ts'
 import type { ExtensionListItem, IpcChannels } from './types.ts'
 
 const EXT_ID = 'com.nuxy.store'

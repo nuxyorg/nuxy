@@ -1,6 +1,6 @@
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import type { NuxySettings, AnyRow } from './types.ts'
-import { parseListFieldValue } from './utils/listField.ts'
+import { parseListFieldValue } from './utils/list-field.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 

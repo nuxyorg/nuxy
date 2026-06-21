@@ -10,7 +10,7 @@ import type {
   TranscribeResult,
   FtsRow,
 } from './types.ts'
-import { deriveTitle } from './utils/noteTitle.ts'
+import { deriveTitle } from './utils/note-title.ts'
 
 let db: ReturnType<CoreContext['db']['open']> | null = null
 let extDataDir: string | null = null

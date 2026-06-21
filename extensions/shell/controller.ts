@@ -17,12 +17,12 @@ import { DeeplinkController } from './controllers/deeplink-controller.ts'
 import { QueryController } from './controllers/query-controller.ts'
 import { NavigationController } from './controllers/navigation-controller.ts'
 import { SettingsController } from './controllers/settings-controller.ts'
-import { syncToolSearchPlaceholder } from './utils/toolSearchPlaceholder.ts'
+import { syncToolSearchPlaceholder } from './utils/tool-search-placeholder.ts'
 import {
   buildAutoSettingsAction,
   buildCallerCommandActions,
   mergeCommandPaletteActions,
-} from './utils/callerCommands.ts'
+} from './utils/caller-commands.ts'
 import { syncBlurSuppression } from '@nuxyorg/extension-sdk'
 import type {
   HoldProgress,
@@ -34,8 +34,8 @@ import type {
   Tool,
   UsageStats,
 } from './types.ts'
-import type { OmnibarSection } from './utils/listResults.ts'
-import { resolveOmniBarPlaceholder as computeOmniBarPlaceholder } from './utils/omniBarPlaceholder.ts'
+import type { OmnibarSection } from './utils/list-results.ts'
+import { resolveOmniBarPlaceholder as computeOmniBarPlaceholder } from './utils/omni-bar-placeholder.ts'
 
 export type { OmnibarSection }
 
@@ -379,7 +379,7 @@ export class ShellController {
   /**
    * Ctrl+K palette entries: the active tool's `bridge.toolActions` merged
    * with that tool's manifest `caller.commands` (see
-   * `extensions/shell/utils/callerCommands.ts`). Caller commands are scoped
+   * `extensions/shell/utils/caller-commands.ts`). Caller commands are scoped
    * to the owning extension — only visible while that tool is active.
    */
   commandPaletteActions(): import('@nuxyorg/core').ShellAction[] {

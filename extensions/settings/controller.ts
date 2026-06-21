@@ -10,7 +10,7 @@ import {
   type SettingsMeta,
 } from './meta.ts'
 import type { AnyRow, NuxySettings, SelectOption, StateSnapshot } from './types.ts'
-import { getRowCurrentValue, getRowOptions, isBooleanRow } from './utils/settingsOptions.ts'
+import { getRowCurrentValue, getRowOptions, isBooleanRow } from './utils/settings-options.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 
