@@ -4,10 +4,13 @@ import {
   nothing,
   customElement,
   property,
+  query as queryDecorator,
+  type PropertyValues,
   type TemplateResult,
 } from '@nuxyorg/core'
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { OllamaController } from './controller.ts'
+import { isNearBottom } from './utils/chat-scroll.ts'
 
 @customElement('nuxy-tool-ollama')
 export class NuxyToolOllamaElement extends LitElement implements NuxyToolElement {
@@ -22,6 +25,12 @@ export class NuxyToolOllamaElement extends LitElement implements NuxyToolElement
 
   private controller: OllamaController | null = null
   private _query = ''
+  /** Follows new messages to the bottom until the user scrolls away manually. */
+  private _stickToBottom = true
+  private _scrollRaf: number | null = null
+
+  @queryDecorator('.nuxy-tool-ollama__messages')
+  private declare _messagesEl: HTMLElement | null
 
   connectedCallback(): void {
     super.connectedCallback()
@@ -40,6 +49,10 @@ export class NuxyToolOllamaElement extends LitElement implements NuxyToolElement
     super.disconnectedCallback()
     this.controller?.disconnect()
     this.controller = null
+    if (this._scrollRaf !== null) {
+      cancelAnimationFrame(this._scrollRaf)
+      this._scrollRaf = null
+    }
   }
 
   get query(): string {
@@ -51,6 +64,24 @@ export class NuxyToolOllamaElement extends LitElement implements NuxyToolElement
     if (this._query === next) return
     this._query = next
     this.controller?.setQuery(next)
+  }
+
+  protected updated(changed: PropertyValues): void {
+    super.updated(changed)
+    if (!this._stickToBottom) return
+    // Child message elements (markdown, streaming text) update their own shadow
+    // DOM asynchronously, so scrollHeight isn't final yet — defer to next frame.
+    if (this._scrollRaf !== null) cancelAnimationFrame(this._scrollRaf)
+    this._scrollRaf = requestAnimationFrame(() => {
+      this._scrollRaf = null
+      if (this._stickToBottom && this._messagesEl) {
+        this._messagesEl.scrollTop = this._messagesEl.scrollHeight
+      }
+    })
+  }
+
+  private handleMessagesScroll(e: Event): void {
+    this._stickToBottom = isNearBottom(e.currentTarget as HTMLElement)
   }
 
   render(): TemplateResult | typeof nothing {
@@ -66,7 +97,9 @@ export class NuxyToolOllamaElement extends LitElement implements NuxyToolElement
           >`
         : nothing}
       <div
+        class="nuxy-tool-ollama__messages"
         style="flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:var(--space-2);"
+        @scroll=${(e: Event) => this.handleMessagesScroll(e)}
       >
         ${messages.length === 0 && !loading
           ? html`<nuxy-empty-state

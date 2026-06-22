@@ -10,6 +10,9 @@
   "description": "Conversational AI assistant powered by a local Ollama model.",
   "placeholder": "Ask anything",
   "permissions": ["storage", "network"],
+  "behavior": {
+    "omniBarPosition": "bottom"
+  },
   "capabilities": {
     "callable": true,
     "caller": false

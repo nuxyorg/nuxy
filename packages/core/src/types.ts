@@ -109,6 +109,12 @@ export interface ExtensionManifest {
      * (e.g. native file dialogs that steal focus).
      */
     suppressBlurHide?: boolean
+    /**
+     * Where the shell renders the omnibar input while this tool is active.
+     * Useful for chat-style tools where the input should sit below the
+     * conversation rather than above it. Defaults to "top".
+     */
+    omniBarPosition?: 'top' | 'bottom'
   }
   /**
    * Composition slots this extension may provide (shell) or claim (overlays).

@@ -367,6 +367,10 @@ export class ShellController {
     return this.tools.activeToolPlaceholder
   }
 
+  get activeToolOmniBarPosition(): 'top' | 'bottom' {
+    return this.tools.activeToolOmniBarPosition
+  }
+
   resolveOmniBarPlaceholder(): string {
     return computeOmniBarPlaceholder(
       this.store.getState().bridge,

@@ -75,4 +75,10 @@ export class ToolController implements ReactiveController {
     const tool = this._tools.find((t) => t.id === this._activeTool)
     return (tool?.manifest as { placeholder?: string } | undefined)?.placeholder ?? null
   }
+
+  get activeToolOmniBarPosition(): 'top' | 'bottom' {
+    if (!this._activeTool) return 'top'
+    const tool = this._tools.find((t) => t.id === this._activeTool)
+    return tool?.manifest.behavior?.omniBarPosition ?? 'top'
+  }
 }

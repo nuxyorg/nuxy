@@ -199,6 +199,14 @@ export class NuxyShellViewElement extends LitElement {
       transform-origin: top;
     }
 
+    .nuxy-shell-tool-wrapper--omnibar-bottom {
+      border-top: none;
+    }
+
+    .nuxy-shell-omni-bar--bottom {
+      border-top: 1px solid var(--syntax-comment);
+    }
+
     .nuxy-shell-footer {
       position: relative;
       flex-shrink: 0;
@@ -281,7 +289,7 @@ export class NuxyShellViewElement extends LitElement {
     ctrl.refs.commandPaletteInput = this.commandPaletteEl?.nativeInput ?? null
   }
 
-  private renderOmniBar() {
+  private renderOmniBar(omniBarAtBottom = false) {
     const ctrl = this.controller
     if (!ctrl) return nothing
     const { query, showOmniBar, bridge } = ctrl.state
@@ -293,6 +301,7 @@ export class NuxyShellViewElement extends LitElement {
 
     return html`
       <nuxy-shell-omni-bar
+        class=${omniBarAtBottom ? 'nuxy-shell-omni-bar--bottom' : ''}
         .query=${query}
         .placeholder=${placeholder}
         aria-label=${t('omniBar.ariaLabel')}
@@ -709,6 +718,10 @@ export class NuxyShellViewElement extends LitElement {
     }
 
     const containerClass = s.themeStyles?.container ?? 'nuxy-shell-container'
+    const omniBarAtBottom = Boolean(s.activeTool) && ctrl.activeToolOmniBarPosition === 'bottom'
+    const toolWrapperClass = omniBarAtBottom
+      ? 'nuxy-shell-tool-wrapper nuxy-shell-tool-wrapper--omnibar-bottom'
+      : 'nuxy-shell-tool-wrapper'
 
     return html`
       <div
@@ -727,7 +740,7 @@ export class NuxyShellViewElement extends LitElement {
           ></nuxy-shell-resize-handles>
           <div class="nuxy-main-wrapper">
             <div class="nuxy-shell-body">
-              ${this.renderOmniBar()}
+              ${omniBarAtBottom ? nothing : this.renderOmniBar()}
               ${s.activeTool
                 ? nothing
                 : this.renderResultsPanel(
@@ -737,9 +750,8 @@ export class NuxyShellViewElement extends LitElement {
                     s.isAnyListProviderLoading,
                     s.copiedId
                   )}
-              ${toolHostEl
-                ? html`<div class="nuxy-shell-tool-wrapper">${toolHostEl}</div>`
-                : nothing}
+              ${toolHostEl ? html`<div class=${toolWrapperClass}>${toolHostEl}</div>` : nothing}
+              ${omniBarAtBottom ? this.renderOmniBar(true) : nothing}
             </div>
             <div class="nuxy-shell-footer">
               ${this.renderShortcutBar(

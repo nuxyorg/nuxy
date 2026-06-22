@@ -2,10 +2,22 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { Tool, Orchestrator } from '../types.ts'
 import { makeHost } from './helpers.ts'
 
-function makeTool(id: string, name: string, placeholder?: string): Tool {
+function makeTool(
+  id: string,
+  name: string,
+  placeholder?: string,
+  omniBarPosition?: 'top' | 'bottom'
+): Tool {
   return {
     id,
-    manifest: { id, name, version: '1', type: 'tool', placeholder } as Tool['manifest'],
+    manifest: {
+      id,
+      name,
+      version: '1',
+      type: 'tool',
+      placeholder,
+      behavior: omniBarPosition ? { omniBarPosition } : undefined,
+    } as Tool['manifest'],
   } as Tool
 }
 
@@ -138,5 +150,27 @@ describe('ToolController', () => {
     ctrl.setTools([makeTool('calc', 'Calculator')])
     ctrl.setActiveTool('calc')
     expect(ctrl.activeToolPlaceholder).toBeNull()
+  })
+
+  it('activeToolOmniBarPosition returns "top" when no active tool', () => {
+    const host = makeHost()
+    const ctrl = new ToolController(host)
+    expect(ctrl.activeToolOmniBarPosition).toBe('top')
+  })
+
+  it('activeToolOmniBarPosition returns "top" when manifest declares no behavior', () => {
+    const host = makeHost()
+    const ctrl = new ToolController(host)
+    ctrl.setTools([makeTool('calc', 'Calculator')])
+    ctrl.setActiveTool('calc')
+    expect(ctrl.activeToolOmniBarPosition).toBe('top')
+  })
+
+  it('activeToolOmniBarPosition returns "bottom" when manifest declares it', () => {
+    const host = makeHost()
+    const ctrl = new ToolController(host)
+    ctrl.setTools([makeTool('ollama', 'Ollama', undefined, 'bottom')])
+    ctrl.setActiveTool('ollama')
+    expect(ctrl.activeToolOmniBarPosition).toBe('bottom')
   })
 })
