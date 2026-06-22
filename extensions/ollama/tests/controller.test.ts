@@ -88,7 +88,11 @@ describe('OllamaController.handleSend', () => {
     const controller = new OllamaController(() => {})
     await controller.handleSend('Hi there')
 
-    expect(controller.state.messages.at(-1)).toEqual({ role: 'assistant', content: 'Hello!' })
+    expect(controller.state.messages.at(-1)).toEqual({
+      role: 'assistant',
+      content: 'Hello!',
+      model: 'llama3',
+    })
     expect(controller.state.loading).toBe(false)
     expect(controller.state.error).toBeNull()
   })
@@ -225,7 +229,7 @@ describe('OllamaController.handleRetry', () => {
 
     expect(controller.state.messages).toEqual([
       { role: 'user', content: 'hi' },
-      { role: 'assistant', content: 'redo' },
+      { role: 'assistant', content: 'redo', model: 'llama3' },
     ])
     const [, body] = fetchMock.mock.calls[0] as [string, { body: string }]
     expect(JSON.parse(body.body).messages).toEqual([{ role: 'user', content: 'hi' }])

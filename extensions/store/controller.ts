@@ -231,22 +231,13 @@ export class StoreController extends BaseExtensionController<StoreState> {
         hint: '↵',
         handler: () => this.focusRightPanel(),
       },
-      {
-        id: 'store-next-category',
-        key: 'Tab',
-        label: t('actions.nextCategory'),
-        hint: 'Tab',
-        handler: () => {
-          const nextTab = TABS[(currentIdx + 1) % TABS.length].id
-          this.navigateTab(nextTab)
-        },
-      },
     ]
   }
 
   private buildRightPanelActions(): ShellAction[] {
     const t = this.t.t
     const filtered = this.filteredExtensions
+    const selected = filtered[this.state.selectedIndex]
 
     return [
       {
@@ -284,9 +275,11 @@ export class StoreController extends BaseExtensionController<StoreState> {
       },
       {
         id: 'store-install',
-        key: 'i',
+        key: 'Enter',
         label: t('actions.installUpdate'),
-        hint: 'I',
+        hint: '↵',
+        section: 'actions',
+        showInMenu: !!(selected && (!selected.installed || selected.canUpdate)),
         activeOn: () => {
           const item = filtered[this.state.selectedIndex]
           return !!(item && (!item.installed || item.canUpdate))
@@ -298,9 +291,11 @@ export class StoreController extends BaseExtensionController<StoreState> {
       },
       {
         id: 'store-uninstall',
-        key: 'u',
+        key: 'Delete',
         label: t('actions.uninstall'),
-        hint: 'U',
+        hint: 'Del',
+        section: 'actions',
+        showInMenu: !!(selected && selected.installed && !selected.isSystem),
         activeOn: () => {
           const item = filtered[this.state.selectedIndex]
           return !!(item && item.installed && !item.isSystem)
@@ -313,40 +308,12 @@ export class StoreController extends BaseExtensionController<StoreState> {
       {
         id: 'store-refresh',
         key: 'r',
+        modifiers: ['ctrl'],
         label: t('actions.refresh'),
-        hint: 'R',
+        section: 'actions',
+        showInMenu: true,
         handler: () => {
           void this.loadCatalog()
-        },
-      },
-      {
-        id: 'store-enter',
-        key: 'Enter',
-        label: t('actions.performAction'),
-        hint: '↵',
-        activeOn: () => {
-          const { selectedIndex } = this.state
-          return selectedIndex >= 0 && selectedIndex < filtered.length
-        },
-        handler: () => {
-          const item = filtered[this.state.selectedIndex]
-          if (!item) return
-          if (!item.installed || item.canUpdate) {
-            void this.handleInstall(item)
-          } else if (item.installed && !item.isSystem) {
-            void this.handleUninstall(item)
-          }
-        },
-      },
-      {
-        id: 'store-next-category',
-        key: 'Tab',
-        label: t('actions.nextCategory'),
-        hint: 'Tab',
-        handler: () => {
-          const idx = TABS.findIndex((tab) => tab.id === this.state.activeTab)
-          const nextTab = TABS[(idx + 1) % TABS.length].id
-          this.setActiveTab(nextTab)
         },
       },
     ]

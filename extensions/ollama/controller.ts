@@ -116,14 +116,11 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
    * message, then re-streams from Ollama.
    */
   async handleRetry(): Promise<void> {
-    if (this.state.loading) return
     const messages = this.state.messages
     if (messages.length === 0) return
     const last = messages[messages.length - 1]
-    const base = last?.role === 'assistant' ? messages.slice(0, -1) : messages
-    if (base.length === 0 || base[base.length - 1]?.role !== 'user') return
-    this.store.setState({ messages: base, error: null })
-    await this.streamChat(base)
+    const index = last?.role === 'assistant' ? messages.length - 1 : messages.length
+    await this.handleRetryMessage(index)
   }
 
   /**
@@ -132,9 +129,28 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
    * from the backend Worker context).
    */
   handleCopyLastMessage(): void {
-    const last = this.state.messages.at(-1)
-    if (!last?.content) return
-    navigator.clipboard.writeText(last.content).catch(() => {})
+    this.handleCopyMessage(this.state.messages.length - 1)
+  }
+
+  /**
+   * Regenerates the assistant reply at `index`, dropping it and any messages
+   * after it before re-streaming from the preceding user turn.
+   */
+  async handleRetryMessage(index: number): Promise<void> {
+    if (this.state.loading) return
+    const messages = this.state.messages
+    const target = messages[index]
+    const base = target?.role === 'assistant' ? messages.slice(0, index) : messages.slice(0, index + 1)
+    if (base.length === 0 || base[base.length - 1]?.role !== 'user') return
+    this.store.setState({ messages: base, error: null })
+    await this.streamChat(base)
+  }
+
+  /** Copies the message at `index` to the system clipboard. */
+  handleCopyMessage(index: number): void {
+    const msg = this.state.messages[index]
+    if (!msg?.content) return
+    navigator.clipboard.writeText(msg.content).catch(() => {})
   }
 
   private async streamChat(next: ChatMessage[]): Promise<void> {
@@ -152,7 +168,7 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
       const host = cfg?.host ?? DEFAULT_HOST
       const model = cfg?.model ?? this.state.selectedModel
 
-      this.store.setState({ messages: [...next, { role: 'assistant', content: '' }] })
+      this.store.setState({ messages: [...next, { role: 'assistant', content: '', model }] })
 
       const response = await fetch(`${host}/api/chat`, {
         method: 'POST',
@@ -200,7 +216,7 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
 
       const finalMessages: ChatMessage[] = [
         ...next,
-        { role: 'assistant', content: assistantContent },
+        { role: 'assistant', content: assistantContent, model },
       ]
       this.store.setState({ messages: finalMessages })
       invoke('history:save', { messages: finalMessages }).catch(() => {})
@@ -208,7 +224,11 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
       const e = err as Error
       if (e?.name === 'AbortError') {
         if (assistantContent) {
-          const partial: ChatMessage[] = [...next, { role: 'assistant', content: assistantContent }]
+          const model = this.state.messages.at(-1)?.model
+          const partial: ChatMessage[] = [
+            ...next,
+            { role: 'assistant', content: assistantContent, model },
+          ]
           this.store.setState({ messages: partial })
           invoke('history:save', { messages: partial }).catch(() => {})
         } else {

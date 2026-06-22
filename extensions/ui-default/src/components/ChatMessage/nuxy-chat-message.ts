@@ -51,6 +51,12 @@ export class NuxyChatMessageElement extends LitElement {
       color: var(--text-muted, rgba(255, 255, 255, 0.4));
       padding: 0 var(--space-1);
     }
+
+    .nuxy-chat-message__footer {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
   `
 
   @property({ type: String, reflect: true })
@@ -59,6 +65,8 @@ export class NuxyChatMessageElement extends LitElement {
   declare content: string
   @property({ type: Boolean })
   declare loading: boolean
+  @property({ type: String })
+  declare model: string
 
   render(): TemplateResult {
     const isThinking = this.role === 'assistant' && this.loading && !this.content
@@ -70,7 +78,12 @@ export class NuxyChatMessageElement extends LitElement {
             ? html`<nuxy-markdown-text content=${this.content}></nuxy-markdown-text>`
             : this.content}
       </div>
-      <div class="nuxy-chat-message__role">${ROLE_LABELS[this.role] ?? this.role}</div>
+      <div class="nuxy-chat-message__footer">
+        <div class="nuxy-chat-message__role">
+          ${ROLE_LABELS[this.role] ?? this.role}${this.model ? ` · ${this.model}` : ''}
+        </div>
+        <slot name="actions"></slot>
+      </div>
     `
   }
 }

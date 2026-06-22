@@ -13,6 +13,7 @@ export interface OllamaTagsResponse {
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system'
   content: string
+  model?: string
 }
 
 export interface ChatPayload {

@@ -3,6 +3,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-5);
-  padding: var(--space-3) var(--space-5);
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 var(--space-5);
   border-top: 1px solid var(--syntax-comment);
 }

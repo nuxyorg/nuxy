@@ -51,4 +51,29 @@ describe('nuxy-chat-message', () => {
     await msg.updateComplete
     expect(msg.shadowRoot?.querySelector('nuxy-spinner')).toBeNull()
   })
+
+  it('shows the model name next to the role label when set', async () => {
+    render(
+      html`<nuxy-chat-message
+        role="assistant"
+        content="hi"
+        model="llama3"
+      ></nuxy-chat-message>`,
+      parent
+    )
+    const msg = parent.querySelector('nuxy-chat-message') as NuxyChatMessageElement
+    await msg.updateComplete
+    expect(msg.shadowRoot?.querySelector('.nuxy-chat-message__role')?.textContent).toContain(
+      'llama3'
+    )
+  })
+
+  it('omits the model suffix when no model is set', async () => {
+    render(html`<nuxy-chat-message role="assistant" content="hi"></nuxy-chat-message>`, parent)
+    const msg = parent.querySelector('nuxy-chat-message') as NuxyChatMessageElement
+    await msg.updateComplete
+    expect(msg.shadowRoot?.querySelector('.nuxy-chat-message__role')?.textContent?.trim()).toBe(
+      'Assistant'
+    )
+  })
 })

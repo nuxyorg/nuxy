@@ -204,7 +204,7 @@ describe('StoreController', () => {
       return controller.getKeyActions().find((a) => a.key === key && !a.modifiers?.length)
     }
 
-    it('exposes install action active only when item not installed or updatable', () => {
+    it('exposes install action on Enter, active only when item not installed or updatable', () => {
       const controller = new StoreController(() => {})
       controller.connect()
       controller.store.setState({
@@ -213,11 +213,32 @@ describe('StoreController', () => {
       })
 
       const install = getter!().find((a) => a.id === 'store-install')
+      expect(install?.key).toBe('Enter')
       expect(install?.activeOn?.()).toBe(true)
       controller.disconnect()
     })
 
-    it('exposes uninstall action active only for installed, non-system items', () => {
+    it('Enter never uninstalls an already-installed item', () => {
+      const controller = new StoreController(() => {})
+      controller.connect()
+      controller.store.setState({
+        extensions: [
+          makeExt({ id: 'com.test.a', installed: true, canUpdate: false, isSystem: false }),
+        ],
+        selectedIndex: 0,
+      })
+
+      const install = getter!().find((a) => a.id === 'store-install')
+      expect(install?.activeOn?.()).toBe(false)
+      install?.handler()
+
+      expect(ipcInvoke.mock.calls.some((call: unknown[]) => call[1] === 'uninstallExtension')).toBe(
+        false
+      )
+      controller.disconnect()
+    })
+
+    it('exposes uninstall action on Delete, active only for installed, non-system items', () => {
       const controller = new StoreController(() => {})
       controller.connect()
       controller.store.setState({
@@ -226,19 +247,60 @@ describe('StoreController', () => {
       })
 
       const uninstall = getter!().find((a) => a.id === 'store-uninstall')
+      expect(uninstall?.key).toBe('Delete')
       expect(uninstall?.activeOn?.()).toBe(false)
       controller.disconnect()
     })
 
-    it('Tab cycles to the next category', () => {
+    it('Delete proxies to uninstall for installed, non-system items', async () => {
+      const ext = makeExt({ id: 'com.test.a', installed: true, isSystem: false })
+      ipcInvoke.mockImplementation(async (_extId: string, channel: string, payload?: unknown) => {
+        if (channel === 'getExtensionTranslations') {
+          return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
+        }
+        if (channel === 'uninstallExtension') {
+          expect(payload).toEqual({ extId: 'com.test.a' })
+          return { success: true, data: { success: true } }
+        }
+        if (channel === 'getExtensions') {
+          return { success: true, data: [ext] }
+        }
+        return { success: true, data: undefined }
+      })
+
       const controller = new StoreController(() => {})
       controller.connect()
-      expect(controller.state.activeTab).toBe('all')
+      await Promise.resolve()
+      await Promise.resolve()
+      await Promise.resolve()
+      controller.store.setState({ extensions: [ext], selectedIndex: 0 })
 
-      const tabAction = getter!().find((a) => a.id === 'store-next-category')
-      tabAction?.handler()
+      const uninstall = getter!().find((a) => a.id === 'store-uninstall')
+      uninstall?.handler()
+      await Promise.resolve()
 
-      expect(controller.state.activeTab).toBe('tool')
+      expect(ipcInvoke.mock.calls.some((call: unknown[]) => call[1] === 'uninstallExtension')).toBe(
+        true
+      )
+      controller.disconnect()
+    })
+
+    it('exposes refresh action on Ctrl+R, shown in the command palette', () => {
+      const controller = new StoreController(() => {})
+      controller.connect()
+
+      const refresh = getter!().find((a) => a.id === 'store-refresh')
+      expect(refresh?.key).toBe('r')
+      expect(refresh?.modifiers).toEqual(['ctrl'])
+      expect(refresh?.showInMenu).toBe(true)
+      controller.disconnect()
+    })
+
+    it('does not bind any action to the Tab key', () => {
+      const controller = new StoreController(() => {})
+      controller.connect()
+
+      expect(actionByKey(controller, 'Tab')).toBeUndefined()
       controller.disconnect()
     })
 

@@ -4,7 +4,8 @@ import { css } from '@nuxyorg/core'
 export const footerBarHostStyles = css`
   :host {
     box-sizing: border-box;
-    padding: var(--space-3) var(--space-5);
+    height: 32px;
+    padding: 0 var(--space-5);
     border-top: 1px solid var(--syntax-comment);
   }
 `

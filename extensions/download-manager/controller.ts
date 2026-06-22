@@ -292,6 +292,13 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
 
     const spaceLabel = t('actions.checkToggle')
 
+    const canOpenFolder =
+      !multiSelectMode &&
+      !!selected &&
+      selected.status !== 'failed' &&
+      selected.status !== 'downloading' &&
+      selected.status !== 'paused'
+
     return [
       {
         id: 'dm-select-all',
@@ -393,7 +400,8 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
         key: 'Enter',
         modifiers: ['shift'],
         label: t('actions.openFolder'),
-        hint: ['⇧', '↵'],
+        section: 'actions',
+        showInMenu: canOpenFolder,
         activeOn: () => {
           const { selectedIndex: idx, multiSelectMode: multi } = this.state
           const currentItems = this.filteredItems

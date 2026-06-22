@@ -308,6 +308,8 @@ describe('DownloadManagerController keyboard actions', () => {
 
     expect(enter?.activeOn?.()).toBe(true)
     expect(shiftEnter?.activeOn?.()).toBe(true)
+    expect(shiftEnter?.showInMenu).toBe(true)
+    expect(shiftEnter?.hint).toBeUndefined()
     expect(del?.trigger).toBe('hold')
     expect(del?.holdCancelToast).toBe('Hold to remove')
     controller.disconnect()
@@ -330,6 +332,7 @@ describe('DownloadManagerController keyboard actions', () => {
 
     expect(enter?.activeOn?.()).toBe(true)
     expect(shiftEnter?.activeOn?.()).toBe(false)
+    expect(shiftEnter?.showInMenu).toBe(false)
     enter?.handler()
     await Promise.resolve()
     expect(resumed).toEqual(['d1'])
