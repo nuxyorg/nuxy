@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "name": "qBittorrent"
+  },
+  "search": {
+    "placeholder": "Search torrents, or paste a magnet/.torrent link"
+  },
+  "empty": {
+    "message": "No torrents yet.",
+    "hint": "Paste a magnet link or .torrent URL to add one.",
+    "noMatching": "No matching torrents."
+  },
+  "error": {
+    "loadFailed": "Failed to connect to qBittorrent",
+    "loadFailedHint": "Check the Web UI address, username and password in Settings."
+  },
+  "add": {
+    "prompt": "Add torrent",
+    "hint": "Press Enter to add this torrent to qBittorrent",
+    "adding": "Adding torrent…",
+    "failed": "Failed to add torrent"
+  },
+  "state": {
+    "downloading": "Downloading",
+    "uploading": "Seeding",
+    "pausedDL": "Paused",
+    "pausedUP": "Paused",
+    "stoppedDL": "Stopped",
+    "stoppedUP": "Stopped",
+    "queuedDL": "Queued",
+    "queuedUP": "Queued",
+    "stalledDL": "Stalled",
+    "stalledUP": "Stalled (seeding)",
+    "checkingDL": "Checking",
+    "checkingUP": "Checking",
+    "error": "Error",
+    "missingFiles": "Missing files",
+    "allocating": "Allocating",
+    "metaDL": "Fetching metadata",
+    "moving": "Moving",
+    "unknown": "Unknown"
+  },
+  "item": {
+    "copiedMagnet": "Magnet link copied",
+    "copiedSavePath": "Save path copied"
+  },
+  "pending": {
+    "pause": "Pausing…",
+    "resume": "Starting…",
+    "recheck": "Rechecking…",
+    "reannounce": "Reannouncing…",
+    "remove": "Removing…"
+  },
+  "actions": {
+    "previous": "Previous",
+    "next": "Next",
+    "pause": "Pause",
+    "resume": "Resume",
+    "addTorrent": "Add torrent",
+    "recheck": "Recheck",
+    "reannounce": "Reannounce",
+    "copyMagnet": "Copy magnet link",
+    "copySavePath": "Copy save path",
+    "removeKeepData": "Hold to remove (keep data)",
+    "removeWithData": "Hold to remove (delete data)"
+  },
+  "settings": {
+    "host": {
+      "label": "Web UI Address",
+      "placeholder": "http://localhost:8080",
+      "description": "The address where your qBittorrent Web UI is running"
+    },
+    "username": {
+      "label": "Username",
+      "placeholder": "admin",
+      "description": "Your qBittorrent Web UI username"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "adminadmin",
+      "description": "Your qBittorrent Web UI password"
+    },
+    "authMethod": {
+      "label": "Login Method",
+      "description": "How to authenticate with the Web UI",
+      "options": {
+        "credentials": "Username & Password",
+        "apikey": "API Key"
+      }
+    },
+    "apiKey": {
+      "label": "API Key",
+      "placeholder": "Token sent as an Authorization: Bearer header",
+      "description": "API key for a reverse proxy that fronts your qBittorrent Web UI"
+    }
+  }
+}

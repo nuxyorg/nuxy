@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { type CoreContext } from '@nuxyorg/extension-sdk'
 import { createMockCore } from '@nuxyorg/extension-sdk/testing'
-import { register } from '../backend.ts'
+import { register, type ActionSettings } from '../backend.ts'
 import type { NyaaResult } from '../types.ts'
 
 const SAMPLE_HTML = `<!DOCTYPE html><html><body>
@@ -61,6 +61,9 @@ describe('nyaa backend', () => {
       },
       shell: {
         open: vi.fn().mockResolvedValue(undefined),
+      },
+      extensions: {
+        invoke: vi.fn().mockResolvedValue({ success: true, data: [] }),
       },
     }))
     mockFetch()
@@ -239,19 +242,47 @@ describe('nyaa backend', () => {
     })
   })
 
-  describe('getEnterAction', () => {
-    it('returns copyMagnet by default when no setting is saved', async () => {
-      const result = await handlers.getEnterAction({})
-      expect(result).toBe('copyMagnet')
+  describe('getActionSettings', () => {
+    it('returns default priority order when no setting is saved', async () => {
+      const result = await handlers.getActionSettings({})
+      expect(result).toEqual({
+        enterActionPriority: ['torrentClient', 'copyMagnet', 'downloadTorrent'],
+      })
     })
 
-    it('returns the saved enterAction setting', async () => {
+    it('returns the saved enterActionPriority when present', async () => {
       core.settings.read = vi.fn().mockImplementation(async (key: string) => {
-        if (key === 'enterAction') return 'downloadTorrent'
+        if (key === 'enterActionPriority') return ['copyMagnet', 'downloadTorrent']
         return null
       })
-      const result = await handlers.getEnterAction({})
-      expect(result).toBe('downloadTorrent')
+      const result = await handlers.getActionSettings({})
+      expect(result).toEqual({
+        enterActionPriority: ['copyMagnet', 'downloadTorrent', 'torrentClient'],
+      })
+    })
+
+    it('migrates legacy enterAction copyMagnet with useQbittorrent=true', async () => {
+      core.settings.read = vi.fn().mockImplementation(async (key: string) => {
+        if (key === 'enterAction') return 'copyMagnet'
+        if (key === 'useQbittorrent') return true
+        return null
+      })
+      const result = await handlers.getActionSettings({})
+      expect(result).toEqual({
+        enterActionPriority: ['torrentClient', 'copyMagnet', 'downloadTorrent'],
+      })
+    })
+
+    it('migrates legacy enterAction copyMagnet with useQbittorrent=false', async () => {
+      core.settings.read = vi.fn().mockImplementation(async (key: string) => {
+        if (key === 'enterAction') return 'copyMagnet'
+        if (key === 'useQbittorrent') return false
+        return null
+      })
+      const result = await handlers.getActionSettings({})
+      expect(result).toEqual({
+        enterActionPriority: ['copyMagnet', 'downloadTorrent', 'torrentClient'],
+      })
     })
   })
 })

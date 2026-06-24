@@ -34,12 +34,13 @@ function noteToMd(note: Note): string {
 function createCore(dbArg: MockDb | null = null): {
   core: CoreContext
   handlers: Record<string, (payload: unknown) => unknown>
+  publicChannels: Set<string>
   db: DbHandle
   mockPrepare: ReturnType<typeof vi.fn>
   preparedStmt: PreparedStatement
 } {
   const { db, mockPrepare, preparedStmt } = dbArg ?? makeMockDb()
-  const { core, handlers } = createMockCore({
+  const { core, handlers, publicChannels } = createMockCore({
     db: { open: vi.fn().mockReturnValue(db) },
     fs: {
       mkdir: vi.fn().mockResolvedValue(undefined),
@@ -51,7 +52,7 @@ function createCore(dbArg: MockDb | null = null): {
       rm: vi.fn().mockResolvedValue(undefined),
     },
   })
-  return { core, handlers, db, mockPrepare, preparedStmt }
+  return { core, handlers, publicChannels, db, mockPrepare, preparedStmt }
 }
 
 beforeEach(async () => {
@@ -74,6 +75,13 @@ describe('notes backend', () => {
     const { core } = createCore()
     await register(core)
     expect(core.registry.registerTool).toHaveBeenCalledWith({ name: 'notes' })
+  })
+
+  it('exposes eval publicly, matching manifest.ipc.public', async () => {
+    const register = await freshBackend()
+    const { core, publicChannels } = createCore()
+    await register(core)
+    expect(publicChannels).toEqual(new Set(['eval']))
   })
 
   describe('notes:create', () => {

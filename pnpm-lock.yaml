@@ -320,6 +320,18 @@ importers:
 
   extensions/icons-default: {}
 
+  extensions/ipc-explorer:
+    devDependencies:
+      '@nuxyorg/ext-devserver':
+        specifier: workspace:*
+        version: link:../../packages/ext-devserver
+      '@nuxyorg/extension-sdk':
+        specifier: workspace:*
+        version: link:../../packages/extension-sdk
+      vitest:
+        specifier: '*'
+        version: 3.2.4(@types/debug@4.1.13)(@types/node@25.8.0)(happy-dom@20.10.2)(jiti@2.7.0)(yaml@2.9.0)
+
   extensions/notes:
     dependencies:
       '@nuxyorg/extension-sdk':
@@ -9505,7 +9517,7 @@ snapshots:
   vite@5.4.21(@types/node@25.8.0):
     dependencies:
       esbuild: 0.21.5
-      postcss: 8.5.14
+      postcss: 8.5.15
       rollup: 4.60.4
     optionalDependencies:
       '@types/node': 25.8.0

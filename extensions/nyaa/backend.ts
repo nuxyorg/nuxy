@@ -8,8 +8,14 @@ import type {
   NyaaResult,
 } from './types.ts'
 import { parseNyaaHtml } from './utils/parse.ts'
+import type { EnterAction } from './utils/enter-action-options.ts'
+import { normalizeEnterActionPriority } from './utils/enter-action-priority.ts'
 
 const BASE_URL = 'https://nyaa.si'
+
+export interface ActionSettings {
+  enterActionPriority: EnterAction[]
+}
 
 export function register(core: CoreContext): void {
   core.registry.registerTool({ name: 'nyaa' })
@@ -57,8 +63,16 @@ export function register(core: CoreContext): void {
     return results
   })
 
-  core.ipc.handle('getEnterAction', async (): Promise<string> => {
-    return (await core.settings.read<string>('enterAction')) ?? 'copyMagnet'
+  core.ipc.handle('getActionSettings', async (): Promise<ActionSettings> => {
+    const savedPriority = await core.settings.read<unknown>('enterActionPriority')
+    const legacyEnterAction = await core.settings.read<unknown>('enterAction')
+    const legacyUseQbittorrent = await core.settings.read<unknown>('useQbittorrent')
+    return {
+      enterActionPriority: normalizeEnterActionPriority(savedPriority, {
+        enterAction: legacyEnterAction,
+        useQbittorrent: legacyUseQbittorrent,
+      }),
+    }
   })
 
   core.ipc.handle('copyMagnet', async (payload: unknown): Promise<void> => {

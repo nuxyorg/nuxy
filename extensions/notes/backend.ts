@@ -172,48 +172,52 @@ export async function register(core: CoreContext): Promise<void> {
     }
   )
 
-  core.ipc.handle('eval', async (payload: unknown): Promise<{ items: unknown[] }> => {
-    const text = (payload as { text?: string } | null | undefined)?.text ?? ''
-    if (!text.trim()) return { items: [] }
+  core.ipc.handle(
+    'eval',
+    async (payload: unknown): Promise<{ items: unknown[] }> => {
+      const text = (payload as { text?: string } | null | undefined)?.text ?? ''
+      if (!text.trim()) return { items: [] }
 
-    let matchingNotes: FtsRow[] = []
-    try {
-      const stmt = db!.prepare(
-        'SELECT id, title, body FROM notes_fts WHERE notes_fts MATCH ? ORDER BY rank'
-      )
-      matchingNotes = stmt.all(text) as unknown as FtsRow[]
-    } catch {
+      let matchingNotes: FtsRow[] = []
       try {
         const stmt = db!.prepare(
-          'SELECT id, title, body FROM notes_fts WHERE title LIKE ? OR body LIKE ?'
+          'SELECT id, title, body FROM notes_fts WHERE notes_fts MATCH ? ORDER BY rank'
         )
-        matchingNotes = stmt.all(`%${text}%`, `%${text}%`) as unknown as FtsRow[]
-      } catch {}
-    }
+        matchingNotes = stmt.all(text) as unknown as FtsRow[]
+      } catch {
+        try {
+          const stmt = db!.prepare(
+            'SELECT id, title, body FROM notes_fts WHERE title LIKE ? OR body LIKE ?'
+          )
+          matchingNotes = stmt.all(`%${text}%`, `%${text}%`) as unknown as FtsRow[]
+        } catch {}
+      }
 
-    const items: unknown[] = []
-    matchingNotes.forEach((row) => {
+      const items: unknown[] = []
+      matchingNotes.forEach((row) => {
+        items.push({
+          id: 'com.nuxy.notes',
+          title: row.title || core.i18n.t('provider.untitled'),
+          subtitle: core.i18n.t('provider.matchSubtitle', { body: row.body.slice(0, 40) }),
+          isTool: true,
+          initialQuery: text,
+        })
+      })
+
       items.push({
         id: 'com.nuxy.notes',
-        title: row.title || core.i18n.t('provider.untitled'),
-        subtitle: core.i18n.t('provider.matchSubtitle', { body: row.body.slice(0, 40) }),
-        isTool: true,
-        initialQuery: text,
+        title: core.i18n.t('provider.saveAsNote'),
+        subtitle: core.i18n.t('provider.saveSubtitle', { text }),
+        execute: {
+          channel: 'notes:create_from_provider',
+          payload: { text },
+        },
       })
-    })
 
-    items.push({
-      id: 'com.nuxy.notes',
-      title: core.i18n.t('provider.saveAsNote'),
-      subtitle: core.i18n.t('provider.saveSubtitle', { text }),
-      execute: {
-        channel: 'notes:create_from_provider',
-        payload: { text },
-      },
-    })
-
-    return { items }
-  })
+      return { items }
+    },
+    { expose: 'public' }
+  )
 
   core.ipc.handle('notes:list', async (): Promise<Note[]> => {
     const entries = await core.fs.readDir(extDataDir!)

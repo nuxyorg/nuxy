@@ -17,6 +17,9 @@
     "callable": true,
     "caller": false
   },
+  "ipc": {
+    "public": ["models"]
+  },
   "locales": {
     "default": "en",
     "supported": ["en", "tr", "ja"]

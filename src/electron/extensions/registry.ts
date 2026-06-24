@@ -9,6 +9,14 @@ const byId = new Map<string, LoadedExtension>()
 const folderToId = new Map<string, string>()
 const shortNameToId = new Map<string, string>()
 const ipcChannelsByExtId = new Map<string, Set<string>>()
+const publicIpcChannelsByExtId = new Map<string, Set<string>>()
+const privateIpcChannelsByExtId = new Map<string, Set<string>>()
+
+export interface IpcSyncValidationResult {
+  ok: boolean
+  errors: string[]
+  warnings: string[]
+}
 
 /** Last dot-separated segment of a reverse-domain id, e.g. "com.nuxy.settings" → "settings". */
 function shortNameOf(id: string): string {
@@ -105,11 +113,54 @@ export function isChannelAllowed(extId: string, channel: string): boolean {
   return allowed.has(channel)
 }
 
+export function isPublicChannel(extId: string, channel: string): boolean {
+  return publicIpcChannelsByExtId.get(extId)?.has(channel) ?? false
+}
+
+export function isPrivateChannel(extId: string, channel: string): boolean {
+  return privateIpcChannelsByExtId.get(extId)?.has(channel) ?? false
+}
+
+/**
+ * Validates a worker's IPC sync payload against the extension's manifest-declared
+ * public surface. Channels registered public but not declared in `manifest.ipc.public`
+ * are an error (manifest is the source of truth); manifest-declared public channels
+ * with no registered handler are a warning (handler may not have booted yet).
+ */
+export function validateIpcSync(
+  extId: string,
+  manifestPublic: string[] | undefined,
+  runtime: Pick<ExtensionRuntimeMeta, 'publicIpcChannels'>
+): IpcSyncValidationResult {
+  const declared = new Set(manifestPublic ?? [])
+  const registered = new Set(runtime.publicIpcChannels)
+  const errors: string[] = []
+  const warnings: string[] = []
+
+  for (const channel of registered) {
+    if (!declared.has(channel)) {
+      errors.push(`Channel "${channel}" registered public but not declared in manifest.ipc.public`)
+    }
+  }
+
+  for (const channel of declared) {
+    if (!registered.has(channel)) {
+      warnings.push(
+        `Manifest declares public channel "${channel}" with no registered public handler`
+      )
+    }
+  }
+
+  return { ok: errors.length === 0, errors, warnings }
+}
+
 export function mergeRuntimeSync(extId: string, payload: ExtensionRuntimeMeta): void {
   const ext = byId.get(extId)
   if (!ext) return
   ext.runtime = payload
   setExtensionChannels(extId, payload.ipcChannels)
+  publicIpcChannelsByExtId.set(extId, new Set(payload.publicIpcChannels))
+  privateIpcChannelsByExtId.set(extId, new Set(payload.privateIpcChannels))
 }
 
 export function getDisplayName(ext: LoadedExtension): string {
@@ -171,6 +222,8 @@ export function unregisterExtension(extId: string): void {
     shortNameToId.delete(shortNameOf(extId))
   }
   ipcChannelsByExtId.delete(extId)
+  publicIpcChannelsByExtId.delete(extId)
+  privateIpcChannelsByExtId.delete(extId)
   const idx = loadedExtensions.findIndex((e) => e.id === extId)
   if (idx >= 0) loadedExtensions.splice(idx, 1)
 }
@@ -180,5 +233,7 @@ export function clearRegistry(): void {
   folderToId.clear()
   shortNameToId.clear()
   ipcChannelsByExtId.clear()
+  publicIpcChannelsByExtId.clear()
+  privateIpcChannelsByExtId.clear()
   loadedExtensions.length = 0
 }

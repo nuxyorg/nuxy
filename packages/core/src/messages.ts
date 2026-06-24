@@ -4,6 +4,8 @@ export type WorkerToHostMessage =
       kind: 'event'
       type: 'registry:sync'
       ipcChannels: string[]
+      privateIpcChannels: string[]
+      publicIpcChannels: string[]
       displayName?: string
       registeredEntries?: import('./types.js').RegistryEntry[]
     }

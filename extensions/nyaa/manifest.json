@@ -7,7 +7,7 @@
   "permissions": ["network", "clipboard", "shell"],
   "capabilities": {
     "callable": false,
-    "caller": false
+    "caller": true
   },
   "composition": {
     "claims": ["omnibar-portal"]

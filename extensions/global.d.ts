@@ -14,7 +14,12 @@ declare global {
     ui: Record<string, any>
     core: {
       ipc: {
-        invoke: (extId: string, channel: string, payload?: unknown) => Promise<unknown>
+        invoke: (
+          extId: string,
+          channel: string,
+          payload?: unknown,
+          options?: { callerExtId?: string }
+        ) => Promise<unknown>
       }
       window: {
         ready: () => void

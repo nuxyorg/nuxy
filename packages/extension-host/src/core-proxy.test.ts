@@ -99,6 +99,27 @@ describe('createCoreProxy', () => {
 
       expect(registerIpcHandler).toHaveBeenCalledWith('com.nuxy.test:doThing', handler)
       expect(getSyncPayload().ipcChannels).toEqual(['com.nuxy.test:doThing'])
+      expect(getSyncPayload().privateIpcChannels).toEqual(['com.nuxy.test:doThing'])
+      expect(getSyncPayload().publicIpcChannels).toEqual([])
+    })
+
+    it('registers a public handler when expose: "public" is passed', () => {
+      const { core, getSyncPayload } = build()
+      const handler = vi.fn()
+      core.ipc.handle('getStatus', handler, { expose: 'public' })
+
+      expect(registerIpcHandler).toHaveBeenCalledWith('getStatus', handler)
+      expect(getSyncPayload().publicIpcChannels).toEqual(['getStatus'])
+      expect(getSyncPayload().privateIpcChannels).toEqual([])
+      expect(getSyncPayload().ipcChannels).toEqual(['getStatus'])
+    })
+
+    it('defaults to private when no options are passed', () => {
+      const { core, getSyncPayload } = build()
+      core.ipc.handle('list', vi.fn())
+
+      expect(getSyncPayload().privateIpcChannels).toEqual(['list'])
+      expect(getSyncPayload().publicIpcChannels).toEqual([])
     })
 
     it('broadcast forwards to callHost without awaiting', () => {

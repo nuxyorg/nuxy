@@ -57,6 +57,7 @@ export function registerProtocols() {
           createStore,
           createTranslator,
           BaseExtensionController,
+          invokeExtensionIpc,
           getToolOnComplete,
           shouldSuppressBlurHide,
           syncBlurSuppression,

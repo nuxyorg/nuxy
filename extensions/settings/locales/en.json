@@ -85,7 +85,9 @@
     "previousSetting": "Previous setting",
     "nextSetting": "Next setting",
     "openSetting": "Open setting",
-    "closeSetting": "Close setting"
+    "closeSetting": "Close setting",
+    "movePriorityUp": "Move priority up",
+    "movePriorityDown": "Move priority down"
   },
   "search": {
     "placeholder": "Filter settings"

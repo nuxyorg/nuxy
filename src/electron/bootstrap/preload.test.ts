@@ -91,6 +91,20 @@ describe('core.ipc.invoke', () => {
     ipc.invoke('com.nuxy.calc', 'eval', { expr: '1+1' })
     expect(mockInvoke).toHaveBeenCalledWith('ext:invoke', 'com.nuxy.calc', 'eval', { expr: '1+1' })
   })
+
+  it('forwards options.callerExtId as a 5th argument when provided', () => {
+    const { ipc } = getExposedCore()
+    ipc.invoke('com.nuxy.qbittorrent', 'getStatus', {}, { callerExtId: 'com.nuxy.nyaa' })
+    expect(mockInvoke).toHaveBeenCalledWith(
+      'ext:invoke',
+      'com.nuxy.qbittorrent',
+      'getStatus',
+      {},
+      {
+        callerExtId: 'com.nuxy.nyaa',
+      }
+    )
+  })
 })
 
 describe('core.window.*', () => {

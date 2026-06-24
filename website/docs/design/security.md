@@ -58,6 +58,17 @@ By routing all cross-module calls through the **Kernel Message Broker**:
 1. Modules remain completely blind to each other's existence (other than knowing their public schema).
 2. The Kernel acts as a strict firewall. If the AI hallucinates bad data, the Kernel rejects it before the Currency thread even sees the request.
 
+### 4.1 Manifest-declared public IPC surface
+
+Each extension declares its cross-module API in `manifest.json` under `ipc.public`. Backend handlers opt in with `core.ipc.handle(channel, fn, { expose: 'public' })`. At startup the kernel rejects extensions whose public handlers and manifest declarations disagree.
+
+Renderer invocations are fail-closed:
+
+- **Private channels** require `callerExtId === targetExtId`.
+- **Public cross-extension channels** require an explicit caller, a public declaration, and `capabilities.callable` on the target.
+
+This keeps integration points static and auditable — consumers know exactly which channels exist without probing private handlers.
+
 ## 5. Frontend UI Isolation (iframes / WebViews)
 
 If extensions are highly untrusted, their custom element UIs can be rendered inside `<webview>` tags or Sandboxed IFrames rather than directly in the main DOM. This prevents a malicious extension from reading the DOM of the Password Vault extension via `document.querySelector`.

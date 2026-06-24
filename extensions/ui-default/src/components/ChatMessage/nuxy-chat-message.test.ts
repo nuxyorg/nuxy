@@ -54,11 +54,7 @@ describe('nuxy-chat-message', () => {
 
   it('shows the model name next to the role label when set', async () => {
     render(
-      html`<nuxy-chat-message
-        role="assistant"
-        content="hi"
-        model="llama3"
-      ></nuxy-chat-message>`,
+      html`<nuxy-chat-message role="assistant" content="hi" model="llama3"></nuxy-chat-message>`,
       parent
     )
     const msg = parent.querySelector('nuxy-chat-message') as NuxyChatMessageElement

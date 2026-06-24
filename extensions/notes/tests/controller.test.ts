@@ -28,6 +28,19 @@ vi.mock('@nuxyorg/core', async () => {
 
 import type { Note } from '../types.ts'
 import { NotesController } from '../controller.ts'
+import { flattenTranslations } from '@nuxyorg/core'
+import enLocale from '../locales/en.json'
+
+const enTranslations = flattenTranslations(enLocale)
+
+function mockTranslations(): void {
+  vi.mocked(window.core!.ipc!.invoke).mockImplementation(async (_extId, channel) => {
+    if (channel === 'getExtensionTranslations') {
+      return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
+    }
+    return { success: true, data: undefined }
+  })
+}
 
 function makeNote(id: string): Note {
   return { id, title: id, body: '', createdAt: 0, updatedAt: 0 } as Note
@@ -176,7 +189,8 @@ describe('NotesController.handleDelete', () => {
 })
 
 describe('NotesController delete key action', () => {
-  it('requires holding Delete to delete a note', () => {
+  it('requires holding Delete to delete a note', async () => {
+    mockTranslations()
     let getter:
       | (() => Array<{
           key: string
@@ -194,6 +208,8 @@ describe('NotesController delete key action', () => {
 
     const controller = new NotesController(() => {})
     controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
     controller.store.setState({
       filteredNotes: [makeNote('a')],
       selectedIndex: 0,
@@ -202,7 +218,7 @@ describe('NotesController delete key action', () => {
 
     const deleteAction = getter!().find((a) => a.key === 'Delete')
     expect(deleteAction?.trigger).toBe('hold')
-    expect(deleteAction?.hint).toBe('hold Del')
+    expect(deleteAction?.hint).toBe('Del')
     expect(deleteAction?.holdCancelToast).toBe('Hold Del to delete')
     expect(deleteAction?.activeOn?.()).toBe(true)
 

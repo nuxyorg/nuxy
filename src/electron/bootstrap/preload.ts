@@ -7,8 +7,15 @@ import { createEventsBridge } from './events-bridge.js'
 
 contextBridge.exposeInMainWorld('core', {
   ipc: {
-    invoke: (extId: string, channel: string, payload?: unknown) =>
-      ipcRenderer.invoke('ext:invoke', extId, channel, payload),
+    invoke: (
+      extId: string,
+      channel: string,
+      payload?: unknown,
+      options?: { callerExtId?: string }
+    ) =>
+      options
+        ? ipcRenderer.invoke('ext:invoke', extId, channel, payload, options)
+        : ipcRenderer.invoke('ext:invoke', extId, channel, payload),
   },
   window: {
     ready: () => ipcRenderer.send('window:ready'),

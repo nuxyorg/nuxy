@@ -35,7 +35,7 @@ export class StoreController extends BaseExtensionController<StoreState> {
   }
 
   private invoke: TypedInvoker<IpcChannels> = async (channel, ...args) => {
-    const res = await window.core.ipc.invoke(EXT_ID, channel, args[0])
+    const res = await window.core.ipc.invoke(EXT_ID, channel, args[0], { callerExtId: EXT_ID })
     const r = res as { success: boolean; data?: unknown; error?: string } | null
     if (!r?.success) throw new Error(r?.error ?? 'IPC failed')
     return r.data as never

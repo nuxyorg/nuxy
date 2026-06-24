@@ -92,6 +92,7 @@ export class NuxyInputElement extends LitElement {
       <input
         type=${this.type || nothing}
         name=${this.name || nothing}
+        .value=${this.value ?? ''}
         placeholder=${this.placeholder || nothing}
         ?disabled=${this.disabled || this.hasAttribute('disabled')}
         ?readonly=${this.readonly || this.hasAttribute('readonly')}

@@ -25,6 +25,8 @@ describe('extensionMatchesListKind', () => {
     const ext = makeExt('com.nuxy.notes', 'tool', {
       runtime: {
         ipcChannels: ['eval'],
+        privateIpcChannels: ['eval'],
+        publicIpcChannels: [],
         registeredEntries: [
           { kind: 'tool', name: 'notes' },
           { kind: 'provider', name: 'notes' },
@@ -40,6 +42,8 @@ describe('extensionMatchesListKind', () => {
     const ext = makeExt('com.nuxy.converter', 'tool', {
       runtime: {
         ipcChannels: ['eval'],
+        privateIpcChannels: ['eval'],
+        publicIpcChannels: [],
         registeredEntries: [{ kind: 'provider', name: 'converter' }],
       },
     })
@@ -49,7 +53,12 @@ describe('extensionMatchesListKind', () => {
 
   it('falls back to manifest when registeredEntries is empty', () => {
     const ext = makeExt('com.nuxy.calc', 'provider', {
-      runtime: { ipcChannels: [], registeredEntries: [] },
+      runtime: {
+        ipcChannels: [],
+        privateIpcChannels: [],
+        publicIpcChannels: [],
+        registeredEntries: [],
+      },
     })
     expect(extensionMatchesListKind(ext, 'provider')).toBe(true)
     expect(extensionMatchesListKind(ext, 'tool')).toBe(false)
@@ -82,6 +91,8 @@ describe('listExtensionsByKind', () => {
     registerExtension(makeExt('com.nuxy.notes', 'tool'))
     mergeRuntimeSync('com.nuxy.notes', {
       ipcChannels: ['eval'],
+      privateIpcChannels: ['eval'],
+      publicIpcChannels: [],
       registeredEntries: [
         { kind: 'tool', name: 'notes' },
         { kind: 'provider', name: 'notes' },
@@ -98,6 +109,8 @@ describe('listExtensionsByKind', () => {
     registerExtension(makeExt('com.example.dual', 'provider'))
     mergeRuntimeSync('com.example.dual', {
       ipcChannels: [],
+      privateIpcChannels: [],
+      publicIpcChannels: [],
       registeredEntries: [
         { kind: 'tool', name: 'dual' },
         { kind: 'provider', name: 'dual' },

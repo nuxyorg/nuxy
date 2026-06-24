@@ -119,7 +119,8 @@ describe('nuxy-tool-download-manager element', () => {
     expect(ipcInvoke).toHaveBeenCalledWith(
       'com.nuxy.download-manager',
       'add',
-      expect.objectContaining({ url: 'https://example.com/file.iso' })
+      expect.objectContaining({ url: 'https://example.com/file.iso' }),
+      { callerExtId: 'com.nuxy.download-manager' }
     )
   })
 })

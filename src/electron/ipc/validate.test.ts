@@ -1,6 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { validateExtInvokeArgs, validateWindowResize } from './validate.js'
-import { registerExtension, clearRegistry, setExtensionChannels } from '../extensions/registry.js'
+import {
+  registerExtension,
+  clearRegistry,
+  setExtensionChannels,
+  mergeRuntimeSync,
+} from '../extensions/registry.js'
 import type { LoadedExtension } from '@nuxyorg/core'
 
 const sampleExt: LoadedExtension = {
@@ -11,6 +16,19 @@ const sampleExt: LoadedExtension = {
     name: 'Test',
     version: '1.0.0',
     type: 'tool',
+    capabilities: { callable: true, caller: false },
+  },
+}
+
+const otherExt: LoadedExtension = {
+  id: 'com.nuxy.other',
+  folderName: 'other',
+  manifest: {
+    id: 'com.nuxy.other',
+    name: 'Other',
+    version: '1.0.0',
+    type: 'tool',
+    capabilities: { callable: false, caller: true },
   },
 }
 
@@ -18,7 +36,13 @@ describe('validateExtInvokeArgs', () => {
   beforeEach(() => {
     clearRegistry()
     registerExtension(sampleExt)
-    setExtensionChannels('com.nuxy.test', ['eval'])
+    registerExtension(otherExt)
+    setExtensionChannels('com.nuxy.test', ['eval', 'secretPrivate'])
+    mergeRuntimeSync('com.nuxy.test', {
+      ipcChannels: ['eval', 'secretPrivate'],
+      privateIpcChannels: ['secretPrivate'],
+      publicIpcChannels: ['eval'],
+    })
   })
 
   it('rejects empty extId', () => {
@@ -110,6 +134,33 @@ describe('validateExtInvokeArgs', () => {
     const r = validateExtInvokeArgs('com.nuxy.test', 'secret', {})
     expect(r.ok).toBe(false)
     if (!r.ok) expect(r.result.code).toBe('UNKNOWN_CHANNEL')
+  })
+
+  it('allows same-extension invoke of a private channel when callerExtId matches target', () => {
+    const r = validateExtInvokeArgs('com.nuxy.test', 'secretPrivate', {}, 'com.nuxy.test')
+    expect(r.ok).toBe(true)
+  })
+
+  it('allows a cross-extension call to a public channel when target is callable', () => {
+    const r = validateExtInvokeArgs('com.nuxy.test', 'eval', {}, 'com.nuxy.other')
+    expect(r.ok).toBe(true)
+  })
+
+  it('denies a cross-extension call to a private channel with IPC_PRIVATE', () => {
+    const r = validateExtInvokeArgs('com.nuxy.test', 'secretPrivate', {}, 'com.nuxy.other')
+    expect(r.ok).toBe(false)
+    if (!r.ok) expect(r.result.code).toBe('IPC_PRIVATE')
+  })
+
+  it('requires callerExtId for private channels', () => {
+    const r = validateExtInvokeArgs('com.nuxy.test', 'secretPrivate', {})
+    expect(r.ok).toBe(false)
+    if (!r.ok) expect(r.result.code).toBe('CALLER_REQUIRED')
+  })
+
+  it('allows public channels without callerExtId', () => {
+    const r = validateExtInvokeArgs('com.nuxy.test', 'eval', {})
+    expect(r.ok).toBe(true)
   })
 })
 

@@ -11,6 +11,9 @@
     "callable": true,
     "caller": true
   },
+  "ipc": {
+    "public": ["registerExternal", "updateExternal"]
+  },
   "behavior": {
     "onComplete": "stay"
   },

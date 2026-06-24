@@ -217,7 +217,12 @@ test.describe('registry', () => {
   test('mergeRuntimeSync updates display name and channels', () => {
     const ext = makeTool('com.nuxy.g')
     registerExtension(ext)
-    mergeRuntimeSync('com.nuxy.g', { displayName: 'Pretty G', ipcChannels: ['doThing'] })
+    mergeRuntimeSync('com.nuxy.g', {
+      displayName: 'Pretty G',
+      ipcChannels: ['doThing'],
+      privateIpcChannels: ['doThing'],
+      publicIpcChannels: [],
+    })
     const loaded = getExtensionById('com.nuxy.g')!
     expect(getDisplayName(loaded)).toBe('Pretty G')
     expect(isChannelAllowed('com.nuxy.g', 'doThing')).toBe(true)

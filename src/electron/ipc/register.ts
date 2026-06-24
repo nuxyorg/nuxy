@@ -14,8 +14,14 @@ export function registerIpc() {
 
   ipcMain.handle(
     'ext:invoke',
-    async (_event, extId: unknown, channel: unknown, payload: unknown) => {
-      const validated = validateExtInvokeArgs(extId, channel, payload)
+    async (
+      _event,
+      extId: unknown,
+      channel: unknown,
+      payload: unknown,
+      options?: { callerExtId?: string }
+    ) => {
+      const validated = validateExtInvokeArgs(extId, channel, payload, options?.callerExtId)
       if (!validated.ok) return validated.result
 
       const { extId: id, channel: ch, payload: pl } = validated

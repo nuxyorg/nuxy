@@ -6,23 +6,43 @@ import {
   BaseExtensionController,
 } from '@nuxyorg/extension-sdk'
 import manifestJson from './manifest.json'
-import type { NyaaResult } from './types.ts'
+import type { NyaaResult, EnterAction } from './types.ts'
+import {
+  ENTER_ACTION_COPY,
+  ENTER_ACTION_DOWNLOAD,
+  ENTER_ACTION_TORRENT_CLIENT,
+  enterActionLabel,
+} from './utils/enter-action-options.ts'
+import {
+  DEFAULT_ENTER_ACTION_PRIORITY,
+  resolveEffectiveActions,
+} from './utils/enter-action-priority.ts'
+import {
+  handoffTorrent,
+  handoffTorrents,
+  isTorrentClientReady,
+  downloadTorrentViaSystem,
+  downloadTorrentsViaSystem,
+} from './utils/torrent-handoff.ts'
 
 const EXT_ID = 'com.nuxy.nyaa'
+const POLL_INTERVAL_MS = 2000
 const manifest = manifestJson as ExtensionManifest
 
-export type EnterAction = 'copyMagnet' | 'downloadTorrent'
+export type { EnterAction } from './types.ts'
 
 export interface NyaaState {
   query: string
   results: NyaaResult[]
   loading: boolean
   error: string | null
+  actionError: string | null
   selectedIndex: number
   multiSelectMode: boolean
   checkedIds: Set<string>
   copiedId: string | null
-  enterAction: EnterAction
+  enterActionPriority: EnterAction[]
+  torrentClientReady: boolean
 }
 
 export class NyaaController extends BaseExtensionController<NyaaState> {
@@ -30,6 +50,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
   private searchGen = 0
   private copiedTimer: ReturnType<typeof setTimeout> | null = null
   private omniPortalHost: HTMLDivElement | null = null
+  private torrentClientPollTimer: ReturnType<typeof setInterval> | null = null
 
   setOmniPortalHost(host: HTMLDivElement | null): void {
     this.omniPortalHost = host
@@ -44,11 +65,13 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
         results: [],
         loading: false,
         error: null,
+        actionError: null,
         selectedIndex: -1,
         multiSelectMode: false,
         checkedIds: new Set(),
         copiedId: null,
-        enterAction: 'copyMagnet',
+        enterActionPriority: [...DEFAULT_ENTER_ACTION_PRIORITY],
+        torrentClientReady: false,
       },
       onUpdate
     )
@@ -58,23 +81,66 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
     if (!window.core?.ipc) return
 
     this.syncSearchPlaceholder()
+    this.reloadActionSettings()
+    this.startTorrentClientPoll()
+
+    const offExtSettings = window.core?.events?.on('extension-settings-updated', (detail) => {
+      if (detail.extId !== EXT_ID) return
+      this.reloadActionSettings()
+    })
+    if (offExtSettings) this.cleanups.push(offExtSettings)
+
+    this.bindKeyboard()
+  }
+
+  private reloadActionSettings(): void {
+    if (!window.core?.ipc) return
 
     window.core.ipc
-      .invoke(EXT_ID, 'getEnterAction', {})
+      .invoke(EXT_ID, 'getActionSettings', {}, { callerExtId: EXT_ID })
       .then((res: unknown) => {
-        const r = res as { success: boolean; data?: string } | null
-        if (r?.success && (r.data === 'copyMagnet' || r.data === 'downloadTorrent')) {
-          this.store.setState({ enterAction: r.data })
+        const r = res as {
+          success: boolean
+          data?: { enterActionPriority?: EnterAction[] }
+        } | null
+        if (r?.success && r.data) {
+          const enterActionPriority = r.data.enterActionPriority ?? [
+            ...DEFAULT_ENTER_ACTION_PRIORITY,
+          ]
+          this.store.setState({ enterActionPriority })
+          void this.pollTorrentClientStatus()
+          window.core?.shell?.refreshShellActions()
         }
       })
       .catch(() => {})
+  }
 
-    this.bindKeyboard()
+  private startTorrentClientPoll(): void {
+    if (this.torrentClientPollTimer) return
+    void this.pollTorrentClientStatus()
+    this.torrentClientPollTimer = setInterval(() => {
+      void this.pollTorrentClientStatus()
+    }, POLL_INTERVAL_MS)
+  }
+
+  private stopTorrentClientPoll(): void {
+    if (this.torrentClientPollTimer) {
+      clearInterval(this.torrentClientPollTimer)
+      this.torrentClientPollTimer = null
+    }
+  }
+
+  private async pollTorrentClientStatus(): Promise<void> {
+    const ready = await isTorrentClientReady()
+    if (ready === this.state.torrentClientReady) return
+    this.store.setState({ torrentClientReady: ready })
+    window.core?.shell?.refreshShellActions()
   }
 
   disconnect(): void {
     if (this.searchTimer) clearTimeout(this.searchTimer)
     if (this.copiedTimer) clearTimeout(this.copiedTimer)
+    this.stopTorrentClientPoll()
     this.setOmniBarPortal(null)
     this.cleanups.forEach((fn) => fn())
     this.cleanups = []
@@ -123,7 +189,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
 
   handleCopyMagnet(id: string, magnet: string): void {
     window.core.ipc
-      .invoke(EXT_ID, 'copyMagnet', { magnet })
+      .invoke(EXT_ID, 'copyMagnet', { magnet }, { callerExtId: EXT_ID })
       .then(() => {
         this.store.setState({ copiedId: id })
         if (this.copiedTimer) clearTimeout(this.copiedTimer)
@@ -134,24 +200,74 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
   }
 
   handleDownloadTorrent(id: string): void {
-    window.core.ipc
-      .invoke(EXT_ID, 'downloadTorrent', { id })
-      .then(() => completeToolAction(manifest))
-      .catch(() => {})
+    void downloadTorrentViaSystem(id).then((outcome) => {
+      if (!outcome.ok) {
+        this.store.setState({ actionError: outcome.error })
+        return
+      }
+      this.store.setState({ actionError: null })
+      completeToolAction(manifest)
+    })
   }
 
   handleCopyMagnets(items: Array<{ id: string; magnet: string }>): void {
     window.core.ipc
-      .invoke(EXT_ID, 'copyMagnets', { magnets: items.map((i) => i.magnet) })
+      .invoke(
+        EXT_ID,
+        'copyMagnets',
+        { magnets: items.map((i) => i.magnet) },
+        { callerExtId: EXT_ID }
+      )
       .then(() => completeToolAction(manifest))
       .catch(() => {})
   }
 
   handleDownloadTorrents(ids: string[]): void {
-    window.core.ipc
-      .invoke(EXT_ID, 'downloadTorrents', { ids })
-      .then(() => completeToolAction(manifest))
-      .catch(() => {})
+    const items = this.state.results
+      .filter((item) => ids.includes(item.id))
+      .map((item) => ({ id: item.id, url: item.magnet }))
+    const handoff = this.state.torrentClientReady
+      ? handoffTorrents(items)
+      : downloadTorrentsViaSystem(ids)
+    void handoff.then((outcome) => {
+      if (!outcome.ok) {
+        this.store.setState({ actionError: outcome.error })
+        return
+      }
+      this.store.setState({ actionError: null })
+      if (outcome.via === 'system') completeToolAction(manifest)
+    })
+  }
+
+  private async runTorrentHandoff(result: NyaaResult): Promise<void> {
+    const outcome = await handoffTorrent(result.id, result.magnet)
+    if (!outcome.ok) {
+      this.store.setState({ actionError: outcome.error })
+      return
+    }
+    this.store.setState({ actionError: null })
+  }
+
+  private effectiveActions() {
+    const result = resolveEffectiveActions(
+      this.state.enterActionPriority,
+      this.state.torrentClientReady
+    )
+    return result
+  }
+
+  private executeAction(action: EnterAction, result: NyaaResult): void {
+    switch (action) {
+      case ENTER_ACTION_COPY:
+        this.handleCopyMagnet(result.id, result.magnet)
+        break
+      case ENTER_ACTION_DOWNLOAD:
+        this.handleDownloadTorrent(result.id)
+        break
+      case ENTER_ACTION_TORRENT_CLIENT:
+        void this.runTorrentHandoff(result)
+        break
+    }
   }
 
   private setOmniBarPortal(template: TemplateResult | null): void {
@@ -172,7 +288,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
     const { query } = this.state
 
     if (!query.trim()) {
-      this.store.setState({ results: [], loading: false, error: null })
+      this.store.setState({ results: [], loading: false, error: null, actionError: null })
       this.setOmniBarPortal(null)
       return
     }
@@ -184,7 +300,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
     this.searchTimer = setTimeout(() => {
       if (generation !== this.searchGen) return
       window.core.ipc
-        .invoke(EXT_ID, 'search', { query })
+        .invoke(EXT_ID, 'search', { query }, { callerExtId: EXT_ID })
         .then((res) => {
           if (generation !== this.searchGen) return
           const r = res as { success: boolean; data?: NyaaResult[]; error?: string } | null
@@ -215,32 +331,59 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
     return this.buildActions()
   }
 
-  /**
-   * Single source of truth for both the footer (actions with a `hint`) and
-   * the Ctrl+K palette (actions with `showInMenu: true`). The two are
-   * mutually exclusive per action: the footer only has room for the
-   * frequent, single-item operations — anything that doesn't fit there
-   * (bulk multi-select operations) is Ctrl+K-only, with its key binding
-   * still live in the background.
-   */
+  private selectedResult(): NyaaResult | null {
+    const idx = this.state.selectedIndex
+    if (idx < 0) return null
+    return this.state.results[idx] ?? null
+  }
+
+  private buildEnterAction(variant: 'enter' | 'shiftEnter'): ShellAction | null {
+    const t = this.t.t
+    const isEnter = variant === 'enter'
+    const { enter, shiftEnter } = this.effectiveActions()
+    const action = isEnter ? enter : shiftEnter
+    if (!action) return null
+
+    const handler = () => {
+      const result = this.selectedResult()
+      if (!result) return
+      if (this.state.multiSelectMode) {
+        this.toggleCheck(result.id)
+        return
+      }
+      this.executeAction(action, result)
+    }
+
+    if (isEnter) {
+      return {
+        id: 'nyaa-enter',
+        key: 'Enter',
+        label: this.state.multiSelectMode ? t('actions.checkToggle') : enterActionLabel(action, t),
+        hint: '↵',
+        activeOn: () => this.state.selectedIndex >= 0,
+        handler,
+      }
+    }
+
+    return {
+      id: 'nyaa-shift-enter',
+      key: 'Enter',
+      modifiers: ['shift'],
+      label: enterActionLabel(action, t),
+      hint: ['⇧', '↵'],
+      activeOn: () => this.state.selectedIndex >= 0 && !this.state.multiSelectMode,
+      handler,
+    }
+  }
+
   private buildActions(): ShellAction[] {
-    const { results, multiSelectMode, checkedIds, enterAction } = this.state
+    const { results, multiSelectMode, checkedIds } = this.state
     const t = this.t.t
     const checkedItems = results.filter((r) => checkedIds.has(r.id))
+    const enterAction = this.buildEnterAction('enter')
+    const shiftEnterAction = this.buildEnterAction('shiftEnter')
 
-    const enterLabel = multiSelectMode
-      ? t('actions.checkToggle')
-      : enterAction === 'copyMagnet'
-        ? t('actions.copyMagnet')
-        : t('actions.downloadTorrent')
-
-    const shiftEnterLabel = !multiSelectMode
-      ? enterAction === 'copyMagnet'
-        ? t('actions.downloadTorrent')
-        : t('actions.copyMagnet')
-      : ''
-
-    return [
+    const actions: ShellAction[] = [
       {
         id: 'nyaa-select-multiple',
         key: 'a',
@@ -298,46 +441,12 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
           this.setSelectedIndex((prev) => Math.min(prev + 1, this.state.results.length - 1))
         },
       },
-      {
-        id: 'nyaa-enter',
-        key: 'Enter',
-        label: enterLabel,
-        hint: '↵',
-        activeOn: () => this.state.selectedIndex >= 0,
-        handler: () => {
-          const idx = this.state.selectedIndex
-          const result = this.state.results[idx]
-          if (!result) return
-          if (this.state.multiSelectMode) {
-            this.toggleCheck(result.id)
-            return
-          }
-          if (this.state.enterAction === 'copyMagnet') {
-            this.handleCopyMagnet(result.id, result.magnet)
-          } else {
-            this.handleDownloadTorrent(result.id)
-          }
-        },
-      },
-      {
-        id: 'nyaa-shift-enter',
-        key: 'Enter',
-        modifiers: ['shift'],
-        label: shiftEnterLabel,
-        hint: ['⇧', '↵'],
-        activeOn: () => this.state.selectedIndex >= 0 && !this.state.multiSelectMode,
-        handler: () => {
-          const idx = this.state.selectedIndex
-          const result = this.state.results[idx]
-          if (!result) return
-          if (this.state.enterAction === 'copyMagnet') {
-            this.handleDownloadTorrent(result.id)
-          } else {
-            this.handleCopyMagnet(result.id, result.magnet)
-          }
-        },
-      },
     ]
+
+    if (enterAction) actions.push(enterAction)
+    if (shiftEnterAction) actions.push(shiftEnterAction)
+
+    return actions
   }
 
   private bindKeyboard(): void {

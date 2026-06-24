@@ -39,7 +39,8 @@ export function createCoreProxy(
   initI18n: () => Promise<void>
   getSyncPayload: () => ExtensionRuntimeMeta
 } {
-  const ipcChannels: string[] = []
+  const privateIpcChannels: string[] = []
+  const publicIpcChannels: string[] = []
   const registeredEntries: RegistryEntry[] = []
   let displayName: string | undefined
 
@@ -157,9 +158,13 @@ export function createCoreProxy(
       },
     },
     ipc: {
-      handle: (channel, handler) => {
+      handle: (channel, handler, options) => {
         logger.log('info', 'IPC', 'Registered handler for channel: ' + channel)
-        ipcChannels.push(channel)
+        if (options?.expose === 'public') {
+          publicIpcChannels.push(channel)
+        } else {
+          privateIpcChannels.push(channel)
+        }
         registerIpcHandler(channel, handler as (payload: unknown) => Promise<unknown>)
       },
       broadcast: (channel, data) => {
@@ -255,7 +260,9 @@ export function createCoreProxy(
     core,
     initI18n,
     getSyncPayload: (): ExtensionRuntimeMeta => ({
-      ipcChannels: [...ipcChannels],
+      ipcChannels: [...privateIpcChannels, ...publicIpcChannels],
+      privateIpcChannels: [...privateIpcChannels],
+      publicIpcChannels: [...publicIpcChannels],
       displayName,
       registeredEntries: registeredEntries.length > 0 ? [...registeredEntries] : undefined,
     }),

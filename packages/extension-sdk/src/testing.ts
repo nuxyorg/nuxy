@@ -102,8 +102,10 @@ export function createNuxyCoreMock(actual: Record<string, unknown>): Record<stri
 export function createMockCore(overrides?: any): {
   core: CoreContext
   handlers: Record<string, (payload?: any) => Promise<any> | any>
+  publicChannels: Set<string>
 } {
   const handlers: Record<string, (payload?: any) => Promise<any> | any> = {}
+  const publicChannels = new Set<string>()
 
   const core = {
     registry: {
@@ -115,8 +117,13 @@ export function createMockCore(overrides?: any): {
       getCallableTools: vi.fn().mockReturnValue([]),
     },
     ipc: {
-      handle: (ch: string, fn: (payload?: any) => Promise<any> | any) => {
+      handle: (
+        ch: string,
+        fn: (payload?: any) => Promise<any> | any,
+        options?: { expose?: 'public' | 'private' }
+      ) => {
         handlers[ch] = fn
+        if (options?.expose === 'public') publicChannels.add(ch)
       },
       broadcast: vi.fn(),
     },
@@ -182,5 +189,5 @@ export function createMockCore(overrides?: any): {
     }
   }
 
-  return { core: core as CoreContext, handlers }
+  return { core: core as CoreContext, handlers, publicChannels }
 }

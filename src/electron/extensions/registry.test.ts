@@ -8,6 +8,9 @@ import {
   loadedExtensions,
   setExtensionChannels,
   isChannelAllowed,
+  isPublicChannel,
+  isPrivateChannel,
+  validateIpcSync,
   mergeRuntimeSync,
   getDisplayName,
   markFailed,
@@ -67,10 +70,65 @@ describe('registry', () => {
   it('merges runtime display name', () => {
     mergeRuntimeSync('com.nuxy.clipboard', {
       ipcChannels: ['eval'],
+      privateIpcChannels: ['eval'],
+      publicIpcChannels: [],
       displayName: 'Clip',
     })
     const loaded = getExtensionById('com.nuxy.clipboard')!
     expect(getDisplayName(loaded)).toBe('Clip')
+  })
+
+  it('splits private and public channels on sync and keeps the combined set for legacy isChannelAllowed', () => {
+    mergeRuntimeSync('com.nuxy.clipboard', {
+      ipcChannels: ['list', 'getStatus'],
+      privateIpcChannels: ['list'],
+      publicIpcChannels: ['getStatus'],
+    })
+    expect(isPrivateChannel('com.nuxy.clipboard', 'list')).toBe(true)
+    expect(isPublicChannel('com.nuxy.clipboard', 'list')).toBe(false)
+    expect(isPublicChannel('com.nuxy.clipboard', 'getStatus')).toBe(true)
+    expect(isPrivateChannel('com.nuxy.clipboard', 'getStatus')).toBe(false)
+    expect(isChannelAllowed('com.nuxy.clipboard', 'list')).toBe(true)
+    expect(isChannelAllowed('com.nuxy.clipboard', 'getStatus')).toBe(true)
+  })
+
+  describe('validateIpcSync', () => {
+    it('passes when public channels are a subset of manifest.ipc.public', () => {
+      const result = validateIpcSync('com.nuxy.qbittorrent', ['getStatus', 'add'], {
+        publicIpcChannels: ['getStatus'],
+      })
+      expect(result.ok).toBe(true)
+      expect(result.errors).toEqual([])
+    })
+
+    it('fails when a registered public channel is not declared in the manifest', () => {
+      const result = validateIpcSync('com.nuxy.qbittorrent', ['getStatus'], {
+        publicIpcChannels: ['getStatus', 'remove'],
+      })
+      expect(result.ok).toBe(false)
+      expect(result.errors).toEqual([
+        'Channel "remove" registered public but not declared in manifest.ipc.public',
+      ])
+    })
+
+    it('warns when a manifest-declared public channel has no registered handler', () => {
+      const result = validateIpcSync('com.nuxy.qbittorrent', ['getStatus', 'add'], {
+        publicIpcChannels: ['getStatus'],
+      })
+      expect(result.ok).toBe(true)
+      expect(result.warnings).toEqual([
+        'Manifest declares public channel "add" with no registered public handler',
+      ])
+    })
+
+    it('passes with no manifest public list when nothing is registered public', () => {
+      const result = validateIpcSync('com.nuxy.clipboard', undefined, {
+        publicIpcChannels: [],
+      })
+      expect(result.ok).toBe(true)
+      expect(result.errors).toEqual([])
+      expect(result.warnings).toEqual([])
+    })
   })
 
   it('marks an extension as failed with a reason', () => {

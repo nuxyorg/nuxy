@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "name": "qBittorrent"
+  },
+  "search": {
+    "placeholder": "トレントを検索、またはマグネット/.torrentリンクを貼り付け"
+  },
+  "empty": {
+    "message": "まだトレントがありません。",
+    "hint": "マグネットリンクまたは.torrent URLを貼り付けて追加してください。",
+    "noMatching": "一致するトレントがありません。"
+  },
+  "error": {
+    "loadFailed": "qBittorrentへの接続に失敗しました",
+    "loadFailedHint": "設定でWeb UIアドレス、ユーザー名、パスワードを確認してください。"
+  },
+  "add": {
+    "prompt": "トレントを追加",
+    "hint": "Enterを押してこのトレントをqBittorrentに追加します",
+    "adding": "トレントを追加中…",
+    "failed": "トレントの追加に失敗しました"
+  },
+  "state": {
+    "downloading": "ダウンロード中",
+    "uploading": "シード中",
+    "pausedDL": "一時停止",
+    "pausedUP": "一時停止",
+    "stoppedDL": "停止",
+    "stoppedUP": "停止",
+    "queuedDL": "待機中",
+    "queuedUP": "待機中",
+    "stalledDL": "停滞中",
+    "stalledUP": "停滞中(シード)",
+    "checkingDL": "確認中",
+    "checkingUP": "確認中",
+    "error": "エラー",
+    "missingFiles": "ファイルが見つかりません",
+    "allocating": "割り当て中",
+    "metaDL": "メタデータ取得中",
+    "moving": "移動中",
+    "unknown": "不明"
+  },
+  "item": {
+    "copiedMagnet": "マグネットリンクをコピーしました",
+    "copiedSavePath": "保存先をコピーしました"
+  },
+  "pending": {
+    "pause": "一時停止中…",
+    "resume": "開始中…",
+    "recheck": "再チェック中…",
+    "reannounce": "再アナウンス中…",
+    "remove": "削除中…"
+  },
+  "actions": {
+    "previous": "前へ",
+    "next": "次へ",
+    "pause": "一時停止",
+    "resume": "再開",
+    "addTorrent": "トレントを追加",
+    "recheck": "再チェック",
+    "reannounce": "再アナウンス",
+    "copyMagnet": "マグネットリンクをコピー",
+    "copySavePath": "保存先をコピー",
+    "removeKeepData": "長押しで削除(データは保持)",
+    "removeWithData": "長押しで削除(データも削除)"
+  },
+  "settings": {
+    "host": {
+      "label": "Web UIアドレス",
+      "placeholder": "http://localhost:8080",
+      "description": "qBittorrent Web UIが動作しているアドレス"
+    },
+    "username": {
+      "label": "ユーザー名",
+      "placeholder": "admin",
+      "description": "qBittorrent Web UIのユーザー名"
+    },
+    "password": {
+      "label": "パスワード",
+      "placeholder": "adminadmin",
+      "description": "qBittorrent Web UIのパスワード"
+    },
+    "authMethod": {
+      "label": "ログイン方法",
+      "description": "Web UIへの認証方法",
+      "options": {
+        "credentials": "ユーザー名とパスワード",
+        "apikey": "APIキー"
+      }
+    },
+    "apiKey": {
+      "label": "APIキー",
+      "placeholder": "Authorization: Bearerヘッダーとして送信されるトークン",
+      "description": "qBittorrent Web UIの前段にあるリバースプロキシ用のAPIキー"
+    }
+  }
+}

@@ -138,10 +138,15 @@ describe('AngrysearchController', () => {
       controller.setQuery('foo')
       await vi.runAllTimersAsync()
 
-      expect(ipcInvoke).toHaveBeenCalledWith('com.nuxy.angrysearch', 'search', {
-        query: 'foo',
-        regex: false,
-      })
+      expect(ipcInvoke).toHaveBeenCalledWith(
+        'com.nuxy.angrysearch',
+        'search',
+        {
+          query: 'foo',
+          regex: false,
+        },
+        { callerExtId: 'com.nuxy.angrysearch' }
+      )
       expect(controller.state.items).toEqual([makeItem()])
       expect(controller.state.selectedIndex).toBe(0)
       controller.disconnect()
@@ -179,10 +184,15 @@ describe('AngrysearchController', () => {
       await vi.runAllTimersAsync()
 
       expect(controller.state.regexMode).toBe(true)
-      expect(ipcInvoke).toHaveBeenCalledWith('com.nuxy.angrysearch', 'search', {
-        query: 'foo',
-        regex: true,
-      })
+      expect(ipcInvoke).toHaveBeenCalledWith(
+        'com.nuxy.angrysearch',
+        'search',
+        {
+          query: 'foo',
+          regex: true,
+        },
+        { callerExtId: 'com.nuxy.angrysearch' }
+      )
       controller.disconnect()
     })
   })
@@ -200,7 +210,8 @@ describe('AngrysearchController', () => {
       expect(ipcInvoke).toHaveBeenCalledWith(
         'com.nuxy.angrysearch',
         'openFile',
-        '/home/user/file.txt'
+        '/home/user/file.txt',
+        { callerExtId: 'com.nuxy.angrysearch' }
       )
       expect(window.core!.window!.hide).toHaveBeenCalled()
       controller.disconnect()
@@ -218,7 +229,8 @@ describe('AngrysearchController', () => {
       expect(ipcInvoke).toHaveBeenCalledWith(
         'com.nuxy.angrysearch',
         'openLocation',
-        '/home/user/file.txt'
+        '/home/user/file.txt',
+        { callerExtId: 'com.nuxy.angrysearch' }
       )
       expect(window.core!.window!.hide).toHaveBeenCalled()
       controller.disconnect()
@@ -234,7 +246,9 @@ describe('AngrysearchController', () => {
       controller.triggerUpdate()
       await vi.advanceTimersByTimeAsync(0)
 
-      expect(ipcInvoke).toHaveBeenCalledWith('com.nuxy.angrysearch', 'updateDatabase', undefined)
+      expect(ipcInvoke).toHaveBeenCalledWith('com.nuxy.angrysearch', 'updateDatabase', undefined, {
+        callerExtId: 'com.nuxy.angrysearch',
+      })
       expect(controller.state.status?.isUpdating).toBe(true)
       controller.disconnect()
     })

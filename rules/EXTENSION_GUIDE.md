@@ -285,6 +285,27 @@ Extensions declare user-configurable settings via a `settings.json` schema file.
 | `color`    | Color picker                                   |
 | `list`     | Multi-value string list                        |
 
+**Conditional fields with `showIf`:** a field can declare `"showIf": { "key": "<otherFieldKey>", "equals": <value> }` to render only when another field in the same schema currently equals that value (falling back to that field's `default` if unset). Useful for things like an "auth method" selector that swaps which credential fields are shown:
+
+```json
+{
+  "key": "authMethod",
+  "label": "Login Method",
+  "type": "select",
+  "default": "credentials",
+  "options": [
+    { "value": "credentials", "label": "Username & Password" },
+    { "value": "apikey", "label": "API Key" }
+  ]
+},
+{
+  "key": "apiKey",
+  "label": "API Key",
+  "type": "text",
+  "showIf": { "key": "authMethod", "equals": "apikey" }
+}
+```
+
 ### 3.2 Declaring settings in the manifest
 
 Add `entry.settings` pointing to the schema file:
@@ -478,6 +499,34 @@ export function register(core: CoreContext): void {
 ```
 
 All IPC handlers must return a value (or `undefined`). The kernel wraps them in `IpcResult<T>` automatically.
+
+### 4.9 Public vs private IPC channels
+
+Handlers are **private by default**. Private channels are reachable only from the same extension's frontend when `callerExtId` matches the target extension id.
+
+To expose a channel to other extensions (or the shell), do **both**:
+
+1. List the channel in `manifest.json` → `ipc.public`
+2. Register with `{ expose: 'public' }`:
+
+```ts
+core.ipc.handle('getStatus', async () => ({ state: 'ready' }), { expose: 'public' })
+core.ipc.handle('list', async () => torrents) // private — same-extension only
+```
+
+Cross-extension calls from worker backends use `core.extensions.invoke` (broker enforces public surface). Cross-extension calls from the renderer must pass caller identity:
+
+```ts
+import { invokeExtensionIpc } from '@nuxyorg/extension-sdk'
+
+// Same-extension call — caller defaults to target
+await invokeExtensionIpc('com.nuxy.my-tool', 'list', {})
+
+// Cross-extension call — explicit caller
+await invokeExtensionIpc('com.nuxy.qbittorrent', 'getStatus', {}, 'com.nuxy.nyaa')
+```
+
+Prefer a thin `utils/ipc.ts` wrapper per extension that calls `invokeExtensionIpc` with the extension's own id.
 
 ---
 

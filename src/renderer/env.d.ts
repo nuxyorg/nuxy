@@ -12,7 +12,8 @@ declare global {
         invoke: <R = unknown>(
           extId: string,
           channel: string,
-          payload?: unknown
+          payload?: unknown,
+          options?: { callerExtId?: string }
         ) => Promise<{
           success: boolean
           data?: R

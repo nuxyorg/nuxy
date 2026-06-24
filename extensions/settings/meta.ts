@@ -119,6 +119,12 @@ export function computeSettingsMeta(params: ComputeSettingsMetaParams): Settings
 
   const extSections = extSchemas.map((info: ExtSettingsInfo) => {
     const resolvedRows: AnyRow[] = info.schema.fields.flatMap((field: ExtFieldDef): AnyRow[] => {
+      if (field.showIf) {
+        const controllingField = info.schema.fields.find((f) => f.key === field.showIf!.key)
+        const currentValue = extValues[info.extId]?.[field.showIf.key] ?? controllingField?.default
+        if (currentValue !== field.showIf.equals) return []
+      }
+
       if (field.type === 'list') {
         const items = parseListFieldValue(extValues[info.extId]?.[field.key])
         const addRow: ExtListAddRow = {

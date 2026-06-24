@@ -3,6 +3,7 @@ import type { NuxyToolElement } from '@nuxyorg/core'
 import { SettingsController } from './controller.ts'
 import { handleSettingsInputKeydown, handleListAddInputKeydown } from './utils/input-keydown.ts'
 import { isBooleanRow } from './utils/settings-options.ts'
+import { resolvePriorityListItems } from './utils/priority-list.ts'
 import type { AnyRow, RenderSection } from './types.ts'
 
 interface NuxyInputElement extends HTMLElement {
@@ -46,6 +47,15 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
     .nuxy-settings-ext-description {
       font-size: 0.75em;
       opacity: 0.6;
+    }
+
+    nuxy-list-item.nuxy-settings-priority-row {
+      align-items: flex-start;
+    }
+
+    nuxy-list-item.nuxy-settings-priority-row nuxy-list-item-body {
+      flex: 1;
+      min-width: 0;
     }
 
     nuxy-input.nuxy-settings-input--color {
@@ -152,10 +162,15 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
     const meta = this.controller.computedMeta
     if (!meta) return nothing
 
-    const { selectedRow } = this.controller.state
+    const { selectedRow, activePriorityList } = this.controller.state
     const start = meta.sectionStartIndex[section.id] ?? 0
     const end = start + section.resolvedRows.length
-    const sectionActiveIndex = selectedRow >= start && selectedRow < end ? selectedRow - start : -1
+    const sectionActiveIndex =
+      activePriorityList !== null
+        ? -1
+        : selectedRow >= start && selectedRow < end
+          ? selectedRow - start
+          : -1
 
     return html`
       <nuxy-list active-index=${sectionActiveIndex} scroll-speed="0.15">
@@ -178,20 +193,52 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
     const globalIdx = (meta.sectionStartIndex[section.id] ?? 0) + i
     const currentValue = this.controller.getRowValue(row)
     const options = this.controller.getRowOpts(row)
-    const { selectedRow, activeSelect, selectFocused } = this.controller.state
+    const { selectedRow, activeSelect, activePriorityList, selectFocused, priorityFocused } =
+      this.controller.state
 
     const isLanguageRow = 'isLanguage' in row && row.isLanguage
     const isLanguageRemoveRow = 'isLanguageRemove' in row && row.isLanguageRemove
     const isListAddRow = 'isExtListAdd' in row && row.isExtListAdd
     const isListRemoveRow = 'isExtListRemove' in row && row.isExtListRemove
+    const isPriorityListRow = row.isExtension && row.type === 'priority-list'
     const isBoolRow = isBooleanRow(row)
     const isSelectType =
       !isBoolRow &&
       !isListAddRow &&
       !isListRemoveRow &&
+      !isPriorityListRow &&
       (isLanguageRow || !row.isExtension || row.type === 'select')
 
     const isActive = globalIdx === selectedRow && activeSelect === null
+    const isPriorityEditing = activePriorityList === row.key
+
+    if (isPriorityListRow) {
+      const priorityItems = resolvePriorityListItems(
+        currentValue,
+        options,
+        row.isExtension ? row.default : undefined
+      )
+      return html`
+        <nuxy-list-item
+          class="nuxy-settings-priority-row"
+          ?active=${isActive}
+          @click=${() => this.controller?.onItemClick(globalIdx)}
+        >
+          <nuxy-list-item-body>
+            <nuxy-list-item-text>${row.label}</nuxy-list-item-text>
+            ${row.description
+              ? html`<span class="nuxy-settings-ext-description">${row.description}</span>`
+              : nothing}
+            <nuxy-priority-list
+              .items=${JSON.stringify(priorityItems)}
+              .activeIndex=${isPriorityEditing ? priorityFocused : -1}
+              ?editing=${isPriorityEditing}
+              scroll-speed="0.15"
+            ></nuxy-priority-list>
+          </nuxy-list-item-body>
+        </nuxy-list-item>
+      `
+    }
 
     if (isLanguageRemoveRow || isListRemoveRow) {
       return html`

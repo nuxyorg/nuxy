@@ -130,8 +130,17 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
   }
 
   private renderLeft(): TemplateResult {
-    const { results, loading, error, query, selectedIndex, copiedId, multiSelectMode, checkedIds } =
-      this.controller!.state
+    const {
+      results,
+      loading,
+      error,
+      actionError,
+      query,
+      selectedIndex,
+      copiedId,
+      multiSelectMode,
+      checkedIds,
+    } = this.controller!.state
     const t = this.controller!.t.t
 
     if (!query.trim()) {
@@ -148,6 +157,9 @@ export class NuxyToolNyaaElement extends LitElement implements NuxyToolElement {
     }
     if (error) {
       return html`<nuxy-alert variant="error">${error}</nuxy-alert>`
+    }
+    if (actionError) {
+      return html`<nuxy-alert variant="error">${actionError}</nuxy-alert>`
     }
     if (results.length === 0) {
       return html`<nuxy-empty-state

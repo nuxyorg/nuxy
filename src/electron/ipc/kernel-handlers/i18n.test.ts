@@ -44,7 +44,7 @@ vi.mock('@nuxyorg/core', async () => {
 })
 
 import fs from 'fs'
-import { i18nHandlers } from './i18n.js'
+import { i18nHandlers, readSettingsSchemaFromDisk } from './i18n.js'
 import { getExtensionById } from '../../extensions/registry.js'
 import { resolveLocale, flattenTranslations } from '@nuxyorg/core'
 
@@ -110,6 +110,110 @@ describe('i18nHandlers', () => {
       )
       const result = i18nHandlers.getExtensionSettingsSchemas(undefined)
       expect((result as any).data[0].schema.fields[0].label).toBe('Translated Foo')
+    })
+
+    it('reads fresh settings.json from disk and preserves labels for untranslated select options', () => {
+      const ext = makeExt({
+        id: 'com.nuxy.nyaa',
+        folderName: 'com.nuxy.nyaa-1.0.0',
+        manifest: {
+          id: 'com.nuxy.nyaa',
+          name: 'Nyaa',
+          version: '1.0.0',
+          type: 'tool',
+          entry: { settings: 'settings.json' },
+          locales: { default: 'en', supported: ['en', 'tr'] },
+        },
+        settingsSchema: {
+          fields: [
+            {
+              key: 'enterAction',
+              label: 'Enter Key Action',
+              type: 'select',
+              options: [
+                { value: 'copyMagnet', label: 'Copy Magnet Link' },
+                { value: 'downloadTorrent', label: 'Save Torrent File' },
+              ],
+            },
+          ],
+        },
+      } as any)
+      loadedExtensions.push(ext)
+      vi.mocked(fs.existsSync).mockReturnValue(true)
+      vi.mocked(fs.readFileSync).mockImplementation((p: fs.PathOrFileDescriptor) => {
+        const filePath = String(p)
+        if (filePath.endsWith('/com.nuxy.nyaa-1.0.0/settings.json')) {
+          return JSON.stringify({
+            fields: [
+              {
+                key: 'enterAction',
+                label: 'Enter Key Action',
+                type: 'select',
+                options: [
+                  { value: 'copyMagnet', label: 'Copy Magnet Link' },
+                  { value: 'downloadTorrent', label: 'Save Torrent File' },
+                  { value: 'torrentClient', label: 'Add via qBittorrent' },
+                ],
+              },
+            ],
+          })
+        }
+        if (filePath.endsWith('/com.nuxy.nyaa-1.0.0/locales/en.json')) {
+          return JSON.stringify({
+            settings: {
+              enterAction: {
+                label: 'Enter Key Action',
+                options: {
+                  copyMagnet: 'Copy Magnet Link',
+                  downloadTorrent: 'Save Torrent File',
+                },
+              },
+            },
+          })
+        }
+        throw new Error(`unexpected read: ${filePath}`)
+      })
+
+      const result = i18nHandlers.getExtensionSettingsSchemas(undefined)
+      const enterField = (result as any).data[0].schema.fields[0]
+      expect(enterField.options.map((o: { value: string; label: string }) => o.label)).toEqual([
+        'Copy Magnet Link',
+        'Save Torrent File',
+        'Add via qBittorrent',
+      ])
+    })
+
+    it('readSettingsSchemaFromDisk prefers the extracted settings.json over cached schema', () => {
+      const ext = makeExt({
+        folderName: 'com.nuxy.nyaa-1.0.0',
+        manifest: {
+          id: 'com.nuxy.nyaa',
+          name: 'Nyaa',
+          version: '1.0.0',
+          type: 'tool',
+          entry: { settings: 'settings.json' },
+        },
+        settingsSchema: {
+          fields: [{ key: 'enterAction', label: 'Stale', type: 'select', options: [] }],
+        },
+      } as any)
+      vi.mocked(fs.existsSync).mockReturnValue(true)
+      vi.mocked(fs.readFileSync).mockReturnValue(
+        JSON.stringify({
+          fields: [
+            {
+              key: 'enterAction',
+              type: 'select',
+              options: [{ value: 'torrentClient', label: 'Add via qBittorrent' }],
+            },
+          ],
+        })
+      )
+
+      const schema = readSettingsSchemaFromDisk(ext)
+      expect(schema?.fields[0]?.options).toEqual([
+        { value: 'torrentClient', label: 'Add via qBittorrent' },
+      ])
     })
   })
 

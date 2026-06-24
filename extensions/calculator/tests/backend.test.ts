@@ -10,6 +10,12 @@ describe('calculator backend', () => {
     expect(core.registry.registerProvider).toHaveBeenCalledWith({ name: 'calculator' })
   })
 
+  it('exposes eval publicly, matching manifest.ipc.public', () => {
+    const { core, publicChannels } = createMockCore()
+    register(core)
+    expect(publicChannels).toEqual(new Set(['eval']))
+  })
+
   describe('eval handler', () => {
     let core: any
     let handlers: Record<string, (payload?: any) => Promise<any>>

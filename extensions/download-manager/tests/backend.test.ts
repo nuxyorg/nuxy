@@ -30,12 +30,13 @@ function createFakeSpawnHandle(): FakeSpawnHandle {
 describe('download-manager backend', () => {
   let core: CoreContext
   let handlers: Record<string, (payload?: unknown) => Promise<unknown>>
+  let publicChannels: Set<string>
   let spawnHandle: FakeSpawnHandle
 
   beforeEach(() => {
     vi.useFakeTimers()
     spawnHandle = createFakeSpawnHandle()
-    ;({ core, handlers } = createMockCore({
+    ;({ core, handlers, publicChannels } = createMockCore({
       fs: {
         homedir: vi.fn().mockReturnValue('/home/test'),
         mkdir: vi.fn().mockResolvedValue(undefined),
@@ -73,6 +74,10 @@ describe('download-manager backend', () => {
 
   it('registers as a provider', () => {
     expect(core.registry.registerProvider).toHaveBeenCalledWith({ name: 'download-manager' })
+  })
+
+  it('exposes registerExternal and updateExternal publicly, matching manifest.ipc.public', () => {
+    expect(publicChannels).toEqual(new Set(['registerExternal', 'updateExternal']))
   })
 
   describe('eval handler', () => {

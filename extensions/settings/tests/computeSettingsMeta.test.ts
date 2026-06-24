@@ -93,3 +93,94 @@ describe('computeSettingsMeta — type: "list" fields', () => {
     expect(renderSection.resolvedRows).toHaveLength(2)
   })
 })
+
+describe('computeSettingsMeta — type: "priority-list" fields', () => {
+  const extSchemas = [
+    {
+      extId: 'com.nuxy.nyaa',
+      name: 'Nyaa Search',
+      schema: {
+        fields: [
+          {
+            key: 'enterActionPriority',
+            label: 'Enter Key Action Priority',
+            type: 'priority-list',
+            options: [
+              { value: 'torrentClient', label: 'Add via qBittorrent' },
+              { value: 'copyMagnet', label: 'Copy Magnet Link' },
+            ],
+          },
+        ],
+      },
+    },
+  ]
+
+  it('emits a single extension row for the priority list field', () => {
+    const meta = computeSettingsMeta(baseParams({ extSchemas }))
+    const section = meta.extSections.find((s) => s.id === 'com.nuxy.nyaa')!
+    expect(section.resolvedRows).toHaveLength(1)
+    expect(section.resolvedRows[0]).toMatchObject({
+      isExtension: true,
+      type: 'priority-list',
+      fieldKey: 'enterActionPriority',
+      options: [
+        { value: 'torrentClient', label: 'Add via qBittorrent' },
+        { value: 'copyMagnet', label: 'Copy Magnet Link' },
+      ],
+    })
+  })
+})
+
+describe('computeSettingsMeta — conditional fields via showIf', () => {
+  const extSchemas = [
+    {
+      extId: 'com.nuxy.qbittorrent',
+      name: 'qBittorrent',
+      schema: {
+        fields: [
+          {
+            key: 'authMethod',
+            label: 'Login Method',
+            type: 'select',
+            default: 'credentials',
+            options: [
+              { value: 'credentials', label: 'Username & Password' },
+              { value: 'apikey', label: 'API Key' },
+            ],
+          },
+          {
+            key: 'username',
+            label: 'Username',
+            type: 'text',
+            showIf: { key: 'authMethod', equals: 'credentials' },
+          },
+          {
+            key: 'apiKey',
+            label: 'API Key',
+            type: 'text',
+            showIf: { key: 'authMethod', equals: 'apikey' },
+          },
+        ],
+      },
+    },
+  ]
+
+  it('renders only the field matching the default value of the controlling field', () => {
+    const meta = computeSettingsMeta(baseParams({ extSchemas }))
+    const section = meta.extSections.find((s) => s.id === 'com.nuxy.qbittorrent')!
+    const keys = section.resolvedRows.map((r) => (r as { fieldKey: string }).fieldKey)
+    expect(keys).toEqual(['authMethod', 'username'])
+  })
+
+  it('switches the rendered field when the controlling value changes', () => {
+    const meta = computeSettingsMeta(
+      baseParams({
+        extSchemas,
+        extValues: { 'com.nuxy.qbittorrent': { authMethod: 'apikey' } },
+      })
+    )
+    const section = meta.extSections.find((s) => s.id === 'com.nuxy.qbittorrent')!
+    const keys = section.resolvedRows.map((r) => (r as { fieldKey: string }).fieldKey)
+    expect(keys).toEqual(['authMethod', 'apiKey'])
+  })
+})

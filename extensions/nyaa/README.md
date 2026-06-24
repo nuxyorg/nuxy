@@ -13,9 +13,11 @@
 
 ## Overview
 
-Nyaa Search lets you query [nyaa.si](https://nyaa.si) from the Nuxy launcher without opening a browser. Type a title, browse results by seeder count, and press Enter to copy the magnet link — ready to paste into any torrent client.
+Nyaa Search lets you query [nyaa.si](https://nyaa.si) from the Nuxy launcher without opening a browser. Type a title, browse results by seeder count, and press Enter to run the highest-priority action on the selected result.
 
 Results show trust level (Normal / Trusted / Remake), seeder and leecher counts, and file size at a glance. The detail panel displays the full title, category, date, and a truncated magnet preview.
+
+Enter and Shift+Enter bind to the first two available actions from your configured priority list. When the qBittorrent extension is unavailable, torrent-client is skipped and the remaining priorities shift into Enter and Shift+Enter automatically. While Nyaa is open, readiness is polled every 2 seconds so labels update as soon as qBittorrent becomes available.
 
 ---
 
@@ -31,14 +33,18 @@ Appears in the Nuxy tool list. The user activates it by selecting it from the sh
 
 ### Activation
 
-Select **Nyaa Search** from the tool list and type a title into the omnibar. Results load automatically after a short debounce. Navigate the list with the arrow keys and press Enter to copy the magnet link to the clipboard.
+Select **Nyaa Search** from the tool list and type a title into the omnibar. Results load automatically after a short debounce. Navigate the list with the arrow keys and press Enter to run the primary action (default: add via qBittorrent when available, otherwise copy magnet).
 
 ### Keyboard Shortcuts
 
-| Key     | Action                     |
-| ------- | -------------------------- |
-| `↑` `↓` | Navigate results           |
-| `Enter` | Copy magnet link and close |
+| Key           | Action                                                   |
+| ------------- | -------------------------------------------------------- |
+| `↑` `↓`       | Navigate results                                         |
+| `Enter`       | Highest-priority available action on the selected result |
+| `Shift+Enter` | Second-priority available action                         |
+| `Ctrl+A`      | Enter multi-select mode                                  |
+| `Ctrl+C`      | Copy all checked magnets (multi-select)                  |
+| `Ctrl+D`      | Download all checked torrents (multi-select)             |
 
 ### Examples
 
@@ -57,11 +63,12 @@ Change Category to **Audio** in Settings, then search for a soundtrack title.
 
 Settings are accessible from the Nuxy **Settings** tool.
 
-| Key        | Type   | Default                 | Description                                            |
-| ---------- | ------ | ----------------------- | ------------------------------------------------------ |
-| `category` | select | `1_2` (Anime - English) | Nyaa category filter                                   |
-| `filter`   | select | `0` (No Filter)         | Removes remakes or limits to trusted uploader(s)       |
-| `sortBy`   | select | `seeders`               | Result sort order: Seeders, Newest, Size, or Downloads |
+| Key                   | Type          | Default                                          | Description                                                         |
+| --------------------- | ------------- | ------------------------------------------------ | ------------------------------------------------------------------- |
+| `category`            | select        | `1_2` (Anime - English)                          | Nyaa category filter                                                |
+| `filter`              | select        | `0` (No Filter)                                  | Removes remakes or limits to trusted uploader(s)                    |
+| `sortBy`              | select        | `seeders`                                        | Result sort order: Seeders, Newest, Size, or Downloads              |
+| `enterActionPriority` | priority-list | `torrentClient`, `copyMagnet`, `downloadTorrent` | Ordered Enter key actions; reorder in Settings with ↑↓ and Shift+↑↓ |
 
 ---
 

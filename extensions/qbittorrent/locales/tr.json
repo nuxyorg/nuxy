@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "name": "qBittorrent"
+  },
+  "search": {
+    "placeholder": "Torrentlerde ara, ya da bir magnet/.torrent bağlantısı yapıştır"
+  },
+  "empty": {
+    "message": "Henüz torrent yok.",
+    "hint": "Eklemek için bir magnet bağlantısı veya .torrent URL'si yapıştırın.",
+    "noMatching": "Eşleşen torrent yok."
+  },
+  "error": {
+    "loadFailed": "qBittorrent'e bağlanılamadı",
+    "loadFailedHint": "Ayarlar'dan Web UI adresini, kullanıcı adını ve şifreyi kontrol edin."
+  },
+  "add": {
+    "prompt": "Torrent ekle",
+    "hint": "Bu torrenti qBittorrent'e eklemek için Enter'a basın",
+    "adding": "Torrent ekleniyor…",
+    "failed": "Torrent eklenemedi"
+  },
+  "state": {
+    "downloading": "İndiriliyor",
+    "uploading": "Yükleniyor",
+    "pausedDL": "Duraklatıldı",
+    "pausedUP": "Duraklatıldı",
+    "stoppedDL": "Durduruldu",
+    "stoppedUP": "Durduruldu",
+    "queuedDL": "Sırada",
+    "queuedUP": "Sırada",
+    "stalledDL": "Askıda",
+    "stalledUP": "Askıda (yükleniyor)",
+    "checkingDL": "Kontrol ediliyor",
+    "checkingUP": "Kontrol ediliyor",
+    "error": "Hata",
+    "missingFiles": "Eksik dosyalar",
+    "allocating": "Ayrılıyor",
+    "metaDL": "Meta veri alınıyor",
+    "moving": "Taşınıyor",
+    "unknown": "Bilinmiyor"
+  },
+  "item": {
+    "copiedMagnet": "Magnet bağlantısı kopyalandı",
+    "copiedSavePath": "Kayıt yolu kopyalandı"
+  },
+  "pending": {
+    "pause": "Duraklatılıyor…",
+    "resume": "Başlatılıyor…",
+    "recheck": "Yeniden denetleniyor…",
+    "reannounce": "Yeniden duyuruluyor…",
+    "remove": "Kaldırılıyor…"
+  },
+  "actions": {
+    "previous": "Önceki",
+    "next": "Sonraki",
+    "pause": "Duraklat",
+    "resume": "Devam ettir",
+    "addTorrent": "Torrent ekle",
+    "recheck": "Yeniden denetle",
+    "reannounce": "Yeniden duyur",
+    "copyMagnet": "Magnet bağlantısını kopyala",
+    "copySavePath": "Kayıt yolunu kopyala",
+    "removeKeepData": "Kaldırmak için basılı tut (verileri sakla)",
+    "removeWithData": "Kaldırmak için basılı tut (verileri sil)"
+  },
+  "settings": {
+    "host": {
+      "label": "Web UI Adresi",
+      "placeholder": "http://localhost:8080",
+      "description": "qBittorrent Web UI'nizin çalıştığı adres"
+    },
+    "username": {
+      "label": "Kullanıcı Adı",
+      "placeholder": "admin",
+      "description": "qBittorrent Web UI kullanıcı adınız"
+    },
+    "password": {
+      "label": "Şifre",
+      "placeholder": "adminadmin",
+      "description": "qBittorrent Web UI şifreniz"
+    },
+    "authMethod": {
+      "label": "Giriş Yöntemi",
+      "description": "Web UI ile nasıl kimlik doğrulanacağı",
+      "options": {
+        "credentials": "Kullanıcı Adı ve Şifre",
+        "apikey": "API Anahtarı"
+      }
+    },
+    "apiKey": {
+      "label": "API Anahtarı",
+      "placeholder": "Authorization: Bearer başlığı olarak gönderilen token",
+      "description": "qBittorrent Web UI'nizin önünde bulunan ters proxy için API anahtarı"
+    }
+  }
+}

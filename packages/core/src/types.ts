@@ -160,6 +160,18 @@ export interface ExtensionManifest {
    * See `ExtensionCallerConfig` in `deeplink.ts`.
    */
   caller?: import('./deeplink.js').ExtensionCallerConfig
+  /**
+   * Static, auditable IPC surface declaration. `public` lists channel names
+   * this extension intends to expose to other extensions (renderer cross-tool
+   * invoke and worker broker calls). Channels not listed here are private —
+   * callable only by the extension's own frontend/worker.
+   */
+  ipc?: ExtensionIpcManifest
+}
+
+export interface ExtensionIpcManifest {
+  /** Channels callable cross-extension. Backend must register them with `{ expose: 'public' }`. */
+  public?: string[]
 }
 
 export interface RegistryEntry {
@@ -169,7 +181,10 @@ export interface RegistryEntry {
 }
 
 export interface ExtensionRuntimeMeta {
+  /** @deprecated alias for privateIpcChannels + publicIpcChannels combined — kept for backward compat */
   ipcChannels: string[]
+  privateIpcChannels: string[]
+  publicIpcChannels: string[]
   displayName?: string
   registeredEntries?: RegistryEntry[]
 }

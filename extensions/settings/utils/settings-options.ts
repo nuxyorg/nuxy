@@ -9,6 +9,7 @@ import type {
   KbdScheme,
   HoldMsPreset,
 } from '../types.ts'
+import { resolvePriorityListOrder } from './priority-list.ts'
 
 // ---------------------------------------------------------------------------
 // Static option arrays
@@ -254,6 +255,9 @@ export function getRowCurrentValue(
   if (isLanguageRow) return ''
   if (isExtToggleRow)
     return !(installedExtensions.find((e) => e.id === row.extId)?.disabled ?? false)
+  if (row.isExtension && row.type === 'priority-list') {
+    return resolvePriorityListOrder(extValues[row.extId]?.[row.fieldKey], row.default)
+  }
   if (row.isExtension) return extValues[row.extId]?.[row.fieldKey] ?? row.default ?? ''
   return settings[row.key]
 }

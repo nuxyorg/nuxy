@@ -10,6 +10,7 @@ import {
   type SettingsMeta,
 } from './meta.ts'
 import type { AnyRow, NuxySettings, SelectOption, StateSnapshot } from './types.ts'
+import { parseListFieldValue } from './utils/list-field.ts'
 import { getRowCurrentValue, getRowOptions, isBooleanRow } from './utils/settings-options.ts'
 
 const EXT_ID = 'com.nuxy.settings'
@@ -17,7 +18,9 @@ const EXT_ID = 'com.nuxy.settings'
 export interface SettingsUIState {
   selectedRow: number
   activeSelect: string | null
+  activePriorityList: string | null
   selectFocused: number
+  priorityFocused: number
   selectedSectionId: string | null
   focusedPanel: 'left' | 'right'
 }
@@ -40,7 +43,9 @@ export class SettingsController extends BaseExtensionController<SettingsControll
         ...createDefaultSettingsData(),
         selectedRow: -1,
         activeSelect: null,
+        activePriorityList: null,
         selectFocused: 0,
+        priorityFocused: 0,
         selectedSectionId: null,
         focusedPanel: 'right',
       },
@@ -51,6 +56,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   protected onStoreChange(): void {
     this.recomputeMeta()
     this.onUpdate()
+    window.core?.shell?.refreshShellActions()
   }
 
   get state(): SettingsControllerState {
@@ -72,7 +78,17 @@ export class SettingsController extends BaseExtensionController<SettingsControll
           extValues: { ...prev.extValues, [extId]: values },
         }))
       },
-      setActiveSelect: (key) => this.store.setState({ activeSelect: key }),
+      patchPriorityReorder: (extId, values, focusIndex) => {
+        this.store.setState((prev) => ({
+          priorityFocused: focusIndex,
+          extValues: { ...prev.extValues, [extId]: values },
+        }))
+      },
+      setActiveSelect: (key) =>
+        this.store.setState({
+          activeSelect: key,
+          ...(key !== null ? { activePriorityList: null } : {}),
+        }),
     })
 
     this.dataCleanup = loadSettingsData((patch) => {
@@ -115,7 +131,12 @@ export class SettingsController extends BaseExtensionController<SettingsControll
     const next = query ?? ''
     if (this.filterQuery === next) return
     this.filterQuery = next
-    this.store.setState({ selectedRow: -1, activeSelect: null, focusedPanel: 'right' })
+    this.store.setState({
+      selectedRow: -1,
+      activeSelect: null,
+      activePriorityList: null,
+      focusedPanel: 'right',
+    })
     this.recomputeMeta()
   }
 
@@ -131,7 +152,24 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   setActiveSelect(key: string | null): void {
-    this.store.setState({ activeSelect: key })
+    this.store.setState({
+      activeSelect: key,
+      activePriorityList: key === null ? this.state.activePriorityList : null,
+    })
+  }
+
+  setActivePriorityList(key: string | null): void {
+    this.store.setState({
+      activePriorityList: key,
+      activeSelect: key === null ? this.state.activeSelect : null,
+      priorityFocused: key === null ? 0 : 0,
+    })
+  }
+
+  setPriorityFocused(index: number | ((prev: number) => number)): void {
+    const prev = this.state.priorityFocused
+    const next = typeof index === 'function' ? index(prev) : index
+    this.store.setState({ priorityFocused: next })
   }
 
   get effectiveSectionId(): string | null {
@@ -147,6 +185,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
       selectedSectionId: id,
       selectedRow: -1,
       activeSelect: null,
+      activePriorityList: null,
       focusedPanel: 'right',
     })
   }
@@ -171,6 +210,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
         selectedSectionId: sectionId,
         selectedRow: start,
         activeSelect: null,
+        activePriorityList: null,
         focusedPanel: 'right',
       })
     }
@@ -189,7 +229,9 @@ export class SettingsController extends BaseExtensionController<SettingsControll
       settings: this.state.settings,
       selectedRow: this.state.selectedRow,
       activeSelect: this.state.activeSelect,
+      activePriorityList: this.state.activePriorityList,
       selectFocused: this.state.selectFocused,
+      priorityFocused: this.state.priorityFocused,
       allRows: meta?.allRows ?? [],
       extValues: this.state.extValues,
       sectionsToRender: meta?.sectionsToRender ?? [],
@@ -230,12 +272,9 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   private buildKeyActions(): ShellAction[] {
     const t = this.t.t
     const { focusedPanel } = this.state
-
-    if (focusedPanel === 'left') {
-      return this.buildLeftPanelKeyActions(t)
-    }
-
-    return this.buildRightPanelKeyActions(t)
+    const actions =
+      focusedPanel === 'left' ? this.buildLeftPanelKeyActions(t) : this.buildRightPanelKeyActions(t)
+    return actions
   }
 
   private buildLeftPanelKeyActions(t: (key: string) => string): ShellAction[] {
@@ -261,6 +300,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
               selectedSectionId: sections[currentIdx - 1].id,
               selectedRow: -1,
               activeSelect: null,
+              activePriorityList: null,
             })
           }
         },
@@ -275,6 +315,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
               selectedSectionId: sections[currentIdx + 1].id,
               selectedRow: -1,
               activeSelect: null,
+              activePriorityList: null,
             })
           }
         },
@@ -293,13 +334,23 @@ export class SettingsController extends BaseExtensionController<SettingsControll
     ]
   }
 
+  private getActivePriorityRow(): AnyRow | null {
+    const key = this.state.activePriorityList
+    if (!key) return null
+    return this.meta?.allRows.find((row) => row.key === key) ?? null
+  }
+
+  private getPriorityListLength(row: AnyRow): number {
+    return parseListFieldValue(this.getRowValue(row)).length
+  }
+
   private buildRightPanelKeyActions(t: (key: string) => string): ShellAction[] {
     const list: ShellAction[] = [
       {
         key: 'ArrowLeft',
         label: '',
         handler: () => {
-          if (this.state.activeSelect !== null) return
+          if (this.state.activeSelect !== null || this.state.activePriorityList !== null) return
           this.store.setState({ focusedPanel: 'left', selectedRow: -1 })
         },
       },
@@ -309,19 +360,23 @@ export class SettingsController extends BaseExtensionController<SettingsControll
         hint: '↑↓',
         allowRepeat: true,
         handler: () => {
-          const { activeSelect } = this.state
+          const { activeSelect, activePriorityList } = this.state
+          if (activePriorityList !== null) {
+            this.setPriorityFocused((i) => Math.max(i - 1, 0))
+            return
+          }
           if (activeSelect !== null) {
             this.setSelectFocused((i) => Math.max(i - 1, 0))
-          } else {
-            const sectionId = this.effectiveSectionId
-            if (!sectionId) return
-            const start = this.meta?.sectionStartIndex[sectionId] ?? 0
-            this.setSelectedRow((prev) => {
-              if (prev < start) return prev
-              if (prev === start) return -1
-              return prev - 1
-            })
+            return
           }
+          const sectionId = this.effectiveSectionId
+          if (!sectionId) return
+          const start = this.meta?.sectionStartIndex[sectionId] ?? 0
+          this.setSelectedRow((prev) => {
+            if (prev < start) return prev
+            if (prev === start) return -1
+            return prev - 1
+          })
         },
       },
       {
@@ -330,21 +385,28 @@ export class SettingsController extends BaseExtensionController<SettingsControll
         allowRepeat: true,
         handler: () => {
           const snap = this.getStateSnapshot()
+          if (snap.activePriorityList !== null) {
+            const row = this.getActivePriorityRow()
+            if (!row) return
+            const lastIdx = Math.max(0, this.getPriorityListLength(row) - 1)
+            this.setPriorityFocused((i) => Math.min(i + 1, lastIdx))
+            return
+          }
           if (snap.activeSelect !== null) {
             const row = snap.allRows.find((r) => r.key === snap.activeSelect)
             if (row) this.setSelectFocused((i) => Math.min(i + 1, row.options.length - 1))
-          } else {
-            const sectionId = this.effectiveSectionId
-            if (!sectionId) return
-            const section = snap.sectionsToRender.find((s) => s.id === sectionId)
-            if (!section) return
-            const start = this.meta?.sectionStartIndex[sectionId] ?? 0
-            const lastIdx = start + section.resolvedRows.length - 1
-            this.setSelectedRow((prev) => {
-              if (prev < start) return start
-              return Math.min(prev + 1, lastIdx)
-            })
+            return
           }
+          const sectionId = this.effectiveSectionId
+          if (!sectionId) return
+          const section = snap.sectionsToRender.find((s) => s.id === sectionId)
+          if (!section) return
+          const start = this.meta?.sectionStartIndex[sectionId] ?? 0
+          const lastIdx = start + section.resolvedRows.length - 1
+          this.setSelectedRow((prev) => {
+            if (prev < start) return start
+            return Math.min(prev + 1, lastIdx)
+          })
         },
       },
       {
@@ -360,70 +422,137 @@ export class SettingsController extends BaseExtensionController<SettingsControll
               if (opt) this.actions?.handleRowSelect(row, opt.value)
               this.setActiveSelect(null)
             }
-          } else {
-            const row = snap.allRows[snap.selectedRow]
-            if (!row) return
-            const isLangRemove = 'isLanguageRemove' in row && row.isLanguageRemove
-            if (isLangRemove) {
-              this.actions?.removeLanguage((row as { langCode: string }).langCode)
-              return
+            return
+          }
+          if (snap.activePriorityList !== null) {
+            this.setActivePriorityList(null)
+            return
+          }
+          const row = snap.allRows[snap.selectedRow]
+          if (!row) return
+          const isLangRemove = 'isLanguageRemove' in row && row.isLanguageRemove
+          if (isLangRemove) {
+            this.actions?.removeLanguage((row as { langCode: string }).langCode)
+            return
+          }
+          const isListRemove = 'isExtListRemove' in row && row.isExtListRemove
+          if (isListRemove) {
+            this.actions?.removeListItem(row.extId, row.fieldKey, row.itemValue)
+            return
+          }
+          const isListAdd = 'isExtListAdd' in row && row.isExtListAdd
+          if (isListAdd) {
+            const focusInput = () => {
+              this.inputRefs[row.key]?.focus()
             }
-            const isListRemove = 'isExtListRemove' in row && row.isExtListRemove
-            if (isListRemove) {
-              this.actions?.removeListItem(row.extId, row.fieldKey, row.itemValue)
-              return
+            focusInput()
+            queueMicrotask(focusInput)
+            setTimeout(focusInput, 0)
+            return
+          }
+          const isExtToggle = 'isExtToggle' in row && row.isExtToggle
+          if (isExtToggle) {
+            const currentEnabled = !(
+              this.state.installedExtensions.find((e) => e.id === row.extId)?.disabled ?? false
+            )
+            this.toggleExtPending(row.extId, !currentEnabled)
+            return
+          }
+          const isLang = 'isLanguage' in row && row.isLanguage
+          if (!isLang && isBooleanRow(row)) {
+            this.handleRowSelect(row, !this.getRowValue(row))
+            return
+          }
+          if (row.isExtension && row.type === 'priority-list') {
+            this.setActivePriorityList(row.key)
+            return
+          }
+          if (
+            !isLang &&
+            row.isExtension &&
+            row.type !== 'select' &&
+            row.type !== 'toggle' &&
+            row.type !== 'priority-list'
+          ) {
+            const focusInput = () => {
+              this.inputRefs[row.key]?.focus()
+              this.inputRefs[row.key]?.select()
             }
-            const isListAdd = 'isExtListAdd' in row && row.isExtListAdd
-            if (isListAdd) {
-              const focusInput = () => {
-                this.inputRefs[row.key]?.focus()
-              }
-              focusInput()
-              queueMicrotask(focusInput)
-              setTimeout(focusInput, 0)
-              return
-            }
-            const isExtToggle = 'isExtToggle' in row && row.isExtToggle
-            if (isExtToggle) {
-              const currentEnabled = !(
-                this.state.installedExtensions.find((e) => e.id === row.extId)?.disabled ?? false
-              )
-              this.toggleExtPending(row.extId, !currentEnabled)
-              return
-            }
-            const isLang = 'isLanguage' in row && row.isLanguage
-            if (!isLang && isBooleanRow(row)) {
-              this.handleRowSelect(row, !this.getRowValue(row))
-              return
-            }
-            if (!isLang && row.isExtension && row.type !== 'select' && row.type !== 'toggle') {
-              const focusInput = () => {
-                this.inputRefs[row.key]?.focus()
-                this.inputRefs[row.key]?.select()
-              }
-              focusInput()
-              queueMicrotask(focusInput)
-              setTimeout(focusInput, 0)
-            } else if (row.options && row.options.length > 0) {
-              const currentValue = isLang
-                ? ''
-                : row.isExtension
-                  ? (snap.extValues[(row as { extId: string }).extId]?.[
-                      (row as { fieldKey: string }).fieldKey
-                    ] ??
-                    (row as { default?: unknown }).default ??
-                    '')
-                  : snap.settings[row.key as keyof NuxySettings]
-              const currentIdx = row.options.findIndex(
-                (o: SelectOption) => String(o.value) === String(currentValue)
-              )
-              this.setSelectFocused(Math.max(0, currentIdx))
-              this.setActiveSelect(row.key)
-            }
+            focusInput()
+            queueMicrotask(focusInput)
+            setTimeout(focusInput, 0)
+          } else if (row.options && row.options.length > 0) {
+            const currentValue = isLang
+              ? ''
+              : row.isExtension
+                ? (snap.extValues[(row as { extId: string }).extId]?.[
+                    (row as { fieldKey: string }).fieldKey
+                  ] ??
+                  (row as { default?: unknown }).default ??
+                  '')
+                : snap.settings[row.key as keyof NuxySettings]
+            const currentIdx = row.options.findIndex(
+              (o: SelectOption) => String(o.value) === String(currentValue)
+            )
+            this.setSelectFocused(Math.max(0, currentIdx))
+            this.setActiveSelect(row.key)
           }
         },
       },
     ]
+
+    if (this.state.activePriorityList !== null) {
+      const row = this.getActivePriorityRow()
+      list.push(
+        {
+          key: 'ArrowUp',
+          modifiers: ['shift'],
+          label: t('actions.movePriorityUp'),
+          hint: ['⇧', '↑'],
+          allowRepeat: true,
+          handler: () => {
+            if (!row || !row.isExtension || !('fieldKey' in row)) return
+            const idx = this.state.priorityFocused
+            if (idx <= 0) return
+            this.actions?.reorderPriorityList(
+              row.extId,
+              row.fieldKey,
+              idx,
+              idx - 1,
+              row.default,
+              idx - 1
+            )
+          },
+        },
+        {
+          key: 'ArrowDown',
+          modifiers: ['shift'],
+          label: t('actions.movePriorityDown'),
+          hint: ['⇧', '↓'],
+          allowRepeat: true,
+          handler: () => {
+            if (!row || !row.isExtension || !('fieldKey' in row)) return
+            const idx = this.state.priorityFocused
+            const last = this.getPriorityListLength(row) - 1
+            if (idx >= last) return
+            this.actions?.reorderPriorityList(
+              row.extId,
+              row.fieldKey,
+              idx,
+              idx + 1,
+              row.default,
+              idx + 1
+            )
+          },
+        },
+        {
+          key: 'Escape',
+          label: t('actions.closeSetting'),
+          hint: 'Esc',
+          handler: () => this.setActivePriorityList(null),
+        }
+      )
+    }
 
     if (this.state.activeSelect !== null) {
       list.push({
@@ -466,7 +595,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   onItemClick(globalIdx: number): void {
-    this.store.setState({ selectedRow: globalIdx, activeSelect: null })
+    this.store.setState({ selectedRow: globalIdx, activeSelect: null, activePriorityList: null })
   }
 
   getRowValue(row: AnyRow): unknown {

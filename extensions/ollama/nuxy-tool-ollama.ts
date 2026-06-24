@@ -30,7 +30,7 @@ export class NuxyToolOllamaElement extends LitElement implements NuxyToolElement
   private _scrollRaf: number | null = null
 
   @queryDecorator('.nuxy-tool-ollama__messages')
-  private declare _messagesEl: HTMLElement | null
+  declare private _messagesEl: HTMLElement | null
 
   connectedCallback(): void {
     super.connectedCallback()

@@ -55,6 +55,9 @@ vi.mock('./migrate-data.js', () => ({
 vi.mock('../extensions/registry.js', () => ({
   mergeRuntimeSync: vi.fn(),
   clearFailed: vi.fn(),
+  markFailed: vi.fn(),
+  getExtensionById: vi.fn(),
+  validateIpcSync: vi.fn(() => ({ ok: true, errors: [], warnings: [] })),
 }))
 
 vi.mock('./host-handlers.js', () => ({
@@ -74,7 +77,13 @@ import {
   workerRegistryErrorListeners,
 } from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
-import { mergeRuntimeSync, clearFailed } from '../extensions/registry.js'
+import {
+  mergeRuntimeSync,
+  clearFailed,
+  markFailed,
+  validateIpcSync,
+  getExtensionById,
+} from '../extensions/registry.js'
 import { handleHostCall } from './host-handlers.js'
 import { bundleExtensionBackend } from '../extensions/bundle-backend.js'
 
@@ -164,6 +173,8 @@ describe('spawnExtension', () => {
     lastWorker.emit('message', {
       type: 'registry:sync',
       ipcChannels: ['foo', 'bar'],
+      privateIpcChannels: ['foo', 'bar'],
+      publicIpcChannels: [],
       displayName: 'Test Extension',
     })
     await flush()
@@ -171,6 +182,8 @@ describe('spawnExtension', () => {
     expect(mergeRuntimeSync).toHaveBeenCalledOnce()
     expect(mergeRuntimeSync).toHaveBeenCalledWith(extId, {
       ipcChannels: ['foo', 'bar'],
+      privateIpcChannels: ['foo', 'bar'],
+      publicIpcChannels: [],
       displayName: 'Test Extension',
     })
     expect(clearFailed).toHaveBeenCalledWith(extId)
@@ -184,8 +197,40 @@ describe('spawnExtension', () => {
 
     expect(mergeRuntimeSync).toHaveBeenCalledWith(extId, {
       ipcChannels: [],
+      privateIpcChannels: [],
+      publicIpcChannels: [],
       displayName: 'X',
     })
+  })
+
+  it('rejects registry:sync when IPC surface validation fails', async () => {
+    vi.mocked(getExtensionById).mockReturnValue({
+      id: extId,
+      manifest: { ipc: { public: [] } },
+    } as never)
+    vi.mocked(validateIpcSync).mockReturnValueOnce({
+      ok: false,
+      errors: ['Channel "eval" registered public but not declared in manifest.ipc.public'],
+      warnings: [],
+    })
+
+    await spawnExtension(extId, folderName, entryFile)
+
+    lastWorker.emit('message', {
+      type: 'registry:sync',
+      ipcChannels: ['eval'],
+      privateIpcChannels: [],
+      publicIpcChannels: ['eval'],
+      displayName: 'Bad',
+    })
+    await flush()
+
+    expect(mergeRuntimeSync).not.toHaveBeenCalled()
+    expect(markFailed).toHaveBeenCalledWith(
+      extId,
+      'Channel "eval" registered public but not declared in manifest.ipc.public'
+    )
+    expect(clearFailed).not.toHaveBeenCalled()
   })
 
   // ─── 7. registry:error message ────────────────────────────────────────────

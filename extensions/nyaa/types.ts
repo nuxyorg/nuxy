@@ -22,6 +22,8 @@ export interface CopyMagnetsPayload {
   magnets: string[]
 }
 
+export type { EnterAction } from './utils/enter-action-options.ts'
+
 export interface DownloadTorrentPayload {
   id: string
 }

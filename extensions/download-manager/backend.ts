@@ -295,37 +295,45 @@ export function register(core: CoreContext): void {
     persist()
   })
 
-  core.ipc.handle('registerExternal', async (payload: unknown): Promise<DownloadItem> => {
-    const { extensionId, jobId, url, fileName, filePath, totalBytes, thumbnail } =
-      payload as RegisterExternalPayload
-    const now = new Date().toISOString()
-    const item: DownloadItem = {
-      id: crypto.randomUUID(),
-      url,
-      fileName: sanitizeFileName(fileName),
-      filePath: filePath ?? '',
-      status: 'downloading',
-      bytesDownloaded: 0,
-      totalBytes: totalBytes ?? null,
-      speedBps: 0,
-      error: null,
-      createdAt: now,
-      updatedAt: now,
-      source: { extensionId, jobId },
-      thumbnail: thumbnail ?? null,
-    }
-    items.set(item.id, item)
-    persist()
-    return item
-  })
+  core.ipc.handle(
+    'registerExternal',
+    async (payload: unknown): Promise<DownloadItem> => {
+      const { extensionId, jobId, url, fileName, filePath, totalBytes, thumbnail } =
+        payload as RegisterExternalPayload
+      const now = new Date().toISOString()
+      const item: DownloadItem = {
+        id: crypto.randomUUID(),
+        url,
+        fileName: sanitizeFileName(fileName),
+        filePath: filePath ?? '',
+        status: 'downloading',
+        bytesDownloaded: 0,
+        totalBytes: totalBytes ?? null,
+        speedBps: 0,
+        error: null,
+        createdAt: now,
+        updatedAt: now,
+        source: { extensionId, jobId },
+        thumbnail: thumbnail ?? null,
+      }
+      items.set(item.id, item)
+      persist()
+      return item
+    },
+    { expose: 'public' }
+  )
 
-  core.ipc.handle('updateExternal', async (payload: unknown): Promise<void> => {
-    const { extensionId, jobId, filePath, ...patch } = payload as UpdateExternalPayload
-    const item = findBySource(extensionId, jobId)
-    if (!item) return
-    touch(item.id, { ...patch, ...(filePath ? { filePath } : {}) })
-    persist()
-  })
+  core.ipc.handle(
+    'updateExternal',
+    async (payload: unknown): Promise<void> => {
+      const { extensionId, jobId, filePath, ...patch } = payload as UpdateExternalPayload
+      const item = findBySource(extensionId, jobId)
+      if (!item) return
+      touch(item.id, { ...patch, ...(filePath ? { filePath } : {}) })
+      persist()
+    },
+    { expose: 'public' }
+  )
 
   core.ipc.handle('removeExternal', async (payload: unknown): Promise<void> => {
     const { extensionId, jobId } = payload as RemoveExternalPayload

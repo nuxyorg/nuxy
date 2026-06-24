@@ -19,26 +19,61 @@ export function register(core: CoreContext): void {
 
 Handlers are namespaced by extension ID. Channel names are arbitrary strings defined by the extension.
 
+### Public vs private channels
+
+By default, handlers are **private** — invokable only from the same extension's renderer when `callerExtId` equals the target extension id.
+
+To expose a channel to other extensions:
+
+1. Add it to `manifest.json`:
+
+```json
+"ipc": { "public": ["getStatus", "add"] }
+```
+
+2. Register with `{ expose: 'public' }`:
+
+```ts
+core.ipc.handle('getStatus', handler, { expose: 'public' })
+```
+
+The kernel validates manifest declarations against registered handlers at startup. Cross-extension renderer calls also require `capabilities.callable: true` on the target extension.
+
 ## Frontend: invoke handlers
 
 ```ts
-const res = await window.core.ipc.invoke('com.nuxy.my-extension', 'greet', { name: 'World' })
+const res = await window.core.ipc.invoke(
+  'com.nuxy.my-extension',
+  'greet',
+  { name: 'World' },
+  {
+    callerExtId: 'com.nuxy.my-extension',
+  }
+)
 if (!res?.success) throw new Error(res?.error ?? 'IPC failed')
 const data = res.data
 ```
 
-Use a typed invoker wrapper in your extension for cleaner call sites:
+Use `invokeExtensionIpc` from `@nuxyorg/extension-sdk` so caller identity is always set:
 
 ```ts
+import { invokeExtensionIpc } from '@nuxyorg/extension-sdk'
+
 async function invoke<C extends keyof IpcChannels>(
   channel: C,
   payload?: IpcChannels[C]['input']
 ): Promise<IpcChannels[C]['output']> {
-  const res = await window.core.ipc.invoke(EXT_ID, channel, payload)
-  if (!res?.success) throw new Error(res?.error ?? 'IPC failed')
-  return res.data
+  return invokeExtensionIpc(EXT_ID, channel, payload)
 }
 ```
+
+For cross-extension calls, pass the caller extension id as the fourth argument:
+
+```ts
+await invokeExtensionIpc('com.nuxy.qbittorrent', 'getStatus', {}, 'com.nuxy.nyaa')
+```
+
+Private channels without `callerExtId` are rejected with `CALLER_REQUIRED`.
 
 ## Kernel channels
 
@@ -55,11 +90,11 @@ Invoke with `extId` set to `kernel` or `core`:
 ## Cross-extension calls
 
 ```ts
-// From one extension backend to another
+// From one extension backend to another (public channels only)
 await core.extensions.invoke('com.nuxy.other', 'someChannel', payload)
 ```
 
-Enforced by `capabilities.callable` / `capabilities.caller` in manifests.
+Enforced by `capabilities.callable` / `capabilities.caller` in manifests and the public channel registry.
 
 ## Provider convention
 

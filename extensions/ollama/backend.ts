@@ -101,16 +101,20 @@ export async function register(core: CoreContext): Promise<void> {
     return chat({ messages: [{ role: 'user', content: prompt }] })
   })
 
-  core.ipc.handle('models', async (): Promise<string[]> => {
-    try {
-      const response = await fetch(`${config.host}/api/tags`)
-      if (!response.ok) return []
-      const data = (await response.json()) as OllamaTagsResponse
-      return (data.models ?? []).map((m) => m.name)
-    } catch {
-      return []
-    }
-  })
+  core.ipc.handle(
+    'models',
+    async (): Promise<string[]> => {
+      try {
+        const response = await fetch(`${config.host}/api/tags`)
+        if (!response.ok) return []
+        const data = (await response.json()) as OllamaTagsResponse
+        return (data.models ?? []).map((m) => m.name)
+      } catch {
+        return []
+      }
+    },
+    { expose: 'public' }
+  )
 
   core.ipc.handle('health', async (): Promise<HealthResult> => {
     try {

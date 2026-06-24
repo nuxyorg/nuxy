@@ -106,6 +106,8 @@ describe('registerIpc - Store Channels', () => {
       manifest: { id: 'com.example.dual', name: 'Dual', version: '1.0.0', type: 'provider' },
       runtime: {
         ipcChannels: ['eval'],
+        privateIpcChannels: ['eval'],
+        publicIpcChannels: [],
         registeredEntries: [
           { kind: 'tool', name: 'dual' },
           { kind: 'provider', name: 'dual' },

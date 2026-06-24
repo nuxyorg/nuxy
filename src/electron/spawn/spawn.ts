@@ -12,7 +12,13 @@ import {
   suppressedWorkerExits,
 } from './active-workers.js'
 import { migrateLegacyData } from './migrate-data.js'
-import { mergeRuntimeSync, clearFailed } from '../extensions/registry.js'
+import {
+  mergeRuntimeSync,
+  clearFailed,
+  markFailed,
+  getExtensionById,
+  validateIpcSync,
+} from '../extensions/registry.js'
 import { handleHostCall } from './host-handlers.js'
 import type { WorkerToHostMessage } from '@nuxyorg/core'
 
@@ -64,8 +70,26 @@ export async function spawnExtension(
     if (!msg) return
 
     if (msg.type === 'registry:sync') {
+      const ext = getExtensionById(extId)
+      if (ext) {
+        const validation = validateIpcSync(extId, ext.manifest.ipc?.public, {
+          publicIpcChannels: msg.publicIpcChannels ?? [],
+        })
+        for (const warning of validation.warnings) {
+          log.warn(`IPC surface warning for "${extId}": ${warning}`)
+        }
+        if (!validation.ok) {
+          const message = validation.errors.join('; ')
+          log.error(`IPC surface violation for "${extId}": ${message}`)
+          markFailed(extId, message)
+          return
+        }
+      }
+
       mergeRuntimeSync(extId, {
         ipcChannels: msg.ipcChannels ?? [],
+        privateIpcChannels: msg.privateIpcChannels ?? [],
+        publicIpcChannels: msg.publicIpcChannels ?? [],
         displayName: msg.displayName,
         registeredEntries: msg.registeredEntries,
       })

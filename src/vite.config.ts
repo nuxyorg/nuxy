@@ -53,7 +53,7 @@ export default defineConfig({
 
         await Promise.all(
           extDirs.map(async (extDir) => {
-            await execFileAsync('node', [nxtBin, 'package'], { cwd: extDir })
+            await execFileAsync('node', [nxtBin, 'package', '--force'], { cwd: extDir })
             await execFileAsync('node', [nxtBin, 'install'], { cwd: extDir })
           })
         )

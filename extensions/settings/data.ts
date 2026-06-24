@@ -2,6 +2,7 @@ import type { NuxySettings, SelectOption, ExtSettingsInfo } from './types.ts'
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import { DEFAULT_SETTINGS } from './utils/settings-options.ts'
 import { buildIconPackOptions, resolveSingleIconPack } from './utils/icon-pack-defaults.ts'
+import { normalizePriorityListFields } from './utils/priority-list.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 const OLLAMA_EXT_ID = 'com.nuxy.ollama'
@@ -50,7 +51,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
         const packNames = r.data.map((name) => String(name))
         onPatch({ iconPacks: buildIconPackOptions(packNames) })
         window.core.ipc
-          .invoke(EXT_ID, 'getSettings', {})
+          .invoke(EXT_ID, 'getSettings', {}, { callerExtId: EXT_ID })
           .then((settingsRes) => {
             const sr = settingsRes as { success: boolean; data?: NuxySettings }
             if (!sr?.success || !sr.data) return
@@ -58,7 +59,9 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
             if (!resolved) return
             onPatch({ settings: resolved })
             window.core?.events?.emit('settings-updated', resolved as Record<string, unknown>)
-            window.core.ipc.invoke(EXT_ID, 'saveSettings', resolved).catch(() => {})
+            window.core.ipc
+              .invoke(EXT_ID, 'saveSettings', resolved, { callerExtId: EXT_ID })
+              .catch(() => {})
           })
           .catch(() => {})
       }
@@ -74,7 +77,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
     .catch(() => {})
 
   window.core.ipc
-    .invoke(EXT_ID, 'getSettings', {})
+    .invoke(EXT_ID, 'getSettings', {}, { callerExtId: EXT_ID })
     .then((res) => {
       const r = res as { success: boolean; data?: NuxySettings }
       if (r?.success && r.data) {
@@ -105,7 +108,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
           onPatch({ extSchemas: r.data })
           if (r.data.some((info) => info.extId === OLLAMA_EXT_ID)) {
             window.core.ipc
-              .invoke(OLLAMA_EXT_ID, 'models', {})
+              .invoke(OLLAMA_EXT_ID, 'models', {}, { callerExtId: EXT_ID })
               .then((mRes) => {
                 const mr = mRes as { success: boolean; data?: string[] }
                 if (mr?.success && Array.isArray(mr.data) && mr.data.length > 0) {
@@ -118,11 +121,15 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
           }
           r.data.forEach((info) => {
             window.core.ipc
-              .invoke(EXT_ID, 'getExtensionSettingValues', info.extId)
+              .invoke(EXT_ID, 'getExtensionSettingValues', info.extId, { callerExtId: EXT_ID })
               .then((vRes) => {
                 const vr = vRes as { success: boolean; data?: Record<string, unknown> }
                 if (vr?.success && vr.data) {
-                  onPatch({ extValues: { [info.extId]: vr.data } })
+                  onPatch({
+                    extValues: {
+                      [info.extId]: normalizePriorityListFields(info, vr.data),
+                    },
+                  })
                 }
               })
               .catch(() => {})

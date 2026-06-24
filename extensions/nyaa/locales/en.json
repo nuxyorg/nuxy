@@ -49,7 +49,9 @@
     "selectMultiple": "Select Multiple",
     "exitSelectMultiple": "Exit Selection",
     "copyAll": "Copy All Magnets",
-    "downloadAll": "Download All Torrents"
+    "downloadAll": "Download All Torrents",
+    "qbitUnavailableHoldEnter": "qBittorrent extension unavailable — hold Enter to fallback to default",
+    "holdEnterFallback": "Hold Enter for default action"
   },
   "settings": {
     "category": {
@@ -91,6 +93,10 @@
         "copyMagnet": "Copy Magnet Link",
         "downloadTorrent": "Save Torrent File"
       }
+    },
+    "useQbittorrent": {
+      "label": "Use qBittorrent Extension If Available",
+      "description": "When Enter (or Shift+Enter) would save a torrent, try the qBittorrent extension first. Falls back to the configured Enter action if qBittorrent is unavailable."
     }
   }
 }

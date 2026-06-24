@@ -9,13 +9,14 @@ function createCore({
 }: { storage?: Record<string, unknown>; settings?: Record<string, unknown> } = {}): {
   core: CoreContext
   handlers: Record<string, (payload?: unknown) => unknown>
+  publicChannels: Set<string>
   storageData: Record<string, unknown>
   settingsData: Record<string, unknown>
 } {
   const storageData = { ...storage }
   const settingsData = { ...settings }
 
-  const { core, handlers } = createMockCore({
+  const { core, handlers, publicChannels } = createMockCore({
     storage: {
       read: vi.fn(async (key: string) => storageData[key] ?? null),
       write: vi.fn(async (key: string, value: unknown) => {
@@ -30,7 +31,7 @@ function createCore({
     },
   })
 
-  return { core, handlers, storageData, settingsData }
+  return { core, handlers, publicChannels, storageData, settingsData }
 }
 
 function makeFetchOk(
@@ -224,6 +225,12 @@ describe('ollama backend', () => {
   })
 
   describe('models handler', () => {
+    it('registers models as a public IPC channel', async () => {
+      const { core, publicChannels } = createCore()
+      await register(core)
+      expect(publicChannels).toEqual(new Set(['models']))
+    })
+
     it('returns an array of model name strings', async () => {
       vi.spyOn(global, 'fetch').mockReturnValue(
         makeFetchOk({ models: [{ name: 'llama3' }, { name: 'mistral' }] }) as ReturnType<

@@ -1,0 +1,20 @@
+{
+  "id": "com.nuxy.ipc-explorer",
+  "name": "IPC Explorer",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "code",
+  "permissions": [],
+  "capabilities": {
+    "callable": false,
+    "caller": false
+  },
+  "behavior": {
+    "onComplete": "stay"
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-ipc-explorer"
+  }
+}

@@ -1,7 +1,12 @@
 /* cspell:ignore nocaps nocallable nocaller */
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { invokeExtension } from './broker.js'
-import { registerExtension, clearRegistry, setExtensionChannels } from '../extensions/registry.js'
+import {
+  registerExtension,
+  clearRegistry,
+  setExtensionChannels,
+  mergeRuntimeSync,
+} from '../extensions/registry.js'
 import type { LoadedExtension } from '@nuxyorg/core'
 
 vi.mock('./worker-invoke.js', () => ({
@@ -49,6 +54,11 @@ describe('invokeExtension', () => {
     registerExtension(caller)
     registerExtension(target)
     setExtensionChannels('com.nuxy.target', ['eval'])
+    mergeRuntimeSync('com.nuxy.target', {
+      ipcChannels: ['eval'],
+      privateIpcChannels: [],
+      publicIpcChannels: ['eval'],
+    })
     vi.mocked(invokeWorker).mockClear()
     vi.mocked(callKernelChannel).mockClear()
   })
@@ -108,6 +118,19 @@ describe('invokeExtension', () => {
   it('denies unknown channel on target', async () => {
     const r = await invokeExtension('com.nuxy.caller', 'com.nuxy.target', 'secret', {})
     expect(r.code).toBe('UNKNOWN_CHANNEL')
+  })
+
+  it('denies a registered but private channel on target with IPC_PRIVATE', async () => {
+    setExtensionChannels('com.nuxy.target', ['eval', 'list'])
+    mergeRuntimeSync('com.nuxy.target', {
+      ipcChannels: ['eval', 'list'],
+      privateIpcChannels: ['list'],
+      publicIpcChannels: ['eval'],
+    })
+    const r = await invokeExtension('com.nuxy.caller', 'com.nuxy.target', 'list', {})
+    expect(r.success).toBe(false)
+    expect(r.code).toBe('IPC_PRIVATE')
+    expect(invokeWorker).not.toHaveBeenCalled()
   })
 
   it('denies channel that exists on caller but not target', async () => {

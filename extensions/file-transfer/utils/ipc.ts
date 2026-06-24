@@ -7,9 +7,9 @@ type IpcResult<T> = { success: boolean; data?: T; error?: string }
 
 export function createInvoker(): TypedInvoker<IpcChannels> {
   return async (channel, ...args) => {
-    const res = (await window.core.ipc.invoke(EXT_ID, channel, args[0])) as IpcResult<
-      IpcChannels[typeof channel]['output']
-    >
+    const res = (await window.core.ipc.invoke(EXT_ID, channel, args[0], {
+      callerExtId: EXT_ID,
+    })) as IpcResult<IpcChannels[typeof channel]['output']>
     if (!res?.success) throw new Error(res?.error ?? 'IPC failed')
     return res.data as IpcChannels[typeof channel]['output']
   }

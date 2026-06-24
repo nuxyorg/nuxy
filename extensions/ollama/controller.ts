@@ -140,7 +140,8 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
     if (this.state.loading) return
     const messages = this.state.messages
     const target = messages[index]
-    const base = target?.role === 'assistant' ? messages.slice(0, index) : messages.slice(0, index + 1)
+    const base =
+      target?.role === 'assistant' ? messages.slice(0, index) : messages.slice(0, index + 1)
     if (base.length === 0 || base[base.length - 1]?.role !== 'user') return
     this.store.setState({ messages: base, error: null })
     await this.streamChat(base)

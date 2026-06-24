@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 const hoisted = vi.hoisted(async () => {
   const h = await import('@nuxyorg/extension-sdk/testing')
@@ -24,6 +24,7 @@ import { flattenTranslations } from '@nuxyorg/core'
 import { NyaaController } from '../controller.ts'
 import enLocale from '../locales/en.json'
 import type { NyaaResult } from '../types.ts'
+import { DEFAULT_ENTER_ACTION_PRIORITY } from '../utils/enter-action-priority.ts'
 
 const enTranslations = flattenTranslations(enLocale)
 
@@ -46,6 +47,7 @@ describe('NyaaController keyboard actions', () => {
   let getter: (() => ReturnType<NyaaController['getKeyActions']>) | null = null
 
   beforeEach(() => {
+    vi.useFakeTimers()
     getter = null
     const ipcInvoke = window.core!.ipc!.invoke as ReturnType<typeof vi.fn>
     ipcInvoke.mockReset()
@@ -53,14 +55,24 @@ describe('NyaaController keyboard actions', () => {
       if (channel === 'getExtensionTranslations') {
         return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
       }
-      if (channel === 'getEnterAction') {
-        return { success: true, data: 'copyMagnet' }
+      if (channel === 'getActionSettings') {
+        return {
+          success: true,
+          data: { enterActionPriority: [...DEFAULT_ENTER_ACTION_PRIORITY] },
+        }
+      }
+      if (channel === 'getStatus') {
+        return { success: true, data: { state: 'unreachable' } }
       }
       return { success: true, data: undefined }
     })
     vi.mocked(window.core!.shell!.registerShellActions).mockImplementation((fn) => {
       getter = fn as typeof getter
     })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('exposes Ctrl+A to enter multi-select, shown in the menu only outside multi-select', () => {
@@ -115,8 +127,137 @@ describe('NyaaController keyboard actions', () => {
     expect(window.core!.ipc!.invoke).toHaveBeenCalledWith(
       'com.nuxy.nyaa',
       'copyMagnets',
-      expect.objectContaining({ magnets: expect.arrayContaining([makeResult().magnet]) })
+      expect.objectContaining({ magnets: expect.arrayContaining([makeResult().magnet]) }),
+      { callerExtId: 'com.nuxy.nyaa' }
     )
+
+    controller.disconnect()
+  })
+
+  it('binds Enter to copy magnet and Shift+Enter to download when qBittorrent is unavailable', async () => {
+    const controller = new NyaaController(() => {})
+    controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
+    controller.store.setState({
+      results: [makeResult()],
+      selectedIndex: 0,
+      enterActionPriority: [...DEFAULT_ENTER_ACTION_PRIORITY],
+      torrentClientReady: false,
+    })
+
+    const enter = getter!().find((a) => a.id === 'nyaa-enter')
+    const shiftEnter = getter!().find((a) => a.id === 'nyaa-shift-enter')
+    expect(enter?.label).toBe('Copy Magnet')
+    expect(shiftEnter?.label).toBe('Save Torrent')
+    expect(enter?.trigger).toBeUndefined()
+
+    controller.disconnect()
+  })
+
+  it('binds Enter to qBittorrent and Shift+Enter to copy magnet when client is ready', async () => {
+    const controller = new NyaaController(() => {})
+    controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
+    controller.store.setState({
+      results: [makeResult()],
+      selectedIndex: 0,
+      enterActionPriority: [...DEFAULT_ENTER_ACTION_PRIORITY],
+      torrentClientReady: true,
+    })
+
+    const enter = getter!().find((a) => a.id === 'nyaa-enter')
+    const shiftEnter = getter!().find((a) => a.id === 'nyaa-shift-enter')
+    expect(enter?.label).toBe('Add via qBittorrent')
+    expect(shiftEnter?.label).toBe('Copy Magnet')
+
+    controller.disconnect()
+  })
+
+  it('updates Enter and Shift+Enter labels when polling detects qBittorrent became ready', async () => {
+    let statusState = 'unreachable'
+    const ipcInvoke = window.core!.ipc!.invoke as ReturnType<typeof vi.fn>
+    ipcInvoke.mockImplementation(async (_extId: string, channel: string) => {
+      if (channel === 'getExtensionTranslations') {
+        return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
+      }
+      if (channel === 'getActionSettings') {
+        return {
+          success: true,
+          data: { enterActionPriority: [...DEFAULT_ENTER_ACTION_PRIORITY] },
+        }
+      }
+      if (channel === 'getStatus') {
+        return { success: true, data: { state: statusState } }
+      }
+      return { success: true, data: undefined }
+    })
+
+    const controller = new NyaaController(() => {})
+    controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(getter!().find((a) => a.id === 'nyaa-enter')?.label).toBe('Copy Magnet')
+
+    statusState = 'ready'
+    await vi.advanceTimersByTimeAsync(2000)
+    await Promise.resolve()
+
+    expect(controller.state.torrentClientReady).toBe(true)
+    expect(getter!().find((a) => a.id === 'nyaa-enter')?.label).toBe('Add via qBittorrent')
+    expect(getter!().find((a) => a.id === 'nyaa-shift-enter')?.label).toBe('Copy Magnet')
+
+    controller.disconnect()
+  })
+
+  it('reloads enterActionPriority when extension-settings-updated fires for nyaa', async () => {
+    let settingsHandler:
+      | ((detail: { extId: string; values: Record<string, unknown> }) => void)
+      | null = null
+    vi.mocked(window.core!.events!.on).mockImplementation((type, handler) => {
+      if (type === 'extension-settings-updated') {
+        settingsHandler = handler as typeof settingsHandler
+      }
+      return () => {}
+    })
+    const ipcInvoke = window.core!.ipc!.invoke as ReturnType<typeof vi.fn>
+    ipcInvoke.mockImplementation(async (_extId: string, channel: string) => {
+      if (channel === 'getExtensionTranslations') {
+        return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
+      }
+      if (channel === 'getActionSettings') {
+        return {
+          success: true,
+          data: {
+            enterActionPriority: ['copyMagnet', 'downloadTorrent', 'torrentClient'],
+          },
+        }
+      }
+      if (channel === 'getStatus') {
+        return { success: true, data: { state: 'ready' } }
+      }
+      return { success: true, data: undefined }
+    })
+
+    const controller = new NyaaController(() => {})
+    controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(settingsHandler).not.toBeNull()
+    settingsHandler!({ extId: 'com.nuxy.nyaa', values: { enterActionPriority: ['copyMagnet'] } })
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(controller.state.enterActionPriority).toEqual([
+      'copyMagnet',
+      'downloadTorrent',
+      'torrentClient',
+    ])
+    const enter = getter!().find((a) => a.id === 'nyaa-enter')
+    expect(enter?.label).toBe('Copy Magnet')
 
     controller.disconnect()
   })
@@ -131,5 +272,19 @@ describe('NyaaController keyboard actions', () => {
     expect(enter?.showInMenu).toBeUndefined()
 
     controller.disconnect()
+  })
+
+  it('stops polling after disconnect', async () => {
+    const controller = new NyaaController(() => {})
+    controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    const invokeBefore = vi.mocked(window.core!.ipc!.invoke).mock.calls.length
+    controller.disconnect()
+    await vi.advanceTimersByTimeAsync(4000)
+    await Promise.resolve()
+
+    expect(vi.mocked(window.core!.ipc!.invoke).mock.calls.length).toBe(invokeBefore)
   })
 })

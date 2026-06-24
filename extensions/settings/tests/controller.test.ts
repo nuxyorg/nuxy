@@ -197,10 +197,15 @@ describe('SettingsController list fields', () => {
     await Promise.resolve()
 
     expect(controller.state.extValues['com.nuxy.angrysearch']?.ignoredRoots).toEqual(['/proc'])
-    expect(ipcInvoke).toHaveBeenCalledWith('com.nuxy.settings', 'saveExtensionSettingValues', {
-      extId: 'com.nuxy.angrysearch',
-      values: { ignoredRoots: ['/proc'] },
-    })
+    expect(ipcInvoke).toHaveBeenCalledWith(
+      'com.nuxy.settings',
+      'saveExtensionSettingValues',
+      {
+        extId: 'com.nuxy.angrysearch',
+        values: { ignoredRoots: ['/proc'] },
+      },
+      { callerExtId: 'com.nuxy.settings' }
+    )
 
     controller.disconnect()
   })
@@ -270,6 +275,108 @@ describe('SettingsController list fields', () => {
     await Promise.resolve()
 
     expect(controller.state.extValues['com.nuxy.angrysearch']?.ignoredRoots).toEqual([])
+
+    controller.disconnect()
+  })
+})
+
+describe('SettingsController priority-list rows', () => {
+  let ipcInvoke: ReturnType<typeof vi.fn>
+
+  beforeEach(async () => {
+    await hoisted
+    ;(document as any).documentElement = { style: { setProperty: vi.fn() } }
+    ;(document as any).body = { style: {} }
+    ipcInvoke = window.core!.ipc!.invoke as ReturnType<typeof vi.fn>
+    ipcInvoke.mockReset()
+    ;(window.core!.themes!.list as ReturnType<typeof vi.fn>).mockReset()
+    ;(window.core!.icons!.listPacks as ReturnType<typeof vi.fn>).mockReset()
+
+    ipcInvoke.mockImplementation(async (_extId: string, channel: string) => {
+      if (channel === 'getExtensionTranslations') {
+        return { success: true, data: { locale: 'en', dir: 'ltr', translations: enTranslations } }
+      }
+      if (channel === 'getSettings') return { success: true, data: undefined }
+      if (channel === 'listSystemFonts') return { success: true, data: [] }
+      if (channel === 'listInstalledExtensions') return { success: true, data: [] }
+      if (channel === 'getExtensionSettingsSchemas') {
+        return {
+          success: true,
+          data: [
+            {
+              extId: 'com.nuxy.nyaa',
+              name: 'Nyaa Search',
+              schema: {
+                fields: [
+                  {
+                    key: 'enterActionPriority',
+                    label: 'Enter Key Action Priority',
+                    type: 'priority-list',
+                    default: ['torrentClient', 'copyMagnet', 'downloadTorrent'],
+                    options: [
+                      { value: 'torrentClient', label: 'Add via qBittorrent' },
+                      { value: 'copyMagnet', label: 'Copy Magnet Link' },
+                      { value: 'downloadTorrent', label: 'Save Torrent File' },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        }
+      }
+      if (channel === 'getExtensionSettingValues') {
+        return {
+          success: true,
+          data: {
+            enterActionPriority: ['torrentClient', 'copyMagnet', 'downloadTorrent'],
+          },
+        }
+      }
+      if (channel === 'saveExtensionSettingValues') return { success: true, data: undefined }
+      return { success: true, data: undefined }
+    })
+    ;(window.core!.themes!.list as ReturnType<typeof vi.fn>).mockResolvedValue({
+      success: true,
+      data: [],
+    })
+    ;(window.core!.icons!.listPacks as ReturnType<typeof vi.fn>).mockResolvedValue({
+      success: true,
+      data: [],
+    })
+  })
+
+  it('Shift+ArrowDown swaps priority items while editing a priority-list row', async () => {
+    const controller = new SettingsController(() => {})
+    controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    const meta = controller.computedMeta!
+    const section = meta.sectionsToRender.find((s) => s.id === 'com.nuxy.nyaa')!
+    const start = meta.sectionStartIndex[section.id] ?? 0
+    controller.setSelectedSection(section.id)
+    controller.setSelectedRow(start)
+
+    getRegisteredActions()
+      .find((a) => a.key === 'Enter')!
+      .handler()
+    expect(controller.state.activePriorityList).toBe('com.nuxy.nyaa:enterActionPriority')
+    expect(controller.state.priorityFocused).toBe(0)
+
+    const shiftDown = getRegisteredActions().find(
+      (a) => a.key === 'ArrowDown' && a.modifiers?.includes('shift')
+    )!
+    shiftDown.handler()
+    await Promise.resolve()
+
+    expect(controller.state.extValues['com.nuxy.nyaa']?.enterActionPriority).toEqual([
+      'copyMagnet',
+      'torrentClient',
+      'downloadTorrent',
+    ])
+    expect(controller.state.priorityFocused).toBe(1)
 
     controller.disconnect()
   })

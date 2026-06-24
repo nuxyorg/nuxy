@@ -1,0 +1,31 @@
+{
+  "id": "com.nuxy.qbittorrent",
+  "name": "qBittorrent",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "download",
+  "permissions": ["network", "clipboard"],
+  "capabilities": {
+    "callable": true,
+    "caller": false
+  },
+  "ipc": {
+    "public": ["getStatus", "add"]
+  },
+  "behavior": {
+    "onComplete": "stay"
+  },
+  "deeplinks": {
+    "schemes": ["add"]
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-qbittorrent",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja"]
+  }
+}

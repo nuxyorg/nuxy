@@ -12,6 +12,8 @@ export { applyUiFontSettings, DEFAULT_FONT_FAMILY_MAP, resolveFontFamily } from 
 
 export { BaseExtensionController } from './controller'
 
+export { invokeExtensionIpc } from './invoke-ipc'
+
 export {
   getToolOnComplete,
   shouldSuppressBlurHide,

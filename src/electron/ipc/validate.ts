@@ -1,5 +1,5 @@
 import type { IpcResult } from '@nuxyorg/core'
-import { getExtensionById, isChannelAllowed } from '../extensions/registry.js'
+import { getExtensionById, isChannelAllowed, isPublicChannel } from '../extensions/registry.js'
 
 const KERNEL_CHANNELS = new Set([
   'listTools',
@@ -31,7 +31,8 @@ const KERNEL_CHANNELS = new Set([
 export function validateExtInvokeArgs(
   extId: unknown,
   channel: unknown,
-  payload: unknown
+  payload: unknown,
+  callerExtId?: string
 ):
   | { ok: true; extId: string; channel: string; payload: unknown }
   | { ok: false; result: IpcResult } {
@@ -80,7 +81,8 @@ export function validateExtInvokeArgs(
     return { ok: true, extId: id, channel: ch, payload }
   }
 
-  if (!getExtensionById(id)) {
+  const target = getExtensionById(id)
+  if (!target) {
     return {
       ok: false,
       result: {
@@ -99,6 +101,37 @@ export function validateExtInvokeArgs(
         error: `Unknown channel: ${ch}`,
         code: 'UNKNOWN_CHANNEL',
       },
+    }
+  }
+
+  const isPublic = isPublicChannel(id, ch)
+
+  if (!isPublic) {
+    if (!callerExtId || callerExtId !== id) {
+      return {
+        ok: false,
+        result: {
+          success: false,
+          error: callerExtId
+            ? `Channel is not public: ${ch}`
+            : 'callerExtId is required for private IPC channels',
+          code: callerExtId ? 'IPC_PRIVATE' : 'CALLER_REQUIRED',
+        },
+      }
+    }
+    return { ok: true, extId: id, channel: ch, payload }
+  }
+
+  if (callerExtId && callerExtId !== id) {
+    if (!target.manifest.capabilities?.callable) {
+      return {
+        ok: false,
+        result: {
+          success: false,
+          error: 'Target is not callable',
+          code: 'CALLABLE_DENIED',
+        },
+      }
     }
   }
 

@@ -74,6 +74,11 @@ export interface NavSection {
   itemCount: number
 }
 
+export interface ExtFieldShowIf {
+  key: string
+  equals: unknown
+}
+
 export interface ExtFieldDef {
   key: string
   label: string
@@ -82,6 +87,8 @@ export interface ExtFieldDef {
   options?: Array<{ value: unknown; label: string }>
   placeholder?: string
   description?: string
+  /** Only render this field when another field in the same schema currently equals this value. */
+  showIf?: ExtFieldShowIf
 }
 
 export interface ExtSettingsInfo {
@@ -167,7 +174,9 @@ export interface StateSnapshot {
   settings: NuxySettings
   selectedRow: number
   activeSelect: string | null
+  activePriorityList: string | null
   selectFocused: number
+  priorityFocused: number
   allRows: AnyRow[]
   extValues: Record<string, Record<string, unknown>>
   sectionsToRender: RenderSection[]

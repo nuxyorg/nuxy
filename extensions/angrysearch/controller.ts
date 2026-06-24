@@ -22,7 +22,9 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
   private searchGen = 0
 
   private invoke: TypedInvoker<IpcChannels> = async (channel, ...args) => {
-    const res = (await window.core.ipc.invoke(EXT_ID, channel, args[0])) as {
+    const res = (await window.core.ipc.invoke(EXT_ID, channel, args[0], {
+      callerExtId: EXT_ID,
+    })) as {
       success: boolean
       data?: unknown
       error?: string

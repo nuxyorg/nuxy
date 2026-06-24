@@ -59,7 +59,7 @@ describe('nuxy-kbd', () => {
     const track = host.shadowRoot?.querySelector('.nuxy-kbd__hold-progress-track')
     expect(progress).not.toBeNull()
     expect(track).not.toBeNull()
-    expect(progress?.style.getPropertyValue('--nuxy-hold-ms')).toBe('800ms')
+    expect(progress?.style.getPropertyValue('--nuxy-hold-ms')).toBe('1600ms')
   })
 
   it('adapts shortcut modifier icons based on data-kbd-scheme', async () => {

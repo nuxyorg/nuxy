@@ -10,6 +10,9 @@
     "callable": true,
     "caller": false
   },
+  "ipc": {
+    "public": ["eval"]
+  },
   "entry": {
     "backend": "backend.ts"
   },

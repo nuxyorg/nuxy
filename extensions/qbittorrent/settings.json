@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "fields": [
+    {
+      "key": "host",
+      "label": "Web UI Address",
+      "type": "text",
+      "default": "http://localhost:8080",
+      "placeholder": "http://localhost:8080",
+      "description": "The address where your qBittorrent Web UI is running"
+    },
+    {
+      "key": "authMethod",
+      "label": "Login Method",
+      "type": "select",
+      "default": "credentials",
+      "options": [
+        { "value": "credentials", "label": "Username & Password" },
+        { "value": "apikey", "label": "API Key" }
+      ],
+      "description": "How to authenticate with the Web UI"
+    },
+    {
+      "key": "username",
+      "label": "Username",
+      "type": "text",
+      "default": "",
+      "placeholder": "admin",
+      "description": "Your qBittorrent Web UI username",
+      "showIf": { "key": "authMethod", "equals": "credentials" }
+    },
+    {
+      "key": "password",
+      "label": "Password",
+      "type": "text",
+      "default": "",
+      "placeholder": "adminadmin",
+      "description": "Your qBittorrent Web UI password",
+      "showIf": { "key": "authMethod", "equals": "credentials" }
+    },
+    {
+      "key": "apiKey",
+      "label": "API Key",
+      "type": "text",
+      "default": "",
+      "placeholder": "Token sent as an Authorization: Bearer header",
+      "description": "API key for a reverse proxy that fronts your qBittorrent Web UI",
+      "showIf": { "key": "authMethod", "equals": "apikey" }
+    }
+  ]
+}

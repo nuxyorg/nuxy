@@ -1,5 +1,5 @@
 import type { IpcResult } from '@nuxyorg/core'
-import { getExtensionById, isChannelAllowed } from '../extensions/registry.js'
+import { getExtensionById, isChannelAllowed, isPublicChannel } from '../extensions/registry.js'
 import { invokeWorker } from './worker-invoke.js'
 import { callKernelChannel } from './kernel-invokable.js'
 
@@ -57,6 +57,16 @@ export async function invokeExtension(
       success: false,
       error: `Unknown channel: ${channel}`,
       code: 'UNKNOWN_CHANNEL',
+    }
+  }
+
+  // Cross-worker calls may only reach an extension's declared public surface;
+  // private channels are reachable only by the extension's own worker/frontend.
+  if (!isPublicChannel(targetId, channel)) {
+    return {
+      success: false,
+      error: `Channel is not public: ${channel}`,
+      code: 'IPC_PRIVATE',
     }
   }
 

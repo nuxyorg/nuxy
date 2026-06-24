@@ -43,12 +43,13 @@
       ]
     },
     {
-      "key": "enterAction",
-      "label": "Enter Key Action",
-      "type": "select",
-      "default": "copyMagnet",
-      "description": "What Enter does on a result. Shift+Enter always does the opposite.",
+      "key": "enterActionPriority",
+      "label": "Enter Key Action Priority",
+      "type": "priority-list",
+      "default": ["torrentClient", "copyMagnet", "downloadTorrent"],
+      "description": "Ordered Enter key actions (highest priority first). Press Enter to edit, then use ↑↓ to move and Shift+↑↓ to reorder.",
       "options": [
+        { "value": "torrentClient", "label": "Add via qBittorrent" },
         { "value": "copyMagnet", "label": "Copy Magnet Link" },
         { "value": "downloadTorrent", "label": "Save Torrent File" }
       ]

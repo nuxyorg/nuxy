@@ -311,7 +311,7 @@ describe('DownloadManagerController keyboard actions', () => {
     expect(shiftEnter?.showInMenu).toBe(true)
     expect(shiftEnter?.hint).toBeUndefined()
     expect(del?.trigger).toBe('hold')
-    expect(del?.holdCancelToast).toBe('Hold to remove')
+    expect(del?.holdCancelToast).toBe('Hold to delete')
     controller.disconnect()
   })
 

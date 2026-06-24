@@ -55,7 +55,8 @@ describe('ShellController handleItemClick execute actions', () => {
     expect(window.core!.ipc.invoke).toHaveBeenCalledWith(
       'com.nuxy.download-manager',
       'add_from_provider',
-      { url: 'https://example.com/file.js' }
+      { url: 'https://example.com/file.js' },
+      { callerExtId: 'com.nuxy.shell' }
     )
     expect(ctrl.state.activeTool).toBe('com.nuxy.download-manager')
   })
@@ -134,9 +135,12 @@ describe('ShellController handleOmniKeyDown Enter', () => {
 
     expect(clickSpy).not.toHaveBeenCalled()
     await new Promise((resolve) => setTimeout(resolve, 0))
-    expect(window.core!.ipc.invoke).toHaveBeenCalledWith('com.nuxy.ai-orchestrator', 'route', {
-      text: 'what is 2+2',
-    })
+    expect(window.core!.ipc.invoke).toHaveBeenCalledWith(
+      'com.nuxy.ai-orchestrator',
+      'route',
+      { text: 'what is 2+2' },
+      { callerExtId: 'com.nuxy.shell' }
+    )
   })
 })
 
@@ -156,9 +160,12 @@ describe('ShellController tryOrchestratorRoute', () => {
     ctrl.store.setState({ savedQuery: 'what is 2+2' })
     ctrl.tools.setOrchestrators(orchestrators as never[])
     await ctrl.tryOrchestratorRoute()
-    expect(window.core!.ipc.invoke).toHaveBeenCalledWith('com.nuxy.ai-orchestrator', 'route', {
-      text: 'what is 2+2',
-    })
+    expect(window.core!.ipc.invoke).toHaveBeenCalledWith(
+      'com.nuxy.ai-orchestrator',
+      'route',
+      { text: 'what is 2+2' },
+      { callerExtId: 'com.nuxy.shell' }
+    )
     expect(ctrl.state.activeTool).toBe('com.nuxy.calculator')
     expect(ctrl.state.query).toBe('2+2')
   })

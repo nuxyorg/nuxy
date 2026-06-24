@@ -1,6 +1,7 @@
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import type { NuxySettings, AnyRow } from './types.ts'
 import { parseListFieldValue } from './utils/list-field.ts'
+import { swapPriorityListItems, resolvePriorityListOrder } from './utils/priority-list.ts'
 
 const EXT_ID = 'com.nuxy.settings'
 
@@ -24,6 +25,7 @@ export interface SettingsActionsContext {
   getFontFamilyMap: () => Record<string, string>
   setSettings: (next: NuxySettings) => void
   patchExtValues: (extId: string, values: Record<string, unknown>) => void
+  patchPriorityReorder: (extId: string, values: Record<string, unknown>, focusIndex: number) => void
   setActiveSelect: (key: string | null) => void
 }
 
@@ -68,7 +70,7 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
     window.core?.events?.emit('settings-updated', next as Record<string, unknown>)
     if (!window.core?.ipc?.invoke) return
     window.core.ipc
-      .invoke(EXT_ID, 'saveSettings', next)
+      .invoke(EXT_ID, 'saveSettings', next, { callerExtId: EXT_ID })
       .then(() => {
         if (key === 'preferredLanguages') window.core?.events?.emit('locale-changed')
         window.core.ipc.invoke('kernel', 'applyWindowSettings', next).catch(() => {})
@@ -93,15 +95,25 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
     )
   }
 
+  const persistExtValues = (extId: string, next: Record<string, unknown>): void => {
+    ctx.setActiveSelect(null)
+    window.core?.events?.emit('extension-settings-updated', { extId, values: next })
+    if (!window.core?.ipc?.invoke) return
+    window.core.ipc
+      .invoke(
+        EXT_ID,
+        'saveExtensionSettingValues',
+        { extId, values: next },
+        { callerExtId: EXT_ID }
+      )
+      .catch(() => {})
+  }
+
   const updateExtSetting = (extId: string, key: string, value: unknown): void => {
     const extValues = ctx.getExtValues()
     const next = { ...(extValues[extId] || {}), [key]: value }
     ctx.patchExtValues(extId, next)
-    ctx.setActiveSelect(null)
-    if (!window.core?.ipc?.invoke) return
-    window.core.ipc
-      .invoke(EXT_ID, 'saveExtensionSettingValues', { extId, values: next })
-      .catch(() => {})
+    persistExtValues(extId, next)
   }
 
   const addListItem = (extId: string, fieldKey: string, rawValue: string): void => {
@@ -119,6 +131,25 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
       fieldKey,
       current.filter((v) => v !== itemValue)
     )
+  }
+
+  const reorderPriorityList = (
+    extId: string,
+    fieldKey: string,
+    indexA: number,
+    indexB: number,
+    fallback?: unknown,
+    focusIndex?: number
+  ): void => {
+    const current = resolvePriorityListOrder(ctx.getExtValues()[extId]?.[fieldKey], fallback)
+    const next = swapPriorityListItems(current, indexA, indexB)
+    const values = { ...(ctx.getExtValues()[extId] || {}), [fieldKey]: next }
+    if (focusIndex !== undefined) {
+      ctx.patchPriorityReorder(extId, values, focusIndex)
+    } else {
+      ctx.patchExtValues(extId, values)
+    }
+    persistExtValues(extId, values)
   }
 
   const toggleExtension = (extId: string, enabled: boolean): void => {
@@ -155,6 +186,7 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
     updateExtSetting,
     addListItem,
     removeListItem,
+    reorderPriorityList,
     toggleExtension,
     handleRowSelect,
     handleExtInputChange,

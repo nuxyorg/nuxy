@@ -136,18 +136,37 @@ customElements.define('nuxy-tool-hello-world', NuxyToolHelloWorldElement)
 
 The `manifest.json` file configures how the extension behaves. Below is the list of properties:
 
-| Property       | Type       | Required | Description                                                                                                                       |
-| -------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `id`           | `string`   | Yes      | Unique reverse-DNS identifier (e.g. `com.nuxy.my-extension`).                                                                     |
-| `name`         | `string`   | Yes      | Human-readable name displayed in the launcher.                                                                                    |
-| `version`      | `string`   | Yes      | Semantic version string (e.g., `1.0.0`).                                                                                          |
-| `type`         | `string`   | Yes      | Type of extension. Allowed values: `tool`, `provider`, `orchestrator`, `helper`, `theme`, `iconpack`, `uikit`.                    |
-| `icon`         | `string`   | No       | Name of the Lucide icon representing the tool.                                                                                    |
-| `permissions`  | `string[]` | No       | Array of permissions indicating host APIs the extension needs access to.                                                          |
-| `capabilities` | `object`   | No       | Defines capabilities: `callable` (whether others can invoke it) and `caller` (whether it invokes others).                         |
-| `placeholder`  | `string`   | No       | Custom omnibar placeholder text shown when this tool is active (e.g. `"Ask anything"`). Falls back to `Search <name>` if omitted. |
-| `locales`      | `object`   | No       | Localisation config. Declare when the extension ships translated strings (see §Localisation below).                               |
-| `entry`        | `object`   | Yes      | Relative paths to entry files: `backend`, `frontend`, `preload`, `theme`, `settings`, etc.                                        |
+| Property       | Type       | Required | Description                                                                                                                                   |
+| -------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | `string`   | Yes      | Unique reverse-DNS identifier (e.g. `com.nuxy.my-extension`).                                                                                 |
+| `name`         | `string`   | Yes      | Human-readable name displayed in the launcher.                                                                                                |
+| `version`      | `string`   | Yes      | Semantic version string (e.g., `1.0.0`).                                                                                                      |
+| `type`         | `string`   | Yes      | Type of extension. Allowed values: `tool`, `provider`, `orchestrator`, `helper`, `theme`, `iconpack`, `uikit`.                                |
+| `icon`         | `string`   | No       | Name of the Lucide icon representing the tool.                                                                                                |
+| `permissions`  | `string[]` | No       | Array of permissions indicating host APIs the extension needs access to.                                                                      |
+| `capabilities` | `object`   | No       | Defines capabilities: `callable` (whether others can invoke it) and `caller` (whether it invokes others).                                     |
+| `placeholder`  | `string`   | No       | Custom omnibar placeholder text shown when this tool is active (e.g. `"Ask anything"`). Falls back to `Search <name>` if omitted.             |
+| `locales`      | `object`   | No       | Localisation config. Declare when the extension ships translated strings (see §Localisation below).                                           |
+| `entry`        | `object`   | Yes      | Relative paths to entry files: `backend`, `frontend`, `preload`, `theme`, `settings`, etc.                                                    |
+| `ipc`          | `object`   | No       | Declares the extension's **public** IPC surface. Only channels listed here may be invoked cross-extension from the renderer or other workers. |
+| `ipc.public`   | `string[]` | No       | Channel names exposed to other extensions (e.g. `["getStatus", "add"]`). Omit or use `[]` when no cross-extension API is intended.            |
+
+### Public IPC surface (`ipc.public`)
+
+By default, every `core.ipc.handle(...)` channel is **private** — callable only from the same extension's renderer code (with `callerExtId` matching the target). To allow another extension or the shell to invoke a channel, declare it in `manifest.json` **and** register it with `{ expose: 'public' }` in the backend:
+
+```json
+{
+  "id": "com.nuxy.qbittorrent",
+  "ipc": {
+    "public": ["getStatus", "add"]
+  }
+}
+```
+
+At startup the kernel validates that every `{ expose: 'public' }` handler appears in `manifest.ipc.public`, and that declared public channels are actually registered. Mismatches fail extension load (`markFailed`).
+
+Cross-extension renderer calls additionally require the target extension to declare `capabilities.callable: true`.
 
 ### Extension Types
 

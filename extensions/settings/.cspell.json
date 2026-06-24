@@ -1,4 +1,15 @@
 {
   "version": "0.2",
-  "words": ["behaviour", "iconpack", "iconpacks", "Neue", "nuxyconfig", "Ollama", "Segoe", "uikit"]
+  "words": [
+    "apikey",
+    "behaviour",
+    "iconpack",
+    "iconpacks",
+    "Neue",
+    "nuxyconfig",
+    "Ollama",
+    "qbittorrent",
+    "Segoe",
+    "uikit"
+  ]
 }

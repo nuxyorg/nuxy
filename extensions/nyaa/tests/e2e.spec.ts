@@ -167,8 +167,13 @@ async function installNyaaMock(appPage: any, electronApp: any) {
             if (channel === 'search') {
               return { success: true, data: results }
             }
-            if (channel === 'getEnterAction') {
-              return { success: true, data: 'copyMagnet' }
+            if (channel === 'getActionSettings') {
+              return {
+                success: true,
+                data: {
+                  enterActionPriority: ['torrentClient', 'copyMagnet', 'downloadTorrent'],
+                },
+              }
             }
             if (channel === 'copyMagnet') {
               return { success: true }

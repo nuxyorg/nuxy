@@ -4,6 +4,7 @@ export interface NuxyRendererEventMap {
   'locale-changed': undefined
   'settings-updated': Record<string, unknown>
   'settings-loaded': Record<string, unknown>
+  'extension-settings-updated': { extId: string; values: Record<string, unknown> }
   'composition-ready': undefined
 }
 

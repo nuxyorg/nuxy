@@ -74,7 +74,11 @@ export interface CoreContext {
     write: <T>(file: string, data: T) => Promise<void>
   }
   ipc: {
-    handle: <T, R>(channel: string, handler: (payload: T) => Promise<R>) => void
+    handle: <T, R>(
+      channel: string,
+      handler: (payload: T) => Promise<R>,
+      options?: { expose?: 'public' | 'private' }
+    ) => void
     broadcast: (channel: string, data: unknown) => void
   }
   registry: {

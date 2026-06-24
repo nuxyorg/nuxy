@@ -486,7 +486,8 @@ export class ShellController {
         const res = await window.core.ipc.invoke(
           item.id,
           item.execute.channel,
-          item.execute.payload
+          item.execute.payload,
+          { callerExtId: SHELL_EXT_ID }
         )
         const r = res as { success: boolean; data?: { toolId?: string; query?: string } } | null
         if (r?.success && r.data?.toolId) {
@@ -508,7 +509,12 @@ export class ShellController {
     const { orchestrators } = this.tools
     if (!savedQuery.trim() || orchestrators.length === 0) return
     try {
-      const res = await window.core.ipc.invoke(orchestrators[0].id, 'route', { text: savedQuery })
+      const res = await window.core.ipc.invoke(
+        orchestrators[0].id,
+        'route',
+        { text: savedQuery },
+        { callerExtId: SHELL_EXT_ID }
+      )
       const r = res as {
         success?: boolean
         data?: { ok?: boolean; data?: { toolCalled?: string; initialQuery?: string } }
