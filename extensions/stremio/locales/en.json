@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "name": "Stremio Search",
+    "direction": "ltr"
+  },
+  "home": {
+    "favorites": "Favorites",
+    "empty": {
+      "message": "Search movies & series",
+      "hint": "Type a title. Press Ctrl+F to save favorites here."
+    }
+  },
+  "search": {
+    "placeholder": "Search movies & series",
+    "empty": {
+      "message": "Search Stremio addons",
+      "hint": "Type a movie or series title."
+    },
+    "loading": {
+      "message": "Searching...",
+      "hint": "Resolving titles and fetching streams"
+    },
+    "noResults": {
+      "message": "No titles found.",
+      "hint": "Try a different search term."
+    }
+  },
+  "episodes": {
+    "empty": "No episodes found for this series.",
+    "season": "Season {season}"
+  },
+  "streams": {
+    "empty": "No streams found. Configure a debrid service in your addon, or try another title.",
+    "unnamed": "Untitled stream"
+  },
+  "badge": {
+    "movie": "Movie",
+    "series": "Series",
+    "torrent": "Torrent",
+    "debrid": "Debrid"
+  },
+  "item": {
+    "copied": "Copied!",
+    "selectPrompt": "Select an item to view details"
+  },
+  "details": {
+    "title": "Details",
+    "type": "Type",
+    "year": "Year",
+    "id": "ID",
+    "season": "Season",
+    "episode": "Episode",
+    "released": "Released",
+    "source": "Source",
+    "quality": "Quality",
+    "favorite": "Favorite",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "actions": {
+    "navigate": "Navigate",
+    "open": "Open",
+    "back": "Back",
+    "favorite": "Favorite",
+    "unfavorite": "Unfavorite",
+    "torrentClient": "Add via qBittorrent",
+    "copyMagnet": "Copy Magnet",
+    "playStream": "Open / Play",
+    "copyLink": "Copy Link"
+  }
+}

@@ -124,10 +124,10 @@ export class NuxyToolVideoDownloaderElement extends LitElement implements NuxyTo
     return html`
       <div class="nuxy-vd-meta">
         <nuxy-media-preview
-          thumbnail=${metadata.thumbnail ?? ''}
-          title=${metadata.title}
-          uploader=${metadata.uploader ?? ''}
-          duration=${metadata.duration ?? ''}
+          .thumbnail=${metadata.thumbnail ?? ''}
+          .title=${metadata.title}
+          .uploader=${metadata.uploader ?? ''}
+          .duration=${metadata.duration ?? ''}
           size="sm"
         ></nuxy-media-preview>
       </div>

@@ -1,4 +1,5 @@
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
+import { logCaughtError } from '@nuxyorg/core'
 import type { NuxySettings, AnyRow } from './types.ts'
 import { parseListFieldValue } from './utils/list-field.ts'
 import { swapPriorityListItems, resolvePriorityListOrder } from './utils/priority-list.ts'
@@ -48,7 +49,7 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
         if (colors) Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
         if (tokens) Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'getThemeByName'))
   }
 
   const applySettings = (s: NuxySettings): void => {
@@ -73,9 +74,11 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
       .invoke(EXT_ID, 'saveSettings', next, { callerExtId: EXT_ID })
       .then(() => {
         if (key === 'preferredLanguages') window.core?.events?.emit('locale-changed')
-        window.core.ipc.invoke('kernel', 'applyWindowSettings', next).catch(() => {})
+        window.core.ipc
+          .invoke('kernel', 'applyWindowSettings', next)
+          .catch((err) => logCaughtError(EXT_ID, err, 'applyWindowSettings'))
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'saveSettings'))
   }
 
   const addLanguage = (code: string): void => {
@@ -106,7 +109,7 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
         { extId, values: next },
         { callerExtId: EXT_ID }
       )
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'saveExtensionSettingValues'))
   }
 
   const updateExtSetting = (extId: string, key: string, value: unknown): void => {
@@ -155,7 +158,9 @@ export function createSettingsActions(ctx: SettingsActionsContext) {
   const toggleExtension = (extId: string, enabled: boolean): void => {
     ctx.setActiveSelect(null)
     if (!window.core?.ipc?.invoke) return
-    window.core.ipc.invoke('kernel', 'setExtensionEnabled', { extId, enabled }).catch(() => {})
+    window.core.ipc
+      .invoke('kernel', 'setExtensionEnabled', { extId, enabled })
+      .catch((err) => logCaughtError(EXT_ID, err, 'setExtensionEnabled'))
   }
 
   const handleRowSelect = (row: AnyRow, value: unknown): void => {

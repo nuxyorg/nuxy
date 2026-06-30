@@ -52,8 +52,7 @@
     "remove": "Kaldırılıyor…"
   },
   "actions": {
-    "previous": "Önceki",
-    "next": "Sonraki",
+    "navigate": "Gezin",
     "pause": "Duraklat",
     "resume": "Devam ettir",
     "addTorrent": "Torrent ekle",

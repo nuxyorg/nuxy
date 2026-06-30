@@ -82,10 +82,10 @@
     "placeholder": "—"
   },
   "actions": {
-    "previousSetting": "前の設定",
-    "nextSetting": "次の設定",
+    "navigate": "移動",
     "openSetting": "設定を開く",
-    "closeSetting": "設定を閉じる"
+    "closeSetting": "設定を閉じる",
+    "reorderPriority": "並べ替え"
   },
   "search": {
     "placeholder": "設定を検索"

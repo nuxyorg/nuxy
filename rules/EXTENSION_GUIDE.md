@@ -279,6 +279,7 @@ Extensions declare user-configurable settings via a `settings.json` schema file.
 | Type       | Description                                    |
 | ---------- | ---------------------------------------------- |
 | `text`     | Free-text string input                         |
+| `password` | Free-text string input, masked like a password |
 | `select`   | Dropdown from a static `options` list          |
 | `toggle`   | Boolean on/off switch                          |
 | `location` | Folder picker (resolves `~` to home directory) |
@@ -504,10 +505,25 @@ All IPC handlers must return a value (or `undefined`). The kernel wraps them in 
 
 Handlers are **private by default**. Private channels are reachable only from the same extension's frontend when `callerExtId` matches the target extension id.
 
-To expose a channel to other extensions (or the shell), do **both**:
+To expose a channel to other extensions (or the shell), do **all three**:
 
 1. List the channel in `manifest.json` → `ipc.public`
-2. Register with `{ expose: 'public' }`:
+2. Register with `{ expose: 'public' }` in the backend
+3. Add an example payload in `manifest.json` → `ipc.samples` (strongly recommended):
+
+```json
+{
+  "ipc": {
+    "public": ["getStatus", "add"],
+    "samples": {
+      "getStatus": {},
+      "add": { "url": "magnet:?xt=..." }
+    }
+  }
+}
+```
+
+IPC Explorer reads `ipc.samples` to pre-fill the invoke payload textarea. The kernel warns at startup when a public channel has no sample entry.
 
 ```ts
 core.ipc.handle('getStatus', async () => ({ state: 'ready' }), { expose: 'public' })
@@ -1753,6 +1769,8 @@ Before submitting or merging an extension, verify every item:
 - [ ] All used `core.*` APIs have a matching entry in `permissions`
 - [ ] `capabilities.caller` is only `true` if the extension calls other extensions
 - [ ] If the extension ships translations, `locales.default` and `locales.supported` are declared
+- [ ] Every `{ expose: 'public' }` handler is listed in `manifest.ipc.public`
+- [ ] Every channel in `manifest.ipc.public` has a matching `manifest.ipc.samples` entry (use `{}` when no payload)
 
 **Localisation**
 

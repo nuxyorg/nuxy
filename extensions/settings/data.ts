@@ -1,5 +1,6 @@
-import type { NuxySettings, SelectOption, ExtSettingsInfo } from './types.ts'
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
+import { logCaughtError } from '@nuxyorg/core'
+import type { NuxySettings, SelectOption, ExtSettingsInfo } from './types.ts'
 import { DEFAULT_SETTINGS } from './utils/settings-options.ts'
 import { buildIconPackOptions, resolveSingleIconPack } from './utils/icon-pack-defaults.ts'
 import { normalizePriorityListFields } from './utils/priority-list.ts'
@@ -41,7 +42,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
         })
       }
     })
-    .catch(() => {})
+    .catch((err) => logCaughtError(EXT_ID, err))
 
   window.core.icons
     ?.listPacks()
@@ -61,12 +62,12 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
             window.core?.events?.emit('settings-updated', resolved as Record<string, unknown>)
             window.core.ipc
               .invoke(EXT_ID, 'saveSettings', resolved, { callerExtId: EXT_ID })
-              .catch(() => {})
+              .catch((err) => logCaughtError(EXT_ID, err))
           })
-          .catch(() => {})
+          .catch((err) => logCaughtError(EXT_ID, err))
       }
     })
-    .catch(() => {})
+    .catch((err) => logCaughtError(EXT_ID, err))
 
   window.core.ipc
     .invoke('kernel', 'listSystemFonts', {})
@@ -74,7 +75,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
       const r = res as { success: boolean; data?: unknown[] }
       if (r?.success && Array.isArray(r.data)) onPatch({ systemFonts: r.data as string[] })
     })
-    .catch(() => {})
+    .catch((err) => logCaughtError(EXT_ID, err))
 
   window.core.ipc
     .invoke(EXT_ID, 'getSettings', {}, { callerExtId: EXT_ID })
@@ -87,7 +88,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
         window.core?.events?.emit('settings-loaded', r.data as Record<string, unknown>)
       }
     })
-    .catch(() => {})
+    .catch((err) => logCaughtError(EXT_ID, err))
 
   const fetchExtData = () => {
     window.core.ipc
@@ -98,7 +99,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
           onPatch({ installedExtensions: r.data as InstalledExtension[] })
         }
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err))
 
     window.core.ipc
       .invoke('kernel', 'getExtensionSettingsSchemas', {})
@@ -117,7 +118,7 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
                   })
                 }
               })
-              .catch(() => {})
+              .catch((err) => logCaughtError(EXT_ID, err))
           }
           r.data.forEach((info) => {
             window.core.ipc
@@ -132,11 +133,11 @@ export function loadSettingsData(onPatch: (patch: SettingsDataPatch) => void): (
                   })
                 }
               })
-              .catch(() => {})
+              .catch((err) => logCaughtError(EXT_ID, err))
           })
         }
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err))
   }
 
   fetchExtData()

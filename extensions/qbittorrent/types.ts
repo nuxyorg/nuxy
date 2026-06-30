@@ -64,6 +64,10 @@ export interface CopySavePathPayload {
   savePath: string
 }
 
+export interface OpenSavePathPayload {
+  savePath: string
+}
+
 export type QbitConnectionState =
   | 'ready'
   | 'misconfigured'
@@ -88,4 +92,5 @@ export interface IpcChannels extends IpcChannelMap {
   remove: { input: RemoveTorrentPayload; output: void }
   copyMagnet: { input: CopyMagnetPayload; output: void }
   copySavePath: { input: CopySavePathPayload; output: void }
+  openSavePath: { input: OpenSavePathPayload; output: void }
 }

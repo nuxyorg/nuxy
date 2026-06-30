@@ -172,6 +172,13 @@ export interface ExtensionManifest {
 export interface ExtensionIpcManifest {
   /** Channels callable cross-extension. Backend must register them with `{ expose: 'public' }`. */
   public?: string[]
+  /**
+   * Example JSON payloads for public channels, keyed by channel name.
+   * Used by IPC Explorer to pre-fill invoke payloads and to document the
+   * cross-extension contract. Optional but strongly recommended for every
+   * entry in `ipc.public`.
+   */
+  samples?: Record<string, unknown>
 }
 
 export interface RegistryEntry {

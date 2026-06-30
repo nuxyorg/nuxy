@@ -39,6 +39,10 @@ vi.mock('@nuxyorg/core', async () => {
     ...actual,
     resolveLocale: vi.fn(() => 'en'),
     flattenTranslations: vi.fn((obj: unknown) => obj as Record<string, string>),
+    mergeTranslations: vi.fn((base: Record<string, string>, overrides: Record<string, string>) => ({
+      ...base,
+      ...overrides,
+    })),
     getTextDirection: vi.fn(() => 'ltr'),
   }
 })
@@ -46,7 +50,7 @@ vi.mock('@nuxyorg/core', async () => {
 import fs from 'fs'
 import { i18nHandlers, readSettingsSchemaFromDisk } from './i18n.js'
 import { getExtensionById } from '../../extensions/registry.js'
-import { resolveLocale, flattenTranslations } from '@nuxyorg/core'
+import { resolveLocale, flattenTranslations, mergeTranslations } from '@nuxyorg/core'
 
 function makeExt(overrides: Partial<LoadedExtension> = {}): LoadedExtension {
   return {
@@ -288,6 +292,52 @@ describe('i18nHandlers', () => {
       })
       const result = i18nHandlers.getExtensionTranslations({ extId: 'com.example.ext' })
       expect((result as any).data.translations).toEqual({})
+    })
+
+    it('merges default-locale keys missing from the resolved locale', () => {
+      const ext = makeExt({
+        manifest: {
+          id: 'com.nuxy.settings',
+          name: 'Settings',
+          version: '1.0.0',
+          type: 'tool',
+          locales: { supported: ['en', 'tr'], default: 'en' },
+        },
+      } as any)
+      vi.mocked(getExtensionById).mockReturnValue(ext)
+      vi.mocked(resolveLocale).mockReturnValue('tr')
+      vi.mocked(flattenTranslations).mockImplementation((obj: unknown) => {
+        const raw = obj as Record<string, unknown>
+        if ('actions' in raw) {
+          const actions = raw.actions as Record<string, string>
+          return Object.fromEntries(Object.entries(actions).map(([k, v]) => [`actions.${k}`, v]))
+        }
+        return {}
+      })
+      vi.mocked(fs.readFileSync).mockImplementation((p: any) => {
+        const filePath = String(p)
+        if (filePath.includes('settings.json'))
+          return JSON.stringify({ preferredLanguages: ['tr'] })
+        if (filePath.endsWith('/tr.json')) {
+          return JSON.stringify({ actions: { closeSetting: 'Ayarı kapat' } })
+        }
+        if (filePath.endsWith('/en.json')) {
+          return JSON.stringify({
+            actions: {
+              closeSetting: 'Close setting',
+              reorderPriority: 'Reorder',
+            },
+          })
+        }
+        throw new Error(`unexpected read: ${filePath}`)
+      })
+
+      const result = i18nHandlers.getExtensionTranslations({ extId: 'com.nuxy.settings' })
+      expect(mergeTranslations).toHaveBeenCalled()
+      expect((result as any).data.translations).toEqual({
+        'actions.closeSetting': 'Ayarı kapat',
+        'actions.reorderPriority': 'Reorder',
+      })
     })
   })
 })

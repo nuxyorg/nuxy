@@ -3,6 +3,7 @@ import {
   getTextDirection,
   resolveLocale,
   flattenTranslations,
+  mergeTranslations,
   interpolate,
   selectPlural,
 } from './i18n.ts'
@@ -80,6 +81,20 @@ describe('flattenTranslations', () => {
 
   it('ignores non-string, non-object values', () => {
     expect(flattenTranslations({ count: 5 })).toEqual({})
+  })
+})
+
+describe('mergeTranslations', () => {
+  it('uses overrides when present and falls back to base for missing keys', () => {
+    expect(
+      mergeTranslations(
+        { 'actions.closeSetting': 'Close setting', 'actions.reorderPriority': 'Reorder' },
+        { 'actions.closeSetting': 'Ayarı kapat' }
+      )
+    ).toEqual({
+      'actions.closeSetting': 'Ayarı kapat',
+      'actions.reorderPriority': 'Reorder',
+    })
   })
 })
 

@@ -136,20 +136,21 @@ customElements.define('nuxy-tool-hello-world', NuxyToolHelloWorldElement)
 
 The `manifest.json` file configures how the extension behaves. Below is the list of properties:
 
-| Property       | Type       | Required | Description                                                                                                                                   |
-| -------------- | ---------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`           | `string`   | Yes      | Unique reverse-DNS identifier (e.g. `com.nuxy.my-extension`).                                                                                 |
-| `name`         | `string`   | Yes      | Human-readable name displayed in the launcher.                                                                                                |
-| `version`      | `string`   | Yes      | Semantic version string (e.g., `1.0.0`).                                                                                                      |
-| `type`         | `string`   | Yes      | Type of extension. Allowed values: `tool`, `provider`, `orchestrator`, `helper`, `theme`, `iconpack`, `uikit`.                                |
-| `icon`         | `string`   | No       | Name of the Lucide icon representing the tool.                                                                                                |
-| `permissions`  | `string[]` | No       | Array of permissions indicating host APIs the extension needs access to.                                                                      |
-| `capabilities` | `object`   | No       | Defines capabilities: `callable` (whether others can invoke it) and `caller` (whether it invokes others).                                     |
-| `placeholder`  | `string`   | No       | Custom omnibar placeholder text shown when this tool is active (e.g. `"Ask anything"`). Falls back to `Search <name>` if omitted.             |
-| `locales`      | `object`   | No       | Localisation config. Declare when the extension ships translated strings (see §Localisation below).                                           |
-| `entry`        | `object`   | Yes      | Relative paths to entry files: `backend`, `frontend`, `preload`, `theme`, `settings`, etc.                                                    |
-| `ipc`          | `object`   | No       | Declares the extension's **public** IPC surface. Only channels listed here may be invoked cross-extension from the renderer or other workers. |
-| `ipc.public`   | `string[]` | No       | Channel names exposed to other extensions (e.g. `["getStatus", "add"]`). Omit or use `[]` when no cross-extension API is intended.            |
+| Property       | Type       | Required | Description                                                                                                                                                                    |
+| -------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`           | `string`   | Yes      | Unique reverse-DNS identifier (e.g. `com.nuxy.my-extension`).                                                                                                                  |
+| `name`         | `string`   | Yes      | Human-readable name displayed in the launcher.                                                                                                                                 |
+| `version`      | `string`   | Yes      | Semantic version string (e.g., `1.0.0`).                                                                                                                                       |
+| `type`         | `string`   | Yes      | Type of extension. Allowed values: `tool`, `provider`, `orchestrator`, `helper`, `theme`, `iconpack`, `uikit`.                                                                 |
+| `icon`         | `string`   | No       | Name of the Lucide icon representing the tool.                                                                                                                                 |
+| `permissions`  | `string[]` | No       | Array of permissions indicating host APIs the extension needs access to.                                                                                                       |
+| `capabilities` | `object`   | No       | Defines capabilities: `callable` (whether others can invoke it) and `caller` (whether it invokes others).                                                                      |
+| `placeholder`  | `string`   | No       | Custom omnibar placeholder text shown when this tool is active (e.g. `"Ask anything"`). Falls back to `Search <name>` if omitted.                                              |
+| `locales`      | `object`   | No       | Localisation config. Declare when the extension ships translated strings (see §Localisation below).                                                                            |
+| `entry`        | `object`   | Yes      | Relative paths to entry files: `backend`, `frontend`, `preload`, `theme`, `settings`, etc.                                                                                     |
+| `ipc`          | `object`   | No       | Declares the extension's **public** IPC surface. Only channels listed here may be invoked cross-extension from the renderer or other workers.                                  |
+| `ipc.public`   | `string[]` | No       | Channel names exposed to other extensions (e.g. `["getStatus", "add"]`). Omit or use `[]` when no cross-extension API is intended.                                             |
+| `ipc.samples`  | `object`   | No       | Example JSON payloads keyed by public channel name. Strongly recommended for every entry in `ipc.public` — IPC Explorer pre-fills these and callers use them as documentation. |
 
 ### Public IPC surface (`ipc.public`)
 
@@ -159,14 +160,62 @@ By default, every `core.ipc.handle(...)` channel is **private** — callable onl
 {
   "id": "com.nuxy.qbittorrent",
   "ipc": {
-    "public": ["getStatus", "add"]
+    "public": ["getStatus", "add"],
+    "samples": {
+      "getStatus": {},
+      "add": {
+        "url": "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"
+      }
+    }
   }
 }
 ```
 
 At startup the kernel validates that every `{ expose: 'public' }` handler appears in `manifest.ipc.public`, and that declared public channels are actually registered. Mismatches fail extension load (`markFailed`).
 
+When `ipc.public` is non-empty, provide a matching `ipc.samples` entry for each channel. The kernel logs a warning at startup when a public channel has no sample — this does not block load, but helps IPC Explorer and cross-extension callers discover the expected payload shape.
+
 Cross-extension renderer calls additionally require the target extension to declare `capabilities.callable: true`.
+
+### Example payloads (`ipc.samples`)
+
+`ipc.samples` is optional in the schema but **strongly recommended** whenever you declare a public IPC surface. Treat it as part of the cross-extension contract — same importance as listing the channel in `ipc.public`.
+
+| Who benefits        | How                                                             |
+| ------------------- | --------------------------------------------------------------- |
+| IPC Explorer        | Pre-fills the invoke payload textarea when you select a channel |
+| Other extensions    | Discover expected payload shape without reading your backend    |
+| Authors / reviewers | Static, auditable documentation in `manifest.json`              |
+| Kernel              | Warns at startup when a public channel has no sample            |
+
+Guidelines:
+
+- One sample object per channel in `ipc.public`. Use `{}` when the handler takes no payload.
+- Match the shape your backend expects (mirror `types.ts` / `IpcChannelMap` input types).
+- Do **not** put private channels in `ipc.samples`.
+- Use realistic placeholder values (URLs, ids, hashes) — not `"foo"` / `"bar"` unless the field is opaque.
+
+```json
+{
+  "ipc": {
+    "public": ["registerExternal", "updateExternal"],
+    "samples": {
+      "registerExternal": {
+        "extensionId": "com.nuxy.video-downloader",
+        "jobId": "job-123",
+        "url": "https://example.com/video.mp4",
+        "fileName": "video.mp4"
+      },
+      "updateExternal": {
+        "extensionId": "com.nuxy.video-downloader",
+        "jobId": "job-123",
+        "status": "downloading",
+        "bytesDownloaded": 524288
+      }
+    }
+  }
+}
+```
 
 ### Extension Types
 

@@ -33,6 +33,11 @@ export interface SpawnHandle {
   kill(signal?: string): void
 }
 
+/** Metadata for an IPC handler invocation (cross-extension caller identity). */
+export interface IpcInvokeContext {
+  callerExtId?: string
+}
+
 export interface CoreContext {
   clipboard: {
     readText: () => Promise<string>
@@ -76,7 +81,7 @@ export interface CoreContext {
   ipc: {
     handle: <T, R>(
       channel: string,
-      handler: (payload: T) => Promise<R>,
+      handler: (payload: T, context?: IpcInvokeContext) => Promise<R>,
       options?: { expose?: 'public' | 'private' }
     ) => void
     broadcast: (channel: string, data: unknown) => void
@@ -150,6 +155,7 @@ export { createLogger, kernelLogger } from './logger'
 export type { Logger, LogLevel } from './logger'
 export type {
   ExtensionManifest,
+  ExtensionIpcManifest,
   ExtensionLocaleConfig,
   ExtensionPermission,
   ExtensionRuntimeMeta,
@@ -171,6 +177,7 @@ export type { WorkerToHostMessage, HostToWorkerMessage } from './messages'
 export {
   resolveLocale,
   flattenTranslations,
+  mergeTranslations,
   interpolate,
   selectPlural,
   getTextDirection,
@@ -199,7 +206,9 @@ export type {
   CoreShell,
   ResetToolStateOptions,
 } from './shell'
+export { computeKeyHints, flattenShellActions, isShellActionClickable } from './shell-actions'
 export type { CoreEvents, NuxyRendererEvent, NuxyRendererEventMap } from './events'
+export { logCaughtError } from './log-caught'
 export { classifyQuery } from './query-context'
 export type { QueryType, QueryContext } from './query-context'
 export { DEEPLINK_OPEN_CHANNEL, DEEPLINK_DISPATCH_CHANNEL } from './deeplink'

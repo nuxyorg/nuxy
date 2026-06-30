@@ -40,6 +40,11 @@
       "label": "ダウンロード先",
       "placeholder": "~/Downloads",
       "description": "ダウンロードした動画を保存するフォルダ"
+    },
+    "extraArgs": {
+      "label": "yt-dlp の追加引数",
+      "placeholder": "-4 --no-playlist",
+      "description": "すべてのダウンロードで yt-dlp に渡す追加のコマンドライン引数（例: IPv4 を強制する -4）。スペースを含む値は引用符で囲んでください。"
     }
   }
 }

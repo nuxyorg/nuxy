@@ -87,6 +87,14 @@ export function flattenTranslations(obj: unknown, prefix = ''): Record<string, s
   return result
 }
 
+/** Merge locale translations: `overrides` win; missing keys fall back to `base`. */
+export function mergeTranslations(
+  base: Record<string, string>,
+  overrides: Record<string, string>
+): Record<string, string> {
+  return { ...base, ...overrides }
+}
+
 /** Replace `{variable}` placeholders with values from `vars`. */
 export function interpolate(template: string, vars: Record<string, string | number>): string {
   return template.replace(/\{(\w+)\}/g, (match, key: string) =>

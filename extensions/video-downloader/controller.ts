@@ -1,7 +1,11 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import { invoke } from './utils/ipc.ts'
+import { mapVideoDownloaderError } from './utils/map-error.ts'
 import { filterFormats } from './utils/format.ts'
+import { isVideoUrl } from './utils/video-url.ts'
 import type { TabId, VideoFormat, VideoMetadata } from './types.ts'
 
 const EXT_ID = 'com.nuxy.video-downloader'
@@ -54,7 +58,10 @@ export class VideoDownloaderController extends BaseExtensionController<VideoDown
     this.syncSearchPlaceholder()
     invoke<{ installed: boolean }>('status')
       .then(({ installed }) => this.store.setState({ ytdlpInstalled: installed }))
-      .catch(() => this.store.setState({ ytdlpInstalled: false }))
+      .catch((err) => {
+        logCaughtError(EXT_ID, err, 'status')
+        this.store.setState({ ytdlpInstalled: false })
+      })
     this.bindActions()
   }
 
@@ -79,6 +86,7 @@ export class VideoDownloaderController extends BaseExtensionController<VideoDown
       focusedPanel: 'right',
     })
     window.core?.shell?.refreshShellActions()
+    if (isVideoUrl(url)) void this.getFormats()
   }
 
   /** Mouse click on a tab — switches category and focuses the format list. */
@@ -139,7 +147,10 @@ export class VideoDownloaderController extends BaseExtensionController<VideoDown
         focusedPanel: 'right',
       })
     } catch (e) {
-      this.store.setState({ error: (e as Error).message, loading: false })
+      this.store.setState({
+        error: mapVideoDownloaderError(e, this.t.t),
+        loading: false,
+      })
     }
     window.core?.shell?.refreshShellActions()
   }
@@ -164,7 +175,7 @@ export class VideoDownloaderController extends BaseExtensionController<VideoDown
       this.store.setState({ url: '', metadata: null, selectedIndex: -1, focusedPanel: 'right' })
       void window.core?.deeplink?.dispatch?.(DOWNLOAD_MANAGER_DEEPLINK)
     } catch (e) {
-      this.store.setState({ error: (e as Error).message })
+      this.store.setState({ error: mapVideoDownloaderError(e, this.t.t) })
     }
   }
 
@@ -205,25 +216,17 @@ export class VideoDownloaderController extends BaseExtensionController<VideoDown
     const currentIdx = TABS.findIndex((tab) => tab.id === this.state.activeTab)
 
     return [
-      {
-        id: 'video-downloader-tab-up',
-        key: 'ArrowUp',
+      pairedKeyAction({
+        id: 'video-downloader-tab-navigate',
         label: t('actions.navigate'),
-        hint: '↑↓',
         allowRepeat: true,
-        handler: () => {
+        negative: () => {
           if (currentIdx > 0) this.navigateTab(TABS[currentIdx - 1].id)
         },
-      },
-      {
-        id: 'video-downloader-tab-down',
-        key: 'ArrowDown',
-        label: '',
-        allowRepeat: true,
-        handler: () => {
+        positive: () => {
           if (currentIdx < TABS.length - 1) this.navigateTab(TABS[currentIdx + 1].id)
         },
-      },
+      }),
       {
         id: 'video-downloader-focus-right',
         key: 'ArrowRight',
@@ -251,14 +254,12 @@ export class VideoDownloaderController extends BaseExtensionController<VideoDown
         label: '',
         handler: () => this.focusLeftPanel(),
       },
-      {
-        id: 'video-downloader-navigate-up',
-        key: 'ArrowUp',
+      pairedKeyAction({
+        id: 'video-downloader-navigate',
         label: t('actions.navigate'),
-        hint: '↑↓',
         allowRepeat: true,
         activeOn: () => formats.length > 0,
-        handler: () =>
+        negative: () =>
           this.setSelectedIndex((i) => {
             if (i <= 0) {
               this.focusLeftPanel()
@@ -266,16 +267,9 @@ export class VideoDownloaderController extends BaseExtensionController<VideoDown
             }
             return i - 1
           }),
-      },
-      {
-        id: 'video-downloader-navigate-down',
-        key: 'ArrowDown',
-        label: '',
-        allowRepeat: true,
-        activeOn: () => formats.length > 0,
-        handler: () =>
+        positive: () =>
           this.setSelectedIndex((i) => (i >= formats.length - 1 ? formats.length - 1 : i + 1)),
-      },
+      }),
       {
         id: 'video-downloader-download',
         key: 'Enter',

@@ -8,6 +8,7 @@
     "Chash",
     "creds",
     "dlspeed",
+    "FORCEDDL",
     "missingfiles",
     "pauseddl",
     "pausedup",

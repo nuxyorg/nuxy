@@ -27,6 +27,24 @@ describe('invokeWorker', () => {
     expect(result).toEqual({ success: false, error: 'Worker not found' })
   })
 
+  it('forwards callerExtId to the worker when provided', async () => {
+    const worker = makeFakeWorker()
+    activeWorkers.set('ext-g', worker as never)
+
+    const promise = invokeWorker('ext-g', 'pause', { jobId: 'j1' }, 'com.nuxy.download-manager')
+
+    const sent = worker.postMessage.mock.calls[0][0] as {
+      id: string
+      callerExtId?: string
+      channel: string
+    }
+    expect(sent.callerExtId).toBe('com.nuxy.download-manager')
+    expect(sent.channel).toBe('pause')
+
+    worker.emit('message', { id: sent.id, result: undefined })
+    await promise
+  })
+
   it('resolves success: true with data when reply has matching id and no error', async () => {
     const worker = makeFakeWorker()
     activeWorkers.set('ext-a', worker as never)

@@ -7,10 +7,7 @@ import type {
   ShellAction,
   ShellBridgeSnapshot,
 } from '@nuxyorg/core'
-
-function computeKeyHints(actions: ShellAction[]): ShellAction[] {
-  return actions.filter((a) => a.hint && (typeof a.activeOn !== 'function' || a.activeOn()))
-}
+import { computeKeyHints } from '@nuxyorg/core'
 
 function computeToolActions(actions: ShellAction[]): ShellAction[] {
   return actions.filter((a) => a.showInMenu && (typeof a.activeOn !== 'function' || a.activeOn()))

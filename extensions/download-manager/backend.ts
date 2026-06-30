@@ -102,7 +102,7 @@ export function register(core: CoreContext): void {
             touch(id, { bytesDownloaded: stat.size, speedBps })
             persist()
           })
-          .catch(() => {})
+          .catch((err) => core.logger.warn('Failed to sample download progress', err))
       }, POLL_INTERVAL_MS),
       lastBytes: 0,
       lastSampleAt: Date.now(),

@@ -53,8 +53,9 @@ export async function scanExtensions(): Promise<void> {
   clearExtensionThemes()
   clearIconRegistry()
 
-  // Update revocation list in background (fails silently if offline)
-  await updateRevocationList().catch(() => {})
+  await updateRevocationList().catch((err) =>
+    log.warn('Failed to update extension revocation list', err)
+  )
 
   const stateCache = loadStateCache()
   const items = prepareExtensionDirs()

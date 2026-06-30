@@ -86,7 +86,10 @@ if ((await extTab.count()) > 0) {
     .locator('[class*="scroll"], [class*="right"], main, [class*="panel"]')
     .first()
     .allTextContents()
-    .catch(() => ['(none)'])
+    .catch((err) => {
+      console.warn('[verify-ext-settings] failed to read panel text', err)
+      return ['(none)']
+    })
   console.log('Panel text:', panelText.slice(0, 3))
 
   const dlField = await page.getByText('Download Location').count()

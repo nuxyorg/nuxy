@@ -230,7 +230,13 @@ export class NuxyToolDownloadManagerElement extends LitElement implements NuxyTo
             `
           : nothing}
         ${item.thumbnail
-          ? html`<img class="nuxy-dm-thumbnail" src=${item.thumbnail} alt="" />`
+          ? html`<img
+              class="nuxy-dm-thumbnail"
+              src=${item.thumbnail}
+              alt=""
+              referrerpolicy="no-referrer"
+              loading="lazy"
+            />`
           : nothing}
         <nuxy-list-item-body>
           <nuxy-list-item-text ?active=${active}>${item.fileName}</nuxy-list-item-text>

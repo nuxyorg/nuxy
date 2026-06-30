@@ -19,7 +19,7 @@ vi.mock('@nuxyorg/core', async () => {
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
-import { flattenTranslations } from '@nuxyorg/core'
+import { flattenTranslations, flattenShellActions } from '@nuxyorg/core'
 import { StoreController } from '../controller.ts'
 import enLocale from '../locales/en.json'
 import type { ExtensionListItem } from '../types.ts'
@@ -201,7 +201,9 @@ describe('StoreController', () => {
 
   describe('keyboard actions', () => {
     function actionByKey(controller: StoreController, key: string) {
-      return controller.getKeyActions().find((a) => a.key === key && !a.modifiers?.length)
+      return flattenShellActions(controller.getKeyActions()).find(
+        (a) => a.key === key && !a.modifiers?.length
+      )
     }
 
     it('exposes install action on Enter, active only when item not installed or updatable', () => {
@@ -230,7 +232,7 @@ describe('StoreController', () => {
 
       const install = getter!().find((a) => a.id === 'store-install')
       expect(install?.activeOn?.()).toBe(false)
-      install?.handler()
+      install?.handler?.()
 
       expect(ipcInvoke.mock.calls.some((call: unknown[]) => call[1] === 'uninstallExtension')).toBe(
         false
@@ -276,7 +278,7 @@ describe('StoreController', () => {
       controller.store.setState({ extensions: [ext], selectedIndex: 0 })
 
       const uninstall = getter!().find((a) => a.id === 'store-uninstall')
-      uninstall?.handler()
+      uninstall?.handler?.()
       await Promise.resolve()
 
       expect(ipcInvoke.mock.calls.some((call: unknown[]) => call[1] === 'uninstallExtension')).toBe(
@@ -308,7 +310,7 @@ describe('StoreController', () => {
       const controller = new StoreController(() => {})
       controller.connect()
       controller.store.setState({ selectedIndex: 2 })
-      actionByKey(controller, 'ArrowLeft')?.handler()
+      actionByKey(controller, 'ArrowLeft')?.handler?.()
 
       expect(controller.state.focusArea).toBe('left')
       expect(controller.state.selectedIndex).toBe(-1)
@@ -320,11 +322,11 @@ describe('StoreController', () => {
       controller.connect()
       controller.store.setState({ activeTab: 'tool', focusArea: 'left', selectedIndex: -1 })
 
-      actionByKey(controller, 'ArrowUp')?.handler()
+      actionByKey(controller, 'ArrowUp')?.handler?.()
       expect(controller.state.activeTab).toBe('all')
       expect(controller.state.focusArea).toBe('left')
 
-      actionByKey(controller, 'ArrowDown')?.handler()
+      actionByKey(controller, 'ArrowDown')?.handler?.()
       expect(controller.state.activeTab).toBe('tool')
       expect(controller.state.focusArea).toBe('left')
       controller.disconnect()
@@ -339,7 +341,7 @@ describe('StoreController', () => {
         selectedIndex: -1,
       })
 
-      actionByKey(controller, 'Enter')?.handler()
+      actionByKey(controller, 'Enter')?.handler?.()
 
       expect(controller.state.focusArea).toBe('right')
       expect(controller.state.selectedIndex).toBe(0)
@@ -355,7 +357,7 @@ describe('StoreController', () => {
         focusArea: 'right',
       })
 
-      actionByKey(controller, 'ArrowUp')?.handler()
+      actionByKey(controller, 'ArrowUp')?.handler?.()
 
       expect(controller.state.focusArea).toBe('left')
       expect(controller.state.selectedIndex).toBe(-1)

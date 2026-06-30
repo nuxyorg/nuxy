@@ -90,6 +90,21 @@ export function register(core: CoreContext): void {
 
 After `register()`, the Worker sends `registry:sync` listing all channel names. Unknown channels are rejected with `UNKNOWN_CHANNEL`.
 
+### Public channels and sample payloads
+
+Cross-extension channels require `manifest.ipc.public` and `{ expose: 'public' }` on the handler. Add matching `manifest.ipc.samples` entries — one example JSON payload per public channel. IPC Explorer reads these to pre-fill invoke payloads; the kernel warns at startup when a public channel has no sample.
+
+```json
+{
+  "ipc": {
+    "public": ["getStatus"],
+    "samples": { "getStatus": {} }
+  }
+}
+```
+
+See [IPC API → Public vs private channels](/api/ipc) and [Manifest Reference → Public IPC surface](/extensions/manifest#public-ipc-surface-ipc).
+
 ## Preload bridge
 
 `window.core` is injected by `preload.ts` via `contextBridge`. Raw `ipcRenderer` is never exposed:

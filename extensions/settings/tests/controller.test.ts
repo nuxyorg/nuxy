@@ -22,16 +22,26 @@ vi.mock('@nuxyorg/core', async () => {
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
-import { flattenTranslations } from '@nuxyorg/core'
+import { flattenTranslations, flattenShellActions, type ShellAction } from '@nuxyorg/core'
 import { SettingsController } from '../controller.ts'
 import enLocale from '../locales/en.json'
 
 const enTranslations = flattenTranslations(enLocale)
 
-function getRegisteredActions(): { key?: string; modifiers?: string[]; handler: () => void }[] {
+function getRegisteredActions(): ShellAction[] {
   const registerShellActions = window.core!.shell!.registerShellActions as ReturnType<typeof vi.fn>
   const getter = registerShellActions.mock.calls.at(-1)?.[0]
   return getter ? getter() : []
+}
+
+function getKeyActionHints() {
+  return getRegisteredActions().filter((a) => a.hint)
+}
+
+function findRegisteredAction(
+  predicate: (action: ReturnType<typeof getRegisteredActions>[number]) => boolean
+) {
+  return flattenShellActions(getRegisteredActions()).find(predicate)
 }
 
 describe('SettingsController boolean rows', () => {
@@ -97,7 +107,7 @@ describe('SettingsController boolean rows', () => {
     expect(controller.state.settings.alwaysOnTop).toBe(false)
 
     const enter = getRegisteredActions().find((a) => a.key === 'Enter')!
-    enter.handler()
+    enter.handler?.()
 
     expect(controller.state.settings.alwaysOnTop).toBe(true)
     expect(controller.state.activeSelect).toBeNull()
@@ -123,7 +133,7 @@ describe('SettingsController boolean rows', () => {
     controller.setSelectedRow(start + idx)
 
     const enter = getRegisteredActions().find((a) => a.key === 'Enter')!
-    enter.handler()
+    enter.handler?.()
 
     expect(controller.state.extValues['com.nuxy.angrysearch']?.caseSensitive).toBe(true)
     expect(controller.state.activeSelect).toBeNull()
@@ -271,7 +281,7 @@ describe('SettingsController list fields', () => {
     controller.setSelectedRow(start + idx)
 
     const enter = getRegisteredActions().find((a) => a.key === 'Enter')!
-    enter.handler()
+    enter.handler?.()
     await Promise.resolve()
 
     expect(controller.state.extValues['com.nuxy.angrysearch']?.ignoredRoots).toEqual([])
@@ -361,14 +371,14 @@ describe('SettingsController priority-list rows', () => {
 
     getRegisteredActions()
       .find((a) => a.key === 'Enter')!
-      .handler()
+      .handler?.()
     expect(controller.state.activePriorityList).toBe('com.nuxy.nyaa:enterActionPriority')
     expect(controller.state.priorityFocused).toBe(0)
 
-    const shiftDown = getRegisteredActions().find(
-      (a) => a.key === 'ArrowDown' && a.modifiers?.includes('shift')
+    const shiftDown = findRegisteredAction(
+      (a) => a.key === 'ArrowDown' && (a.modifiers?.includes('shift') ?? false)
     )!
-    shiftDown.handler()
+    shiftDown.handler?.()
     await Promise.resolve()
 
     expect(controller.state.extValues['com.nuxy.nyaa']?.enterActionPriority).toEqual([
@@ -377,6 +387,35 @@ describe('SettingsController priority-list rows', () => {
       'downloadTorrent',
     ])
     expect(controller.state.priorityFocused).toBe(1)
+
+    controller.disconnect()
+  })
+
+  it('shows minimal footer hints while editing a priority list', async () => {
+    const controller = new SettingsController(() => {})
+    controller.connect()
+    await Promise.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    const meta = controller.computedMeta!
+    const section = meta.sectionsToRender.find((s) => s.id === 'com.nuxy.nyaa')!
+    const start = meta.sectionStartIndex[section.id] ?? 0
+    controller.setSelectedSection(section.id)
+    controller.setSelectedRow(start)
+
+    getRegisteredActions()
+      .find((a) => a.key === 'Enter')!
+      .handler?.()
+
+    expect(getKeyActionHints()).toHaveLength(3)
+    expect(getKeyActionHints().some((a) => a.key === 'Escape')).toBe(false)
+    expect(
+      getKeyActionHints().find((a) => Array.isArray(a.hint) && a.hint.includes('⇧'))?.hint
+    ).toEqual(['⇧', '↑↓'])
+    expect(getRegisteredActions().find((a) => a.key === 'Enter')?.label).toBe(
+      enTranslations['actions.closeSetting']
+    )
 
     controller.disconnect()
   })

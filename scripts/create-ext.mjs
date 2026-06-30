@@ -157,7 +157,7 @@ export default function ${componentName}View({ query }: Props) {
   }
 
   useEffect(() => {
-    invoke('getItems').then(setItems).catch(() => {})
+    invoke('getItems').then(setItems).catch((err) => console.error('[${id}] getItems failed', err))
   }, [])
 
   const filtered = React.useMemo(() => {

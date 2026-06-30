@@ -227,7 +227,7 @@ describe('ShellController commandPaletteActions', () => {
     expect(actions).toHaveLength(1)
     expect(actions[0].label).toBe('Nyaa settings')
 
-    actions[0].handler()
+    actions[0].handler?.()
     expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
       'nuxy://settings/extension/com.nuxy.nyaa'
     )
@@ -286,7 +286,7 @@ describe('ShellController commandPaletteActions', () => {
     expect(actions.map((a) => a.id)).toContain('auto-settings')
 
     const settingsAction = actions.find((a) => a.id === 'auto-settings')
-    settingsAction?.handler()
+    settingsAction?.handler?.()
     expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
       'nuxy://settings/extension/com.nuxy.download-manager'
     )
@@ -385,6 +385,43 @@ describe('ShellController handleOmniKeyDown provider cards', () => {
     expect(writeText).toHaveBeenCalledWith('4')
     expect(ctrl.store.getState().copiedId).toBe('calc-result')
     vi.useRealTimers()
+  })
+})
+
+describe('ShellController returnToShell selection', () => {
+  const angrysearchTool = {
+    id: 'com.nuxy.angrysearch',
+    manifest: { id: 'com.nuxy.angrysearch', name: 'ANGRYsearch', version: '1.0.0', type: 'tool' },
+  }
+  const stremioTool = {
+    id: 'com.nuxy.stremio',
+    manifest: { id: 'com.nuxy.stremio', name: 'Stremio Arama', version: '1.0.0', type: 'tool' },
+  }
+
+  beforeEach(() => {
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+      cb(0)
+      return 0
+    })
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('selects the exiting tool instead of the first list item', () => {
+    const ctrl = new ShellController(() => {})
+    vi.spyOn(ctrl, 'ensureShellFocus').mockImplementation(() => {})
+    ctrl.tools.setTools([angrysearchTool, stremioTool] as never[])
+    ctrl.providers.recompute(ctrl.tools.tools, '', [], {})
+    ctrl.tools.setActiveTool('com.nuxy.stremio')
+
+    ctrl.returnToShell()
+
+    expect(ctrl.store.getState().selectedIndex).toBe(1)
+    expect(ctrl.providers.navigableResults[ctrl.store.getState().selectedIndex]?.id).toBe(
+      'com.nuxy.stremio'
+    )
   })
 })
 

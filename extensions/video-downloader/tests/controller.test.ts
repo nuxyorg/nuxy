@@ -27,7 +27,7 @@ vi.mock('@nuxyorg/core', async () => {
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
-import { flattenTranslations } from '@nuxyorg/core'
+import { flattenTranslations, flattenShellActions } from '@nuxyorg/core'
 import { VideoDownloaderController } from '../controller.ts'
 import type { VideoMetadata } from '../types.ts'
 import enLocale from '../locales/en.json'
@@ -76,9 +76,9 @@ function mockInvoke(impl: (channel: string, payload?: unknown) => unknown): void
 }
 
 function actionByKey(controller: VideoDownloaderController, key: string) {
-  return controller
-    .getKeyActions()
-    .find((action) => action.key === key && !action.modifiers?.length)
+  return flattenShellActions(controller.getKeyActions()).find(
+    (action) => action.key === key && !action.modifiers?.length
+  )
 }
 
 describe('VideoDownloaderController two-panel navigation', () => {
@@ -106,12 +106,12 @@ describe('VideoDownloaderController two-panel navigation', () => {
     const controller = setupWithMetadata('video_audio')
     controller.store.setState({ focusedPanel: 'left', selectedIndex: -1 })
 
-    actionByKey(controller, 'ArrowUp')?.handler()
+    actionByKey(controller, 'ArrowUp')?.handler?.()
     expect(controller.state.activeTab).toBe('recommended')
     expect(controller.state.focusedPanel).toBe('left')
     expect(controller.state.selectedIndex).toBe(-1)
 
-    actionByKey(controller, 'ArrowDown')?.handler()
+    actionByKey(controller, 'ArrowDown')?.handler?.()
     expect(controller.state.activeTab).toBe('video_audio')
     expect(controller.state.focusedPanel).toBe('left')
   })
@@ -120,7 +120,7 @@ describe('VideoDownloaderController two-panel navigation', () => {
     const controller = setupWithMetadata()
     controller.store.setState({ focusedPanel: 'left', selectedIndex: -1 })
 
-    actionByKey(controller, 'Enter')?.handler()
+    actionByKey(controller, 'Enter')?.handler?.()
 
     expect(controller.state.focusedPanel).toBe('right')
     expect(controller.state.selectedIndex).toBe(0)
@@ -129,7 +129,7 @@ describe('VideoDownloaderController two-panel navigation', () => {
   it('returns focus to the left panel from the first format row with ArrowUp', () => {
     const controller = setupWithMetadata()
 
-    actionByKey(controller, 'ArrowUp')?.handler()
+    actionByKey(controller, 'ArrowUp')?.handler?.()
 
     expect(controller.state.focusedPanel).toBe('left')
     expect(controller.state.selectedIndex).toBe(-1)
@@ -144,6 +144,48 @@ describe('VideoDownloaderController two-panel navigation', () => {
     expect(controller.state.activeTab).toBe('audio_only')
     expect(controller.state.focusedPanel).toBe('right')
     expect(controller.state.selectedIndex).toBe(-1)
+  })
+
+  it('auto-fetches formats when setQuery receives a supported video URL', async () => {
+    mockInvoke((channel) => {
+      if (channel === 'status') return { installed: true }
+      if (channel === 'getFormats') return sampleMetadata
+      return null
+    })
+
+    const controller = new VideoDownloaderController(() => {})
+    controller.connect()
+    controller.setQuery('https://www.youtube.com/watch?v=abc123')
+
+    await vi.waitFor(() => {
+      expect(controller.state.metadata).not.toBeNull()
+    })
+
+    expect(controller.state.url).toBe('https://www.youtube.com/watch?v=abc123')
+    controller.disconnect()
+  })
+
+  it('does not auto-fetch when setQuery receives non-video text', async () => {
+    mockInvoke((channel) => {
+      if (channel === 'status') return { installed: true }
+      if (channel === 'getFormats') return sampleMetadata
+      return null
+    })
+
+    const controller = new VideoDownloaderController(() => {})
+    controller.connect()
+    controller.setQuery('hello world')
+
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(controller.state.metadata).toBeNull()
+    expect(window.core!.ipc!.invoke).not.toHaveBeenCalledWith(
+      expect.anything(),
+      'getFormats',
+      expect.anything(),
+      expect.anything()
+    )
+    controller.disconnect()
   })
 
   it('refreshes shell actions after formats are fetched', async () => {
@@ -162,6 +204,24 @@ describe('VideoDownloaderController two-panel navigation', () => {
 
     expect(controller.state.metadata).not.toBeNull()
     expect(window.core!.shell!.refreshShellActions).toHaveBeenCalled()
+    controller.disconnect()
+  })
+
+  it('maps raw fetch failures to a friendly i18n message', async () => {
+    mockInvoke((channel) => {
+      if (channel === 'status') return { installed: true }
+      if (channel === 'getFormats')
+        throw new Error("Cannot read properties of null (reading 'title')")
+      return null
+    })
+
+    const controller = new VideoDownloaderController(() => {})
+    controller.connect()
+    controller.store.setState({ url: 'https://example.com/watch?v=1' })
+
+    await controller.getFormats()
+
+    expect(controller.state.error).toBe(enTranslations['errors.fetchFailed'])
     controller.disconnect()
   })
 

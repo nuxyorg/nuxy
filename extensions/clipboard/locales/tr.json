@@ -42,7 +42,6 @@
   },
   "actions": {
     "navigate": "Gezin",
-    "nextItem": "Sonraki öğe",
     "copy": "Kopyala",
     "deleteSelected": "Seçili Öğeyi Sil",
     "pinSelected": "Seçili Öğeyi Sabitle",

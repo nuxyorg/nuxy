@@ -54,7 +54,11 @@ export async function resetShell(page: any) {
     undefined,
     { timeout: 2000 }
   )
-  await page.waitForSelector('[role="option"]', { timeout: 2000 }).catch(() => {})
+  await page
+    .waitForSelector('[role="option"]', { timeout: 2000 })
+    .catch((err: unknown) =>
+      console.warn('[e2e] optional waitForSelector [role="option"] failed', err)
+    )
   await page.locator('.nuxy-shell-omni-bar__input').focus()
 }
 

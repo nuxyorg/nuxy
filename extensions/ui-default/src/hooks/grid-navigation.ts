@@ -1,4 +1,5 @@
 import type { KeyAction } from './useToolKeyActions'
+import { dualAxisKeyAction } from './paired-key-action'
 
 export interface GridNavigationOptions {
   getActiveIndex: () => number
@@ -9,17 +10,15 @@ export interface GridNavigationOptions {
   omnibarHandoff?: boolean
 }
 
-/** Keyboard actions for 2D grid navigation (↑↓ by row, ←→ by column). */
+/** Keyboard actions for 2D grid navigation (↑↓ by row, ←→ by column) as one footer entry. */
 export function createGridKeyActions(options: GridNavigationOptions): KeyAction[] {
-  const { getActiveIndex, setActiveIndex, getItemCount, getCols, omnibarHandoff } = options
+  const { setActiveIndex, getItemCount, getCols, omnibarHandoff } = options
 
   return [
-    {
-      key: 'ArrowUp',
+    dualAxisKeyAction({
       label: 'Navigate',
-      hint: '↑↓',
       allowRepeat: true,
-      handler: () => {
+      up: () => {
         setActiveIndex((prev) => {
           if (prev === -1) return -1
           const cols = getCols()
@@ -31,12 +30,7 @@ export function createGridKeyActions(options: GridNavigationOptions): KeyAction[
           return next
         })
       },
-    },
-    {
-      key: 'ArrowDown',
-      label: '',
-      allowRepeat: true,
-      handler: () => {
+      down: () => {
         const total = getItemCount()
         setActiveIndex((prev) => {
           if (prev === -1) {
@@ -48,26 +42,14 @@ export function createGridKeyActions(options: GridNavigationOptions): KeyAction[
           return next < total ? next : prev
         })
       },
-    },
-    {
-      key: 'ArrowLeft',
-      label: 'Navigate',
-      hint: '←→',
-      allowRepeat: true,
-      activeOn: () => getActiveIndex() >= 0,
-      handler: () => {
+      left: () => {
         setActiveIndex((prev) => (prev > 0 ? prev - 1 : prev))
       },
-    },
-    {
-      key: 'ArrowRight',
-      label: '',
-      allowRepeat: true,
-      activeOn: () => getActiveIndex() >= 0,
-      handler: () => {
+      right: () => {
         const total = getItemCount()
-        setActiveIndex((prev) => (prev + 1 < total ? prev + 1 : prev))
+        // Stay inert until a cell is selected (mirrors the old horizontal activeOn guard).
+        setActiveIndex((prev) => (prev >= 0 && prev + 1 < total ? prev + 1 : prev))
       },
-    },
+    }),
   ]
 }

@@ -374,6 +374,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ext-devserver
 
+  extensions/stremio:
+    devDependencies:
+      '@nuxyorg/ext-devserver':
+        specifier: workspace:*
+        version: link:../../packages/ext-devserver
+
   extensions/theme-black: {}
 
   extensions/theme-dark: {}

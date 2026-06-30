@@ -42,7 +42,6 @@
   },
   "actions": {
     "navigate": "ナビゲート",
-    "nextItem": "次のアイテム",
     "copy": "コピー",
     "deleteSelected": "選択アイテムを削除",
     "pinSelected": "選択アイテムをピン留め",

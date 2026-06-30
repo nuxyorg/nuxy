@@ -30,7 +30,9 @@ export function buildSettingsApi(
       try {
         const content = await fsPromises.readFile(extSettingsFile, 'utf8')
         data = JSON.parse(content) as Record<string, unknown>
-      } catch {}
+      } catch (err) {
+        console.warn(`[extension-host] failed to read settings file ${extSettingsFile}`, err)
+      }
       data[key] = value
       fs.mkdirSync(dataDir, { recursive: true })
       await fsPromises.writeFile(extSettingsFile, JSON.stringify(data, null, 2))
@@ -85,7 +87,9 @@ export function buildSettingsApi(
       try {
         const content = await fsPromises.readFile(p, 'utf8')
         data = JSON.parse(content) as Record<string, unknown>
-      } catch {}
+      } catch (err) {
+        console.warn(`[extension-host] failed to read extension settings file ${p}`, err)
+      }
       data[key] = value
       fs.mkdirSync(dir, { recursive: true })
       await fsPromises.writeFile(p, JSON.stringify(data, null, 2))

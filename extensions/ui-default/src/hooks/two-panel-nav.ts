@@ -1,4 +1,6 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { flattenShellActions } from '@nuxyorg/core'
+import { pairedKeyAction } from './paired-key-action'
 
 const BUILTIN_KEYS = new Set(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter'])
 
@@ -128,8 +130,10 @@ export class TwoPanelNav {
   }
 
   private callRightAction(key: string): void {
-    const action = this.getRightPanelActions().find((a) => a.key === key && !a.modifiers?.length)
-    action?.handler()
+    const action = flattenShellActions(this.getRightPanelActions()).find(
+      (a) => a.key === key && !a.modifiers?.length
+    )
+    action?.handler?.()
   }
 
   private getDeepActiveElement(root: DocumentOrShadowRoot = document): Element | null {
@@ -175,7 +179,7 @@ export class TwoPanelNav {
           const rightAction = rightPanelActions.find(
             (a) => a.key === 'ArrowLeft' && !a.modifiers?.length
           )
-          if (rightAction) rightAction.handler()
+          if (rightAction) rightAction.handler?.()
           else {
             this.focusArea = 'left'
             this.onFocusLeft?.()
@@ -201,12 +205,10 @@ export class TwoPanelNav {
           }
         },
       },
-      {
-        key: 'ArrowUp',
-        label: tr('keyboard.previous'),
-        hint: '↑↓',
+      pairedKeyAction({
+        label: tr('keyboard.navigate'),
         allowRepeat: true,
-        handler: () => {
+        negative: () => {
           if (this.focusArea === 'left') this.moveSectionUp()
           else {
             const activeEl = this.getDeepActiveElement()
@@ -219,12 +221,7 @@ export class TwoPanelNav {
             this.callRightAction('ArrowUp')
           }
         },
-      },
-      {
-        key: 'ArrowDown',
-        label: tr('keyboard.next'),
-        allowRepeat: true,
-        handler: () => {
+        positive: () => {
           if (this.focusArea === 'left') this.moveSectionDown()
           else {
             const activeEl = this.getDeepActiveElement()
@@ -237,7 +234,7 @@ export class TwoPanelNav {
             this.callRightAction('ArrowDown')
           }
         },
-      },
+      }),
       {
         key: 'Enter',
         label: tr('keyboard.selectConfirm'),
@@ -258,12 +255,12 @@ export class TwoPanelNav {
           }
         },
       },
-      ...rightPanelActions
+      ...flattenShellActions(rightPanelActions)
         .filter((a) => !!a.key && (!BUILTIN_KEYS.has(a.key) || a.modifiers?.length))
         .map((a) => ({
           ...a,
           handler: () => {
-            if (this.focusArea === 'right') a.handler()
+            if (this.focusArea === 'right') a.handler?.()
           },
         })),
     ]

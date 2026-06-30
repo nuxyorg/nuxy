@@ -4,13 +4,19 @@
   "version": "1.0.0",
   "type": "tool",
   "icon": "download",
-  "permissions": ["network", "clipboard"],
+  "permissions": ["network", "clipboard", "shell"],
   "capabilities": {
     "callable": true,
     "caller": false
   },
   "ipc": {
-    "public": ["getStatus", "add"]
+    "public": ["getStatus", "add"],
+    "samples": {
+      "getStatus": {},
+      "add": {
+        "url": "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"
+      }
+    }
   },
   "behavior": {
     "onComplete": "stay"

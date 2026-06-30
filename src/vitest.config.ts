@@ -15,6 +15,14 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@nuxyorg/core/runtime-export-names': path.resolve(
+        __dirname,
+        '../packages/core/src/runtime-export-names.ts'
+      ),
+      '@nuxyorg/extension-sdk/runtime-export-names': path.resolve(
+        __dirname,
+        '../packages/extension-sdk/src/runtime-export-names.ts'
+      ),
       '@nuxyorg/core': path.resolve(__dirname, '../packages/core/src/renderer.ts'),
     },
   },

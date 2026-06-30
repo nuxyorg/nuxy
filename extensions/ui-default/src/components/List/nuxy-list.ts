@@ -18,6 +18,9 @@ export class NuxyListElement extends LitElement {
   declare scrollLookahead: number
   @property({ type: Number, attribute: 'scroll-speed' })
   declare scrollSpeed: number
+  /** When true, slotted list items share a fixed row height (single-line label + meta). */
+  @property({ type: Boolean, attribute: 'uniform-items', reflect: true })
+  declare uniformItems: boolean
 
   private _indicatorState: ListIndicatorState = createListIndicatorState()
   private _visibilityObserver: IntersectionObserver | null = null
@@ -70,6 +73,19 @@ export class NuxyListElement extends LitElement {
 
     :host([max-height='md']) {
       max-height: 320px;
+    }
+
+    :host([uniform-items]) ::slotted(nuxy-list-item) {
+      min-height: var(
+        --nuxy-list-item-uniform-height,
+        calc((var(--space-4) - 2px) * 2 + 1.25rem + var(--space-0) + 1rem)
+      );
+      max-height: var(
+        --nuxy-list-item-uniform-height,
+        calc((var(--space-4) - 2px) * 2 + 1.25rem + var(--space-0) + 1rem)
+      );
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .indicator {

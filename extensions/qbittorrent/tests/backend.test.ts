@@ -92,6 +92,9 @@ describe('qbittorrent backend', () => {
       clipboard: {
         writeText: vi.fn().mockResolvedValue(undefined),
       },
+      shell: {
+        open: vi.fn().mockResolvedValue(undefined),
+      },
       settings: {
         read: vi.fn().mockImplementation(async (key: string) => {
           if (key === 'host') return 'http://localhost:8080'
@@ -307,6 +310,18 @@ describe('qbittorrent backend', () => {
     it('writes the save path to the clipboard', async () => {
       await handlers.copySavePath({ savePath: '/downloads' })
       expect(core.clipboard.writeText).toHaveBeenCalledWith('/downloads')
+    })
+  })
+
+  describe('openSavePath', () => {
+    it('opens the save path via the shell', async () => {
+      await handlers.openSavePath({ savePath: '/downloads/ubuntu' })
+      expect(core.shell.open).toHaveBeenCalledWith('/downloads/ubuntu')
+    })
+
+    it('rejects an empty save path', async () => {
+      await expect(handlers.openSavePath({ savePath: '' })).rejects.toThrow('No save path to open')
+      expect(core.shell.open).not.toHaveBeenCalled()
     })
   })
 

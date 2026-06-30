@@ -10,6 +10,8 @@ import {
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { QbittorrentController, isPausedState } from './controller.ts'
 import { formatBytes, formatEta, formatProgress, formatSpeed } from './utils/format.ts'
+import { isCompletedTorrent, resolveDisplayState } from './utils/state-label.ts'
+import { formatItemMeta } from './utils/format-meta.ts'
 import type { TorrentItem, TorrentPendingAction } from './types.ts'
 
 const TAG = 'nuxy-tool-qbittorrent'
@@ -33,6 +35,11 @@ export class NuxyToolQbittorrentElement extends LitElement implements NuxyToolEl
       overflow: auto;
     }
 
+    .nuxy-qbit-panel--centered {
+      justify-content: center;
+      align-items: center;
+    }
+
     .nuxy-qbit-progress {
       margin-top: var(--space-1);
     }
@@ -42,6 +49,9 @@ export class NuxyToolQbittorrentElement extends LitElement implements NuxyToolEl
       flex-direction: column;
       gap: var(--space-3);
       padding: var(--space-5);
+      text-align: center;
+      align-items: center;
+      max-width: 420px;
     }
   `
 
@@ -94,23 +104,40 @@ export class NuxyToolQbittorrentElement extends LitElement implements NuxyToolEl
   render(): TemplateResult | typeof nothing {
     if (!this.controller) return nothing
     const t = this.controller.t.t
-    const { error, query } = this.controller.state
+    const { error, query, loading, connectionState, actionError, torrents } = this.controller.state
 
     if (this.controller.isAddMode) {
-      return html`<div class="nuxy-qbit-panel">${this.renderAddPanel(t)}</div>`
+      return html`<div class="nuxy-qbit-panel nuxy-qbit-panel--centered">
+        ${this.renderAddPanel(t)}
+      </div>`
+    }
+
+    if (loading && torrents.length === 0) {
+      return html`
+        <div class="nuxy-qbit-panel nuxy-qbit-panel--centered">
+          <nuxy-empty-state
+            message=${t('loading.message')}
+            hint=${t('loading.hint')}
+          ></nuxy-empty-state>
+        </div>
+      `
     }
 
     if (error) {
-      return html`<div class="nuxy-qbit-panel">
+      const showHint = connectionState && connectionState !== 'error'
+      return html`<div class="nuxy-qbit-panel nuxy-qbit-panel--centered">
         <nuxy-alert variant="error">${error}</nuxy-alert>
+        ${showHint
+          ? html`<nuxy-text size="xs" variant="muted">${t('error.loadFailedHint')}</nuxy-text>`
+          : nothing}
       </div>`
     }
 
     const items = this.controller.filteredTorrents
     if (items.length === 0) {
-      const hasAny = this.controller.state.torrents.length > 0
+      const hasAny = torrents.length > 0
       return html`
-        <div class="nuxy-qbit-panel">
+        <div class="nuxy-qbit-panel nuxy-qbit-panel--centered">
           <nuxy-empty-state
             message=${query && hasAny ? t('empty.noMatching') : t('empty.message')}
             hint=${query && hasAny ? '' : t('empty.hint')}
@@ -119,13 +146,20 @@ export class NuxyToolQbittorrentElement extends LitElement implements NuxyToolEl
       `
     }
 
-    const { selectedIndex, copiedHash } = this.controller.state
+    const { selectedIndex, copiedHash, copiedKind } = this.controller.state
 
     return html`
       <div class="nuxy-qbit-panel">
+        ${actionError ? html`<nuxy-alert variant="error">${actionError}</nuxy-alert>` : nothing}
         <nuxy-list active-index=${selectedIndex}>
           ${items.map((item, idx) =>
-            this.renderItem(item, idx, idx === selectedIndex, copiedHash === item.hash, t)
+            this.renderItem(
+              item,
+              idx,
+              idx === selectedIndex,
+              copiedHash === item.hash ? copiedKind : null,
+              t
+            )
           )}
         </nuxy-list>
       </div>
@@ -148,7 +182,7 @@ export class NuxyToolQbittorrentElement extends LitElement implements NuxyToolEl
   }
 
   private statusLabel(item: TorrentItem, t: (key: string) => string): string {
-    const key = `state.${item.state}`
+    const key = `state.${resolveDisplayState(item)}`
     const translated = t(key)
     return translated === key ? item.state : translated
   }
@@ -163,7 +197,7 @@ export class NuxyToolQbittorrentElement extends LitElement implements NuxyToolEl
     item: TorrentItem,
     index: number,
     active: boolean,
-    copied: boolean,
+    copiedKind: 'magnet' | 'savePath' | null,
     t: (key: string) => string
   ): TemplateResult {
     const pending = this.controller?.getPendingAction(item.hash) ?? null
@@ -184,16 +218,21 @@ export class NuxyToolQbittorrentElement extends LitElement implements NuxyToolEl
       `
     }
 
-    const paused = isPausedState(item.state)
-    const meta = paused
+    const paused = isPausedState(item.state) || isCompletedTorrent(item)
+    const statusLine = paused
       ? `${this.statusLabel(item, t)} — ${formatProgress(item.progress)} of ${formatBytes(item.size)}`
       : `${this.statusLabel(item, t)} — ${formatProgress(item.progress)} · ${formatSpeed(item.dlspeed)} ↓ ${formatSpeed(item.upspeed)} ↑ · ${formatEta(item.eta)}`
+    const meta = formatItemMeta(item, statusLine)
 
     return html`
       <nuxy-list-item ?active=${active} @click=${() => this.controller?.setSelectedIndex(index)}>
         <nuxy-list-item-body>
-          <nuxy-list-item-text ?active=${active} variant=${copied ? 'success' : 'default'}>
-            ${copied ? t('item.copiedMagnet') : item.name}
+          <nuxy-list-item-text ?active=${active} variant=${copiedKind ? 'success' : 'default'}>
+            ${copiedKind === 'magnet'
+              ? t('item.copiedMagnet')
+              : copiedKind === 'savePath'
+                ? t('item.copiedSavePath')
+                : item.name}
           </nuxy-list-item-text>
           <nuxy-list-item-meta>${meta}</nuxy-list-item-meta>
           <nuxy-progress-bar

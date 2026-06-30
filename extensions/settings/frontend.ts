@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing, customElement, property, ref } from '@n
 import type { NuxyToolElement } from '@nuxyorg/core'
 import { SettingsController } from './controller.ts'
 import { handleSettingsInputKeydown, handleListAddInputKeydown } from './utils/input-keydown.ts'
-import { isBooleanRow } from './utils/settings-options.ts'
+import { isBooleanRow, resolveExtInputType } from './utils/settings-options.ts'
 import { resolvePriorityListItems } from './utils/priority-list.ts'
 import type { AnyRow, RenderSection } from './types.ts'
 
@@ -331,7 +331,7 @@ export class NuxyToolSettingsElement extends LitElement implements NuxyToolEleme
               : row.isExtension
                 ? html`
                     <nuxy-input
-                      type=${row.type === 'color' ? 'color' : 'text'}
+                      type=${resolveExtInputType(row)}
                       value=${currentValue !== undefined ? String(currentValue) : ''}
                       placeholder=${('placeholder' in row ? row.placeholder : '') || ''}
                       class=${row.type === 'color'

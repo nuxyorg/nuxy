@@ -14,6 +14,7 @@ export class NuxyTwoPanelElement extends LitElement {
 
     ::slotted([slot='left']) {
       flex-shrink: 0;
+      min-width: 0;
       overflow-x: hidden;
       overflow-y: overlay;
     }

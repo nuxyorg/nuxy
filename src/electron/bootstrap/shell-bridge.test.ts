@@ -78,6 +78,24 @@ describe('createShellBridge', () => {
     expect(handler).toHaveBeenCalledOnce()
   })
 
+  it('includes display groups with hints in footer snapshot', () => {
+    const bridge = createShellBridge()
+    bridge.registerShellActions(() => [
+      {
+        label: 'Navigate',
+        hint: '↑↓',
+        children: [
+          { key: 'ArrowUp', label: '', handler: vi.fn() },
+          { key: 'ArrowDown', label: '', handler: vi.fn() },
+        ],
+      },
+    ])
+    const hints = bridge.getSnapshot().keyActionHints
+    expect(hints).toHaveLength(1)
+    expect(hints[0]?.label).toBe('Navigate')
+    expect(hints[0]?.handler).toBeUndefined()
+  })
+
   it('deferred unregisterShellActions does not clear a newer registration', async () => {
     const bridge = createShellBridge()
     const oldHandler = vi.fn()

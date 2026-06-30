@@ -31,7 +31,7 @@ export function registerIpc() {
         return handleKernelChannel(ch, pl)
       }
 
-      return invokeWorker(id, ch, pl)
+      return invokeWorker(id, ch, pl, options?.callerExtId)
     }
   )
 

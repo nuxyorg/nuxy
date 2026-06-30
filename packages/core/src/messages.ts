@@ -16,4 +16,11 @@ export type WorkerToHostMessage =
 /** Messages sent from the host to the extension worker. */
 export type HostToWorkerMessage =
   | { kind: 'reply'; type: 'host:reply'; id: string; result?: unknown; error?: string }
-  | { kind: 'call'; type?: undefined; id: string; channel: string; payload?: unknown }
+  | {
+      kind: 'call'
+      type?: undefined
+      id: string
+      channel: string
+      payload?: unknown
+      callerExtId?: string
+    }

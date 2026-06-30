@@ -1,4 +1,5 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 import type { ChatMessage, OllamaConfig } from './types.ts'
 import { invoke } from './utils/ipc.ts'
@@ -43,9 +44,18 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
     this.bindKeyboard()
 
     Promise.all([
-      invoke<OllamaConfig>('getConfig').catch(() => null),
-      invoke<ChatMessage[]>('history:load').catch(() => [] as ChatMessage[]),
-      invoke<string[]>('models').catch(() => [] as string[]),
+      invoke<OllamaConfig>('getConfig').catch((err) => {
+        logCaughtError(EXT_ID, err, 'getConfig')
+        return null
+      }),
+      invoke<ChatMessage[]>('history:load').catch((err) => {
+        logCaughtError(EXT_ID, err, 'history:load')
+        return [] as ChatMessage[]
+      }),
+      invoke<string[]>('models').catch((err) => {
+        logCaughtError(EXT_ID, err, 'models')
+        return [] as string[]
+      }),
     ]).then(([cfg, history, models]) => {
       const list = Array.isArray(models) ? models : []
       const savedModel = cfg?.model ?? ''
@@ -88,7 +98,10 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
    * the currently selected one no longer exists.
    */
   async refreshModels(): Promise<void> {
-    const list = await invoke<string[]>('models').catch(() => [] as string[])
+    const list = await invoke<string[]>('models').catch((err) => {
+      logCaughtError(EXT_ID, err, 'models')
+      return [] as string[]
+    })
     const models = Array.isArray(list) ? list : []
     const selectedModel = models.includes(this.state.selectedModel)
       ? this.state.selectedModel
@@ -151,7 +164,9 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
   handleCopyMessage(index: number): void {
     const msg = this.state.messages[index]
     if (!msg?.content) return
-    navigator.clipboard.writeText(msg.content).catch(() => {})
+    navigator.clipboard
+      .writeText(msg.content)
+      .catch((err) => logCaughtError(EXT_ID, err, 'clipboard.writeText'))
   }
 
   private async streamChat(next: ChatMessage[]): Promise<void> {
@@ -220,7 +235,9 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
         { role: 'assistant', content: assistantContent, model },
       ]
       this.store.setState({ messages: finalMessages })
-      invoke('history:save', { messages: finalMessages }).catch(() => {})
+      invoke('history:save', { messages: finalMessages }).catch((err) =>
+        logCaughtError(EXT_ID, err, 'history:save')
+      )
     } catch (err) {
       const e = err as Error
       if (e?.name === 'AbortError') {
@@ -231,7 +248,9 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
             { role: 'assistant', content: assistantContent, model },
           ]
           this.store.setState({ messages: partial })
-          invoke('history:save', { messages: partial }).catch(() => {})
+          invoke('history:save', { messages: partial }).catch((err) =>
+            logCaughtError(EXT_ID, err, 'history:save')
+          )
         } else {
           this.store.setState({ messages: next })
         }
@@ -269,7 +288,7 @@ export class OllamaController extends BaseExtensionController<OllamaState> {
 
   handleClearChat(): void {
     this.store.setState({ messages: [] })
-    invoke('history:clear').catch(() => {})
+    invoke('history:clear').catch((err) => logCaughtError(EXT_ID, err, 'history:clear'))
   }
 
   getKeyActions(): ShellAction[] {

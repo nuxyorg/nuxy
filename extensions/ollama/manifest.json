@@ -18,7 +18,10 @@
     "caller": false
   },
   "ipc": {
-    "public": ["models"]
+    "public": ["models"],
+    "samples": {
+      "models": {}
+    }
   },
   "locales": {
     "default": "en",

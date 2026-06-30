@@ -40,8 +40,7 @@
     "multiSelectHint": "Seçilenleri silmek için Ctrl+K'yı açın"
   },
   "actions": {
-    "previous": "Önceki",
-    "next": "Sonraki",
+    "navigate": "Gezin",
     "pause": "Duraklat",
     "resume": "Devam ettir",
     "cancel": "İptal et",

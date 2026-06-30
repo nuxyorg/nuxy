@@ -29,6 +29,12 @@
     "download": "Download",
     "openTab": "Open"
   },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "fetchFailed": "Could not load this video. The link may be invalid, private, or unavailable.",
+    "noFormats": "No downloadable formats were found for this video.",
+    "downloadFailed": "Could not start the download. Please try again."
+  },
   "install": {
     "notInstalled": "yt-dlp is not installed.",
     "viaPip": "Install via pip",
@@ -40,6 +46,11 @@
       "label": "Download Location",
       "placeholder": "~/Downloads",
       "description": "Folder where downloaded videos are saved"
+    },
+    "extraArgs": {
+      "label": "Extra yt-dlp arguments",
+      "placeholder": "-4 --no-playlist",
+      "description": "Additional command-line flags passed to yt-dlp on every download (e.g. -4 to force IPv4). Quote values that contain spaces."
     }
   }
 }

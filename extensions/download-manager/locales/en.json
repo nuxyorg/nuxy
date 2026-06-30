@@ -40,8 +40,7 @@
     "multiSelectHint": "Open Ctrl+K to delete selected"
   },
   "actions": {
-    "previous": "Previous",
-    "next": "Next",
+    "navigate": "Navigate",
     "pause": "Pause",
     "resume": "Resume",
     "cancel": "Cancel",

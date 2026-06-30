@@ -1,4 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import type { Provider, Tool, ProviderState, ListItem, UsageStats } from '../types.ts'
 import {
   buildOmnibarSections,
@@ -272,9 +273,10 @@ export class ProviderController implements ReactiveController {
         }
         this.recompute(tools, query, recentToolIds, usageStats)
       })
-      .catch(() => {
+      .catch((err) => {
         clearTimeout(loadingTimer)
         if (generation !== currentGeneration()) return
+        logCaughtError('com.nuxy.shell', err, `provider:${provider.id}`)
         this._providerStates = {
           ...this._providerStates,
           [provider.id]: { loading: false, items: [], type, name },

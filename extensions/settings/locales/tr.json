@@ -82,10 +82,10 @@
     "placeholder": "—"
   },
   "actions": {
-    "previousSetting": "Önceki ayar",
-    "nextSetting": "Sonraki ayar",
+    "navigate": "Gezin",
     "openSetting": "Ayarı aç",
-    "closeSetting": "Ayarı kapat"
+    "closeSetting": "Ayarı kapat",
+    "reorderPriority": "Sırala"
   },
   "kbdScheme": {
     "auto": "Otomatik (sistemi algıla)",

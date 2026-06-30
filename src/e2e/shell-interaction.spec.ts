@@ -31,9 +31,16 @@ test.describe('omnibar input', () => {
 
   test('typing a non-matching query shows no tool options', async ({ appPage }) => {
     await typeInOmnibar(appPage, 'zzznomatch')
-    await appPage.waitForSelector('.nuxy-shell-results-panel', { timeout: 1000 }).catch(() => {})
+    await appPage
+      .waitForSelector('.nuxy-shell-results-panel', { timeout: 1000 })
+      .catch((err: unknown) =>
+        console.warn('[e2e] optional waitForSelector .nuxy-shell-results-panel failed', err)
+      )
     const resultsList = appPage.locator('.nuxy-shell-results-panel')
-    const listVisible = await resultsList.isVisible().catch(() => false)
+    const listVisible = await resultsList.isVisible().catch((err: unknown) => {
+      console.warn('[e2e] results panel visibility check failed', err)
+      return false
+    })
     if (listVisible) {
       const toolSection = resultsList.locator('.nuxy-shell-results-section').filter({
         has: appPage.locator('nuxy-section-header[label="Tools"]'),

@@ -12,7 +12,23 @@
     "caller": true
   },
   "ipc": {
-    "public": ["registerExternal", "updateExternal"]
+    "public": ["registerExternal", "updateExternal"],
+    "samples": {
+      "registerExternal": {
+        "extensionId": "com.nuxy.video-downloader",
+        "jobId": "job-123",
+        "url": "https://example.com/video.mp4",
+        "fileName": "video.mp4",
+        "totalBytes": 1048576
+      },
+      "updateExternal": {
+        "extensionId": "com.nuxy.video-downloader",
+        "jobId": "job-123",
+        "status": "downloading",
+        "bytesDownloaded": 524288,
+        "speedBps": 102400
+      }
+    }
   },
   "behavior": {
     "onComplete": "stay"

@@ -81,4 +81,20 @@ describe('buildShellApi', () => {
     handle.kill('SIGTERM')
     expect(fakeProc.kill).toHaveBeenCalledWith('SIGTERM')
   })
+
+  it('spawn forwards process errors to onClose instead of crashing the worker', () => {
+    const fakeProc = new EventEmitter() as EventEmitter & { kill: ReturnType<typeof vi.fn> }
+    ;(fakeProc as unknown as { stdout: EventEmitter }).stdout = new EventEmitter()
+    fakeProc.kill = vi.fn()
+    spawnMock.mockReturnValue(fakeProc)
+
+    const handle = api.spawn('missing-binary', [])
+    const closeHandler = vi.fn()
+    handle.onClose(closeHandler)
+    fakeProc.emit(
+      'error',
+      Object.assign(new Error('spawn missing-binary ENOENT'), { code: 'ENOENT' })
+    )
+    expect(closeHandler).toHaveBeenCalledWith(1)
+  })
 })

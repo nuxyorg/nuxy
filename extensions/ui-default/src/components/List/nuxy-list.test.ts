@@ -104,4 +104,16 @@ describe('nuxy-list indicator', () => {
     expect(indicator!.classList.contains('visible')).toBe(true)
     expect(indicator!.style.transform).toBe(`translateY(${items[1].offsetTop}px)`)
   })
+
+  it('reflects uniform-items attribute', async () => {
+    const list = document.createElement('nuxy-list') as NuxyListElement
+    list.uniformItems = true
+    list.activeIndex = 0
+    list.appendChild(document.createElement('nuxy-list-item'))
+    document.body.appendChild(list)
+    await list.updateComplete
+
+    expect(list.uniformItems).toBe(true)
+    expect(list.hasAttribute('uniform-items')).toBe(true)
+  })
 })

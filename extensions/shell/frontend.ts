@@ -16,6 +16,7 @@ import './nuxy-shell-resize-handles.ts'
 import './nuxy-shell-omni-bar.ts'
 import './nuxy-command-palette.ts'
 import type { ShellAction } from '@nuxyorg/core'
+import { isShellActionClickable } from '@nuxyorg/core'
 import type { HoldProgress, ProviderState } from './types.ts'
 import type { OmnibarSection } from './utils/list-results.ts'
 
@@ -607,12 +608,18 @@ export class NuxyShellViewElement extends LitElement {
                     ></nuxy-portal-host>`
                   : nothing}
                 ${activeTool
-                  ? keyActionHints.map(
-                      (a, i) => html`
+                  ? keyActionHints.map((a, i) => {
+                      const clickable = isShellActionClickable(a)
+                      return html`
                         ${i > 0 || footerPortal
                           ? html`<nuxy-shortcut-sep></nuxy-shortcut-sep>`
                           : nothing}
-                        <span class="nuxy-shortcut-action" @click=${() => a.handler()}>
+                        <span
+                          class="nuxy-shortcut-action${clickable
+                            ? ''
+                            : ' nuxy-shortcut-action--display'}"
+                          @click=${clickable ? () => a.handler?.() : undefined}
+                        >
                           ${(Array.isArray(a.hint) ? a.hint : [a.hint]).map(
                             (k) => html`
                               <nuxy-kbd
@@ -626,7 +633,7 @@ export class NuxyShellViewElement extends LitElement {
                           <span>${a.label}</span>
                         </span>
                       `
-                    )
+                    })
                   : nothing}
               `
             : extensionSummary

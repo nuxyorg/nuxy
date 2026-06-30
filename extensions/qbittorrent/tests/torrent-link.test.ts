@@ -39,4 +39,20 @@ describe('isTorrentLink', () => {
   it('trims surrounding whitespace before checking', () => {
     expect(isTorrentLink('  magnet:?xt=urn:btih:abc123  ')).toBe(true)
   })
+
+  it('is case-insensitive for the .torrent file extension', () => {
+    expect(isTorrentLink('https://example.com/file.TORRENT')).toBe(true)
+  })
+
+  it('returns true for a .torrent URL with a port in the host', () => {
+    expect(isTorrentLink('http://example.com:8080/file.torrent')).toBe(true)
+  })
+
+  it('returns false for a magnet link missing the required "?" separator', () => {
+    expect(isTorrentLink('magnet:xt=urn:btih:abc123')).toBe(false)
+  })
+
+  it('returns false for a non-http(s) scheme', () => {
+    expect(isTorrentLink('ftp://example.com/file.torrent')).toBe(false)
+  })
 })

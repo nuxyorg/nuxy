@@ -1,4 +1,4 @@
-import type { ExtensionRuntimeMeta, LoadedExtension } from '@nuxyorg/core'
+import type { ExtensionIpcManifest, ExtensionRuntimeMeta, LoadedExtension } from '@nuxyorg/core'
 import fs from 'fs'
 import path from 'path'
 import electron from 'electron'
@@ -129,10 +129,12 @@ export function isPrivateChannel(extId: string, channel: string): boolean {
  */
 export function validateIpcSync(
   extId: string,
-  manifestPublic: string[] | undefined,
+  manifestIpc: ExtensionIpcManifest | undefined,
   runtime: Pick<ExtensionRuntimeMeta, 'publicIpcChannels'>
 ): IpcSyncValidationResult {
-  const declared = new Set(manifestPublic ?? [])
+  const declaredPublic = manifestIpc?.public ?? []
+  const samples = manifestIpc?.samples ?? {}
+  const declared = new Set(declaredPublic)
   const registered = new Set(runtime.publicIpcChannels)
   const errors: string[] = []
   const warnings: string[] = []
@@ -143,11 +145,22 @@ export function validateIpcSync(
     }
   }
 
-  for (const channel of declared) {
+  for (const channel of declaredPublic) {
     if (!registered.has(channel)) {
       warnings.push(
         `Manifest declares public channel "${channel}" with no registered public handler`
       )
+    }
+    if (!(channel in samples)) {
+      warnings.push(
+        `Public channel "${channel}" has no ipc.samples entry — add an example payload for IPC Explorer and cross-extension callers`
+      )
+    }
+  }
+
+  for (const channel of Object.keys(samples)) {
+    if (!declared.has(channel)) {
+      warnings.push(`ipc.samples declares "${channel}" which is not listed in ipc.public`)
     }
   }
 

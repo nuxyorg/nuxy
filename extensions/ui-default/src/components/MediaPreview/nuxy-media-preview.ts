@@ -1,4 +1,12 @@
-import { LitElement, html, css, nothing, customElement, type TemplateResult } from '@nuxyorg/core'
+import {
+  LitElement,
+  html,
+  css,
+  nothing,
+  customElement,
+  property,
+  type TemplateResult,
+} from '@nuxyorg/core'
 
 function fmtDuration(sec: number): string {
   const hrs = Math.floor(sec / 3600)
@@ -160,6 +168,23 @@ export class NuxyMediaPreviewElement extends LitElement {
     }
   `
 
+  @property({ type: String })
+  declare thumbnail: string
+  @property({ type: String })
+  declare title: string
+  @property({ type: String })
+  declare uploader: string
+  @property({ type: String })
+  declare duration: string
+  @property({ type: String })
+  declare progress: string
+  @property({ type: String, attribute: 'footer-text' })
+  declare footerText: string
+  @property({ type: String, reflect: true })
+  declare size: string
+  @property({ type: String, reflect: true })
+  declare layout: string
+
   static get observedAttributes(): string[] {
     // Reading `super.observedAttributes` triggers Lit's `finalize()` step,
     // which turns `static styles` into adopted stylesheets. Skipping it
@@ -179,24 +204,24 @@ export class NuxyMediaPreviewElement extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback()
-    this.syncReflectedAttrs()
+    if (!this.size) this.size = 'md'
+    if (!this.layout) this.layout = 'horizontal'
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null): void {
     super.attributeChangedCallback(name, oldVal, newVal)
-    if (this.isConnected) this.syncReflectedAttrs()
-  }
-
-  private syncReflectedAttrs(): void {
-    // Ensure size and layout attributes exist for CSS :host([attr]) selectors
-    if (!this.getAttribute('size')) this.setAttribute('size', 'md')
-    if (!this.getAttribute('layout')) this.setAttribute('layout', 'horizontal')
   }
 
   private renderThumbnail(thumbnail: string, duration: string): TemplateResult {
     return html`
       <div class="nuxy-media-preview__thumbnail-container">
-        <img src=${thumbnail} class="nuxy-media-preview__thumbnail" alt="" />
+        <img
+          src=${thumbnail}
+          class="nuxy-media-preview__thumbnail"
+          alt=""
+          referrerpolicy="no-referrer"
+          loading="lazy"
+        />
         ${duration ? html`<span class="nuxy-media-preview__duration">${duration}</span>` : nothing}
       </div>
     `
@@ -216,12 +241,12 @@ export class NuxyMediaPreviewElement extends LitElement {
   }
 
   render(): TemplateResult {
-    const thumbnail = this.getAttribute('thumbnail')
-    const title = this.getAttribute('title') ?? ''
-    const uploader = this.getAttribute('uploader')
-    const duration = formatDurationAttr(this.getAttribute('duration'))
-    const progress = parseProgress(this.getAttribute('progress'))
-    const footerText = this.getAttribute('footer-text')
+    const thumbnail = (this.thumbnail || this.getAttribute('thumbnail') || '').trim()
+    const title = this.title || this.getAttribute('title') || ''
+    const uploader = this.uploader || this.getAttribute('uploader') || ''
+    const duration = formatDurationAttr(this.duration || this.getAttribute('duration'))
+    const progress = parseProgress(this.progress || this.getAttribute('progress'))
+    const footerText = this.footerText || this.getAttribute('footer-text') || ''
 
     // Collect slotted content — badge and extras pass through via slots
     const badge =

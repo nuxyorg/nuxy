@@ -28,6 +28,15 @@ export class NuxyShortcutHintElement extends LitElement {
       opacity: 0.75;
       background: var(--hover);
     }
+
+    ::slotted(.nuxy-shortcut-action--display) {
+      cursor: default;
+    }
+
+    ::slotted(.nuxy-shortcut-action--display):hover {
+      opacity: 1;
+      background: transparent;
+    }
   `
 
   render() {

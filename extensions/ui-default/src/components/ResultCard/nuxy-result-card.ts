@@ -5,6 +5,7 @@ import {
   nothing,
   customElement,
   property,
+  logCaughtError,
   type TemplateResult,
 } from '@nuxyorg/core'
 import '../Tag/nuxy-tag.ts'
@@ -97,7 +98,9 @@ export class NuxyResultCardElement extends LitElement {
   private onClick = (): void => {
     const { value, itemId } = this
     if (!value || !itemId) return
-    navigator.clipboard.writeText(value).catch(() => {})
+    navigator.clipboard
+      .writeText(value)
+      .catch((err) => logCaughtError('nuxy-result-card', err, 'clipboard.writeText'))
     this.dispatchEvent(
       new CustomEvent('nuxy-result-card-copy', {
         detail: { id: itemId },

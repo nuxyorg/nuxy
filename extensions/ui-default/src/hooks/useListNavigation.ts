@@ -1,6 +1,7 @@
 import { createStore } from '@nuxyorg/extension-sdk'
 import { useToolKeyActions, type KeyAction } from './useToolKeyActions'
 import { useTranslation } from './useTranslation'
+import { pairedKeyAction } from './paired-key-action'
 
 export interface UseListNavigationOptions<T> {
   onEnter?: (item: T, index: number) => void
@@ -57,14 +58,12 @@ export function useListNavigation<T>(
   }
 
   useToolKeyActions([
-    {
-      key: 'ArrowUp',
+    pairedKeyAction({
       label: t('keyboard.navigate'),
-      hint: '↑↓',
-      handler: moveUp,
       allowRepeat: true,
-    },
-    { key: 'ArrowDown', label: '', handler: moveDown, allowRepeat: true },
+      negative: moveUp,
+      positive: moveDown,
+    }),
     ...(onEnter
       ? [{ key: 'Enter', label: enterLabel, hint: enterHint, handler: handleEnter }]
       : []),

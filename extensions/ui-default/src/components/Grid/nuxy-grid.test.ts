@@ -107,6 +107,24 @@ describe('nuxy-grid indicator', () => {
     )
   })
 
+  it('uses auto-fill minmax when min-cell-width is set', async () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    render(
+      html`
+        <nuxy-grid min-cell-width="150" gap="12">
+          <nuxy-grid-item>A</nuxy-grid-item>
+        </nuxy-grid>
+      `,
+      container
+    )
+
+    const grid = container.querySelector('nuxy-grid') as NuxyGridElement
+    await grid.updateComplete
+    expect(grid.style.gridTemplateColumns).toBe('repeat(auto-fill, minmax(min(150px, 100%), 1fr))')
+  })
+
   it('hides the indicator when active-index is -1', async () => {
     const container = document.createElement('div')
     document.body.appendChild(container)

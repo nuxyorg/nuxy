@@ -1,4 +1,5 @@
 import type { ThemeDefinition, IpcResult } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 
 const BOOTSTRAP_ID = 'com.nuxy.shell'
@@ -33,7 +34,10 @@ async function bootstrapNuxy(): Promise<void> {
   showLoading('Loading Nuxy…')
 
   try {
-    const configRes = await core?.ipc?.invoke('kernel', 'getConfig', {}).catch(() => null)
+    const configRes = await core?.ipc?.invoke('kernel', 'getConfig', {}).catch((err) => {
+      logCaughtError(BOOTSTRAP_ID, err, 'getConfig')
+      return null
+    })
     const config = configRes as
       | IpcResult<{
           zoom?: string
@@ -50,7 +54,10 @@ async function bootstrapNuxy(): Promise<void> {
     } else {
       const defaultRes = await core?.ipc
         ?.invoke('kernel', 'getDefaultThemeName', {})
-        .catch(() => null)
+        .catch((err) => {
+          logCaughtError(BOOTSTRAP_ID, err, 'getDefaultThemeName')
+          return null
+        })
       const defaultTheme = defaultRes as { success: boolean; data?: string } | null
       themeName = defaultTheme?.success && defaultTheme.data ? defaultTheme.data : 'dark'
     }
@@ -137,9 +144,10 @@ async function bootstrapNuxy(): Promise<void> {
 
   const handleWindowShow = () => {
     void (async () => {
-      const configRes = (await core?.ipc
-        ?.invoke('kernel', 'getConfig', {})
-        .catch(() => null)) as IpcResult<{ backgroundBehavior?: string }> | null
+      const configRes = (await core?.ipc?.invoke('kernel', 'getConfig', {}).catch((err) => {
+        logCaughtError(BOOTSTRAP_ID, err, 'getConfig')
+        return null
+      })) as IpcResult<{ backgroundBehavior?: string }> | null
       const resume = configRes?.success && configRes.data?.backgroundBehavior === 'resume-session'
       if (resume) {
         window.dispatchEvent(new Event('focus'))

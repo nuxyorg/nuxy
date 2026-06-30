@@ -1,6 +1,9 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import type { ClipboardItem } from './types.ts'
+import { invoke } from './utils/ipc.ts'
 import { getItemType } from './utils/item-type.ts'
 
 const EXT_ID = 'com.nuxy.clipboard'
@@ -36,7 +39,10 @@ export class ClipboardController extends BaseExtensionController<ClipboardState>
   }
 
   connect(): void {
-    if (!window.core?.ipc) return
+    if (!window.core?.ipc) {
+      logCaughtError(EXT_ID, new Error('window.core.ipc is not available'))
+      return
+    }
     this.syncSearchPlaceholder()
     this.loadHistory()
     this.startRefreshTimer(DEFAULT_REFRESH_INTERVAL_MS)
@@ -54,16 +60,13 @@ export class ClipboardController extends BaseExtensionController<ClipboardState>
    * so just doubles work without surfacing new clips any sooner.
    */
   private syncRefreshIntervalFromBackend(): void {
-    if (!window.core?.ipc?.invoke) return
-    window.core.ipc
-      .invoke(EXT_ID, 'getPollIntervalMs')
-      .then((res) => {
-        const r = res as { success: boolean; data?: number } | null
-        if (r?.success && typeof r.data === 'number' && r.data > 0) {
-          this.startRefreshTimer(Math.max(r.data, DEFAULT_REFRESH_INTERVAL_MS))
+    invoke<number>('getPollIntervalMs')
+      .then((intervalMs) => {
+        if (typeof intervalMs === 'number' && intervalMs > 0) {
+          this.startRefreshTimer(Math.max(intervalMs, DEFAULT_REFRESH_INTERVAL_MS))
         }
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'getPollIntervalMs'))
   }
 
   disconnect(): void {
@@ -157,13 +160,8 @@ export class ClipboardController extends BaseExtensionController<ClipboardState>
   }
 
   private loadHistory(): void {
-    if (!window.core?.ipc?.invoke) return
-    window.core.ipc
-      .invoke(EXT_ID, 'getHistory')
-      .then((res) => {
-        const r = res as { success: boolean; data?: ClipboardItem[] } | null
-        if (!r?.success) return
-        const newData = r.data ?? []
+    invoke<ClipboardItem[]>('getHistory')
+      .then((newData) => {
         const prev = this.state.items
         const unchanged =
           prev.length === newData.length &&
@@ -175,19 +173,19 @@ export class ClipboardController extends BaseExtensionController<ClipboardState>
           )
         if (!unchanged) this.store.setState({ items: newData })
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'getHistory'))
   }
 
   private ipcMutate(channel: string, payload: string | undefined): Promise<ClipboardItem[]> {
-    if (!window.core?.ipc?.invoke) return Promise.resolve(this.state.items)
-    return window.core.ipc
-      .invoke(EXT_ID, channel, payload)
-      .then((res) => {
-        const r = res as { success: boolean; data?: ClipboardItem[] } | null
-        if (r?.success) this.store.setState({ items: r.data ?? [] })
-        return r?.data ?? []
+    return invoke<ClipboardItem[]>(channel, payload)
+      .then((items) => {
+        this.store.setState({ items })
+        return items
       })
-      .catch(() => [])
+      .catch((err) => {
+        logCaughtError(EXT_ID, err, channel)
+        return this.state.items
+      })
   }
 
   private resetSelectedItemMeta(): void {
@@ -206,14 +204,13 @@ export class ClipboardController extends BaseExtensionController<ClipboardState>
       img.src = item.image
     }
 
-    if (getItemType(item) === 'file' && window.core?.ipc?.invoke) {
-      window.core.ipc
-        .invoke(EXT_ID, 'checkFile', item.text?.trim())
-        .then((res) => {
-          const r = res as { success: boolean; data?: boolean } | null
-          if (r?.success) this.store.setState({ fileExists: !!r.data })
+    if (getItemType(item) === 'file') {
+      invoke<boolean>('checkFile', item.text?.trim())
+        .then((exists) => this.store.setState({ fileExists: !!exists }))
+        .catch((err) => {
+          logCaughtError(EXT_ID, err, 'checkFile')
+          this.store.setState({ fileExists: false })
         })
-        .catch(() => this.store.setState({ fileExists: false }))
     }
   }
 
@@ -232,25 +229,18 @@ export class ClipboardController extends BaseExtensionController<ClipboardState>
     const selected = this.selectedItem
 
     return [
-      {
-        id: 'clipboard-navigate-up',
-        key: 'ArrowUp',
+      pairedKeyAction({
+        id: 'clipboard-navigate',
         label: t('actions.navigate'),
-        hint: '↑↓',
-        handler: () => {
+        negative: () => {
           if (filtered.length === 0) return
           this.setSelectedIndex((prev) => (prev <= 0 ? -1 : prev - 1))
         },
-      },
-      {
-        id: 'clipboard-navigate-down',
-        key: 'ArrowDown',
-        label: t('actions.nextItem'),
-        handler: () => {
+        positive: () => {
           if (filtered.length === 0) return
           this.setSelectedIndex((prev) => Math.min(prev + 1, filtered.length - 1))
         },
-      },
+      }),
       {
         id: 'clipboard-copy',
         key: 'Enter',

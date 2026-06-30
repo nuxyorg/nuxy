@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "name": "Stremio Arama",
+    "direction": "ltr"
+  },
+  "home": {
+    "favorites": "Favoriler",
+    "empty": {
+      "message": "Film ve dizi ara",
+      "hint": "Bir başlık yaz. Favorilere eklemek için Ctrl+F."
+    }
+  },
+  "search": {
+    "placeholder": "Film ve dizi ara",
+    "empty": {
+      "message": "Stremio eklentilerinde ara",
+      "hint": "Bir film veya dizi adı yaz."
+    },
+    "loading": {
+      "message": "Aranıyor...",
+      "hint": "Başlıklar çözümleniyor ve akışlar getiriliyor"
+    },
+    "noResults": {
+      "message": "Başlık bulunamadı.",
+      "hint": "Farklı bir arama terimi dene."
+    }
+  },
+  "episodes": {
+    "empty": "Bu dizi için bölüm bulunamadı.",
+    "season": "{season}. Sezon"
+  },
+  "streams": {
+    "empty": "Akış bulunamadı. Eklentinde bir debrid servisi yapılandır veya başka bir başlık dene.",
+    "unnamed": "Adsız akış"
+  },
+  "badge": {
+    "movie": "Film",
+    "series": "Dizi",
+    "torrent": "Torrent",
+    "debrid": "Debrid"
+  },
+  "item": {
+    "copied": "Kopyalandı!",
+    "selectPrompt": "Ayrıntıları görmek için bir öğe seç"
+  },
+  "details": {
+    "title": "Ayrıntılar",
+    "type": "Tür",
+    "year": "Yıl",
+    "id": "Kimlik",
+    "season": "Sezon",
+    "episode": "Bölüm",
+    "released": "Yayın",
+    "source": "Kaynak",
+    "quality": "Kalite",
+    "favorite": "Favori",
+    "yes": "Evet",
+    "no": "Hayır"
+  },
+  "actions": {
+    "navigate": "Gezin",
+    "open": "Aç",
+    "back": "Geri",
+    "favorite": "Favorile",
+    "unfavorite": "Favoriden çıkar",
+    "torrentClient": "qBittorrent ile ekle",
+    "copyMagnet": "Magnet kopyala",
+    "playStream": "Aç / Oynat",
+    "copyLink": "Bağlantıyı kopyala"
+  }
+}

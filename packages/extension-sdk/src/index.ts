@@ -27,6 +27,7 @@ export type {
   CoreContext,
   ExtensionManifest,
   ExtensionType,
+  IpcInvokeContext,
   IpcResult,
   HostChannelName,
   LoadedExtension,

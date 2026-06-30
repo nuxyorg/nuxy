@@ -1,5 +1,7 @@
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 import type { ShellAction } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import { invoke } from './utils/ipc.ts'
 import { parseAddDeeplink } from './utils/parse-deeplink.ts'
 import type { DownloadItem } from './types.ts'
@@ -137,7 +139,10 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
   }
 
   async refresh(): Promise<void> {
-    const items = await invoke<DownloadItem[]>('list').catch(() => null)
+    const items = await invoke<DownloadItem[]>('list').catch((err) => {
+      logCaughtError(EXT_ID, err, 'list')
+      return null
+    })
     if (!items) return
 
     const next: Partial<DownloadManagerState> = { items }
@@ -338,14 +343,12 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
         activeOn: () => multiSelectMode && checkedIds.size > 0,
         handler: () => void this.handleRemoveSelected(),
       },
-      {
-        id: 'dm-previous',
-        key: 'ArrowUp',
-        label: t('actions.previous'),
-        hint: '↑↓',
+      pairedKeyAction({
+        id: 'dm-navigate',
+        label: t('actions.navigate'),
         allowRepeat: true,
         activeOn: () => items.length > 0,
-        handler: () => {
+        negative: () => {
           this.setSelectedIndex((prev) => {
             if (prev <= 0) {
               window.core?.shell?.controlOmniBar('show')
@@ -354,14 +357,7 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
             return prev - 1
           })
         },
-      },
-      {
-        id: 'dm-next',
-        key: 'ArrowDown',
-        label: t('actions.next'),
-        allowRepeat: true,
-        activeOn: () => items.length > 0,
-        handler: () => {
+        positive: () => {
           this.setSelectedIndex((prev) => {
             if (prev + 1 < items.length) {
               if (prev === -1) window.core?.shell?.controlOmniBar('hide')
@@ -370,7 +366,7 @@ export class DownloadManagerController extends BaseExtensionController<DownloadM
             return prev
           })
         },
-      },
+      }),
       {
         id: 'dm-enter',
         key: 'Enter',

@@ -220,4 +220,24 @@ describe('KeyboardController', () => {
 
     input.remove()
   })
+
+  it('routes keyboard events to flattened display-group children', () => {
+    const up = vi.fn()
+    const down = vi.fn()
+    keyActions = [
+      {
+        label: 'Navigate',
+        hint: '↑↓',
+        children: [
+          { key: 'ArrowUp', label: '', handler: up },
+          { key: 'ArrowDown', label: '', handler: down },
+        ],
+      },
+    ]
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }))
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }))
+    expect(up).toHaveBeenCalledTimes(1)
+    expect(down).toHaveBeenCalledTimes(1)
+  })
 })

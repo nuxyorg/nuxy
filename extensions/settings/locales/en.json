@@ -82,12 +82,10 @@
     "placeholder": "—"
   },
   "actions": {
-    "previousSetting": "Previous setting",
-    "nextSetting": "Next setting",
+    "navigate": "Navigate",
     "openSetting": "Open setting",
     "closeSetting": "Close setting",
-    "movePriorityUp": "Move priority up",
-    "movePriorityDown": "Move priority down"
+    "reorderPriority": "Reorder"
   },
   "search": {
     "placeholder": "Filter settings"

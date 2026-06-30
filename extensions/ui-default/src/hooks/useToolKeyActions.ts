@@ -1,16 +1,7 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit'
+import type { ShellAction } from '@nuxyorg/core'
 
-export interface KeyAction {
-  key: string
-  modifiers?: ('ctrl' | 'shift' | 'alt' | 'meta')[]
-  label: string
-  hint?: string | string[]
-  activeOn?: () => boolean
-  handler: () => void
-  allowRepeat?: boolean
-  trigger?: 'press' | 'hold'
-  holdCancelToast?: string
-}
+export type KeyAction = ShellAction
 
 // Registry for Lit reactive controllers
 const activeControllers = new Set<KeyActionsController>()
@@ -31,12 +22,46 @@ function getCombinedActions(): KeyAction[] {
   return allActions
 }
 
+function hasComponentActions(): boolean {
+  return legacyActionsList.length > 0 || activeControllers.size > 0
+}
+
+/** Tool-level getter registered before a KeyActionsController mounts (e.g. Enter on nuxy-grid). */
+let parentActionsGetter: (() => KeyAction[]) | null = null
+
+function mergedShellActionsGetter(): KeyAction[] {
+  const parent = parentActionsGetter?.() ?? []
+  return [...parent, ...getCombinedActions()]
+}
+
 let isRegistered = false
+
+function restoreParentRegistration(): void {
+  isRegistered = false
+  if (parentActionsGetter) {
+    window.core?.shell?.registerShellActions(parentActionsGetter)
+    parentActionsGetter = null
+  } else {
+    window.core?.shell?.registerShellActions(null)
+  }
+}
+
 function ensureShellRegistration() {
-  const getterExists = !!window.core?.shell?.getShellActionsGetter?.()
-  if (isRegistered && getterExists) return
+  if (!window.core?.shell?.registerShellActions) return
+
+  if (!hasComponentActions()) {
+    if (isRegistered) restoreParentRegistration()
+    return
+  }
+
+  const current = window.core.shell.getShellActionsGetter?.()
+  if (isRegistered && current === mergedShellActionsGetter) return
+
+  if (current && current !== mergedShellActionsGetter) {
+    parentActionsGetter = current
+  }
+  window.core.shell.registerShellActions(mergedShellActionsGetter)
   isRegistered = true
-  window.core?.shell?.registerShellActions(() => getCombinedActions())
 }
 
 export class KeyActionsController implements ReactiveController {
@@ -55,7 +80,11 @@ export class KeyActionsController implements ReactiveController {
 
   hostDisconnected() {
     activeControllers.delete(this)
-    window.core?.shell?.refreshShellActions()
+    if (!hasComponentActions()) {
+      restoreParentRegistration()
+    } else {
+      window.core?.shell?.refreshShellActions()
+    }
   }
 }
 
@@ -70,5 +99,17 @@ export function useToolKeyActions(actions: KeyAction[]): void {
 
 export function unregisterToolKeyActions(): void {
   legacyActionsList.length = 0
-  window.core?.shell?.refreshShellActions()
+  if (!hasComponentActions()) {
+    restoreParentRegistration()
+  } else {
+    window.core?.shell?.refreshShellActions()
+  }
+}
+
+/** @internal Resets module state between unit tests. */
+export function resetKeyActionsRegistrationForTest(): void {
+  activeControllers.clear()
+  legacyActionsList.length = 0
+  parentActionsGetter = null
+  isRegistered = false
 }

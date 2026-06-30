@@ -11,7 +11,10 @@
     "caller": false
   },
   "ipc": {
-    "public": ["eval"]
+    "public": ["eval"],
+    "samples": {
+      "eval": { "text": "2+2" }
+    }
   },
   "entry": {
     "backend": "backend.ts"

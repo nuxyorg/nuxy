@@ -1,4 +1,6 @@
 // fallow-ignore-file code-duplication
+import { resolveActiveItem } from './list-indicator'
+
 const DEFAULT_SCROLL_SPEED = 0.2
 
 let scrollAnimationId: number | null = null
@@ -75,6 +77,15 @@ function smoothScrollTo(container: HTMLElement, target: number, speed?: number) 
   }
 }
 
+function ascendDomTree(node: HTMLElement): HTMLElement | null {
+  if (node.parentElement) return node.parentElement
+  const root = node.getRootNode()
+  if (root instanceof ShadowRoot && root.host instanceof HTMLElement) {
+    return root.host
+  }
+  return null
+}
+
 function getScrollParent(node: HTMLElement | null): HTMLElement | null {
   if (!node || node === document.body) return null
 
@@ -87,7 +98,7 @@ function getScrollParent(node: HTMLElement | null): HTMLElement | null {
       if (current.scrollHeight > current.clientHeight) return current
       overflowFallback ??= current
     }
-    current = current.parentElement
+    current = ascendDomTree(current)
   }
 
   return overflowFallback
@@ -102,6 +113,8 @@ export type ScrollBias = 'up' | 'down'
 export interface SmoothScrollIntoViewOptions {
   /** Inflate the element rect in the navigation direction so context stays visible ahead. */
   scrollBias?: ScrollBias
+  /** When false, scroll only enough to keep the focused item visible (no extra margin). Default true. */
+  scrollLookahead?: boolean
   /** Override look-ahead padding in px; default is the focused element's own height (~one item). */
   scrollLookaheadPadding?: number
   /** Fraction of remaining distance applied per frame (0–1). Default 0.2. */
@@ -109,8 +122,14 @@ export interface SmoothScrollIntoViewOptions {
 }
 
 export interface ScrollListActiveItemOptions {
+  /** When false, scroll only enough to keep the focused item visible (no extra margin). Default true. */
+  scrollLookahead?: boolean
   scrollLookaheadPadding?: number
   scrollSpeed?: number
+  /** Defaults to `nuxy-list-item`. Grids pass `nuxy-grid-item`. */
+  itemSelector?: string
+  /** Map the matched item to the element whose rect drives scrolling. */
+  resolveTarget?: (item: HTMLElement | null) => HTMLElement | null
 }
 
 type RectLike = Pick<DOMRect, 'top' | 'bottom' | 'height'>
@@ -120,7 +139,12 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 /** Default look-ahead is one item — approximated by the focused element's height. */
-function resolveScrollLookaheadPadding(elRect: RectLike, override?: number): number {
+function resolveScrollLookaheadPadding(
+  elRect: RectLike,
+  override?: number,
+  enabled = true
+): number {
+  if (!enabled) return 0
   if (override !== undefined && Number.isFinite(override) && override >= 0) {
     return override
   }
@@ -188,16 +212,16 @@ export function smoothScrollIntoViewIfNeeded(
   el: HTMLElement,
   options: SmoothScrollIntoViewOptions = {}
 ): void {
-  const parent = getScrollParent(el.parentElement)
+  const parent = getScrollParent(el)
+  const max = parent ? maxScrollTop(parent) : 0
 
-  if (!parent || maxScrollTop(parent) <= 0) {
+  if (!parent || max <= 0) {
     el.scrollIntoView({ block: 'nearest' })
     return
   }
 
   const elRect = el.getBoundingClientRect()
   const parentRect = parent.getBoundingClientRect()
-  const max = maxScrollTop(parent)
 
   // While a programmatic scroll is mid-flight, chain off its destination so
   // back-to-back calls compose smoothly. Directional (bias) nav always measures
@@ -213,7 +237,11 @@ export function smoothScrollIntoViewIfNeeded(
   if (options.scrollBias) {
     // "Minimal + margin": only scroll once the focused item plus one item of
     // look-ahead would leave the viewport; otherwise the cursor moves freely.
-    const padding = resolveScrollLookaheadPadding(elRect, options.scrollLookaheadPadding)
+    const padding = resolveScrollLookaheadPadding(
+      elRect,
+      options.scrollLookaheadPadding,
+      options.scrollLookahead !== false
+    )
     const biasedRect = inflateRectForScrollBias(elRect, options.scrollBias, padding)
     const raw = computeRawScrollTarget(
       biasedRect,
@@ -263,7 +291,7 @@ export function smoothScrollElementToStart(
   instant = false,
   scrollSpeed?: number
 ): void {
-  const parent = getScrollParent(el.parentElement)
+  const parent = getScrollParent(el)
 
   if (!parent) {
     el.scrollIntoView({ block: 'start' })
@@ -283,25 +311,51 @@ export function smoothScrollElementToStart(
   }
 }
 
+function findSectionHeaderAbove(el: HTMLElement): HTMLElement | null {
+  let prev = el.previousElementSibling as HTMLElement | null
+  while (prev) {
+    if (prev.tagName.toLowerCase() === 'nuxy-section-header') return prev
+    const nested = prev.querySelector('nuxy-section-header')
+    if (nested instanceof HTMLElement) return nested
+    prev = prev.previousElementSibling as HTMLElement | null
+  }
+  return null
+}
+
+function resolveNavActiveTarget(
+  containerEl: HTMLElement,
+  activeIndex: number,
+  previousActiveIndex: number | undefined,
+  itemSelector: string,
+  resolveTarget: (item: HTMLElement | null) => HTMLElement | null
+): HTMLElement | null {
+  if (activeIndex >= 0) {
+    const item = resolveActiveItem(containerEl, activeIndex, itemSelector)
+    const scrollingUp = previousActiveIndex !== undefined && previousActiveIndex > activeIndex
+    if (activeIndex === 0 && scrollingUp) {
+      const header = findSectionHeaderAbove(containerEl)
+      if (header) return header
+    }
+    return resolveTarget(item)
+  }
+  if (itemSelector === 'nuxy-list-item') {
+    return containerEl.querySelector('nuxy-list-item[active]')
+  }
+  return null
+}
+
 function resolveListActiveTarget(
   listEl: HTMLElement,
   activeIndex: number,
   previousActiveIndex?: number
 ): HTMLElement | null {
-  if (activeIndex >= 0) {
-    const items = listEl.querySelectorAll('nuxy-list-item')
-    const item = (items[activeIndex] as HTMLElement | undefined) ?? null
-
-    const scrollingUp = previousActiveIndex !== undefined && previousActiveIndex > activeIndex
-
-    if (activeIndex === 0 && scrollingUp) {
-      const header = listEl.previousElementSibling as HTMLElement | null
-      if (header?.tagName.toLowerCase() === 'nuxy-section-header') return header
-    }
-
-    return item
-  }
-  return listEl.querySelector('nuxy-list-item[active]')
+  return resolveNavActiveTarget(
+    listEl,
+    activeIndex,
+    previousActiveIndex,
+    'nuxy-list-item',
+    (item) => item
+  )
 }
 
 /** @internal Exported for unit tests. */
@@ -328,20 +382,22 @@ export function scrollBiasForIndexChange(
   return listScrollBias(activeIndex, previousActiveIndex)
 }
 
-/** Scroll a list's active item into view after layout settles. */
+/** Scroll the active navigable item into view after layout settles (list, grid, …). */
 export function scrollListActiveItem(
-  listEl: HTMLElement,
+  containerEl: HTMLElement,
   activeIndex: number,
   previousActiveIndex?: number,
   options: ScrollListActiveItemOptions = {}
 ): void {
   const scrollBias = scrollBiasForIndexChange(activeIndex, previousActiveIndex)
+  const itemSelector = options.itemSelector ?? 'nuxy-list-item'
+  const resolveTarget = options.resolveTarget ?? ((item) => item)
 
   // Focus left the list at the top (e.g. ArrowUp off the first item, back to the
   // search box) — settle the scroll container flush at the very top.
   if (activeIndex < 0 && scrollBias === 'up') {
     requestAnimationFrame(() => {
-      const parent = getScrollParent(listEl)
+      const parent = getScrollParent(containerEl)
       if (parent && parent.scrollTop > 0) {
         smoothScrollTo(parent, 0, options.scrollSpeed)
       }
@@ -351,17 +407,25 @@ export function scrollListActiveItem(
 
   const attempt = (retriesLeft: number) => {
     requestAnimationFrame(() => {
-      const target = resolveListActiveTarget(listEl, activeIndex, previousActiveIndex)
+      const target = resolveNavActiveTarget(
+        containerEl,
+        activeIndex,
+        previousActiveIndex,
+        itemSelector,
+        resolveTarget
+      )
       if (!target) return
 
-      const parent = getScrollParent(target.parentElement)
-      if (parent && maxScrollTop(parent) <= 0 && retriesLeft > 0) {
+      const parent = getScrollParent(target)
+      const parentMax = parent ? maxScrollTop(parent) : 0
+      if (parent && parentMax <= 0 && retriesLeft > 0) {
         attempt(retriesLeft - 1)
         return
       }
 
       smoothScrollIntoViewIfNeeded(target, {
         scrollBias,
+        scrollLookahead: options.scrollLookahead,
         scrollLookaheadPadding: options.scrollLookaheadPadding,
         scrollSpeed: options.scrollSpeed,
       })

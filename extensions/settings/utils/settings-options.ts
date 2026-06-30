@@ -232,6 +232,14 @@ export function isBooleanRow(row: AnyRow): boolean {
   return row.options.length === 2 && row.options.every((o) => typeof o.value === 'boolean')
 }
 
+/** Native `<input type>` for an extension field's text-like row (password masking, color picker, plain text). */
+export function resolveExtInputType(row: AnyRow): 'password' | 'color' | 'text' {
+  if (!row.isExtension) return 'text'
+  if (row.type === 'password') return 'password'
+  if (row.type === 'color') return 'color'
+  return 'text'
+}
+
 export function getRowOptions(row: AnyRow, state: StateSnapshot): SelectOption[] {
   if ('isLanguage' in row && row.isLanguage) {
     const selected = new Set(state.settings.preferredLanguages.filter(Boolean))

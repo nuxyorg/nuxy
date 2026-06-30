@@ -1,4 +1,4 @@
-import { KERNEL_IPC_CHANNELS } from './kernel-channels.ts'
+import { KERNEL_IPC_CHANNELS, KERNEL_IPC_SAMPLES } from './kernel-channels.ts'
 
 export interface IpcTarget {
   extId: string
@@ -9,6 +9,8 @@ export interface IpcTarget {
   publicChannels: string[]
   /** Channels callable only by this extension's own frontend/worker. */
   privateChannels: string[]
+  /** Example payloads from manifest.ipc.samples (public channels only). */
+  ipcSamples: Record<string, unknown>
   callable: boolean
 }
 
@@ -18,6 +20,9 @@ export interface LoadedExtensionEntry {
   manifest?: {
     name?: string
     capabilities?: { callable?: boolean }
+    ipc?: {
+      samples?: Record<string, unknown>
+    }
   }
   runtime?: {
     ipcChannels?: string[]
@@ -35,6 +40,7 @@ export function kernelTarget(): IpcTarget {
     channels,
     publicChannels: channels,
     privateChannels: [],
+    ipcSamples: { ...KERNEL_IPC_SAMPLES },
     callable: false,
   }
 }
@@ -66,6 +72,7 @@ export function parseExtensionTargets(data: unknown): IpcTarget[] {
         channels: [...(ext.runtime?.ipcChannels ?? [])].sort(),
         publicChannels,
         privateChannels,
+        ipcSamples: { ...(ext.manifest?.ipc?.samples ?? {}) },
         callable: ext.manifest?.capabilities?.callable === true,
       }
     })
@@ -73,11 +80,30 @@ export function parseExtensionTargets(data: unknown): IpcTarget[] {
 }
 
 export function buildIpcTargets(data: unknown): IpcTarget[] {
-  return [kernelTarget(), ...parseExtensionTargets(data)]
+  const extensions = parseExtensionTargets(data)
+  const withPublicChannels = extensions.filter((target) => target.publicChannels.length > 0)
+  const withoutPublicChannels = extensions.filter((target) => target.publicChannels.length === 0)
+  return [kernelTarget(), ...withPublicChannels, ...withoutPublicChannels]
 }
 
 export function selectedTarget(targets: IpcTarget[], extId: string): IpcTarget | undefined {
   return targets.find((t) => t.extId === extId)
+}
+
+export interface FlatChannel {
+  channel: string
+  scope: 'public' | 'private'
+}
+
+/** Public channels A–Z, then private channels A–Z. */
+export function flatChannels(target: IpcTarget | undefined): FlatChannel[] {
+  if (!target) return []
+  const publicSorted = [...target.publicChannels].sort((a, b) => a.localeCompare(b))
+  const privateSorted = [...target.privateChannels].sort((a, b) => a.localeCompare(b))
+  return [
+    ...publicSorted.map((channel) => ({ channel, scope: 'public' as const })),
+    ...privateSorted.map((channel) => ({ channel, scope: 'private' as const })),
+  ]
 }
 
 /** This tool's own extension id — never matches a target, so every call it makes is cross-extension. */

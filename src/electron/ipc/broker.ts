@@ -70,5 +70,5 @@ export async function invokeExtension(
     }
   }
 
-  return invokeWorker(targetId, channel, payload)
+  return invokeWorker(targetId, channel, payload, callerId)
 }

@@ -5,6 +5,7 @@ import type {
   AddTorrentPayload,
   CopyMagnetPayload,
   CopySavePathPayload,
+  OpenSavePathPayload,
   QbitCredentials,
   QbitStatusResult,
   RemoveTorrentPayload,
@@ -104,5 +105,11 @@ export function register(core: CoreContext): void {
   core.ipc.handle('copySavePath', async (payload: unknown): Promise<void> => {
     const { savePath } = payload as CopySavePathPayload
     await core.clipboard.writeText(savePath)
+  })
+
+  core.ipc.handle('openSavePath', async (payload: unknown): Promise<void> => {
+    const { savePath } = payload as OpenSavePathPayload
+    if (!savePath.trim()) throw new Error('No save path to open')
+    await core.shell.open(savePath)
   })
 }

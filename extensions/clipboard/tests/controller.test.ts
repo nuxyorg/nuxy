@@ -26,6 +26,8 @@ import { ClipboardController } from '../controller.ts'
 import enLocale from '../locales/en.json'
 import type { ClipboardItem } from '../types.ts'
 
+const EXT_ID = 'com.nuxy.clipboard'
+const IPC_OPTS = { callerExtId: EXT_ID }
 const enTranslations = flattenTranslations(enLocale)
 
 async function flush(): Promise<void> {
@@ -124,7 +126,7 @@ describe('ClipboardController', () => {
     controller.handleCopy('a')
     await flush()
 
-    expect(invokeMock).toHaveBeenCalledWith('com.nuxy.clipboard', 'copyItem', 'a')
+    expect(invokeMock).toHaveBeenCalledWith(EXT_ID, 'copyItem', 'a', IPC_OPTS)
     expect(controller.state.copiedId).toBe('a')
   })
 
@@ -147,7 +149,7 @@ describe('ClipboardController', () => {
     controller.handleDelete('b')
     await flush()
 
-    expect(invokeMock).toHaveBeenCalledWith('com.nuxy.clipboard', 'deleteItem', 'b')
+    expect(invokeMock).toHaveBeenCalledWith(EXT_ID, 'deleteItem', 'b', IPC_OPTS)
     expect(controller.state.selectedIndex).toBe(0)
   })
 
@@ -159,7 +161,7 @@ describe('ClipboardController', () => {
       invokeMock.mockClear()
 
       await vi.advanceTimersByTimeAsync(1000)
-      expect(invokeMock).toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+      expect(invokeMock).toHaveBeenCalledWith(EXT_ID, 'getHistory', undefined, IPC_OPTS)
 
       controller.disconnect()
     })
@@ -180,10 +182,10 @@ describe('ClipboardController', () => {
       invokeMock.mockClear()
 
       await vi.advanceTimersByTimeAsync(1000)
-      expect(invokeMock).not.toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+      expect(invokeMock).not.toHaveBeenCalledWith(EXT_ID, 'getHistory', undefined, IPC_OPTS)
 
       await vi.advanceTimersByTimeAsync(4000)
-      expect(invokeMock).toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+      expect(invokeMock).toHaveBeenCalledWith(EXT_ID, 'getHistory', undefined, IPC_OPTS)
 
       controller.disconnect()
     })
@@ -204,10 +206,10 @@ describe('ClipboardController', () => {
       invokeMock.mockClear()
 
       await vi.advanceTimersByTimeAsync(250)
-      expect(invokeMock).not.toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+      expect(invokeMock).not.toHaveBeenCalledWith(EXT_ID, 'getHistory', undefined, IPC_OPTS)
 
       await vi.advanceTimersByTimeAsync(750)
-      expect(invokeMock).toHaveBeenCalledWith('com.nuxy.clipboard', 'getHistory')
+      expect(invokeMock).toHaveBeenCalledWith(EXT_ID, 'getHistory', undefined, IPC_OPTS)
 
       controller.disconnect()
     })

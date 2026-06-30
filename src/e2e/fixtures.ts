@@ -51,7 +51,9 @@ async function launchApp(
   // Clean up the UNIX socket to ensure we wait for a fresh socket to be created
   try {
     rmSync(socketPath, { force: true })
-  } catch {}
+  } catch (err: unknown) {
+    console.warn('[e2e] failed to remove stale socket', err)
+  }
 
   const cleanEnv = { ...process.env }
   // Cursor/Playwright may set ELECTRON_RUN_AS_NODE — Electron then exits immediately as Node.
@@ -147,10 +149,14 @@ export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
         app = await launchApp(userDataDir, headless, socketPath)
         await use(app)
       } finally {
-        await app?.close().catch(() => {})
+        await app
+          ?.close()
+          .catch((err: unknown) => console.warn('[e2e] electron app close failed', err))
         try {
           rmSync(userDataDir, { recursive: true, force: true })
-        } catch {}
+        } catch (err: unknown) {
+          console.warn('[e2e] failed to remove test userDataDir', err)
+        }
       }
     },
     { scope: 'worker' },
@@ -229,7 +235,10 @@ export const test = base.extend<ElectronTestFixtures, ElectronWorkerFixtures>({
     async ({ appPage }, use, testInfo: TestInfo) => {
       await use()
       if (!appPage.isClosed()) {
-        const screenshot = await appPage.screenshot().catch(() => null)
+        const screenshot = await appPage.screenshot().catch((err: unknown) => {
+          console.warn('[e2e] screenshot capture failed', err)
+          return null
+        })
         if (screenshot) {
           await testInfo.attach('screenshot', { body: screenshot, contentType: 'image/png' })
         }
