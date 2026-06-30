@@ -26,7 +26,7 @@ vi.mock('@nuxyorg/core', async () => {
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
-import { flattenTranslations } from '@nuxyorg/core'
+import { flattenTranslations, flattenShellActions } from '@nuxyorg/core'
 import type { TorrentItem } from '../types.ts'
 import {
   QbittorrentController,
@@ -278,6 +278,34 @@ describe('QbittorrentController', () => {
     controller.disconnect()
   })
 
+  it('Enter opens the save folder for a completed torrent instead of toggling pause', async () => {
+    const calledChannels: { channel: string; payload?: unknown }[] = []
+    mockInvoke((channel, payload) => {
+      calledChannels.push({ channel, payload })
+      return channel === 'list'
+        ? [makeTorrent({ progress: 1, state: 'pausedUP', savePath: '/downloads/done' })]
+        : null
+    })
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+    controller.store.setState({ selectedIndex: 0 })
+
+    const enter = controller.getKeyActions().find((a) => a.id === 'qbit-toggle-pause')
+    expect(enter?.label).toBe(enTranslations['actions.openFolder'])
+    expect(enter?.activeOn?.()).toBe(true)
+
+    enter?.handler?.()
+
+    expect(calledChannels).toContainEqual({
+      channel: 'openSavePath',
+      payload: { savePath: '/downloads/done' },
+    })
+    expect(calledChannels.some((c) => c.channel === 'pause' || c.channel === 'resume')).toBe(false)
+    controller.disconnect()
+  })
+
   it('shows pending state while pause/resume is waiting for qBittorrent to update', async () => {
     let listState = 'downloading'
     mockInvoke(async (channel) => {
@@ -393,6 +421,113 @@ describe('QbittorrentController', () => {
 
     expect(controller.state.error).toBe('Connection refused')
     expect(controller.state.loading).toBe(false)
+    controller.disconnect()
+  })
+
+  it('sets loading true as soon as connect starts, until the first list resolves', async () => {
+    let resolveList: ((value: TorrentItem[]) => void) | null = null
+    mockInvoke((channel) => {
+      if (channel !== 'list') return null
+      return new Promise<TorrentItem[]>((resolve) => {
+        resolveList = resolve
+      })
+    })
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    expect(controller.state.loading).toBe(true)
+
+    resolveList!([makeTorrent()])
+    await vi.runOnlyPendingTimersAsync()
+    expect(controller.state.loading).toBe(false)
+    controller.disconnect()
+  })
+
+  it('maps an auth failure during refresh to connectionState "auth_failed"', async () => {
+    mockInvoke((channel) => {
+      if (channel === 'list') throw new Error('Invalid qBittorrent username or password')
+      return null
+    })
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+
+    expect(controller.state.connectionState).toBe('auth_failed')
+    expect(controller.state.error).toBe('Invalid qBittorrent username or password')
+    controller.disconnect()
+  })
+
+  it('clears connectionState once the list loads successfully again', async () => {
+    let shouldFail = true
+    mockInvoke((channel) => {
+      if (channel !== 'list') return null
+      if (shouldFail) throw new Error('Invalid qBittorrent username or password')
+      return [makeTorrent()]
+    })
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+    expect(controller.state.connectionState).toBe('auth_failed')
+
+    shouldFail = false
+    await controller.refresh()
+    expect(controller.state.connectionState).toBeNull()
+    expect(controller.state.error).toBeNull()
+    controller.disconnect()
+  })
+
+  it('sets actionError when a torrent action fails, without blocking the rejection', async () => {
+    mockInvoke((channel) => {
+      if (channel === 'pause') throw new Error('pause failed')
+      return channel === 'list' ? [makeTorrent()] : null
+    })
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+
+    await expect(controller.togglePause(makeTorrent())).rejects.toThrow('pause failed')
+    expect(controller.state.actionError).toBe('pause failed')
+    controller.disconnect()
+  })
+
+  it('clears actionError on the next successful refresh', async () => {
+    let shouldFailPause = true
+    mockInvoke((channel) => {
+      if (channel === 'pause' && shouldFailPause) throw new Error('pause failed')
+      return channel === 'list' ? [makeTorrent()] : null
+    })
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+
+    await expect(controller.togglePause(makeTorrent())).rejects.toThrow('pause failed')
+    expect(controller.state.actionError).toBe('pause failed')
+
+    shouldFailPause = false
+    await controller.refresh()
+    expect(controller.state.actionError).toBeNull()
+    controller.disconnect()
+  })
+
+  it('clears actionError when the query changes', async () => {
+    mockInvoke((channel) => {
+      if (channel === 'pause') throw new Error('pause failed')
+      return channel === 'list' ? [makeTorrent()] : null
+    })
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+
+    await expect(controller.togglePause(makeTorrent())).rejects.toThrow('pause failed')
+    expect(controller.state.actionError).toBe('pause failed')
+
+    controller.setQuery('ubuntu')
+    expect(controller.state.actionError).toBeNull()
     controller.disconnect()
   })
 
@@ -516,6 +651,25 @@ describe('QbittorrentController', () => {
     controller.disconnect()
   })
 
+  it('openSavePath invokes the openSavePath channel with the save path', async () => {
+    const calledChannels: { channel: string; payload?: unknown }[] = []
+    mockInvoke((channel, payload) => {
+      calledChannels.push({ channel, payload })
+      return channel === 'list' ? [makeTorrent()] : null
+    })
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+
+    await controller.openSavePath(makeTorrent({ savePath: '/downloads/ubuntu' }))
+    expect(calledChannels).toContainEqual({
+      channel: 'openSavePath',
+      payload: { savePath: '/downloads/ubuntu' },
+    })
+    controller.disconnect()
+  })
+
   it('copyMagnet and copySavePath invoke clipboard channels and flash copiedHash', async () => {
     const calledChannels: string[] = []
     mockInvoke((channel) => {
@@ -534,6 +688,22 @@ describe('QbittorrentController', () => {
 
     await controller.copySavePath(item)
     expect(calledChannels).toContain('copySavePath')
+    controller.disconnect()
+  })
+
+  it('copyMagnet flashes copiedKind "magnet" and copySavePath flashes copiedKind "savePath"', async () => {
+    mockInvoke((channel) => (channel === 'list' ? [makeTorrent()] : null))
+
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    await vi.runOnlyPendingTimersAsync()
+
+    const item = makeTorrent()
+    await controller.copyMagnet(item)
+    expect(controller.state.copiedKind).toBe('magnet')
+
+    await controller.copySavePath(item)
+    expect(controller.state.copiedKind).toBe('savePath')
     controller.disconnect()
   })
 })
@@ -567,8 +737,8 @@ describe('QbittorrentController keyboard actions', () => {
     controller.connect()
     controller.store.setState({ torrents: [makeTorrent()], selectedIndex: -1 })
 
-    const down = getter!().find((a) => a.key === 'ArrowDown')
-    down?.handler()
+    const down = flattenShellActions(getter!()).find((a) => a.key === 'ArrowDown')
+    down?.handler?.()
 
     expect(controlOmniBarMock).toHaveBeenCalledWith('hide')
     expect(controller.state.selectedIndex).toBe(0)
@@ -580,8 +750,8 @@ describe('QbittorrentController keyboard actions', () => {
     controller.connect()
     controller.store.setState({ torrents: [makeTorrent()], selectedIndex: 0 })
 
-    const up = getter!().find((a) => a.key === 'ArrowUp')
-    up?.handler()
+    const up = flattenShellActions(getter!()).find((a) => a.key === 'ArrowUp')
+    up?.handler?.()
 
     expect(controlOmniBarMock).toHaveBeenCalledWith('show')
     expect(controller.state.selectedIndex).toBe(-1)
@@ -597,6 +767,7 @@ describe('QbittorrentController keyboard actions', () => {
     const secondaryIds = [
       'qbit-copy-magnet',
       'qbit-copy-save-path',
+      'qbit-open-folder',
       'qbit-recheck',
       'qbit-reannounce',
       'qbit-remove',
@@ -608,6 +779,23 @@ describe('QbittorrentController keyboard actions', () => {
       expect(action?.showInMenu).toBe(true)
       expect(action?.section).toBe('actions')
     }
+    controller.disconnect()
+  })
+
+  it('qbit-open-folder calls openSavePath for the selected torrent and is disabled without a save path', () => {
+    const controller = new QbittorrentController(() => {})
+    controller.connect()
+    controller.store.setState({
+      torrents: [makeTorrent({ savePath: '/downloads/ubuntu' })],
+      selectedIndex: 0,
+    })
+
+    const action = getter!().find((a) => a.id === 'qbit-open-folder')
+    expect(action?.activeOn?.()).toBe(true)
+
+    controller.store.setState({ torrents: [makeTorrent({ savePath: '' })], selectedIndex: 0 })
+    const disabledAction = getter!().find((a) => a.id === 'qbit-open-folder')
+    expect(disabledAction?.activeOn?.()).toBe(false)
     controller.disconnect()
   })
 
@@ -630,7 +818,7 @@ describe('QbittorrentController keyboard actions', () => {
       expect(actions.find((a) => a.id === id)?.hint).toBeUndefined()
     }
 
-    const footerIds = ['qbit-previous', 'qbit-toggle-pause']
+    const footerIds = ['qbit-navigate', 'qbit-toggle-pause']
     for (const id of footerIds) {
       expect(actions.find((a) => a.id === id)?.hint).toBeDefined()
     }

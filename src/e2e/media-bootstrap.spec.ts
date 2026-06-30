@@ -17,7 +17,10 @@ test.describe('media / getNowPlaying (main process)', () => {
       const media = (globalThis as any).__test_media
       return {
         platform: media.platformId(),
-        nowPlaying: await media.getNowPlaying().catch(() => null),
+        nowPlaying: await media.getNowPlaying().catch((err: unknown) => {
+          console.warn('[e2e] getNowPlaying failed', err)
+          return null
+        }),
       }
     })
 

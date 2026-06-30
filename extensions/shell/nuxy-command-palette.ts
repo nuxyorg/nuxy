@@ -291,7 +291,7 @@ export class NuxyCommandPaletteElement extends LitElement {
     if (action.children) {
       this._openSubmenu(action)
     } else {
-      action.handler()
+      action.handler?.()
       this._close()
     }
   }

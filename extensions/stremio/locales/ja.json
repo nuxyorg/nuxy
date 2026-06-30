@@ -1,0 +1,71 @@
+{
+  "meta": {
+    "name": "Stremio 検索",
+    "direction": "ltr"
+  },
+  "home": {
+    "favorites": "お気に入り",
+    "empty": {
+      "message": "映画・シリーズを検索",
+      "hint": "タイトルを入力。Ctrl+F でお気に入りに保存できます。"
+    }
+  },
+  "search": {
+    "placeholder": "映画・シリーズを検索",
+    "empty": {
+      "message": "Stremio アドオンを検索",
+      "hint": "映画またはシリーズのタイトルを入力してください。"
+    },
+    "loading": {
+      "message": "検索中...",
+      "hint": "タイトルを解決してストリームを取得しています"
+    },
+    "noResults": {
+      "message": "タイトルが見つかりません。",
+      "hint": "別の検索語を試してください。"
+    }
+  },
+  "episodes": {
+    "empty": "このシリーズのエピソードが見つかりません。",
+    "season": "シーズン{season}"
+  },
+  "streams": {
+    "empty": "ストリームが見つかりません。アドオンで debrid サービスを設定するか、別のタイトルを試してください。",
+    "unnamed": "無題のストリーム"
+  },
+  "badge": {
+    "movie": "映画",
+    "series": "シリーズ",
+    "torrent": "トレント",
+    "debrid": "Debrid"
+  },
+  "item": {
+    "copied": "コピーしました！",
+    "selectPrompt": "詳細を表示する項目を選択してください"
+  },
+  "details": {
+    "title": "詳細",
+    "type": "種類",
+    "year": "年",
+    "id": "ID",
+    "season": "シーズン",
+    "episode": "エピソード",
+    "released": "公開日",
+    "source": "ソース",
+    "quality": "画質",
+    "favorite": "お気に入り",
+    "yes": "はい",
+    "no": "いいえ"
+  },
+  "actions": {
+    "navigate": "移動",
+    "open": "開く",
+    "back": "戻る",
+    "favorite": "お気に入り登録",
+    "unfavorite": "お気に入り解除",
+    "torrentClient": "qBittorrent で追加",
+    "copyMagnet": "マグネットをコピー",
+    "playStream": "開く / 再生",
+    "copyLink": "リンクをコピー"
+  }
+}

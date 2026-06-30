@@ -72,7 +72,7 @@ export async function spawnExtension(
     if (msg.type === 'registry:sync') {
       const ext = getExtensionById(extId)
       if (ext) {
-        const validation = validateIpcSync(extId, ext.manifest.ipc?.public, {
+        const validation = validateIpcSync(extId, ext.manifest.ipc, {
           publicIpcChannels: msg.publicIpcChannels ?? [],
         })
         for (const warning of validation.warnings) {

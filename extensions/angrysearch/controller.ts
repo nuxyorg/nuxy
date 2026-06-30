@@ -1,4 +1,6 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
 import type { TypedInvoker } from '@nuxyorg/extension-sdk'
 import type { AngrysearchItem, DbStatus, IpcChannels } from './types.ts'
@@ -56,7 +58,7 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
         this.store.setState({ status })
         if (status.isUpdating) this.startStatusPoll()
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'getStatus'))
 
     this.bindKeyboard()
   }
@@ -97,12 +99,14 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
   }
 
   handleOpen(item: AngrysearchItem): void {
-    this.invoke('openFile', item.value).catch(() => {})
+    this.invoke('openFile', item.value).catch((err) => logCaughtError(EXT_ID, err, 'openFile'))
     window.core?.window?.hide?.()
   }
 
   handleOpenLocation(item: AngrysearchItem): void {
-    this.invoke('openLocation', item.value).catch(() => {})
+    this.invoke('openLocation', item.value).catch((err) =>
+      logCaughtError(EXT_ID, err, 'openLocation')
+    )
     window.core?.window?.hide?.()
   }
 
@@ -113,7 +117,7 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
         this.store.setState({ status: status ? { ...status, isUpdating: true } : status })
         this.startStatusPoll()
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'updateDatabase'))
   }
 
   private startStatusPoll(): void {
@@ -124,7 +128,7 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
           this.store.setState({ status })
           if (!status.isUpdating) this.stopStatusPoll()
         })
-        .catch(() => {})
+        .catch((err) => logCaughtError(EXT_ID, err, 'getStatus'))
     }, STATUS_POLL_MS)
   }
 
@@ -155,8 +159,9 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
             selectedIndex: result.items.length > 0 ? 0 : -1,
           })
         })
-        .catch(() => {
+        .catch((err) => {
           if (generation !== this.searchGen) return
+          logCaughtError(EXT_ID, err, 'search')
           this.store.setState({ items: [] })
         })
     }, SEARCH_DEBOUNCE_MS)
@@ -175,27 +180,19 @@ export class AngrysearchController extends BaseExtensionController<AngrysearchSt
     const t = this.t.t
 
     return [
-      {
-        id: 'angrysearch-navigate-up',
-        key: 'ArrowUp',
+      pairedKeyAction({
+        id: 'angrysearch-navigate',
         label: t('actions.navigate'),
-        hint: '↑↓',
         allowRepeat: true,
-        handler: () => {
+        negative: () => {
           if (items.length === 0) return
           this.setSelectedIndex((prev) => Math.max(0, prev - 1))
         },
-      },
-      {
-        id: 'angrysearch-navigate-down',
-        key: 'ArrowDown',
-        label: '',
-        allowRepeat: true,
-        handler: () => {
+        positive: () => {
           if (items.length === 0) return
           this.setSelectedIndex((prev) => Math.min(prev + 1, items.length - 1))
         },
-      },
+      }),
       {
         id: 'angrysearch-open',
         key: 'Enter',

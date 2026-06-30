@@ -1,7 +1,11 @@
 // @vitest-environment happy-dom
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { KeyActionsController, type KeyAction } from './useToolKeyActions.ts'
+import {
+  KeyActionsController,
+  resetKeyActionsRegistrationForTest,
+  type KeyAction,
+} from './useToolKeyActions.ts'
 
 describe('KeyActionsController shell registration', () => {
   let keyActionsGetter: (() => KeyAction[]) | null = null
@@ -22,6 +26,7 @@ describe('KeyActionsController shell registration', () => {
   })
 
   afterEach(() => {
+    resetKeyActionsRegistrationForTest()
     delete (window as { core?: unknown }).core
   })
 
@@ -44,7 +49,56 @@ describe('KeyActionsController shell registration', () => {
     ctrl.hostDisconnected()
 
     ctrl.hostConnected()
-    expect(registerShellActions).toHaveBeenCalledTimes(2)
-    expect(registerShellActions.mock.calls[1]![0]!()).toHaveLength(1)
+    expect(registerShellActions.mock.calls.at(-1)![0]!()).toHaveLength(1)
+  })
+
+  it('merges tool shell actions with component key actions instead of replacing them', () => {
+    const parentEnter = { key: 'Enter', label: 'Open', handler: vi.fn() }
+    const parentGetter = () => [parentEnter]
+    registerShellActions.mockImplementation((getter) => {
+      keyActionsGetter = getter
+    })
+    registerShellActions(parentGetter)
+
+    const host = {
+      addController: vi.fn(),
+      removeController: vi.fn(),
+      requestUpdate: vi.fn(),
+      updateComplete: Promise.resolve(true),
+    }
+
+    const ctrl = new KeyActionsController(host, () => [
+      { key: 'ArrowDown', label: '', handler: vi.fn() },
+    ])
+    ctrl.hostConnected()
+
+    const actions = keyActionsGetter!()
+    expect(actions).toHaveLength(2)
+    expect(actions.some((a) => a.key === 'Enter')).toBe(true)
+    expect(actions.some((a) => a.key === 'ArrowDown')).toBe(true)
+  })
+
+  it('restores the parent getter when the last KeyActionsController disconnects', () => {
+    const parentEnter = { key: 'Enter', label: 'Open', handler: vi.fn() }
+    const parentGetter = () => [parentEnter]
+    registerShellActions.mockImplementation((getter) => {
+      keyActionsGetter = getter
+    })
+    registerShellActions(parentGetter)
+
+    const host = {
+      addController: vi.fn(),
+      removeController: vi.fn(),
+      requestUpdate: vi.fn(),
+      updateComplete: Promise.resolve(true),
+    }
+
+    const ctrl = new KeyActionsController(host, () => [
+      { key: 'ArrowDown', label: '', handler: vi.fn() },
+    ])
+    ctrl.hostConnected()
+    ctrl.hostDisconnected()
+
+    expect(keyActionsGetter!()).toEqual([parentEnter])
   })
 })

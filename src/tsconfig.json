@@ -17,6 +17,10 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
+      "@nuxyorg/core/runtime-export-names": ["../packages/core/src/runtime-export-names.ts"],
+      "@nuxyorg/extension-sdk/runtime-export-names": [
+        "../packages/extension-sdk/src/runtime-export-names.ts"
+      ],
       "@nuxyorg/core": ["../packages/core/src/index.ts"],
       "@nuxyorg/ui": ["../extensions/ui-default/src/index.ts"],
       "@nuxyorg/extension-host": ["../packages/extension-host/src/index.ts"],

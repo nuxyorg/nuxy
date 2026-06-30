@@ -1,0 +1,28 @@
+{
+  "id": "com.nuxy.stremio",
+  "name": "Stremio Search",
+  "version": "1.0.0",
+  "type": "tool",
+  "icon": "search",
+  "permissions": ["network", "clipboard", "shell", "storage"],
+  "capabilities": {
+    "callable": false,
+    "caller": true
+  },
+  "composition": {
+    "claims": ["omnibar-portal"]
+  },
+  "behavior": {
+    "onComplete": "returnToShellAndHide"
+  },
+  "entry": {
+    "backend": "backend.ts",
+    "frontend": "frontend.ts",
+    "element": "nuxy-tool-stremio",
+    "settings": "settings.json"
+  },
+  "locales": {
+    "default": "en",
+    "supported": ["en", "tr", "ja"]
+  }
+}

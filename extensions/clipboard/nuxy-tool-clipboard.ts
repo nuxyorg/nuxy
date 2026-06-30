@@ -182,7 +182,7 @@ export class NuxyToolClipboardElement extends LitElement implements NuxyToolElem
     }
 
     return html`
-      <nuxy-list active-index=${selectedIndex}>
+      <nuxy-list uniform-items active-index=${selectedIndex}>
         ${filtered.map((item, idx) => {
           const isCopied = copiedId === item.id
           const isActive = idx === selectedIndex
@@ -218,20 +218,27 @@ export class NuxyToolClipboardElement extends LitElement implements NuxyToolElem
 
   private renderLeading(item: ClipboardItem, type: ItemType): TemplateResult | typeof nothing {
     if (type === 'image') {
-      return html`<nuxy-item-leading
+      return html`<nuxy-item-leading size="md"
         ><img src=${item.image!} alt="" style="width:100%;height:100%;object-fit:cover"
       /></nuxy-item-leading>`
     }
     if (type === 'color') {
-      return html`<nuxy-item-leading color=${item.text?.trim() || ''}></nuxy-item-leading>`
+      return html`<nuxy-item-leading
+        size="md"
+        color=${item.text?.trim() || ''}
+      ></nuxy-item-leading>`
     }
     if (type === 'file') {
       const ext = getFileExtension(item.text?.trim() || '')
       const iconName = FILE_ICON_MAP[getFileIconType(ext)] ?? 'file'
-      return html`<nuxy-item-leading><nuxy-icon name=${iconName}></nuxy-icon></nuxy-item-leading>`
+      return html`<nuxy-item-leading size="md"
+        ><nuxy-icon name=${iconName}></nuxy-icon
+      ></nuxy-item-leading>`
     }
     if (type === 'url') {
-      return html`<nuxy-item-leading><nuxy-icon name="globe"></nuxy-icon></nuxy-item-leading>`
+      return html`<nuxy-item-leading size="md"
+        ><nuxy-icon name="globe"></nuxy-icon
+      ></nuxy-item-leading>`
     }
     return nothing
   }

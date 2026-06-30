@@ -157,6 +157,8 @@ Extensions should declare host privileges they need. The kernel will eventually 
 
 Any extension may define arbitrary backend channels via `core.ipc.handle`. These are **not** global permissions; they are namespaced by `extId` when invoked from the renderer.
 
+Handlers are **private by default**. To expose a channel cross-extension, declare it in `manifest.ipc.public`, register with `{ expose: 'public' }`, and add a matching example payload in `manifest.ipc.samples` (strongly recommended — IPC Explorer pre-fills these; the kernel warns when missing). See [IPC API → Public vs private channels](/api/ipc).
+
 | Extension             | Type       | Channels                                           | Host APIs used                                |
 | --------------------- | ---------- | -------------------------------------------------- | --------------------------------------------- |
 | `com.nuxy.notes`      | `tool`     | `listNotes`, `saveNote`, `deleteNote`, …           | `storage`, `db`, `logger`                     |

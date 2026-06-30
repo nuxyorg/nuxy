@@ -1,6 +1,6 @@
 import { LitElement, html, css, nothing, customElement, property, ref } from '@nuxyorg/core'
 import type { TemplateResult } from '@nuxyorg/core'
-import { smoothScrollIntoViewIfNeeded } from '../../hooks/scroll-into-view'
+import { scrollListActiveItem } from '../../hooks/scroll-into-view'
 import { createGridKeyActions } from '../../hooks/grid-navigation'
 import { KeyActionsController } from '../../hooks/useToolKeyActions'
 import {
@@ -18,6 +18,9 @@ export class NuxyGridElement extends LitElement {
     :host {
       display: grid;
       position: relative;
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
       padding: 4px 8px;
     }
 
@@ -54,16 +57,21 @@ export class NuxyGridElement extends LitElement {
   declare keyboardNav: boolean
   @property({ type: Boolean, attribute: 'omnibar-handoff' })
   declare omnibarHandoff: boolean
+  /** When false, scroll only enough to keep the focused cell visible (no row look-ahead). */
+  @property({ type: Boolean, attribute: 'scroll-lookahead' })
+  declare scrollLookahead: boolean
 
   private _indicatorState: ListIndicatorState = createListIndicatorState()
   private _visibilityObserver: IntersectionObserver | null = null
   private _resizeObserver: ResizeObserver | null = null
+  private _childObserver: MutationObserver | null = null
   private _observersAttached = false
   private _computedCols = 1
   private _keyActions: KeyActionsController | null = null
 
   connectedCallback(): void {
     super.connectedCallback()
+    if (!Number.isFinite(this.activeIndex)) this.activeIndex = -1
     this.sync()
     if (this.keyboardNav) this._attachKeyActions()
   }
@@ -73,6 +81,8 @@ export class NuxyGridElement extends LitElement {
     this._visibilityObserver = null
     this._resizeObserver?.disconnect()
     this._resizeObserver = null
+    this._childObserver?.disconnect()
+    this._childObserver = null
     this._observersAttached = false
     this._keyActions = null
     super.disconnectedCallback()
@@ -87,7 +97,7 @@ export class NuxyGridElement extends LitElement {
     if (this._keyActions) return
     this._keyActions = new KeyActionsController(this, () =>
       createGridKeyActions({
-        getActiveIndex: () => this.activeIndex,
+        getActiveIndex: () => (Number.isFinite(this.activeIndex) ? this.activeIndex : -1),
         setActiveIndex: (index) => this._setActiveIndex(index),
         getItemCount: () => this.querySelectorAll('nuxy-grid-item').length,
         getCols: () => this._effectiveCols(),
@@ -97,9 +107,9 @@ export class NuxyGridElement extends LitElement {
   }
 
   private _setActiveIndex(index: number | ((prev: number) => number)): void {
-    const prev = this.activeIndex
+    const prev = Number.isFinite(this.activeIndex) ? this.activeIndex : -1
     const next = typeof index === 'function' ? index(prev) : index
-    if (next === prev) return
+    if (!Number.isFinite(next) || next === prev) return
     // Keep local state in sync before the parent re-render so rapid key repeats work.
     this.activeIndex = next
     this.dispatchEvent(
@@ -129,6 +139,10 @@ export class NuxyGridElement extends LitElement {
     if (this.minCellWidth > 0) {
       this._resizeObserver = new ResizeObserver(() => this._measureCols())
       this._resizeObserver.observe(this)
+      this._childObserver = new MutationObserver(() => {
+        requestAnimationFrame(() => this._measureCols())
+      })
+      this._childObserver.observe(this, { childList: true })
     }
   }
 
@@ -141,10 +155,22 @@ export class NuxyGridElement extends LitElement {
       if (this.minCellWidth > 0 && !this._resizeObserver) {
         this._resizeObserver = new ResizeObserver(() => this._measureCols())
         this._resizeObserver.observe(this)
+        this._childObserver = new MutationObserver(() => {
+          requestAnimationFrame(() => this._measureCols())
+        })
+        this._childObserver.observe(this, { childList: true })
         this._measureCols()
       }
     }
-    if (changedProperties.has('activeIndex') || changedProperties.has('cols')) {
+    if (changedProperties.has('activeIndex')) {
+      const previousActiveIndex = changedProperties.get('activeIndex') as number
+      scrollListActiveItem(this, this.activeIndex, previousActiveIndex, {
+        itemSelector: 'nuxy-grid-item',
+        resolveTarget: resolveGridIndicatorTarget,
+        scrollLookahead: this.scrollLookahead,
+      })
+      requestAnimationFrame(() => this._updateIndicator())
+    } else if (changedProperties.has('cols')) {
       requestAnimationFrame(() => this._updateIndicator())
     }
   }
@@ -157,21 +183,40 @@ export class NuxyGridElement extends LitElement {
 
   private _measureCols(): void {
     if (!this.minCellWidth || this.minCellWidth <= 0) return
-    const width = this.clientWidth
-    if (width <= 0) return
-    const gap = parseInt(this.gap, 10) || 0
-    const cols = Math.max(1, Math.floor((width + gap) / (this.minCellWidth + gap)))
+    if (this.clientWidth <= 0) return
+    const cols = this._readComputedCols()
     if (cols === this._computedCols) return
     this._computedCols = cols
-    this.style.gridTemplateColumns = `repeat(${cols}, 1fr)`
     requestAnimationFrame(() => this._updateIndicator())
+  }
+
+  /** Count items in the first row — used for keyboard navigation with auto-fill grids. */
+  private _readComputedCols(): number {
+    const items = Array.from(this.querySelectorAll('nuxy-grid-item')) as NuxyGridItemElement[]
+    if (items.length === 0) return 1
+
+    let cols = 0
+    let rowTop: number | null = null
+    for (const item of items) {
+      const btn = resolveGridIndicatorTarget(item)
+      if (!btn) continue
+      if (rowTop === null) {
+        rowTop = btn.offsetTop
+        cols = 1
+      } else if (btn.offsetTop === rowTop) {
+        cols++
+      } else {
+        break
+      }
+    }
+    return Math.max(1, cols)
   }
 
   private sync(): void {
     if (this.minCellWidth > 0) {
-      this.style.gridTemplateColumns = `repeat(${this._computedCols}, 1fr)`
+      this.style.gridTemplateColumns = `repeat(auto-fill, minmax(min(${this.minCellWidth}px, 100%), 1fr))`
     } else {
-      this.style.gridTemplateColumns = `repeat(${this.cols || 1}, 1fr)`
+      this.style.gridTemplateColumns = `repeat(${this.cols || 1}, minmax(0, 1fr))`
     }
     this.style.gap = `${this.gap}px`
   }
@@ -201,6 +246,8 @@ export class NuxyGridItemElement extends LitElement {
 
     .nuxy-grid-item {
       width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
       background: none;
       border: none;
       cursor: pointer;
@@ -236,12 +283,6 @@ export class NuxyGridItemElement extends LitElement {
   declare tabindex: string
 
   private buttonRef: HTMLButtonElement | null = null
-
-  updated(changedProperties: Map<string, unknown>): void {
-    if (changedProperties.has('active') && this.active && this.buttonRef) {
-      smoothScrollIntoViewIfNeeded(this.buttonRef)
-    }
-  }
 
   private onButtonRef = (el: Element | undefined): void => {
     this.buttonRef = (el as HTMLButtonElement | null | undefined) ?? null

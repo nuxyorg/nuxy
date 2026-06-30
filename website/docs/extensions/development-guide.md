@@ -1679,6 +1679,8 @@ Before submitting or merging an extension, verify every item:
 - [ ] All used `core.*` APIs have a matching entry in `permissions`
 - [ ] `capabilities.caller` is only `true` if the extension calls other extensions
 - [ ] If the extension ships translations, `locales.default` and `locales.supported` are declared
+- [ ] Every `{ expose: 'public' }` handler is listed in `manifest.ipc.public`
+- [ ] Every channel in `manifest.ipc.public` has a matching `manifest.ipc.samples` entry (use `{}` when no payload)
 
 **Localisation**
 

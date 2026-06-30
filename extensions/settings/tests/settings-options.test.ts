@@ -5,6 +5,7 @@ import {
   buildFontOptions,
   getRowCurrentValue,
   isBooleanRow,
+  resolveExtInputType,
   FONT_OPTIONS_STATIC,
   DEFAULT_SETTINGS,
   BOOL_OPTIONS,
@@ -197,6 +198,47 @@ describe('isBooleanRow', () => {
       isExtension: false,
     } as any
     expect(isBooleanRow(row)).toBe(false)
+  })
+})
+
+describe('resolveExtInputType', () => {
+  it('returns "password" for a field declared type: "password"', () => {
+    const row: AnyRow = {
+      key: 'com.nuxy.qbittorrent:password',
+      label: 'Password',
+      options: [],
+      isExtension: true,
+      extId: 'com.nuxy.qbittorrent',
+      fieldKey: 'password',
+      type: 'password',
+    }
+    expect(resolveExtInputType(row)).toBe('password')
+  })
+
+  it('returns "color" for a field declared type: "color"', () => {
+    const row: AnyRow = {
+      key: 'com.nuxy.example:accent',
+      label: 'Accent',
+      options: [],
+      isExtension: true,
+      extId: 'com.nuxy.example',
+      fieldKey: 'accent',
+      type: 'color',
+    }
+    expect(resolveExtInputType(row)).toBe('color')
+  })
+
+  it('defaults to "text" for any other field type', () => {
+    const row: AnyRow = {
+      key: 'com.nuxy.example:host',
+      label: 'Host',
+      options: [],
+      isExtension: true,
+      extId: 'com.nuxy.example',
+      fieldKey: 'host',
+      type: 'text',
+    }
+    expect(resolveExtInputType(row)).toBe('text')
   })
 })
 

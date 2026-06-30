@@ -36,6 +36,7 @@ Before writing or reviewing any Nuxy extension, read the following documents in 
 - `type`: `tool` | `provider` | `orchestrator` | `helper` | `theme` | `iconpack` | `uikit`
 - `entry.element`: must match the registered custom element tag name
 - Declare every `core.*` API you use in `permissions`
+- Public IPC: list channels in `ipc.public`, register with `{ expose: 'public' }`, and add matching `ipc.samples` payloads (strongly recommended — IPC Explorer and kernel warnings depend on them)
 
 ### Frontend (LitElement — mandatory for new code)
 

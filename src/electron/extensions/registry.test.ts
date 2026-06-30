@@ -94,17 +94,21 @@ describe('registry', () => {
 
   describe('validateIpcSync', () => {
     it('passes when public channels are a subset of manifest.ipc.public', () => {
-      const result = validateIpcSync('com.nuxy.qbittorrent', ['getStatus', 'add'], {
-        publicIpcChannels: ['getStatus'],
-      })
+      const result = validateIpcSync(
+        'com.nuxy.qbittorrent',
+        { public: ['getStatus', 'add'], samples: { getStatus: {}, add: { url: 'x' } } },
+        { publicIpcChannels: ['getStatus'] }
+      )
       expect(result.ok).toBe(true)
       expect(result.errors).toEqual([])
     })
 
     it('fails when a registered public channel is not declared in the manifest', () => {
-      const result = validateIpcSync('com.nuxy.qbittorrent', ['getStatus'], {
-        publicIpcChannels: ['getStatus', 'remove'],
-      })
+      const result = validateIpcSync(
+        'com.nuxy.qbittorrent',
+        { public: ['getStatus'] },
+        { publicIpcChannels: ['getStatus', 'remove'] }
+      )
       expect(result.ok).toBe(false)
       expect(result.errors).toEqual([
         'Channel "remove" registered public but not declared in manifest.ipc.public',
@@ -112,13 +116,39 @@ describe('registry', () => {
     })
 
     it('warns when a manifest-declared public channel has no registered handler', () => {
-      const result = validateIpcSync('com.nuxy.qbittorrent', ['getStatus', 'add'], {
-        publicIpcChannels: ['getStatus'],
-      })
+      const result = validateIpcSync(
+        'com.nuxy.qbittorrent',
+        { public: ['getStatus', 'add'], samples: { getStatus: {}, add: {} } },
+        { publicIpcChannels: ['getStatus'] }
+      )
       expect(result.ok).toBe(true)
       expect(result.warnings).toEqual([
         'Manifest declares public channel "add" with no registered public handler',
       ])
+    })
+
+    it('warns when a public channel has no ipc.samples entry', () => {
+      const result = validateIpcSync(
+        'com.nuxy.qbittorrent',
+        { public: ['getStatus', 'add'], samples: { getStatus: {} } },
+        { publicIpcChannels: ['getStatus', 'add'] }
+      )
+      expect(result.ok).toBe(true)
+      expect(result.warnings).toContain(
+        'Public channel "add" has no ipc.samples entry — add an example payload for IPC Explorer and cross-extension callers'
+      )
+    })
+
+    it('warns when ipc.samples declares a channel not in ipc.public', () => {
+      const result = validateIpcSync(
+        'com.nuxy.qbittorrent',
+        { public: ['getStatus'], samples: { getStatus: {}, add: {} } },
+        { publicIpcChannels: ['getStatus'] }
+      )
+      expect(result.ok).toBe(true)
+      expect(result.warnings).toContain(
+        'ipc.samples declares "add" which is not listed in ipc.public'
+      )
     })
 
     it('passes with no manifest public list when nothing is registered public', () => {

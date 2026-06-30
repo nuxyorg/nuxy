@@ -1,4 +1,5 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { flattenShellActions } from '@nuxyorg/core'
 import type { HoldProgress } from '../types.ts'
 import { isWritingElement } from '../utils/keyboard.ts'
 
@@ -59,7 +60,7 @@ export class KeyboardController {
       holdTimer = setTimeout(() => {
         holdTimer = null
         clearHold()
-        action.handler()
+        action.handler?.()
         e.preventDefault()
       }, ms)
     }
@@ -101,8 +102,8 @@ export class KeyboardController {
           return
         }
         if (isToolActive) {
-          const actions = window.core?.shell?.getShellActionsGetter()?.()
-          if (actions && actions.length > 0) {
+          const actions = flattenShellActions(window.core?.shell?.getShellActionsGetter()?.() ?? [])
+          if (actions.length > 0) {
             const matched = actions.find((a) => {
               if (!matchesAction(a, e)) return false
               if (typeof a.activeOn === 'function' && !a.activeOn()) return false
@@ -113,7 +114,7 @@ export class KeyboardController {
                 if (!e.repeat) startHold(matched, e)
                 e.preventDefault()
               } else {
-                matched.handler()
+                matched.handler?.()
                 e.preventDefault()
               }
               return
@@ -133,8 +134,8 @@ export class KeyboardController {
         const target = (e.composedPath?.()[0] || e.target) as HTMLElement
         const isInput = isWritingElement(target)
         const isOmniBar = target?.classList?.contains('nuxy-shell-omni-bar__input')
-        const actions = window.core?.shell?.getShellActionsGetter()?.()
-        if (actions && actions.length > 0) {
+        const actions = flattenShellActions(window.core?.shell?.getShellActionsGetter()?.() ?? [])
+        if (actions.length > 0) {
           const matched = actions.find((a) => {
             if (!matchesAction(a, e)) return false
             if (e.repeat && !a.allowRepeat) return false
@@ -156,7 +157,7 @@ export class KeyboardController {
               e.preventDefault()
               return
             }
-            matched.handler()
+            matched.handler?.()
             e.preventDefault()
             return
           }
@@ -185,8 +186,8 @@ export class KeyboardController {
 
     const handleGlobalKeyUp = (e: KeyboardEvent) => {
       if (holdTimer !== null) {
-        const actions = window.core?.shell?.getShellActionsGetter()?.()
-        const held = actions?.find((a) => a.trigger === 'hold' && matchesAction(a, e))
+        const actions = flattenShellActions(window.core?.shell?.getShellActionsGetter()?.() ?? [])
+        const held = actions.find((a) => a.trigger === 'hold' && matchesAction(a, e))
         if (held) {
           if (held.holdCancelToast) {
             holdCancelToastId =

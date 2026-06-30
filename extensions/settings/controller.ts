@@ -1,5 +1,7 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import { BaseExtensionController, setToolSearchPlaceholder } from '@nuxyorg/extension-sdk'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import { createSettingsActions, type SettingsActions } from './actions.ts'
 import { createDefaultSettingsData, loadSettingsData, type SettingsDataState } from './data.ts'
 import {
@@ -108,7 +110,9 @@ export class SettingsController extends BaseExtensionController<SettingsControll
 
   disconnect(): void {
     for (const [extId, enabled] of this.pendingExtToggles) {
-      window.core?.ipc?.invoke('kernel', 'setExtensionEnabled', { extId, enabled }).catch(() => {})
+      window.core?.ipc
+        ?.invoke('kernel', 'setExtensionEnabled', { extId, enabled })
+        .catch((err) => logCaughtError('com.nuxy.settings', err, 'setExtensionEnabled'))
     }
     this.pendingExtToggles.clear()
     this.dataCleanup?.()
@@ -289,12 +293,10 @@ export class SettingsController extends BaseExtensionController<SettingsControll
     }
 
     return [
-      {
-        key: 'ArrowUp',
-        label: t('actions.previousSetting'),
-        hint: '↑↓',
+      pairedKeyAction({
+        label: t('actions.navigate'),
         allowRepeat: true,
-        handler: () => {
+        negative: () => {
           if (currentIdx > 0) {
             this.store.setState({
               selectedSectionId: sections[currentIdx - 1].id,
@@ -304,12 +306,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
             })
           }
         },
-      },
-      {
-        key: 'ArrowDown',
-        label: t('actions.nextSetting'),
-        allowRepeat: true,
-        handler: () => {
+        positive: () => {
           if (currentIdx < sections.length - 1) {
             this.store.setState({
               selectedSectionId: sections[currentIdx + 1].id,
@@ -319,7 +316,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
             })
           }
         },
-      },
+      }),
       {
         key: 'ArrowRight',
         label: '',
@@ -345,6 +342,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
   }
 
   private buildRightPanelKeyActions(t: (key: string) => string): ShellAction[] {
+    const inSubMode = this.state.activeSelect !== null || this.state.activePriorityList !== null
     const list: ShellAction[] = [
       {
         key: 'ArrowLeft',
@@ -354,12 +352,10 @@ export class SettingsController extends BaseExtensionController<SettingsControll
           this.store.setState({ focusedPanel: 'left', selectedRow: -1 })
         },
       },
-      {
-        key: 'ArrowUp',
-        label: t('actions.previousSetting'),
-        hint: '↑↓',
+      pairedKeyAction({
+        label: t('actions.navigate'),
         allowRepeat: true,
-        handler: () => {
+        negative: () => {
           const { activeSelect, activePriorityList } = this.state
           if (activePriorityList !== null) {
             this.setPriorityFocused((i) => Math.max(i - 1, 0))
@@ -378,12 +374,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
             return prev - 1
           })
         },
-      },
-      {
-        key: 'ArrowDown',
-        label: t('actions.nextSetting'),
-        allowRepeat: true,
-        handler: () => {
+        positive: () => {
           const snap = this.getStateSnapshot()
           if (snap.activePriorityList !== null) {
             const row = this.getActivePriorityRow()
@@ -408,10 +399,10 @@ export class SettingsController extends BaseExtensionController<SettingsControll
             return Math.min(prev + 1, lastIdx)
           })
         },
-      },
+      }),
       {
         key: 'Enter',
-        label: t('actions.openSetting'),
+        label: inSubMode ? t('actions.closeSetting') : t('actions.openSetting'),
         hint: '↵',
         handler: () => {
           const snap = this.getStateSnapshot()
@@ -504,13 +495,12 @@ export class SettingsController extends BaseExtensionController<SettingsControll
     if (this.state.activePriorityList !== null) {
       const row = this.getActivePriorityRow()
       list.push(
-        {
-          key: 'ArrowUp',
+        pairedKeyAction({
+          label: t('actions.reorderPriority'),
+          hint: ['⇧', '↑↓'],
           modifiers: ['shift'],
-          label: t('actions.movePriorityUp'),
-          hint: ['⇧', '↑'],
           allowRepeat: true,
-          handler: () => {
+          negative: () => {
             if (!row || !row.isExtension || !('fieldKey' in row)) return
             const idx = this.state.priorityFocused
             if (idx <= 0) return
@@ -523,14 +513,7 @@ export class SettingsController extends BaseExtensionController<SettingsControll
               idx - 1
             )
           },
-        },
-        {
-          key: 'ArrowDown',
-          modifiers: ['shift'],
-          label: t('actions.movePriorityDown'),
-          hint: ['⇧', '↓'],
-          allowRepeat: true,
-          handler: () => {
+          positive: () => {
             if (!row || !row.isExtension || !('fieldKey' in row)) return
             const idx = this.state.priorityFocused
             const last = this.getPriorityListLength(row) - 1
@@ -544,23 +527,13 @@ export class SettingsController extends BaseExtensionController<SettingsControll
               idx + 1
             )
           },
-        },
+        }),
         {
           key: 'Escape',
           label: t('actions.closeSetting'),
-          hint: 'Esc',
           handler: () => this.setActivePriorityList(null),
         }
       )
-    }
-
-    if (this.state.activeSelect !== null) {
-      list.push({
-        key: 'Escape',
-        label: t('actions.closeSetting'),
-        hint: 'Esc',
-        handler: () => this.setActiveSelect(null),
-      })
     }
 
     return list

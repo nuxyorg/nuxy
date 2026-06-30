@@ -5,7 +5,12 @@ import { activeWorkers } from '../spawn/active-workers.js'
 const log = kernelLogger.child('WorkerInvoke')
 const EXT_INVOKE_TIMEOUT_MS = 15_000
 
-export function invokeWorker(extId: string, channel: string, payload: unknown): Promise<IpcResult> {
+export function invokeWorker(
+  extId: string,
+  channel: string,
+  payload: unknown,
+  callerExtId?: string
+): Promise<IpcResult> {
   const worker = activeWorkers.get(extId)
   if (!worker) {
     return Promise.resolve({ success: false, error: 'Worker not found' })
@@ -43,6 +48,6 @@ export function invokeWorker(extId: string, channel: string, payload: unknown): 
     }
 
     worker.on('message', listener)
-    worker.postMessage({ kind: 'call', id: msgId, channel, payload })
+    worker.postMessage({ kind: 'call', id: msgId, channel, payload, callerExtId })
   })
 }

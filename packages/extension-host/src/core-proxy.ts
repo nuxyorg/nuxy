@@ -17,6 +17,7 @@ import {
   HostChannel,
   resolveLocale,
   flattenTranslations,
+  mergeTranslations,
   interpolate,
   selectPlural,
   getTextDirection,
@@ -57,7 +58,10 @@ export function createCoreProxy(
     if (!extDir) return
     try {
       const manifestPath = path.join(extDir, 'manifest.json')
-      const manifestRaw = await fsPromises.readFile(manifestPath, 'utf8').catch(() => null)
+      const manifestRaw = await fsPromises.readFile(manifestPath, 'utf8').catch((err) => {
+        console.warn(`[extension-host] failed to read manifest for i18n: ${manifestPath}`, err)
+        return null
+      })
       if (!manifestRaw) return
       const manifest = JSON.parse(manifestRaw) as ExtensionManifest
       if (!manifest.locales) return
@@ -72,7 +76,9 @@ export function createCoreProxy(
         const raw = await fsPromises.readFile(globalSettings, 'utf8')
         const parsed = JSON.parse(raw) as { preferredLanguages?: string[] }
         preferredLanguages = parsed.preferredLanguages ?? []
-      } catch {}
+      } catch (err) {
+        console.warn('[extension-host] failed to read global preferredLanguages', err)
+      }
 
       const systemHint = (process.env.LANG ?? '').split('.')[0].replace('_', '-')
       const candidates = [...preferredLanguages, systemHint].filter(Boolean)
@@ -90,7 +96,13 @@ export function createCoreProxy(
         }
       }
 
-      i18nTranslations = (await tryLoad(i18nLocale)) ?? (await tryLoad(defaultLocale)) ?? {}
+      const defaultTranslations = (await tryLoad(defaultLocale)) ?? {}
+      const resolvedTranslations =
+        i18nLocale === defaultLocale ? defaultTranslations : await tryLoad(i18nLocale)
+      i18nTranslations =
+        i18nLocale === defaultLocale || !resolvedTranslations
+          ? defaultTranslations
+          : mergeTranslations(defaultTranslations, resolvedTranslations)
     } catch (err) {
       logger.warn('i18n: initialization failed', err)
     }

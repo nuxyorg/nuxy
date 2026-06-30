@@ -1,4 +1,4 @@
-import type { CoreContext } from '@nuxyorg/extension-sdk'
+import type { CoreContext, IpcInvokeContext } from '@nuxyorg/extension-sdk'
 import type { SpawnHandle } from '@nuxyorg/core'
 import type {
   DownloadPayload,
@@ -7,6 +7,10 @@ import type {
   VideoFormat,
   VideoMetadata,
 } from './types.ts'
+import { isVideoUrl } from './utils/video-url.ts'
+import { assertJobControl } from './utils/job-control.ts'
+import { parseExtraArgs } from './utils/parse-args.ts'
+import { resolveThumbnailUrl } from './utils/fetch-thumbnail.ts'
 
 const EXT_ID = 'com.nuxy.video-downloader'
 const DOWNLOAD_MANAGER_ID = 'com.nuxy.download-manager'
@@ -17,15 +21,20 @@ const DESTINATION_RE = /\[download] Destination:\s+(.+)/
 const ALREADY_DOWNLOADED_RE = /\[download]\s+(.+?)\s+has already been downloaded/
 const MERGED_RE = /\[(?:Merger|ffmpeg)] Merging formats into\s+"(.+?)"/
 
-const VIDEO_URL_RE =
-  /^https?:\/\/(?:www\.|m\.)?(youtube\.com|youtu\.be|vimeo\.com|tiktok\.com|twitter\.com|x\.com|instagram\.com|facebook\.com|fb\.watch|dailymotion\.com|twitch\.tv|soundcloud\.com|streamable\.com|reddit\.com)\//i
+let ytdlpBin: string | null | undefined
+
+async function readExtraArgs(core: CoreContext): Promise<string[]> {
+  return parseExtraArgs(await core.settings.read<string>('extraArgs'))
+}
 
 interface ActiveJob {
   url: string
   formatId: string
   outputTemplate: string
+  extraArgs: string[]
   handle: SpawnHandle
   outputPath: string | null
+  controllerExtId: string
 }
 
 function unitToBytes(value: number, unit: string): number {
@@ -44,12 +53,32 @@ function parseProgress(
   return { percent, totalBytes, speedBps }
 }
 
+function resolveDownloadDir(core: CoreContext, rawSetting: string | null | undefined): string {
+  const downloadDirSetting = rawSetting?.trim() || '~/Downloads'
+  return downloadDirSetting.startsWith('~/')
+    ? `${core.fs.homedir()}/${downloadDirSetting.slice(2)}`
+    : downloadDirSetting
+}
+
+async function resolveYtdlpBin(core: CoreContext): Promise<string | null> {
+  if (ytdlpBin !== undefined) return ytdlpBin
+
+  const whichResult = await core.shell.exec('which', ['yt-dlp']).catch((err) => {
+    core.logger.warn('Failed to check yt-dlp binary', err)
+    return { code: 1, stdout: '' }
+  })
+  const { code, stdout } = whichResult
+  const resolved = code === 0 && stdout.trim() ? stdout.trim() : null
+  ytdlpBin = resolved
+  return resolved
+}
+
 async function checkBinary(core: CoreContext): Promise<boolean> {
-  const { code } = await core.shell.exec('which', ['yt-dlp']).catch(() => ({ code: 1, stdout: '' }))
-  return code === 0
+  return (await resolveYtdlpBin(core)) !== null
 }
 
 export function register(core: CoreContext): void {
+  ytdlpBin = undefined
   core.registry.registerTool({ name: 'video-downloader' })
   core.registry.registerProvider({ name: 'video-downloader' })
 
@@ -61,22 +90,26 @@ export function register(core: CoreContext): void {
     if (!ok) core.logger.warn('yt-dlp is not installed. Install it with: pip install yt-dlp')
   })
 
-  core.ipc.handle('eval', async (payload: unknown): Promise<{ items: unknown[] }> => {
-    const text = (payload as { text?: string } | null | undefined)?.text?.trim() ?? ''
-    if (!VIDEO_URL_RE.test(text)) return { items: [] }
+  core.ipc.handle(
+    'eval',
+    async (payload: unknown): Promise<{ items: unknown[] }> => {
+      const text = (payload as { text?: string } | null | undefined)?.text?.trim() ?? ''
+      if (!isVideoUrl(text)) return { items: [] }
 
-    return {
-      items: [
-        {
-          id: EXT_ID,
-          title: core.i18n.t('provider.download'),
-          subtitle: core.i18n.t('provider.subtitle', { url: text }),
-          isTool: true,
-          initialQuery: text,
-        },
-      ],
-    }
-  })
+      return {
+        items: [
+          {
+            id: EXT_ID,
+            title: core.i18n.t('provider.download'),
+            subtitle: core.i18n.t('provider.subtitle', { url: text }),
+            isTool: true,
+            initialQuery: text,
+          },
+        ],
+      }
+    },
+    { expose: 'public' }
+  )
 
   function attachHandlers(jobId: string, job: ActiveJob, handle: SpawnHandle): void {
     handle.onData((chunk) => {
@@ -124,20 +157,42 @@ export function register(core: CoreContext): void {
 
   core.ipc.handle('getFormats', async (payload: unknown): Promise<VideoMetadata> => {
     const { url } = payload as GetFormatsPayload
+    const bin = await resolveYtdlpBin(core)
+    if (!bin) throw new Error(core.i18n.t('install.notInstalled'))
+
+    const extraArgs = await readExtraArgs(core)
+    const execArgs = ['-J', '--no-download', ...extraArgs, url]
+
     let stdout: string
+    let code: number
     try {
-      ;({ stdout } = await core.shell.exec('yt-dlp', ['-J', '--no-download', url], {
+      ;({ stdout, code } = await core.shell.exec(bin, execArgs, {
         maxBuffer: 10 * 1024 * 1024,
       }))
     } catch (err) {
       const e = err as { code?: string }
       if (e.code === 'ENOENT') {
-        throw new Error('yt-dlp is not installed. Install it with: pip install yt-dlp')
+        throw new Error(core.i18n.t('install.notInstalled'))
       }
       throw err
     }
 
-    const data = JSON.parse(stdout) as {
+    if (code !== 0) {
+      throw new Error(core.i18n.t('errors.fetchFailed'))
+    }
+
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(stdout)
+    } catch {
+      throw new Error(core.i18n.t('errors.fetchFailed'))
+    }
+
+    if (!parsed || typeof parsed !== 'object') {
+      throw new Error(core.i18n.t('errors.fetchFailed'))
+    }
+
+    const data = parsed as {
       title?: string
       thumbnail?: string
       thumbnails?: Array<{ url: string }>
@@ -161,14 +216,19 @@ export function register(core: CoreContext): void {
     }
 
     const title = data.title ?? 'Unknown Video'
-    const thumbnail =
+    const rawThumbnail =
       data.thumbnail ??
       (data.thumbnails && data.thumbnails.length > 0
         ? data.thumbnails[data.thumbnails.length - 1].url
         : null) ??
       null
+    const thumbnail = await resolveThumbnailUrl(core, rawThumbnail, extraArgs)
     const duration = typeof data.duration === 'number' ? data.duration : null
     const uploader = data.uploader ?? data.channel ?? null
+
+    if (!Array.isArray(data.formats)) {
+      throw new Error(core.i18n.t('errors.noFormats'))
+    }
 
     const formats = data.formats.map(
       (f): VideoFormat => ({
@@ -191,26 +251,40 @@ export function register(core: CoreContext): void {
 
   core.ipc.handle('download', async (payload: unknown): Promise<{ jobId: string }> => {
     const { url, formatId, metadata } = payload as DownloadPayload
+    const bin = await resolveYtdlpBin(core)
+    if (!bin) throw new Error(core.i18n.t('install.notInstalled'))
 
-    const downloadDirSetting = (await core.settings.read<string>('downloadPath')) ?? '~/Downloads'
-    const dir = downloadDirSetting.startsWith('~/')
-      ? `${core.fs.homedir()}/${downloadDirSetting.slice(2)}`
-      : downloadDirSetting
-    await core.fs.mkdir(dir, { recursive: true })
+    const dir = resolveDownloadDir(core, await core.settings.read<string>('downloadPath'))
+    try {
+      await core.fs.mkdir(dir, { recursive: true })
+    } catch {
+      throw new Error(core.i18n.t('errors.downloadFailed'))
+    }
     const outputTemplate = `${dir}/%(title)s.%(ext)s`
-
-    const jobId = crypto.randomUUID()
-    const handle = core.shell.spawn('yt-dlp', [
+    const extraArgs = await readExtraArgs(core)
+    const spawnArgs = [
       '--newline',
       '--continue',
       '-f',
       formatId,
       '-o',
       outputTemplate,
+      ...extraArgs,
       url,
-    ])
+    ]
 
-    const job: ActiveJob = { url, formatId, outputTemplate, handle, outputPath: null }
+    const jobId = crypto.randomUUID()
+    const handle = core.shell.spawn(bin, spawnArgs)
+
+    const job: ActiveJob = {
+      url,
+      formatId,
+      outputTemplate,
+      extraArgs,
+      handle,
+      outputPath: null,
+      controllerExtId: DOWNLOAD_MANAGER_ID,
+    }
     jobs.set(jobId, job)
     attachHandlers(jobId, job, handle)
 
@@ -228,36 +302,55 @@ export function register(core: CoreContext): void {
     return { jobId }
   })
 
-  core.ipc.handle('pause', async (payload: unknown): Promise<void> => {
-    const { jobId } = payload as JobIdPayload
-    jobs.get(jobId)?.handle.kill('SIGTERM')
-  })
+  core.ipc.handle(
+    'pause',
+    async (payload: unknown, context?: IpcInvokeContext): Promise<void> => {
+      const { jobId } = payload as JobIdPayload
+      const job = jobs.get(jobId)
+      if (!job) return
+      assertJobControl(job, EXT_ID, context)
+      job.handle.kill('SIGTERM')
+    },
+    { expose: 'public' }
+  )
 
-  core.ipc.handle('resume', async (payload: unknown): Promise<void> => {
-    const { jobId } = payload as JobIdPayload
-    const job = jobs.get(jobId)
-    if (!job) return
-    const handle = core.shell.spawn('yt-dlp', [
-      '--newline',
-      '--continue',
-      '-f',
-      job.formatId,
-      '-o',
-      job.outputTemplate,
-      job.url,
-    ])
-    job.handle = handle
-    attachHandlers(jobId, job, handle)
-  })
+  core.ipc.handle(
+    'resume',
+    async (payload: unknown, context?: IpcInvokeContext): Promise<void> => {
+      const { jobId } = payload as JobIdPayload
+      const job = jobs.get(jobId)
+      if (!job) return
+      assertJobControl(job, EXT_ID, context)
+      const bin = (await resolveYtdlpBin(core)) ?? 'yt-dlp'
+      const handle = core.shell.spawn(bin, [
+        '--newline',
+        '--continue',
+        '-f',
+        job.formatId,
+        '-o',
+        job.outputTemplate,
+        ...job.extraArgs,
+        job.url,
+      ])
+      job.handle = handle
+      attachHandlers(jobId, job, handle)
+    },
+    { expose: 'public' }
+  )
 
-  core.ipc.handle('cancel', async (payload: unknown): Promise<void> => {
-    const { jobId } = payload as JobIdPayload
-    const job = jobs.get(jobId)
-    if (!job) return
-    job.handle.kill('SIGTERM')
-    if (job.outputPath && (await core.fs.fileExists(job.outputPath))) {
-      await core.fs.rm(job.outputPath)
-    }
-    jobs.delete(jobId)
-  })
+  core.ipc.handle(
+    'cancel',
+    async (payload: unknown, context?: IpcInvokeContext): Promise<void> => {
+      const { jobId } = payload as JobIdPayload
+      const job = jobs.get(jobId)
+      if (!job) return
+      assertJobControl(job, EXT_ID, context)
+      job.handle.kill('SIGTERM')
+      if (job.outputPath && (await core.fs.fileExists(job.outputPath))) {
+        await core.fs.rm(job.outputPath)
+      }
+      jobs.delete(jobId)
+    },
+    { expose: 'public' }
+  )
 }

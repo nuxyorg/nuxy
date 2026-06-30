@@ -27,3 +27,12 @@
   opacity: 0.75;
   background: var(--hover);
 }
+
+.nuxy-shortcut-action--display {
+  cursor: default;
+}
+
+.nuxy-shortcut-action--display:hover {
+  opacity: 1;
+  background: transparent;
+}

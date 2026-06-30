@@ -20,7 +20,7 @@ vi.mock('@nuxyorg/core', async () => {
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
-import { flattenTranslations } from '@nuxyorg/core'
+import { flattenTranslations, flattenShellActions } from '@nuxyorg/core'
 import { AngrysearchController } from '../controller.ts'
 import enLocale from '../locales/en.json'
 import type { AngrysearchItem } from '../types.ts'
@@ -309,13 +309,15 @@ describe('AngrysearchController', () => {
       const ids = actions.map((a) => a.id)
       expect(ids).toEqual(
         expect.arrayContaining([
-          'angrysearch-navigate-up',
-          'angrysearch-navigate-down',
+          'angrysearch-navigate',
           'angrysearch-open',
           'angrysearch-open-location',
           'angrysearch-toggle-regex',
           'angrysearch-update-database',
         ])
+      )
+      expect(flattenShellActions(actions).map((a) => a.id)).toEqual(
+        expect.arrayContaining(['angrysearch-navigate-neg', 'angrysearch-navigate-pos'])
       )
       controller.disconnect()
     })

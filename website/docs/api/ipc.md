@@ -28,7 +28,13 @@ To expose a channel to other extensions:
 1. Add it to `manifest.json`:
 
 ```json
-"ipc": { "public": ["getStatus", "add"] }
+"ipc": {
+  "public": ["getStatus", "add"],
+  "samples": {
+    "getStatus": {},
+    "add": { "url": "magnet:?xt=..." }
+  }
+}
 ```
 
 2. Register with `{ expose: 'public' }`:
@@ -36,6 +42,8 @@ To expose a channel to other extensions:
 ```ts
 core.ipc.handle('getStatus', handler, { expose: 'public' })
 ```
+
+3. Add a matching `ipc.samples` entry for every channel in `ipc.public` (strongly recommended). These example JSON payloads document the cross-extension contract, pre-fill the IPC Explorer invoke textarea, and are validated at startup — the kernel logs a warning when a public channel has no sample.
 
 The kernel validates manifest declarations against registered handlers at startup. Cross-extension renderer calls also require `capabilities.callable: true` on the target extension.
 

@@ -3,11 +3,16 @@ import type { CoreContext, SpawnHandle } from '@nuxyorg/core'
 
 function createSpawnHandle(cmd: string, args: string[]): SpawnHandle {
   const proc = nodeSpawn(cmd, args)
+  let closeHandler: ((code: number | null) => void) | undefined
+  proc.on('error', () => {
+    closeHandler?.(1)
+  })
   return {
     onData(handler) {
       proc.stdout?.on('data', (chunk: Buffer) => handler(chunk.toString()))
     },
     onClose(handler) {
+      closeHandler = handler
       proc.on('close', (code) => handler(code))
     },
     kill(signal?: string) {

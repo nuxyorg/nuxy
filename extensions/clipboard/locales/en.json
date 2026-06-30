@@ -42,7 +42,6 @@
   },
   "actions": {
     "navigate": "Navigate",
-    "nextItem": "Next item",
     "copy": "Copy",
     "deleteSelected": "Delete Selected Item",
     "pinSelected": "Pin Selected Item",

@@ -10,6 +10,10 @@
     "hint": "Paste a magnet link or .torrent URL to add one.",
     "noMatching": "No matching torrents."
   },
+  "loading": {
+    "message": "Connecting to qBittorrent…",
+    "hint": "Loading your torrents."
+  },
   "error": {
     "loadFailed": "Failed to connect to qBittorrent",
     "loadFailedHint": "Check the Web UI address, username and password in Settings."
@@ -33,11 +37,15 @@
     "stalledUP": "Stalled (seeding)",
     "checkingDL": "Checking",
     "checkingUP": "Checking",
+    "checkingResumeData": "Checking resume data",
+    "forcedDL": "Force downloading",
+    "forcedUP": "Force seeding",
     "error": "Error",
     "missingFiles": "Missing files",
     "allocating": "Allocating",
     "metaDL": "Fetching metadata",
     "moving": "Moving",
+    "completed": "Completed",
     "unknown": "Unknown"
   },
   "item": {
@@ -52,8 +60,7 @@
     "remove": "Removing…"
   },
   "actions": {
-    "previous": "Previous",
-    "next": "Next",
+    "navigate": "Navigate",
     "pause": "Pause",
     "resume": "Resume",
     "addTorrent": "Add torrent",
@@ -61,6 +68,7 @@
     "reannounce": "Reannounce",
     "copyMagnet": "Copy magnet link",
     "copySavePath": "Copy save path",
+    "openFolder": "Open save folder",
     "removeKeepData": "Hold to remove (keep data)",
     "removeWithData": "Hold to remove (delete data)"
   },

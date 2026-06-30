@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+import { flattenShellActions } from '@nuxyorg/core'
 import { createGridKeyActions } from './grid-navigation.ts'
 import type { KeyAction } from './useToolKeyActions.ts'
 
@@ -14,7 +15,9 @@ function setupDomGlobals() {
 }
 
 function fire(actions: KeyAction[], key: string): void {
-  actions.find((a) => a.key === key)?.handler()
+  flattenShellActions(actions)
+    .find((a) => a.key === key)
+    ?.handler?.()
 }
 
 describe('createGridKeyActions', () => {
@@ -110,19 +113,42 @@ describe('createGridKeyActions', () => {
     expect(controlOmniBar).toHaveBeenCalledWith('show')
   })
 
-  it('disables left/right navigation when nothing is selected', () => {
+  it('does not move left/right when nothing is selected', () => {
+    setupDomGlobals()
+    let activeIndex = -1
+    const actions = createGridKeyActions({
+      getActiveIndex: () => activeIndex,
+      setActiveIndex: (v) => {
+        activeIndex = typeof v === 'function' ? v(activeIndex) : v
+      },
+      getItemCount: () => 3,
+      getCols: () => 3,
+    })
+
+    fire(actions, 'ArrowRight')
+    expect(activeIndex).toBe(-1)
+
+    fire(actions, 'ArrowLeft')
+    expect(activeIndex).toBe(-1)
+  })
+
+  it('exposes 2D navigation as a single footer entry with all four arrows', () => {
     setupDomGlobals()
     const actions = createGridKeyActions({
-      getActiveIndex: () => -1,
+      getActiveIndex: () => 0,
       setActiveIndex: () => {},
       getItemCount: () => 3,
       getCols: () => 3,
     })
 
-    const left = actions.find((a) => a.key === 'ArrowLeft')
-    const right = actions.find((a) => a.key === 'ArrowRight')
-    expect(left?.activeOn?.()).toBe(false)
-    expect(right?.activeOn?.()).toBe(false)
+    expect(actions).toHaveLength(1)
+    expect(actions[0].hint).toBe('↑↓←→')
+    expect(actions[0].children?.map((c) => c.key)).toEqual([
+      'ArrowUp',
+      'ArrowDown',
+      'ArrowLeft',
+      'ArrowRight',
+    ])
   })
 
   it('enters the first filtered cell on ArrowDown while omnibar still owns focus', () => {

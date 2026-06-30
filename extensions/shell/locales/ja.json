@@ -33,8 +33,6 @@
   "keyboard": {
     "focusTabs": "タブにフォーカス",
     "focusContent": "コンテンツにフォーカス",
-    "previous": "前へ",
-    "next": "次へ",
     "selectConfirm": "選択 / 確定",
     "navigate": "移動",
     "select": "選択"

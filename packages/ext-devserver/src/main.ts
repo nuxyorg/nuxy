@@ -19,8 +19,14 @@ declare global {
 
 async function bootstrap() {
   const [themeRes, iconsRes] = await Promise.all([
-    fetch('/dev/theme.json').catch(() => null),
-    fetch('/dev/icons.json').catch(() => null),
+    fetch('/dev/theme.json').catch((err) => {
+      console.warn('[ext-devserver] failed to fetch dev theme.json', err)
+      return null
+    }),
+    fetch('/dev/icons.json').catch((err) => {
+      console.warn('[ext-devserver] failed to fetch dev icons.json', err)
+      return null
+    }),
   ])
 
   let theme: DevTheme | null = null

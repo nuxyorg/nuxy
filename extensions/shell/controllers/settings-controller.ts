@@ -1,3 +1,4 @@
+import { logCaughtError } from '@nuxyorg/core'
 import { applyUiFontSettings } from '@nuxyorg/extension-sdk'
 import type { ReactiveController, ReactiveControllerHost } from '@nuxyorg/core'
 import type { ShellConfig } from '../types.ts'
@@ -55,6 +56,6 @@ export class SettingsController implements ReactiveController {
         if (colors) Object.entries(colors).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
         if (tokens) Object.entries(tokens).forEach(([k, v]) => root.style.setProperty(`--${k}`, v))
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError('com.nuxy.shell', err, 'getThemeByName'))
   }
 }

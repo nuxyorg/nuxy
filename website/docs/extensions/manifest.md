@@ -89,6 +89,43 @@ Controls cross-extension invocation rights:
 AI orchestrators must declare `"caller": true` to get access to `core.extensions.invoke`. Standard tools should declare `"callable": true` to be invokable by orchestrators, and `"caller": false` to prevent them from making cross-extension calls.
 :::
 
+## Public IPC surface (`ipc`)
+
+Declare channels that other extensions or the shell may invoke cross-extension. All other handlers remain private (same-extension only).
+
+| Field         | Type       | Required | Description                                                                                                               |
+| ------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `ipc.public`  | `string[]` | No       | Channel names exposed cross-extension (e.g. `["getStatus", "add"]`). Omit or use `[]` when no public API is intended.     |
+| `ipc.samples` | `object`   | No       | Example JSON payloads keyed by public channel name. **Strongly recommended** for every entry in `ipc.public` — see below. |
+
+Backend handlers must register public channels with `{ expose: 'public' }`. The kernel validates that manifest declarations match registered handlers at startup.
+
+### Example payloads (`ipc.samples`)
+
+When you declare `ipc.public`, add a matching `ipc.samples` entry for each channel. Use realistic placeholder values that mirror your typed handler payload (from `types.ts` / `IpcChannelMap`):
+
+```json
+{
+  "ipc": {
+    "public": ["getStatus", "add"],
+    "samples": {
+      "getStatus": {},
+      "add": {
+        "url": "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567"
+      }
+    }
+  }
+}
+```
+
+Why bother?
+
+- **IPC Explorer** pre-fills the invoke payload textarea from `ipc.samples`.
+- **Cross-extension callers** discover the contract without reading backend source.
+- **Startup validation** logs a warning when a public channel lacks a sample (non-blocking, but signals incomplete documentation).
+
+Only public channels belong in `ipc.samples`. Private channels must not appear there.
+
 ## Entry Points
 
 The `entry` object maps entry point names to relative file paths within the extension folder.

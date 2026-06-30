@@ -1,4 +1,5 @@
 import type { ShellBridgeSnapshot, ReactiveControllerHost } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import { createStore, type Store, createTranslator, type Translator } from '@nuxyorg/extension-sdk'
 import { getZoom } from './utils/zoom.ts'
 import { resolveLayoutHeight, resolveLayoutWidth } from './utils.ts'
@@ -206,7 +207,7 @@ export class ShellController {
       isToolActive: () => this.tools.activeTool !== null,
       toggleCommandPalette: () => this.toggleCommandPalette(),
       closeCommandPalette: () => this.closeCommandPalette(),
-      returnToShell: () => this.returnToShell({ selectedIndex: 0 }),
+      returnToShell: () => this.returnToShell(),
       clearQueryAndEsc: () => {
         this.query.reset()
         this.navigation.reset()
@@ -499,7 +500,9 @@ export class ShellController {
     } else if (item.isTool) {
       this.openTool(item.id, (item as ListItem & { initialQuery?: string }).initialQuery || '')
     } else if (item.value != null && String(item.value) !== '') {
-      navigator.clipboard.writeText(String(item.value)).catch(() => {})
+      navigator.clipboard
+        .writeText(String(item.value))
+        .catch((err) => logCaughtError(SHELL_EXT_ID, err, 'clipboard.writeText'))
       this.handleCopy(item.id)
     }
   }
@@ -535,7 +538,7 @@ export class ShellController {
 
     if (activeTool && this.store.getState().query === '' && e.key === 'Backspace') {
       e.preventDefault()
-      this.returnToShell({ selectedIndex: 0 })
+      this.returnToShell()
       return
     }
 
@@ -602,15 +605,19 @@ export class ShellController {
   returnToShell(options?: { selectedIndex?: number }): void {
     const container = this.refs.container
     const fromH = container?.offsetHeight ?? 0
+    const exitingToolId = this.tools.activeTool
 
     this.tools.setActiveTool(null)
     this.query.reset()
-    this.navigation.setSelectedIndex(options?.selectedIndex ?? -1)
     this.store.setState({
       showOmniBar: true,
     })
     this._syncProviders()
     this._recompute()
+
+    const selectedIndex = this._resolveReturnSelectedIndex(exitingToolId, options?.selectedIndex)
+    this.refs.selectionSource = 'nav'
+    this.navigation.setSelectedIndex(selectedIndex)
 
     const finishReturn = (): void => {
       requestAnimationFrame(() => {
@@ -637,6 +644,16 @@ export class ShellController {
     } else {
       finishReturn()
     }
+  }
+
+  private _resolveReturnSelectedIndex(
+    exitingToolId: string | null,
+    explicitIndex?: number
+  ): number {
+    if (explicitIndex !== undefined) return explicitIndex
+    if (!exitingToolId) return -1
+    const idx = this.providers.navigableResults.findIndex((r) => r.id === exitingToolId)
+    return idx >= 0 ? idx : -1
   }
 
   containerStyle(): Record<string, string | undefined> {
@@ -684,7 +701,7 @@ export class ShellController {
           this._recompute()
         }
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(SHELL_EXT_ID, err, 'getUsageStats'))
   }
 
   private _recompute(): void {

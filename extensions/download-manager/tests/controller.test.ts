@@ -26,7 +26,7 @@ vi.mock('@nuxyorg/core', async () => {
   return (await hoisted).createNuxyCoreMock(actual as Record<string, unknown>)
 })
 
-import { flattenTranslations } from '@nuxyorg/core'
+import { flattenTranslations, flattenShellActions } from '@nuxyorg/core'
 import type { DownloadItem } from '../types.ts'
 import { DownloadManagerController } from '../controller.ts'
 import enLocale from '../locales/en.json'
@@ -273,8 +273,8 @@ describe('DownloadManagerController keyboard actions', () => {
     controller.connect()
     controller.store.setState({ items: [makeItem()], selectedIndex: -1 })
 
-    const down = getter!().find((a) => a.key === 'ArrowDown')
-    down?.handler()
+    const down = flattenShellActions(getter!()).find((a) => a.key === 'ArrowDown')
+    down?.handler?.()
 
     expect(controlOmniBarMock).toHaveBeenCalledWith('hide')
     expect(controller.state.selectedIndex).toBe(0)
@@ -286,8 +286,8 @@ describe('DownloadManagerController keyboard actions', () => {
     controller.connect()
     controller.store.setState({ items: [makeItem()], selectedIndex: 0 })
 
-    const up = getter!().find((a) => a.key === 'ArrowUp')
-    up?.handler()
+    const up = flattenShellActions(getter!()).find((a) => a.key === 'ArrowUp')
+    up?.handler?.()
 
     expect(controlOmniBarMock).toHaveBeenCalledWith('show')
     expect(controller.state.selectedIndex).toBe(-1)
@@ -333,7 +333,7 @@ describe('DownloadManagerController keyboard actions', () => {
     expect(enter?.activeOn?.()).toBe(true)
     expect(shiftEnter?.activeOn?.()).toBe(false)
     expect(shiftEnter?.showInMenu).toBe(false)
-    enter?.handler()
+    enter?.handler?.()
     await Promise.resolve()
     expect(resumed).toEqual(['d1'])
     controller.disconnect()
@@ -370,7 +370,7 @@ describe('DownloadManagerController keyboard actions', () => {
 
     const selectAll = getter!().find((a) => a.id === 'dm-select-all')
     expect(selectAll).toMatchObject({ key: 'a', modifiers: ['ctrl'], showInMenu: true })
-    selectAll?.handler()
+    selectAll?.handler?.()
     expect(controller.state.multiSelectMode).toBe(true)
     expect(controller.state.checkedIds).toEqual(new Set(['d1', 'd2']))
 
@@ -379,11 +379,11 @@ describe('DownloadManagerController keyboard actions', () => {
 
     const space = getter!().find((a) => a.id === 'dm-space')
     expect(space).toMatchObject({ key: ' ', hint: 'Space' })
-    space?.handler()
+    space?.handler?.()
     expect(controller.state.multiSelectMode).toBe(true)
     expect(controller.state.checkedIds).toEqual(new Set(['d1']))
 
-    space?.handler()
+    space?.handler?.()
     expect(controller.state.checkedIds).toEqual(new Set())
 
     controller.disconnect()
@@ -400,7 +400,7 @@ describe('DownloadManagerController keyboard actions', () => {
     controller.setMultiSelectMode(true)
     const escActive = getter!().find((a) => a.key === 'Escape')
     expect(escActive?.activeOn?.()).toBe(true)
-    escActive?.handler()
+    escActive?.handler?.()
     expect(controller.state.multiSelectMode).toBe(false)
 
     controller.disconnect()
@@ -516,7 +516,7 @@ describe('DownloadManagerController keyboard actions', () => {
 
     const selectAll = getter!().find((a) => a.id === 'dm-select-all')
     expect(selectAll?.activeOn?.()).toBe(true)
-    selectAll?.handler()
+    selectAll?.handler?.()
 
     expect(controller.state.multiSelectMode).toBe(true)
     expect(controller.state.checkedIds).toEqual(new Set(['d1', 'd2']))

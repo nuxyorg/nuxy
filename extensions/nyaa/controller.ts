@@ -1,5 +1,6 @@
 import type { ExtensionManifest, ShellAction, TemplateResult } from '@nuxyorg/core'
-import { render, html } from '@nuxyorg/core'
+import { logCaughtError, render, html } from '@nuxyorg/core'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import {
   completeToolAction,
   setToolSearchPlaceholder,
@@ -112,7 +113,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
           window.core?.shell?.refreshShellActions()
         }
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'getActionSettings'))
   }
 
   private startTorrentClientPoll(): void {
@@ -196,7 +197,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
         this.copiedTimer = setTimeout(() => this.store.setState({ copiedId: null }), 2000)
         completeToolAction(manifest)
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'copyMagnet'))
   }
 
   handleDownloadTorrent(id: string): void {
@@ -219,7 +220,7 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
         { callerExtId: EXT_ID }
       )
       .then(() => completeToolAction(manifest))
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'copyMagnets'))
   }
 
   handleDownloadTorrents(ids: string[]): void {
@@ -422,25 +423,18 @@ export class NyaaController extends BaseExtensionController<NyaaState> {
         activeOn: () => multiSelectMode && checkedItems.length > 0,
         handler: () => this.handleDownloadTorrents(checkedItems.map((i) => i.id)),
       },
-      {
-        id: 'nyaa-navigate-up',
-        key: 'ArrowUp',
+      pairedKeyAction({
+        id: 'nyaa-navigate',
         label: t('actions.navigate'),
-        hint: '↑↓',
-        handler: () => {
+        negative: () => {
           if (this.state.results.length === 0) return
           this.setSelectedIndex((prev) => (prev <= 0 ? -1 : prev - 1))
         },
-      },
-      {
-        id: 'nyaa-navigate-down',
-        key: 'ArrowDown',
-        label: '',
-        handler: () => {
+        positive: () => {
           if (this.state.results.length === 0) return
           this.setSelectedIndex((prev) => Math.min(prev + 1, this.state.results.length - 1))
         },
-      },
+      }),
     ]
 
     if (enterAction) actions.push(enterAction)

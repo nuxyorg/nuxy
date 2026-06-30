@@ -4,7 +4,12 @@ import { app } from 'electron'
 import { loadedExtensions } from '../../extensions/scanner.js'
 import { getExtensionById, getDisplayName, getPreferredLocale } from '../../extensions/registry.js'
 import { EXTRACTED_DIR, DATA_DIR } from '../../config/paths.js'
-import { resolveLocale, flattenTranslations, getTextDirection } from '@nuxyorg/core'
+import {
+  resolveLocale,
+  flattenTranslations,
+  mergeTranslations,
+  getTextDirection,
+} from '@nuxyorg/core'
 import type { ExtensionSettingsSchema, IpcResult, LoadedExtension } from '@nuxyorg/core'
 
 /** Read the live settings schema from the extracted extension folder (avoids stale in-memory cache). */
@@ -136,7 +141,13 @@ export const i18nHandlers: Record<string, Handler> = {
       }
     }
 
-    const translations = tryLoad(resolved) ?? tryLoad(defaultLocale) ?? {}
+    const defaultTranslations = tryLoad(defaultLocale) ?? {}
+    const resolvedTranslations =
+      resolved === defaultLocale ? defaultTranslations : tryLoad(resolved)
+    const translations =
+      resolved === defaultLocale || !resolvedTranslations
+        ? defaultTranslations
+        : mergeTranslations(defaultTranslations, resolvedTranslations)
     return { success: true, data: { locale: resolved, dir, translations } }
   },
 }

@@ -1,5 +1,7 @@
 import { vi } from 'vitest'
-import type { CoreContext } from '@nuxyorg/core'
+import type { CoreContext, IpcInvokeContext } from '@nuxyorg/core'
+
+export type MockIpcHandler = (payload?: unknown, context?: IpcInvokeContext) => Promise<unknown>
 
 interface WindowCoreConfig {
   ipc?: {
@@ -101,10 +103,10 @@ export function createNuxyCoreMock(actual: Record<string, unknown>): Record<stri
  */
 export function createMockCore(overrides?: any): {
   core: CoreContext
-  handlers: Record<string, (payload?: any) => Promise<any> | any>
+  handlers: Record<string, MockIpcHandler>
   publicChannels: Set<string>
 } {
-  const handlers: Record<string, (payload?: any) => Promise<any> | any> = {}
+  const handlers: Record<string, MockIpcHandler> = {}
   const publicChannels = new Set<string>()
 
   const core = {
@@ -117,11 +119,7 @@ export function createMockCore(overrides?: any): {
       getCallableTools: vi.fn().mockReturnValue([]),
     },
     ipc: {
-      handle: (
-        ch: string,
-        fn: (payload?: any) => Promise<any> | any,
-        options?: { expose?: 'public' | 'private' }
-      ) => {
+      handle: (ch: string, fn: MockIpcHandler, options?: { expose?: 'public' | 'private' }) => {
         handlers[ch] = fn
         if (options?.expose === 'public') publicChannels.add(ch)
       },

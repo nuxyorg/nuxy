@@ -1,5 +1,6 @@
 import type { ShellAction } from '@nuxyorg/core'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import type { TypedInvoker } from '@nuxyorg/extension-sdk'
 import { TABS, buildNavSections, filterExtensions } from './utils/store-filter.ts'
 import type { NavSection } from './utils/store-filter.ts'
@@ -199,25 +200,17 @@ export class StoreController extends BaseExtensionController<StoreState> {
     const currentIdx = TABS.findIndex((tab) => tab.id === this.state.activeTab)
 
     return [
-      {
-        id: 'store-tab-up',
-        key: 'ArrowUp',
+      pairedKeyAction({
+        id: 'store-tab-navigate',
         label: t('actions.navigate'),
-        hint: '↑↓',
         allowRepeat: true,
-        handler: () => {
+        negative: () => {
           if (currentIdx > 0) this.navigateTab(TABS[currentIdx - 1].id)
         },
-      },
-      {
-        id: 'store-tab-down',
-        key: 'ArrowDown',
-        label: '',
-        allowRepeat: true,
-        handler: () => {
+        positive: () => {
           if (currentIdx < TABS.length - 1) this.navigateTab(TABS[currentIdx + 1].id)
         },
-      },
+      }),
       {
         id: 'store-focus-right',
         key: 'ArrowRight',
@@ -246,13 +239,11 @@ export class StoreController extends BaseExtensionController<StoreState> {
         label: t('actions.focusSidebar'),
         handler: () => this.focusLeftPanel(),
       },
-      {
-        id: 'store-navigate-up',
-        key: 'ArrowUp',
+      pairedKeyAction({
+        id: 'store-navigate',
         label: t('actions.navigate'),
-        hint: '↑↓',
         allowRepeat: true,
-        handler: () =>
+        negative: () =>
           this.setSelectedIndex((idx) => {
             if (idx <= 0) {
               this.focusLeftPanel()
@@ -260,19 +251,13 @@ export class StoreController extends BaseExtensionController<StoreState> {
             }
             return idx - 1
           }),
-      },
-      {
-        id: 'store-navigate-down',
-        key: 'ArrowDown',
-        label: '',
-        allowRepeat: true,
-        handler: () => {
+        positive: () => {
           this.setSelectedIndex((idx) => {
             const maxIdx = filtered.length - 1
             return idx >= maxIdx ? maxIdx : idx + 1
           })
         },
-      },
+      }),
       {
         id: 'store-install',
         key: 'Enter',

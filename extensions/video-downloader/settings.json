@@ -8,6 +8,14 @@
       "default": "~/Downloads",
       "placeholder": "~/Downloads",
       "description": "Folder where downloaded videos are saved"
+    },
+    {
+      "key": "extraArgs",
+      "label": "Extra yt-dlp arguments",
+      "type": "text",
+      "default": "",
+      "placeholder": "-4 --no-playlist",
+      "description": "Additional command-line flags passed to yt-dlp on every download (e.g. -4 to force IPv4). Quote values that contain spaces."
     }
   ]
 }

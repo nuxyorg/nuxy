@@ -1,5 +1,7 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import { createInvoker } from './utils/ipc.ts'
 import {
   generateTransferCode,
@@ -72,7 +74,8 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
       .then((settings) => {
         this.store.setState({ settings })
       })
-      .catch(() => {
+      .catch((err) => {
+        logCaughtError(EXT_ID, err, 'getSettings')
         this.store.setState({
           settings: {
             downloadDir: '~/Downloads',
@@ -396,17 +399,11 @@ export class FileTransferController extends BaseExtensionController<FileTransfer
 
     if (s.mode === 'menu') {
       return [
-        {
-          key: 'ArrowUp',
+        pairedKeyAction({
           label: t('keys.navigate'),
-          hint: '↑↓',
-          handler: () => this.setMenuIndex(s.menuIndex - 1),
-        },
-        {
-          key: 'ArrowDown',
-          label: '',
-          handler: () => this.setMenuIndex(s.menuIndex + 1),
-        },
+          negative: () => this.setMenuIndex(s.menuIndex - 1),
+          positive: () => this.setMenuIndex(s.menuIndex + 1),
+        }),
         {
           key: 'Enter',
           label: t('keys.select'),

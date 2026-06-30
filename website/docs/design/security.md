@@ -62,6 +62,8 @@ By routing all cross-module calls through the **Kernel Message Broker**:
 
 Each extension declares its cross-module API in `manifest.json` under `ipc.public`. Backend handlers opt in with `core.ipc.handle(channel, fn, { expose: 'public' })`. At startup the kernel rejects extensions whose public handlers and manifest declarations disagree.
 
+Provide an `ipc.samples` object alongside `ipc.public` — one example JSON payload per public channel. Samples are optional but **strongly recommended**: they document the expected payload shape for cross-extension callers, pre-fill the IPC Explorer dev tool, and trigger a kernel warning at startup when missing.
+
 Renderer invocations are fail-closed:
 
 - **Private channels** require `callerExtId === targetExtId`.

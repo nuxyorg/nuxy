@@ -1,13 +1,18 @@
 import { protocol, net } from 'electron'
 import fs from 'fs'
+import { kernelLogger } from '@nuxyorg/core'
+import { listNuxyCoreRuntimeExportNames } from '@nuxyorg/core/runtime-export-names'
+import { listNuxySdkRuntimeExportNames } from '@nuxyorg/extension-sdk/runtime-export-names'
 import { resolveExtensionFile } from './resolve.js'
 import { createJsonModuleResponse, MODULE_HEADERS } from './response.js'
 import { bundleExtensionFrontend } from '../extensions/bundle-frontend.js'
-import { kernelLogger } from '@nuxyorg/core'
+import { buildRuntimeVirtualModule } from './virtual-runtime-module.js'
 
 const log = kernelLogger.child('Protocol')
 
 const bundleCache = new Map<string, { mtime: number; output: string }>()
+const CORE_VIRTUAL_SCRIPT = buildRuntimeVirtualModule('NuxyCore', listNuxyCoreRuntimeExportNames())
+const SDK_VIRTUAL_SCRIPT = buildRuntimeVirtualModule('NuxySdk', listNuxySdkRuntimeExportNames())
 
 export function registerProtocols() {
   protocol.handle('nuxy-ext', async (request) => {
@@ -16,63 +21,11 @@ export function registerProtocols() {
     const filePath = rest.join('/')
 
     if (extId === 'core') {
-      const coreVirtualScript = `
-        const NuxyCore = window.NuxyCore || {};
-        export const {
-          createLogger,
-          kernelLogger,
-          HostChannel,
-          resolveLocale,
-          flattenTranslations,
-          interpolate,
-          selectPlural,
-          getTextDirection,
-          resolveToolElementTag,
-          listCompositionProvides,
-          listCompositionClaims,
-          validateCompositionClaim,
-          LitElement,
-          html,
-          css,
-          nothing,
-          render,
-          svg,
-          customElement,
-          property,
-          state,
-          query,
-          ref,
-          createRef,
-          safeHTML,
-          safeSVG,
-        } = NuxyCore;
-      `
-      return new Response(coreVirtualScript, { headers: MODULE_HEADERS })
+      return new Response(CORE_VIRTUAL_SCRIPT, { headers: MODULE_HEADERS })
     }
 
     if (extId === 'sdk') {
-      const sdkVirtualScript = `
-        const NuxySdk = window.NuxySdk || {};
-        export const {
-          createStore,
-          createTranslator,
-          BaseExtensionController,
-          invokeExtensionIpc,
-          getToolOnComplete,
-          shouldSuppressBlurHide,
-          syncBlurSuppression,
-          setToolSearchPlaceholder,
-          completeToolAction,
-          defineExtension,
-          HostChannel,
-          getFocusableElements,
-          trapTabKey,
-          applyUiFontSettings,
-          DEFAULT_FONT_FAMILY_MAP,
-          resolveFontFamily,
-        } = NuxySdk;
-      `
-      return new Response(sdkVirtualScript, { headers: MODULE_HEADERS })
+      return new Response(SDK_VIRTUAL_SCRIPT, { headers: MODULE_HEADERS })
     }
 
     const resolved = resolveExtensionFile(extId, filePath)

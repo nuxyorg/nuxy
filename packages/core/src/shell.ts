@@ -14,6 +14,11 @@ export interface ShellAction {
   label: string
   /** Footer chip text. Presence of this field makes the action show up in the footer. */
   hint?: string | string[]
+  /**
+   * When false, the footer chip is display-only (no click handler). Display
+   * groups (`children` without a parent `handler`) are non-clickable by default.
+   */
+  clickable?: boolean
   /** Ctrl+K palette divider grouping. */
   section?: string
   /** Makes the action show up in the Ctrl+K palette. */
@@ -25,7 +30,8 @@ export interface ShellAction {
    */
   relevantFor?: QueryType[]
   activeOn?: () => boolean
-  handler: () => void
+  /** Omit on display groups; keyboard bindings live in `children`. */
+  handler?: () => void
   allowRepeat?: boolean
   trigger?: 'press' | 'hold'
   /** Shown when a hold action is released before it completes. */

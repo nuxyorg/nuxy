@@ -38,7 +38,10 @@ const pendingHostCalls = new Map<
   }
 >()
 
-const channelHandlers = new Map<string, (payload: unknown) => Promise<unknown>>()
+const channelHandlers = new Map<
+  string,
+  (payload: unknown, context?: { callerExtId?: string }) => Promise<unknown>
+>()
 
 parentPort!.on('message', (msg: HostToWorkerMessage) => {
   if (msg?.type === 'host:reply') {
@@ -51,7 +54,7 @@ parentPort!.on('message', (msg: HostToWorkerMessage) => {
     if (!handler) return
     void (async () => {
       try {
-        const res = await handler(msg.payload)
+        const res = await handler(msg.payload, { callerExtId: msg.callerExtId })
         parentPort!.postMessage({ kind: 'reply', id: msg.id, result: res } as WorkerToHostMessage)
       } catch (e) {
         const err = e as Error

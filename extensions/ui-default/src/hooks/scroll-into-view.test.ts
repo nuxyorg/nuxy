@@ -75,6 +75,51 @@ describe('scroll-into-view', () => {
     expect(container.scrollTop).toBeGreaterThan(0)
   })
 
+  it('finds scroll parent through shadow DOM hosts', () => {
+    const container = document.createElement('div')
+    container.style.overflowY = 'auto'
+    container.style.height = '100px'
+
+    const host = document.createElement('div')
+    const shadow = host.attachShadow({ mode: 'open' })
+    const button = document.createElement('button')
+    shadow.appendChild(button)
+    container.appendChild(host)
+    document.body.appendChild(container)
+
+    Object.defineProperty(container, 'scrollHeight', { configurable: true, value: 200 })
+    Object.defineProperty(container, 'clientHeight', { configurable: true, value: 100 })
+
+    vi.spyOn(container, 'getBoundingClientRect').mockReturnValue({
+      top: 0,
+      bottom: 100,
+      left: 0,
+      right: 100,
+      width: 100,
+      height: 100,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    } as DOMRect)
+    vi.spyOn(button, 'getBoundingClientRect').mockReturnValue({
+      top: 120,
+      bottom: 140,
+      left: 0,
+      right: 100,
+      width: 100,
+      height: 20,
+      x: 0,
+      y: 120,
+      toJSON: () => ({}),
+    } as DOMRect)
+
+    const scrollIntoView = vi.spyOn(button, 'scrollIntoView')
+    smoothScrollIntoViewIfNeeded(button)
+
+    expect(scrollIntoView).not.toHaveBeenCalled()
+    expect(container.scrollTop).toBeGreaterThan(0)
+  })
+
   it('scrolls to section header when moving up to the first list item', () => {
     if (!customElements.get('nuxy-section-header')) {
       customElements.define('nuxy-section-header', class extends HTMLElement {})
@@ -116,6 +161,25 @@ describe('scroll-into-view', () => {
 
     smoothScrollIntoViewIfNeeded(item, { scrollBias: 'down' })
     expect(container.scrollTop).toBe(30)
+  })
+
+  it('skips look-ahead padding when scrollLookahead is false', () => {
+    const { container, item } = setupScrollContainer()
+
+    vi.spyOn(item, 'getBoundingClientRect').mockReturnValue({
+      top: 50,
+      bottom: 90,
+      left: 0,
+      right: 100,
+      width: 100,
+      height: 40,
+      x: 0,
+      y: 50,
+      toJSON: () => ({}),
+    } as DOMRect)
+
+    smoothScrollIntoViewIfNeeded(item, { scrollBias: 'down', scrollLookahead: false })
+    expect(container.scrollTop).toBe(0)
   })
 
   it('scrolls further when scrollBias is down and the item is off-screen', () => {

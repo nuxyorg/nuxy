@@ -40,6 +40,11 @@
       "label": "İndirme Konumu",
       "placeholder": "~/Downloads",
       "description": "İndirilen videoların kaydedileceği klasör"
+    },
+    "extraArgs": {
+      "label": "Ek yt-dlp parametreleri",
+      "placeholder": "-4 --no-playlist",
+      "description": "Her indirmede yt-dlp'ye iletilen ek komut satırı bayrakları (ör. IPv4 için -4). Boşluk içeren değerleri tırnak içine alın."
     }
   }
 }

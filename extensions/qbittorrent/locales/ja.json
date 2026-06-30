@@ -52,8 +52,7 @@
     "remove": "削除中…"
   },
   "actions": {
-    "previous": "前へ",
-    "next": "次へ",
+    "navigate": "移動",
     "pause": "一時停止",
     "resume": "再開",
     "addTorrent": "トレントを追加",

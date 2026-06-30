@@ -190,7 +190,9 @@ export async function register(core: CoreContext): Promise<void> {
             'SELECT id, title, body FROM notes_fts WHERE title LIKE ? OR body LIKE ?'
           )
           matchingNotes = stmt.all(`%${text}%`, `%${text}%`) as unknown as FtsRow[]
-        } catch {}
+        } catch (fallbackErr) {
+          core.logger.warn('FTS LIKE fallback query failed', fallbackErr)
+        }
       }
 
       const items: unknown[] = []
@@ -311,7 +313,9 @@ export async function register(core: CoreContext): Promise<void> {
       )
       return { transcript }
     } finally {
-      await core.fs.rm(tmpPath).catch(() => {})
+      await core.fs
+        .rm(tmpPath)
+        .catch((err) => core.logger.warn('Failed to remove temporary transcription file', err))
     }
   })
 

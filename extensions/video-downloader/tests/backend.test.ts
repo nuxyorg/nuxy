@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { type CoreContext } from '@nuxyorg/extension-sdk'
-import { createMockCore } from '@nuxyorg/extension-sdk/testing'
+import { createMockCore, type MockIpcHandler } from '@nuxyorg/extension-sdk/testing'
 import { register } from '../backend.ts'
+import type { VideoMetadata } from '../types.ts'
 
 const DOWNLOAD_MANAGER_ID = 'com.nuxy.download-manager'
 const EXT_ID = 'com.nuxy.video-downloader'
@@ -36,16 +37,19 @@ function createFakeSpawnHandle(): FakeSpawnHandle {
 
 describe('video-downloader backend', () => {
   let core: CoreContext
-  let handlers: Record<string, (payload?: unknown) => Promise<unknown>>
+  let handlers: Record<string, MockIpcHandler>
+  let publicChannels: Set<string>
   let spawnHandle: FakeSpawnHandle
 
   beforeEach(() => {
     spawnHandle = createFakeSpawnHandle()
-    ;({ core, handlers } = createMockCore({
+    ;({ core, handlers, publicChannels } = createMockCore({
       fs: {
         homedir: vi.fn().mockReturnValue('/home/test'),
+        tmpdir: vi.fn().mockReturnValue('/tmp'),
         mkdir: vi.fn().mockResolvedValue(undefined),
         fileExists: vi.fn().mockResolvedValue(false),
+        readFileBinary: vi.fn().mockResolvedValue(new Uint8Array([0xff, 0xd8, 0xff, 0x00])),
         rm: vi.fn().mockResolvedValue(undefined),
       },
       shell: {
@@ -53,7 +57,11 @@ describe('video-downloader backend', () => {
         spawn: vi.fn().mockReturnValue(spawnHandle),
       },
       settings: {
-        read: vi.fn().mockResolvedValue('~/Downloads'),
+        read: vi
+          .fn()
+          .mockImplementation((key: string) =>
+            Promise.resolve(key === 'downloadPath' ? '~/Downloads' : '')
+          ),
         write: vi.fn().mockResolvedValue(undefined),
       },
       extensions: {
@@ -73,6 +81,10 @@ describe('video-downloader backend', () => {
 
   it('registers as a provider named "video-downloader"', () => {
     expect(core.registry.registerProvider).toHaveBeenCalledWith({ name: 'video-downloader' })
+  })
+
+  it('exposes eval, pause, resume, and cancel publicly, matching manifest.ipc.public', () => {
+    expect(publicChannels).toEqual(new Set(['eval', 'pause', 'resume', 'cancel']))
   })
 
   describe('eval', () => {
@@ -144,10 +156,55 @@ describe('video-downloader backend', () => {
       await handlers.getFormats({ url: 'https://youtube.com/watch?v=test' })
 
       expect(core.shell.exec).toHaveBeenCalledWith(
-        'yt-dlp',
+        '/usr/bin/yt-dlp',
         ['-J', '--no-download', 'https://youtube.com/watch?v=test'],
         { maxBuffer: 10 * 1024 * 1024 }
       )
+    })
+
+    it('injects parsed extra yt-dlp arguments before the URL', async () => {
+      vi.mocked(core.settings.read).mockImplementation((key: string) =>
+        Promise.resolve(key === 'extraArgs' ? '-4 --no-playlist' : null)
+      )
+      vi.mocked(core.shell.exec).mockResolvedValueOnce({
+        stdout: JSON.stringify({ formats: [] }),
+        code: 0,
+      })
+
+      await handlers.getFormats({ url: 'https://youtube.com/watch?v=test' })
+
+      expect(core.shell.exec).toHaveBeenCalledWith(
+        '/usr/bin/yt-dlp',
+        ['-J', '--no-download', '-4', '--no-playlist', 'https://youtube.com/watch?v=test'],
+        { maxBuffer: 10 * 1024 * 1024 }
+      )
+    })
+
+    it('proxies thumbnails through curl when network extra args are set', async () => {
+      vi.mocked(core.settings.read).mockImplementation((key: string) =>
+        Promise.resolve(key === 'extraArgs' ? '-4' : null)
+      )
+      vi.mocked(core.fs.fileExists).mockResolvedValue(true)
+      vi.mocked(core.shell.exec)
+        .mockResolvedValueOnce({
+          stdout: JSON.stringify({
+            title: 'Test Video',
+            thumbnail: 'https://example.com/thumb.jpg',
+            formats: [],
+          }),
+          code: 0,
+        })
+        .mockResolvedValueOnce({ stdout: '', code: 0 })
+
+      const result = (await handlers.getFormats({
+        url: 'https://youtube.com/watch?v=test',
+      })) as VideoMetadata
+
+      expect(core.shell.exec).toHaveBeenCalledWith(
+        'curl',
+        expect.arrayContaining(['-4', 'https://example.com/thumb.jpg'])
+      )
+      expect(result.thumbnail).toMatch(/^data:image\/jpeg;base64,/)
     })
 
     it('parses yt-dlp JSON output into a VideoMetadata shape', async () => {
@@ -183,7 +240,29 @@ describe('video-downloader backend', () => {
       vi.mocked(core.shell.exec).mockRejectedValueOnce(enoentErr)
 
       await expect(handlers.getFormats({ url: 'https://example.com/video' })).rejects.toThrow(
-        'yt-dlp is not installed'
+        'install.notInstalled'
+      )
+    })
+
+    it('throws a friendly error when yt-dlp exits with a non-zero code', async () => {
+      vi.mocked(core.shell.exec).mockResolvedValueOnce({
+        stdout: '',
+        code: 1,
+      })
+
+      await expect(handlers.getFormats({ url: 'https://example.com/video' })).rejects.toThrow(
+        'errors.fetchFailed'
+      )
+    })
+
+    it('throws a friendly error when yt-dlp returns null JSON', async () => {
+      vi.mocked(core.shell.exec).mockResolvedValueOnce({
+        stdout: 'null',
+        code: 0,
+      })
+
+      await expect(handlers.getFormats({ url: 'https://example.com/video' })).rejects.toThrow(
+        'errors.fetchFailed'
       )
     })
   })
@@ -199,7 +278,7 @@ describe('video-downloader backend', () => {
 
       expect(typeof jobId).toBe('string')
       expect(core.shell.spawn).toHaveBeenCalledWith(
-        'yt-dlp',
+        '/usr/bin/yt-dlp',
         expect.arrayContaining([
           '--newline',
           '--continue',
@@ -217,6 +296,65 @@ describe('video-downloader backend', () => {
         totalBytes: null,
         thumbnail: null,
       })
+    })
+
+    it('injects parsed extra yt-dlp arguments before the URL', async () => {
+      vi.mocked(core.settings.read).mockImplementation((key: string) =>
+        Promise.resolve(key === 'downloadPath' ? '~/Downloads' : '-4 --no-playlist')
+      )
+
+      await handlers.download({
+        url: 'https://example.com/video',
+        formatId: '137',
+        resolution: '1080p',
+        metadata: { title: 'My Video', thumbnail: null, duration: null, uploader: null },
+      })
+
+      const args = vi.mocked(core.shell.spawn).mock.calls[0][1]
+      expect(args).toEqual([
+        '--newline',
+        '--continue',
+        '-f',
+        '137',
+        '-o',
+        '/home/test/Downloads/%(title)s.%(ext)s',
+        '-4',
+        '--no-playlist',
+        'https://example.com/video',
+      ])
+    })
+
+    it('adds no extra arguments when the setting is empty', async () => {
+      await handlers.download({
+        url: 'https://example.com/video',
+        formatId: '137',
+        resolution: '1080p',
+        metadata: { title: 'My Video', thumbnail: null, duration: null, uploader: null },
+      })
+
+      const args = vi.mocked(core.shell.spawn).mock.calls[0][1]
+      expect(args).toEqual([
+        '--newline',
+        '--continue',
+        '-f',
+        '137',
+        '-o',
+        '/home/test/Downloads/%(title)s.%(ext)s',
+        'https://example.com/video',
+      ])
+    })
+
+    it('defaults to ~/Downloads when downloadPath is empty', async () => {
+      vi.mocked(core.settings.read).mockResolvedValueOnce('')
+
+      await handlers.download({
+        url: 'https://example.com/video',
+        formatId: '137',
+        resolution: '1080p',
+        metadata: { title: 'My Video', thumbnail: null, duration: null, uploader: null },
+      })
+
+      expect(core.fs.mkdir).toHaveBeenCalledWith('/home/test/Downloads', { recursive: true })
     })
 
     it('forwards the video thumbnail to the download manager when known', async () => {
@@ -332,9 +470,29 @@ describe('video-downloader backend', () => {
       await handlers.resume({ jobId })
 
       expect(core.shell.spawn).toHaveBeenCalledWith(
-        'yt-dlp',
+        '/usr/bin/yt-dlp',
         expect.arrayContaining(['--continue', '-f', '137'])
       )
+    })
+
+    it('resume reuses the extra arguments captured at download time', async () => {
+      vi.mocked(core.settings.read).mockImplementation((key: string) =>
+        Promise.resolve(key === 'downloadPath' ? '~/Downloads' : '-4')
+      )
+      const { jobId } = (await handlers.download({
+        url: 'https://example.com/video',
+        formatId: '137',
+        resolution: '1080p',
+        metadata: { title: 'My Video', thumbnail: null, duration: null, uploader: null },
+      })) as { jobId: string }
+      await handlers.pause({ jobId })
+      vi.mocked(core.shell.spawn).mockClear()
+
+      await handlers.resume({ jobId })
+
+      const args = vi.mocked(core.shell.spawn).mock.calls[0][1]
+      expect(args).toContain('-4')
+      expect(args[args.length - 1]).toBe('https://example.com/video')
     })
 
     it('cancel kills the process and removes the partial file if known', async () => {
@@ -355,6 +513,32 @@ describe('video-downloader backend', () => {
 
     it('cancel on an unknown job is a no-op', async () => {
       await expect(handlers.cancel({ jobId: 'missing' })).resolves.toBeUndefined()
+    })
+
+    it('rejects pause from an extension that is not the job controller', async () => {
+      const { jobId } = (await handlers.download({
+        url: 'https://example.com/video',
+        formatId: '137',
+        resolution: '1080p',
+        metadata: { title: 'My Video', thumbnail: null, duration: null, uploader: null },
+      })) as { jobId: string }
+
+      await expect(handlers.pause({ jobId }, { callerExtId: 'com.nuxy.nyaa' })).rejects.toThrow(
+        'Not authorized to control this job'
+      )
+    })
+
+    it('allows pause from the download manager controller', async () => {
+      const { jobId } = (await handlers.download({
+        url: 'https://example.com/video',
+        formatId: '137',
+        resolution: '1080p',
+        metadata: { title: 'My Video', thumbnail: null, duration: null, uploader: null },
+      })) as { jobId: string }
+
+      await handlers.pause({ jobId }, { callerExtId: DOWNLOAD_MANAGER_ID })
+
+      expect(spawnHandle.kill).toHaveBeenCalledWith('SIGTERM')
     })
   })
 })

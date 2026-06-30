@@ -12,7 +12,10 @@
     "caller": false
   },
   "ipc": {
-    "public": ["eval"]
+    "public": ["eval"],
+    "samples": {
+      "eval": { "text": "meeting notes" }
+    }
   },
   "entry": {
     "backend": "backend.ts",

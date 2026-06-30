@@ -1,3 +1,4 @@
+import { logCaughtError } from '@nuxyorg/core'
 import type { ShellConfig, Tool, Provider, Orchestrator, UsageStats } from '../types.ts'
 import type { ExtensionSummary } from '../controller.ts'
 import { SHELL_EXT_ID } from '../utils.ts'
@@ -107,7 +108,7 @@ export class InitController {
         if (!r?.success || !r.data) return
         this.callbacks.applySettings(r.data)
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(SHELL_EXT_ID, err, 'getSettings'))
   }
 
   private _fetchRecentTools(): void {
@@ -120,7 +121,7 @@ export class InitController {
           this.callbacks.recompute()
         }
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(SHELL_EXT_ID, err, 'getRecentTools'))
   }
 
   private _fetchUsageStats(): void {
@@ -133,7 +134,7 @@ export class InitController {
           this.callbacks.recompute()
         }
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(SHELL_EXT_ID, err, 'getUsageStats'))
   }
 
   private _fetchExtensionSummary(): void {
@@ -143,7 +144,7 @@ export class InitController {
         const r = res as { success: boolean; data: ExtensionSummary } | null
         if (r?.success && r.data) this.callbacks.setExtensionSummary(r.data)
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(SHELL_EXT_ID, err, 'getExtensionSummary'))
   }
 
   private _bindLocaleChange(): void {

@@ -103,7 +103,7 @@ describe('buildCallerCommandActions', () => {
       ]),
     ]
     const actions = buildCallerCommandActions(tools, 'com.nuxy.nyaa')
-    actions[0].handler()
+    actions[0].handler?.()
     expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
       'nuxy://settings/extension/com.nuxy.nyaa'
     )
@@ -143,7 +143,7 @@ describe('buildAutoSettingsAction', () => {
       showInMenu: true,
       hint: ['⌃', '.'],
     })
-    actions[0].handler()
+    actions[0].handler?.()
     expect(window.core!.deeplink!.dispatch).toHaveBeenCalledWith(
       'nuxy://settings/extension/com.nuxy.download-manager'
     )

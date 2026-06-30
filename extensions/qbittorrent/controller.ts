@@ -1,9 +1,12 @@
 import { BaseExtensionController, setToolSearchPlaceholder } from '@nuxyorg/extension-sdk'
 import type { ShellAction } from '@nuxyorg/core'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 import { invoke } from './utils/ipc.ts'
 import { isTorrentLink } from './utils/torrent-link.ts'
 import { parseAddDeeplink } from './utils/parse-deeplink.ts'
-import type { TorrentItem, TorrentPendingAction } from './types.ts'
+import { mapQbitError } from './utils/get-status.ts'
+import { isCompletedTorrent } from './utils/state-label.ts'
+import type { QbitConnectionState, TorrentItem, TorrentPendingAction } from './types.ts'
 
 const EXT_ID = 'com.nuxy.qbittorrent'
 const POLL_INTERVAL_MS = 2000
@@ -18,15 +21,20 @@ const PAUSED_STATES = new Set([
   'missingfiles',
 ])
 
+export type CopiedKind = 'magnet' | 'savePath'
+
 export interface QbitState {
   torrents: TorrentItem[]
   query: string
   selectedIndex: number
   loading: boolean
   error: string | null
+  connectionState: QbitConnectionState | null
   adding: boolean
   addError: string | null
+  actionError: string | null
   copiedHash: string | null
+  copiedKind: CopiedKind | null
   pendingActions: Record<string, TorrentPendingAction>
 }
 
@@ -88,9 +96,12 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
         selectedIndex: -1,
         loading: false,
         error: null,
+        connectionState: null,
         adding: false,
         addError: null,
+        actionError: null,
         copiedHash: null,
+        copiedKind: null,
         pendingActions: {},
       },
       onUpdate
@@ -160,6 +171,7 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
 
   connect(): void {
     this.syncSearchPlaceholder()
+    this.store.setState({ loading: true })
     void this.refresh()
     this.pollTimer = setInterval(() => void this.refresh(), POLL_INTERVAL_MS)
     this.bindActions()
@@ -186,7 +198,7 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
 
   setQuery(query: string): void {
     if (query === this.state.query) return
-    this.store.setState({ query, selectedIndex: -1, addError: null })
+    this.store.setState({ query, selectedIndex: -1, addError: null, actionError: null })
     window.core?.shell?.refreshShellActions()
   }
 
@@ -204,6 +216,8 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
         torrents,
         loading: false,
         error: null,
+        connectionState: null,
+        actionError: null,
         pendingActions: resolvePendingActions(
           this.state.pendingActions,
           torrents,
@@ -211,10 +225,20 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
         ),
       })
     } catch (err) {
-      this.store.setState({
-        loading: false,
-        error: err instanceof Error ? err.message : 'Failed to load torrents',
-      })
+      if (err instanceof Error) {
+        const mapped = mapQbitError(err)
+        this.store.setState({
+          loading: false,
+          error: mapped.message,
+          connectionState: mapped.state,
+        })
+      } else {
+        this.store.setState({
+          loading: false,
+          error: 'Failed to load torrents',
+          connectionState: 'error',
+        })
+      }
     }
     window.core?.shell?.refreshShellActions()
   }
@@ -262,6 +286,7 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
       await this.refresh()
     } catch (err) {
       this.clearPending(hash)
+      this.store.setState({ actionError: err instanceof Error ? err.message : 'Action failed' })
       throw err
     }
   }
@@ -284,6 +309,7 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
       await invoke('remove', { hash: item.hash, deleteFiles })
     } catch (err) {
       this.clearPending(item.hash)
+      this.store.setState({ actionError: err instanceof Error ? err.message : 'Action failed' })
       throw err
     }
 
@@ -298,18 +324,25 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
 
   async copyMagnet(item: TorrentItem): Promise<void> {
     await invoke('copyMagnet', { magnetUri: item.magnetUri })
-    this.flashCopied(item.hash)
+    this.flashCopied(item.hash, 'magnet')
   }
 
   async copySavePath(item: TorrentItem): Promise<void> {
     await invoke('copySavePath', { savePath: item.savePath })
-    this.flashCopied(item.hash)
+    this.flashCopied(item.hash, 'savePath')
   }
 
-  private flashCopied(hash: string): void {
-    this.store.setState({ copiedHash: hash })
+  async openSavePath(item: TorrentItem): Promise<void> {
+    await invoke('openSavePath', { savePath: item.savePath })
+  }
+
+  private flashCopied(hash: string, kind: CopiedKind): void {
+    this.store.setState({ copiedHash: hash, copiedKind: kind })
     if (this.copiedTimer) clearTimeout(this.copiedTimer)
-    this.copiedTimer = setTimeout(() => this.store.setState({ copiedHash: null }), 1500)
+    this.copiedTimer = setTimeout(
+      () => this.store.setState({ copiedHash: null, copiedKind: null }),
+      1500
+    )
   }
 
   getKeyActions(): ShellAction[] {
@@ -344,14 +377,12 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
     const selected = selectedIndex >= 0 ? items[selectedIndex] : null
 
     return [
-      {
-        id: 'qbit-previous',
-        key: 'ArrowUp',
-        label: t('actions.previous'),
-        hint: '↑↓',
+      pairedKeyAction({
+        id: 'qbit-navigate',
+        label: t('actions.navigate'),
         allowRepeat: true,
         activeOn: () => items.length > 0,
-        handler: () => {
+        negative: () => {
           this.setSelectedIndex((prev) => {
             if (prev <= 0) {
               window.core?.shell?.controlOmniBar('show')
@@ -360,14 +391,7 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
             return prev - 1
           })
         },
-      },
-      {
-        id: 'qbit-next',
-        key: 'ArrowDown',
-        label: t('actions.next'),
-        allowRepeat: true,
-        activeOn: () => items.length > 0,
-        handler: () => {
+        positive: () => {
           this.setSelectedIndex((prev) => {
             if (prev + 1 < items.length) {
               if (prev === -1) window.core?.shell?.controlOmniBar('hide')
@@ -376,14 +400,29 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
             return prev
           })
         },
-      },
+      }),
       {
         id: 'qbit-toggle-pause',
         key: 'Enter',
-        label: selected && isPausedState(selected.state) ? t('actions.resume') : t('actions.pause'),
+        label:
+          selected && isCompletedTorrent(selected)
+            ? t('actions.openFolder')
+            : selected && isPausedState(selected.state)
+              ? t('actions.resume')
+              : t('actions.pause'),
         hint: '↵',
-        activeOn: () => !!selected && !this.isItemPending(selected.hash),
-        handler: () => selected && void this.togglePause(selected),
+        activeOn: () =>
+          !!selected &&
+          !this.isItemPending(selected.hash) &&
+          (!isCompletedTorrent(selected) || !!selected.savePath),
+        handler: () => {
+          if (!selected) return
+          if (isCompletedTorrent(selected)) {
+            void this.openSavePath(selected)
+            return
+          }
+          void this.togglePause(selected)
+        },
       },
       {
         id: 'qbit-copy-magnet',
@@ -403,6 +442,15 @@ export class QbittorrentController extends BaseExtensionController<QbitState> {
         showInMenu: !!selected,
         activeOn: () => !!selected && !this.isItemPending(selected.hash),
         handler: () => selected && void this.copySavePath(selected),
+      },
+      {
+        id: 'qbit-open-folder',
+        key: 'o',
+        label: t('actions.openFolder'),
+        section: 'actions',
+        showInMenu: !!selected,
+        activeOn: () => !!selected && !this.isItemPending(selected.hash) && !!selected.savePath,
+        handler: () => selected && void this.openSavePath(selected),
       },
       {
         id: 'qbit-recheck',

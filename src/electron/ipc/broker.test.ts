@@ -145,13 +145,18 @@ describe('invokeExtension', () => {
       text: '1+1',
     })
     expect(r.success).toBe(true)
-    expect(invokeWorker).toHaveBeenCalledWith('com.nuxy.target', 'eval', { text: '1+1' })
+    expect(invokeWorker).toHaveBeenCalledWith(
+      'com.nuxy.target',
+      'eval',
+      { text: '1+1' },
+      'com.nuxy.caller'
+    )
   })
 
   it('passes payload through to worker', async () => {
     const payload = { text: '2*3', extra: 'data' }
     await invokeExtension('com.nuxy.caller', 'com.nuxy.target', 'eval', payload)
-    expect(invokeWorker).toHaveBeenCalledWith('com.nuxy.target', 'eval', payload)
+    expect(invokeWorker).toHaveBeenCalledWith('com.nuxy.target', 'eval', payload, 'com.nuxy.caller')
   })
 
   it('does not call worker when denied', async () => {

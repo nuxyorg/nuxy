@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing, type TemplateResult } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
+import { logCaughtError } from '@nuxyorg/core'
 
 export interface CompareMeta {
   left?: { text: string; badge: string }
@@ -122,7 +123,9 @@ export class NuxyCompareCardElement extends LitElement {
   private onClick = (): void => {
     const { value, itemId } = this
     if (!value || !itemId) return
-    navigator.clipboard.writeText(value).catch(() => {})
+    navigator.clipboard
+      .writeText(value)
+      .catch((err) => logCaughtError('nuxy-compare-card', err, 'clipboard.writeText'))
     this.dispatchEvent(
       new CustomEvent('nuxy-result-card-copy', {
         detail: { id: itemId },

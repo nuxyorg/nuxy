@@ -83,7 +83,7 @@ describe('NyaaController keyboard actions', () => {
     const selectMultiple = getter!().find((a) => a.id === 'nyaa-select-multiple')
     expect(selectMultiple).toMatchObject({ key: 'a', modifiers: ['ctrl'], showInMenu: true })
 
-    selectMultiple?.handler()
+    selectMultiple?.handler?.()
     expect(controller.state.multiSelectMode).toBe(true)
 
     const afterToggle = getter!().find((a) => a.id === 'nyaa-select-multiple')
@@ -103,7 +103,7 @@ describe('NyaaController keyboard actions', () => {
     controller.setMultiSelectMode(true)
     const exitActive = getter!().find((a) => a.id === 'nyaa-exit-select')
     expect(exitActive?.activeOn?.()).toBe(true)
-    exitActive?.handler()
+    exitActive?.handler?.()
     expect(controller.state.multiSelectMode).toBe(false)
 
     controller.disconnect()
@@ -123,7 +123,7 @@ describe('NyaaController keyboard actions', () => {
     expect(copyAll).toMatchObject({ key: 'c', modifiers: ['ctrl'], showInMenu: true })
     expect(downloadAll).toMatchObject({ key: 'd', modifiers: ['ctrl'], showInMenu: true })
 
-    copyAll?.handler()
+    copyAll?.handler?.()
     expect(window.core!.ipc!.invoke).toHaveBeenCalledWith(
       'com.nuxy.nyaa',
       'copyMagnets',

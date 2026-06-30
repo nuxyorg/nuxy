@@ -1,8 +1,10 @@
 import type { ShellAction } from '@nuxyorg/core'
+import { logCaughtError } from '@nuxyorg/core'
 import type { Note } from './types.ts'
 import { deriveTitle } from './utils/note-title.ts'
 import { invoke } from './utils/ipc.ts'
 import { setToolSearchPlaceholder, BaseExtensionController } from '@nuxyorg/extension-sdk'
+import { pairedKeyAction } from '../ui-default/src/hooks/paired-key-action.ts'
 
 const EXT_ID = 'com.nuxy.notes'
 
@@ -57,13 +59,13 @@ export class NotesController extends BaseExtensionController<NotesState> {
           this.setQuery(q)
         }
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'notes:list'))
 
     invoke<{ fontSize: string }>('notes:getConfig', {})
       .then((cfg) => {
         if (cfg?.fontSize) this.store.setState({ fontSize: cfg.fontSize })
       })
-      .catch(() => {})
+      .catch((err) => logCaughtError(EXT_ID, err, 'notes:list'))
 
     this.bindKeyboard()
     if (this.state.editMode) {
@@ -161,7 +163,10 @@ export class NotesController extends BaseExtensionController<NotesState> {
     window.core?.shell?.setShellResetPaused?.(editMode)
     const sync = window.core?.window?.setBlurSuppressedSync
     if (editMode && sync) {
-      await sync(true, 'tool').catch(() => null)
+      await sync(true, 'tool').catch((err) => {
+        logCaughtError(EXT_ID, err, 'sync')
+        return null
+      })
       return
     }
     window.core?.window?.setBlurSuppressed?.(editMode, 'tool')
@@ -396,13 +401,12 @@ export class NotesController extends BaseExtensionController<NotesState> {
           this.setEditMode(false)
         },
       },
-      {
-        id: 'notes-previous',
-        key: 'ArrowUp',
-        label: t('actions.previous'),
+      pairedKeyAction({
+        id: 'notes-navigate',
+        label: t('actions.navigate'),
         allowRepeat: true,
         activeOn: () => !editMode,
-        handler: () => {
+        negative: () => {
           this.setSelectedIndex((prev) => {
             if (prev <= 0) {
               window.core?.shell?.controlOmniBar('show')
@@ -411,14 +415,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
             return prev - 1
           })
         },
-      },
-      {
-        id: 'notes-next',
-        key: 'ArrowDown',
-        label: t('actions.next'),
-        allowRepeat: true,
-        activeOn: () => !editMode,
-        handler: () => {
+        positive: () => {
           this.setSelectedIndex((prev) => {
             if (prev + 1 < filteredNotes.length) {
               if (prev === -1) window.core?.shell?.controlOmniBar('hide')
@@ -427,7 +424,7 @@ export class NotesController extends BaseExtensionController<NotesState> {
             return prev
           })
         },
-      },
+      }),
     ]
   }
 

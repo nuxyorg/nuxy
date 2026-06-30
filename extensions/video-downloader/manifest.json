@@ -11,6 +11,15 @@
     "callable": true,
     "caller": true
   },
+  "ipc": {
+    "public": ["eval", "pause", "resume", "cancel"],
+    "samples": {
+      "eval": { "text": "https://www.youtube.com/watch?v=abc123" },
+      "pause": { "jobId": "job-123" },
+      "resume": { "jobId": "job-123" },
+      "cancel": { "jobId": "job-123" }
+    }
+  },
   "behavior": {
     "onComplete": "stay"
   },

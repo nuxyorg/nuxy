@@ -1,0 +1,13 @@
+{
+  "name": "@nuxy-ext/stremio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxy-ext-dev",
+    "start": "nuxy-ext-dev"
+  },
+  "devDependencies": {
+    "@nuxyorg/ext-devserver": "workspace:*"
+  }
+}
